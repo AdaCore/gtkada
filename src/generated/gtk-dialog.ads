@@ -395,12 +395,41 @@ package Gtk.Dialog is
    --
    --  Returns: Whether the alternative button order should be used
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Close : constant Glib.Signal_Name := "close";
+   procedure On_Close
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure (Self : access Gtk_Dialog_Record'Class));
+   procedure On_Close
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
+   --  signal</link> which gets emitted when the user uses a keybinding to
+   --  close the dialog.
+   --
+   --  The default binding for this signal is the Escape key.
+
+   Signal_Response : constant Glib.Signal_Name := "response";
+   procedure On_Response
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Dialog_Record'Class;
+          Response_Id : Gtk_Response_Type));
+   procedure On_Response
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Response_Id : Gtk_Response_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted when an action widget is clicked, the dialog receives a delete
+   --  event, or the application programmer calls Gtk.Dialog.Response. On a
+   --  delete event, the response ID is GTK_RESPONSE_DELETE_EVENT. Otherwise,
+   --  it depends on which action widget was clicked.
 
    ----------------
    -- Interfaces --
@@ -419,27 +448,5 @@ package Gtk.Dialog is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Dialog
    renames Implements_Gtk_Buildable.To_Object;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Close : constant Glib.Signal_Name := "close";
-   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted when the user uses a keybinding to
-   --  close the dialog.
-   --
-   --  The default binding for this signal is the Escape key.
-   --     procedure Handler (Self : access Gtk_Dialog_Record'Class);
-
-   Signal_Response : constant Glib.Signal_Name := "response";
-   --  Emitted when an action widget is clicked, the dialog receives a delete
-   --  event, or the application programmer calls Gtk.Dialog.Response. On a
-   --  delete event, the response ID is GTK_RESPONSE_DELETE_EVENT. Otherwise,
-   --  it depends on which action widget was clicked.
-   --     procedure Handler
-   --       (Self        : access Gtk_Dialog_Record'Class;
-   --        Response_Id : Gtk_Response_Type);
-   --    --  "response_id": the response ID
 
 end Gtk.Dialog;

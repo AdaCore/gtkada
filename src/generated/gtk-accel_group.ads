@@ -360,32 +360,55 @@ package Gtk.Accel_Group is
    -------------
 
    Signal_Accel_Activate : constant Glib.Signal_Name := "accel-activate";
+   procedure On_Accel_Activate
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access function
+         (Self          : access Gtk_Accel_Group_Record'Class;
+          Acceleratable : not null access Glib.Object.GObject_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean);
+   procedure On_Accel_Activate
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access function
+         (Self          : access Glib.Object.GObject_Record'Class;
+          Acceleratable : not null access Glib.Object.GObject_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The accel-activate signal is an implementation detail of
    --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
    --  applications.
-   --
-   --  Returns True if the accelerator was activated
-   --     function Handler
-   --       (Self          : access Gtk_Accel_Group_Record'Class;
-   --        Acceleratable : not null access Glib.Object.GObject_Record'Class;
-   --        Keyval        : Guint;
-   --        Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "acceleratable": the object on which the accelerator was activated
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
+   --    --  Returns True if the accelerator was activated
 
    Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";
+   procedure On_Accel_Changed
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access procedure
+         (Self          : access Gtk_Accel_Group_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type;
+          Accel_Closure : System.Address));
+   procedure On_Accel_Changed
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access procedure
+         (Self          : access Glib.Object.GObject_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type;
+          Accel_Closure : System.Address);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
    --  added to or removed from the accel group.
    --
    --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an
    --  associated accelerator should connect to this signal, and rebuild their
    --  visual representation if the Accel_Closure is theirs.
-   --     procedure Handler
-   --       (Self          : access Gtk_Accel_Group_Record'Class;
-   --        Keyval        : Guint;
-   --        Modifier      : Gdk.Types.Gdk_Modifier_Type;
-   --        Accel_Closure : System.Address);
+   -- 
+   --  Callback parameters:
    --    --  "keyval": the accelerator keyval
    --    --  "modifier": the modifier combination of the accelerator
    --    --  "accel_closure": the GClosure of the accelerator

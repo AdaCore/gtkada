@@ -60,7 +60,6 @@ package Pango.Layout is
    function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line;
    pragma Inline (From_Object_Free);
 
-
    ----------------------------
    -- Enumeration Properties --
    ----------------------------

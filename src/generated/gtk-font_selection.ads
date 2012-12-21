@@ -188,6 +188,16 @@ package Gtk.Font_Selection is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Font_Name_Property : constant Glib.Properties.Property_String;
+
+   Preview_Text_Property : constant Glib.Properties.Property_String;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -217,16 +227,6 @@ package Gtk.Font_Selection is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Font_Selection
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Font_Name_Property : constant Glib.Properties.Property_String;
-
-   Preview_Text_Property : constant Glib.Properties.Property_String;
 
 private
    Preview_Text_Property : constant Glib.Properties.Property_String :=

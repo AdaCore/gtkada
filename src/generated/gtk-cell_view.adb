@@ -172,7 +172,6 @@ package body Gtk.Cell_View is
       (Cell_View : out Gtk_Cell_View;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
        Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
-      
    is
    begin
       Cell_View := new Gtk_Cell_View_Record;
@@ -239,7 +238,6 @@ package body Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
        Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
-      
    is
       function Internal
          (Area    : System.Address;
@@ -594,7 +592,6 @@ package body Gtk.Cell_View is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Cell_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;

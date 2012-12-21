@@ -256,4 +256,72 @@ package body Gtk.Entry_Buffer is
       Free (Tmp_Chars);
    end Set_Text;
 
+   ---------------------
+   -- On_Deleted_Text --
+   ---------------------
+
+   procedure On_Deleted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Buffer_Record'Class;
+          Position : Guint;
+          N_Chars  : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Deleted_Text;
+
+   ---------------------
+   -- On_Deleted_Text --
+   ---------------------
+
+   procedure On_Deleted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Position : Guint;
+          N_Chars  : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Deleted_Text;
+
+   ----------------------
+   -- On_Inserted_Text --
+   ----------------------
+
+   procedure On_Inserted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Buffer_Record'Class;
+          Position : Guint;
+          Chars    : UTF8_String;
+          N_Chars  : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Inserted_Text;
+
+   ----------------------
+   -- On_Inserted_Text --
+   ----------------------
+
+   procedure On_Inserted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Position : Guint;
+          Chars    : UTF8_String;
+          N_Chars  : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Inserted_Text;
+
 end Gtk.Entry_Buffer;

@@ -363,7 +363,6 @@ package body Gtk.Tool_Item is
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
        Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
-      
    is
       procedure Internal
          (Tool_Item    : System.Address;
@@ -556,5 +555,63 @@ package body Gtk.Tool_Item is
    begin
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
+
+   --------------------------
+   -- On_Create_Menu_Proxy --
+   --------------------------
+
+   procedure On_Create_Menu_Proxy
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access function
+         (Self : access Gtk_Tool_Item_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Create_Menu_Proxy;
+
+   --------------------------
+   -- On_Create_Menu_Proxy --
+   --------------------------
+
+   procedure On_Create_Menu_Proxy
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Create_Menu_Proxy;
+
+   -----------------------------
+   -- On_Toolbar_Reconfigured --
+   -----------------------------
+
+   procedure On_Toolbar_Reconfigured
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Tool_Item_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toolbar_Reconfigured;
+
+   -----------------------------
+   -- On_Toolbar_Reconfigured --
+   -----------------------------
+
+   procedure On_Toolbar_Reconfigured
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toolbar_Reconfigured;
 
 end Gtk.Tool_Item;

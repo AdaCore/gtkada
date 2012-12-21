@@ -2415,6 +2415,7 @@ __PRE__
    <package id="GtkWidget" needs_merge="false">
      <parameter name="self" ada="Widget" />
      <enum ctype="GtkAlign"/>
+     <enum ctype="GtkWidgetHelpType" />
      <record ctype="GtkRequisition"/>
      <record ctype="GtkWidgetPath"/>
      <list ada="Widget_List" ctype="Widget"/>
@@ -2742,6 +2743,7 @@ __PRE__
      <enum ctype="GtkCornerType"/>
      <enum ctype="GtkDeleteType"/>
      <enum ctype="GtkDirectionType"/>
+     <enum ctype="GtkDragResult"/>
      <enum ctype="GtkExpanderStyle"/>
      <enum ctype="GtkIconSize" asbitfield="True"/>
      <enum ctype="GtkJunctionSides"/>

@@ -526,7 +526,6 @@ package body Gtk.Container is
    procedure Set_Focus_Hadjustment
       (Container  : not null access Gtk_Container_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (Container  : System.Address;
@@ -543,7 +542,6 @@ package body Gtk.Container is
    procedure Set_Focus_Vadjustment
       (Container  : not null access Gtk_Container_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (Container  : System.Address;
@@ -597,5 +595,126 @@ package body Gtk.Container is
    begin
       Internal (Get_Object (Container));
    end Unset_Focus_Chain;
+
+   ------------
+   -- On_Add --
+   ------------
+
+   procedure On_Add
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Container_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Add;
+
+   ------------
+   -- On_Add --
+   ------------
+
+   procedure On_Add
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Add;
+
+   ---------------------
+   -- On_Check_Resize --
+   ---------------------
+
+   procedure On_Check_Resize
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure (Self : access Gtk_Container_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Check_Resize;
+
+   ---------------------
+   -- On_Check_Resize --
+   ---------------------
+
+   procedure On_Check_Resize
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Check_Resize;
+
+   ---------------
+   -- On_Remove --
+   ---------------
+
+   procedure On_Remove
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Container_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Remove;
+
+   ---------------
+   -- On_Remove --
+   ---------------
+
+   procedure On_Remove
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Remove;
+
+   ------------------------
+   -- On_Set_Focus_Child --
+   ------------------------
+
+   procedure On_Set_Focus_Child
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Container_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Set_Focus_Child;
+
+   ------------------------
+   -- On_Set_Focus_Child --
+   ------------------------
+
+   procedure On_Set_Focus_Child
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Set_Focus_Child;
 
 end Gtk.Container;

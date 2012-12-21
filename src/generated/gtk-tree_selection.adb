@@ -562,4 +562,33 @@ package body Gtk.Tree_Selection is
       Internal (Get_Object (Selection), Get_Object (Start_Path), Get_Object (End_Path));
    end Unselect_Range;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Tree_Selection_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tree_Selection_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Tree_Selection_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
 end Gtk.Tree_Selection;

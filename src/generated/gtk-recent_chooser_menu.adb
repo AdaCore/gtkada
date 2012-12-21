@@ -97,7 +97,6 @@ package body Gtk.Recent_Chooser_Menu is
    procedure Gtk_New_For_Manager
       (Self    : out Gtk_Recent_Chooser_Menu;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      
    is
    begin
       Self := new Gtk_Recent_Chooser_Menu_Record;
@@ -149,7 +148,6 @@ package body Gtk.Recent_Chooser_Menu is
    procedure Initialize_For_Manager
       (Self    : not null access Gtk_Recent_Chooser_Menu_Record'Class;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      
    is
       function Internal (Manager : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_menu_new_for_manager");
@@ -259,7 +257,6 @@ package body Gtk.Recent_Chooser_Menu is
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_add_filter");
@@ -505,7 +502,6 @@ package body Gtk.Recent_Chooser_Menu is
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_remove_filter");
@@ -573,7 +569,6 @@ package body Gtk.Recent_Chooser_Menu is
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_set_filter");

@@ -414,8 +414,7 @@ package Gtk.File_Chooser is
 
    procedure Add_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
    --  Adds Filter to the list of filters that the user can select between.
    --  When a filter is selected, only files that are passed by that filter are
    --  displayed.
@@ -631,8 +630,7 @@ package Gtk.File_Chooser is
 
    procedure Set_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
    --  Sets the current filter; only the files that pass the filter will be
    --  displayed. If the user-selectable list of filters is non-empty, then the
    --  filter should be one of the filters in that list. Setting the current
@@ -836,8 +834,7 @@ package Gtk.File_Chooser is
 
    procedure Remove_Filter
       (Chooser : Gtk_File_Chooser;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
    --  Removes Filter from the list of filters that the user can select
    --  between.
    --  Since: gtk+ 2.4
@@ -922,16 +919,6 @@ package Gtk.File_Chooser is
    --  "uri": the URI to unselect
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_File_Chooser"
-
-   function "+" (W : Gtk_File_Chooser) return Gtk_File_Chooser;
-   pragma Inline ("+");
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -973,6 +960,17 @@ package Gtk.File_Chooser is
    -------------
 
    Signal_Confirm_Overwrite : constant Glib.Signal_Name := "confirm-overwrite";
+   procedure On_Confirm_Overwrite
+      (Self : Gtk_File_Chooser;
+       Call : not null access function
+         (Self : Gtk_File_Chooser)
+          return Gtk_File_Chooser_Confirmation);
+   procedure On_Confirm_Overwrite
+      (Self : Gtk_File_Chooser;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Gtk_File_Chooser_Confirmation;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal gets emitted whenever it is appropriate to present a
    --  confirmation dialog when the user has selected a file name that already
    --  exists. The signal only gets emitted when the file chooser is in
@@ -1022,13 +1020,19 @@ package Gtk.File_Chooser is
    --          gtk_widget_destroy (chooser);
    --
    --  action to take after emitting the signal.
-   --
-   --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that
-   --  indicates which
-   --     function Handler
-   --       (Self : Gtk_File_Chooser) return Gtk_File_Chooser_Confirmation;
+   -- 
+   --  Callback parameters:
+   --    --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that indicates which
 
    Signal_Current_Folder_Changed : constant Glib.Signal_Name := "current-folder-changed";
+   procedure On_Current_Folder_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser));
+   procedure On_Current_Folder_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the current folder in a
    --  Gtk.File_Chooser.Gtk_File_Chooser changes. This can happen due to the
    --  user performing some action that changes folders, such as selecting a
@@ -1043,9 +1047,16 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Get_Current_Folder,
    --  Gtk.File_Chooser.Set_Current_Folder_Uri,
    --  Gtk.File_Chooser.Get_Current_Folder_Uri.
-   --     procedure Handler (Self : Gtk_File_Chooser);
 
    Signal_File_Activated : constant Glib.Signal_Name := "file-activated";
+   procedure On_File_Activated
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser));
+   procedure On_File_Activated
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the user "activates" a file in the file
    --  chooser. This can happen by double-clicking on a file in the file list,
    --  or by pressing 'Enter'.
@@ -1057,9 +1068,16 @@ package Gtk.File_Chooser is
    --  See also: Gtk.File_Chooser.Get_Filename,
    --  Gtk.File_Chooser.Get_Filenames, Gtk.File_Chooser.Get_Uri,
    --  Gtk.File_Chooser.Get_Uris.
-   --     procedure Handler (Self : Gtk_File_Chooser);
 
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
+   procedure On_Selection_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser));
+   procedure On_Selection_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when there is a change in the set of selected
    --  files in a Gtk.File_Chooser.Gtk_File_Chooser. This can happen when the
    --  user modifies the selection with the mouse or the keyboard, or when
@@ -1074,9 +1092,16 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Get_Filenames, Gtk.File_Chooser.Select_Uri,
    --  Gtk.File_Chooser.Unselect_Uri, Gtk.File_Chooser.Get_Uri,
    --  Gtk.File_Chooser.Get_Uris.
-   --     procedure Handler (Self : Gtk_File_Chooser);
 
    Signal_Update_Preview : constant Glib.Signal_Name := "update-preview";
+   procedure On_Update_Preview
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser));
+   procedure On_Update_Preview
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the preview in a file chooser should be
    --  regenerated. For example, this can happen when the currently selected
    --  file changes. You should use this signal if you want your file chooser
@@ -1098,7 +1123,16 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Set_Preview_Widget_Active,
    --  Gtk.File_Chooser.Set_Use_Preview_Label,
    --  Gtk.File_Chooser.Get_Preview_Filename, Gtk.File_Chooser.Get_Preview_Uri.
-   --     procedure Handler (Self : Gtk_File_Chooser);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_File_Chooser"
+
+   function "+" (W : Gtk_File_Chooser) return Gtk_File_Chooser;
+   pragma Inline ("+");
 
 private
    Use_Preview_Label_Property : constant Glib.Properties.Property_Boolean :=

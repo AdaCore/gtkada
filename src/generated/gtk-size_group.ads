@@ -201,12 +201,18 @@ package Gtk.Size_Group is
    --  Removes a widget from a Gtk.Size_Group.Gtk_Size_Group.
    --  "widget": the Gtk.Widget.Gtk_Widget to remove
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean;
+   --  If True, unmapped widgets are ignored when determining the size of the
+   --  group.
+
+   Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode;
+   --  Type: Size_Group_Mode
 
    ----------------
    -- Interfaces --
@@ -225,19 +231,6 @@ package Gtk.Size_Group is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Size_Group
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Ignore_Hidden_Property : constant Glib.Properties.Property_Boolean;
-   --  If True, unmapped widgets are ignored when determining the size of the
-   --  group.
-
-   Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode;
-   --  Type: Size_Group_Mode
 
 private
    Mode_Property : constant Gtk.Size_Group.Property_Size_Group_Mode :=

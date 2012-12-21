@@ -106,12 +106,10 @@ package Gtk.Tree_View_Column is
 
    procedure Gtk_New_With_Area
       (Tree_Column : out Gtk_Tree_View_Column;
-       Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      ;
+       Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    procedure Initialize_With_Area
       (Tree_Column : not null access Gtk_Tree_View_Column_Record'Class;
-       Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      ;
+       Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column using Area to
    --  render its cells.
    --  Since: gtk+ 3.0
@@ -196,8 +194,7 @@ package Gtk.Tree_View_Column is
 
    procedure Focus_Cell
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Sets the current keyboard focus to be at Cell, if the column contains 2
    --  or more editable and activatable cells.
    --  Since: gtk+ 2.2
@@ -528,8 +525,7 @@ package Gtk.Tree_View_Column is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record)
@@ -549,37 +545,6 @@ package Gtk.Tree_View_Column is
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "CellLayout"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Tree_View_Column_Record, Gtk_Tree_View_Column);
-   function "+"
-     (Widget : access Gtk_Tree_View_Column_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Tree_View_Column
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
-     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Tree_View_Column_Record, Gtk_Tree_View_Column);
-   function "+"
-     (Widget : access Gtk_Tree_View_Column_Record'Class)
-   return Gtk.Cell_Layout.Gtk_Cell_Layout
-   renames Implements_Gtk_Cell_Layout.To_Interface;
-   function "-"
-     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
-   return Gtk_Tree_View_Column
-   renames Implements_Gtk_Cell_Layout.To_Object;
 
    ----------------
    -- Properties --
@@ -642,8 +607,46 @@ package Gtk.Tree_View_Column is
    -------------
 
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
-   --     procedure Handler
-   --       (Self : access Gtk_Tree_View_Column_Record'Class);
+   procedure On_Clicked
+      (Self : not null access Gtk_Tree_View_Column_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tree_View_Column_Record'Class));
+   procedure On_Clicked
+      (Self : not null access Gtk_Tree_View_Column_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "CellLayout"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Tree_View_Column_Record, Gtk_Tree_View_Column);
+   function "+"
+     (Widget : access Gtk_Tree_View_Column_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Tree_View_Column
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
+     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Tree_View_Column_Record, Gtk_Tree_View_Column);
+   function "+"
+     (Widget : access Gtk_Tree_View_Column_Record'Class)
+   return Gtk.Cell_Layout.Gtk_Cell_Layout
+   renames Implements_Gtk_Cell_Layout.To_Interface;
+   function "-"
+     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
+   return Gtk_Tree_View_Column
+   renames Implements_Gtk_Cell_Layout.To_Object;
 
 private
    X_Offset_Property : constant Glib.Properties.Property_Int :=

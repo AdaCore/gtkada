@@ -305,7 +305,6 @@ package body Gtk.Cell_Area is
    procedure Add
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal (Self : System.Address; Renderer : System.Address);
       pragma Import (C, Internal, "gtk_cell_area_add");
@@ -321,7 +320,6 @@ package body Gtk.Cell_Area is
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Sibling  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Self     : System.Address;
@@ -972,7 +970,6 @@ package body Gtk.Cell_Area is
    procedure Remove
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal (Self : System.Address; Renderer : System.Address);
       pragma Import (C, Internal, "gtk_cell_area_remove");
@@ -988,7 +985,6 @@ package body Gtk.Cell_Area is
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Sibling  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Self     : System.Address;
@@ -1141,7 +1137,6 @@ package body Gtk.Cell_Area is
    procedure Set_Focus_Cell
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal (Self : System.Address; Renderer : System.Address);
       pragma Import (C, Internal, "gtk_cell_area_set_focus_cell");
@@ -1203,7 +1198,6 @@ package body Gtk.Cell_Area is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;
@@ -1282,5 +1276,145 @@ package body Gtk.Cell_Area is
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
+
+   ---------------------
+   -- On_Add_Editable --
+   ---------------------
+
+   procedure On_Add_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self      : access Gtk_Cell_Area_Record'Class;
+          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
+          Cell_Area : Cairo.Cairo_Rectangle;
+          Path      : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Add_Editable;
+
+   ---------------------
+   -- On_Add_Editable --
+   ---------------------
+
+   procedure On_Add_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
+          Cell_Area : Cairo.Cairo_Rectangle;
+          Path      : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Add_Editable;
+
+   -------------------------
+   -- On_Apply_Attributes --
+   -------------------------
+
+   procedure On_Apply_Attributes
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Cell_Area_Record'Class;
+          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Is_Expander : Boolean;
+          Is_Expanded : Boolean))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Apply_Attributes;
+
+   -------------------------
+   -- On_Apply_Attributes --
+   -------------------------
+
+   procedure On_Apply_Attributes
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Is_Expander : Boolean;
+          Is_Expanded : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Apply_Attributes;
+
+   ----------------------
+   -- On_Focus_Changed --
+   ----------------------
+
+   procedure On_Focus_Changed
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Area_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Path     : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Focus_Changed;
+
+   ----------------------
+   -- On_Focus_Changed --
+   ----------------------
+
+   procedure On_Focus_Changed
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Path     : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Focus_Changed;
+
+   ------------------------
+   -- On_Remove_Editable --
+   ------------------------
+
+   procedure On_Remove_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Area_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Remove_Editable;
+
+   ------------------------
+   -- On_Remove_Editable --
+   ------------------------
+
+   procedure On_Remove_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Remove_Editable;
 
 end Gtk.Cell_Area;

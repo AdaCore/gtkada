@@ -557,6 +557,15 @@ package Gtk.Tree_Model_Filter is
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Virtual_Root_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Path
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -586,15 +595,6 @@ package Gtk.Tree_Model_Filter is
      (Interf : Gtk.Tree_Model.Gtk_Tree_Model)
    return Gtk_Tree_Model_Filter
    renames Implements_Gtk_Tree_Model.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Virtual_Root_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Tree_Model.Gtk_Tree_Path
 
 private
    Virtual_Root_Property : constant Glib.Properties.Property_Object :=

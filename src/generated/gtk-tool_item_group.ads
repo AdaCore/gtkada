@@ -234,6 +234,24 @@ package Gtk.Tool_Item_Group is
       (Self : not null access Gtk_Tool_Item_Group_Record);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Collapsed_Property : constant Glib.Properties.Property_Boolean;
+
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
+   --  Type: Pango.Layout.Pango_Ellipsize_Mode
+
+   Header_Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
+
+   Label_Property : constant Glib.Properties.Property_String;
+
+   Label_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -263,24 +281,6 @@ package Gtk.Tool_Item_Group is
      (Interf : Gtk.Tool_Shell.Gtk_Tool_Shell)
    return Gtk_Tool_Item_Group
    renames Implements_Gtk_Tool_Shell.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Collapsed_Property : constant Glib.Properties.Property_Boolean;
-
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
-   --  Type: Pango.Layout.Pango_Ellipsize_Mode
-
-   Header_Relief_Property : constant Gtk.Enums.Property_Gtk_Relief_Style;
-
-   Label_Property : constant Glib.Properties.Property_String;
-
-   Label_Widget_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Widget.Gtk_Widget
 
 private
    Label_Widget_Property : constant Glib.Properties.Property_Object :=

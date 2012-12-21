@@ -26,6 +26,62 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gtk.Cell_Editable is
 
+   ---------------------
+   -- On_Editing_Done --
+   ---------------------
+
+   procedure On_Editing_Done
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure (Self : Gtk_Cell_Editable))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Editing_Done;
+
+   ---------------------
+   -- On_Editing_Done --
+   ---------------------
+
+   procedure On_Editing_Done
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Editing_Done;
+
+   ----------------------
+   -- On_Remove_Widget --
+   ----------------------
+
+   procedure On_Remove_Widget
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure (Self : Gtk_Cell_Editable))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Remove_Widget;
+
+   ----------------------
+   -- On_Remove_Widget --
+   ----------------------
+
+   procedure On_Remove_Widget
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Remove_Widget;
+
    function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable is
    begin
       return W;

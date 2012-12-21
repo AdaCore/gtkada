@@ -355,6 +355,41 @@ package Gtk.Tool_Palette is
       (Self   : not null access Gtk_Tool_Palette_Record;
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Get_Drag_Target_Group return Gtk.Target_Entry.Gtk_Target_Entry;
+   --  Get the target entry for a dragged
+   --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group.
+   --  Since: gtk+ 2.20
+
+   function Get_Drag_Target_Item return Gtk.Target_Entry.Gtk_Target_Entry;
+   --  Gets the target entry for a dragged Gtk.Tool_Item.Gtk_Tool_Item.
+   --  Since: gtk+ 2.20
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
+   --  The size of the icons in a tool palette is normally determined by the
+   --  Gtk.Settings.Gtk_Settings:toolbar-icon-size setting. When this property
+   --  is set, it overrides the setting.
+   --
+   --  This should only be used for special-purpose tool palettes, normal
+   --  application tool palettes should respect the user preferences for the
+   --  size of icons.
+
+   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
+   --  Is True if the Gtk.Tool_Palette.Gtk_Tool_Palette:icon-size property has
+   --  been set.
+
+   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
+   --  The style of items in the tool palette.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -398,41 +433,6 @@ package Gtk.Tool_Palette is
      (Interf : Gtk.Scrollable.Gtk_Scrollable)
    return Gtk_Tool_Palette
    renames Implements_Gtk_Scrollable.To_Object;
-
-   ---------------
-   -- Functions --
-   ---------------
-
-   function Get_Drag_Target_Group return Gtk.Target_Entry.Gtk_Target_Entry;
-   --  Get the target entry for a dragged
-   --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group.
-   --  Since: gtk+ 2.20
-
-   function Get_Drag_Target_Item return Gtk.Target_Entry.Gtk_Target_Entry;
-   --  Gets the target entry for a dragged Gtk.Tool_Item.Gtk_Tool_Item.
-   --  Since: gtk+ 2.20
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
-   --  The size of the icons in a tool palette is normally determined by the
-   --  Gtk.Settings.Gtk_Settings:toolbar-icon-size setting. When this property
-   --  is set, it overrides the setting.
-   --
-   --  This should only be used for special-purpose tool palettes, normal
-   --  application tool palettes should respect the user preferences for the
-   --  size of icons.
-
-   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
-   --  Is True if the Gtk.Tool_Palette.Gtk_Tool_Palette:icon-size property has
-   --  been set.
-
-   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
-   --  The style of items in the tool palette.
 
 private
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=

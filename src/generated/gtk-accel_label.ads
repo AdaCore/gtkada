@@ -142,12 +142,14 @@ package Gtk.Accel_Label is
    --  must be connected to an accelerator group; see Gtk.Accel_Group.Connect.
    --  "accel_closure": the closure to monitor for accelerator changes.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Accel_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
 
    ----------------
    -- Interfaces --
@@ -166,15 +168,6 @@ package Gtk.Accel_Label is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Accel_Label
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Accel_Widget_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Widget.Gtk_Widget
 
 private
    Accel_Widget_Property : constant Glib.Properties.Property_Object :=

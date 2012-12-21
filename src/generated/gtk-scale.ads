@@ -149,6 +149,10 @@ package Gtk.Scale is
    procedure Initialize_Hscale
       (Scale      : not null access Gtk_Hscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Scale.Gtk_Hscale.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale.
+
    procedure Gtk_New_Hscale
       (Scale : out Gtk_Hscale;
        Min   : Gdouble;
@@ -200,6 +204,10 @@ package Gtk.Scale is
    procedure Initialize_Vscale
       (Scale      : not null access Gtk_Vscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
+   --  Creates a new Gtk.Scale.Gtk_Vscale.
+   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
+   --  the scale.
+
    procedure Gtk_New_Vscale
       (Scale : out Gtk_Vscale;
        Min   : Gdouble;
@@ -349,6 +357,47 @@ package Gtk.Scale is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   The_Digits_Property : constant Glib.Properties.Property_Int;
+
+   Draw_Value_Property : constant Glib.Properties.Property_Boolean;
+
+   Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Format_Value : constant Glib.Signal_Name := "format-value";
+   procedure On_Format_Value
+      (Self : not null access Gtk_Scale_Record;
+       Call : not null access function
+         (Self  : access Gtk_Scale_Record'Class;
+          Value : Gdouble) return UTF8_String);
+   procedure On_Format_Value
+      (Self : not null access Gtk_Scale_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Value : Gdouble) return UTF8_String;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Signal which allows you to change how the scale value is displayed.
+   --  Connect a signal handler which returns an allocated string representing
+   --  Value. That string will then be used to display the scale's value.
+   --
+   --  Here's an example signal handler which displays a value 1.0 as with
+   --  "-->1.0<--". |[ static gchar* format_value_callback (GtkScale *scale,
+   --  gdouble value) { return g_strdup_printf ("-->%0.*g<--",
+   --  gtk_scale_get_digits (scale), value); } ]|
+   -- 
+   --  Callback parameters:
+   --    --  "value": the value to format
+   --    --  Returns allocated string representing Value
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -378,38 +427,6 @@ package Gtk.Scale is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Scale
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   The_Digits_Property : constant Glib.Properties.Property_Int;
-
-   Draw_Value_Property : constant Glib.Properties.Property_Boolean;
-
-   Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Format_Value : constant Glib.Signal_Name := "format-value";
-   --  Signal which allows you to change how the scale value is displayed.
-   --  Connect a signal handler which returns an allocated string representing
-   --  Value. That string will then be used to display the scale's value.
-   --
-   --  Here's an example signal handler which displays a value 1.0 as with
-   --  "-->1.0<--". |[ static gchar* format_value_callback (GtkScale *scale,
-   --  gdouble value) { return g_strdup_printf ("-->%0.*g<--",
-   --  gtk_scale_get_digits (scale), value); } ]|
-   --
-   --  Returns allocated string representing Value
-   --     function Handler
-   --       (Self  : access Gtk_Scale_Record'Class;
-   --        Value : Gdouble) return UTF8_String;
-   --    --  "value": the value to format
 
 private
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=

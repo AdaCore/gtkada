@@ -357,4 +357,32 @@ package body Gtk.Expander is
       Internal (Get_Object (Expander), Boolean'Pos (Use_Underline));
    end Set_Use_Underline;
 
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Expander_Record;
+       Call : not null access procedure (Self : access Gtk_Expander_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Expander_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate;
+
 end Gtk.Expander;

@@ -122,24 +122,6 @@ package Gtk.Settings is
        Value : out Glib.Values.GValue;
        Found : out Boolean);
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "StyleProvider"
-
-   package Implements_Gtk_Style_Provider is new Glib.Types.Implements
-     (Gtk.Style_Provider.Gtk_Style_Provider, Gtk_Settings_Record, Gtk_Settings);
-   function "+"
-     (Widget : access Gtk_Settings_Record'Class)
-   return Gtk.Style_Provider.Gtk_Style_Provider
-   renames Implements_Gtk_Style_Provider.To_Interface;
-   function "-"
-     (Interf : Gtk.Style_Provider.Gtk_Style_Provider)
-   return Gtk_Settings
-   renames Implements_Gtk_Style_Provider.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -222,7 +204,6 @@ package Gtk.Settings is
    --  ';' instead of newlines:
    --
    --    name1: color1; name2: color2; ...
-   --
 
    Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the cursor should blink.
@@ -460,6 +441,24 @@ package Gtk.Settings is
    Gtk_Xft_Hintstyle_Property : constant Glib.Properties.Property_String;
 
    Gtk_Xft_Rgba_Property : constant Glib.Properties.Property_String;
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "StyleProvider"
+
+   package Implements_Gtk_Style_Provider is new Glib.Types.Implements
+     (Gtk.Style_Provider.Gtk_Style_Provider, Gtk_Settings_Record, Gtk_Settings);
+   function "+"
+     (Widget : access Gtk_Settings_Record'Class)
+   return Gtk.Style_Provider.Gtk_Style_Provider
+   renames Implements_Gtk_Style_Provider.To_Interface;
+   function "-"
+     (Interf : Gtk.Style_Provider.Gtk_Style_Provider)
+   return Gtk_Settings
+   renames Implements_Gtk_Style_Provider.To_Object;
 
 private
    Gtk_Xft_Rgba_Property : constant Glib.Properties.Property_String :=

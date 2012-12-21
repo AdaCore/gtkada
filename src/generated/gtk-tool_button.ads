@@ -261,6 +261,46 @@ package Gtk.Tool_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Icon_Name_Property : constant Glib.Properties.Property_String;
+   --  The name of the themed icon displayed on the item. This property only
+   --  has an effect if not overridden by "label", "icon_widget" or "stock_id"
+   --  properties.
+
+   Icon_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
+   Label_Property : constant Glib.Properties.Property_String;
+
+   Label_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
+   Stock_Id_Property : constant Glib.Properties.Property_String;
+
+   Use_Underline_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Clicked : constant Glib.Signal_Name := "clicked";
+   procedure On_Clicked
+      (Self : not null access Gtk_Tool_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tool_Button_Record'Class));
+   procedure On_Clicked
+      (Self : not null access Gtk_Tool_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted when the tool button is clicked with the mouse
+   --  or activated with the keyboard.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -290,38 +330,6 @@ package Gtk.Tool_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Tool_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Icon_Name_Property : constant Glib.Properties.Property_String;
-   --  The name of the themed icon displayed on the item. This property only
-   --  has an effect if not overridden by "label", "icon_widget" or "stock_id"
-   --  properties.
-
-   Icon_Widget_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Widget.Gtk_Widget
-
-   Label_Property : constant Glib.Properties.Property_String;
-
-   Label_Widget_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Widget.Gtk_Widget
-
-   Stock_Id_Property : constant Glib.Properties.Property_String;
-
-   Use_Underline_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Clicked : constant Glib.Signal_Name := "clicked";
-   --  This signal is emitted when the tool button is clicked with the mouse
-   --  or activated with the keyboard.
-   --     procedure Handler (Self : access Gtk_Tool_Button_Record'Class);
 
 private
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=

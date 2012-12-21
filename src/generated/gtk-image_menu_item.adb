@@ -251,7 +251,6 @@ package body Gtk.Image_Menu_Item is
    procedure Set_Accel_Group
       (Self        : not null access Gtk_Image_Menu_Item_Record;
        Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
-      
    is
       procedure Internal
          (Self        : System.Address;

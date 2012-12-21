@@ -149,4 +149,35 @@ package body Gtk.Cell_Renderer_Toggle is
       Internal (Get_Object (Self), Boolean'Pos (Radio));
    end Set_Radio;
 
+   ----------------
+   -- On_Toggled --
+   ----------------
+
+   procedure On_Toggled
+      (Self : not null access Gtk_Cell_Renderer_Toggle_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
+          Path : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggled;
+
+   ----------------
+   -- On_Toggled --
+   ----------------
+
+   procedure On_Toggled
+      (Self : not null access Gtk_Cell_Renderer_Toggle_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggled;
+
 end Gtk.Cell_Renderer_Toggle;

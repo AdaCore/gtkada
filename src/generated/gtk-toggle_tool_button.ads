@@ -137,6 +137,31 @@ package Gtk.Toggle_Tool_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
+   --  If the toggle tool button should be pressed in.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Tool_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Toggle_Tool_Button_Record'Class));
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Tool_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted whenever the toggle tool button changes state.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -166,24 +191,6 @@ package Gtk.Toggle_Tool_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Toggle_Tool_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
-   --  If the toggle tool button should be pressed in.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Toggled : constant Glib.Signal_Name := "toggled";
-   --  Emitted whenever the toggle tool button changes state.
-   --     procedure Handler
-   --       (Self : access Gtk_Toggle_Tool_Button_Record'Class);
 
 private
    Active_Property : constant Glib.Properties.Property_Boolean :=

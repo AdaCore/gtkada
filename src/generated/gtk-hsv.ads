@@ -113,31 +113,6 @@ package Gtk.Hsv is
    --  color value status to be final.
    --  Since: gtk+ 2.14
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Hsv_Record, Gtk_Hsv);
-   function "+"
-     (Widget : access Gtk_Hsv_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Hsv
-   renames Implements_Gtk_Buildable.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -164,11 +139,44 @@ package Gtk.Hsv is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
-   --     procedure Handler (Self : access Gtk_Hsv_Record'Class);
+   procedure On_Changed
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure (Self : access Gtk_Hsv_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Move : constant Glib.Signal_Name := "move";
-   --     procedure Handler
-   --       (Self   : access Gtk_Hsv_Record'Class;
-   --        Object : Gtk.Enums.Gtk_Direction_Type);
+   procedure On_Move
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Hsv_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type));
+   procedure On_Move
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Hsv_Record, Gtk_Hsv);
+   function "+"
+     (Widget : access Gtk_Hsv_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Hsv
+   renames Implements_Gtk_Buildable.To_Object;
 
 end Gtk.Hsv;

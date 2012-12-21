@@ -97,7 +97,6 @@ package body Gtk.Recent_Chooser_Widget is
    procedure Gtk_New_For_Manager
       (Widget  : out Gtk_Recent_Chooser_Widget;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      
    is
    begin
       Widget := new Gtk_Recent_Chooser_Widget_Record;
@@ -149,7 +148,6 @@ package body Gtk.Recent_Chooser_Widget is
    procedure Initialize_For_Manager
       (Widget  : not null access Gtk_Recent_Chooser_Widget_Record'Class;
        Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      
    is
       function Internal (Manager : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_widget_new_for_manager");
@@ -232,7 +230,6 @@ package body Gtk.Recent_Chooser_Widget is
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_add_filter");
@@ -452,7 +449,6 @@ package body Gtk.Recent_Chooser_Widget is
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_remove_filter");
@@ -520,7 +516,6 @@ package body Gtk.Recent_Chooser_Widget is
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_set_filter");

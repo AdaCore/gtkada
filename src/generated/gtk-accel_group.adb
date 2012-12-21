@@ -470,4 +470,74 @@ package body Gtk.Accel_Group is
       Internal (Default_Mod_Mask);
    end Set_Default_Mod_Mask;
 
+   -----------------------
+   -- On_Accel_Activate --
+   -----------------------
+
+   procedure On_Accel_Activate
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access function
+         (Self          : access Gtk_Accel_Group_Record'Class;
+          Acceleratable : not null access Glib.Object.GObject_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Accel_Activate;
+
+   -----------------------
+   -- On_Accel_Activate --
+   -----------------------
+
+   procedure On_Accel_Activate
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access function
+         (Self          : access Glib.Object.GObject_Record'Class;
+          Acceleratable : not null access Glib.Object.GObject_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Accel_Activate;
+
+   ----------------------
+   -- On_Accel_Changed --
+   ----------------------
+
+   procedure On_Accel_Changed
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access procedure
+         (Self          : access Gtk_Accel_Group_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type;
+          Accel_Closure : System.Address))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Accel_Changed;
+
+   ----------------------
+   -- On_Accel_Changed --
+   ----------------------
+
+   procedure On_Accel_Changed
+      (Self : not null access Gtk_Accel_Group_Record;
+       Call : not null access procedure
+         (Self          : access Glib.Object.GObject_Record'Class;
+          Keyval        : Guint;
+          Modifier      : Gdk.Types.Gdk_Modifier_Type;
+          Accel_Closure : System.Address);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Accel_Changed;
+
 end Gtk.Accel_Group;

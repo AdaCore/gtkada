@@ -198,16 +198,6 @@ package Gtk.Font_Chooser is
    end Set_Filter_Func_User_Data;
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Font_Chooser"
-
-   function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser;
-   pragma Inline ("+");
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -231,7 +221,27 @@ package Gtk.Font_Chooser is
    -------------
 
    Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
-   --     procedure Handler (Self : Gtk_Font_Chooser; Object : UTF8_String);
+   procedure On_Font_Activated
+      (Self : Gtk_Font_Chooser;
+       Call : not null access procedure
+         (Self   : Gtk_Font_Chooser;
+          Object : UTF8_String));
+   procedure On_Font_Activated
+      (Self : Gtk_Font_Chooser;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Font_Chooser"
+
+   function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser;
+   pragma Inline ("+");
 
 private
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean :=

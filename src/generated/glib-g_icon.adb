@@ -51,11 +51,6 @@ package body Glib.G_Icon is
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
    end To_String;
 
-   function "+" (W : G_Icon) return G_Icon is
-   begin
-      return W;
-   end "+";
-
    --------------------
    -- New_For_String --
    --------------------
@@ -70,5 +65,10 @@ package body Glib.G_Icon is
       Free (Tmp_Str);
       return Tmp_Return;
    end New_For_String;
+
+   function "+" (W : G_Icon) return G_Icon is
+   begin
+      return W;
+   end "+";
 
 end Glib.G_Icon;

@@ -136,12 +136,10 @@ package Gtk.Entry_Completion is
 
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
-       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      ;
+       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    procedure Initialize_With_Area
       (Completion : not null access Gtk_Entry_Completion_Record'Class;
-       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      ;
+       Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new Gtk.Entry_Completion.Gtk_Entry_Completion object using
    --  the specified Area to layout cells in the underlying
    --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.
@@ -459,8 +457,7 @@ package Gtk.Entry_Completion is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Entry_Completion_Record)
@@ -480,37 +477,6 @@ package Gtk.Entry_Completion is
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "CellLayout"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Entry_Completion_Record, Gtk_Entry_Completion);
-   function "+"
-     (Widget : access Gtk_Entry_Completion_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Entry_Completion
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
-     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Entry_Completion_Record, Gtk_Entry_Completion);
-   function "+"
-     (Widget : access Gtk_Entry_Completion_Record'Class)
-   return Gtk.Cell_Layout.Gtk_Cell_Layout
-   renames Implements_Gtk_Cell_Layout.To_Interface;
-   function "-"
-     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
-   return Gtk_Entry_Completion
-   renames Implements_Gtk_Cell_Layout.To_Object;
 
    ----------------
    -- Properties --
@@ -561,29 +527,57 @@ package Gtk.Entry_Completion is
    -------------
 
    Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
+   procedure On_Action_Activated
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Entry_Completion_Record'Class;
+          Index : Gint));
+   procedure On_Action_Activated
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Index : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when an action is activated.
-   --     procedure Handler
-   --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Index : Gint);
-   --    --  "index": the index of the activated action
 
    Signal_Cursor_On_Match : constant Glib.Signal_Name := "cursor-on-match";
+   procedure On_Cursor_On_Match
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Gtk_Entry_Completion_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean);
+   procedure On_Cursor_On_Match
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
    --  contents of the text column in the row pointed to by Iter.
    --
    --  Note that Model is the model that was passed to
    --  Gtk.Entry_Completion.Set_Model.
-   --
-   --  Returns True if the signal has been handled
-   --     function Handler
-   --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
    --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+   --    --  Returns True if the signal has been handled
 
    Signal_Insert_Prefix : constant Glib.Signal_Name := "insert-prefix";
+   procedure On_Insert_Prefix
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self   : access Gtk_Entry_Completion_Record'Class;
+          Prefix : UTF8_String) return Boolean);
+   procedure On_Insert_Prefix
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Prefix : UTF8_String) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when the inline autocompletion is triggered. The default
    --  behaviour is to make the entry display the whole prefix and select the
    --  newly inserted part.
@@ -592,28 +586,67 @@ package Gtk.Entry_Completion is
    --  smaller part of the Prefix into the entry - e.g. the entry used in the
    --  Gtk.File_Chooser.Gtk_File_Chooser inserts only the part of the prefix up
    --  to the next '/'.
-   --
-   --  Returns True if the signal has been handled
-   --     function Handler
-   --       (Self   : access Gtk_Entry_Completion_Record'Class;
-   --        Prefix : UTF8_String) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "prefix": the common prefix of all possible completions
+   --    --  Returns True if the signal has been handled
 
    Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
+   procedure On_Match_Selected
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Gtk_Entry_Completion_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean);
+   procedure On_Match_Selected
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
    --  the text column in the row pointed to by Iter.
    --
    --  Note that Model is the model that was passed to
    --  Gtk.Entry_Completion.Set_Model.
-   --
-   --  Returns True if the signal has been handled
-   --     function Handler
-   --       (Self  : access Gtk_Entry_Completion_Record'Class;
-   --        Model : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
    --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+   --    --  Returns True if the signal has been handled
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "CellLayout"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Entry_Completion_Record, Gtk_Entry_Completion);
+   function "+"
+     (Widget : access Gtk_Entry_Completion_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Entry_Completion
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
+     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Entry_Completion_Record, Gtk_Entry_Completion);
+   function "+"
+     (Widget : access Gtk_Entry_Completion_Record'Class)
+   return Gtk.Cell_Layout.Gtk_Cell_Layout
+   renames Implements_Gtk_Cell_Layout.To_Interface;
+   function "-"
+     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
+   return Gtk_Entry_Completion
+   renames Implements_Gtk_Cell_Layout.To_Object;
 
 private
    Text_Column_Property : constant Glib.Properties.Property_Int :=

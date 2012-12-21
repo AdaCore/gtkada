@@ -149,6 +149,14 @@ package Gtk.Viewport is
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -178,14 +186,6 @@ package Gtk.Viewport is
      (Interf : Gtk.Scrollable.Gtk_Scrollable)
    return Gtk_Viewport
    renames Implements_Gtk_Scrollable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=

@@ -487,4 +487,178 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate;
+
+   ----------------------
+   -- On_Activate_Item --
+   ----------------------
+
+   procedure On_Activate_Item
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Item;
+
+   ----------------------
+   -- On_Activate_Item --
+   ----------------------
+
+   procedure On_Activate_Item
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Item;
+
+   -----------------
+   -- On_Deselect --
+   -----------------
+
+   procedure On_Deselect
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Deselect;
+
+   -----------------
+   -- On_Deselect --
+   -----------------
+
+   procedure On_Deselect
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Deselect;
+
+   -------------------
+   -- On_Gtk_Select --
+   -------------------
+
+   procedure On_Gtk_Select
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Gtk_Select;
+
+   -------------------
+   -- On_Gtk_Select --
+   -------------------
+
+   procedure On_Gtk_Select
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Gtk_Select;
+
+   -----------------------------
+   -- On_Toggle_Size_Allocate --
+   -----------------------------
+
+   procedure On_Toggle_Size_Allocate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Menu_Item_Record'Class;
+          Object : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggle_Size_Allocate;
+
+   -----------------------------
+   -- On_Toggle_Size_Allocate --
+   -----------------------------
+
+   procedure On_Toggle_Size_Allocate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggle_Size_Allocate;
+
+   ----------------------------
+   -- On_Toggle_Size_Request --
+   ----------------------------
+
+   procedure On_Toggle_Size_Request
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Menu_Item_Record'Class;
+          Object : System.Address))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggle_Size_Request;
+
+   ----------------------------
+   -- On_Toggle_Size_Request --
+   ----------------------------
+
+   procedure On_Toggle_Size_Request
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : System.Address);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggle_Size_Request;
+
 end Gtk.Menu_Item;

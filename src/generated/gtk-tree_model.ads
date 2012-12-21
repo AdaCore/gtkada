@@ -749,16 +749,6 @@ package Gtk.Tree_Model is
    function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
    --  Extract the path from the given GValue.
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Tree_Model"
-
-   function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model;
-   pragma Inline ("+");
-
    -----------
    -- Lists --
    -----------
@@ -772,16 +762,38 @@ package Gtk.Tree_Model is
    -------------
 
    Signal_Row_Changed : constant Glib.Signal_Name := "row-changed";
+   procedure On_Row_Changed
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter));
+   procedure On_Row_Changed
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when a row in the model has changed.
-   --     procedure Handler
-   --       (Self : Gtk_Tree_Model;
-   --        Path : Gtk_Tree_Path;
-   --        Iter : Gtk_Tree_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the changed row
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the changed
    --    --  row
 
    Signal_Row_Deleted : constant Glib.Signal_Name := "row-deleted";
+   procedure On_Row_Deleted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path));
+   procedure On_Row_Deleted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when a row has been deleted.
    --
    --  Note that no iterator is passed to the signal handler, since the row is
@@ -790,49 +802,91 @@ package Gtk.Tree_Model is
    --  This should be called by models after a row has been removed. The
    --  location pointed to by Path should be the location that the row
    --  previously was at. It may not be a valid location anymore.
-   --     procedure Handler (Self : Gtk_Tree_Model; Path : Gtk_Tree_Path);
-   --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
 
    Signal_Row_Has_Child_Toggled : constant Glib.Signal_Name := "row-has-child-toggled";
+   procedure On_Row_Has_Child_Toggled
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter));
+   procedure On_Row_Has_Child_Toggled
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when a row has gotten the first child row or
    --  lost its last child row.
-   --     procedure Handler
-   --       (Self : Gtk_Tree_Model;
-   --        Path : Gtk_Tree_Path;
-   --        Iter : Gtk_Tree_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row
 
    Signal_Row_Inserted : constant Glib.Signal_Name := "row-inserted";
+   procedure On_Row_Inserted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter));
+   procedure On_Row_Inserted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when a new row has been inserted in the model.
    --
    --  Note that the row may still be empty at this point, since it is a
    --  common pattern to first insert an empty row, and then fill it with the
    --  desired values.
-   --     procedure Handler
-   --       (Self : Gtk_Tree_Model;
-   --        Path : Gtk_Tree_Path;
-   --        Iter : Gtk_Tree_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the new row
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the new row
 
    Signal_Rows_Reordered : constant Glib.Signal_Name := "rows-reordered";
+   procedure On_Rows_Reordered
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self      : Gtk_Tree_Model;
+          Path      : Gtk_Tree_Path;
+          Iter      : Gtk_Tree_Iter;
+          New_Order : System.Address));
+   procedure On_Rows_Reordered
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Path      : Gtk_Tree_Path;
+          Iter      : Gtk_Tree_Iter;
+          New_Order : System.Address);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the children of a node in the
    --  Gtk.Tree_Model.Gtk_Tree_Model have been reordered.
    --
    --  Note that this signal is *not* emitted when rows are reordered by DND,
    --  since this is implemented by removing and then reinserting the row.
-   --     procedure Handler
-   --       (Self      : Gtk_Tree_Model;
-   --        Path      : Gtk_Tree_Path;
-   --        Iter      : Gtk_Tree_Iter;
-   --        New_Order : System.Address);
+   -- 
+   --  Callback parameters:
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the tree node whose
    --    --  children have been reordered
    --    --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the node whose
    --    --  "new_order": an array of integers mapping the current position of each
    --    --  child to its old position before the re-ordering, i.e.
    --    --  New_Order'[newpos] = oldpos'
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Tree_Model"
+
+   function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model;
+   pragma Inline ("+");
 
 private
 type Gtk_Tree_Iter is record

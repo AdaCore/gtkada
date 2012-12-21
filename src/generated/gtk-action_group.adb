@@ -619,4 +619,132 @@ package body Gtk.Action_Group is
       return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
    end Translate_String;
 
+   ----------------------
+   -- On_Connect_Proxy --
+   ----------------------
+
+   procedure On_Connect_Proxy
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Action_Group_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Connect_Proxy;
+
+   ----------------------
+   -- On_Connect_Proxy --
+   ----------------------
+
+   procedure On_Connect_Proxy
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Connect_Proxy;
+
+   -------------------------
+   -- On_Disconnect_Proxy --
+   -------------------------
+
+   procedure On_Disconnect_Proxy
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Action_Group_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Disconnect_Proxy;
+
+   -------------------------
+   -- On_Disconnect_Proxy --
+   -------------------------
+
+   procedure On_Disconnect_Proxy
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Disconnect_Proxy;
+
+   ----------------------
+   -- On_Post_Activate --
+   ----------------------
+
+   procedure On_Post_Activate
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Action_Group_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Post_Activate;
+
+   ----------------------
+   -- On_Post_Activate --
+   ----------------------
+
+   procedure On_Post_Activate
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Post_Activate;
+
+   ---------------------
+   -- On_Pre_Activate --
+   ---------------------
+
+   procedure On_Pre_Activate
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Action_Group_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Pre_Activate;
+
+   ---------------------
+   -- On_Pre_Activate --
+   ---------------------
+
+   procedure On_Pre_Activate
+      (Self : not null access Gtk_Action_Group_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Pre_Activate;
+
 end Gtk.Action_Group;

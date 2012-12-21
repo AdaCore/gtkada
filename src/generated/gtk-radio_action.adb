@@ -187,4 +187,35 @@ package body Gtk.Radio_Action is
       Internal (Get_Object (Action), Gtk.Widget.Widget_SList.Get_Object (Group));
    end Set_Group;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Radio_Action_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Radio_Action_Record'Class;
+          Current : not null access Gtk_Radio_Action_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Radio_Action_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Current : not null access Gtk_Radio_Action_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
 end Gtk.Radio_Action;

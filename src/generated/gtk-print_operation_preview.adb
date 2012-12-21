@@ -42,6 +42,70 @@ package body Gtk.Print_Operation_Preview is
       return Boolean'Val (Internal (Preview, Page_Nr));
    end Is_Selected;
 
+   ----------------------
+   -- On_Got_Page_Size --
+   ----------------------
+
+   procedure On_Got_Page_Size
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self       : Gtk_Print_Operation_Preview;
+          Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Got_Page_Size;
+
+   ----------------------
+   -- On_Got_Page_Size --
+   ----------------------
+
+   procedure On_Got_Page_Size
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Got_Page_Size;
+
+   --------------
+   -- On_Ready --
+   --------------
+
+   procedure On_Ready
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self    : Gtk_Print_Operation_Preview;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Ready;
+
+   --------------
+   -- On_Ready --
+   --------------
+
+   procedure On_Ready
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Ready;
+
    function "+" (W : Gtk_Print_Operation_Preview) return Gtk_Print_Operation_Preview is
    begin
       return W;

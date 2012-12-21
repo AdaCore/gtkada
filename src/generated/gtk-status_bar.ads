@@ -157,6 +157,50 @@ package Gtk.Status_Bar is
       (Self        : not null access Gtk_Status_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Text_Popped : constant Glib.Signal_Name := "text-popped";
+   procedure On_Text_Popped
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Status_Bar_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String));
+   procedure On_Text_Popped
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Is emitted whenever a new message is popped off a statusbar's stack.
+   -- 
+   --  Callback parameters:
+   --    --  "context": the context id of the relevant message/statusbar
+   --    --  "text": the message that was just popped
+
+   Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
+   procedure On_Text_Pushed
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Status_Bar_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String));
+   procedure On_Text_Pushed
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
+   -- 
+   --  Callback parameters:
+   --    --  "context": the context id of the relevant message/statusbar
+   --    --  "text": the message that was pushed
+
    ----------------
    -- Interfaces --
    ----------------
@@ -187,27 +231,5 @@ package Gtk.Status_Bar is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Status_Bar
    renames Implements_Gtk_Orientable.To_Object;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Text_Popped : constant Glib.Signal_Name := "text-popped";
-   --  Is emitted whenever a new message is popped off a statusbar's stack.
-   --     procedure Handler
-   --       (Self    : access Gtk_Status_Bar_Record'Class;
-   --        Context : Context_Id;
-   --        Text    : UTF8_String);
-   --    --  "context": the context id of the relevant message/statusbar
-   --    --  "text": the message that was just popped
-
-   Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
-   --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
-   --     procedure Handler
-   --       (Self    : access Gtk_Status_Bar_Record'Class;
-   --        Context : Context_Id;
-   --        Text    : UTF8_String);
-   --    --  "context": the context id of the relevant message/statusbar
-   --    --  "text": the message that was pushed
 
 end Gtk.Status_Bar;

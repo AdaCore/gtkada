@@ -213,6 +213,60 @@ package Gtk.Info_Bar is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
+   --  Type: Gtk.Message_Dialog.Gtk_Message_Type
+   --  The type of the message.
+   --
+   --  The type is used to determine the colors to use in the info bar. The
+   --  following symbolic color names can by used to customize these colors:
+   --  "info_fg_color", "info_bg_color", "warning_fg_color",
+   --  "warning_bg_color", "question_fg_color", "question_bg_color",
+   --  "error_fg_color", "error_bg_color". "other_fg_color", "other_bg_color".
+   --
+   --  If the type is GTK_MESSAGE_OTHER, no info bar is painted but the colors
+   --  are still set.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Close : constant Glib.Signal_Name := "close";
+   procedure On_Close
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure (Self : access Gtk_Info_Bar_Record'Class));
+   procedure On_Close
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
+   --  signal</link> which gets emitted when the user uses a keybinding to
+   --  dismiss the info bar.
+   --
+   --  The default binding for this signal is the Escape key.
+
+   Signal_Response : constant Glib.Signal_Name := "response";
+   procedure On_Response
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Info_Bar_Record'Class;
+          Response_Id : Gint));
+   procedure On_Response
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Response_Id : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted when an action widget is clicked or the application programmer
+   --  calls Gtk.Dialog.Response. The Response_Id depends on which action
+   --  widget was clicked.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -242,46 +296,6 @@ package Gtk.Info_Bar is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Info_Bar
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
-   --  Type: Gtk.Message_Dialog.Gtk_Message_Type
-   --  The type of the message.
-   --
-   --  The type is used to determine the colors to use in the info bar. The
-   --  following symbolic color names can by used to customize these colors:
-   --  "info_fg_color", "info_bg_color", "warning_fg_color",
-   --  "warning_bg_color", "question_fg_color", "question_bg_color",
-   --  "error_fg_color", "error_bg_color". "other_fg_color", "other_bg_color".
-   --
-   --  If the type is GTK_MESSAGE_OTHER, no info bar is painted but the colors
-   --  are still set.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Close : constant Glib.Signal_Name := "close";
-   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted when the user uses a keybinding to
-   --  dismiss the info bar.
-   --
-   --  The default binding for this signal is the Escape key.
-   --     procedure Handler (Self : access Gtk_Info_Bar_Record'Class);
-
-   Signal_Response : constant Glib.Signal_Name := "response";
-   --  Emitted when an action widget is clicked or the application programmer
-   --  calls Gtk.Dialog.Response. The Response_Id depends on which action
-   --  widget was clicked.
-   --     procedure Handler
-   --       (Self        : access Gtk_Info_Bar_Record'Class;
-   --        Response_Id : Gint);
-   --    --  "response_id": the response ID
 
 private
    Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type :=

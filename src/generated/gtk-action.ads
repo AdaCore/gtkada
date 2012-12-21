@@ -410,31 +410,6 @@ package Gtk.Action is
    --  Reenable activation signals from the action
    --  Since: gtk+ 2.16
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Action_Record, Gtk_Action);
-   function "+"
-     (Widget : access Gtk_Action_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Action
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -519,8 +494,33 @@ package Gtk.Action is
    -------------
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
+   procedure On_Activate
+      (Self : not null access Gtk_Action_Record;
+       Call : not null access procedure (Self : access Gtk_Action_Record'Class));
+   procedure On_Activate
+      (Self : not null access Gtk_Action_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The "activate" signal is emitted when the action is activated.
-   --     procedure Handler (Self : access Gtk_Action_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Action_Record, Gtk_Action);
+   function "+"
+     (Widget : access Gtk_Action_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Action
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean :=

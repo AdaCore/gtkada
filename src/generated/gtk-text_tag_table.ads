@@ -138,12 +138,54 @@ package Gtk.Text_Tag_Table is
    --  a reference to it.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Tag_Added : constant Glib.Signal_Name := "tag-added";
+   procedure On_Tag_Added
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Tag_Table_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class));
+   procedure On_Tag_Added
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   Signal_Tag_Changed : constant Glib.Signal_Name := "tag-changed";
+   procedure On_Tag_Changed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Text_Tag_Table_Record'Class;
+          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Size_Changed : Boolean));
+   procedure On_Tag_Changed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Size_Changed : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   -- 
+   --  Callback parameters:
+   --    --  "tag": the changed tag.
+   --    --  "size_changed": whether the size has been changed.
+
+   Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
+   procedure On_Tag_Removed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Tag_Table_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class));
+   procedure On_Tag_Removed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    ----------------
    -- Interfaces --
@@ -162,29 +204,5 @@ package Gtk.Text_Tag_Table is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Text_Tag_Table
    renames Implements_Gtk_Buildable.To_Object;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Tag_Added : constant Glib.Signal_Name := "tag-added";
-   --     procedure Handler
-   --       (Self : access Gtk_Text_Tag_Table_Record'Class;
-   --        Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-   --    --  "tag": the added tag.
-
-   Signal_Tag_Changed : constant Glib.Signal_Name := "tag-changed";
-   --     procedure Handler
-   --       (Self         : access Gtk_Text_Tag_Table_Record'Class;
-   --        Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-   --        Size_Changed : Boolean);
-   --    --  "tag": the changed tag.
-   --    --  "size_changed": whether the size has been changed.
-
-   Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
-   --     procedure Handler
-   --       (Self : access Gtk_Text_Tag_Table_Record'Class;
-   --        Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-   --    --  "tag": the removed tag.
 
 end Gtk.Text_Tag_Table;

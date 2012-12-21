@@ -420,8 +420,7 @@ package Gtk.Container is
 
    procedure Set_Focus_Hadjustment
       (Container  : not null access Gtk_Container_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Hooks up an adjustment to focus handling in a container, so when a
    --  child of the container is focused, the adjustment is scrolled to show
    --  that widget. This function sets the horizontal alignment. See
@@ -442,8 +441,7 @@ package Gtk.Container is
 
    procedure Set_Focus_Vadjustment
       (Container  : not null access Gtk_Container_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Hooks up an adjustment to focus handling in a container, so when a
    --  child of the container is focused, the adjustment is scrolled to show
    --  that widget. This function sets the vertical alignment. See
@@ -543,31 +541,6 @@ package Gtk.Container is
    --  Removes a focus chain explicitly set with
    --  Gtk.Container.Set_Focus_Chain.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Container_Record, Gtk_Container);
-   function "+"
-     (Widget : access Gtk_Container_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Container
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -587,22 +560,71 @@ package Gtk.Container is
    -------------
 
    Signal_Add : constant Glib.Signal_Name := "add";
-   --     procedure Handler
-   --       (Self   : access Gtk_Container_Record'Class;
-   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure On_Add
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Container_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Add
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Check_Resize : constant Glib.Signal_Name := "check-resize";
-   --     procedure Handler (Self : access Gtk_Container_Record'Class);
+   procedure On_Check_Resize
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure (Self : access Gtk_Container_Record'Class));
+   procedure On_Check_Resize
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Remove : constant Glib.Signal_Name := "remove";
-   --     procedure Handler
-   --       (Self   : access Gtk_Container_Record'Class;
-   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure On_Remove
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Container_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Remove
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Set_Focus_Child : constant Glib.Signal_Name := "set-focus-child";
-   --     procedure Handler
-   --       (Self   : access Gtk_Container_Record'Class;
-   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure On_Set_Focus_Child
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Container_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Set_Focus_Child
+      (Self : not null access Gtk_Container_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Container_Record, Gtk_Container);
+   function "+"
+     (Widget : access Gtk_Container_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Container
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Resize_Mode_Property : constant Gtk.Enums.Property_Gtk_Resize_Mode :=

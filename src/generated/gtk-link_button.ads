@@ -163,6 +163,44 @@ package Gtk.Link_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   URI_Property : constant Glib.Properties.Property_String;
+   --  The URI bound to this button.
+
+   Visited_Property : constant Glib.Properties.Property_Boolean;
+   --  The 'visited' state of this button. A visited link is drawn in a
+   --  different color.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
+   procedure On_Activate_Link
+      (Self : not null access Gtk_Link_Button_Record;
+       Call : not null access function
+         (Self : access Gtk_Link_Button_Record'Class) return Boolean);
+   procedure On_Activate_Link
+      (Self : not null access Gtk_Link_Button_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::activate-link signal is emitted each time the
+   --  Gtk.Link_Button.Gtk_Link_Button has been clicked.
+   --
+   --  The default handler will call gtk_show_uri() with the URI stored inside
+   --  the Gtk.Link_Button.Gtk_Link_Button:uri property.
+   --
+   --  To override the default behavior, you can connect to the
+   --  ::activate-link signal and stop the propagation of the signal by
+   --  returning True from your handler.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -192,36 +230,6 @@ package Gtk.Link_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Link_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   URI_Property : constant Glib.Properties.Property_String;
-   --  The URI bound to this button.
-
-   Visited_Property : constant Glib.Properties.Property_Boolean;
-   --  The 'visited' state of this button. A visited link is drawn in a
-   --  different color.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
-   --  The ::activate-link signal is emitted each time the
-   --  Gtk.Link_Button.Gtk_Link_Button has been clicked.
-   --
-   --  The default handler will call gtk_show_uri() with the URI stored inside
-   --  the Gtk.Link_Button.Gtk_Link_Button:uri property.
-   --
-   --  To override the default behavior, you can connect to the
-   --  ::activate-link signal and stop the propagation of the signal by
-   --  returning True from your handler.
-   --     function Handler
-   --       (Self : access Gtk_Link_Button_Record'Class) return Boolean;
 
 private
    Visited_Property : constant Glib.Properties.Property_Boolean :=

@@ -232,6 +232,110 @@ package Gtk.Toolbar is
    procedure Rebuild_Menu (Self : not null access Gtk_Toolbar_Record);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Icon_Size_Property : constant Glib.Properties.Property_Int;
+   --  The size of the icons in a toolbar is normally determined by the
+   --  toolbar-icon-size setting. When this property is set, it overrides the
+   --  setting.
+   --
+   --  This should only be used for special-purpose toolbars, normal
+   --  application toolbars should respect the user preferences for the size of
+   --  icons.
+
+   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
+   --  Is True if the icon-size property has been set.
+
+   Show_Arrow_Property : constant Glib.Properties.Property_Boolean;
+
+   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Focus_Home_Or_End : constant Glib.Signal_Name := "focus-home-or-end";
+   procedure On_Focus_Home_Or_End
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self       : access Gtk_Toolbar_Record'Class;
+          Focus_Home : Boolean) return Boolean);
+   procedure On_Focus_Home_Or_End
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Focus_Home : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  A keybinding signal used internally by GTK+. This signal can't be used
+   --  in application code
+   -- 
+   --  Callback parameters:
+   --    --  "focus_home": True if the first item should be focused
+   --    --  Returns True if the signal was handled, False if not
+
+   Signal_Orientation_Changed : constant Glib.Signal_Name := "orientation-changed";
+   procedure On_Orientation_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Toolbar_Record'Class;
+          Orientation : Gtk.Enums.Gtk_Orientation));
+   procedure On_Orientation_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Orientation : Gtk.Enums.Gtk_Orientation);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted when the orientation of the toolbar changes.
+
+   Signal_Popup_Context_Menu : constant Glib.Signal_Name := "popup-context-menu";
+   procedure On_Popup_Context_Menu
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self   : access Gtk_Toolbar_Record'Class;
+          X      : Gint;
+          Y      : Gint;
+          Button : Gint) return Boolean);
+   procedure On_Popup_Context_Menu
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          X      : Gint;
+          Y      : Gint;
+          Button : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted when the user right-clicks the toolbar or uses the keybinding
+   --  to display a popup menu.
+   --
+   --  Application developers should handle this signal if they want to
+   --  display a context menu on the toolbar. The context-menu should appear at
+   --  the coordinates given by X and Y. The mouse button number is given by
+   --  the Button parameter. If the menu was popped up using the keybaord,
+   --  Button is -1.
+   -- 
+   --  Callback parameters:
+   --    --  "x": the x coordinate of the point where the menu should appear
+   --    --  "y": the y coordinate of the point where the menu should appear
+   --    --  "button": the mouse button the user pressed, or -1
+   --    --  Returns return True if the signal was handled, False if not
+
+   Signal_Style_Changed : constant Glib.Signal_Name := "style-changed";
+   procedure On_Style_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Toolbar_Record'Class;
+          Style : Gtk.Enums.Gtk_Toolbar_Style));
+   procedure On_Style_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Style : Gtk.Enums.Gtk_Toolbar_Style);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted when the style of the toolbar changes.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -274,76 +378,6 @@ package Gtk.Toolbar is
      (Interf : Gtk.Tool_Shell.Gtk_Tool_Shell)
    return Gtk_Toolbar
    renames Implements_Gtk_Tool_Shell.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Icon_Size_Property : constant Glib.Properties.Property_Int;
-   --  The size of the icons in a toolbar is normally determined by the
-   --  toolbar-icon-size setting. When this property is set, it overrides the
-   --  setting.
-   --
-   --  This should only be used for special-purpose toolbars, normal
-   --  application toolbars should respect the user preferences for the size of
-   --  icons.
-
-   Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean;
-   --  Is True if the icon-size property has been set.
-
-   Show_Arrow_Property : constant Glib.Properties.Property_Boolean;
-
-   Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Focus_Home_Or_End : constant Glib.Signal_Name := "focus-home-or-end";
-   --  A keybinding signal used internally by GTK+. This signal can't be used
-   --  in application code
-   --
-   --  Returns True if the signal was handled, False if not
-   --     function Handler
-   --       (Self       : access Gtk_Toolbar_Record'Class;
-   --        Focus_Home : Boolean) return Boolean;
-   --    --  "focus_home": True if the first item should be focused
-
-   Signal_Orientation_Changed : constant Glib.Signal_Name := "orientation-changed";
-   --  Emitted when the orientation of the toolbar changes.
-   --     procedure Handler
-   --       (Self        : access Gtk_Toolbar_Record'Class;
-   --        Orientation : Gtk.Enums.Gtk_Orientation);
-   --    --  "orientation": the new Gtk.Enums.Gtk_Orientation of the toolbar
-
-   Signal_Popup_Context_Menu : constant Glib.Signal_Name := "popup-context-menu";
-   --  Emitted when the user right-clicks the toolbar or uses the keybinding
-   --  to display a popup menu.
-   --
-   --  Application developers should handle this signal if they want to
-   --  display a context menu on the toolbar. The context-menu should appear at
-   --  the coordinates given by X and Y. The mouse button number is given by
-   --  the Button parameter. If the menu was popped up using the keybaord,
-   --  Button is -1.
-   --
-   --  Returns return True if the signal was handled, False if not
-   --     function Handler
-   --       (Self   : access Gtk_Toolbar_Record'Class;
-   --        X      : Gint;
-   --        Y      : Gint;
-   --        Button : Gint) return Boolean;
-   --    --  "x": the x coordinate of the point where the menu should appear
-   --    --  "y": the y coordinate of the point where the menu should appear
-   --    --  "button": the mouse button the user pressed, or -1
-
-   Signal_Style_Changed : constant Glib.Signal_Name := "style-changed";
-   --  Emitted when the style of the toolbar changes.
-   --     procedure Handler
-   --       (Self  : access Gtk_Toolbar_Record'Class;
-   --        Style : Gtk.Enums.Gtk_Toolbar_Style);
-   --    --  "style": the new Gtk.Enums.Gtk_Toolbar_Style of the toolbar
 
 private
    Toolbar_Style_Property : constant Gtk.Enums.Property_Gtk_Toolbar_Style :=

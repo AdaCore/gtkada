@@ -172,6 +172,37 @@ package Gtk.Check_Menu_Item is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
+
+   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean;
+
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   procedure On_Toggled
+      (Self : not null access Gtk_Check_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Check_Menu_Item_Record'Class));
+   procedure On_Toggled
+      (Self : not null access Gtk_Check_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted when the state of the check box is changed.
+   --
+   --  A signal handler can use Gtk.Check_Menu_Item.Get_Active to discover the
+   --  new state.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -201,29 +232,6 @@ package Gtk.Check_Menu_Item is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Check_Menu_Item
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
-
-   Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean;
-
-   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Toggled : constant Glib.Signal_Name := "toggled";
-   --  This signal is emitted when the state of the check box is changed.
-   --
-   --  A signal handler can use Gtk.Check_Menu_Item.Get_Active to discover the
-   --  new state.
-   --     procedure Handler (Self : access Gtk_Check_Menu_Item_Record'Class);
 
 private
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=

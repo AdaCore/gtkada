@@ -70,6 +70,52 @@ package Gtk.Print_Operation_Preview is
    --  Since: gtk+ 2.10
    --  "page_nr": the page to render
 
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Got_Page_Size : constant Glib.Signal_Name := "got-page-size";
+   procedure On_Got_Page_Size
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self       : Gtk_Print_Operation_Preview;
+          Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class));
+   procedure On_Got_Page_Size
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::got-page-size signal is emitted once for each page that gets
+   --  rendered to the preview.
+   --
+   --  A handler for this signal should update the Context according to
+   --  Page_Setup and set up a suitable cairo context, using
+   --  Gtk.Print_Context.Set_Cairo_Context.
+   -- 
+   --  Callback parameters:
+   --    --  "context": the current Gtk.Print_Context.Gtk_Print_Context
+   --    --  "page_setup": the Gtk.Page_Setup.Gtk_Page_Setup for the current page
+
+   Signal_Ready : constant Glib.Signal_Name := "ready";
+   procedure On_Ready
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self    : Gtk_Print_Operation_Preview;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class));
+   procedure On_Ready
+      (Self : Gtk_Print_Operation_Preview;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::ready signal gets emitted once per preview operation, before the
+   --  first page is rendered.
+   --
+   --  A handler for this signal can be used for setup tasks.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -79,36 +125,6 @@ package Gtk.Print_Operation_Preview is
 
    function "+" (W : Gtk_Print_Operation_Preview) return Gtk_Print_Operation_Preview;
    pragma Inline ("+");
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Got_Page_Size : constant Glib.Signal_Name := "got-page-size";
-   --  The ::got-page-size signal is emitted once for each page that gets
-   --  rendered to the preview.
-   --
-   --  A handler for this signal should update the Context according to
-   --  Page_Setup and set up a suitable cairo context, using
-   --  Gtk.Print_Context.Set_Cairo_Context.
-   --     procedure Handler
-   --       (Self       : Gtk_Print_Operation_Preview;
-   --        Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-   --        Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class)
-   --       ;
-   --    --  "context": the current Gtk.Print_Context.Gtk_Print_Context
-   --    --  "page_setup": the Gtk.Page_Setup.Gtk_Page_Setup for the current page
-
-   Signal_Ready : constant Glib.Signal_Name := "ready";
-   --  The ::ready signal gets emitted once per preview operation, before the
-   --  first page is rendered.
-   --
-   --  A handler for this signal can be used for setup tasks.
-   --     procedure Handler
-   --       (Self    : Gtk_Print_Operation_Preview;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
-   --       ;
-   --    --  "context": the current Gtk.Print_Context.Gtk_Print_Context
 
 private
 

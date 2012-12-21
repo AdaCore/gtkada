@@ -84,7 +84,6 @@ package body Gtk.GEntry is
    procedure Gtk_New_With_Buffer
       (The_Entry : out Gtk_Entry;
        Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
-      
    is
    begin
       The_Entry := new Gtk_Entry_Record;
@@ -109,7 +108,6 @@ package body Gtk.GEntry is
    procedure Initialize_With_Buffer
       (The_Entry : not null access Gtk_Entry_Record'Class;
        Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
-      
    is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_new_with_buffer");
@@ -685,7 +683,6 @@ package body Gtk.GEntry is
    procedure Set_Buffer
       (The_Entry : not null access Gtk_Entry_Record;
        Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
-      
    is
       procedure Internal
          (The_Entry : System.Address;
@@ -702,7 +699,6 @@ package body Gtk.GEntry is
    procedure Set_Completion
       (The_Entry  : not null access Gtk_Entry_Record;
        Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class)
-      
    is
       procedure Internal
          (The_Entry  : System.Address;
@@ -719,7 +715,6 @@ package body Gtk.GEntry is
    procedure Set_Cursor_Hadjustment
       (The_Entry  : not null access Gtk_Entry_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (The_Entry  : System.Address;
@@ -1352,5 +1347,400 @@ package body Gtk.GEntry is
    begin
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate;
+
+   ------------------
+   -- On_Backspace --
+   ------------------
+
+   procedure On_Backspace
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Backspace;
+
+   ------------------
+   -- On_Backspace --
+   ------------------
+
+   procedure On_Backspace
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Backspace;
+
+   -----------------------
+   -- On_Copy_Clipboard --
+   -----------------------
+
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Copy_Clipboard;
+
+   -----------------------
+   -- On_Copy_Clipboard --
+   -----------------------
+
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Copy_Clipboard;
+
+   ----------------------
+   -- On_Cut_Clipboard --
+   ----------------------
+
+   procedure On_Cut_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cut_Clipboard;
+
+   ----------------------
+   -- On_Cut_Clipboard --
+   ----------------------
+
+   procedure On_Cut_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cut_Clipboard;
+
+   ---------------------------
+   -- On_Delete_From_Cursor --
+   ---------------------------
+
+   procedure On_Delete_From_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Record'Class;
+          The_Type : Gtk.Enums.Gtk_Delete_Type;
+          Count    : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Delete_From_Cursor;
+
+   ---------------------------
+   -- On_Delete_From_Cursor --
+   ---------------------------
+
+   procedure On_Delete_From_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          The_Type : Gtk.Enums.Gtk_Delete_Type;
+          Count    : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Delete_From_Cursor;
+
+   -------------------
+   -- On_Icon_Press --
+   -------------------
+
+   procedure On_Icon_Press
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Icon_Press;
+
+   -------------------
+   -- On_Icon_Press --
+   -------------------
+
+   procedure On_Icon_Press
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Icon_Press;
+
+   ---------------------
+   -- On_Icon_Release --
+   ---------------------
+
+   procedure On_Icon_Release
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Icon_Release;
+
+   ---------------------
+   -- On_Icon_Release --
+   ---------------------
+
+   procedure On_Icon_Release
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Icon_Release;
+
+   -------------------------
+   -- On_Insert_At_Cursor --
+   -------------------------
+
+   procedure On_Insert_At_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Entry_Record'Class;
+          String : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert_At_Cursor;
+
+   -------------------------
+   -- On_Insert_At_Cursor --
+   -------------------------
+
+   procedure On_Insert_At_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          String : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert_At_Cursor;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self             : access Gtk_Entry_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self             : access Glib.Object.GObject_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   ------------------------
+   -- On_Paste_Clipboard --
+   ------------------------
+
+   procedure On_Paste_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Paste_Clipboard;
+
+   ------------------------
+   -- On_Paste_Clipboard --
+   ------------------------
+
+   procedure On_Paste_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Paste_Clipboard;
+
+   -----------------------
+   -- On_Populate_Popup --
+   -----------------------
+
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Entry_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Populate_Popup;
+
+   -----------------------
+   -- On_Populate_Popup --
+   -----------------------
+
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Populate_Popup;
+
+   ------------------------
+   -- On_Preedit_Changed --
+   ------------------------
+
+   procedure On_Preedit_Changed
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Entry_Record'Class;
+          Preedit : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Preedit_Changed;
+
+   ------------------------
+   -- On_Preedit_Changed --
+   ------------------------
+
+   procedure On_Preedit_Changed
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Preedit : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Preedit_Changed;
+
+   -------------------------
+   -- On_Toggle_Overwrite --
+   -------------------------
+
+   procedure On_Toggle_Overwrite
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggle_Overwrite;
+
+   -------------------------
+   -- On_Toggle_Overwrite --
+   -------------------------
+
+   procedure On_Toggle_Overwrite
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggle_Overwrite;
 
 end Gtk.GEntry;

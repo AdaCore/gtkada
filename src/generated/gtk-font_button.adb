@@ -663,4 +663,33 @@ package body Gtk.Font_Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   -----------------
+   -- On_Font_Set --
+   -----------------
+
+   procedure On_Font_Set
+      (Self : not null access Gtk_Font_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Font_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Font_Set;
+
+   -----------------
+   -- On_Font_Set --
+   -----------------
+
+   procedure On_Font_Set
+      (Self : not null access Gtk_Font_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Font_Set;
+
 end Gtk.Font_Button;

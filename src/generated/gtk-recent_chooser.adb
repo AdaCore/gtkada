@@ -82,7 +82,6 @@ package body Gtk.Recent_Chooser is
    procedure Add_Filter
       (Chooser : Gtk_Recent_Chooser;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal
          (Chooser : Gtk_Recent_Chooser;
@@ -242,7 +241,6 @@ package body Gtk.Recent_Chooser is
    procedure Remove_Filter
       (Chooser : Gtk_Recent_Chooser;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal
          (Chooser : Gtk_Recent_Chooser;
@@ -299,7 +297,6 @@ package body Gtk.Recent_Chooser is
    procedure Set_Filter
       (Chooser : Gtk_Recent_Chooser;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal
          (Chooser : Gtk_Recent_Chooser;
@@ -485,6 +482,62 @@ package body Gtk.Recent_Chooser is
       Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
    end Unselect_Uri;
+
+   -----------------------
+   -- On_Item_Activated --
+   -----------------------
+
+   procedure On_Item_Activated
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure (Self : Gtk_Recent_Chooser))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Item_Activated;
+
+   -----------------------
+   -- On_Item_Activated --
+   -----------------------
+
+   procedure On_Item_Activated
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Item_Activated;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   procedure On_Selection_Changed
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure (Self : Gtk_Recent_Chooser))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Changed;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   procedure On_Selection_Changed
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Changed;
 
    function "+" (W : Gtk_Recent_Chooser) return Gtk_Recent_Chooser is
    begin

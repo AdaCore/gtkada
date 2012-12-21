@@ -232,6 +232,23 @@ package Gtk.Tree_Sortable is
    Unsorted_Sort_Column_Id : constant Gint := -2;
    --  Two special values for the sort column
 
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Sort_Column_Changed : constant Glib.Signal_Name := "sort-column-changed";
+   procedure On_Sort_Column_Changed
+      (Self : Gtk_Tree_Sortable;
+       Call : not null access procedure (Self : Gtk_Tree_Sortable));
+   procedure On_Sort_Column_Changed
+      (Self : Gtk_Tree_Sortable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::sort-column-changed signal is emitted when the sort column or
+   --  sort order of Sortable is changed. The signal is emitted before the
+   --  contents of Sortable are resorted.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -241,16 +258,6 @@ package Gtk.Tree_Sortable is
 
    function "+" (W : Gtk_Tree_Sortable) return Gtk_Tree_Sortable;
    pragma Inline ("+");
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Sort_Column_Changed : constant Glib.Signal_Name := "sort-column-changed";
-   --  The ::sort-column-changed signal is emitted when the sort column or
-   --  sort order of Sortable is changed. The signal is emitted before the
-   --  contents of Sortable are resorted.
-   --     procedure Handler (Self : Gtk_Tree_Sortable);
 
 private
 

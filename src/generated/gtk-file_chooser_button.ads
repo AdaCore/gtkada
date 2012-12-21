@@ -189,8 +189,7 @@ package Gtk.File_Chooser_Button is
 
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
 
    function Add_Shortcut_Folder
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
@@ -266,8 +265,7 @@ package Gtk.File_Chooser_Button is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
 
    function Get_Local_Only
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
@@ -351,8 +349,7 @@ package Gtk.File_Chooser_Button is
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
 
    function Remove_Shortcut_Folder
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
@@ -397,6 +394,41 @@ package Gtk.File_Chooser_Button is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the Gtk.File_Chooser_Button.Gtk_File_Chooser_Button button
+   --  grabs focus when it is clicked with the mouse.
+
+   Title_Property : constant Glib.Properties.Property_String;
+   --  Title to put on the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
+   --  associated with the button.
+
+   Width_Chars_Property : constant Glib.Properties.Property_Int;
+   --  The width of the entry and label inside the button, in characters.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_File_Set : constant Glib.Signal_Name := "file-set";
+   procedure On_File_Set
+      (Self : not null access Gtk_File_Chooser_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_File_Chooser_Button_Record'Class));
+   procedure On_File_Set
+      (Self : not null access Gtk_File_Chooser_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::file-set signal is emitted when the user selects a file.
+   --
+   --  Note that this signal is only emitted when the *user* changes the file.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -439,34 +471,6 @@ package Gtk.File_Chooser_Button is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_File_Chooser_Button
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
-   --  Whether the Gtk.File_Chooser_Button.Gtk_File_Chooser_Button button
-   --  grabs focus when it is clicked with the mouse.
-
-   Title_Property : constant Glib.Properties.Property_String;
-   --  Title to put on the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
-   --  associated with the button.
-
-   Width_Chars_Property : constant Glib.Properties.Property_Int;
-   --  The width of the entry and label inside the button, in characters.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_File_Set : constant Glib.Signal_Name := "file-set";
-   --  The ::file-set signal is emitted when the user selects a file.
-   --
-   --  Note that this signal is only emitted when the *user* changes the file.
-   --     procedure Handler
-   --       (Self : access Gtk_File_Chooser_Button_Record'Class);
 
 private
    Width_Chars_Property : constant Glib.Properties.Property_Int :=

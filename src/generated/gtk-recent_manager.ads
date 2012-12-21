@@ -329,10 +329,18 @@ package Gtk.Recent_Manager is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Recent_Manager_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Recent_Manager_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Recent_Manager_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the current recently used resources manager changes its
    --  contents, either by calling Gtk.Recent_Manager.Add_Item or by another
    --  application.
-   --     procedure Handler (Self : access Gtk_Recent_Manager_Record'Class);
 
 private
    Size_Property : constant Glib.Properties.Property_Int :=

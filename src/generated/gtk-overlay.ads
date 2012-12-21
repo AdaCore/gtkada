@@ -89,12 +89,40 @@ package Gtk.Overlay is
    --  Since: gtk+ 3.2
    --  "widget": a Gtk.Widget.Gtk_Widget to be added to the container
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Get_Child_Position : constant Glib.Signal_Name := "get-child-position";
+   procedure On_Get_Child_Position
+      (Self : not null access Gtk_Overlay_Record;
+       Call : not null access function
+         (Self       : access Gtk_Overlay_Record'Class;
+          Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Allocation : access Cairo.Cairo_Rectangle) return Boolean);
+   procedure On_Get_Child_Position
+      (Self : not null access Gtk_Overlay_Record;
+       Call : not null access function
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Allocation : access Cairo.Cairo_Rectangle) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::get-child-position signal is emitted to determine the position
+   --  and size of any overlay child widgets. A handler for this signal should
+   --  fill Allocation with the desired position and size for Widget, relative
+   --  to the 'main' child of Overlay.
+   --
+   --  The default handler for this signal uses the Widget's halign and valign
+   --  properties to determine the position and gives the widget its natural
+   --  size (except that an alignment of Gtk.Widget.Align_Fill will cause the
+   --  overlay to be full-width/height). If the main child is a
+   --  Gtk.Scrolled_Window.Gtk_Scrolled_Window, the overlays are placed
+   --  relative to its contents.
+   -- 
+   --  Callback parameters:
+   --    --  "widget": the child widget to position
+   --    --  "allocation": return location for the allocation
+   --    --  Returns True if the Allocation has been filled
 
    ----------------
    -- Interfaces --
@@ -113,30 +141,5 @@ package Gtk.Overlay is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Overlay
    renames Implements_Gtk_Buildable.To_Object;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Get_Child_Position : constant Glib.Signal_Name := "get-child-position";
-   --  The ::get-child-position signal is emitted to determine the position
-   --  and size of any overlay child widgets. A handler for this signal should
-   --  fill Allocation with the desired position and size for Widget, relative
-   --  to the 'main' child of Overlay.
-   --
-   --  The default handler for this signal uses the Widget's halign and valign
-   --  properties to determine the position and gives the widget its natural
-   --  size (except that an alignment of Gtk.Widget.Align_Fill will cause the
-   --  overlay to be full-width/height). If the main child is a
-   --  Gtk.Scrolled_Window.Gtk_Scrolled_Window, the overlays are placed
-   --  relative to its contents.
-   --
-   --  Returns True if the Allocation has been filled
-   --     function Handler
-   --       (Self       : access Gtk_Overlay_Record'Class;
-   --        Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Allocation : access cairo.Rectangle_Int) return Boolean;
-   --    --  "widget": the child widget to position
-   --    --  "allocation": return location for the allocation
 
 end Gtk.Overlay;

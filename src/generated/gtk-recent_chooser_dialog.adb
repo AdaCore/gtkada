@@ -269,7 +269,6 @@ package body Gtk.Recent_Chooser_Dialog is
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_add_filter");
@@ -474,7 +473,6 @@ package body Gtk.Recent_Chooser_Dialog is
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_remove_filter");
@@ -542,7 +540,6 @@ package body Gtk.Recent_Chooser_Dialog is
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_set_filter");

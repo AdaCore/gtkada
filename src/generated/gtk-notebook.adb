@@ -793,4 +793,328 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Get_Object (Child), Boolean'Pos (Reorderable));
    end Set_Tab_Reorderable;
 
+   ----------------------------
+   -- On_Change_Current_Page --
+   ----------------------------
+
+   procedure On_Change_Current_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Gint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Change_Current_Page;
+
+   ----------------------------
+   -- On_Change_Current_Page --
+   ----------------------------
+
+   procedure On_Change_Current_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Change_Current_Page;
+
+   ----------------------
+   -- On_Create_Window --
+   ----------------------
+
+   procedure On_Create_Window
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self : access Gtk_Notebook_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          X    : Gint;
+          Y    : Gint) return Gtk_Notebook)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Create_Window;
+
+   ----------------------
+   -- On_Create_Window --
+   ----------------------
+
+   procedure On_Create_Window
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          X    : Gint;
+          Y    : Gint) return Gtk_Notebook;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Create_Window;
+
+   ------------------
+   -- On_Focus_Tab --
+   ------------------
+
+   procedure On_Focus_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Notebook_Tab) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Focus_Tab;
+
+   ------------------
+   -- On_Focus_Tab --
+   ------------------
+
+   procedure On_Focus_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Notebook_Tab) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Focus_Tab;
+
+   -----------------------
+   -- On_Move_Focus_Out --
+   -----------------------
+
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Focus_Out;
+
+   -----------------------
+   -- On_Move_Focus_Out --
+   -----------------------
+
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Focus_Out;
+
+   -------------------
+   -- On_Page_Added --
+   -------------------
+
+   procedure On_Page_Added
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Page_Added;
+
+   -------------------
+   -- On_Page_Added --
+   -------------------
+
+   procedure On_Page_Added
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Page_Added;
+
+   ---------------------
+   -- On_Page_Removed --
+   ---------------------
+
+   procedure On_Page_Removed
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Page_Removed;
+
+   ---------------------
+   -- On_Page_Removed --
+   ---------------------
+
+   procedure On_Page_Removed
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Page_Removed;
+
+   -----------------------
+   -- On_Page_Reordered --
+   -----------------------
+
+   procedure On_Page_Reordered
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Page_Reordered;
+
+   -----------------------
+   -- On_Page_Reordered --
+   -----------------------
+
+   procedure On_Page_Reordered
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Page_Reordered;
+
+   --------------------
+   -- On_Reorder_Tab --
+   --------------------
+
+   procedure On_Reorder_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type;
+          P0     : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Reorder_Tab;
+
+   --------------------
+   -- On_Reorder_Tab --
+   --------------------
+
+   procedure On_Reorder_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type;
+          P0     : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Reorder_Tab;
+
+   --------------------
+   -- On_Select_Page --
+   --------------------
+
+   procedure On_Select_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Select_Page;
+
+   --------------------
+   -- On_Select_Page --
+   --------------------
+
+   procedure On_Select_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Select_Page;
+
+   --------------------
+   -- On_Switch_Page --
+   --------------------
+
+   procedure On_Switch_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Switch_Page;
+
+   --------------------
+   -- On_Switch_Page --
+   --------------------
+
+   procedure On_Switch_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Switch_Page;
+
 end Gtk.Notebook;

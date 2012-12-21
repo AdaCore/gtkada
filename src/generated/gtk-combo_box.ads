@@ -574,8 +574,7 @@ package Gtk.Combo_Box is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Combo_Box_Record)
@@ -595,50 +594,6 @@ package Gtk.Combo_Box is
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "CellEditable"
-   --
-   --  - "CellLayout"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Combo_Box_Record, Gtk_Combo_Box);
-   function "+"
-     (Widget : access Gtk_Combo_Box_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Combo_Box
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Cell_Editable is new Glib.Types.Implements
-     (Gtk.Cell_Editable.Gtk_Cell_Editable, Gtk_Combo_Box_Record, Gtk_Combo_Box);
-   function "+"
-     (Widget : access Gtk_Combo_Box_Record'Class)
-   return Gtk.Cell_Editable.Gtk_Cell_Editable
-   renames Implements_Gtk_Cell_Editable.To_Interface;
-   function "-"
-     (Interf : Gtk.Cell_Editable.Gtk_Cell_Editable)
-   return Gtk_Combo_Box
-   renames Implements_Gtk_Cell_Editable.To_Object;
-
-   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
-     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Combo_Box_Record, Gtk_Combo_Box);
-   function "+"
-     (Widget : access Gtk_Combo_Box_Record'Class)
-   return Gtk.Cell_Layout.Gtk_Cell_Layout
-   renames Implements_Gtk_Cell_Layout.To_Interface;
-   function "-"
-     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
-   return Gtk_Combo_Box
-   renames Implements_Gtk_Cell_Layout.To_Object;
 
    ----------------
    -- Properties --
@@ -730,35 +685,108 @@ package Gtk.Combo_Box is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure (Self : access Gtk_Combo_Box_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The changed signal is emitted when the active item is changed. The can
    --  be due to the user selecting a different item from the list, or due to a
    --  call to Gtk.Combo_Box.Set_Active_Iter. It will also be emitted while
    --  typing into the entry of a combo box with an entry.
-   --     procedure Handler (Self : access Gtk_Combo_Box_Record'Class);
 
    Signal_Move_Active : constant Glib.Signal_Name := "move-active";
+   procedure On_Move_Active
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Combo_Box_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type));
+   procedure On_Move_Active
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::move-active signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to move the active selection.
-   --     procedure Handler
-   --       (Self        : access Gtk_Combo_Box_Record'Class;
-   --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
-   --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
 
    Signal_Popdown : constant Glib.Signal_Name := "popdown";
+   procedure On_Popdown
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access function
+         (Self : access Gtk_Combo_Box_Record'Class) return Boolean);
+   procedure On_Popdown
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popdown the combo box list.
    --
    --  The default bindings for this signal are Alt+Up and Escape.
-   --     function Handler
-   --       (Self : access Gtk_Combo_Box_Record'Class) return Boolean;
 
    Signal_Popup : constant Glib.Signal_Name := "popup";
+   procedure On_Popup
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure (Self : access Gtk_Combo_Box_Record'Class));
+   procedure On_Popup
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popup the combo box list.
    --
    --  The default binding for this signal is Alt+Down.
-   --     procedure Handler (Self : access Gtk_Combo_Box_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "CellEditable"
+   --
+   --  - "CellLayout"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Combo_Box_Record, Gtk_Combo_Box);
+   function "+"
+     (Widget : access Gtk_Combo_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Combo_Box
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Cell_Editable is new Glib.Types.Implements
+     (Gtk.Cell_Editable.Gtk_Cell_Editable, Gtk_Combo_Box_Record, Gtk_Combo_Box);
+   function "+"
+     (Widget : access Gtk_Combo_Box_Record'Class)
+   return Gtk.Cell_Editable.Gtk_Cell_Editable
+   renames Implements_Gtk_Cell_Editable.To_Interface;
+   function "-"
+     (Interf : Gtk.Cell_Editable.Gtk_Cell_Editable)
+   return Gtk_Combo_Box
+   renames Implements_Gtk_Cell_Editable.To_Object;
+
+   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
+     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Combo_Box_Record, Gtk_Combo_Box);
+   function "+"
+     (Widget : access Gtk_Combo_Box_Record'Class)
+   return Gtk.Cell_Layout.Gtk_Cell_Layout
+   renames Implements_Gtk_Cell_Layout.To_Interface;
+   function "-"
+     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
+   return Gtk_Combo_Box
+   renames Implements_Gtk_Cell_Layout.To_Object;
 
 private
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=

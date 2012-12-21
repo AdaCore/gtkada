@@ -202,6 +202,35 @@ package Gtk.Progress_Bar is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
+   --  Type: Pango.Layout.Pango_Ellipsize_Mode
+   --  The preferred place to ellipsize the string, if the progressbar does
+   --  not have enough room to display the entire string, specified as a
+   --  Pango_Ellisize_Mode.
+   --
+   --  Note that setting this property to a value other than
+   --  Pango.Layout.Ellipsize_None has the side-effect that the progressbar
+   --  requests only enough space to display the ellipsis "...". Another means
+   --  to set a progressbar's width is Gtk.Widget.Set_Size_Request.
+
+   Fraction_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
+   Inverted_Property : constant Glib.Properties.Property_Boolean;
+
+   Pulse_Step_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
+   Show_Text_Property : constant Glib.Properties.Property_Boolean;
+
+   Text_Property : constant Glib.Properties.Property_String;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -231,35 +260,6 @@ package Gtk.Progress_Bar is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Progress_Bar
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
-   --  Type: Pango.Layout.Pango_Ellipsize_Mode
-   --  The preferred place to ellipsize the string, if the progressbar does
-   --  not have enough room to display the entire string, specified as a
-   --  Pango_Ellisize_Mode.
-   --
-   --  Note that setting this property to a value other than
-   --  Pango.Layout.Ellipsize_None has the side-effect that the progressbar
-   --  requests only enough space to display the ellipsis "...". Another means
-   --  to set a progressbar's width is Gtk.Widget.Set_Size_Request.
-
-   Fraction_Property : constant Glib.Properties.Property_Double;
-   --  Type: Gdouble
-
-   Inverted_Property : constant Glib.Properties.Property_Boolean;
-
-   Pulse_Step_Property : constant Glib.Properties.Property_Double;
-   --  Type: Gdouble
-
-   Show_Text_Property : constant Glib.Properties.Property_Boolean;
-
-   Text_Property : constant Glib.Properties.Property_String;
 
 private
    Text_Property : constant Glib.Properties.Property_String :=

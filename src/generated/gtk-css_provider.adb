@@ -201,4 +201,37 @@ package body Gtk.Css_Provider is
       return Gtk.Css_Provider.Gtk_Css_Provider (Get_User_Data (Tmp_Return, Stub_Gtk_Css_Provider));
    end Get_Named;
 
+   ----------------------
+   -- On_Parsing_Error --
+   ----------------------
+
+   procedure On_Parsing_Error
+      (Self : not null access Gtk_Css_Provider_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Css_Provider_Record'Class;
+          Section : Gtk.Css_Section.Gtk_Css_Section;
+          Error   : GLib.Error))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Parsing_Error;
+
+   ----------------------
+   -- On_Parsing_Error --
+   ----------------------
+
+   procedure On_Parsing_Error
+      (Self : not null access Gtk_Css_Provider_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Section : Gtk.Css_Section.Gtk_Css_Section;
+          Error   : GLib.Error);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Parsing_Error;
+
 end Gtk.Css_Provider;

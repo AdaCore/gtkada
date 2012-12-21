@@ -298,16 +298,6 @@ package Gtk.Activatable is
    --  "action": the related Gtk.Action.Gtk_Action or null
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Activatable"
-
-   function "+" (W : Gtk_Activatable) return Gtk_Activatable;
-   pragma Inline ("+");
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -336,6 +326,16 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Gtk_Activatable implementors need to handle this
    --  property and call Gtk.Activatable.Sync_Action_Properties on the
    --  activatable widget when it changes.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Activatable"
+
+   function "+" (W : Gtk_Activatable) return Gtk_Activatable;
+   pragma Inline ("+");
 
 private
    Use_Action_Appearance_Property : constant Glib.Properties.Property_Boolean :=

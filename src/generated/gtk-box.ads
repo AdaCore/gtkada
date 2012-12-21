@@ -333,6 +333,16 @@ package Gtk.Box is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   Spacing_Property : constant Glib.Properties.Property_Int;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -362,16 +372,6 @@ package Gtk.Box is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Box
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Homogeneous_Property : constant Glib.Properties.Property_Boolean;
-
-   Spacing_Property : constant Glib.Properties.Property_Int;
 
 private
    Spacing_Property : constant Glib.Properties.Property_Int :=

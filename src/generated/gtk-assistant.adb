@@ -564,4 +564,119 @@ package body Gtk.Assistant is
       Internal (Get_Object (Assistant));
    end Update_Buttons_State;
 
+   --------------
+   -- On_Apply --
+   --------------
+
+   procedure On_Apply
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Apply;
+
+   --------------
+   -- On_Apply --
+   --------------
+
+   procedure On_Apply
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Apply;
+
+   ---------------
+   -- On_Cancel --
+   ---------------
+
+   procedure On_Cancel
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cancel;
+
+   ---------------
+   -- On_Cancel --
+   ---------------
+
+   procedure On_Cancel
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cancel;
+
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Close;
+
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Close;
+
+   ----------------
+   -- On_Prepare --
+   ----------------
+
+   procedure On_Prepare
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Assistant_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Prepare;
+
+   ----------------
+   -- On_Prepare --
+   ----------------
+
+   procedure On_Prepare
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Prepare;
+
 end Gtk.Assistant;

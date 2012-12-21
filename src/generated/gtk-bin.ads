@@ -62,13 +62,6 @@ package Gtk.Bin is
    --  child widget. The returned widget does not have a reference added, so
    --  you do not need to unref it.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
    ----------------
    -- Interfaces --
    ----------------

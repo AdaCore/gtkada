@@ -228,6 +228,135 @@ package Gtk.Paned is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Max_Position_Property : constant Glib.Properties.Property_Int;
+   --  The largest possible value for the position property. This property is
+   --  derived from the size and shrinkability of the widget's children.
+
+   Min_Position_Property : constant Glib.Properties.Property_Int;
+   --  The smallest possible value for the position property. This property is
+   --  derived from the size and shrinkability of the widget's children.
+
+   Position_Property : constant Glib.Properties.Property_Int;
+
+   Position_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";
+   procedure On_Accept_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Gtk_Paned_Record'Class) return Boolean);
+   procedure On_Accept_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::accept-position signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to accept the current position of the handle when moving it using key
+   --  bindings.
+   --
+   --  The default binding for this signal is Return or Space.
+
+   Signal_Cancel_Position : constant Glib.Signal_Name := "cancel-position";
+   procedure On_Cancel_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Gtk_Paned_Record'Class) return Boolean);
+   procedure On_Cancel_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::cancel-position signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to cancel moving the position of the handle using key bindings. The
+   --  position of the handle will be reset to the value prior to moving it.
+   --
+   --  The default binding for this signal is Escape.
+
+   Signal_Cycle_Child_Focus : constant Glib.Signal_Name := "cycle-child-focus";
+   procedure On_Cycle_Child_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Gtk_Paned_Record'Class;
+          Reversed : Boolean) return Boolean);
+   procedure On_Cycle_Child_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Reversed : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::cycle-child-focus signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to cycle the focus between the children of the paned.
+   --
+   --  The default binding is f6.
+
+   Signal_Cycle_Handle_Focus : constant Glib.Signal_Name := "cycle-handle-focus";
+   procedure On_Cycle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Gtk_Paned_Record'Class;
+          Reversed : Boolean) return Boolean);
+   procedure On_Cycle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Reversed : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::cycle-handle-focus signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to cycle whether the paned should grab focus to allow the user to change
+   --  position of the handle by using key bindings.
+   --
+   --  The default binding for this signal is f8.
+
+   Signal_Move_Handle : constant Glib.Signal_Name := "move-handle";
+   procedure On_Move_Handle
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self        : access Gtk_Paned_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean);
+   procedure On_Move_Handle
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::move-handle signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to move the handle when the user is using key bindings to move it.
+
+   Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
+   procedure On_Toggle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Gtk_Paned_Record'Class) return Boolean);
+   procedure On_Toggle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::toggle-handle-focus is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to accept the current position of the handle and then move focus to the
+   --  next widget in the focus chain.
+   --
+   --  The default binding is Tab.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -257,90 +386,6 @@ package Gtk.Paned is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Paned
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Max_Position_Property : constant Glib.Properties.Property_Int;
-   --  The largest possible value for the position property. This property is
-   --  derived from the size and shrinkability of the widget's children.
-
-   Min_Position_Property : constant Glib.Properties.Property_Int;
-   --  The smallest possible value for the position property. This property is
-   --  derived from the size and shrinkability of the widget's children.
-
-   Position_Property : constant Glib.Properties.Property_Int;
-
-   Position_Set_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";
-   --  The ::accept-position signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to accept the current position of the handle when moving it using key
-   --  bindings.
-   --
-   --  The default binding for this signal is Return or Space.
-   --     function Handler
-   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
-
-   Signal_Cancel_Position : constant Glib.Signal_Name := "cancel-position";
-   --  The ::cancel-position signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cancel moving the position of the handle using key bindings. The
-   --  position of the handle will be reset to the value prior to moving it.
-   --
-   --  The default binding for this signal is Escape.
-   --     function Handler
-   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
-
-   Signal_Cycle_Child_Focus : constant Glib.Signal_Name := "cycle-child-focus";
-   --  The ::cycle-child-focus signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle the focus between the children of the paned.
-   --
-   --  The default binding is f6.
-   --     function Handler
-   --       (Self     : access Gtk_Paned_Record'Class;
-   --        Reversed : Boolean) return Boolean;
-   --    --  "reversed": whether cycling backward or forward
-
-   Signal_Cycle_Handle_Focus : constant Glib.Signal_Name := "cycle-handle-focus";
-   --  The ::cycle-handle-focus signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle whether the paned should grab focus to allow the user to change
-   --  position of the handle by using key bindings.
-   --
-   --  The default binding for this signal is f8.
-   --     function Handler
-   --       (Self     : access Gtk_Paned_Record'Class;
-   --        Reversed : Boolean) return Boolean;
-   --    --  "reversed": whether cycling backward or forward
-
-   Signal_Move_Handle : constant Glib.Signal_Name := "move-handle";
-   --  The ::move-handle signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to move the handle when the user is using key bindings to move it.
-   --     function Handler
-   --       (Self        : access Gtk_Paned_Record'Class;
-   --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
-   --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
-
-   Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
-   --  The ::toggle-handle-focus is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to accept the current position of the handle and then move focus to the
-   --  next widget in the focus chain.
-   --
-   --  The default binding is Tab.
-   --     function Handler
-   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
 
 private
    Position_Set_Property : constant Glib.Properties.Property_Boolean :=

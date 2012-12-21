@@ -248,12 +248,21 @@ package Gtk.Table is
    --  "spacing": the number of pixels of space to place between every row in
    --  the table.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Column_Spacing_Property : constant Glib.Properties.Property_Uint;
+
+   Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   N_Columns_Property : constant Glib.Properties.Property_Uint;
+
+   N_Rows_Property : constant Glib.Properties.Property_Uint;
+
+   Row_Spacing_Property : constant Glib.Properties.Property_Uint;
 
    ----------------
    -- Interfaces --
@@ -272,22 +281,6 @@ package Gtk.Table is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Table
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Column_Spacing_Property : constant Glib.Properties.Property_Uint;
-
-   Homogeneous_Property : constant Glib.Properties.Property_Boolean;
-
-   N_Columns_Property : constant Glib.Properties.Property_Uint;
-
-   N_Rows_Property : constant Glib.Properties.Property_Uint;
-
-   Row_Spacing_Property : constant Glib.Properties.Property_Uint;
 
 private
    Row_Spacing_Property : constant Glib.Properties.Property_Uint :=

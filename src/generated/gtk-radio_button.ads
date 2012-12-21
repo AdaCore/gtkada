@@ -165,6 +165,14 @@ package Gtk.Radio_Button is
       (Radio_Button : not null access Gtk_Radio_Button_Record'Class;
        Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String);
+   --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button containing a label,
+   --  adding it to the same group as Group. The label will be created using
+   --  Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate the
+   --  mnemonic for the button.
+   --  "group": the radio button group
+   --  "label": the text of the button, with an underscore in front of the
+   --  mnemonic character
+
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
        Group        : access Gtk_Radio_Button_Record'Class;
@@ -280,6 +288,38 @@ package Gtk.Radio_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Group_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk_Radio_Button
+   --  Flags: write
+   --  Sets a new group for a radio button.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
+   procedure On_Group_Changed
+      (Self : not null access Gtk_Radio_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Radio_Button_Record'Class));
+   procedure On_Group_Changed
+      (Self : not null access Gtk_Radio_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Emitted when the group of radio buttons that a radio button belongs to
+   --  changes. This is emitted when a radio button switches from being alone
+   --  to being part of a group of 2 or more buttons, or vice-versa, and when a
+   --  button is moved from one group of 2 or more buttons to a different one,
+   --  but not when the composition of the group that a button belongs to
+   --  changes.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -309,30 +349,6 @@ package Gtk.Radio_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Radio_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Group_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk_Radio_Button
-   --  Flags: write
-   --  Sets a new group for a radio button.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
-   --  Emitted when the group of radio buttons that a radio button belongs to
-   --  changes. This is emitted when a radio button switches from being alone
-   --  to being part of a group of 2 or more buttons, or vice-versa, and when a
-   --  button is moved from one group of 2 or more buttons to a different one,
-   --  but not when the composition of the group that a button belongs to
-   --  changes.
-   --     procedure Handler (Self : access Gtk_Radio_Button_Record'Class);
 
 private
    Group_Property : constant Glib.Properties.Property_Object :=

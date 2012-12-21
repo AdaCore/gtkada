@@ -112,8 +112,7 @@ package Gtk.Scale_Button is
 
    procedure Set_Adjustment
       (Button     : not null access Gtk_Scale_Button_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the Gtk.Adjustment.Gtk_Adjustment to be used as a model for the
    --  Gtk.Scale_Button.Gtk_Scale_Button's scale. See Gtk.GRange.Set_Adjustment
    --  for details.
@@ -201,6 +200,68 @@ package Gtk.Scale_Button is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Adjustment_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
+
+   Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
+
+   Value_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Popdown : constant Glib.Signal_Name := "popdown";
+   procedure On_Popdown
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Scale_Button_Record'Class));
+   procedure On_Popdown
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
+   --  signal</link> which gets emitted to popdown the scale widget.
+   --
+   --  The default binding for this signal is Escape.
+
+   Signal_Popup : constant Glib.Signal_Name := "popup";
+   procedure On_Popup
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Scale_Button_Record'Class));
+   procedure On_Popup
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
+   --  signal</link> which gets emitted to popup the scale widget.
+   --
+   --  The default bindings for this signal are Space, Enter and Return.
+
+   Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Scale_Button_Record'Class;
+          Value : Gdouble));
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Value : Gdouble);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::value-changed signal is emitted when the value field has changed.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -243,45 +304,6 @@ package Gtk.Scale_Button is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Scale_Button
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Adjustment_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
-
-   Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
-
-   Value_Property : constant Glib.Properties.Property_Double;
-   --  Type: Gdouble
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Popdown : constant Glib.Signal_Name := "popdown";
-   --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted to popdown the scale widget.
-   --
-   --  The default binding for this signal is Escape.
-   --     procedure Handler (Self : access Gtk_Scale_Button_Record'Class);
-
-   Signal_Popup : constant Glib.Signal_Name := "popup";
-   --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted to popup the scale widget.
-   --
-   --  The default bindings for this signal are Space, Enter and Return.
-   --     procedure Handler (Self : access Gtk_Scale_Button_Record'Class);
-
-   Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
-   --  The ::value-changed signal is emitted when the value field has changed.
-   --     procedure Handler
-   --       (Self  : access Gtk_Scale_Button_Record'Class;
-   --        Value : Gdouble);
-   --    --  "value": the new value
 
 private
    Value_Property : constant Glib.Properties.Property_Double :=

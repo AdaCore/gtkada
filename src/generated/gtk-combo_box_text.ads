@@ -293,8 +293,7 @@ package Gtk.Combo_Box_Text is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record)

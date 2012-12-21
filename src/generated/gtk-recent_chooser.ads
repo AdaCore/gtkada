@@ -85,8 +85,7 @@ package Gtk.Recent_Chooser is
 
    procedure Add_Filter
       (Chooser : Gtk_Recent_Chooser;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
    --  Adds Filter to the list of Gtk.Recent_Filter.Gtk_Recent_Filter objects
    --  held by Chooser.
    --  If no previous filter objects were defined, this function will call
@@ -121,8 +120,7 @@ package Gtk.Recent_Chooser is
 
    procedure Set_Filter
       (Chooser : Gtk_Recent_Chooser;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
    --  Sets Filter as the current Gtk.Recent_Filter.Gtk_Recent_Filter object
    --  used by Chooser to affect the displayed recently used resources.
    --  Since: gtk+ 2.10
@@ -260,8 +258,7 @@ package Gtk.Recent_Chooser is
 
    procedure Remove_Filter
       (Chooser : Gtk_Recent_Chooser;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
    --  Removes Filter from the list of Gtk.Recent_Filter.Gtk_Recent_Filter
    --  objects held by Chooser.
    --  Since: gtk+ 2.10
@@ -337,16 +334,6 @@ package Gtk.Recent_Chooser is
    --  "uri": a URI
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Recent_Chooser"
-
-   function "+" (W : Gtk_Recent_Chooser) return Gtk_Recent_Chooser;
-   pragma Inline ("+");
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -403,17 +390,41 @@ package Gtk.Recent_Chooser is
    -------------
 
    Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
+   procedure On_Item_Activated
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure (Self : Gtk_Recent_Chooser));
+   procedure On_Item_Activated
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the user "activates" a recent item in the
    --  recent chooser. This can happen by double-clicking on an item in the
    --  recently used resources list, or by pressing 'Enter'.
-   --     procedure Handler (Self : Gtk_Recent_Chooser);
 
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
+   procedure On_Selection_Changed
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure (Self : Gtk_Recent_Chooser));
+   procedure On_Selection_Changed
+      (Self : Gtk_Recent_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when there is a change in the set of selected
    --  recently used resources. This can happen when a user modifies the
    --  selection with the mouse or the keyboard, or when explicitely calling
    --  functions to change the selection.
-   --     procedure Handler (Self : Gtk_Recent_Chooser);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Recent_Chooser"
+
+   function "+" (W : Gtk_Recent_Chooser) return Gtk_Recent_Chooser;
+   pragma Inline ("+");
 
 private
    Sort_Type_Property : constant Gtk.Recent_Chooser.Property_Gtk_Recent_Sort_Type :=

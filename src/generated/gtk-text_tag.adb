@@ -114,4 +114,39 @@ package body Gtk.Text_Tag is
       Internal (Get_Object (Tag), Priority);
    end Set_Priority;
 
+   --------------
+   -- On_Event --
+   --------------
+
+   procedure On_Event
+      (Self : not null access Gtk_Text_Tag_Record;
+       Call : not null access function
+         (Self   : access Gtk_Text_Tag_Record'Class;
+          Object : not null access Glib.Object.GObject_Record'Class;
+          Event  : Gdk.Event.Gdk_Event;
+          Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Event;
+
+   --------------
+   -- On_Event --
+   --------------
+
+   procedure On_Event
+      (Self : not null access Gtk_Text_Tag_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Glib.Object.GObject_Record'Class;
+          Event  : Gdk.Event.Gdk_Event;
+          Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Event;
+
 end Gtk.Text_Tag;

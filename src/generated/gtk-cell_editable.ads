@@ -69,16 +69,6 @@ package Gtk.Cell_Editable is
    --  "event": A Gdk.Event.Gdk_Event, or null
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Cell_Editable"
-
-   function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable;
-   pragma Inline ("+");
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -92,6 +82,14 @@ package Gtk.Cell_Editable is
    -------------
 
    Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";
+   procedure On_Editing_Done
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure (Self : Gtk_Cell_Editable));
+   procedure On_Editing_Done
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is a sign for the cell renderer to update its value from
    --  the Cell_Editable.
    --
@@ -101,9 +99,16 @@ package Gtk.Cell_Editable is
    --
    --  Gtk.Cell_Editable.Editing_Done is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
-   --     procedure Handler (Self : Gtk_Cell_Editable);
 
    Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";
+   procedure On_Remove_Widget
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure (Self : Gtk_Cell_Editable));
+   procedure On_Remove_Widget
+      (Self : Gtk_Cell_Editable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is meant to indicate that the cell is finished editing, and
    --  the widget may now be destroyed.
    --
@@ -115,7 +120,16 @@ package Gtk.Cell_Editable is
    --
    --  Gtk.Cell_Editable.Remove_Widget is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::remove-widget.
-   --     procedure Handler (Self : Gtk_Cell_Editable);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Cell_Editable"
+
+   function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable;
+   pragma Inline ("+");
 
 private
    Editing_Canceled_Property : constant Glib.Properties.Property_Boolean :=

@@ -115,13 +115,6 @@ package Gtk.Fixed is
    --  "x": the horizontal position to place the widget at.
    --  "y": the vertical position to place the widget at.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
    ----------------
    -- Interfaces --
    ----------------

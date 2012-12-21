@@ -158,12 +158,22 @@ package Gtk.Frame is
    --  Sets the shadow type for Frame.
    --  "type": the new Gtk.Enums.Gtk_Shadow_Type
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Label_Property : constant Glib.Properties.Property_String;
+
+   Label_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
+   Label_Xalign_Property : constant Glib.Properties.Property_Float;
+
+   Label_Yalign_Property : constant Glib.Properties.Property_Float;
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
    ----------------
    -- Interfaces --
@@ -182,23 +192,6 @@ package Gtk.Frame is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Frame
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Label_Property : constant Glib.Properties.Property_String;
-
-   Label_Widget_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Widget.Gtk_Widget
-
-   Label_Xalign_Property : constant Glib.Properties.Property_Float;
-
-   Label_Yalign_Property : constant Glib.Properties.Property_Float;
-
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=

@@ -240,7 +240,6 @@ package body Gtk.Scrolled_Window is
    procedure Set_Hadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Hadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (Scrolled_Window : System.Address;
@@ -335,7 +334,6 @@ package body Gtk.Scrolled_Window is
    procedure Set_Vadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Vadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (Scrolled_Window : System.Address;
@@ -357,5 +355,69 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window));
    end Unset_Placement;
+
+   -----------------------
+   -- On_Move_Focus_Out --
+   -----------------------
+
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access procedure
+         (Self           : access Gtk_Scrolled_Window_Record'Class;
+          Direction_Type : Gtk.Enums.Gtk_Direction_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Focus_Out;
+
+   -----------------------
+   -- On_Move_Focus_Out --
+   -----------------------
+
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access procedure
+         (Self           : access Glib.Object.GObject_Record'Class;
+          Direction_Type : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Focus_Out;
+
+   ---------------------
+   -- On_Scroll_Child --
+   ---------------------
+
+   procedure On_Scroll_Child
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access function
+         (Self       : access Gtk_Scrolled_Window_Record'Class;
+          Scroll     : Gtk.Enums.Gtk_Scroll_Type;
+          Horizontal : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Scroll_Child;
+
+   ---------------------
+   -- On_Scroll_Child --
+   ---------------------
+
+   procedure On_Scroll_Child
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access function
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Scroll     : Gtk.Enums.Gtk_Scroll_Type;
+          Horizontal : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Scroll_Child;
 
 end Gtk.Scrolled_Window;

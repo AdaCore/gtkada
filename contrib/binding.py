@@ -1017,9 +1017,9 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
                 nouser_cb_profile = copy.deepcopy(cb_profile)
                 subp = nouser_cb_profile.subprogram(name="", lang="ada->c")
-                section.add_code(
+                section.add(
                     "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
-                section.add_code(
+                section.add(
                     "\npragma Convention (C, %s);" % funcname)
 
             else:
@@ -1030,7 +1030,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 nouser_cb_profile.remove_param(
                     destroy_data_params + [cb_user_data])
                 subp = nouser_cb_profile.subprogram(name="")
-                section.add_code(
+                section.add(
                     "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
 
                 # Generate a subprogram in the body to act as the C callback.
@@ -1040,14 +1040,14 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
                 self.pkg.add_with(
                     "Ada.Unchecked_Conversion", do_use=False, specs=False)
-                section.add_code(
+                section.add(
                     ("function To_%s is new Ada.Unchecked_Conversion\n"
                     + "   (System.Address, %s);\n") % (funcname, funcname),
-                    specs=False)
-                section.add_code(
+                    in_spec=False)
+                section.add(
                     ("function To_Address is new Ada.Unchecked_Conversion\n"
                     + "   (%s, System.Address);\n") % (cb_type_name,),
-                    specs=False)
+                    in_spec=False)
 
                 ada_func = copy.deepcopy(subp)
                 ada_func.name = "Func"
@@ -1129,22 +1129,22 @@ end if;""" % (cb.name, call1, call2), exec2[2])
       with procedure Destroy (Data : in out User_Data_Type) is null;"""
 
             sect2 = pkg2.section("")
-            sect2.add_code("""package Users is new Glib.Object.User_Data_Closure
-         (User_Data_Type, Destroy);""", specs=False)
+            sect2.add("""package Users is new Glib.Object.User_Data_Closure
+         (User_Data_Type, Destroy);""", in_spec=False)
 
-            sect2.add_code(
+            sect2.add(
                 ("function To_%s is new Ada.Unchecked_Conversion\n"
                  + "   (System.Address, %s);\n") % (funcname, funcname),
-                specs=False)
-            sect2.add_code(
+                in_spec=False)
+            sect2.add(
                 ("function To_Address is new Ada.Unchecked_Conversion\n"
                  + "   (%s, System.Address);\n") % (funcname,),
-                specs=False)
+                in_spec=False)
 
             cb_profile2 = copy.deepcopy(cb_profile)
             cb_profile2.replace_param(user_data2, "User_Data_Type")
             cb2 = cb_profile2.subprogram(name="")
-            sect2.add_code(
+            sect2.add(
                 "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
 
             values = {user_data2.lower(): "D.Data.all"}
@@ -1416,10 +1416,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
                 self._subst["get_type"] = get_type_name
 
-                section.add_code("""
+                section.add("""
 package Type_Conversion_%(typename)s is new Glib.Type_Conversion_Hooks.Hook_Registrator
    (%(get_type)s'Access, %(typename)s_Record);
-pragma Unreferenced (Type_Conversion_%(typename)s);""" % self._subst, specs=False)
+pragma Unreferenced (Type_Conversion_%(typename)s);""" % self._subst, in_spec=False)
 
     def _get_c_type(self, node):
         t = node.find(ntype)
@@ -1554,7 +1554,7 @@ See Glib.Properties for more information on properties)""")
                         section.add(
                             Code("Flags: %(flags)s" % p, iscomment=True))
                     if p["doc"]:
-                        section.add(Code("%s\n" % p["doc"], iscomment=True))
+                        section.add(Code("%s" % p["doc"], iscomment=True))
 
                     d = '   %(name)s_Property : constant %(ptype)s' % p
                     self.pkg.add_private(
@@ -1565,6 +1565,7 @@ See Glib.Properties for more information on properties)""")
         if signals:
             adasignals = []
             section = self.pkg.section("Signals")
+            section.sort_objects = False  # preserve insertion order
 
             signals.sort(key=lambda x: x.get("name"))
 
@@ -1583,41 +1584,69 @@ See Glib.Properties for more information on properties)""")
                     on_selftype = selftype = "%(typename)s" % self._subst
 
                 sub = Subprogram(
-                    name="Handler",
+                    name="",
                     plist=[
                       Parameter(name="Self", type=selftype)]
                       + profile.params,
                     code="null",
+                    allow_none=False,
+                    returns=profile.returns)
+                obj_sub = Subprogram(
+                    name="",
+                    plist=[
+                      Parameter(
+                         name="Self",
+                         type=GObject("Glib.Object.GObject", allow_none=True,
+                                      classwide=True))]
+                      + profile.params,
+                    code="null",
+                    allow_none=False,
                     returns=profile.returns)
 
                 name = s.get("name")
                 section.add(
-                    '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
-                    naming.case(name), name))
+                    Code(
+                       '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
+                       naming.case(name), name)),
+                    add_newline=False)
 
-                doc = s.findtext(ndoc, "")
-                if profile.returns_doc:
-                    doc += "\n\n%s" % profile.returns_doc
-                if doc:
-                    section.add(Code("  %s""" % doc, iscomment=True))
-
-                spec = sub.spec(pkg=self.pkg, maxlen=69)
-                section.add(Code(" %s""" % spec, fill=False, iscomment=True))
-
-                sub.name = ""
                 connect = Subprogram(
                     name="On_%s" % naming.case(name),
                     plist=[Parameter(name="Self", type=on_selftype),
                            Parameter(
+                            name="Call",
+                            type=Proxy(sub.profile(pkg=self.pkg, maxlen=69,
+                                                   indent="      ")))],
+                    code="null")
+                section.add(connect, add_newline=False)
+
+                obj_connect = Subprogram(
+                    name="On_%s" % naming.case(name),
+                    plist=[Parameter(name="Self", type=on_selftype),
+                           Parameter(
                              name="Call",
-                             type=Proxy(sub.profile(pkg=self.pkg, maxlen=69))),
+                             type=Proxy(obj_sub.profile(pkg=self.pkg, maxlen=69,
+                                                         indent="      "))),
                            Parameter(
                              name="Slot",
                              type=GObject("Glib.Object.GObject",
-                                          allow_none=True, classwide=True),
-                             default="null")],
+                                          allow_none=False, classwide=True))],
                     code="null")
-                #section.add(Code(connect.spec(pkg=self.pkg)))
+                section.add(obj_connect)
+
+                sub.name = "Handler"
+
+                doc = s.findtext(ndoc, "")
+                if doc:
+                    section.add(Code("  %s""" % doc, iscomment=True))
+
+                if profile.returns_doc or len(profile.params) > 1:
+                    doc = "\n Callback parameters:"
+                    doc += sub.formatted_doc()
+
+                    if profile.returns_doc:
+                        doc += "\n   --  %s" % profile.returns_doc
+                    section.add(Code(doc, fill=False, iscomment=True))
 
     def _implements(self):
         """Bind the interfaces that a class implements"""
@@ -1726,9 +1755,9 @@ end "+";""" % self._subst,
                 impl = self.implements[impl]
                 section.add_comment("")
                 section.add_comment('- "%(name)s"' % impl)
-                section.add_code(impl["code"])
+                section.add(impl["code"])
                 if impl["body"]:
-                    section.add_code(impl["body"], specs=False)
+                    section.add(impl["body"], in_spec=False)
 
     def add_list_binding(self, section, adaname, ctype, singleList):
         """Generate a list instantiation"""
@@ -1786,8 +1815,8 @@ end "+";""" % self._subst,
         self.pkg.add_with("Glib.%s" % pkg)
 
         decl += "package %s is new %s (%s);\n" % (adaname, generic, ctype.ada)
-        section.add_code(decl)
-        section.add_code(body, specs=False)
+        section.add(decl)
+        section.add(body, in_spec=False)
 
     def record_binding(
         self, section, ctype, adaname, type, override_fields, unions, private):
@@ -1861,13 +1890,13 @@ end "+";""" % self._subst,
                 "\ntype %s is new Glib.C_Proxy;\n" % base
                 + ("function From_Object_Free (B : access %(typename)s) "
                 + "return %(typename)s;\npragma Inline (From_Object_Free);") % {"typename": base})
-            section.add_code("""
+            section.add("""
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
 begin
    Glib.g_free (B.all'Address);
    return Result;
-end From_Object_Free;""" % {"typename": base}, specs=False)
+end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
         else:
            if private:
@@ -1915,13 +1944,13 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
                        % {"typename": base}
                            + "\npragma Inline (From_Object_Free);")
 
-           section.add_code("""
+           section.add("""
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
 begin
    Glib.g_free (B.all'Address);
    return Result;
-end From_Object_Free;""" % {"typename": base}, specs=False)
+end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
         section.add(Code(node.findtext(ndoc, ""), iscomment=True))
 
@@ -2115,14 +2144,14 @@ end From_Object_Free;""" % {"typename": base}, specs=False)
         section = self.pkg.section("")
 
         if self.gtkpkg.is_obsolete():
-            section.add_code("pragma Obsolescent;")
+            section.add("pragma Obsolescent;")
 
         if not self.has_toplevel_type:
             pass
 
         elif self.is_interface:
             self.pkg.add_with("Glib.Types")
-            section.add_code(
+            section.add(
 """type %(typename)s is new Glib.Types.GType_Interface;
 Null_%(typename)s : constant %(typename)s;""" % self._subst)
 
@@ -2132,20 +2161,20 @@ Null_%(typename)s : constant %(typename)s :=
 self._subst)
 
         elif self.gtktype.is_subtype():
-            section.add_code(
+            section.add(
             """
 subtype %(typename)s_Record is %(parent)s_Record;
 subtype %(typename)s is %(parent)s;""" % self._subst);
 
         elif self.is_proxy:
-            section.add_code("""
+            section.add("""
    type %(typename)s is new Glib.C_Proxy;""" % self._subst)
 
         elif self.is_boxed:
             # The type is not private so that we can directly instantiate
             # generic packages for lists of this type.
 
-            section.add_code("""
+            section.add("""
    type %(typename)s is new Glib.C_Boxed with null record;
    Null_%(typename)s : constant %(typename)s;
 
@@ -2160,7 +2189,7 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
    Null_%(typename)s : constant %(typename)s := (Glib.C_Boxed with null record);
 """ % self._subst, at_end=True)
 
-            section.add_code("""
+            section.add("""
    function From_Object_Free
       (B : access %(typename)s'Class) return %(typename)s
    is
@@ -2176,7 +2205,7 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
       S.Set_Object (Object);
       return S;
    end From_Object;
-""" % self._subst, specs=False)
+""" % self._subst, in_spec=False)
 
         elif self._subst["parent"] is None:
             # Likely a public record type (ie with visible fields). Automatically
@@ -2185,7 +2214,7 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
             self.gtkpkg.add_record_type(self.ctype)
 
         else:
-            section.add_code("""
+            section.add("""
 type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
@@ -2220,12 +2249,12 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     naming.add_type_exception(
                         cname=p.get("ctype"),
                         type=Proxy(p.get("ada"), p.get("properties", None)))
-                    section.add_code(p.text)
+                    section.add(p.text)
                 elif p.tag == "body":
                     if p.get("before", "true").lower() == "true":
                         # Go before the body of generated subprograms, so that
                         # we can add type definition
-                        section.add_code(p.text, specs=False)
+                        section.add(p.text, in_spec=False)
 
 
         self._constructors()
@@ -2240,10 +2269,10 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                         self.pkg.add_private(p.text, at_end=True)
                     else:
                         s = s or self.pkg.section("GtkAda additions")
-                        s.add_code(p.text)
+                        s.add(p.text)
                 elif p.tag == "body" \
                         and p.get("before", "true").lower() != "true":
-                    s.add_code(p.text, specs=False)
+                    s.add(p.text, in_spec=False)
 
 
         self._functions()

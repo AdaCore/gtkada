@@ -348,31 +348,6 @@ package Gtk.About_Dialog is
    --  Since: gtk+ 2.8
    --  "wrap_license": whether to wrap the license
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_About_Dialog_Record, Gtk_About_Dialog);
-   function "+"
-     (Widget : access Gtk_About_Dialog_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_About_Dialog
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -451,15 +426,42 @@ package Gtk.About_Dialog is
    -------------
 
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
+   procedure On_Activate_Link
+      (Self : not null access Gtk_About_Dialog_Record;
+       Call : not null access function
+         (Self : access Gtk_About_Dialog_Record'Class;
+          URI  : UTF8_String) return Boolean);
+   procedure On_Activate_Link
+      (Self : not null access Gtk_About_Dialog_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          URI  : UTF8_String) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
-   --
-   --  Returns True if the link has been activated
-   --     function Handler
-   --       (Self : access Gtk_About_Dialog_Record'Class;
-   --        URI  : UTF8_String) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "uri": the URI that is activated
+   --    --  Returns True if the link has been activated
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_About_Dialog_Record, Gtk_About_Dialog);
+   function "+"
+     (Widget : access Gtk_About_Dialog_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_About_Dialog
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Wrap_License_Property : constant Glib.Properties.Property_Boolean :=

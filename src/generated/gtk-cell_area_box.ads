@@ -212,8 +212,7 @@ package Gtk.Cell_Area_Box is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record)
@@ -241,6 +240,15 @@ package Gtk.Cell_Area_Box is
    procedure Set_Orientation
       (Self        : not null access Gtk_Cell_Area_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Spacing_Property : constant Glib.Properties.Property_Int;
+   --  The amount of space to reserve between cells.
 
    ----------------
    -- Interfaces --
@@ -285,15 +293,6 @@ package Gtk.Cell_Area_Box is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Cell_Area_Box
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Spacing_Property : constant Glib.Properties.Property_Int;
-   --  The amount of space to reserve between cells.
 
 private
    Spacing_Property : constant Glib.Properties.Property_Int :=

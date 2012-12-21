@@ -241,4 +241,60 @@ package body Gtk.Style is
       Internal (Get_Object (Style), Window, State_Type);
    end Set_Background;
 
+   ----------------
+   -- On_Realize --
+   ----------------
+
+   procedure On_Realize
+      (Self : not null access Gtk_Style_Record;
+       Call : not null access procedure (Self : access Gtk_Style_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Realize;
+
+   ----------------
+   -- On_Realize --
+   ----------------
+
+   procedure On_Realize
+      (Self : not null access Gtk_Style_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Realize;
+
+   ------------------
+   -- On_Unrealize --
+   ------------------
+
+   procedure On_Unrealize
+      (Self : not null access Gtk_Style_Record;
+       Call : not null access procedure (Self : access Gtk_Style_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Unrealize;
+
+   ------------------
+   -- On_Unrealize --
+   ------------------
+
+   procedure On_Unrealize
+      (Self : not null access Gtk_Style_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Unrealize;
+
 end Gtk.Style;

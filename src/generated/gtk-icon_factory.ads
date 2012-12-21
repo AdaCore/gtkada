@@ -206,31 +206,6 @@ package Gtk.Icon_Factory is
    --  Path, or null if none is defined.
    --  Since: gtk+ 3.0
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Icon_Factory_Record, Gtk_Icon_Factory);
-   function "+"
-     (Widget : access Gtk_Icon_Factory_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Icon_Factory
-   renames Implements_Gtk_Buildable.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -301,5 +276,23 @@ package Gtk.Icon_Factory is
    --  gtk_icon_size_from_name with Alias as argument will return Target.
    --  "alias": an alias for Target
    --  "target": an existing icon size
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Icon_Factory_Record, Gtk_Icon_Factory);
+   function "+"
+     (Widget : access Gtk_Icon_Factory_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Icon_Factory
+   renames Implements_Gtk_Buildable.To_Object;
 
 end Gtk.Icon_Factory;

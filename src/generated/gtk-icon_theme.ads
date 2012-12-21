@@ -598,9 +598,16 @@ package Gtk.Icon_Theme is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Icon_Theme_Record;
+       Call : not null access procedure (Self : access Gtk_Icon_Theme_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Icon_Theme_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the current icon theme is switched or GTK+ detects that a
    --  change has occurred in the contents of the current icon theme.
-   --     procedure Handler (Self : access Gtk_Icon_Theme_Record'Class);
 
 private
 

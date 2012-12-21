@@ -750,4 +750,157 @@ package body Gtk.Label is
       Internal (Get_Object (Label), N_Chars);
    end Set_Width_Chars;
 
+   ------------------------------
+   -- On_Activate_Current_Link --
+   ------------------------------
+
+   procedure On_Activate_Current_Link
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure (Self : access Gtk_Label_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Current_Link;
+
+   ------------------------------
+   -- On_Activate_Current_Link --
+   ------------------------------
+
+   procedure On_Activate_Current_Link
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Current_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access function
+         (Self : access Gtk_Label_Record'Class;
+          URI  : UTF8_String) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          URI  : UTF8_String) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Link;
+
+   -----------------------
+   -- On_Copy_Clipboard --
+   -----------------------
+
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure (Self : access Gtk_Label_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Copy_Clipboard;
+
+   -----------------------
+   -- On_Copy_Clipboard --
+   -----------------------
+
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Copy_Clipboard;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure
+         (Self             : access Gtk_Label_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure
+         (Self             : access Glib.Object.GObject_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   -----------------------
+   -- On_Populate_Popup --
+   -----------------------
+
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Label_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Populate_Popup;
+
+   -----------------------
+   -- On_Populate_Popup --
+   -----------------------
+
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Label_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Populate_Popup;
+
 end Gtk.Label;

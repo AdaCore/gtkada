@@ -124,12 +124,10 @@ package Gtk.GEntry is
 
    procedure Gtk_New_With_Buffer
       (The_Entry : out Gtk_Entry;
-       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
-      ;
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class);
    procedure Initialize_With_Buffer
       (The_Entry : not null access Gtk_Entry_Record'Class;
-       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
-      ;
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class);
    --  Creates a new entry with the specified text buffer.
    --  Since: gtk+ 2.18
    --  "buffer": The buffer to use for the new Gtk.GEntry.Gtk_Entry.
@@ -188,8 +186,7 @@ package Gtk.GEntry is
 
    procedure Set_Buffer
       (The_Entry : not null access Gtk_Entry_Record;
-       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class)
-      ;
+       Buffer    : not null access Gtk.Entry_Buffer.Gtk_Entry_Buffer_Record'Class);
    --  Set the Gtk.Entry_Buffer.Gtk_Entry_Buffer object which holds the text
    --  for this widget.
    --  Since: gtk+ 2.18
@@ -204,8 +201,7 @@ package Gtk.GEntry is
 
    procedure Set_Completion
       (The_Entry  : not null access Gtk_Entry_Record;
-       Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class)
-      ;
+       Completion : access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class);
    --  Sets Completion to be the auxiliary completion object to use with
    --  Entry. All further configuration of the completion mechanism is done on
    --  Completion using the Gtk.Entry_Completion.Gtk_Entry_Completion API.
@@ -232,8 +228,7 @@ package Gtk.GEntry is
 
    procedure Set_Cursor_Hadjustment
       (The_Entry  : not null access Gtk_Entry_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Hooks up an adjustment to the cursor position in an entry, so that when
    --  the cursor is moved, the adjustment is scrolled to show that position.
    --  See Gtk.Scrolled_Window.Get_Hadjustment for a typical way of obtaining
@@ -827,50 +822,6 @@ package Gtk.GEntry is
        End_Pos   : Gint := -1);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "CellEditable"
-   --
-   --  - "Editable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Entry_Record, Gtk_Entry);
-   function "+"
-     (Widget : access Gtk_Entry_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Entry
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Cell_Editable is new Glib.Types.Implements
-     (Gtk.Cell_Editable.Gtk_Cell_Editable, Gtk_Entry_Record, Gtk_Entry);
-   function "+"
-     (Widget : access Gtk_Entry_Record'Class)
-   return Gtk.Cell_Editable.Gtk_Cell_Editable
-   renames Implements_Gtk_Cell_Editable.To_Interface;
-   function "-"
-     (Interf : Gtk.Cell_Editable.Gtk_Cell_Editable)
-   return Gtk_Entry
-   renames Implements_Gtk_Cell_Editable.To_Object;
-
-   package Implements_Gtk_Editable is new Glib.Types.Implements
-     (Gtk.Editable.Gtk_Editable, Gtk_Entry_Record, Gtk_Entry);
-   function "+"
-     (Widget : access Gtk_Entry_Record'Class)
-   return Gtk.Editable.Gtk_Editable
-   renames Implements_Gtk_Editable.To_Interface;
-   function "-"
-     (Interf : Gtk.Editable.Gtk_Editable)
-   return Gtk_Entry
-   renames Implements_Gtk_Editable.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -1070,6 +1021,14 @@ package Gtk.GEntry is
    -------------
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
+   procedure On_Activate
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class));
+   procedure On_Activate
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates the entry.
    --
@@ -1078,33 +1037,66 @@ package Gtk.GEntry is
    --  programmatically.
    --
    --  The default bindings for this signal are all forms of the Enter key.
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
 
    Signal_Backspace : constant Glib.Signal_Name := "backspace";
+   procedure On_Backspace
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class));
+   procedure On_Backspace
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::backspace signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user asks for it.
    --
    --  The default bindings for this signal are Backspace and Shift-Backspace.
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
 
    Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class));
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-c and Ctrl-Insert.
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
 
    Signal_Cut_Clipboard : constant Glib.Signal_Name := "cut-clipboard";
+   procedure On_Cut_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class));
+   procedure On_Cut_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::cut-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cut the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-x and Shift-Delete.
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
 
    Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
+   procedure On_Delete_From_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Record'Class;
+          The_Type : Gtk.Enums.Gtk_Delete_Type;
+          Count    : Gint));
+   procedure On_Delete_From_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          The_Type : Gtk.Enums.Gtk_Delete_Type;
+          Count    : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::delete-from-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a text deletion.
@@ -1114,44 +1106,86 @@ package Gtk.GEntry is
    --
    --  The default bindings for this signal are Delete for deleting a
    --  character and Ctrl-Delete for deleting a word.
-   --     procedure Handler
-   --       (Self     : access Gtk_Entry_Record'Class;
-   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
-   --        Count    : Gint);
+   -- 
+   --  Callback parameters:
    --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
 
    Signal_Icon_Press : constant Glib.Signal_Name := "icon-press";
+   procedure On_Icon_Press
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button));
+   procedure On_Icon_Press
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::icon-press signal is emitted when an activatable icon is clicked.
-   --     procedure Handler
-   --       (Self     : access Gtk_Entry_Record'Class;
-   --        Icon_Pos : Gtk_Entry_Icon_Position;
-   --        Event    : Gdk.Event_Button);
+   -- 
+   --  Callback parameters:
    --    --  "icon_pos": The position of the clicked icon
    --    --  "event": the button press event
 
    Signal_Icon_Release : constant Glib.Signal_Name := "icon-release";
+   procedure On_Icon_Release
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button));
+   procedure On_Icon_Release
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Icon_Pos : Gtk_Entry_Icon_Position;
+          Event    : Gdk.Event.Gdk_Event_Button);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::icon-release signal is emitted on the button release from a mouse
    --  click over an activatable icon.
-   --     procedure Handler
-   --       (Self     : access Gtk_Entry_Record'Class;
-   --        Icon_Pos : Gtk_Entry_Icon_Position;
-   --        Event    : Gdk.Event_Button);
+   -- 
+   --  Callback parameters:
    --    --  "icon_pos": The position of the clicked icon
    --    --  "event": the button release event
 
    Signal_Insert_At_Cursor : constant Glib.Signal_Name := "insert-at-cursor";
+   procedure On_Insert_At_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Entry_Record'Class;
+          String : UTF8_String));
+   procedure On_Insert_At_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          String : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::insert-at-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates the insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
-   --     procedure Handler
-   --       (Self   : access Gtk_Entry_Record'Class;
-   --        String : UTF8_String);
-   --    --  "string": the string to insert
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self             : access Gtk_Entry_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean));
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self             : access Glib.Object.GObject_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -1171,50 +1205,119 @@ package Gtk.GEntry is
    --     * Ctrl-arrow key combinations move by words/paragraphs
    --
    --     * Home/End keys move to the ends of the buffer
-   --     procedure Handler
-   --       (Self             : access Gtk_Entry_Record'Class;
-   --        Step             : Gtk.Enums.Gtk_Movement_Step;
-   --        Count            : Gint;
-   --        Extend_Selection : Boolean);
+   -- 
+   --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
    --    --  "extend_selection": True if the move should extend the selection
 
    Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
+   procedure On_Paste_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class));
+   procedure On_Paste_Clipboard
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::paste-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to paste the contents of the clipboard into the text view.
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
 
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Entry_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class));
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the entry.
    --
    --  If you need to add items to the context menu, connect to this signal
    --  and append your menuitems to the Menu.
-   --     procedure Handler
-   --       (Self : access Gtk_Entry_Record'Class;
-   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-   --    --  "menu": the menu that is being populated
 
    Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
+   procedure On_Preedit_Changed
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Entry_Record'Class;
+          Preedit : UTF8_String));
+   procedure On_Preedit_Changed
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Preedit : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  If an input method is used, the typed text will not immediately be
    --  committed to the buffer. So if you are interested in the text, connect
    --  to this signal.
-   --     procedure Handler
-   --       (Self    : access Gtk_Entry_Record'Class;
-   --        Preedit : UTF8_String);
-   --    --  "preedit": the current preedit string
 
    Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
+   procedure On_Toggle_Overwrite
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure (Self : access Gtk_Entry_Record'Class));
+   procedure On_Toggle_Overwrite
+      (Self : not null access Gtk_Entry_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::toggle-overwrite signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to toggle the overwrite mode of the entry.
    --
    --  The default bindings for this signal is Insert.
-   --     procedure Handler (Self : access Gtk_Entry_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "CellEditable"
+   --
+   --  - "Editable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Entry_Record, Gtk_Entry);
+   function "+"
+     (Widget : access Gtk_Entry_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Entry
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Cell_Editable is new Glib.Types.Implements
+     (Gtk.Cell_Editable.Gtk_Cell_Editable, Gtk_Entry_Record, Gtk_Entry);
+   function "+"
+     (Widget : access Gtk_Entry_Record'Class)
+   return Gtk.Cell_Editable.Gtk_Cell_Editable
+   renames Implements_Gtk_Cell_Editable.To_Interface;
+   function "-"
+     (Interf : Gtk.Cell_Editable.Gtk_Cell_Editable)
+   return Gtk_Entry
+   renames Implements_Gtk_Cell_Editable.To_Object;
+
+   package Implements_Gtk_Editable is new Glib.Types.Implements
+     (Gtk.Editable.Gtk_Editable, Gtk_Entry_Record, Gtk_Entry);
+   function "+"
+     (Widget : access Gtk_Entry_Record'Class)
+   return Gtk.Editable.Gtk_Editable
+   renames Implements_Gtk_Editable.To_Interface;
+   function "-"
+     (Interf : Gtk.Editable.Gtk_Editable)
+   return Gtk_Entry
+   renames Implements_Gtk_Editable.To_Object;
 
 private
    Xalign_Property : constant Glib.Properties.Property_Float :=

@@ -124,6 +124,102 @@ package body Gtk.Editable is
       Internal (Editable, Boolean'Pos (Is_Editable));
    end Set_Editable;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : Gtk_Editable;
+       Call : not null access procedure (Self : Gtk_Editable))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
+   --------------------
+   -- On_Delete_Text --
+   --------------------
+
+   procedure On_Delete_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self      : Gtk_Editable;
+          Start_Pos : Gint;
+          End_Pos   : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Delete_Text;
+
+   --------------------
+   -- On_Delete_Text --
+   --------------------
+
+   procedure On_Delete_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Start_Pos : Gint;
+          End_Pos   : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Delete_Text;
+
+   --------------------
+   -- On_Insert_Text --
+   --------------------
+
+   procedure On_Insert_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self            : Gtk_Editable;
+          New_Text        : UTF8_String;
+          New_Text_Length : Gint;
+          Position        : in out Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert_Text;
+
+   --------------------
+   -- On_Insert_Text --
+   --------------------
+
+   procedure On_Insert_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self            : access Glib.Object.GObject_Record'Class;
+          New_Text        : UTF8_String;
+          New_Text_Length : Gint;
+          Position        : in out Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert_Text;
+
    function "+" (W : Gtk_Editable) return Gtk_Editable is
    begin
       return W;

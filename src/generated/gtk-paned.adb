@@ -309,4 +309,187 @@ package body Gtk.Paned is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
+   ------------------------
+   -- On_Accept_Position --
+   ------------------------
+
+   procedure On_Accept_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Gtk_Paned_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Accept_Position;
+
+   ------------------------
+   -- On_Accept_Position --
+   ------------------------
+
+   procedure On_Accept_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Accept_Position;
+
+   ------------------------
+   -- On_Cancel_Position --
+   ------------------------
+
+   procedure On_Cancel_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Gtk_Paned_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cancel_Position;
+
+   ------------------------
+   -- On_Cancel_Position --
+   ------------------------
+
+   procedure On_Cancel_Position
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cancel_Position;
+
+   --------------------------
+   -- On_Cycle_Child_Focus --
+   --------------------------
+
+   procedure On_Cycle_Child_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Gtk_Paned_Record'Class;
+          Reversed : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cycle_Child_Focus;
+
+   --------------------------
+   -- On_Cycle_Child_Focus --
+   --------------------------
+
+   procedure On_Cycle_Child_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Reversed : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cycle_Child_Focus;
+
+   ---------------------------
+   -- On_Cycle_Handle_Focus --
+   ---------------------------
+
+   procedure On_Cycle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Gtk_Paned_Record'Class;
+          Reversed : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cycle_Handle_Focus;
+
+   ---------------------------
+   -- On_Cycle_Handle_Focus --
+   ---------------------------
+
+   procedure On_Cycle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Reversed : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cycle_Handle_Focus;
+
+   --------------------
+   -- On_Move_Handle --
+   --------------------
+
+   procedure On_Move_Handle
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self        : access Gtk_Paned_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Handle;
+
+   --------------------
+   -- On_Move_Handle --
+   --------------------
+
+   procedure On_Move_Handle
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Handle;
+
+   ----------------------------
+   -- On_Toggle_Handle_Focus --
+   ----------------------------
+
+   procedure On_Toggle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Gtk_Paned_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggle_Handle_Focus;
+
+   ----------------------------
+   -- On_Toggle_Handle_Focus --
+   ----------------------------
+
+   procedure On_Toggle_Handle_Focus
+      (Self : not null access Gtk_Paned_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggle_Handle_Focus;
+
 end Gtk.Paned;

@@ -30,6 +30,7 @@ with Gtk.Widget;     use Gtk.Widget;
 with Pango.Language; use Pango.Language;
 
 package Gtk.Main is
+
    ---------------
    -- Callbacks --
    ---------------

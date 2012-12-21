@@ -318,14 +318,26 @@ package Gtk.Accel_Map is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Accel_Map_Record;
+       Call : not null access procedure
+         (Self       : access Gtk_Accel_Map_Record'Class;
+          Accel_Path : UTF8_String;
+          Accel_Key  : Guint;
+          Accel_Mods : Gdk.Types.Gdk_Modifier_Type));
+   procedure On_Changed
+      (Self : not null access Gtk_Accel_Map_Record;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Accel_Path : UTF8_String;
+          Accel_Key  : Guint;
+          Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Notifies of a change in the global accelerator map. The path is also
    --  used as the detail for the signal, so it is possible to connect to
    --  changed::<replaceable>accel_path</replaceable>.
-   --     procedure Handler
-   --       (Self       : access Gtk_Accel_Map_Record'Class;
-   --        Accel_Path : UTF8_String;
-   --        Accel_Key  : Guint;
-   --        Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
+   -- 
+   --  Callback parameters:
    --    --  "accel_path": the path of the accelerator that changed
    --    --  "accel_key": the key value for the new accelerator
    --    --  "accel_mods": the modifier mask for the new accelerator

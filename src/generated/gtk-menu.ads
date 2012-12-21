@@ -539,31 +539,6 @@ package Gtk.Menu is
    --  "screen": a Gdk.Screen.Gdk_Screen, or null if the screen should be
    --  determined by the widget the menu is attached to
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Menu_Record, Gtk_Menu);
-   function "+"
-     (Widget : access Gtk_Menu_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Menu
-   renames Implements_Gtk_Buildable.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -623,10 +598,35 @@ package Gtk.Menu is
    -------------
 
    Signal_Move_Scroll : constant Glib.Signal_Name := "move-scroll";
-   --     procedure Handler
-   --       (Self        : access Gtk_Menu_Record'Class;
-   --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
-   --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
+   procedure On_Move_Scroll
+      (Self : not null access Gtk_Menu_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Menu_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type));
+   procedure On_Move_Scroll
+      (Self : not null access Gtk_Menu_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Menu_Record, Gtk_Menu);
+   function "+"
+     (Widget : access Gtk_Menu_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Menu
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Tearoff_Title_Property : constant Glib.Properties.Property_String :=

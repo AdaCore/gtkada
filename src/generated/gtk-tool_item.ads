@@ -173,8 +173,7 @@ package Gtk.Tool_Item is
    procedure Set_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
-       Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
-      ;
+       Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
    --  Sets the Gtk.Menu_Item.Gtk_Menu_Item used in the toolbar overflow menu.
    --  The Menu_Item_Id is used to identify the caller of this function and
    --  should also be used with Gtk.Tool_Item.Get_Proxy_Menu_Item.
@@ -361,6 +360,81 @@ package Gtk.Tool_Item is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Is_Important_Property : constant Glib.Properties.Property_Boolean;
+
+   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean;
+
+   Visible_Vertical_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Create_Menu_Proxy : constant Glib.Signal_Name := "create-menu-proxy";
+   procedure On_Create_Menu_Proxy
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access function
+         (Self : access Gtk_Tool_Item_Record'Class) return Boolean);
+   procedure On_Create_Menu_Proxy
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted when the toolbar needs information from
+   --  Tool_Item about whether the item should appear in the toolbar overflow
+   --  menu. In response the tool item should either
+   --
+   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a null pointer and
+   --  return True to indicate that the item should not appear in the overflow
+   --  menu
+   --
+   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a new menu item and
+   --  return True, or
+   --
+   --     * return False to indicate that the signal was not handled by the
+   --  item. This means that the item will not appear in the overflow menu
+   --  unless a later handler installs a menu item.
+   --
+   --  The toolbar may cache the result of this signal. When the tool item
+   --  changes how it will respond to this signal it must call
+   --  Gtk.Tool_Item.Rebuild_Menu to invalidate the cache and ensure that the
+   --  toolbar rebuilds its overflow menu.
+   -- 
+   --  Callback parameters:
+   --    --  Returns True if the signal was handled, False if not
+
+   Signal_Toolbar_Reconfigured : constant Glib.Signal_Name := "toolbar-reconfigured";
+   procedure On_Toolbar_Reconfigured
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Tool_Item_Record'Class));
+   procedure On_Toolbar_Reconfigured
+      (Self : not null access Gtk_Tool_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted when some property of the toolbar that the item
+   --  is a child of changes. For custom subclasses of
+   --  Gtk.Tool_Item.Gtk_Tool_Item, the default handler of this signal use the
+   --  functions
+   --
+   --     * gtk_tool_shell_get_orientation
+   --
+   --     * gtk_tool_shell_get_style
+   --
+   --     * gtk_tool_shell_get_icon_size
+   --
+   --     * gtk_tool_shell_get_relief_style
+   --
+   --  to find out what the toolbar should look like and change themselves
+   --  accordingly.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -390,65 +464,6 @@ package Gtk.Tool_Item is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Tool_Item
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Is_Important_Property : constant Glib.Properties.Property_Boolean;
-
-   Visible_Horizontal_Property : constant Glib.Properties.Property_Boolean;
-
-   Visible_Vertical_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Create_Menu_Proxy : constant Glib.Signal_Name := "create-menu-proxy";
-   --  This signal is emitted when the toolbar needs information from
-   --  Tool_Item about whether the item should appear in the toolbar overflow
-   --  menu. In response the tool item should either
-   --
-   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a null pointer and
-   --  return True to indicate that the item should not appear in the overflow
-   --  menu
-   --
-   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a new menu item and
-   --  return True, or
-   --
-   --     * return False to indicate that the signal was not handled by the
-   --  item. This means that the item will not appear in the overflow menu
-   --  unless a later handler installs a menu item.
-   --
-   --  The toolbar may cache the result of this signal. When the tool item
-   --  changes how it will respond to this signal it must call
-   --  Gtk.Tool_Item.Rebuild_Menu to invalidate the cache and ensure that the
-   --  toolbar rebuilds its overflow menu.
-   --
-   --  Returns True if the signal was handled, False if not
-   --     function Handler
-   --       (Self : access Gtk_Tool_Item_Record'Class) return Boolean;
-
-   Signal_Toolbar_Reconfigured : constant Glib.Signal_Name := "toolbar-reconfigured";
-   --  This signal is emitted when some property of the toolbar that the item
-   --  is a child of changes. For custom subclasses of
-   --  Gtk.Tool_Item.Gtk_Tool_Item, the default handler of this signal use the
-   --  functions
-   --
-   --     * gtk_tool_shell_get_orientation
-   --
-   --     * gtk_tool_shell_get_style
-   --
-   --     * gtk_tool_shell_get_icon_size
-   --
-   --     * gtk_tool_shell_get_relief_style
-   --
-   --  to find out what the toolbar should look like and change themselves
-   --  accordingly.
-   --     procedure Handler (Self : access Gtk_Tool_Item_Record'Class);
 
 private
    Visible_Vertical_Property : constant Glib.Properties.Property_Boolean :=

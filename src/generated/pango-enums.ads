@@ -206,7 +206,6 @@ package Pango.Enums is
       Pango_Wrap_Word_Char);
    pragma Convention (C, Wrap_Mode);
 
-
    ----------------------------
    -- Enumeration Properties --
    ----------------------------

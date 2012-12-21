@@ -189,8 +189,7 @@ package Gtk.Cell_Layout is
 
    procedure Clear_Attributes
       (Cell_Layout : Gtk_Cell_Layout;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Clears all existing attributes previously set with
    --  gtk_cell_layout_set_attributes.
    --  Since: gtk+ 2.4

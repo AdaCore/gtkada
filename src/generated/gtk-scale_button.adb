@@ -176,7 +176,6 @@ package body Gtk.Scale_Button is
    procedure Set_Adjustment
       (Button     : not null access Gtk_Scale_Button_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (Button     : System.Address;
@@ -332,5 +331,94 @@ package body Gtk.Scale_Button is
    begin
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
+
+   ----------------
+   -- On_Popdown --
+   ----------------
+
+   procedure On_Popdown
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Scale_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popdown;
+
+   ----------------
+   -- On_Popdown --
+   ----------------
+
+   procedure On_Popdown
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popdown;
+
+   --------------
+   -- On_Popup --
+   --------------
+
+   procedure On_Popup
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Scale_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popup;
+
+   --------------
+   -- On_Popup --
+   --------------
+
+   procedure On_Popup
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popup;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Scale_Button_Record'Class;
+          Value : Gdouble))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Value_Changed;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Scale_Button_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Value : Gdouble);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Value_Changed;
 
 end Gtk.Scale_Button;

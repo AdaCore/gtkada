@@ -85,16 +85,6 @@ package Glib.G_Icon is
    --  be serialized. Use g_free to free.
    --  Since: gtk+ 2.20
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "G_Icon"
-
-   function "+" (W : G_Icon) return G_Icon;
-   pragma Inline ("+");
-
    ---------------
    -- Functions --
    ---------------
@@ -114,6 +104,16 @@ package Glib.G_Icon is
    --  interface or null if Error is set.
    --  Since: gtk+ 2.20
    --  "str": A string obtained via Glib.G_Icon.To_String.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "G_Icon"
+
+   function "+" (W : G_Icon) return G_Icon;
+   pragma Inline ("+");
 
 private
 

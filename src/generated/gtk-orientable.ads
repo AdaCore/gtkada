@@ -70,6 +70,15 @@ package Gtk.Orientable is
    --  "orientation": the orientable's new orientation.
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
+   --  The orientation of the orientable.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -78,15 +87,6 @@ package Gtk.Orientable is
 
    function "+" (W : Gtk_Orientable) return Gtk_Orientable;
    pragma Inline ("+");
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation;
-   --  The orientation of the orientable.
 
 private
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=

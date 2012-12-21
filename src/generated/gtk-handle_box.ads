@@ -129,31 +129,6 @@ package Gtk.Handle_Box is
    --  "edge": the snap edge, or -1 to unset the value; in which case GTK+
    --  will try to guess an appropriate value in the future.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Handle_Box_Record, Gtk_Handle_Box);
-   function "+"
-     (Widget : access Gtk_Handle_Box_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Handle_Box
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -175,22 +150,52 @@ package Gtk.Handle_Box is
    -------------
 
    Signal_Child_Attached : constant Glib.Signal_Name := "child-attached";
+   procedure On_Child_Attached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Handle_Box_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Child_Attached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the contents of the handlebox are
    --  reattached to the main window.
-   --     procedure Handler
-   --       (Self   : access Gtk_Handle_Box_Record'Class;
-   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "widget": the child widget of the handlebox. (this argument provides no
-   --    --  extra information and is here only for backwards-compatibility)
 
    Signal_Child_Detached : constant Glib.Signal_Name := "child-detached";
+   procedure On_Child_Detached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Handle_Box_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Child_Detached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the contents of the handlebox are detached
    --  from the main window.
-   --     procedure Handler
-   --       (Self   : access Gtk_Handle_Box_Record'Class;
-   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "widget": the child widget of the handlebox. (this argument provides no
-   --    --  extra information and is here only for backwards-compatibility)
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Handle_Box_Record, Gtk_Handle_Box);
+   function "+"
+     (Widget : access Gtk_Handle_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Handle_Box
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Snap_Edge_Set_Property : constant Glib.Properties.Property_Boolean :=

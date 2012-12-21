@@ -408,4 +408,33 @@ package body Gtk.Color_Selection is
       Internal (Func'Address);
    end Set_Change_Palette_With_Screen_Hook;
 
+   ----------------------
+   -- On_Color_Changed --
+   ----------------------
+
+   procedure On_Color_Changed
+      (Self : not null access Gtk_Color_Selection_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Color_Selection_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Color_Changed;
+
+   ----------------------
+   -- On_Color_Changed --
+   ----------------------
+
+   procedure On_Color_Changed
+      (Self : not null access Gtk_Color_Selection_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Color_Changed;
+
 end Gtk.Color_Selection;

@@ -288,6 +288,58 @@ package Gtk.Font_Button is
        Show_Preview_Entry : Boolean);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Font_Name_Property : constant Glib.Properties.Property_String;
+   --  The name of the currently selected font.
+
+   Show_Size_Property : constant Glib.Properties.Property_Boolean;
+   --  If this property is set to True, the selected font size will be shown
+   --  in the label. For a more WYSIWYG way to show the selected size, see the
+   --  ::use-size property.
+
+   Show_Style_Property : constant Glib.Properties.Property_Boolean;
+   --  If this property is set to True, the name of the selected font style
+   --  will be shown in the label. For a more WYSIWYG way to show the selected
+   --  style, see the ::use-font property.
+
+   Title_Property : constant Glib.Properties.Property_String;
+   --  The title of the font chooser dialog.
+
+   Use_Font_Property : constant Glib.Properties.Property_Boolean;
+   --  If this property is set to True, the label will be drawn in the
+   --  selected font.
+
+   Use_Size_Property : constant Glib.Properties.Property_Boolean;
+   --  If this property is set to True, the label will be drawn with the
+   --  selected font size.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Font_Set : constant Glib.Signal_Name := "font-set";
+   procedure On_Font_Set
+      (Self : not null access Gtk_Font_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Font_Button_Record'Class));
+   procedure On_Font_Set
+      (Self : not null access Gtk_Font_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::font-set signal is emitted when the user selects a font. When
+   --  handling this signal, use Gtk.Font_Button.Get_Font_Name to find out
+   --  which font was just selected.
+   --
+   --  Note that this signal is only emitted when the *user* changes the font.
+   --  If you need to react to programmatic font changes as well, use the
+   --  notify::font-name signal.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -330,50 +382,6 @@ package Gtk.Font_Button is
      (Interf : Gtk.Font_Chooser.Gtk_Font_Chooser)
    return Gtk_Font_Button
    renames Implements_Gtk_Font_Chooser.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Font_Name_Property : constant Glib.Properties.Property_String;
-   --  The name of the currently selected font.
-
-   Show_Size_Property : constant Glib.Properties.Property_Boolean;
-   --  If this property is set to True, the selected font size will be shown
-   --  in the label. For a more WYSIWYG way to show the selected size, see the
-   --  ::use-size property.
-
-   Show_Style_Property : constant Glib.Properties.Property_Boolean;
-   --  If this property is set to True, the name of the selected font style
-   --  will be shown in the label. For a more WYSIWYG way to show the selected
-   --  style, see the ::use-font property.
-
-   Title_Property : constant Glib.Properties.Property_String;
-   --  The title of the font chooser dialog.
-
-   Use_Font_Property : constant Glib.Properties.Property_Boolean;
-   --  If this property is set to True, the label will be drawn in the
-   --  selected font.
-
-   Use_Size_Property : constant Glib.Properties.Property_Boolean;
-   --  If this property is set to True, the label will be drawn with the
-   --  selected font size.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Font_Set : constant Glib.Signal_Name := "font-set";
-   --  The ::font-set signal is emitted when the user selects a font. When
-   --  handling this signal, use Gtk.Font_Button.Get_Font_Name to find out
-   --  which font was just selected.
-   --
-   --  Note that this signal is only emitted when the *user* changes the font.
-   --  If you need to react to programmatic font changes as well, use the
-   --  notify::font-name signal.
-   --     procedure Handler (Self : access Gtk_Font_Button_Record'Class);
 
 private
    Use_Size_Property : constant Glib.Properties.Property_Boolean :=

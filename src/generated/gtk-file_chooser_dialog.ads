@@ -216,8 +216,7 @@ package Gtk.File_Chooser_Dialog is
 
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
 
    function Add_Shortcut_Folder
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
@@ -293,8 +292,7 @@ package Gtk.File_Chooser_Dialog is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
 
    function Get_Local_Only
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
@@ -378,8 +376,7 @@ package Gtk.File_Chooser_Dialog is
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
 
    function Remove_Shortcut_Folder
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;

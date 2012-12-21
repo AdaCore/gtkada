@@ -691,4 +691,32 @@ package body Gtk.Action is
       Internal (Get_Object (Action));
    end Unblock_Activate;
 
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Action_Record;
+       Call : not null access procedure (Self : access Gtk_Action_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Action_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate;
+
 end Gtk.Action;

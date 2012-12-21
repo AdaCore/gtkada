@@ -75,12 +75,10 @@ package Gtk.Text_View is
 
    procedure Gtk_New
       (View   : out Gtk_Text_View;
-       Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
-      ;
+       Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class);
    procedure Initialize
       (View   : not null access Gtk_Text_View_Record'Class;
-       Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
-      ;
+       Buffer : not null access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class);
    --  Creates a new Gtk.Text_View.Gtk_Text_View widget displaying the buffer
    --  Buffer. One buffer can be shared among many widgets. Buffer may be null
    --  to create a default buffer, in which case this function is equivalent to
@@ -108,8 +106,7 @@ package Gtk.Text_View is
    procedure Add_Child_At_Anchor
       (View   : not null access Gtk_Text_View_Record;
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class)
-      ;
+       Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class);
    --  Adds a child widget in the text buffer, at the given Anchor.
    --  "child": a Gtk.Widget.Gtk_Widget
    --  "anchor": a Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor in the
@@ -730,37 +727,6 @@ package Gtk.Text_View is
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "Scrollable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Text_View_Record, Gtk_Text_View);
-   function "+"
-     (Widget : access Gtk_Text_View_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Text_View
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Scrollable is new Glib.Types.Implements
-     (Gtk.Scrollable.Gtk_Scrollable, Gtk_Text_View_Record, Gtk_Text_View);
-   function "+"
-     (Widget : access Gtk_Text_View_Record'Class)
-   return Gtk.Scrollable.Gtk_Scrollable
-   renames Implements_Gtk_Scrollable.To_Interface;
-   function "-"
-     (Interf : Gtk.Scrollable.Gtk_Scrollable)
-   return Gtk_Text_View
-   renames Implements_Gtk_Scrollable.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -809,30 +775,64 @@ package Gtk.Text_View is
    -------------
 
    Signal_Backspace : constant Glib.Signal_Name := "backspace";
+   procedure On_Backspace
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Backspace
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::backspace signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user asks for it.
    --
    --  The default bindings for this signal are Backspace and Shift-Backspace.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
    Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Copy_Clipboard
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-c and Ctrl-Insert.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
    Signal_Cut_Clipboard : constant Glib.Signal_Name := "cut-clipboard";
+   procedure On_Cut_Clipboard
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Cut_Clipboard
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::cut-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cut the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-x and Shift-Delete.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
    Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
+   procedure On_Delete_From_Cursor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_View_Record'Class;
+          The_Type : Gtk.Enums.Gtk_Delete_Type;
+          Count    : Gint));
+   procedure On_Delete_From_Cursor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          The_Type : Gtk.Enums.Gtk_Delete_Type;
+          Count    : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::delete-from-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a text deletion.
@@ -843,25 +843,45 @@ package Gtk.Text_View is
    --  The default bindings for this signal are Delete for deleting a
    --  character, Ctrl-Delete for deleting a word and Ctrl-Backspace for
    --  deleting a word backwords.
-   --     procedure Handler
-   --       (Self     : access Gtk_Text_View_Record'Class;
-   --        The_Type : Gtk.Enums.Gtk_Delete_Type;
-   --        Count    : Gint);
+   -- 
+   --  Callback parameters:
    --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
 
    Signal_Insert_At_Cursor : constant Glib.Signal_Name := "insert-at-cursor";
+   procedure On_Insert_At_Cursor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Text_View_Record'Class;
+          String : UTF8_String));
+   procedure On_Insert_At_Cursor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          String : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::insert-at-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates the insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
-   --     procedure Handler
-   --       (Self   : access Gtk_Text_View_Record'Class;
-   --        String : UTF8_String);
-   --    --  "string": the string to insert
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self             : access Gtk_Text_View_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean));
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self             : access Glib.Object.GObject_Record'Class;
+          Step             : Gtk.Enums.Gtk_Movement_Step;
+          Count            : Gint;
+          Extend_Selection : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -885,96 +905,184 @@ package Gtk.Text_View is
    --     * PageUp/PageDown keys move vertically by pages
    --
    --     * Ctrl-PageUp/PageDown keys move horizontally by pages
-   --     procedure Handler
-   --       (Self             : access Gtk_Text_View_Record'Class;
-   --        Step             : Gtk.Enums.Gtk_Movement_Step;
-   --        Count            : Gint;
-   --        Extend_Selection : Boolean);
+   -- 
+   --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
    --    --  "extend_selection": True if the move should extend the selection
 
    Signal_Move_Viewport : constant Glib.Signal_Name := "move-viewport";
+   procedure On_Move_Viewport
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Text_View_Record'Class;
+          Step  : Gtk.Enums.Gtk_Scroll_Step;
+          Count : Gint));
+   procedure On_Move_Viewport
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Step  : Gtk.Enums.Gtk_Scroll_Step;
+          Count : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::move-viewport signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which can be bound
    --  to key combinations to allow the user to move the viewport, i.e. change
    --  what part of the text view is visible in a containing scrolled window.
    --
    --  There are no default bindings for this signal.
-   --     procedure Handler
-   --       (Self  : access Gtk_Text_View_Record'Class;
-   --        Step  : Gtk.Enums.Gtk_Scroll_Step;
-   --        Count : Gint);
+   -- 
+   --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
 
    Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
+   procedure On_Paste_Clipboard
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Paste_Clipboard
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::paste-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to paste the contents of the clipboard into the text view.
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_View_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class));
+   procedure On_Populate_Popup
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the text view.
    --
    --  If you need to add items to the context menu, connect to this signal
    --  and append your menuitems to the Menu.
-   --     procedure Handler
-   --       (Self : access Gtk_Text_View_Record'Class;
-   --        Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-   --    --  "menu": the menu that is being populated
 
    Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
+   procedure On_Preedit_Changed
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_View_Record'Class;
+          Preedit : UTF8_String));
+   procedure On_Preedit_Changed
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Preedit : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  If an input method is used, the typed text will not immediately be
    --  committed to the buffer. So if you are interested in the text, connect
    --  to this signal.
    --
    --  This signal is only emitted if the text at the given position is
    --  actually editable.
-   --     procedure Handler
-   --       (Self    : access Gtk_Text_View_Record'Class;
-   --        Preedit : UTF8_String);
-   --    --  "preedit": the current preedit string
 
    Signal_Select_All : constant Glib.Signal_Name := "select-all";
+   procedure On_Select_All
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self       : access Gtk_Text_View_Record'Class;
+          Gtk_Select : Boolean));
+   procedure On_Select_All
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Gtk_Select : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::select-all signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to select or unselect the complete contents of the text view.
    --
    --  The default bindings for this signal are Ctrl-a and Ctrl-/ for
    --  selecting and Shift-Ctrl-a and Ctrl-\ for unselecting.
-   --     procedure Handler
-   --       (Self       : access Gtk_Text_View_Record'Class;
-   --        Gtk_Select : Boolean);
-   --    --  "select": True to select, False to unselect
 
    Signal_Set_Anchor : constant Glib.Signal_Name := "set-anchor";
+   procedure On_Set_Anchor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Set_Anchor
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::set-anchor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates setting the "anchor" mark. The "anchor" mark
    --  gets placed at the same position as the "insert" mark.
    --
    --  This signal has no default bindings.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
    Signal_Toggle_Cursor_Visible : constant Glib.Signal_Name := "toggle-cursor-visible";
+   procedure On_Toggle_Cursor_Visible
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Toggle_Cursor_Visible
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::toggle-cursor-visible signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to toggle the visibility of the cursor.
    --
    --  The default binding for this signal is F7.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
 
    Signal_Toggle_Overwrite : constant Glib.Signal_Name := "toggle-overwrite";
+   procedure On_Toggle_Overwrite
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure (Self : access Gtk_Text_View_Record'Class));
+   procedure On_Toggle_Overwrite
+      (Self : not null access Gtk_Text_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::toggle-overwrite signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to toggle the overwrite mode of the text view.
    --
    --  The default bindings for this signal is Insert.
-   --     procedure Handler (Self : access Gtk_Text_View_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Scrollable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Text_View_Record, Gtk_Text_View);
+   function "+"
+     (Widget : access Gtk_Text_View_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Text_View
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Scrollable is new Glib.Types.Implements
+     (Gtk.Scrollable.Gtk_Scrollable, Gtk_Text_View_Record, Gtk_Text_View);
+   function "+"
+     (Widget : access Gtk_Text_View_Record'Class)
+   return Gtk.Scrollable.Gtk_Scrollable
+   renames Implements_Gtk_Scrollable.To_Interface;
+   function "-"
+     (Interf : Gtk.Scrollable.Gtk_Scrollable)
+   return Gtk_Text_View
+   renames Implements_Gtk_Scrollable.To_Object;
 
 private
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=

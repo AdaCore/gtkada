@@ -186,8 +186,7 @@ package Gtk.Image_Menu_Item is
 
    procedure Set_Accel_Group
       (Self        : not null access Gtk_Image_Menu_Item_Record;
-       Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
-      ;
+       Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Specifies an Accel_Group to add the menu items accelerator to (this
    --  only applies to stock items so a stock item must already be set, make
    --  sure to call Gtk.Image_Menu_Item.Set_Use_Stock and
@@ -228,6 +227,32 @@ package Gtk.Image_Menu_Item is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Accel_Group_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Accel_Group.Gtk_Accel_Group
+   --  Flags: write
+   --  The Accel Group to use for stock accelerator keys
+
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
+   --  If True, the menu item will ignore the
+   --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show the
+   --  image, if available.
+   --
+   --  Use this property if the menuitem would be useless or hard to use
+   --  without the image.
+
+   Image_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+
+   Use_Stock_Property : constant Glib.Properties.Property_Boolean;
+   --  If True, the label set in the menuitem is used as a stock id to select
+   --  the stock item for the item.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -257,32 +282,6 @@ package Gtk.Image_Menu_Item is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Image_Menu_Item
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Accel_Group_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Accel_Group.Gtk_Accel_Group
-   --  Flags: write
-   --  The Accel Group to use for stock accelerator keys
-
-   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
-   --  If True, the menu item will ignore the
-   --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show the
-   --  image, if available.
-   --
-   --  Use this property if the menuitem would be useless or hard to use
-   --  without the image.
-
-   Image_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Widget.Gtk_Widget
-
-   Use_Stock_Property : constant Glib.Properties.Property_Boolean;
-   --  If True, the label set in the menuitem is used as a stock id to select
-   --  the stock item for the item.
 
 private
    Use_Stock_Property : constant Glib.Properties.Property_Boolean :=

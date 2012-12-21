@@ -82,12 +82,10 @@ package Gtk.Recent_Chooser_Widget is
 
    procedure Gtk_New_For_Manager
       (Widget  : out Gtk_Recent_Chooser_Widget;
-       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      ;
+       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
    procedure Initialize_For_Manager
       (Widget  : not null access Gtk_Recent_Chooser_Widget_Record'Class;
-       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      ;
+       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
    --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget with
    --  a specified recent manager.
    --  This is useful if you have implemented your own recent manager, or if
@@ -177,8 +175,7 @@ package Gtk.Recent_Chooser_Widget is
 
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Current_Item
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
@@ -198,8 +195,7 @@ package Gtk.Recent_Chooser_Widget is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)
@@ -275,8 +271,7 @@ package Gtk.Recent_Chooser_Widget is
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    procedure Select_All
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record);

@@ -171,4 +171,66 @@ package body Gtk.Handle_Box is
       Internal (Get_Object (Handle_Box), Edge);
    end Set_Snap_Edge;
 
+   -----------------------
+   -- On_Child_Attached --
+   -----------------------
+
+   procedure On_Child_Attached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Handle_Box_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Child_Attached;
+
+   -----------------------
+   -- On_Child_Attached --
+   -----------------------
+
+   procedure On_Child_Attached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Child_Attached;
+
+   -----------------------
+   -- On_Child_Detached --
+   -----------------------
+
+   procedure On_Child_Detached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Handle_Box_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Child_Detached;
+
+   -----------------------
+   -- On_Child_Detached --
+   -----------------------
+
+   procedure On_Child_Detached
+      (Self : not null access Gtk_Handle_Box_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Child_Detached;
+
 end Gtk.Handle_Box;

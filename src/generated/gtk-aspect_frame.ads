@@ -117,12 +117,19 @@ package Gtk.Aspect_Frame is
    --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean;
+
+   Ratio_Property : constant Glib.Properties.Property_Float;
+
+   Xalign_Property : constant Glib.Properties.Property_Float;
+
+   Yalign_Property : constant Glib.Properties.Property_Float;
 
    ----------------
    -- Interfaces --
@@ -141,20 +148,6 @@ package Gtk.Aspect_Frame is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Aspect_Frame
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Obey_Child_Property : constant Glib.Properties.Property_Boolean;
-
-   Ratio_Property : constant Glib.Properties.Property_Float;
-
-   Xalign_Property : constant Glib.Properties.Property_Float;
-
-   Yalign_Property : constant Glib.Properties.Property_Float;
 
 private
    Yalign_Property : constant Glib.Properties.Property_Float :=

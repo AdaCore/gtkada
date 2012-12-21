@@ -227,6 +227,35 @@ package Gtk.Toggle_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
+
+   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean;
+
+   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Toggle_Button_Record'Class));
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Should be connected if you wish to perform an action whenever the
+   --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -256,27 +285,6 @@ package Gtk.Toggle_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Toggle_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
-
-   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean;
-
-   Inconsistent_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Toggled : constant Glib.Signal_Name := "toggled";
-   --  Should be connected if you wish to perform an action whenever the
-   --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
-   --     procedure Handler (Self : access Gtk_Toggle_Button_Record'Class);
 
 private
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=

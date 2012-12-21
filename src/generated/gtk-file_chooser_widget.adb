@@ -83,7 +83,6 @@ package body Gtk.File_Chooser_Widget is
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_add_filter");
@@ -482,7 +481,6 @@ package body Gtk.File_Chooser_Widget is
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_remove_filter");
@@ -732,7 +730,6 @@ package body Gtk.File_Chooser_Widget is
    procedure Set_Filter
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_set_filter");

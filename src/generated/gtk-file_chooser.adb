@@ -35,7 +35,6 @@ package body Gtk.File_Chooser is
    procedure Add_Filter
       (Chooser : Gtk_File_Chooser;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal
          (Chooser : Gtk_File_Chooser;
@@ -370,7 +369,6 @@ package body Gtk.File_Chooser is
    procedure Remove_Filter
       (Chooser : Gtk_File_Chooser;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal
          (Chooser : Gtk_File_Chooser;
@@ -593,7 +591,6 @@ package body Gtk.File_Chooser is
    procedure Set_Filter
       (Chooser : Gtk_File_Chooser;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal
          (Chooser : Gtk_File_Chooser;
@@ -743,6 +740,149 @@ package body Gtk.File_Chooser is
       Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
    end Unselect_Uri;
+
+   --------------------------
+   -- On_Confirm_Overwrite --
+   --------------------------
+
+   procedure On_Confirm_Overwrite
+      (Self : Gtk_File_Chooser;
+       Call : not null access function
+         (Self : Gtk_File_Chooser)
+          return Gtk_File_Chooser_Confirmation)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Confirm_Overwrite;
+
+   --------------------------
+   -- On_Confirm_Overwrite --
+   --------------------------
+
+   procedure On_Confirm_Overwrite
+      (Self : Gtk_File_Chooser;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Gtk_File_Chooser_Confirmation;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Confirm_Overwrite;
+
+   -------------------------------
+   -- On_Current_Folder_Changed --
+   -------------------------------
+
+   procedure On_Current_Folder_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Current_Folder_Changed;
+
+   -------------------------------
+   -- On_Current_Folder_Changed --
+   -------------------------------
+
+   procedure On_Current_Folder_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Current_Folder_Changed;
+
+   -----------------------
+   -- On_File_Activated --
+   -----------------------
+
+   procedure On_File_Activated
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_File_Activated;
+
+   -----------------------
+   -- On_File_Activated --
+   -----------------------
+
+   procedure On_File_Activated
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_File_Activated;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   procedure On_Selection_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Changed;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   procedure On_Selection_Changed
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Changed;
+
+   -----------------------
+   -- On_Update_Preview --
+   -----------------------
+
+   procedure On_Update_Preview
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure (Self : Gtk_File_Chooser))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Update_Preview;
+
+   -----------------------
+   -- On_Update_Preview --
+   -----------------------
+
+   procedure On_Update_Preview
+      (Self : Gtk_File_Chooser;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Update_Preview;
 
    function "+" (W : Gtk_File_Chooser) return Gtk_File_Chooser is
    begin

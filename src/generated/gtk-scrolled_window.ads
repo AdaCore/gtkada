@@ -146,8 +146,7 @@ package Gtk.Scrolled_Window is
 
    procedure Set_Hadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
-       Hadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Hadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the Gtk.Adjustment.Gtk_Adjustment for the horizontal scrollbar.
    --  "hadjustment": horizontal scroll adjustment
 
@@ -256,8 +255,7 @@ package Gtk.Scrolled_Window is
 
    procedure Set_Vadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
-       Vadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Vadjustment     : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the Gtk.Adjustment.Gtk_Adjustment for the vertical scrollbar.
    --  "vadjustment": vertical scroll adjustment
 
@@ -276,31 +274,6 @@ package Gtk.Scrolled_Window is
    --  See also Gtk.Scrolled_Window.Set_Placement and
    --  Gtk.Scrolled_Window.Get_Placement.
    --  Since: gtk+ 2.10
-
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Scrolled_Window_Record, Gtk_Scrolled_Window);
-   function "+"
-     (Widget : access Gtk_Scrolled_Window_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Scrolled_Window
-   renames Implements_Gtk_Buildable.To_Object;
 
    ----------------
    -- Properties --
@@ -338,6 +311,17 @@ package Gtk.Scrolled_Window is
    -------------
 
    Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access procedure
+         (Self           : access Gtk_Scrolled_Window_Record'Class;
+          Direction_Type : Gtk.Enums.Gtk_Direction_Type));
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access procedure
+         (Self           : access Glib.Object.GObject_Record'Class;
+          Direction_Type : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::move-focus-out signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when focus is moved away from the scrolled window by a keybinding. The
@@ -345,25 +329,49 @@ package Gtk.Scrolled_Window is
    --  on this scrolled windows toplevel parent in the container hierarchy. The
    --  default bindings for this signal are ['Tab''Ctrl'] and
    --  ['Tab''Ctrl''Shift'].
-   --     procedure Handler
-   --       (Self           : access Gtk_Scrolled_Window_Record'Class;
-   --        Direction_Type : Gtk.Enums.Gtk_Direction_Type);
-   --    --  "direction_type": either Gtk.Enums.Dir_Tab_Forward or
-   --    --  Gtk.Enums.Dir_Tab_Backward
 
    Signal_Scroll_Child : constant Glib.Signal_Name := "scroll-child";
+   procedure On_Scroll_Child
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access function
+         (Self       : access Gtk_Scrolled_Window_Record'Class;
+          Scroll     : Gtk.Enums.Gtk_Scroll_Type;
+          Horizontal : Boolean) return Boolean);
+   procedure On_Scroll_Child
+      (Self : not null access Gtk_Scrolled_Window_Record;
+       Call : not null access function
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Scroll     : Gtk.Enums.Gtk_Scroll_Type;
+          Horizontal : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::scroll-child signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when a keybinding that scrolls is pressed. The horizontal or vertical
    --  adjustment is updated which triggers a signal that the scrolled windows
    --  child may listen to and scroll itself.
-   --     function Handler
-   --       (Self       : access Gtk_Scrolled_Window_Record'Class;
-   --        Scroll     : Gtk.Enums.Gtk_Scroll_Type;
-   --        Horizontal : Boolean) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "scroll": a Gtk.Enums.Gtk_Scroll_Type describing how much to scroll
    --    --  "horizontal": whether the keybinding scrolls the child horizontally or
    --    --  not
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Scrolled_Window_Record, Gtk_Scrolled_Window);
+   function "+"
+     (Widget : access Gtk_Scrolled_Window_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Scrolled_Window
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean :=

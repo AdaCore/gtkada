@@ -172,6 +172,32 @@ package Gtk.Radio_Menu_Item is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Group_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk_Radio_Menu_Item
+   --  Flags: write
+   --  The radio menu item whose group this widget belongs to.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
+   procedure On_Group_Changed
+      (Self : not null access Gtk_Radio_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Radio_Menu_Item_Record'Class));
+   procedure On_Group_Changed
+      (Self : not null access Gtk_Radio_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -201,24 +227,6 @@ package Gtk.Radio_Menu_Item is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Radio_Menu_Item
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Group_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk_Radio_Menu_Item
-   --  Flags: write
-   --  The radio menu item whose group this widget belongs to.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
-   --     procedure Handler (Self : access Gtk_Radio_Menu_Item_Record'Class);
 
 private
    Group_Property : constant Glib.Properties.Property_Object :=

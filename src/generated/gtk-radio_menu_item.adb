@@ -263,4 +263,33 @@ package body Gtk.Radio_Menu_Item is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   ----------------------
+   -- On_Group_Changed --
+   ----------------------
+
+   procedure On_Group_Changed
+      (Self : not null access Gtk_Radio_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Radio_Menu_Item_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Group_Changed;
+
+   ----------------------
+   -- On_Group_Changed --
+   ----------------------
+
+   procedure On_Group_Changed
+      (Self : not null access Gtk_Radio_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Group_Changed;
+
 end Gtk.Radio_Menu_Item;

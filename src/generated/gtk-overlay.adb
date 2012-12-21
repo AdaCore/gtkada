@@ -77,4 +77,37 @@ package body Gtk.Overlay is
       Internal (Get_Object (Self), Get_Object (Widget));
    end Add_Overlay;
 
+   ---------------------------
+   -- On_Get_Child_Position --
+   ---------------------------
+
+   procedure On_Get_Child_Position
+      (Self : not null access Gtk_Overlay_Record;
+       Call : not null access function
+         (Self       : access Gtk_Overlay_Record'Class;
+          Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Allocation : access Cairo.Cairo_Rectangle) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Get_Child_Position;
+
+   ---------------------------
+   -- On_Get_Child_Position --
+   ---------------------------
+
+   procedure On_Get_Child_Position
+      (Self : not null access Gtk_Overlay_Record;
+       Call : not null access function
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Allocation : access Cairo.Cairo_Rectangle) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Get_Child_Position;
+
 end Gtk.Overlay;

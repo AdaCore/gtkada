@@ -388,12 +388,73 @@ package Gtk.Assistant is
    --  assistant.
    --  Since: gtk+ 2.10
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Apply : constant Glib.Signal_Name := "apply";
+   procedure On_Apply
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class));
+   procedure On_Apply
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::apply signal is emitted when the apply button is clicked.
+   --
+   --  The default behavior of the Gtk.Assistant.Gtk_Assistant is to switch to
+   --  the page after the current page, unless the current page is the last
+   --  one.
+   --
+   --  A handler for the ::apply signal should carry out the actions for which
+   --  the wizard has collected data. If the action takes a long time to
+   --  complete, you might consider putting a page of type
+   --  Gtk.Assistant.Gtk_Assistant_Page_Progress after the confirmation page
+   --  and handle this operation within the
+   --  Gtk.Assistant.Gtk_Assistant::prepare signal of the progress page.
+
+   Signal_Cancel : constant Glib.Signal_Name := "cancel";
+   procedure On_Cancel
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class));
+   procedure On_Cancel
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::cancel signal is emitted when then the cancel button is clicked.
+
+   Signal_Close : constant Glib.Signal_Name := "close";
+   procedure On_Close
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class));
+   procedure On_Close
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::close signal is emitted either when the close button of a summary
+   --  page is clicked, or when the apply button in the last page in the flow
+   --  (of type Gtk.Assistant.Gtk_Assistant_Page_Confirm) is clicked.
+
+   Signal_Prepare : constant Glib.Signal_Name := "prepare";
+   procedure On_Prepare
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Assistant_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Prepare
+      (Self : not null access Gtk_Assistant_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::prepare signal is emitted when a new page is set as the
+   --  assistant's current page, before making the new page visible.
+   --
+   --  A handler for this signal can do any preparations which are necessary
+   --  before showing Page.
 
    ----------------
    -- Interfaces --
@@ -412,45 +473,5 @@ package Gtk.Assistant is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Assistant
    renames Implements_Gtk_Buildable.To_Object;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Apply : constant Glib.Signal_Name := "apply";
-   --  The ::apply signal is emitted when the apply button is clicked.
-   --
-   --  The default behavior of the Gtk.Assistant.Gtk_Assistant is to switch to
-   --  the page after the current page, unless the current page is the last
-   --  one.
-   --
-   --  A handler for the ::apply signal should carry out the actions for which
-   --  the wizard has collected data. If the action takes a long time to
-   --  complete, you might consider putting a page of type
-   --  Gtk.Assistant.Gtk_Assistant_Page_Progress after the confirmation page
-   --  and handle this operation within the
-   --  Gtk.Assistant.Gtk_Assistant::prepare signal of the progress page.
-   --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
-
-   Signal_Cancel : constant Glib.Signal_Name := "cancel";
-   --  The ::cancel signal is emitted when then the cancel button is clicked.
-   --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
-
-   Signal_Close : constant Glib.Signal_Name := "close";
-   --  The ::close signal is emitted either when the close button of a summary
-   --  page is clicked, or when the apply button in the last page in the flow
-   --  (of type Gtk.Assistant.Gtk_Assistant_Page_Confirm) is clicked.
-   --     procedure Handler (Self : access Gtk_Assistant_Record'Class);
-
-   Signal_Prepare : constant Glib.Signal_Name := "prepare";
-   --  The ::prepare signal is emitted when a new page is set as the
-   --  assistant's current page, before making the new page visible.
-   --
-   --  A handler for this signal can do any preparations which are necessary
-   --  before showing Page.
-   --     procedure Handler
-   --       (Self : access Gtk_Assistant_Record'Class;
-   --        Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "page": the current page
 
 end Gtk.Assistant;

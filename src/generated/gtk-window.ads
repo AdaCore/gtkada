@@ -163,8 +163,7 @@ package Gtk.Window is
 
    procedure Add_Accel_Group
       (Window      : not null access Gtk_Window_Record;
-       Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
-      ;
+       Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Associate Accel_Group with Window, such that calling
    --  Gtk.Accel_Group.Accel_Groups_Activate on Window will activate
    --  accelerators in Accel_Group.
@@ -981,8 +980,7 @@ package Gtk.Window is
 
    procedure Remove_Accel_Group
       (Window      : not null access Gtk_Window_Record;
-       Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
-      ;
+       Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Reverses the effects of Gtk.Window.Add_Accel_Group.
    --  "accel_group": a Gtk.Accel_Group.Gtk_Accel_Group
 
@@ -1239,31 +1237,6 @@ package Gtk.Window is
    --  Removes a window from a Gtk.Window.Gtk_Window_Group.
    --  "window": the Gtk.Window.Gtk_Window to remove
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Window_Record, Gtk_Window);
-   function "+"
-     (Widget : access Gtk_Window_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Window
-   renames Implements_Gtk_Buildable.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -1418,8 +1391,8 @@ package Gtk.Window is
 
    Role_Property : constant Glib.Properties.Property_String;
 
-   Screen_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gdk.Screen
+   Screen_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gdk.Screen.Gdk_Screen
 
    Skip_Pager_Hint_Property : constant Glib.Properties.Property_Boolean;
 
@@ -1451,26 +1424,73 @@ package Gtk.Window is
    -------------
 
    Signal_Activate_Default : constant Glib.Signal_Name := "activate-default";
+   procedure On_Activate_Default
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure (Self : access Gtk_Window_Record'Class));
+   procedure On_Activate_Default
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::activate-default signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user activates the default widget of Window.
-   --     procedure Handler (Self : access Gtk_Window_Record'Class);
 
    Signal_Activate_Focus : constant Glib.Signal_Name := "activate-focus";
+   procedure On_Activate_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure (Self : access Gtk_Window_Record'Class));
+   procedure On_Activate_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::activate-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user activates the currently focused widget of Window.
-   --     procedure Handler (Self : access Gtk_Window_Record'Class);
 
    Signal_Keys_Changed : constant Glib.Signal_Name := "keys-changed";
+   procedure On_Keys_Changed
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure (Self : access Gtk_Window_Record'Class));
+   procedure On_Keys_Changed
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::keys-changed signal gets emitted when the set of accelerators or
    --  mnemonics that are associated with Window changes.
-   --     procedure Handler (Self : access Gtk_Window_Record'Class);
 
    Signal_Set_Focus : constant Glib.Signal_Name := "set-focus";
-   --     procedure Handler
-   --       (Self   : access Gtk_Window_Record'Class;
-   --        Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure On_Set_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Window_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Set_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Window_Record, Gtk_Window);
+   function "+"
+     (Widget : access Gtk_Window_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Window
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Window_Position_Property : constant Gtk.Enums.Property_Gtk_Window_Position :=
@@ -1491,7 +1511,7 @@ private
      Glib.Properties.Build ("skip-taskbar-hint");
    Skip_Pager_Hint_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("skip-pager-hint");
-   Screen_Property : constant Glib.Properties.Property_Boxed :=
+   Screen_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("screen");
    Role_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("role");

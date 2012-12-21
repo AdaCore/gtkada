@@ -290,37 +290,6 @@ package Gtk.Menu_Item is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Activatable"
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Activatable is new Glib.Types.Implements
-     (Gtk.Activatable.Gtk_Activatable, Gtk_Menu_Item_Record, Gtk_Menu_Item);
-   function "+"
-     (Widget : access Gtk_Menu_Item_Record'Class)
-   return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Gtk_Activatable.To_Interface;
-   function "-"
-     (Interf : Gtk.Activatable.Gtk_Activatable)
-   return Gtk_Menu_Item
-   renames Implements_Gtk_Activatable.To_Object;
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Menu_Item_Record, Gtk_Menu_Item);
-   function "+"
-     (Widget : access Gtk_Menu_Item_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Menu_Item
-   renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -350,30 +319,105 @@ package Gtk.Menu_Item is
    -------------
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
+   procedure On_Activate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+   procedure On_Activate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the item is activated.
-   --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
 
    Signal_Activate_Item : constant Glib.Signal_Name := "activate-item";
+   procedure On_Activate_Item
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+   procedure On_Activate_Item
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the item is activated, but also if the menu item has a
    --  submenu. For normal applications, the relevant signal is
    --  Gtk.Menu_Item.Gtk_Menu_Item::activate.
-   --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
 
    Signal_Deselect : constant Glib.Signal_Name := "deselect";
-   --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
+   procedure On_Deselect
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+   procedure On_Deselect
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Gtk_Select : constant Glib.Signal_Name := "select";
-   --     procedure Handler (Self : access Gtk_Menu_Item_Record'Class);
+   procedure On_Gtk_Select
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+   procedure On_Gtk_Select
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Toggle_Size_Allocate : constant Glib.Signal_Name := "toggle-size-allocate";
-   --     procedure Handler
-   --       (Self   : access Gtk_Menu_Item_Record'Class;
-   --        Object : Gint);
+   procedure On_Toggle_Size_Allocate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Menu_Item_Record'Class;
+          Object : Gint));
+   procedure On_Toggle_Size_Allocate
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Toggle_Size_Request : constant Glib.Signal_Name := "toggle-size-request";
-   --     procedure Handler
-   --       (Self   : access Gtk_Menu_Item_Record'Class;
-   --        Object : System.Address);
+   procedure On_Toggle_Size_Request
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Menu_Item_Record'Class;
+          Object : System.Address));
+   procedure On_Toggle_Size_Request
+      (Self : not null access Gtk_Menu_Item_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : System.Address);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Menu_Item_Record, Gtk_Menu_Item);
+   function "+"
+     (Widget : access Gtk_Menu_Item_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Gtk_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Menu_Item
+   renames Implements_Gtk_Activatable.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Menu_Item_Record, Gtk_Menu_Item);
+   function "+"
+     (Widget : access Gtk_Menu_Item_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Menu_Item
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Use_Underline_Property : constant Glib.Properties.Property_Boolean :=

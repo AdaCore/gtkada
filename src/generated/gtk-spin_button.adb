@@ -302,7 +302,6 @@ package body Gtk.Spin_Button is
    procedure Set_Adjustment
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Adjustment  : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (Spin_Button : System.Address;
@@ -713,5 +712,155 @@ package body Gtk.Spin_Button is
    begin
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
+
+   ---------------------
+   -- On_Change_Value --
+   ---------------------
+
+   procedure On_Change_Value
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Spin_Button_Record'Class;
+          Object : Gtk.Enums.Gtk_Scroll_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Change_Value;
+
+   ---------------------
+   -- On_Change_Value --
+   ---------------------
+
+   procedure On_Change_Value
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Change_Value;
+
+   --------------
+   -- On_Input --
+   --------------
+
+   procedure On_Input
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self      : access Gtk_Spin_Button_Record'Class;
+          New_Value : access Gdouble) return Gint)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Input;
+
+   --------------
+   -- On_Input --
+   --------------
+
+   procedure On_Input
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self      : access Glib.Object.GObject_Record'Class;
+          New_Value : access Gdouble) return Gint;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Input;
+
+   ---------------
+   -- On_Output --
+   ---------------
+
+   procedure On_Output
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self : access Gtk_Spin_Button_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Output;
+
+   ---------------
+   -- On_Output --
+   ---------------
+
+   procedure On_Output
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Output;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Spin_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Value_Changed;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Value_Changed;
+
+   ----------------
+   -- On_Wrapped --
+   ----------------
+
+   procedure On_Wrapped
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Spin_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Wrapped;
+
+   ----------------
+   -- On_Wrapped --
+   ----------------
+
+   procedure On_Wrapped
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Wrapped;
 
 end Gtk.Spin_Button;

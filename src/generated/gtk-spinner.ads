@@ -72,12 +72,13 @@ package Gtk.Spinner is
    --  Stops the animation of the spinner.
    --  Since: gtk+ 2.20
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
 
    ----------------
    -- Interfaces --
@@ -96,14 +97,6 @@ package Gtk.Spinner is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Spinner
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Active_Property : constant Glib.Properties.Property_Boolean :=

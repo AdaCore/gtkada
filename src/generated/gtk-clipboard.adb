@@ -1077,4 +1077,35 @@ package body Gtk.Clipboard is
       return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Get_Object (Display), Selection), Stub_Gtk_Clipboard));
    end Get_For_Display;
 
+   ---------------------
+   -- On_Owner_Change --
+   ---------------------
+
+   procedure On_Owner_Change
+      (Self : not null access Gtk_Clipboard_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Clipboard_Record'Class;
+          Event : Gdk.Event_Owner_Change))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Owner_Change;
+
+   ---------------------
+   -- On_Owner_Change --
+   ---------------------
+
+   procedure On_Owner_Change
+      (Self : not null access Gtk_Clipboard_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event_Owner_Change);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Owner_Change;
+
 end Gtk.Clipboard;

@@ -166,31 +166,6 @@ package Gtk.Alignment is
    --  "yscale": the amount that the child widget expands vertically to fill
    --  up unused space, from 0 to 1. The values are similar to Xscale.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Alignment_Record, Gtk_Alignment);
-   function "+"
-     (Widget : access Gtk_Alignment_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Alignment
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -216,6 +191,24 @@ package Gtk.Alignment is
    Yalign_Property : constant Glib.Properties.Property_Float;
 
    Yscale_Property : constant Glib.Properties.Property_Float;
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Alignment_Record, Gtk_Alignment);
+   function "+"
+     (Widget : access Gtk_Alignment_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Alignment
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Yscale_Property : constant Glib.Properties.Property_Float :=

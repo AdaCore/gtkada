@@ -178,7 +178,6 @@ package body Gtk.Entry_Completion is
    procedure Gtk_New_With_Area
       (Completion : out Gtk_Entry_Completion;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      
    is
    begin
       Completion := new Gtk_Entry_Completion_Record;
@@ -205,7 +204,6 @@ package body Gtk.Entry_Completion is
    procedure Initialize_With_Area
       (Completion : not null access Gtk_Entry_Completion_Record'Class;
        Area       : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      
    is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_new_with_area");
@@ -761,7 +759,6 @@ package body Gtk.Entry_Completion is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;
@@ -840,5 +837,133 @@ package body Gtk.Entry_Completion is
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
+
+   -------------------------
+   -- On_Action_Activated --
+   -------------------------
+
+   procedure On_Action_Activated
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Entry_Completion_Record'Class;
+          Index : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Action_Activated;
+
+   -------------------------
+   -- On_Action_Activated --
+   -------------------------
+
+   procedure On_Action_Activated
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Index : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Action_Activated;
+
+   ------------------------
+   -- On_Cursor_On_Match --
+   ------------------------
+
+   procedure On_Cursor_On_Match
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Gtk_Entry_Completion_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cursor_On_Match;
+
+   ------------------------
+   -- On_Cursor_On_Match --
+   ------------------------
+
+   procedure On_Cursor_On_Match
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cursor_On_Match;
+
+   ----------------------
+   -- On_Insert_Prefix --
+   ----------------------
+
+   procedure On_Insert_Prefix
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self   : access Gtk_Entry_Completion_Record'Class;
+          Prefix : UTF8_String) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert_Prefix;
+
+   ----------------------
+   -- On_Insert_Prefix --
+   ----------------------
+
+   procedure On_Insert_Prefix
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Prefix : UTF8_String) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert_Prefix;
+
+   -----------------------
+   -- On_Match_Selected --
+   -----------------------
+
+   procedure On_Match_Selected
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Gtk_Entry_Completion_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Match_Selected;
+
+   -----------------------
+   -- On_Match_Selected --
+   -----------------------
+
+   procedure On_Match_Selected
+      (Self : not null access Gtk_Entry_Completion_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Model : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Match_Selected;
 
 end Gtk.Entry_Completion;

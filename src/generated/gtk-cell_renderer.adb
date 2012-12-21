@@ -505,4 +505,66 @@ package body Gtk.Cell_Renderer is
       Internal (Get_Object (Cell), Boolean'Pos (Canceled));
    end Stop_Editing;
 
+   -------------------------
+   -- On_Editing_Canceled --
+   -------------------------
+
+   procedure On_Editing_Canceled
+      (Self : not null access Gtk_Cell_Renderer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Cell_Renderer_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Editing_Canceled;
+
+   -------------------------
+   -- On_Editing_Canceled --
+   -------------------------
+
+   procedure On_Editing_Canceled
+      (Self : not null access Gtk_Cell_Renderer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Editing_Canceled;
+
+   ------------------------
+   -- On_Editing_Started --
+   ------------------------
+
+   procedure On_Editing_Started
+      (Self : not null access Gtk_Cell_Renderer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Renderer_Record'Class;
+          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
+          Path     : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Editing_Started;
+
+   ------------------------
+   -- On_Editing_Started --
+   ------------------------
+
+   procedure On_Editing_Started
+      (Self : not null access Gtk_Cell_Renderer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
+          Path     : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Editing_Started;
+
 end Gtk.Cell_Renderer;

@@ -201,21 +201,44 @@ package Gtk.Entry_Buffer is
    -------------
 
    Signal_Deleted_Text : constant Glib.Signal_Name := "deleted-text";
+   procedure On_Deleted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Buffer_Record'Class;
+          Position : Guint;
+          N_Chars  : Guint));
+   procedure On_Deleted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Position : Guint;
+          N_Chars  : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted after text is deleted from the buffer.
-   --     procedure Handler
-   --       (Self     : access Gtk_Entry_Buffer_Record'Class;
-   --        Position : Guint;
-   --        N_Chars  : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "position": the position the text was deleted at.
    --    --  "n_chars": The number of characters that were deleted.
 
    Signal_Inserted_Text : constant Glib.Signal_Name := "inserted-text";
+   procedure On_Inserted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Entry_Buffer_Record'Class;
+          Position : Guint;
+          Chars    : UTF8_String;
+          N_Chars  : Guint));
+   procedure On_Inserted_Text
+      (Self : not null access Gtk_Entry_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Position : Guint;
+          Chars    : UTF8_String;
+          N_Chars  : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted after text is inserted into the buffer.
-   --     procedure Handler
-   --       (Self     : access Gtk_Entry_Buffer_Record'Class;
-   --        Position : Guint;
-   --        Chars    : UTF8_String;
-   --        N_Chars  : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "position": the position the text was inserted at.
    --    --  "chars": The text that was inserted.
    --    --  "n_chars": The number of characters that were inserted.

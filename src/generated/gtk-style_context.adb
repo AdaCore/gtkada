@@ -1182,4 +1182,33 @@ package body Gtk.Style_Context is
       Internal (Get_Object (Screen));
    end Reset_Widgets;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Style_Context_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Style_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Style_Context_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
 end Gtk.Style_Context;

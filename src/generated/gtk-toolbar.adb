@@ -390,4 +390,132 @@ package body Gtk.Toolbar is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
+   --------------------------
+   -- On_Focus_Home_Or_End --
+   --------------------------
+
+   procedure On_Focus_Home_Or_End
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self       : access Gtk_Toolbar_Record'Class;
+          Focus_Home : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Focus_Home_Or_End;
+
+   --------------------------
+   -- On_Focus_Home_Or_End --
+   --------------------------
+
+   procedure On_Focus_Home_Or_End
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Focus_Home : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Focus_Home_Or_End;
+
+   ----------------------------
+   -- On_Orientation_Changed --
+   ----------------------------
+
+   procedure On_Orientation_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Toolbar_Record'Class;
+          Orientation : Gtk.Enums.Gtk_Orientation))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Orientation_Changed;
+
+   ----------------------------
+   -- On_Orientation_Changed --
+   ----------------------------
+
+   procedure On_Orientation_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Orientation : Gtk.Enums.Gtk_Orientation);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Orientation_Changed;
+
+   ---------------------------
+   -- On_Popup_Context_Menu --
+   ---------------------------
+
+   procedure On_Popup_Context_Menu
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self   : access Gtk_Toolbar_Record'Class;
+          X      : Gint;
+          Y      : Gint;
+          Button : Gint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popup_Context_Menu;
+
+   ---------------------------
+   -- On_Popup_Context_Menu --
+   ---------------------------
+
+   procedure On_Popup_Context_Menu
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          X      : Gint;
+          Y      : Gint;
+          Button : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popup_Context_Menu;
+
+   ----------------------
+   -- On_Style_Changed --
+   ----------------------
+
+   procedure On_Style_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Toolbar_Record'Class;
+          Style : Gtk.Enums.Gtk_Toolbar_Style))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Style_Changed;
+
+   ----------------------
+   -- On_Style_Changed --
+   ----------------------
+
+   procedure On_Style_Changed
+      (Self : not null access Gtk_Toolbar_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Style : Gtk.Enums.Gtk_Toolbar_Style);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Style_Changed;
+
 end Gtk.Toolbar;

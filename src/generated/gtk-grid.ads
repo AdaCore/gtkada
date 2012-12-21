@@ -206,6 +206,20 @@ package Gtk.Grid is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   Column_Spacing_Property : constant Glib.Properties.Property_Int;
+
+   Row_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   Row_Spacing_Property : constant Glib.Properties.Property_Int;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -235,20 +249,6 @@ package Gtk.Grid is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Grid
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
-
-   Column_Spacing_Property : constant Glib.Properties.Property_Int;
-
-   Row_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
-
-   Row_Spacing_Property : constant Glib.Properties.Property_Int;
 
 private
    Row_Spacing_Property : constant Glib.Properties.Property_Int :=

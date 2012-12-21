@@ -3406,4 +3406,2124 @@ package body Gtk.Widget is
       Internal (Cr, Get_Object (Widget), Window);
    end Transform_To_Window;
 
+   -------------------------------
+   -- On_Accel_Closures_Changed --
+   -------------------------------
+
+   procedure On_Accel_Closures_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Accel_Closures_Changed;
+
+   -------------------------------
+   -- On_Accel_Closures_Changed --
+   -------------------------------
+
+   procedure On_Accel_Closures_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Accel_Closures_Changed;
+
+   ---------------------------
+   -- On_Button_Press_Event --
+   ---------------------------
+
+   procedure On_Button_Press_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Button_Press_Event;
+
+   ---------------------------
+   -- On_Button_Press_Event --
+   ---------------------------
+
+   procedure On_Button_Press_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Button_Press_Event;
+
+   -----------------------------
+   -- On_Button_Release_Event --
+   -----------------------------
+
+   procedure On_Button_Release_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Button_Release_Event;
+
+   -----------------------------
+   -- On_Button_Release_Event --
+   -----------------------------
+
+   procedure On_Button_Release_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Button_Release_Event;
+
+   ---------------------------
+   -- On_Can_Activate_Accel --
+   ---------------------------
+
+   procedure On_Can_Activate_Accel
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self      : access Gtk_Widget_Record'Class;
+          Signal_Id : Guint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Can_Activate_Accel;
+
+   ---------------------------
+   -- On_Can_Activate_Accel --
+   ---------------------------
+
+   procedure On_Can_Activate_Accel
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Signal_Id : Guint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Can_Activate_Accel;
+
+   ---------------------
+   -- On_Child_Notify --
+   ---------------------
+
+   procedure On_Child_Notify
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Widget_Record'Class;
+          Pspec : Glib.Param_Spec))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Child_Notify;
+
+   ---------------------
+   -- On_Child_Notify --
+   ---------------------
+
+   procedure On_Child_Notify
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Pspec : Glib.Param_Spec);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Child_Notify;
+
+   ---------------------------
+   -- On_Composited_Changed --
+   ---------------------------
+
+   procedure On_Composited_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Composited_Changed;
+
+   ---------------------------
+   -- On_Composited_Changed --
+   ---------------------------
+
+   procedure On_Composited_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Composited_Changed;
+
+   ------------------------
+   -- On_Configure_Event --
+   ------------------------
+
+   procedure On_Configure_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Configure) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Configure_Event;
+
+   ------------------------
+   -- On_Configure_Event --
+   ------------------------
+
+   procedure On_Configure_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Configure) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Configure_Event;
+
+   ---------------------
+   -- On_Damage_Event --
+   ---------------------
+
+   procedure On_Damage_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Expose) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Damage_Event;
+
+   ---------------------
+   -- On_Damage_Event --
+   ---------------------
+
+   procedure On_Damage_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Expose) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Damage_Event;
+
+   ---------------------
+   -- On_Delete_Event --
+   ---------------------
+
+   procedure On_Delete_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Delete_Event;
+
+   ---------------------
+   -- On_Delete_Event --
+   ---------------------
+
+   procedure On_Delete_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Delete_Event;
+
+   ----------------
+   -- On_Destroy --
+   ----------------
+
+   procedure On_Destroy
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Destroy;
+
+   ----------------
+   -- On_Destroy --
+   ----------------
+
+   procedure On_Destroy
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Destroy;
+
+   ----------------------
+   -- On_Destroy_Event --
+   ----------------------
+
+   procedure On_Destroy_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Destroy_Event;
+
+   ----------------------
+   -- On_Destroy_Event --
+   ----------------------
+
+   procedure On_Destroy_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Destroy_Event;
+
+   --------------------------
+   -- On_Direction_Changed --
+   --------------------------
+
+   procedure On_Direction_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self               : access Gtk_Widget_Record'Class;
+          Previous_Direction : Gtk.Enums.Gtk_Text_Direction))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Direction_Changed;
+
+   --------------------------
+   -- On_Direction_Changed --
+   --------------------------
+
+   procedure On_Direction_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self               : access Glib.Object.GObject_Record'Class;
+          Previous_Direction : Gtk.Enums.Gtk_Text_Direction);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Direction_Changed;
+
+   -------------------
+   -- On_Drag_Begin --
+   -------------------
+
+   procedure On_Drag_Begin
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Begin;
+
+   -------------------
+   -- On_Drag_Begin --
+   -------------------
+
+   procedure On_Drag_Begin
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Begin;
+
+   -------------------------
+   -- On_Drag_Data_Delete --
+   -------------------------
+
+   procedure On_Drag_Data_Delete
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Data_Delete;
+
+   -------------------------
+   -- On_Drag_Data_Delete --
+   -------------------------
+
+   procedure On_Drag_Data_Delete
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Data_Delete;
+
+   ----------------------
+   -- On_Drag_Data_Get --
+   ----------------------
+
+   procedure On_Drag_Data_Get
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+          Info         : Guint;
+          Time         : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Data_Get;
+
+   ----------------------
+   -- On_Drag_Data_Get --
+   ----------------------
+
+   procedure On_Drag_Data_Get
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+          Info         : Guint;
+          Time         : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Data_Get;
+
+   ---------------------------
+   -- On_Drag_Data_Received --
+   ---------------------------
+
+   procedure On_Drag_Data_Received
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          X            : Gint;
+          Y            : Gint;
+          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+          Info         : Guint;
+          Time         : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Data_Received;
+
+   ---------------------------
+   -- On_Drag_Data_Received --
+   ---------------------------
+
+   procedure On_Drag_Data_Received
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          X            : Gint;
+          Y            : Gint;
+          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+          Info         : Guint;
+          Time         : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Data_Received;
+
+   ------------------
+   -- On_Drag_Drop --
+   ------------------
+
+   procedure On_Drag_Drop
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          X            : Gint;
+          Y            : Gint;
+          Time         : Guint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Drop;
+
+   ------------------
+   -- On_Drag_Drop --
+   ------------------
+
+   procedure On_Drag_Drop
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          X            : Gint;
+          Y            : Gint;
+          Time         : Guint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Drop;
+
+   -----------------
+   -- On_Drag_End --
+   -----------------
+
+   procedure On_Drag_End
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_End;
+
+   -----------------
+   -- On_Drag_End --
+   -----------------
+
+   procedure On_Drag_End
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_End;
+
+   --------------------
+   -- On_Drag_Failed --
+   --------------------
+
+   procedure On_Drag_Failed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Failed;
+
+   --------------------
+   -- On_Drag_Failed --
+   --------------------
+
+   procedure On_Drag_Failed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Failed;
+
+   -------------------
+   -- On_Drag_Leave --
+   -------------------
+
+   procedure On_Drag_Leave
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          Time         : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Leave;
+
+   -------------------
+   -- On_Drag_Leave --
+   -------------------
+
+   procedure On_Drag_Leave
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          Time         : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Leave;
+
+   --------------------
+   -- On_Drag_Motion --
+   --------------------
+
+   procedure On_Drag_Motion
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self         : access Gtk_Widget_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          X            : Gint;
+          Y            : Gint;
+          Time         : Guint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Drag_Motion;
+
+   --------------------
+   -- On_Drag_Motion --
+   --------------------
+
+   procedure On_Drag_Motion
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+          X            : Gint;
+          Y            : Gint;
+          Time         : Guint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Drag_Motion;
+
+   -------------
+   -- On_Draw --
+   -------------
+
+   procedure On_Draw
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self : access Gtk_Widget_Record'Class;
+          Cr   : Cairo.Cairo_Context) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Draw;
+
+   -------------
+   -- On_Draw --
+   -------------
+
+   procedure On_Draw
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          Cr   : Cairo.Cairo_Context) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Draw;
+
+   ---------------------------
+   -- On_Enter_Notify_Event --
+   ---------------------------
+
+   procedure On_Enter_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Enter_Notify_Event;
+
+   ---------------------------
+   -- On_Enter_Notify_Event --
+   ---------------------------
+
+   procedure On_Enter_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Enter_Notify_Event;
+
+   --------------
+   -- On_Event --
+   --------------
+
+   procedure On_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Event;
+
+   --------------
+   -- On_Event --
+   --------------
+
+   procedure On_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Event;
+
+   --------------------
+   -- On_Event_After --
+   --------------------
+
+   procedure On_Event_After
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Event_After;
+
+   --------------------
+   -- On_Event_After --
+   --------------------
+
+   procedure On_Event_After
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Event_After;
+
+   --------------
+   -- On_Focus --
+   --------------
+
+   procedure On_Focus
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self    : access Gtk_Widget_Record'Class;
+          Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Focus;
+
+   --------------
+   -- On_Focus --
+   --------------
+
+   procedure On_Focus
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Focus;
+
+   -----------------------
+   -- On_Focus_In_Event --
+   -----------------------
+
+   procedure On_Focus_In_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Focus) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Focus_In_Event;
+
+   -----------------------
+   -- On_Focus_In_Event --
+   -----------------------
+
+   procedure On_Focus_In_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Focus) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Focus_In_Event;
+
+   ------------------------
+   -- On_Focus_Out_Event --
+   ------------------------
+
+   procedure On_Focus_Out_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Focus) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Focus_Out_Event;
+
+   ------------------------
+   -- On_Focus_Out_Event --
+   ------------------------
+
+   procedure On_Focus_Out_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Focus) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Focus_Out_Event;
+
+   --------------------------
+   -- On_Grab_Broken_Event --
+   --------------------------
+
+   procedure On_Grab_Broken_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Grab_Broken) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Grab_Broken_Event;
+
+   --------------------------
+   -- On_Grab_Broken_Event --
+   --------------------------
+
+   procedure On_Grab_Broken_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Grab_Broken) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Grab_Broken_Event;
+
+   -------------------
+   -- On_Grab_Focus --
+   -------------------
+
+   procedure On_Grab_Focus
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Grab_Focus;
+
+   -------------------
+   -- On_Grab_Focus --
+   -------------------
+
+   procedure On_Grab_Focus
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Grab_Focus;
+
+   --------------------
+   -- On_Grab_Notify --
+   --------------------
+
+   procedure On_Grab_Notify
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Widget_Record'Class;
+          Was_Grabbed : Boolean))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Grab_Notify;
+
+   --------------------
+   -- On_Grab_Notify --
+   --------------------
+
+   procedure On_Grab_Notify
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Was_Grabbed : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Grab_Notify;
+
+   -------------
+   -- On_Hide --
+   -------------
+
+   procedure On_Hide
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Hide;
+
+   -------------
+   -- On_Hide --
+   -------------
+
+   procedure On_Hide
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Hide;
+
+   --------------------------
+   -- On_Hierarchy_Changed --
+   --------------------------
+
+   procedure On_Hierarchy_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self              : access Gtk_Widget_Record'Class;
+          Previous_Toplevel : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Hierarchy_Changed;
+
+   --------------------------
+   -- On_Hierarchy_Changed --
+   --------------------------
+
+   procedure On_Hierarchy_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self              : access Glib.Object.GObject_Record'Class;
+          Previous_Toplevel : access Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Hierarchy_Changed;
+
+   ------------------------
+   -- On_Key_Press_Event --
+   ------------------------
+
+   procedure On_Key_Press_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Key) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Key_Press_Event;
+
+   ------------------------
+   -- On_Key_Press_Event --
+   ------------------------
+
+   procedure On_Key_Press_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Key) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Key_Press_Event;
+
+   --------------------------
+   -- On_Key_Release_Event --
+   --------------------------
+
+   procedure On_Key_Release_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Key) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Key_Release_Event;
+
+   --------------------------
+   -- On_Key_Release_Event --
+   --------------------------
+
+   procedure On_Key_Release_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Key) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Key_Release_Event;
+
+   ----------------------
+   -- On_Keynav_Failed --
+   ----------------------
+
+   procedure On_Keynav_Failed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self      : access Gtk_Widget_Record'Class;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Keynav_Failed;
+
+   ----------------------
+   -- On_Keynav_Failed --
+   ----------------------
+
+   procedure On_Keynav_Failed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Keynav_Failed;
+
+   ---------------------------
+   -- On_Leave_Notify_Event --
+   ---------------------------
+
+   procedure On_Leave_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Leave_Notify_Event;
+
+   ---------------------------
+   -- On_Leave_Notify_Event --
+   ---------------------------
+
+   procedure On_Leave_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Leave_Notify_Event;
+
+   ------------
+   -- On_Map --
+   ------------
+
+   procedure On_Map
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Map;
+
+   ------------
+   -- On_Map --
+   ------------
+
+   procedure On_Map
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Map;
+
+   ------------------
+   -- On_Map_Event --
+   ------------------
+
+   procedure On_Map_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Any) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Map_Event;
+
+   ------------------
+   -- On_Map_Event --
+   ------------------
+
+   procedure On_Map_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Any) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Map_Event;
+
+   --------------------------
+   -- On_Mnemonic_Activate --
+   --------------------------
+
+   procedure On_Mnemonic_Activate
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self   : access Gtk_Widget_Record'Class;
+          Object : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Mnemonic_Activate;
+
+   --------------------------
+   -- On_Mnemonic_Activate --
+   --------------------------
+
+   procedure On_Mnemonic_Activate
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Mnemonic_Activate;
+
+   ----------------------------
+   -- On_Motion_Notify_Event --
+   ----------------------------
+
+   procedure On_Motion_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Motion) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Motion_Notify_Event;
+
+   ----------------------------
+   -- On_Motion_Notify_Event --
+   ----------------------------
+
+   procedure On_Motion_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Motion) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Motion_Notify_Event;
+
+   -------------------
+   -- On_Move_Focus --
+   -------------------
+
+   procedure On_Move_Focus
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Widget_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Focus;
+
+   -------------------
+   -- On_Move_Focus --
+   -------------------
+
+   procedure On_Move_Focus
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Focus;
+
+   -------------------
+   -- On_Parent_Set --
+   -------------------
+
+   procedure On_Parent_Set
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self       : access Gtk_Widget_Record'Class;
+          Old_Parent : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Parent_Set;
+
+   -------------------
+   -- On_Parent_Set --
+   -------------------
+
+   procedure On_Parent_Set
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Old_Parent : access Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Parent_Set;
+
+   -------------------
+   -- On_Popup_Menu --
+   -------------------
+
+   procedure On_Popup_Menu
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self : access Gtk_Widget_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popup_Menu;
+
+   -------------------
+   -- On_Popup_Menu --
+   -------------------
+
+   procedure On_Popup_Menu
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popup_Menu;
+
+   ------------------------------
+   -- On_Property_Notify_Event --
+   ------------------------------
+
+   procedure On_Property_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Property) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Property_Notify_Event;
+
+   ------------------------------
+   -- On_Property_Notify_Event --
+   ------------------------------
+
+   procedure On_Property_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Property) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Property_Notify_Event;
+
+   ---------------------------
+   -- On_Proximity_In_Event --
+   ---------------------------
+
+   procedure On_Proximity_In_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Proximity_In_Event;
+
+   ---------------------------
+   -- On_Proximity_In_Event --
+   ---------------------------
+
+   procedure On_Proximity_In_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Proximity_In_Event;
+
+   ----------------------------
+   -- On_Proximity_Out_Event --
+   ----------------------------
+
+   procedure On_Proximity_Out_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Proximity_Out_Event;
+
+   ----------------------------
+   -- On_Proximity_Out_Event --
+   ----------------------------
+
+   procedure On_Proximity_Out_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Proximity_Out_Event;
+
+   ----------------------
+   -- On_Query_Tooltip --
+   ----------------------
+
+   procedure On_Query_Tooltip
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self          : access Gtk_Widget_Record'Class;
+          X             : Gint;
+          Y             : Gint;
+          Keyboard_Mode : Boolean;
+          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+          return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Query_Tooltip;
+
+   ----------------------
+   -- On_Query_Tooltip --
+   ----------------------
+
+   procedure On_Query_Tooltip
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self          : access Glib.Object.GObject_Record'Class;
+          X             : Gint;
+          Y             : Gint;
+          Keyboard_Mode : Boolean;
+          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Query_Tooltip;
+
+   ----------------
+   -- On_Realize --
+   ----------------
+
+   procedure On_Realize
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Realize;
+
+   ----------------
+   -- On_Realize --
+   ----------------
+
+   procedure On_Realize
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Realize;
+
+   -----------------------
+   -- On_Screen_Changed --
+   -----------------------
+
+   procedure On_Screen_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self            : access Gtk_Widget_Record'Class;
+          Previous_Screen : access Gdk.Screen.Gdk_Screen_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Screen_Changed;
+
+   -----------------------
+   -- On_Screen_Changed --
+   -----------------------
+
+   procedure On_Screen_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self            : access Glib.Object.GObject_Record'Class;
+          Previous_Screen : access Gdk.Screen.Gdk_Screen_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Screen_Changed;
+
+   ---------------------
+   -- On_Scroll_Event --
+   ---------------------
+
+   procedure On_Scroll_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Scroll_Event;
+
+   ---------------------
+   -- On_Scroll_Event --
+   ---------------------
+
+   procedure On_Scroll_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Scroll_Event;
+
+   ------------------------------
+   -- On_Selection_Clear_Event --
+   ------------------------------
+
+   procedure On_Selection_Clear_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Selection) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Clear_Event;
+
+   ------------------------------
+   -- On_Selection_Clear_Event --
+   ------------------------------
+
+   procedure On_Selection_Clear_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Clear_Event;
+
+   ----------------------
+   -- On_Selection_Get --
+   ----------------------
+
+   procedure On_Selection_Get
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Widget_Record'Class;
+          Object : Gtk.Selection_Data.Gtk_Selection_Data;
+          P0     : Guint;
+          P1     : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Get;
+
+   ----------------------
+   -- On_Selection_Get --
+   ----------------------
+
+   procedure On_Selection_Get
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Selection_Data.Gtk_Selection_Data;
+          P0     : Guint;
+          P1     : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Get;
+
+   -------------------------------
+   -- On_Selection_Notify_Event --
+   -------------------------------
+
+   procedure On_Selection_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Selection) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Notify_Event;
+
+   -------------------------------
+   -- On_Selection_Notify_Event --
+   -------------------------------
+
+   procedure On_Selection_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Notify_Event;
+
+   ---------------------------
+   -- On_Selection_Received --
+   ---------------------------
+
+   procedure On_Selection_Received
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Widget_Record'Class;
+          Object : Gtk.Selection_Data.Gtk_Selection_Data;
+          P0     : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Received;
+
+   ---------------------------
+   -- On_Selection_Received --
+   ---------------------------
+
+   procedure On_Selection_Received
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Selection_Data.Gtk_Selection_Data;
+          P0     : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Received;
+
+   --------------------------------
+   -- On_Selection_Request_Event --
+   --------------------------------
+
+   procedure On_Selection_Request_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Selection) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Request_Event;
+
+   --------------------------------
+   -- On_Selection_Request_Event --
+   --------------------------------
+
+   procedure On_Selection_Request_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Request_Event;
+
+   -------------
+   -- On_Show --
+   -------------
+
+   procedure On_Show
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Show;
+
+   -------------
+   -- On_Show --
+   -------------
+
+   procedure On_Show
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Show;
+
+   ------------------
+   -- On_Show_Help --
+   ------------------
+
+   procedure On_Show_Help
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self   : access Gtk_Widget_Record'Class;
+          Object : Gtk_Widget_Help_Type) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Show_Help;
+
+   ------------------
+   -- On_Show_Help --
+   ------------------
+
+   procedure On_Show_Help
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk_Widget_Help_Type) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Show_Help;
+
+   ----------------------
+   -- On_Size_Allocate --
+   ----------------------
+
+   procedure On_Size_Allocate
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Widget_Record'Class;
+          Object : Cairo.Cairo_Rectangle))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Size_Allocate;
+
+   ----------------------
+   -- On_Size_Allocate --
+   ----------------------
+
+   procedure On_Size_Allocate
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Cairo.Cairo_Rectangle);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Size_Allocate;
+
+   ----------------------
+   -- On_State_Changed --
+   ----------------------
+
+   procedure On_State_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Widget_Record'Class;
+          State : Gtk.Enums.Gtk_State_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_State_Changed;
+
+   ----------------------
+   -- On_State_Changed --
+   ----------------------
+
+   procedure On_State_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          State : Gtk.Enums.Gtk_State_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_State_Changed;
+
+   ----------------------------
+   -- On_State_Flags_Changed --
+   ----------------------------
+
+   procedure On_State_Flags_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Widget_Record'Class;
+          Flags : Gtk.Enums.Gtk_State_Flags))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_State_Flags_Changed;
+
+   ----------------------------
+   -- On_State_Flags_Changed --
+   ----------------------------
+
+   procedure On_State_Flags_Changed
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Flags : Gtk.Enums.Gtk_State_Flags);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_State_Flags_Changed;
+
+   ------------------
+   -- On_Style_Set --
+   ------------------
+
+   procedure On_Style_Set
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self           : access Gtk_Widget_Record'Class;
+          Previous_Style : access Gtk.Style.Gtk_Style_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Style_Set;
+
+   ------------------
+   -- On_Style_Set --
+   ------------------
+
+   procedure On_Style_Set
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self           : access Glib.Object.GObject_Record'Class;
+          Previous_Style : access Gtk.Style.Gtk_Style_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Style_Set;
+
+   ----------------------
+   -- On_Style_Updated --
+   ----------------------
+
+   procedure On_Style_Updated
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Style_Updated;
+
+   ----------------------
+   -- On_Style_Updated --
+   ----------------------
+
+   procedure On_Style_Updated
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Style_Updated;
+
+   --------------
+   -- On_Unmap --
+   --------------
+
+   procedure On_Unmap
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Unmap;
+
+   --------------
+   -- On_Unmap --
+   --------------
+
+   procedure On_Unmap
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Unmap;
+
+   --------------------
+   -- On_Unmap_Event --
+   --------------------
+
+   procedure On_Unmap_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Any) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Unmap_Event;
+
+   --------------------
+   -- On_Unmap_Event --
+   --------------------
+
+   procedure On_Unmap_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Any) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Unmap_Event;
+
+   ------------------
+   -- On_Unrealize --
+   ------------------
+
+   procedure On_Unrealize
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure (Self : access Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Unrealize;
+
+   ------------------
+   -- On_Unrealize --
+   ------------------
+
+   procedure On_Unrealize
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Unrealize;
+
+   --------------------------------
+   -- On_Visibility_Notify_Event --
+   --------------------------------
+
+   procedure On_Visibility_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Visibility) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Visibility_Notify_Event;
+
+   --------------------------------
+   -- On_Visibility_Notify_Event --
+   --------------------------------
+
+   procedure On_Visibility_Notify_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Visibility) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Visibility_Notify_Event;
+
+   ---------------------------
+   -- On_Window_State_Event --
+   ---------------------------
+
+   procedure On_Window_State_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Gtk_Widget_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Window_State) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Window_State_Event;
+
+   ---------------------------
+   -- On_Window_State_Event --
+   ---------------------------
+
+   procedure On_Window_State_Event
+      (Self : not null access Gtk_Widget_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Window_State) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Window_State_Event;
+
 end Gtk.Widget;

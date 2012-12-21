@@ -201,4 +201,70 @@ package body Gtk.Status_Bar is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
+   --------------------
+   -- On_Text_Popped --
+   --------------------
+
+   procedure On_Text_Popped
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Status_Bar_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Text_Popped;
+
+   --------------------
+   -- On_Text_Popped --
+   --------------------
+
+   procedure On_Text_Popped
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Text_Popped;
+
+   --------------------
+   -- On_Text_Pushed --
+   --------------------
+
+   procedure On_Text_Pushed
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Status_Bar_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Text_Pushed;
+
+   --------------------
+   -- On_Text_Pushed --
+   --------------------
+
+   procedure On_Text_Pushed
+      (Self : not null access Gtk_Status_Bar_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : Context_Id;
+          Text    : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Text_Pushed;
+
 end Gtk.Status_Bar;

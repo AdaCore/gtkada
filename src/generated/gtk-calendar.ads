@@ -268,31 +268,6 @@ package Gtk.Calendar is
    --  Removes the visual marker from a particular day.
    --  "day": the day number to unmark between 1 and 31.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Calendar_Record, Gtk_Calendar);
-   function "+"
-     (Widget : access Gtk_Calendar_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Calendar
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -342,33 +317,100 @@ package Gtk.Calendar is
    -------------
 
    Signal_Day_Selected : constant Glib.Signal_Name := "day-selected";
+   procedure On_Day_Selected
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Day_Selected
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the user selects a day.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Day_Selected_Double_Click : constant Glib.Signal_Name := "day-selected-double-click";
+   procedure On_Day_Selected_Double_Click
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Day_Selected_Double_Click
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the user double-clicks a day.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Month_Changed : constant Glib.Signal_Name := "month-changed";
+   procedure On_Month_Changed
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Month_Changed
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the user clicks a button to change the selected month on a
    --  calendar.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Next_Month : constant Glib.Signal_Name := "next-month";
+   procedure On_Next_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Next_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the user switched to the next month.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Next_Year : constant Glib.Signal_Name := "next-year";
+   procedure On_Next_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Next_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when user switched to the next year.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Prev_Month : constant Glib.Signal_Name := "prev-month";
+   procedure On_Prev_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Prev_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the user switched to the previous month.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
 
    Signal_Prev_Year : constant Glib.Signal_Name := "prev-year";
+   procedure On_Prev_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class));
+   procedure On_Prev_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when user switched to the previous year.
-   --     procedure Handler (Self : access Gtk_Calendar_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Calendar_Record, Gtk_Calendar);
+   function "+"
+     (Widget : access Gtk_Calendar_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Calendar
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Year_Property : constant Glib.Properties.Property_Int :=

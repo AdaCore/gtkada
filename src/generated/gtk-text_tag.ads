@@ -288,22 +288,33 @@ package Gtk.Text_Tag is
    -------------
 
    Signal_Event : constant Glib.Signal_Name := "event";
+   procedure On_Event
+      (Self : not null access Gtk_Text_Tag_Record;
+       Call : not null access function
+         (Self   : access Gtk_Text_Tag_Record'Class;
+          Object : not null access Glib.Object.GObject_Record'Class;
+          Event  : Gdk.Event.Gdk_Event;
+          Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean);
+   procedure On_Event
+      (Self : not null access Gtk_Text_Tag_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Glib.Object.GObject_Record'Class;
+          Event  : Gdk.Event.Gdk_Event;
+          Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::event signal is emitted when an event occurs on a region of the
    --  buffer marked with this tag.
    --
    --  event. False to propagate the event further.
-   --
-   --  Returns True to stop other handlers from being invoked for the
-   --     function Handler
-   --       (Self   : access Gtk_Text_Tag_Record'Class;
-   --        Object : not null access Glib.Object.GObject_Record'Class;
-   --        Event  : Gdk.Event;
-   --        Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "object": the object the event was fired from (typically a
    --    --  Gtk.Text_View.Gtk_Text_View)
    --    --  "event": the event which triggered the signal
    --    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
    --    --  event occured
+   --    --  Returns True to stop other handlers from being invoked for the
 
 private
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean :=

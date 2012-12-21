@@ -202,8 +202,7 @@ package Gtk.Print_Operation is
 
    procedure Set_Default_Page_Setup
       (Self               : not null access Gtk_Print_Operation_Record;
-       Default_Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class)
-      ;
+       Default_Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
    --  Makes Default_Page_Setup the default page setup for Op.
    --  This page setup will be used by Gtk.Print_Operation.Run, but it can be
    --  overridden on a per-page basis by connecting to the
@@ -274,8 +273,7 @@ package Gtk.Print_Operation is
 
    procedure Set_Print_Settings
       (Self           : not null access Gtk_Print_Operation_Record;
-       Print_Settings : access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
-      ;
+       Print_Settings : access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class);
    --  Sets the print settings for Op. This is typically used to re-establish
    --  print settings from a previous print operation, see
    --  Gtk.Print_Operation.Run.
@@ -502,24 +500,6 @@ package Gtk.Print_Operation is
        Page_Nr : Gint);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "PrintOperationPreview"
-
-   package Implements_Gtk_Print_Operation_Preview is new Glib.Types.Implements
-     (Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview, Gtk_Print_Operation_Record, Gtk_Print_Operation);
-   function "+"
-     (Widget : access Gtk_Print_Operation_Record'Class)
-   return Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview
-   renames Implements_Gtk_Print_Operation_Preview.To_Interface;
-   function "-"
-     (Interf : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview)
-   return Gtk_Print_Operation
-   renames Implements_Gtk_Print_Operation_Preview.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -664,6 +644,17 @@ package Gtk.Print_Operation is
    -------------
 
    Signal_Begin_Print : constant Glib.Signal_Name := "begin-print";
+   procedure On_Begin_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class));
+   procedure On_Begin_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted after the user has finished changing print settings in the
    --  dialog, before the actual rendering starts.
    --
@@ -671,14 +662,19 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Context.Gtk_Print_Context and paginate the document
    --  accordingly, and then set the number of pages with
    --  Gtk.Print_Operation.Set_N_Pages.
-   --     procedure Handler
-   --       (Self    : access Gtk_Print_Operation_Record'Class;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
-   --       ;
-   --    --  "context": the Gtk.Print_Context.Gtk_Print_Context for the current
-   --    --  operation
 
    Signal_Create_Custom_Widget : constant Glib.Signal_Name := "create-custom-widget";
+   procedure On_Create_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self : access Gtk_Print_Operation_Record'Class)
+          return Glib.Object.GObject);
+   procedure On_Create_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Glib.Object.GObject;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when displaying the print dialog. If you return a widget in a
    --  handler for this signal it will be added to a custom tab in the print
    --  dialog. You typically return a container widget with multiple widgets in
@@ -692,25 +688,41 @@ package Gtk.Print_Operation is
    --  from the widgets.
    --
    --  the print dialog, or null
-   --
-   --  Returns A custom widget that gets embedded in
-   --     function Handler
-   --       (Self : access Gtk_Print_Operation_Record'Class)
-   --        return Glib.Object.GObject;
+   -- 
+   --  Callback parameters:
+   --    --  Returns A custom widget that gets embedded in
 
    Signal_Custom_Widget_Apply : constant Glib.Signal_Name := "custom-widget-apply";
+   procedure On_Custom_Widget_Apply
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Print_Operation_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+   procedure On_Custom_Widget_Apply
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted right before
    --  Gtk.Print_Operation.Gtk_Print_Operation::begin-print if you added a
    --  custom widget in the
    --  Gtk.Print_Operation.Gtk_Print_Operation::create-custom-widget handler.
    --  When you get this signal you should read the information from the custom
    --  widgets, as the widgets are not guaraneed to be around at a later time.
-   --     procedure Handler
-   --       (Self   : access Gtk_Print_Operation_Record'Class;
-   --        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --    --  "widget": the custom widget added in create-custom-widget
 
    Signal_Done : constant Glib.Signal_Name := "done";
+   procedure On_Done
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Print_Operation_Record'Class;
+          Result : Gtk_Print_Operation_Result));
+   procedure On_Done
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Result : Gtk_Print_Operation_Result);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the print operation run has finished doing everything
    --  required for printing.
    --
@@ -721,12 +733,21 @@ package Gtk.Print_Operation is
    --  If you enabled print status tracking then
    --  Gtk.Print_Operation.Is_Finished may still return False after
    --  Gtk.Print_Operation.Gtk_Print_Operation::done was emitted.
-   --     procedure Handler
-   --       (Self   : access Gtk_Print_Operation_Record'Class;
-   --        Result : Gtk_Print_Operation_Result);
-   --    --  "result": the result of the print operation
 
    Signal_Draw_Page : constant Glib.Signal_Name := "draw-page";
+   procedure On_Draw_Page
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint));
+   procedure On_Draw_Page
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted for every page that is printed. The signal handler must render
    --  the Page_Nr's page onto the cairo context obtained from Context using
    --  Gtk.Print_Context.Get_Cairo_Context. |[ static void draw_page
@@ -762,26 +783,42 @@ package Gtk.Print_Operation is
    --  Use Gtk.Print_Operation.Set_Use_Full_Page and
    --  Gtk.Print_Operation.Set_Unit before starting the print operation to set
    --  up the transformation of the cairo context according to your needs.
-   --     procedure Handler
-   --       (Self    : access Gtk_Print_Operation_Record'Class;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-   --        Page_Nr : Gint);
+   -- 
+   --  Callback parameters:
    --    --  "context": the Gtk.Print_Context.Gtk_Print_Context for the current
    --    --  operation
    --    --  "page_nr": the number of the currently printed page (0-based)
 
    Signal_End_Print : constant Glib.Signal_Name := "end-print";
+   procedure On_End_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class));
+   procedure On_End_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted after all pages have been rendered. A handler for this signal
    --  can clean up any resources that have been allocated in the
    --  Gtk.Print_Operation.Gtk_Print_Operation::begin-print handler.
-   --     procedure Handler
-   --       (Self    : access Gtk_Print_Operation_Record'Class;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
-   --       ;
-   --    --  "context": the Gtk.Print_Context.Gtk_Print_Context for the current
-   --    --  operation
 
    Signal_Paginate : constant Glib.Signal_Name := "paginate";
+   procedure On_Paginate
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
+          return Boolean);
+   procedure On_Paginate
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted after the Gtk.Print_Operation.Gtk_Print_Operation::begin-print
    --  signal, but before the actual rendering starts. It keeps getting emitted
    --  until a connected signal handler returns True.
@@ -794,16 +831,30 @@ package Gtk.Print_Operation is
    --
    --  If you don't need to do pagination in chunks, you can simply do it all
    --  in the ::begin-print handler, and set the number of pages from there.
-   --
-   --  Returns True if pagination is complete
-   --     function Handler
-   --       (Self    : access Gtk_Print_Operation_Record'Class;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
-   --        return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "context": the Gtk.Print_Context.Gtk_Print_Context for the current
    --    --  operation
+   --    --  Returns True if pagination is complete
 
    Signal_Preview : constant Glib.Signal_Name := "preview";
+   procedure On_Preview
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Parent  : access Gtk.Window.Gtk_Window_Record'Class)
+          return Boolean);
+   procedure On_Preview
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Parent  : access Gtk.Window.Gtk_Window_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when a preview is requested from the native dialog.
    --
    --  The default handler for this signal uses an external viewer application
@@ -820,53 +871,96 @@ package Gtk.Print_Operation is
    --  for print and render them. The preview must be finished by calling
    --  Gtk.Print_Operation_Preview.End_Preview (typically in response to the
    --  user clicking a close button).
-   --
-   --  Returns True if the listener wants to take over control of the preview
-   --     function Handler
-   --       (Self    : access Gtk_Print_Operation_Record'Class;
-   --        Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-   --        Parent  : access Gtk.Window.Gtk_Window_Record'Class)
-   --        return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "preview": the Gtk_Print_Preview_Operation for the current operation
    --    --  "context": the Gtk.Print_Context.Gtk_Print_Context that will be used
    --    --  "parent": the Gtk.Window.Gtk_Window to use as window parent, or null
+   --    --  Returns True if the listener wants to take over control of the preview
 
    Signal_Request_Page_Setup : constant Glib.Signal_Name := "request-page-setup";
+   procedure On_Request_Page_Setup
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint;
+          Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class));
+   procedure On_Request_Page_Setup
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint;
+          Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted once for every page that is printed, to give the application a
    --  chance to modify the page setup. Any changes done to Setup will be in
    --  force only for printing this page.
-   --     procedure Handler
-   --       (Self    : access Gtk_Print_Operation_Record'Class;
-   --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-   --        Page_Nr : Gint;
-   --        Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class)
-   --       ;
+   -- 
+   --  Callback parameters:
    --    --  "context": the Gtk.Print_Context.Gtk_Print_Context for the current
    --    --  operation
    --    --  "page_nr": the number of the currently printed page (0-based)
    --    --  "setup": the Gtk.Page_Setup.Gtk_Page_Setup
 
    Signal_Status_Changed : constant Glib.Signal_Name := "status-changed";
+   procedure On_Status_Changed
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Print_Operation_Record'Class));
+   procedure On_Status_Changed
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted at between the various phases of the print operation. See
    --  Gtk.Print_Operation.Gtk_Print_Status for the phases that are being
    --  discriminated. Use Gtk.Print_Operation.Get_Status to find out the
    --  current status.
-   --     procedure Handler (Self : access Gtk_Print_Operation_Record'Class);
 
    Signal_Update_Custom_Widget : constant Glib.Signal_Name := "update-custom-widget";
+   procedure On_Update_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Print_Operation_Record'Class;
+          Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+          Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class));
+   procedure On_Update_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+          Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted after change of selected printer. The actual page setup and
    --  print settings are passed to the custom widget, which can actualize
    --  itself according to this change.
-   --     procedure Handler
-   --       (Self     : access Gtk_Print_Operation_Record'Class;
-   --        Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
-   --        Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
-   --       ;
+   -- 
+   --  Callback parameters:
    --    --  "widget": the custom widget added in create-custom-widget
    --    --  "setup": actual page setup
    --    --  "settings": actual print settings
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "PrintOperationPreview"
+
+   package Implements_Gtk_Print_Operation_Preview is new Glib.Types.Implements
+     (Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview, Gtk_Print_Operation_Record, Gtk_Print_Operation);
+   function "+"
+     (Widget : access Gtk_Print_Operation_Record'Class)
+   return Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview
+   renames Implements_Gtk_Print_Operation_Preview.To_Interface;
+   function "-"
+     (Interf : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview)
+   return Gtk_Print_Operation
+   renames Implements_Gtk_Print_Operation_Preview.To_Object;
 
 private
    Use_Full_Page_Property : constant Glib.Properties.Property_Boolean :=

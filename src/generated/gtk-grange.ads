@@ -71,8 +71,7 @@ package Gtk.GRange is
 
    procedure Set_Adjustment
       (The_Range  : not null access Gtk_Range_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the adjustment to be used as the "model" object for this range
    --  widget. The adjustment indicates the current range value, the minimum
    --  and maximum range values, the step/page increments used for keybindings
@@ -304,37 +303,6 @@ package Gtk.GRange is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "Orientable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Range_Record, Gtk_Range);
-   function "+"
-     (Widget : access Gtk_Range_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Range
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Orientable is new Glib.Types.Implements
-     (Gtk.Orientable.Gtk_Orientable, Gtk_Range_Record, Gtk_Range);
-   function "+"
-     (Widget : access Gtk_Range_Record'Class)
-   return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Gtk_Orientable.To_Interface;
-   function "-"
-     (Interf : Gtk.Orientable.Gtk_Orientable)
-   return Gtk_Range
-   renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -373,14 +341,34 @@ package Gtk.GRange is
    -------------
 
    Signal_Adjust_Bounds : constant Glib.Signal_Name := "adjust-bounds";
+   procedure On_Adjust_Bounds
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Range_Record'Class;
+          Value : Gdouble));
+   procedure On_Adjust_Bounds
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Value : Gdouble);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted before clamping a value, to give the application a chance to
    --  adjust the bounds.
-   --     procedure Handler
-   --       (Self  : access Gtk_Range_Record'Class;
-   --        Value : Gdouble);
-   --    --  "value": the value before we clamp
 
    Signal_Change_Value : constant Glib.Signal_Name := "change-value";
+   procedure On_Change_Value
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access function
+         (Self   : access Gtk_Range_Record'Class;
+          Scroll : Gtk.Enums.Gtk_Scroll_Type;
+          Value  : Gdouble) return Boolean);
+   procedure On_Change_Value
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Scroll : Gtk.Enums.Gtk_Scroll_Type;
+          Value  : Gdouble) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The Gtk.GRange.Gtk_Range::change-value signal is emitted when a scroll
    --  action is performed on a range. It allows an application to determine
    --  the type of scroll event that occurred and the resultant new value. The
@@ -395,26 +383,67 @@ package Gtk.GRange is
    --
    --  It is not possible to use delayed update policies in an overridden
    --  Gtk.GRange.Gtk_Range::change-value handler.
-   --
-   --  Returns True to prevent other handlers from being invoked for the
-   --  signal, False to propagate the signal further
-   --     function Handler
-   --       (Self   : access Gtk_Range_Record'Class;
-   --        Scroll : Gtk.Enums.Gtk_Scroll_Type;
-   --        Value  : Gdouble) return Boolean;
+   -- 
+   --  Callback parameters:
    --    --  "scroll": the type of scroll action that was performed
    --    --  "value": the new value resulting from the scroll action
+   --    --  Returns True to prevent other handlers from being invoked for the signal, False to propagate the signal further
 
    Signal_Move_Slider : constant Glib.Signal_Name := "move-slider";
+   procedure On_Move_Slider
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Range_Record'Class;
+          Step : Gtk.Enums.Gtk_Scroll_Type));
+   procedure On_Move_Slider
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Step : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Virtual function that moves the slider. Used for keybindings.
-   --     procedure Handler
-   --       (Self : access Gtk_Range_Record'Class;
-   --        Step : Gtk.Enums.Gtk_Scroll_Type);
-   --    --  "step": how to move the slider
 
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure (Self : access Gtk_Range_Record'Class));
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the range value changes.
-   --     procedure Handler (Self : access Gtk_Range_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Range_Record, Gtk_Range);
+   function "+"
+     (Widget : access Gtk_Range_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Range
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Range_Record, Gtk_Range);
+   function "+"
+     (Widget : access Gtk_Range_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Range
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Upper_Stepper_Sensitivity_Property : constant Gtk.Enums.Property_Gtk_Sensitivity_Type :=

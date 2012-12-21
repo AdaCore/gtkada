@@ -89,20 +89,40 @@ package Gtk.Cell_Renderer_Accel is
    -------------
 
    Signal_Accel_Cleared : constant Glib.Signal_Name := "accel-cleared";
+   procedure On_Accel_Cleared
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Cell_Renderer_Accel_Record'Class;
+          Path_String : UTF8_String));
+   procedure On_Accel_Cleared
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Path_String : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when the user has removed the accelerator.
-   --     procedure Handler
-   --       (Self        : access Gtk_Cell_Renderer_Accel_Record'Class;
-   --        Path_String : UTF8_String);
-   --    --  "path_string": the path identifying the row of the edited cell
 
    Signal_Accel_Edited : constant Glib.Signal_Name := "accel-edited";
+   procedure On_Accel_Edited
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
+          Path_String      : UTF8_String;
+          Accel_Key        : Guint;
+          Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
+          Hardware_Keycode : Guint));
+   procedure On_Accel_Edited
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self             : access Glib.Object.GObject_Record'Class;
+          Path_String      : UTF8_String;
+          Accel_Key        : Guint;
+          Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
+          Hardware_Keycode : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Gets emitted when the user has selected a new accelerator.
-   --     procedure Handler
-   --       (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
-   --        Path_String      : UTF8_String;
-   --        Accel_Key        : Guint;
-   --        Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
-   --        Hardware_Keycode : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "path_string": the path identifying the row of the edited cell
    --    --  "accel_key": the new accelerator keyval
    --    --  "accel_mods": the new acclerator modifier mask

@@ -399,4 +399,200 @@ package body Gtk.Calendar is
       Internal (Get_Object (Calendar), Day);
    end Unmark_Day;
 
+   ---------------------
+   -- On_Day_Selected --
+   ---------------------
+
+   procedure On_Day_Selected
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Day_Selected;
+
+   ---------------------
+   -- On_Day_Selected --
+   ---------------------
+
+   procedure On_Day_Selected
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Day_Selected;
+
+   ----------------------------------
+   -- On_Day_Selected_Double_Click --
+   ----------------------------------
+
+   procedure On_Day_Selected_Double_Click
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Day_Selected_Double_Click;
+
+   ----------------------------------
+   -- On_Day_Selected_Double_Click --
+   ----------------------------------
+
+   procedure On_Day_Selected_Double_Click
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Day_Selected_Double_Click;
+
+   ----------------------
+   -- On_Month_Changed --
+   ----------------------
+
+   procedure On_Month_Changed
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Month_Changed;
+
+   ----------------------
+   -- On_Month_Changed --
+   ----------------------
+
+   procedure On_Month_Changed
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Month_Changed;
+
+   -------------------
+   -- On_Next_Month --
+   -------------------
+
+   procedure On_Next_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Next_Month;
+
+   -------------------
+   -- On_Next_Month --
+   -------------------
+
+   procedure On_Next_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Next_Month;
+
+   ------------------
+   -- On_Next_Year --
+   ------------------
+
+   procedure On_Next_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Next_Year;
+
+   ------------------
+   -- On_Next_Year --
+   ------------------
+
+   procedure On_Next_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Next_Year;
+
+   -------------------
+   -- On_Prev_Month --
+   -------------------
+
+   procedure On_Prev_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Prev_Month;
+
+   -------------------
+   -- On_Prev_Month --
+   -------------------
+
+   procedure On_Prev_Month
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Prev_Month;
+
+   ------------------
+   -- On_Prev_Year --
+   ------------------
+
+   procedure On_Prev_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure (Self : access Gtk_Calendar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Prev_Year;
+
+   ------------------
+   -- On_Prev_Year --
+   ------------------
+
+   procedure On_Prev_Year
+      (Self : not null access Gtk_Calendar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Prev_Year;
+
 end Gtk.Calendar;

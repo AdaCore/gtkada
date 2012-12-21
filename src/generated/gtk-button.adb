@@ -562,4 +562,172 @@ package body Gtk.Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate;
+
+   ----------------
+   -- On_Clicked --
+   ----------------
+
+   procedure On_Clicked
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Clicked;
+
+   ----------------
+   -- On_Clicked --
+   ----------------
+
+   procedure On_Clicked
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Clicked;
+
+   --------------
+   -- On_Enter --
+   --------------
+
+   procedure On_Enter
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Enter;
+
+   --------------
+   -- On_Enter --
+   --------------
+
+   procedure On_Enter
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Enter;
+
+   --------------
+   -- On_Leave --
+   --------------
+
+   procedure On_Leave
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Leave;
+
+   --------------
+   -- On_Leave --
+   --------------
+
+   procedure On_Leave
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Leave;
+
+   ----------------
+   -- On_Pressed --
+   ----------------
+
+   procedure On_Pressed
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Pressed;
+
+   ----------------
+   -- On_Pressed --
+   ----------------
+
+   procedure On_Pressed
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Pressed;
+
+   -----------------
+   -- On_Released --
+   -----------------
+
+   procedure On_Released
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Released;
+
+   -----------------
+   -- On_Released --
+   -----------------
+
+   procedure On_Released
+      (Self : not null access Gtk_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Released;
+
 end Gtk.Button;

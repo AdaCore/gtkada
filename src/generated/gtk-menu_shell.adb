@@ -221,4 +221,245 @@ package body Gtk.Menu_Shell is
       Internal (Get_Object (Menu_Shell), Boolean'Pos (Take_Focus));
    end Set_Take_Focus;
 
+   -------------------------
+   -- On_Activate_Current --
+   -------------------------
+
+   procedure On_Activate_Current
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self       : access Gtk_Menu_Shell_Record'Class;
+          Force_Hide : Boolean))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Current;
+
+   -------------------------
+   -- On_Activate_Current --
+   -------------------------
+
+   procedure On_Activate_Current
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Force_Hide : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Current;
+
+   ---------------
+   -- On_Cancel --
+   ---------------
+
+   procedure On_Cancel
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Shell_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cancel;
+
+   ---------------
+   -- On_Cancel --
+   ---------------
+
+   procedure On_Cancel
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cancel;
+
+   --------------------
+   -- On_Cycle_Focus --
+   --------------------
+
+   procedure On_Cycle_Focus
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self      : access Gtk_Menu_Shell_Record'Class;
+          Direction : Gtk.Enums.Gtk_Direction_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cycle_Focus;
+
+   --------------------
+   -- On_Cycle_Focus --
+   --------------------
+
+   procedure On_Cycle_Focus
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Direction : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cycle_Focus;
+
+   -------------------
+   -- On_Deactivate --
+   -------------------
+
+   procedure On_Deactivate
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Shell_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Deactivate;
+
+   -------------------
+   -- On_Deactivate --
+   -------------------
+
+   procedure On_Deactivate
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Deactivate;
+
+   ---------------
+   -- On_Insert --
+   ---------------
+
+   procedure On_Insert
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Menu_Shell_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Position : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert;
+
+   ---------------
+   -- On_Insert --
+   ---------------
+
+   procedure On_Insert
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Position : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert;
+
+   ---------------------
+   -- On_Move_Current --
+   ---------------------
+
+   procedure On_Move_Current
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self      : access Gtk_Menu_Shell_Record'Class;
+          Direction : Gtk.Enums.Gtk_Menu_Direction_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Current;
+
+   ---------------------
+   -- On_Move_Current --
+   ---------------------
+
+   procedure On_Move_Current
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Direction : Gtk.Enums.Gtk_Menu_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Current;
+
+   ----------------------
+   -- On_Move_Selected --
+   ----------------------
+
+   procedure On_Move_Selected
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access function
+         (Self     : access Gtk_Menu_Shell_Record'Class;
+          Distance : Gint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Selected;
+
+   ----------------------
+   -- On_Move_Selected --
+   ----------------------
+
+   procedure On_Move_Selected
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access function
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Distance : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Selected;
+
+   -----------------------
+   -- On_Selection_Done --
+   -----------------------
+
+   procedure On_Selection_Done
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure (Self : access Gtk_Menu_Shell_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Done;
+
+   -----------------------
+   -- On_Selection_Done --
+   -----------------------
+
+   procedure On_Selection_Done
+      (Self : not null access Gtk_Menu_Shell_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Done;
+
 end Gtk.Menu_Shell;

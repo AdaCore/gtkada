@@ -98,6 +98,17 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Direction_Type);
 
 
+   type Gtk_Drag_Result is (
+      Drag_Result_Success,
+      Drag_Result_No_Target,
+      Drag_Result_User_Cancelled,
+      Drag_Result_Timeout_Expired,
+      Drag_Result_Grab_Broken,
+      Drag_Result_Error);
+   pragma Convention (C, Gtk_Drag_Result);
+   --  Gives an indication why a drag operation failed. The value can by
+   --  obtained by connecting to the Gtk.Widget.Gtk_Widget::drag-failed signal.
+
    type Gtk_Expander_Style is (
       Expander_Collapsed,
       Expander_Semi_Collapsed,
@@ -535,6 +546,10 @@ package Gtk.Enums is
    package Gtk_Direction_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Direction_Type);
    type Property_Gtk_Direction_Type is new Gtk_Direction_Type_Properties.Property;
+
+   package Gtk_Drag_Result_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Drag_Result);
+   type Property_Gtk_Drag_Result is new Gtk_Drag_Result_Properties.Property;
 
    package Gtk_Expander_Style_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Expander_Style);

@@ -116,7 +116,6 @@ package body Gtk.Tree_View_Column is
    procedure Gtk_New_With_Area
       (Tree_Column : out Gtk_Tree_View_Column;
        Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      
    is
    begin
       Tree_Column := new Gtk_Tree_View_Column_Record;
@@ -168,7 +167,6 @@ package body Gtk.Tree_View_Column is
    procedure Initialize_With_Area
       (Tree_Column : not null access Gtk_Tree_View_Column_Record'Class;
        Area        : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
-      
    is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_column_new_with_area");
@@ -283,7 +281,6 @@ package body Gtk.Tree_View_Column is
    procedure Focus_Cell
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Tree_Column : System.Address;
@@ -954,7 +951,6 @@ package body Gtk.Tree_View_Column is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;
@@ -1033,5 +1029,34 @@ package body Gtk.Tree_View_Column is
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
+
+   ----------------
+   -- On_Clicked --
+   ----------------
+
+   procedure On_Clicked
+      (Self : not null access Gtk_Tree_View_Column_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tree_View_Column_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Clicked;
+
+   ----------------
+   -- On_Clicked --
+   ----------------
+
+   procedure On_Clicked
+      (Self : not null access Gtk_Tree_View_Column_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Clicked;
 
 end Gtk.Tree_View_Column;

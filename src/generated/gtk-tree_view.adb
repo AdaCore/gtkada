@@ -1595,7 +1595,6 @@ package body Gtk.Tree_View is
       (Tree_View   : not null access Gtk_Tree_View_Record;
        Column      : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class;
        Base_Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-      
    is
       procedure Internal
          (Tree_View   : System.Address;
@@ -1631,7 +1630,6 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-      
    is
       procedure Internal
          (Tree_View : System.Address;
@@ -1954,7 +1952,6 @@ package body Gtk.Tree_View is
    procedure Set_Expander_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-      
    is
       procedure Internal
          (Tree_View : System.Address;
@@ -2594,5 +2591,475 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Self), Policy);
    end Set_Vscroll_Policy;
+
+   ------------------------
+   -- On_Columns_Changed --
+   ------------------------
+
+   procedure On_Columns_Changed
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure (Self : access Gtk_Tree_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Columns_Changed;
+
+   ------------------------
+   -- On_Columns_Changed --
+   ------------------------
+
+   procedure On_Columns_Changed
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Columns_Changed;
+
+   -----------------------
+   -- On_Cursor_Changed --
+   -----------------------
+
+   procedure On_Cursor_Changed
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure (Self : access Gtk_Tree_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Cursor_Changed;
+
+   -----------------------
+   -- On_Cursor_Changed --
+   -----------------------
+
+   procedure On_Cursor_Changed
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Cursor_Changed;
+
+   -----------------------------------
+   -- On_Expand_Collapse_Cursor_Row --
+   -----------------------------------
+
+   procedure On_Expand_Collapse_Cursor_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self   : access Gtk_Tree_View_Record'Class;
+          Object : Boolean;
+          P0     : Boolean;
+          P1     : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Expand_Collapse_Cursor_Row;
+
+   -----------------------------------
+   -- On_Expand_Collapse_Cursor_Row --
+   -----------------------------------
+
+   procedure On_Expand_Collapse_Cursor_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Boolean;
+          P0     : Boolean;
+          P1     : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Expand_Collapse_Cursor_Row;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self   : access Gtk_Tree_View_Record'Class;
+          Object : Gtk.Enums.Gtk_Movement_Step;
+          P0     : Gint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Movement_Step;
+          P0     : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   ----------------------
+   -- On_Row_Activated --
+   ----------------------
+
+   procedure On_Row_Activated
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Tree_View_Record'Class;
+          Path   : Gtk.Tree_Model.Gtk_Tree_Path;
+          Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Activated;
+
+   ----------------------
+   -- On_Row_Activated --
+   ----------------------
+
+   procedure On_Row_Activated
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Path   : Gtk.Tree_Model.Gtk_Tree_Path;
+          Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Activated;
+
+   ----------------------
+   -- On_Row_Collapsed --
+   ----------------------
+
+   procedure On_Row_Collapsed
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tree_View_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Collapsed;
+
+   ----------------------
+   -- On_Row_Collapsed --
+   ----------------------
+
+   procedure On_Row_Collapsed
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Collapsed;
+
+   ---------------------
+   -- On_Row_Expanded --
+   ---------------------
+
+   procedure On_Row_Expanded
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tree_View_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Expanded;
+
+   ---------------------
+   -- On_Row_Expanded --
+   ---------------------
+
+   procedure On_Row_Expanded
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Expanded;
+
+   -------------------
+   -- On_Select_All --
+   -------------------
+
+   procedure On_Select_All
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Select_All;
+
+   -------------------
+   -- On_Select_All --
+   -------------------
+
+   procedure On_Select_All
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Select_All;
+
+   -----------------------------
+   -- On_Select_Cursor_Parent --
+   -----------------------------
+
+   procedure On_Select_Cursor_Parent
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Select_Cursor_Parent;
+
+   -----------------------------
+   -- On_Select_Cursor_Parent --
+   -----------------------------
+
+   procedure On_Select_Cursor_Parent
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Select_Cursor_Parent;
+
+   --------------------------
+   -- On_Select_Cursor_Row --
+   --------------------------
+
+   procedure On_Select_Cursor_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self   : access Gtk_Tree_View_Record'Class;
+          Object : Boolean) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Select_Cursor_Row;
+
+   --------------------------
+   -- On_Select_Cursor_Row --
+   --------------------------
+
+   procedure On_Select_Cursor_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Select_Cursor_Row;
+
+   ---------------------------------
+   -- On_Start_Interactive_Search --
+   ---------------------------------
+
+   procedure On_Start_Interactive_Search
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Start_Interactive_Search;
+
+   ---------------------------------
+   -- On_Start_Interactive_Search --
+   ---------------------------------
+
+   procedure On_Start_Interactive_Search
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Start_Interactive_Search;
+
+   --------------------------
+   -- On_Test_Collapse_Row --
+   --------------------------
+
+   procedure On_Test_Collapse_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Test_Collapse_Row;
+
+   --------------------------
+   -- On_Test_Collapse_Row --
+   --------------------------
+
+   procedure On_Test_Collapse_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Test_Collapse_Row;
+
+   ------------------------
+   -- On_Test_Expand_Row --
+   ------------------------
+
+   procedure On_Test_Expand_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Test_Expand_Row;
+
+   ------------------------
+   -- On_Test_Expand_Row --
+   ------------------------
+
+   procedure On_Test_Expand_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Test_Expand_Row;
+
+   --------------------------
+   -- On_Toggle_Cursor_Row --
+   --------------------------
+
+   procedure On_Toggle_Cursor_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggle_Cursor_Row;
+
+   --------------------------
+   -- On_Toggle_Cursor_Row --
+   --------------------------
+
+   procedure On_Toggle_Cursor_Row
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggle_Cursor_Row;
+
+   ---------------------
+   -- On_Unselect_All --
+   ---------------------
+
+   procedure On_Unselect_All
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Unselect_All;
+
+   ---------------------
+   -- On_Unselect_All --
+   ---------------------
+
+   procedure On_Unselect_All
+      (Self : not null access Gtk_Tree_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Unselect_All;
 
 end Gtk.Tree_View;

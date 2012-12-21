@@ -436,8 +436,7 @@ package Gtk.Cell_Area is
 
    procedure Add
       (Self     : not null access Gtk_Cell_Area_Record;
-       Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Adds Renderer to Area with the default child cell properties.
    --  Since: gtk+ 3.0
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add to Area
@@ -445,8 +444,7 @@ package Gtk.Cell_Area is
    procedure Add_Focus_Sibling
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Sibling  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Sibling  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Adds Sibling to Renderer's focusable area, focus will be drawn around
    --  Renderer and all of its siblings if Renderer can focus for a given row.
    --  Events handled by focus siblings can also activate the given focusable
@@ -719,8 +717,7 @@ package Gtk.Cell_Area is
 
    procedure Set_Focus_Cell
       (Self     : not null access Gtk_Cell_Area_Record;
-       Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Explicitly sets the currently focused cell to Renderer.
    --  This is generally called by implementations of
    --  Gtk.Cell_Area_Class.Gtk_Cell_Area_Class.focus or
@@ -896,8 +893,7 @@ package Gtk.Cell_Area is
 
    procedure Remove
       (Self     : not null access Gtk_Cell_Area_Record;
-       Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Removes Renderer from Area.
    --  Since: gtk+ 3.0
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to remove from Area
@@ -905,8 +901,7 @@ package Gtk.Cell_Area is
    procedure Remove_Focus_Sibling
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Sibling  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Sibling  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Removes Sibling from Renderer's focus sibling list (see
    --  Gtk.Cell_Area.Add_Focus_Sibling).
    --  Since: gtk+ 3.0
@@ -1085,8 +1080,7 @@ package Gtk.Cell_Area is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Cell_Area_Record)
@@ -1106,6 +1100,132 @@ package Gtk.Cell_Area is
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Gint);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Edited_Cell_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  The cell in the area that is currently edited
+   --
+   --  This property is read-only and only changes as a result of a call
+   --  Gtk.Cell_Area.Activate_Cell.
+
+   Focus_Cell_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  The cell in the area that currently has focus
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Add_Editable : constant Glib.Signal_Name := "add-editable";
+   procedure On_Add_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self      : access Gtk_Cell_Area_Record'Class;
+          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
+          Cell_Area : Cairo.Cairo_Rectangle;
+          Path      : UTF8_String));
+   procedure On_Add_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
+          Cell_Area : Cairo.Cairo_Rectangle;
+          Path      : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Indicates that editing has started on Renderer and that Editable should
+   --  be added to the owning cell-layouting widget at Cell_Area.
+   -- 
+   --  Callback parameters:
+   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that started the
+   --    --  edited
+   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
+   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative
+   --    --  Gdk.Rectangle.Gdk_Rectangle coordinates where Editable should be added
+   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path string this edit was initiated
+   --    --  for
+
+   Signal_Apply_Attributes : constant Glib.Signal_Name := "apply-attributes";
+   procedure On_Apply_Attributes
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Cell_Area_Record'Class;
+          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Is_Expander : Boolean;
+          Is_Expanded : Boolean));
+   procedure On_Apply_Attributes
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Is_Expander : Boolean;
+          Is_Expanded : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted whenever applying attributes to Area from Model
+   -- 
+   --  Callback parameters:
+   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model to apply the attributes from
+   --    --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter indicating which row to apply
+   --    --  the attributes of
+   --    --  "is_expander": whether the view shows children for this row
+   --    --  "is_expanded": whether the view is currently showing the children of
+   --    --  this row
+
+   Signal_Focus_Changed : constant Glib.Signal_Name := "focus-changed";
+   procedure On_Focus_Changed
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Area_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Path     : UTF8_String));
+   procedure On_Focus_Changed
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Path     : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Indicates that focus changed on this Area. This signal is emitted
+   --  either as a result of focus handling or event handling.
+   --
+   --  It's possible that the signal is emitted even if the currently focused
+   --  renderer did not change, this is because focus may change to the same
+   --  renderer in the same cell area for a different row of data.
+   -- 
+   --  Callback parameters:
+   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
+   --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
+
+   Signal_Remove_Editable : constant Glib.Signal_Name := "remove-editable";
+   procedure On_Remove_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Area_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable));
+   procedure On_Remove_Editable
+      (Self : not null access Gtk_Cell_Area_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  Indicates that editing finished on Renderer and that Editable should be
+   --  removed from the owning cell-layouting widget.
+   -- 
+   --  Callback parameters:
+   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that finished
+   --    --  editeding
+   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to remove
 
    ----------------
    -- Interfaces --
@@ -1137,84 +1257,6 @@ package Gtk.Cell_Area is
      (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
    return Gtk_Cell_Area
    renames Implements_Gtk_Cell_Layout.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Edited_Cell_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  The cell in the area that is currently edited
-   --
-   --  This property is read-only and only changes as a result of a call
-   --  Gtk.Cell_Area.Activate_Cell.
-
-   Focus_Cell_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  The cell in the area that currently has focus
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Add_Editable : constant Glib.Signal_Name := "add-editable";
-   --  Indicates that editing has started on Renderer and that Editable should
-   --  be added to the owning cell-layouting widget at Cell_Area.
-   --     procedure Handler
-   --       (Self      : access Gtk_Cell_Area_Record'Class;
-   --        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-   --        Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-   --        Cell_Area : cairo.Rectangle_Int;
-   --        Path      : UTF8_String);
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that started the
-   --    --  edited
-   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
-   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative
-   --    --  Gdk.Rectangle.Gdk_Rectangle coordinates where Editable should be added
-   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path string this edit was initiated
-   --    --  for
-
-   Signal_Apply_Attributes : constant Glib.Signal_Name := "apply-attributes";
-   --  This signal is emitted whenever applying attributes to Area from Model
-   --     procedure Handler
-   --       (Self        : access Gtk_Cell_Area_Record'Class;
-   --        Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-   --        Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-   --        Is_Expander : Boolean;
-   --        Is_Expanded : Boolean);
-   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model to apply the attributes from
-   --    --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter indicating which row to apply
-   --    --  the attributes of
-   --    --  "is_expander": whether the view shows children for this row
-   --    --  "is_expanded": whether the view is currently showing the children of
-   --    --  this row
-
-   Signal_Focus_Changed : constant Glib.Signal_Name := "focus-changed";
-   --  Indicates that focus changed on this Area. This signal is emitted
-   --  either as a result of focus handling or event handling.
-   --
-   --  It's possible that the signal is emitted even if the currently focused
-   --  renderer did not change, this is because focus may change to the same
-   --  renderer in the same cell area for a different row of data.
-   --     procedure Handler
-   --       (Self     : access Gtk_Cell_Area_Record'Class;
-   --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-   --        Path     : UTF8_String);
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
-   --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
-
-   Signal_Remove_Editable : constant Glib.Signal_Name := "remove-editable";
-   --  Indicates that editing finished on Renderer and that Editable should be
-   --  removed from the owning cell-layouting widget.
-   --     procedure Handler
-   --       (Self     : access Gtk_Cell_Area_Record'Class;
-   --        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-   --        Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that finished
-   --    --  editeding
-   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to remove
 
 private
    Focus_Cell_Property : constant Glib.Properties.Property_Object :=

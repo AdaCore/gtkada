@@ -87,12 +87,19 @@ package Gtk.Menu_Bar is
    --  Since: gtk+ 2.8
    --  "pack_dir": a new Gtk.Enums.Gtk_Pack_Direction
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
+   --  The child pack direction of the menubar. It determines how the widgets
+   --  contained in child menuitems are arranged.
+
+   Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
+   --  The pack direction of the menubar. It determines how menuitems are
+   --  arranged in the menubar.
 
    ----------------
    -- Interfaces --
@@ -111,20 +118,6 @@ package Gtk.Menu_Bar is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Menu_Bar
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Child_Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
-   --  The child pack direction of the menubar. It determines how the widgets
-   --  contained in child menuitems are arranged.
-
-   Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction;
-   --  The pack direction of the menubar. It determines how menuitems are
-   --  arranged in the menubar.
 
 private
    Pack_Direction_Property : constant Gtk.Enums.Property_Gtk_Pack_Direction :=

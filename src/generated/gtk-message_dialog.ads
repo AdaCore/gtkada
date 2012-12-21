@@ -295,31 +295,6 @@ package Gtk.Message_Dialog is
    --  "str": markup string (see <link linkend="PangoMarkupFormat">Pango
    --  markup format</link>)
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Message_Dialog_Record, Gtk_Message_Dialog);
-   function "+"
-     (Widget : access Gtk_Message_Dialog_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Message_Dialog
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -360,6 +335,24 @@ package Gtk.Message_Dialog is
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
    --  True if the primary text of the dialog includes Pango markup. See
    --  pango_parse_markup.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Message_Dialog_Record, Gtk_Message_Dialog);
+   function "+"
+     (Widget : access Gtk_Message_Dialog_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Message_Dialog
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Use_Markup_Property : constant Glib.Properties.Property_Boolean :=

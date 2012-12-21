@@ -39,7 +39,6 @@ package Pango.Tabs is
       Pango_Tab_Left);
    pragma Convention (C, Pango_Tab_Align);
 
-
    ----------------------------
    -- Enumeration Properties --
    ----------------------------

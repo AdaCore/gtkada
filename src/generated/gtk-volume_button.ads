@@ -104,6 +104,17 @@ package Gtk.Volume_Button is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Use_Symbolic_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether to use symbolic icons as the icons. Note that if the symbolic
+   --  icons are not available in your installed theme, then the normal
+   --  (potentially colorful) icons will be used.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -146,17 +157,6 @@ package Gtk.Volume_Button is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Volume_Button
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Use_Symbolic_Property : constant Glib.Properties.Property_Boolean;
-   --  Whether to use symbolic icons as the icons. Note that if the symbolic
-   --  icons are not available in your installed theme, then the normal
-   --  (potentially colorful) icons will be used.
 
 private
    Use_Symbolic_Property : constant Glib.Properties.Property_Boolean :=

@@ -368,8 +368,7 @@ package Gtk.Text_Buffer is
    procedure Get_Iter_At_Child_Anchor
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Iter   : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class)
-      ;
+       Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class);
    --  Obtains the location of Anchor within Buffer.
    --  "iter": an iterator to be initialized
    --  "anchor": a child anchor that appears in Buffer
@@ -556,8 +555,7 @@ package Gtk.Text_Buffer is
    procedure Insert_Child_Anchor
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-       Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class)
-      ;
+       Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class);
    --  Inserts a child widget anchor into the text buffer at Iter. The anchor
    --  will be counted as one character in character counts, and when obtaining
    --  the buffer contents as a string, will be represented by the Unicode
@@ -896,6 +894,21 @@ package Gtk.Text_Buffer is
    -------------
 
    Signal_Apply_Tag : constant Glib.Signal_Name := "apply-tag";
+   procedure On_Apply_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_Buffer_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter));
+   procedure On_Apply_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::apply-tag signal is emitted to apply a tag to a range of text in
    --  a Gtk.Text_Buffer.Gtk_Text_Buffer. Applying actually occurs in the
    --  default handler.
@@ -905,16 +918,22 @@ package Gtk.Text_Buffer is
    --
    --  See also: Gtk.Text_Buffer.Apply_Tag, gtk_text_buffer_insert_with_tags,
    --  Gtk.Text_Buffer.Insert_Range.
-   --     procedure Handler
-   --       (Self    : access Gtk_Text_Buffer_Record'Class;
-   --        Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-   --        Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "tag": the applied tag
    --    --  "start": the start of the range the tag is applied to
    --    --  "end": the end of the range the tag is applied to
 
    Signal_Begin_User_Action : constant Glib.Signal_Name := "begin-user-action";
+   procedure On_Begin_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class));
+   procedure On_Begin_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::begin-user-action signal is emitted at the beginning of a single
    --  user-visible operation on a Gtk.Text_Buffer.Gtk_Text_Buffer.
    --
@@ -923,14 +942,34 @@ package Gtk.Text_Buffer is
    --  Gtk.Text_Buffer.Insert_Range_Interactive,
    --  Gtk.Text_Buffer.Delete_Interactive, Gtk.Text_Buffer.Backspace,
    --  Gtk.Text_Buffer.Delete_Selection.
-   --     procedure Handler (Self : access Gtk_Text_Buffer_Record'Class);
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::changed signal is emitted when the content of a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer has changed.
-   --     procedure Handler (Self : access Gtk_Text_Buffer_Record'Class);
 
    Signal_Delete_Range : constant Glib.Signal_Name := "delete-range";
+   procedure On_Delete_Range
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_Buffer_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter));
+   procedure On_Delete_Range
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::delete-range signal is emitted to delete a range from a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer.
    --
@@ -942,14 +981,21 @@ package Gtk.Text_Buffer is
    --  the deleted text.
    --
    --  See also: Gtk.Text_Buffer.Delete.
-   --     procedure Handler
-   --       (Self    : access Gtk_Text_Buffer_Record'Class;
-   --        Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "start": the start of the range to be deleted
    --    --  "end": the end of the range to be deleted
 
    Signal_End_User_Action : constant Glib.Signal_Name := "end-user-action";
+   procedure On_End_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class));
+   procedure On_End_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::end-user-action signal is emitted at the end of a single
    --  user-visible operation on the Gtk.Text_Buffer.Gtk_Text_Buffer.
    --
@@ -958,9 +1004,21 @@ package Gtk.Text_Buffer is
    --  Gtk.Text_Buffer.Insert_Range_Interactive,
    --  Gtk.Text_Buffer.Delete_Interactive, Gtk.Text_Buffer.Backspace,
    --  Gtk.Text_Buffer.Delete_Selection, Gtk.Text_Buffer.Backspace.
-   --     procedure Handler (Self : access Gtk_Text_Buffer_Record'Class);
 
    Signal_Insert_Child_Anchor : constant Glib.Signal_Name := "insert-child-anchor";
+   procedure On_Insert_Child_Anchor
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class));
+   procedure On_Insert_Child_Anchor
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::insert-child-anchor signal is emitted to insert a
    --  Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor in a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer. Insertion actually occurs in the
@@ -971,16 +1029,26 @@ package Gtk.Text_Buffer is
    --  signal handler revalidates it to be placed after the inserted Anchor.
    --
    --  See also: Gtk.Text_Buffer.Insert_Child_Anchor.
-   --     procedure Handler
-   --       (Self     : access Gtk_Text_Buffer_Record'Class;
-   --        Location : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class)
-   --       ;
+   -- 
+   --  Callback parameters:
    --    --  "location": position to insert Anchor in Textbuffer
    --    --  "anchor": the Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor to be
    --    --  inserted
 
    Signal_Insert_Pixbuf : constant Glib.Signal_Name := "insert-pixbuf";
+   procedure On_Insert_Pixbuf
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class));
+   procedure On_Insert_Pixbuf
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::insert-pixbuf signal is emitted to insert a Gdk.Pixbuf.Gdk_Pixbuf
    --  in a Gtk.Text_Buffer.Gtk_Text_Buffer. Insertion actually occurs in the
    --  default handler.
@@ -990,14 +1058,27 @@ package Gtk.Text_Buffer is
    --  signal handler revalidates it to be placed after the inserted Pixbuf.
    --
    --  See also: Gtk.Text_Buffer.Insert_Pixbuf.
-   --     procedure Handler
-   --       (Self     : access Gtk_Text_Buffer_Record'Class;
-   --        Location : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   -- 
+   --  Callback parameters:
    --    --  "location": position to insert Pixbuf in Textbuffer
    --    --  "pixbuf": the Gdk.Pixbuf.Gdk_Pixbuf to be inserted
 
    Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
+   procedure On_Insert_Text
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Text     : UTF8_String;
+          Len      : Gint));
+   procedure On_Insert_Text
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Text     : UTF8_String;
+          Len      : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::insert-text signal is emitted to insert text in a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer. Insertion actually occurs in the
    --  default handler.
@@ -1007,56 +1088,99 @@ package Gtk.Text_Buffer is
    --  signal handler revalidates it to point to the end of the inserted text.
    --
    --  See also: Gtk.Text_Buffer.Insert, Gtk.Text_Buffer.Insert_Range.
-   --     procedure Handler
-   --       (Self     : access Gtk_Text_Buffer_Record'Class;
-   --        Location : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        Text     : UTF8_String;
-   --        Len      : Gint);
+   -- 
+   --  Callback parameters:
    --    --  "location": position to insert Text in Textbuffer
    --    --  "text": the UTF-8 text to be inserted
    --    --  "len": length of the inserted text in bytes
 
    Signal_Mark_Deleted : constant Glib.Signal_Name := "mark-deleted";
+   procedure On_Mark_Deleted
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class;
+          Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class));
+   procedure On_Mark_Deleted
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::mark-deleted signal is emitted as notification after a
    --  Gtk.Text_Mark.Gtk_Text_Mark is deleted.
    --
    --  See also: Gtk.Text_Buffer.Delete_Mark.
-   --     procedure Handler
-   --       (Self : access Gtk_Text_Buffer_Record'Class;
-   --        Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class)
-   --       ;
-   --    --  "mark": The mark that was deleted
 
    Signal_Mark_Set : constant Glib.Signal_Name := "mark-set";
+   procedure On_Mark_Set
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class));
+   procedure On_Mark_Set
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::mark-set signal is emitted as notification after a
    --  Gtk.Text_Mark.Gtk_Text_Mark is set.
    --
    --  See also: Gtk.Text_Buffer.Create_Mark, Gtk.Text_Buffer.Move_Mark.
-   --     procedure Handler
-   --       (Self     : access Gtk_Text_Buffer_Record'Class;
-   --        Location : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class)
-   --       ;
+   -- 
+   --  Callback parameters:
    --    --  "location": The location of Mark in Textbuffer
    --    --  "mark": The mark that is set
 
    Signal_Modified_Changed : constant Glib.Signal_Name := "modified-changed";
+   procedure On_Modified_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class));
+   procedure On_Modified_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::modified-changed signal is emitted when the modified bit of a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer flips.
    --
    --  See also: Gtk.Text_Buffer.Set_Modified.
-   --     procedure Handler (Self : access Gtk_Text_Buffer_Record'Class);
 
    Signal_Paste_Done : constant Glib.Signal_Name := "paste-done";
+   procedure On_Paste_Done
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Text_Buffer_Record'Class;
+          Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class));
+   procedure On_Paste_Done
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The paste-done signal is emitted after paste operation has been
    --  completed. This is useful to properly scroll the view to the end of the
    --  pasted text. See Gtk.Text_Buffer.Paste_Clipboard for more details.
-   --     procedure Handler
-   --       (Self  : access Gtk_Text_Buffer_Record'Class;
-   --        Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class)
-   --       ;
 
    Signal_Remove_Tag : constant Glib.Signal_Name := "remove-tag";
+   procedure On_Remove_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_Buffer_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter));
+   procedure On_Remove_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::remove-tag signal is emitted to remove all occurrences of Tag
    --  from a range of text in a Gtk.Text_Buffer.Gtk_Text_Buffer. Removal
    --  actually occurs in the default handler.
@@ -1065,11 +1189,8 @@ package Gtk.Text_Buffer is
    --  invalidate the Start and End iters (or has to revalidate them).
    --
    --  See also: Gtk.Text_Buffer.Remove_Tag.
-   --     procedure Handler
-   --       (Self    : access Gtk_Text_Buffer_Record'Class;
-   --        Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-   --        Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "tag": the tag to be removed
    --    --  "start": the start of the range the tag is removed from
    --    --  "end": the end of the range the tag is removed from

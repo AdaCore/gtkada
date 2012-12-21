@@ -105,6 +105,32 @@ package Gtk.Switch is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Active_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the Gtk.Switch.Gtk_Switch widget is in its on or off state.
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Activate : constant Glib.Signal_Name := "activate";
+   procedure On_Activate
+      (Self : not null access Gtk_Switch_Record;
+       Call : not null access procedure (Self : access Gtk_Switch_Record'Class));
+   procedure On_Activate
+      (Self : not null access Gtk_Switch_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::activate signal on GtkSwitch is an action signal and emitting it
+   --  causes the switch to animate. Applications should never connect to this
+   --  signal, but use the notify::active signal.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -134,25 +160,6 @@ package Gtk.Switch is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Switch
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Active_Property : constant Glib.Properties.Property_Boolean;
-   --  Whether the Gtk.Switch.Gtk_Switch widget is in its on or off state.
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Activate : constant Glib.Signal_Name := "activate";
-   --  The ::activate signal on GtkSwitch is an action signal and emitting it
-   --  causes the switch to animate. Applications should never connect to this
-   --  signal, but use the notify::active signal.
-   --     procedure Handler (Self : access Gtk_Switch_Record'Class);
 
 private
    Active_Property : constant Glib.Properties.Property_Boolean :=

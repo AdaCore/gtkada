@@ -155,6 +155,17 @@ package Gtk.Radio_Tool_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Group_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk_Radio_Tool_Button
+   --  Flags: write
+   --  Sets a new group for a radio tool button.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -184,17 +195,6 @@ package Gtk.Radio_Tool_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Radio_Tool_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Group_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk_Radio_Tool_Button
-   --  Flags: write
-   --  Sets a new group for a radio tool button.
 
 private
    Group_Property : constant Glib.Properties.Property_Object :=

@@ -272,4 +272,34 @@ package body Gtk.Link_Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self : not null access Gtk_Link_Button_Record;
+       Call : not null access function
+         (Self : access Gtk_Link_Button_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self : not null access Gtk_Link_Button_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Link;
+
 end Gtk.Link_Button;

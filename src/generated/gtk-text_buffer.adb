@@ -669,7 +669,6 @@ package body Gtk.Text_Buffer is
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Iter   : out Gtk.Text_Iter.Gtk_Text_Iter;
        Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class)
-      
    is
       procedure Internal
          (Buffer : System.Address;
@@ -1016,7 +1015,6 @@ package body Gtk.Text_Buffer is
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
        Anchor : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class)
-      
    is
       procedure Internal
          (Buffer : System.Address;
@@ -1422,5 +1420,420 @@ package body Gtk.Text_Buffer is
    begin
       Internal (Get_Object (Buffer), Format);
    end Unregister_Serialize_Format;
+
+   ------------------
+   -- On_Apply_Tag --
+   ------------------
+
+   procedure On_Apply_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_Buffer_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Apply_Tag;
+
+   ------------------
+   -- On_Apply_Tag --
+   ------------------
+
+   procedure On_Apply_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Apply_Tag;
+
+   --------------------------
+   -- On_Begin_User_Action --
+   --------------------------
+
+   procedure On_Begin_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Begin_User_Action;
+
+   --------------------------
+   -- On_Begin_User_Action --
+   --------------------------
+
+   procedure On_Begin_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Begin_User_Action;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
+   ---------------------
+   -- On_Delete_Range --
+   ---------------------
+
+   procedure On_Delete_Range
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_Buffer_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Delete_Range;
+
+   ---------------------
+   -- On_Delete_Range --
+   ---------------------
+
+   procedure On_Delete_Range
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Delete_Range;
+
+   ------------------------
+   -- On_End_User_Action --
+   ------------------------
+
+   procedure On_End_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_End_User_Action;
+
+   ------------------------
+   -- On_End_User_Action --
+   ------------------------
+
+   procedure On_End_User_Action
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_End_User_Action;
+
+   ----------------------------
+   -- On_Insert_Child_Anchor --
+   ----------------------------
+
+   procedure On_Insert_Child_Anchor
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert_Child_Anchor;
+
+   ----------------------------
+   -- On_Insert_Child_Anchor --
+   ----------------------------
+
+   procedure On_Insert_Child_Anchor
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert_Child_Anchor;
+
+   ----------------------
+   -- On_Insert_Pixbuf --
+   ----------------------
+
+   procedure On_Insert_Pixbuf
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert_Pixbuf;
+
+   ----------------------
+   -- On_Insert_Pixbuf --
+   ----------------------
+
+   procedure On_Insert_Pixbuf
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert_Pixbuf;
+
+   --------------------
+   -- On_Insert_Text --
+   --------------------
+
+   procedure On_Insert_Text
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Text     : UTF8_String;
+          Len      : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Insert_Text;
+
+   --------------------
+   -- On_Insert_Text --
+   --------------------
+
+   procedure On_Insert_Text
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Text     : UTF8_String;
+          Len      : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Insert_Text;
+
+   ---------------------
+   -- On_Mark_Deleted --
+   ---------------------
+
+   procedure On_Mark_Deleted
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class;
+          Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Mark_Deleted;
+
+   ---------------------
+   -- On_Mark_Deleted --
+   ---------------------
+
+   procedure On_Mark_Deleted
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Mark_Deleted;
+
+   -----------------
+   -- On_Mark_Set --
+   -----------------
+
+   procedure On_Mark_Set
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Text_Buffer_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Mark_Set;
+
+   -----------------
+   -- On_Mark_Set --
+   -----------------
+
+   procedure On_Mark_Set
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Location : Gtk.Text_Iter.Gtk_Text_Iter;
+          Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Mark_Set;
+
+   -------------------------
+   -- On_Modified_Changed --
+   -------------------------
+
+   procedure On_Modified_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Buffer_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Modified_Changed;
+
+   -------------------------
+   -- On_Modified_Changed --
+   -------------------------
+
+   procedure On_Modified_Changed
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Modified_Changed;
+
+   -------------------
+   -- On_Paste_Done --
+   -------------------
+
+   procedure On_Paste_Done
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Text_Buffer_Record'Class;
+          Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Paste_Done;
+
+   -------------------
+   -- On_Paste_Done --
+   -------------------
+
+   procedure On_Paste_Done
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Paste_Done;
+
+   -------------------
+   -- On_Remove_Tag --
+   -------------------
+
+   procedure On_Remove_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Text_Buffer_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Remove_Tag;
+
+   -------------------
+   -- On_Remove_Tag --
+   -------------------
+
+   procedure On_Remove_Tag
+      (Self : not null access Gtk_Text_Buffer_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Remove_Tag;
 
 end Gtk.Text_Buffer;

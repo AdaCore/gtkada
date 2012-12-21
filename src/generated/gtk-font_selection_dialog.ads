@@ -140,13 +140,6 @@ package Gtk.Font_Selection_Dialog is
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
    --  "text": the text to display in the preview area
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
    ----------------
    -- Interfaces --
    ----------------

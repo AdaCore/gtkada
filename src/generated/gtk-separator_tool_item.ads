@@ -119,6 +119,14 @@ package Gtk.Separator_Tool_Item is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Draw_Property : constant Glib.Properties.Property_Boolean;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -148,14 +156,6 @@ package Gtk.Separator_Tool_Item is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Separator_Tool_Item
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Draw_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Draw_Property : constant Glib.Properties.Property_Boolean :=

@@ -175,4 +175,33 @@ package body Gtk.Toggle_Action is
       Internal (Get_Object (Action));
    end Toggled;
 
+   ----------------
+   -- On_Toggled --
+   ----------------
+
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Action_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Toggle_Action_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggled;
+
+   ----------------
+   -- On_Toggled --
+   ----------------
+
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Action_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggled;
+
 end Gtk.Toggle_Action;

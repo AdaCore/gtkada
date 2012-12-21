@@ -721,4 +721,229 @@ package body Gtk.Status_Icon is
       Push_In := Boolean'Val (Tmp_Push_In);
    end Position_Menu;
 
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Status_Icon_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate;
+
+   -----------------
+   -- On_Activate --
+   -----------------
+
+   procedure On_Activate
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate;
+
+   ---------------------------
+   -- On_Button_Press_Event --
+   ---------------------------
+
+   procedure On_Button_Press_Event
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self  : access Gtk_Status_Icon_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Button_Press_Event;
+
+   ---------------------------
+   -- On_Button_Press_Event --
+   ---------------------------
+
+   procedure On_Button_Press_Event
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Button_Press_Event;
+
+   -----------------------------
+   -- On_Button_Release_Event --
+   -----------------------------
+
+   procedure On_Button_Release_Event
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self  : access Gtk_Status_Icon_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Button_Release_Event;
+
+   -----------------------------
+   -- On_Button_Release_Event --
+   -----------------------------
+
+   procedure On_Button_Release_Event
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Button_Release_Event;
+
+   -------------------
+   -- On_Popup_Menu --
+   -------------------
+
+   procedure On_Popup_Menu
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access procedure
+         (Self          : access Gtk_Status_Icon_Record'Class;
+          Button        : Guint;
+          Activate_Time : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popup_Menu;
+
+   -------------------
+   -- On_Popup_Menu --
+   -------------------
+
+   procedure On_Popup_Menu
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access procedure
+         (Self          : access Glib.Object.GObject_Record'Class;
+          Button        : Guint;
+          Activate_Time : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popup_Menu;
+
+   ----------------------
+   -- On_Query_Tooltip --
+   ----------------------
+
+   procedure On_Query_Tooltip
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self          : access Gtk_Status_Icon_Record'Class;
+          X             : Gint;
+          Y             : Gint;
+          Keyboard_Mode : Boolean;
+          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+          return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Query_Tooltip;
+
+   ----------------------
+   -- On_Query_Tooltip --
+   ----------------------
+
+   procedure On_Query_Tooltip
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self          : access Glib.Object.GObject_Record'Class;
+          X             : Gint;
+          Y             : Gint;
+          Keyboard_Mode : Boolean;
+          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Query_Tooltip;
+
+   ---------------------
+   -- On_Scroll_Event --
+   ---------------------
+
+   procedure On_Scroll_Event
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self  : access Gtk_Status_Icon_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Scroll_Event;
+
+   ---------------------
+   -- On_Scroll_Event --
+   ---------------------
+
+   procedure On_Scroll_Event
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Scroll_Event;
+
+   ---------------------
+   -- On_Size_Changed --
+   ---------------------
+
+   procedure On_Size_Changed
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self : access Gtk_Status_Icon_Record'Class;
+          Size : Gint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Size_Changed;
+
+   ---------------------
+   -- On_Size_Changed --
+   ---------------------
+
+   procedure On_Size_Changed
+      (Self : not null access Gtk_Status_Icon_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          Size : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Size_Changed;
+
 end Gtk.Status_Icon;

@@ -196,6 +196,16 @@ package Gtk.Layout is
        Policy : Gtk.Enums.Gtk_Scrollable_Policy);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Height_Property : constant Glib.Properties.Property_Uint;
+
+   Width_Property : constant Glib.Properties.Property_Uint;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -225,16 +235,6 @@ package Gtk.Layout is
      (Interf : Gtk.Scrollable.Gtk_Scrollable)
    return Gtk_Layout
    renames Implements_Gtk_Scrollable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Height_Property : constant Glib.Properties.Property_Uint;
-
-   Width_Property : constant Glib.Properties.Property_Uint;
 
 private
    Width_Property : constant Glib.Properties.Property_Uint :=

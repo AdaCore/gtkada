@@ -117,31 +117,6 @@ package Gtk.Toggle_Action is
    --  Emits the "toggled" signal on the toggle action.
    --  Since: gtk+ 2.4
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Toggle_Action_Record, Gtk_Toggle_Action);
-   function "+"
-     (Widget : access Gtk_Toggle_Action_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Toggle_Action
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -162,9 +137,35 @@ package Gtk.Toggle_Action is
    -------------
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Action_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Toggle_Action_Record'Class));
+   procedure On_Toggled
+      (Self : not null access Gtk_Toggle_Action_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Should be connected if you wish to perform an action whenever the
    --  Gtk.Toggle_Action.Gtk_Toggle_Action state is changed.
-   --     procedure Handler (Self : access Gtk_Toggle_Action_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Toggle_Action_Record, Gtk_Toggle_Action);
+   function "+"
+     (Widget : access Gtk_Toggle_Action_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Toggle_Action
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Draw_As_Radio_Property : constant Glib.Properties.Property_Boolean :=

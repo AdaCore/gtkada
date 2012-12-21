@@ -176,4 +176,63 @@ package body Gtk.Hsv is
       Internal (H, S, V, R, G, B);
    end To_Rgb;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure (Self : access Gtk_Hsv_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
+   -------------
+   -- On_Move --
+   -------------
+
+   procedure On_Move
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Hsv_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move;
+
+   -------------
+   -- On_Move --
+   -------------
+
+   procedure On_Move
+      (Self : not null access Gtk_Hsv_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move;
+
 end Gtk.Hsv;

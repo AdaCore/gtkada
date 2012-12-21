@@ -227,37 +227,6 @@ package Gtk.Color_Selection is
       (Self        : not null access Gtk_Color_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "Orientable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Color_Selection_Record, Gtk_Color_Selection);
-   function "+"
-     (Widget : access Gtk_Color_Selection_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Color_Selection
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Orientable is new Glib.Types.Implements
-     (Gtk.Orientable.Gtk_Orientable, Gtk_Color_Selection_Record, Gtk_Color_Selection);
-   function "+"
-     (Widget : access Gtk_Color_Selection_Record'Class)
-   return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Gtk_Orientable.To_Interface;
-   function "-"
-     (Interf : Gtk.Orientable.Gtk_Orientable)
-   return Gtk_Color_Selection
-   renames Implements_Gtk_Orientable.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -296,9 +265,48 @@ package Gtk.Color_Selection is
    -------------
 
    Signal_Color_Changed : constant Glib.Signal_Name := "color-changed";
+   procedure On_Color_Changed
+      (Self : not null access Gtk_Color_Selection_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Color_Selection_Record'Class));
+   procedure On_Color_Changed
+      (Self : not null access Gtk_Color_Selection_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted when the color changes in the
    --  Gtk.Color_Selection.Gtk_Color_Selection according to its update policy.
-   --     procedure Handler (Self : access Gtk_Color_Selection_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "Orientable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Color_Selection_Record, Gtk_Color_Selection);
+   function "+"
+     (Widget : access Gtk_Color_Selection_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Color_Selection
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Color_Selection_Record, Gtk_Color_Selection);
+   function "+"
+     (Widget : access Gtk_Color_Selection_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Color_Selection
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Has_Palette_Property : constant Glib.Properties.Property_Boolean :=

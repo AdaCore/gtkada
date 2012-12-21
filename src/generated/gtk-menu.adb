@@ -755,4 +755,35 @@ package body Gtk.Menu is
       return Tmp_Return;
    end Get_For_Attach_Widget;
 
+   --------------------
+   -- On_Move_Scroll --
+   --------------------
+
+   procedure On_Move_Scroll
+      (Self : not null access Gtk_Menu_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Menu_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Scroll;
+
+   --------------------
+   -- On_Move_Scroll --
+   --------------------
+
+   procedure On_Move_Scroll
+      (Self : not null access Gtk_Menu_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Scroll;
+
 end Gtk.Menu;

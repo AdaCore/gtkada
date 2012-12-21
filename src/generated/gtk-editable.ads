@@ -196,6 +196,83 @@ package Gtk.Editable is
    --  Convenience subprogram, identical to Insert_Text above without
    --  the requirement to supply the New_Text_Length argument.
 
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : Gtk_Editable;
+       Call : not null access procedure (Self : Gtk_Editable));
+   procedure On_Changed
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::changed signal is emitted at the end of a single user-visible
+   --  operation on the contents of the Gtk.Editable.Gtk_Editable.
+   --
+   --  E.g., a paste operation that replaces the contents of the selection
+   --  will cause only one signal emission (even though it is implemented by
+   --  first deleting the selection, then inserting the new content, and may
+   --  cause multiple ::notify::text signals to be emitted).
+
+   Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
+   procedure On_Delete_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self      : Gtk_Editable;
+          Start_Pos : Gint;
+          End_Pos   : Gint));
+   procedure On_Delete_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Start_Pos : Gint;
+          End_Pos   : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted when text is deleted from the widget by the
+   --  user. The default handler for this signal will normally be responsible
+   --  for deleting the text, so by connecting to this signal and then stopping
+   --  the signal with g_signal_stop_emission, it is possible to modify the
+   --  range of deleted text, or prevent it from being deleted entirely. The
+   --  Start_Pos and End_Pos parameters are interpreted as for
+   --  Gtk.Editable.Delete_Text.
+   -- 
+   --  Callback parameters:
+   --    --  "start_pos": the starting position
+   --    --  "end_pos": the end position
+
+   Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
+   procedure On_Insert_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self            : Gtk_Editable;
+          New_Text        : UTF8_String;
+          New_Text_Length : Gint;
+          Position        : in out Gint));
+   procedure On_Insert_Text
+      (Self : Gtk_Editable;
+       Call : not null access procedure
+         (Self            : access Glib.Object.GObject_Record'Class;
+          New_Text        : UTF8_String;
+          New_Text_Length : Gint;
+          Position        : in out Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  This signal is emitted when text is inserted into the widget by the
+   --  user. The default handler for this signal will normally be responsible
+   --  for inserting the text, so by connecting to this signal and then
+   --  stopping the signal with g_signal_stop_emission, it is possible to
+   --  modify the inserted text, or prevent it from being inserted entirely.
+   -- 
+   --  Callback parameters:
+   --    --  "new_text": the new text to insert
+   --    --  "new_text_length": the length of the new text, in bytes, or -1 if
+   --    --  new_text is nul-terminated
+   --    --  "position": the position, in characters, at which to insert the new
+   --    --  text. this is an in-out parameter. After the signal emission is
+   --    --  finished, it should point after the newly inserted text.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -205,53 +282,6 @@ package Gtk.Editable is
 
    function "+" (W : Gtk_Editable) return Gtk_Editable;
    pragma Inline ("+");
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Changed : constant Glib.Signal_Name := "changed";
-   --  The ::changed signal is emitted at the end of a single user-visible
-   --  operation on the contents of the Gtk.Editable.Gtk_Editable.
-   --
-   --  E.g., a paste operation that replaces the contents of the selection
-   --  will cause only one signal emission (even though it is implemented by
-   --  first deleting the selection, then inserting the new content, and may
-   --  cause multiple ::notify::text signals to be emitted).
-   --     procedure Handler (Self : Gtk_Editable);
-
-   Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
-   --  This signal is emitted when text is deleted from the widget by the
-   --  user. The default handler for this signal will normally be responsible
-   --  for deleting the text, so by connecting to this signal and then stopping
-   --  the signal with g_signal_stop_emission, it is possible to modify the
-   --  range of deleted text, or prevent it from being deleted entirely. The
-   --  Start_Pos and End_Pos parameters are interpreted as for
-   --  Gtk.Editable.Delete_Text.
-   --     procedure Handler
-   --       (Self      : Gtk_Editable;
-   --        Start_Pos : Gint;
-   --        End_Pos   : Gint);
-   --    --  "start_pos": the starting position
-   --    --  "end_pos": the end position
-
-   Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
-   --  This signal is emitted when text is inserted into the widget by the
-   --  user. The default handler for this signal will normally be responsible
-   --  for inserting the text, so by connecting to this signal and then
-   --  stopping the signal with g_signal_stop_emission, it is possible to
-   --  modify the inserted text, or prevent it from being inserted entirely.
-   --     procedure Handler
-   --       (Self            : Gtk_Editable;
-   --        New_Text        : UTF8_String;
-   --        New_Text_Length : Gint;
-   --        Position        : in out Gint);
-   --    --  "new_text": the new text to insert
-   --    --  "new_text_length": the length of the new text, in bytes, or -1 if
-   --    --  new_text is nul-terminated
-   --    --  "position": the position, in characters, at which to insert the new
-   --    --  text. this is an in-out parameter. After the signal emission is
-   --    --  finished, it should point after the newly inserted text.
 
 private
 

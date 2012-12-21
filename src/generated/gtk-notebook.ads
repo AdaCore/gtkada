@@ -493,31 +493,6 @@ package Gtk.Notebook is
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Convenience functions, same as above but discarding the return value.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Notebook_Record, Gtk_Notebook);
-   function "+"
-     (Widget : access Gtk_Notebook_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Notebook
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -544,11 +519,34 @@ package Gtk.Notebook is
    -------------
 
    Signal_Change_Current_Page : constant Glib.Signal_Name := "change-current-page";
-   --     function Handler
-   --       (Self   : access Gtk_Notebook_Record'Class;
-   --        Object : Gint) return Boolean;
+   procedure On_Change_Current_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Gint) return Boolean);
+   procedure On_Change_Current_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Create_Window : constant Glib.Signal_Name := "create-window";
+   procedure On_Create_Window
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self : access Gtk_Notebook_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          X    : Gint;
+          Y    : Gint) return Gtk_Notebook);
+   procedure On_Create_Window
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          X    : Gint;
+          Y    : Gint) return Gtk_Notebook;
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::create-window signal is emitted when a detachable tab is dropped
    --  on the root window.
    --
@@ -558,76 +556,169 @@ package Gtk.Notebook is
    --  notebook (e.g. the Gtk.Notebook.Gtk_Notebook:group ).
    --
    --  added to, or null.
-   --
-   --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
-   --     function Handler
-   --       (Self : access Gtk_Notebook_Record'Class;
-   --        Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        X    : Gint;
-   --        Y    : Gint) return Gtk_Notebook;
+   -- 
+   --  Callback parameters:
    --    --  "page": the tab of Notebook that is being detached
    --    --  "x": the X coordinate where the drop happens
    --    --  "y": the Y coordinate where the drop happens
+   --    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
 
    Signal_Focus_Tab : constant Glib.Signal_Name := "focus-tab";
-   --     function Handler
-   --       (Self   : access Gtk_Notebook_Record'Class;
-   --        Object : Notebook_Tab) return Boolean;
+   procedure On_Focus_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Notebook_Tab) return Boolean);
+   procedure On_Focus_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Notebook_Tab) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
-   --     procedure Handler
-   --       (Self   : access Gtk_Notebook_Record'Class;
-   --        Object : Gtk.Enums.Gtk_Direction_Type);
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type));
+   procedure On_Move_Focus_Out
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Page_Added : constant Glib.Signal_Name := "page-added";
+   procedure On_Page_Added
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint));
+   procedure On_Page_Added
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  the ::page-added signal is emitted in the notebook right after a page
    --  is added to the notebook.
-   --     procedure Handler
-   --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Page_Num : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
 
    Signal_Page_Removed : constant Glib.Signal_Name := "page-removed";
+   procedure On_Page_Removed
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint));
+   procedure On_Page_Removed
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  the ::page-removed signal is emitted in the notebook right after a page
    --  is removed from the notebook.
-   --     procedure Handler
-   --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Page_Num : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the Child page number
 
    Signal_Page_Reordered : constant Glib.Signal_Name := "page-reordered";
+   procedure On_Page_Reordered
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint));
+   procedure On_Page_Reordered
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  the ::page-reordered signal is emitted in the notebook right after a
    --  page has been reordered.
-   --     procedure Handler
-   --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Page_Num : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
 
    Signal_Reorder_Tab : constant Glib.Signal_Name := "reorder-tab";
-   --     function Handler
-   --       (Self   : access Gtk_Notebook_Record'Class;
-   --        Object : Gtk.Enums.Gtk_Direction_Type;
-   --        P0     : Boolean) return Boolean;
+   procedure On_Reorder_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type;
+          P0     : Boolean) return Boolean);
+   procedure On_Reorder_Tab
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Direction_Type;
+          P0     : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   -- 
+   --  Callback parameters:
 
    Signal_Select_Page : constant Glib.Signal_Name := "select-page";
-   --     function Handler
-   --       (Self   : access Gtk_Notebook_Record'Class;
-   --        Object : Boolean) return Boolean;
+   procedure On_Select_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Gtk_Notebook_Record'Class;
+          Object : Boolean) return Boolean);
+   procedure On_Select_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Boolean) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Switch_Page : constant Glib.Signal_Name := "switch-page";
+   procedure On_Switch_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Notebook_Record'Class;
+          Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint));
+   procedure On_Switch_Page
+      (Self : not null access Gtk_Notebook_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Page_Num : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when the user or a function changes the current page.
-   --     procedure Handler
-   --       (Self     : access Gtk_Notebook_Record'Class;
-   --        Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-   --        Page_Num : Guint);
+   -- 
+   --  Callback parameters:
    --    --  "page": the new current page
    --    --  "page_num": the index of the page
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Notebook_Record, Gtk_Notebook);
+   function "+"
+     (Widget : access Gtk_Notebook_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Notebook
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Tab_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=

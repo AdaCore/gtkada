@@ -225,4 +225,99 @@ package body Gtk.Text_Tag_Table is
       Internal (Get_Object (Table), Get_Object (Tag));
    end Remove;
 
+   ------------------
+   -- On_Tag_Added --
+   ------------------
+
+   procedure On_Tag_Added
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Tag_Table_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Tag_Added;
+
+   ------------------
+   -- On_Tag_Added --
+   ------------------
+
+   procedure On_Tag_Added
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Tag_Added;
+
+   --------------------
+   -- On_Tag_Changed --
+   --------------------
+
+   procedure On_Tag_Changed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self         : access Gtk_Text_Tag_Table_Record'Class;
+          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Size_Changed : Boolean))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Tag_Changed;
+
+   --------------------
+   -- On_Tag_Changed --
+   --------------------
+
+   procedure On_Tag_Changed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self         : access Glib.Object.GObject_Record'Class;
+          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+          Size_Changed : Boolean);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Tag_Changed;
+
+   --------------------
+   -- On_Tag_Removed --
+   --------------------
+
+   procedure On_Tag_Removed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Text_Tag_Table_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Tag_Removed;
+
+   --------------------
+   -- On_Tag_Removed --
+   --------------------
+
+   procedure On_Tag_Removed
+      (Self : not null access Gtk_Text_Tag_Table_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Tag_Removed;
+
 end Gtk.Text_Tag_Table;

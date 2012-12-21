@@ -307,4 +307,63 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
 
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure (Self : access Gtk_Dialog_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Close;
+
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Close;
+
+   -----------------
+   -- On_Response --
+   -----------------
+
+   procedure On_Response
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Dialog_Record'Class;
+          Response_Id : Gtk_Response_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Response;
+
+   -----------------
+   -- On_Response --
+   -----------------
+
+   procedure On_Response
+      (Self : not null access Gtk_Dialog_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Response_Id : Gtk_Response_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Response;
+
 end Gtk.Dialog;

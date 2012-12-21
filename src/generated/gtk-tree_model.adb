@@ -971,11 +971,6 @@ package body Gtk.Tree_Model is
       return Boolean'Val (Internal (Get_Object (Path)));
    end Up;
 
-   function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model is
-   begin
-      return W;
-   end "+";
-
    function Convert (R : Gtk.Tree_Model.Gtk_Tree_Path) return System.Address is
    begin
       return Get_Object (R);
@@ -985,5 +980,175 @@ package body Gtk.Tree_Model is
    begin
       return From_Object(R);
    end Convert;
+
+   --------------------
+   -- On_Row_Changed --
+   --------------------
+
+   procedure On_Row_Changed
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Changed;
+
+   --------------------
+   -- On_Row_Changed --
+   --------------------
+
+   procedure On_Row_Changed
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Changed;
+
+   --------------------
+   -- On_Row_Deleted --
+   --------------------
+
+   procedure On_Row_Deleted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Deleted;
+
+   --------------------
+   -- On_Row_Deleted --
+   --------------------
+
+   procedure On_Row_Deleted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Deleted;
+
+   ------------------------------
+   -- On_Row_Has_Child_Toggled --
+   ------------------------------
+
+   procedure On_Row_Has_Child_Toggled
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Has_Child_Toggled;
+
+   ------------------------------
+   -- On_Row_Has_Child_Toggled --
+   ------------------------------
+
+   procedure On_Row_Has_Child_Toggled
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Has_Child_Toggled;
+
+   ---------------------
+   -- On_Row_Inserted --
+   ---------------------
+
+   procedure On_Row_Inserted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : Gtk_Tree_Model;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Row_Inserted;
+
+   ---------------------
+   -- On_Row_Inserted --
+   ---------------------
+
+   procedure On_Row_Inserted
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk_Tree_Path;
+          Iter : Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Row_Inserted;
+
+   -----------------------
+   -- On_Rows_Reordered --
+   -----------------------
+
+   procedure On_Rows_Reordered
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self      : Gtk_Tree_Model;
+          Path      : Gtk_Tree_Path;
+          Iter      : Gtk_Tree_Iter;
+          New_Order : System.Address))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Rows_Reordered;
+
+   -----------------------
+   -- On_Rows_Reordered --
+   -----------------------
+
+   procedure On_Rows_Reordered
+      (Self : Gtk_Tree_Model;
+       Call : not null access procedure
+         (Self      : access Glib.Object.GObject_Record'Class;
+          Path      : Gtk_Tree_Path;
+          Iter      : Gtk_Tree_Iter;
+          New_Order : System.Address);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Rows_Reordered;
+
+   function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model is
+   begin
+      return W;
+   end "+";
 
 end Gtk.Tree_Model;

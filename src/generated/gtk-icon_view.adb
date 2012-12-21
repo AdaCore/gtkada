@@ -1379,7 +1379,6 @@ package body Gtk.Icon_View is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;
@@ -1582,5 +1581,239 @@ package body Gtk.Icon_View is
    begin
       Internal (Get_Object (Self), Policy);
    end Set_Vscroll_Policy;
+
+   -----------------------------
+   -- On_Activate_Cursor_Item --
+   -----------------------------
+
+   procedure On_Activate_Cursor_Item
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access function
+         (Self : access Gtk_Icon_View_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Cursor_Item;
+
+   -----------------------------
+   -- On_Activate_Cursor_Item --
+   -----------------------------
+
+   procedure On_Activate_Cursor_Item
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Cursor_Item;
+
+   -----------------------
+   -- On_Item_Activated --
+   -----------------------
+
+   procedure On_Item_Activated
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Icon_View_Record'Class;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Item_Activated;
+
+   -----------------------
+   -- On_Item_Activated --
+   -----------------------
+
+   procedure On_Item_Activated
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : Gtk.Tree_Model.Gtk_Tree_Path);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Item_Activated;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access function
+         (Self  : access Gtk_Icon_View_Record'Class;
+          Step  : Gtk.Enums.Gtk_Movement_Step;
+          Count : Gint) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Step  : Gtk.Enums.Gtk_Movement_Step;
+          Count : Gint) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Cursor;
+
+   -------------------
+   -- On_Select_All --
+   -------------------
+
+   procedure On_Select_All
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Select_All;
+
+   -------------------
+   -- On_Select_All --
+   -------------------
+
+   procedure On_Select_All
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Select_All;
+
+   ---------------------------
+   -- On_Select_Cursor_Item --
+   ---------------------------
+
+   procedure On_Select_Cursor_Item
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Select_Cursor_Item;
+
+   ---------------------------
+   -- On_Select_Cursor_Item --
+   ---------------------------
+
+   procedure On_Select_Cursor_Item
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Select_Cursor_Item;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   procedure On_Selection_Changed
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Selection_Changed;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   procedure On_Selection_Changed
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Selection_Changed;
+
+   ---------------------------
+   -- On_Toggle_Cursor_Item --
+   ---------------------------
+
+   procedure On_Toggle_Cursor_Item
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Toggle_Cursor_Item;
+
+   ---------------------------
+   -- On_Toggle_Cursor_Item --
+   ---------------------------
+
+   procedure On_Toggle_Cursor_Item
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Toggle_Cursor_Item;
+
+   ---------------------
+   -- On_Unselect_All --
+   ---------------------
+
+   procedure On_Unselect_All
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Unselect_All;
+
+   ---------------------
+   -- On_Unselect_All --
+   ---------------------
+
+   procedure On_Unselect_All
+      (Self : not null access Gtk_Icon_View_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Unselect_All;
 
 end Gtk.Icon_View;

@@ -354,22 +354,43 @@ package Gdk.Screen is
    -------------
 
    Signal_Composited_Changed : constant Glib.Signal_Name := "composited-changed";
+   procedure On_Composited_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure (Self : access Gdk_Screen_Record'Class));
+   procedure On_Composited_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::composited-changed signal is emitted when the composited status
    --  of the screen changes
-   --     procedure Handler (Self : access Gdk_Screen_Record'Class);
 
    Signal_Monitors_Changed : constant Glib.Signal_Name := "monitors-changed";
+   procedure On_Monitors_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure (Self : access Gdk_Screen_Record'Class));
+   procedure On_Monitors_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::monitors-changed signal is emitted when the number, size or
    --  position of the monitors attached to the screen change.
    --
    --  Only for X11 and OS X for now. A future implementation for Win32 may be
    --  a possibility.
-   --     procedure Handler (Self : access Gdk_Screen_Record'Class);
 
    Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
+   procedure On_Size_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure (Self : access Gdk_Screen_Record'Class));
+   procedure On_Size_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::size-changed signal is emitted when the pixel width or height of
    --  a screen changes.
-   --     procedure Handler (Self : access Gdk_Screen_Record'Class);
 
 private
    Resolution_Property : constant Glib.Properties.Property_Double :=

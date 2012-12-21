@@ -162,7 +162,6 @@ package body Gtk.Window is
    procedure Add_Accel_Group
       (Window      : not null access Gtk_Window_Record;
        Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
-      
    is
       procedure Internal
          (Window      : System.Address;
@@ -950,7 +949,6 @@ package body Gtk.Window is
    procedure Remove_Accel_Group
       (Window      : not null access Gtk_Window_Record;
        Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
-      
    is
       procedure Internal
          (Window      : System.Address;
@@ -1767,5 +1765,120 @@ package body Gtk.Window is
       Internal (Tmp_Name);
       Free (Tmp_Name);
    end Set_Default_Icon_Name;
+
+   -------------------------
+   -- On_Activate_Default --
+   -------------------------
+
+   procedure On_Activate_Default
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure (Self : access Gtk_Window_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Default;
+
+   -------------------------
+   -- On_Activate_Default --
+   -------------------------
+
+   procedure On_Activate_Default
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Default;
+
+   -----------------------
+   -- On_Activate_Focus --
+   -----------------------
+
+   procedure On_Activate_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure (Self : access Gtk_Window_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Focus;
+
+   -----------------------
+   -- On_Activate_Focus --
+   -----------------------
+
+   procedure On_Activate_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Focus;
+
+   ---------------------
+   -- On_Keys_Changed --
+   ---------------------
+
+   procedure On_Keys_Changed
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure (Self : access Gtk_Window_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Keys_Changed;
+
+   ---------------------
+   -- On_Keys_Changed --
+   ---------------------
+
+   procedure On_Keys_Changed
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Keys_Changed;
+
+   ------------------
+   -- On_Set_Focus --
+   ------------------
+
+   procedure On_Set_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Window_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Set_Focus;
+
+   ------------------
+   -- On_Set_Focus --
+   ------------------
+
+   procedure On_Set_Focus
+      (Self : not null access Gtk_Window_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Set_Focus;
 
 end Gtk.Window;

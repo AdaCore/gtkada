@@ -74,24 +74,6 @@ package Gtk.Cell_Renderer_Progress is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Orientable"
-
-   package Implements_Gtk_Orientable is new Glib.Types.Implements
-     (Gtk.Orientable.Gtk_Orientable, Gtk_Cell_Renderer_Progress_Record, Gtk_Cell_Renderer_Progress);
-   function "+"
-     (Widget : access Gtk_Cell_Renderer_Progress_Record'Class)
-   return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Gtk_Orientable.To_Interface;
-   function "-"
-     (Interf : Gtk.Orientable.Gtk_Orientable)
-   return Gtk_Cell_Renderer_Progress
-   renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -128,6 +110,24 @@ package Gtk.Cell_Renderer_Progress is
    Value_Property : constant Glib.Properties.Property_Int;
    --  The "value" property determines the percentage to which the progress
    --  bar will be "filled in".
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Orientable"
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Cell_Renderer_Progress_Record, Gtk_Cell_Renderer_Progress);
+   function "+"
+     (Widget : access Gtk_Cell_Renderer_Progress_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Cell_Renderer_Progress
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Value_Property : constant Glib.Properties.Property_Int :=

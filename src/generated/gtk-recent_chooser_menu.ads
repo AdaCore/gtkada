@@ -107,12 +107,10 @@ package Gtk.Recent_Chooser_Menu is
 
    procedure Gtk_New_For_Manager
       (Self    : out Gtk_Recent_Chooser_Menu;
-       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      ;
+       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
    procedure Initialize_For_Manager
       (Self    : not null access Gtk_Recent_Chooser_Menu_Record'Class;
-       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
-      ;
+       Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
    --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget
    --  using Manager as the underlying recently used resources manager.
    --  This is useful if you have implemented your own recent manager, or if
@@ -236,8 +234,7 @@ package Gtk.Recent_Chooser_Menu is
 
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Current_Item
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
@@ -257,8 +254,7 @@ package Gtk.Recent_Chooser_Menu is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
@@ -333,8 +329,7 @@ package Gtk.Recent_Chooser_Menu is
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    procedure Select_All
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record);
@@ -349,6 +344,16 @@ package Gtk.Recent_Chooser_Menu is
    procedure Unselect_Uri
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record;
        URI     : UTF8_String);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Show_Numbers_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the first ten items in the menu should be prepended by a number
+   --  acting as a unique mnemonic.
 
    ----------------
    -- Interfaces --
@@ -393,16 +398,6 @@ package Gtk.Recent_Chooser_Menu is
      (Interf : Gtk.Recent_Chooser.Gtk_Recent_Chooser)
    return Gtk_Recent_Chooser_Menu
    renames Implements_Gtk_Recent_Chooser.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Show_Numbers_Property : constant Glib.Properties.Property_Boolean;
-   --  Whether the first ten items in the menu should be prepended by a number
-   --  acting as a unique mnemonic.
 
 private
    Show_Numbers_Property : constant Glib.Properties.Property_Boolean :=

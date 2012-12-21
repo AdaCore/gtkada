@@ -570,4 +570,35 @@ package body Gtk.About_Dialog is
       Internal (Get_Object (About), Boolean'Pos (Wrap_License));
    end Set_Wrap_License;
 
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self : not null access Gtk_About_Dialog_Record;
+       Call : not null access function
+         (Self : access Gtk_About_Dialog_Record'Class;
+          URI  : UTF8_String) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Activate_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self : not null access Gtk_About_Dialog_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class;
+          URI  : UTF8_String) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Activate_Link;
+
 end Gtk.About_Dialog;

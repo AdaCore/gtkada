@@ -89,12 +89,15 @@ package Gtk.Arrow is
    --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
    --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
+
+   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
    ----------------
    -- Interfaces --
@@ -113,16 +116,6 @@ package Gtk.Arrow is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Arrow
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Arrow_Type_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
-
-   Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
 private
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=

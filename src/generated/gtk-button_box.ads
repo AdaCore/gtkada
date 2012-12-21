@@ -147,6 +147,14 @@ package Gtk.Button_Box is
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -176,14 +184,6 @@ package Gtk.Button_Box is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Button_Box
    renames Implements_Gtk_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
 
 private
    Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style :=

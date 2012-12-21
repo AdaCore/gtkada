@@ -106,16 +106,14 @@ package Gtk.Recent_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
-      ;
+       Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default);
    procedure Initialize_For_Manager
       (Widget   : not null access Gtk_Recent_Action_Record'Class;
        Name     : UTF8_String;
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
-      ;
+       Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default);
    --  Creates a new Gtk.Recent_Action.Gtk_Recent_Action object. To add the
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
@@ -224,8 +222,7 @@ package Gtk.Recent_Action is
 
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Current_Item
       (Chooser : not null access Gtk_Recent_Action_Record)
@@ -245,8 +242,7 @@ package Gtk.Recent_Action is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Action_Record)
@@ -315,8 +311,7 @@ package Gtk.Recent_Action is
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    procedure Select_All (Chooser : not null access Gtk_Recent_Action_Record);
 
@@ -330,6 +325,14 @@ package Gtk.Recent_Action is
    procedure Unselect_Uri
       (Chooser : not null access Gtk_Recent_Action_Record;
        URI     : UTF8_String);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Show_Numbers_Property : constant Glib.Properties.Property_Boolean;
 
    ----------------
    -- Interfaces --
@@ -361,14 +364,6 @@ package Gtk.Recent_Action is
      (Interf : Gtk.Recent_Chooser.Gtk_Recent_Chooser)
    return Gtk_Recent_Action
    renames Implements_Gtk_Recent_Chooser.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Show_Numbers_Property : constant Glib.Properties.Property_Boolean;
 
 private
    Show_Numbers_Property : constant Glib.Properties.Property_Boolean :=

@@ -184,6 +184,37 @@ package Gtk.Menu_Tool_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Menu_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Menu.Gtk_Menu
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Show_Menu : constant Glib.Signal_Name := "show-menu";
+   procedure On_Show_Menu
+      (Self : not null access Gtk_Menu_Tool_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Menu_Tool_Button_Record'Class));
+   procedure On_Show_Menu
+      (Self : not null access Gtk_Menu_Tool_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::show-menu signal is emitted before the menu is shown.
+   --
+   --  It can be used to populate the menu on demand, using
+   --  Gtk.Menu_Tool_Button.Get_Menu. Note that even if you populate the menu
+   --  dynamically in this way, you must set an empty menu on the
+   --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button beforehand, since the arrow is
+   --  made insensitive if the menu is not set.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -213,30 +244,6 @@ package Gtk.Menu_Tool_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Menu_Tool_Button
    renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Menu_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Menu.Gtk_Menu
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Show_Menu : constant Glib.Signal_Name := "show-menu";
-   --  The ::show-menu signal is emitted before the menu is shown.
-   --
-   --  It can be used to populate the menu on demand, using
-   --  Gtk.Menu_Tool_Button.Get_Menu. Note that even if you populate the menu
-   --  dynamically in this way, you must set an empty menu on the
-   --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button beforehand, since the arrow is
-   --  made insensitive if the menu is not set.
-   --     procedure Handler
-   --       (Self : access Gtk_Menu_Tool_Button_Record'Class);
 
 private
    Menu_Property : constant Glib.Properties.Property_Object :=

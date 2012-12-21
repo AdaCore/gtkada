@@ -135,12 +135,18 @@ package Gtk.Cell_Renderer_Toggle is
    -------------
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   procedure On_Toggled
+      (Self : not null access Gtk_Cell_Renderer_Toggle_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
+          Path : UTF8_String));
+   procedure On_Toggled
+      (Self : not null access Gtk_Cell_Renderer_Toggle_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Path : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::toggled signal is emitted when the cell is toggled.
-   --     procedure Handler
-   --       (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
-   --        Path : UTF8_String);
-   --    --  "path": string representation of Gtk.Tree_Model.Gtk_Tree_Path
-   --    --  describing the event location
 
 private
    Radio_Property : constant Glib.Properties.Property_Boolean :=

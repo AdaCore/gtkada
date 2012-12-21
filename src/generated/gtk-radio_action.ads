@@ -157,31 +157,6 @@ package Gtk.Radio_Action is
    --  "group_source": a radio action object whos group we are joining, or
    --  null to remove the radio action from its group
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Radio_Action_Record, Gtk_Radio_Action);
-   function "+"
-     (Widget : access Gtk_Radio_Action_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Radio_Action
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -209,14 +184,38 @@ package Gtk.Radio_Action is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Radio_Action_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Radio_Action_Record'Class;
+          Current : not null access Gtk_Radio_Action_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Radio_Action_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Current : not null access Gtk_Radio_Action_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::changed signal is emitted on every member of a radio group when
    --  the active member is changed. The signal gets emitted after the
    --  ::activate signals for the previous and current active members.
-   --     procedure Handler
-   --       (Self    : access Gtk_Radio_Action_Record'Class;
-   --        Current : not null access Gtk_Radio_Action_Record'Class);
-   --    --  "current": the member of Action<!-- -->s group which has just been
-   --    --  activated
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Radio_Action_Record, Gtk_Radio_Action);
+   function "+"
+     (Widget : access Gtk_Radio_Action_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Radio_Action
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Value_Property : constant Glib.Properties.Property_Int :=

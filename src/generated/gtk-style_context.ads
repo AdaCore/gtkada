@@ -1063,18 +1063,26 @@ package Gtk.Style_Context is
 
    Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction;
 
-   Screen_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gdk.Screen
+   Screen_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gdk.Screen.Gdk_Screen
 
    -------------
    -- Signals --
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
-   --     procedure Handler (Self : access Gtk_Style_Context_Record'Class);
+   procedure On_Changed
+      (Self : not null access Gtk_Style_Context_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Style_Context_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Style_Context_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
 
 private
-   Screen_Property : constant Glib.Properties.Property_Boxed :=
+   Screen_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("screen");
    Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
      Gtk.Enums.Build ("direction");

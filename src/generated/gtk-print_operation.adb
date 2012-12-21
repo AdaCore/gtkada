@@ -302,7 +302,6 @@ package body Gtk.Print_Operation is
    procedure Set_Default_Page_Setup
       (Self               : not null access Gtk_Print_Operation_Record;
        Default_Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class)
-      
    is
       procedure Internal
          (Self               : System.Address;
@@ -410,7 +409,6 @@ package body Gtk.Print_Operation is
    procedure Set_Print_Settings
       (Self           : not null access Gtk_Print_Operation_Record;
        Print_Settings : access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
-      
    is
       procedure Internal
          (Self           : System.Address;
@@ -534,5 +532,362 @@ package body Gtk.Print_Operation is
    begin
       Internal (Get_Object (Preview), Page_Nr);
    end Render_Page;
+
+   --------------------
+   -- On_Begin_Print --
+   --------------------
+
+   procedure On_Begin_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Begin_Print;
+
+   --------------------
+   -- On_Begin_Print --
+   --------------------
+
+   procedure On_Begin_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Begin_Print;
+
+   -----------------------------
+   -- On_Create_Custom_Widget --
+   -----------------------------
+
+   procedure On_Create_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self : access Gtk_Print_Operation_Record'Class)
+          return Glib.Object.GObject)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Create_Custom_Widget;
+
+   -----------------------------
+   -- On_Create_Custom_Widget --
+   -----------------------------
+
+   procedure On_Create_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Glib.Object.GObject;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Create_Custom_Widget;
+
+   ----------------------------
+   -- On_Custom_Widget_Apply --
+   ----------------------------
+
+   procedure On_Custom_Widget_Apply
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Print_Operation_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Custom_Widget_Apply;
+
+   ----------------------------
+   -- On_Custom_Widget_Apply --
+   ----------------------------
+
+   procedure On_Custom_Widget_Apply
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Custom_Widget_Apply;
+
+   -------------
+   -- On_Done --
+   -------------
+
+   procedure On_Done
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Print_Operation_Record'Class;
+          Result : Gtk_Print_Operation_Result))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Done;
+
+   -------------
+   -- On_Done --
+   -------------
+
+   procedure On_Done
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Result : Gtk_Print_Operation_Result);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Done;
+
+   ------------------
+   -- On_Draw_Page --
+   ------------------
+
+   procedure On_Draw_Page
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Draw_Page;
+
+   ------------------
+   -- On_Draw_Page --
+   ------------------
+
+   procedure On_Draw_Page
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Draw_Page;
+
+   ------------------
+   -- On_End_Print --
+   ------------------
+
+   procedure On_End_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_End_Print;
+
+   ------------------
+   -- On_End_Print --
+   ------------------
+
+   procedure On_End_Print
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_End_Print;
+
+   -----------------
+   -- On_Paginate --
+   -----------------
+
+   procedure On_Paginate
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
+          return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Paginate;
+
+   -----------------
+   -- On_Paginate --
+   -----------------
+
+   procedure On_Paginate
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Paginate;
+
+   ----------------
+   -- On_Preview --
+   ----------------
+
+   procedure On_Preview
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Parent  : access Gtk.Window.Gtk_Window_Record'Class)
+          return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Preview;
+
+   ----------------
+   -- On_Preview --
+   ----------------
+
+   procedure On_Preview
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access function
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Parent  : access Gtk.Window.Gtk_Window_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Preview;
+
+   ---------------------------
+   -- On_Request_Page_Setup --
+   ---------------------------
+
+   procedure On_Request_Page_Setup
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Print_Operation_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint;
+          Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Request_Page_Setup;
+
+   ---------------------------
+   -- On_Request_Page_Setup --
+   ---------------------------
+
+   procedure On_Request_Page_Setup
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+          Page_Nr : Gint;
+          Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Request_Page_Setup;
+
+   -----------------------
+   -- On_Status_Changed --
+   -----------------------
+
+   procedure On_Status_Changed
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Print_Operation_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Status_Changed;
+
+   -----------------------
+   -- On_Status_Changed --
+   -----------------------
+
+   procedure On_Status_Changed
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Status_Changed;
+
+   -----------------------------
+   -- On_Update_Custom_Widget --
+   -----------------------------
+
+   procedure On_Update_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Print_Operation_Record'Class;
+          Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+          Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Update_Custom_Widget;
+
+   -----------------------------
+   -- On_Update_Custom_Widget --
+   -----------------------------
+
+   procedure On_Update_Custom_Widget
+      (Self : not null access Gtk_Print_Operation_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+          Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Update_Custom_Widget;
 
 end Gtk.Print_Operation;

@@ -110,6 +110,19 @@ package Gtk.Cell_Renderer_Combo is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Cell_Renderer_Combo_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Cell_Renderer_Combo_Record'Class;
+          Path_String : UTF8_String;
+          New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter));
+   procedure On_Changed
+      (Self : not null access Gtk_Cell_Renderer_Combo_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Path_String : UTF8_String;
+          New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted each time after the user selected an item in the
    --  combo box, either by using the mouse or the arrow keys. Contrary to
    --  GtkComboBox, GtkCellRendererCombo::changed is not emitted for changes
@@ -121,10 +134,8 @@ package Gtk.Cell_Renderer_Combo is
    --  the tree view will immediately cease the editing operating. This means
    --  that you most probably want to refrain from changing the model until the
    --  combo cell renderer emits the edited or editing_canceled signal.
-   --     procedure Handler
-   --       (Self        : access Gtk_Cell_Renderer_Combo_Record'Class;
-   --        Path_String : UTF8_String;
-   --        New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
+   -- 
+   --  Callback parameters:
    --    --  "path_string": a string of the path identifying the edited cell
    --    --  (relative to the tree view model)
    --    --  "new_iter": the new iter selected in the combo box (relative to the

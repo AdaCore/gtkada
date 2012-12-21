@@ -94,12 +94,14 @@ package Gtk.Invisible is
    --  Since: gtk+ 2.2
    --  "screen": a Gdk.Screen.Gdk_Screen.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Screen_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gdk.Screen.Gdk_Screen
 
    ----------------
    -- Interfaces --
@@ -119,16 +121,7 @@ package Gtk.Invisible is
    return Gtk_Invisible
    renames Implements_Gtk_Buildable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Screen_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gdk.Screen
-
 private
-   Screen_Property : constant Glib.Properties.Property_Boxed :=
+   Screen_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("screen");
 end Gtk.Invisible;

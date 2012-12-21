@@ -1373,7 +1373,7 @@ class Subprogram(object):
 
     def __init__(self, name, code="", plist=[], local_vars=[],
                  returns=None, doc=[], showdoc=True, convention=None,
-                 lang="ada"):
+                 lang="ada", allow_none=True):
         """Create a new subprogram.
            'plist' is a list of Parameter.
            'local_vars' is a list of Local_Var.
@@ -1381,6 +1381,9 @@ class Subprogram(object):
            'code' can be the empty string, in which case no body is output.
            'lang' is the language for the types of parameters (see comment at
                the top of this file).
+           'allow_none': when this is an anonumous subprogram (and therefore
+               used for a callback), this indicates whether the callback can be
+               null or not).
            The code will be automatically pretty-printed, and the appropriate
            pragma Unreferenced are also added automatically.
         """
@@ -1393,6 +1396,7 @@ class Subprogram(object):
         self.local = local_vars
         self.showdoc = showdoc
         self.convention = convention   # "lang"
+        self.allow_none = allow_none
         self._import = None
         self._nested = []  # nested subprograms
         self._deprecated = (False, "") # True if deprecated
@@ -1453,8 +1457,10 @@ class Subprogram(object):
 
         if self.name:
             prefix = indent + prefix + " " + base_name(self.name)
-        else:
+        elif self.allow_none:
             prefix = "access %s" % prefix
+        else:
+            prefix = "not null access %s" % prefix
 
         if self.plist:
             # First test: all parameters on same line
@@ -1474,22 +1480,25 @@ class Subprogram(object):
             p = ""
 
         # Should the "return" go on a separate line ?
-        if p and len(p.splitlines()[-1]) + len(suffix) > maxlen:
+        if p and suffix and len(p.splitlines()[-1]) + len(suffix) > maxlen:
             return prefix + p + "\n   " + indent + suffix
         else:
             return prefix + p + suffix
 
-    def spec(self, pkg, indent="   ", show_doc=True,
-             maxlen=max_profile_length):
-        """Return the spec of the subprogram"""
-
-        if self.showdoc and show_doc:
+    def formatted_doc(self, indent="   "):
+        if self.showdoc:
             doc = [d for d in self.doc]
             if self._deprecated[0]:
                 doc += [self._deprecated[1]]
             doc += [p.doc for p in self.plist]
         else:
             doc = []
+
+        return format_doc(doc, indent=indent, separate_paragraphs=False)
+
+    def spec(self, pkg, indent="   ", show_doc=True,
+             maxlen=max_profile_length):
+        """Return the spec of the subprogram"""
 
         result = self.profile(pkg=pkg, indent=indent, maxlen=maxlen) + ";"
 
@@ -1503,7 +1512,12 @@ class Subprogram(object):
             result += "\n" + indent \
                 + "pragma Convention (%s, %s);" % (self.convention, self.name)
 
-        return result + format_doc(doc, indent=indent, separate_paragraphs=False)
+        if show_doc:
+            doc = self.formatted_doc(indent=indent)
+        else:
+            doc = ""
+
+        return result + doc
 
     def _find_unreferenced(self, local_vars="", indent="   "):
         """List the pragma Unreferenced statements that are needed for this
@@ -1697,33 +1711,20 @@ class Code(object):
     """
 
     def __init__(self, content, iscomment=False, fill=True):
-        """:param:`fill` whether to reflow the text if this is a comment."""
+        """:param:`fill` whether to reflow the text if this is a comment.
+           :param:`add_newline` whether the block should have a leading newline
+        """
         self.content = content
         self.iscomment = iscomment
         self.fill = fill
+        self.add_newline = True
 
     def format(self, indent=""):
         """Return the code that should be written into a package"""
         if self.iscomment:
-            return format_doc(
-                self.content, indent=indent, fill=self.fill) + "\n"
+            return format_doc(self.content, indent=indent, fill=self.fill)
         else:
             return indent_code(self.content, indent=len(indent), addnewlines=False)
-
-    @staticmethod
-    def formatlist(codelist, indent):
-        """Format a list of code objects. This properly associates a comment with the
-           previous code, with no blank line.
-        """
-
-        result = ""
-        for r in codelist:
-            f = r.format(indent=indent)
-            if result and not r.iscomment:
-                result += "\n"
-            result += f
-
-        return result
 
 
 class Section(object):
@@ -1744,10 +1745,16 @@ class Section(object):
     def __init__(self, pkg, name):
         self.pkg = pkg  # The instance of Package in which the section is
         self.name = name
-        self.comment = ""
-        self.__subprograms = []  # All subprograms  (in_spec, Subprogram())
-        self.spec_code = []  # List of Code objects
-        self.body_code = []  # List of Code objects
+        self.__comment = ""
+        self.__objects = []  # List of objects. These are tuples:
+                             #    (Code or Subprogram or Package instance,
+                             #     in_spec)
+
+        # Whether we should sort the objects. If yes, code always comes before
+        # subprograms. Otherwise, they are output in the order they were added
+        self.sort_objects = (
+           not Section.sort_alphabetically
+           or Section.group_getters_and_setters)
 
     def add_comment(self, comment, fill=True):
         """If 'fill' is true, the comment is automatically split on several
@@ -1755,35 +1762,28 @@ class Section(object):
            formatted properly, minus the leading --
         """
         if comment == "":
-            self.comment += "   --\n"
+            self.__comment += "   --\n"
         else:
-            self.comment += "".join(
+            self.__comment += "".join(
                 format_doc(comment, indent="   ", fill=fill)) + \
                 "\n"
 
-    def add(self, obj, in_spec=True):
-        """Add one or more objects to the section (subprogram, code,...)"""
-        if isinstance(obj, Subprogram):
-            self.__subprograms.append((in_spec, obj))
+    def add(self, obj, in_spec=True, add_newline=True):
+        """Add one or more objects to the section (subprogram, code,...).
+           :param:`add_newline` indicates whether the object should be
+           followed by a blank line. There is never a blank line between some
+           code and the following comment.
+        """
+
+        if isinstance(obj, str):
+            obj = Code(obj)
         elif isinstance(obj, Package):
             obj.isnested = True
-            self.__subprograms.append((in_spec, obj))
-        else:
-            if isinstance(obj, str):
-                obj = Code(obj)
-            elif not isinstance(obj, Code):
-                print "Unexpected type passed to add: %s" % type(obj)
-                raise Exception
 
-            if in_spec:
-                self.spec_code.append(obj)
-            else:
-                self.body_code.append(obj)
+        obj.add_newline = add_newline
+        self.__objects.append((obj, in_spec))
 
-    def add_code(self, code, specs=True):
-        self.add(code, specs)
-
-    def _group_subprograms(self):
+    def _group_objects(self):
         """Returns a list of subprograms for the specs. In each nested list,
            the subprograms are grouped and a single documentation is output for
            the whole group. At the same time, this preserves the order of
@@ -1791,18 +1791,22 @@ class Section(object):
            in the group appeared.
         """
 
-        if Section.group_getters_and_setters \
-                or not Section.sort_alphabetically:
-            result = []
+        if self.sort_objects:
+            code = []
+            subprograms = []
             tmp = dict()  # group_name => [subprograms]
 
             gtk_new_index = 0;
 
-            for in_spec, s in self.__subprograms:
+            for obj, in_spec in self.__objects:
                 if not in_spec:
                     continue
 
-                name = base_name(s.name).replace("Get_", "") \
+                if isinstance(obj, Code):
+                   code.append([obj])
+
+                else:
+                    name = base_name(obj.name).replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
                         .replace("Gdk_New", "") \
@@ -1810,90 +1814,103 @@ class Section(object):
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
 
-                if base_name(s.name) in ("Gtk_New", "Gdk_New"):
-                    # Always create a new group for Gtk_New, since they all
-                    # have different parameters. But we still want to group
-                    # Gtk_New and Initialize.
-                    t = tmp["Gtk_New%d" % gtk_new_index] = [s]
-                    result.append(t)
-                elif base_name(s.name) == "Initialize":
-                    tmp["Gtk_New%d" % gtk_new_index].append(s)
-                    gtk_new_index += 1
-                elif name in tmp:
-                    tmp[name].append(s)  # Also modified in result
-                else:
-                    tmp[name] = [s]
-                    result.append(tmp[name])
+                    if base_name(obj.name) in ("Gtk_New", "Gdk_New"):
+                        # Always create a new group for Gtk_New, since they all
+                        # have different parameters. But we still want to group
+                        # Gtk_New and Initialize.
+                        t = tmp["Gtk_New%d" % gtk_new_index] = [obj]
+                        subprograms.append(t)
+                    elif base_name(obj.name) == "Initialize":
+                        tmp["Gtk_New%d" % gtk_new_index].append(obj)
+                        gtk_new_index += 1
+                    elif name in tmp:
+                        tmp[name].append(obj)  # Also modified in result
+                    else:
+                        tmp[name] = [obj]
+                        subprograms.append(tmp[name])
 
-            return result
+            return code + subprograms
 
         else:
-            return [[s] for in_spec, s in self.__subprograms]
+            return [[obj]
+                    for obj, in_spec in self.__objects
+                    if in_spec]
 
     def spec(self, pkg, indent):
         """Return the spec of the section"""
 
-        result = []
+        result = ""
+        add_newline = False
 
-        if self.__subprograms or self.spec_code or self.comment:
+        for group in self._group_objects():
+            for obj in group:
+                # If the previous object requested a trailing newline, and the
+                # current object is not a comment, then add the newline now.
+                if (add_newline
+                    and (not isinstance(obj, Code)
+                         or not obj.iscomment)):
+
+                    result += "\n"
+
+                if isinstance(obj, Code):
+                    result += obj.format(indent=indent).strip("\n") + "\n"
+                    add_newline = obj.add_newline
+
+                elif isinstance(obj, Subprogram):
+                    show_doc = ((not Section.group_getters_and_setters
+                                 and not obj.name.startswith("Gtk_New"))
+                                 or obj == group[-1])
+                    result += obj.spec(pkg=pkg,
+                                      show_doc=show_doc,
+                                      indent=indent).strip("\n") + "\n"
+                    add_newline = (obj.add_newline and show_doc)
+
+                else:
+                    result += obj.spec().strip("\n") + "\n"
+                    add_newline = obj.add_newline
+
+        if add_newline:
+            result += "\n"
+
+        if result:
+            if self.__comment:
+                result = self.__comment + "\n" + result
+            elif self.name:
+                result = "\n" + result
             if self.name:
-                result.append(box(self.name))
-            if self.comment:
-                result.append(self.comment)
-            else:
-                result.append("")
+                result = box(self.name) + "\n" + result
 
-            spec_code = Code.formatlist(self.spec_code, indent=indent)
-            if spec_code:
-                result.append(spec_code)
-
-            for group in self._group_subprograms():
-                for s in group:
-                    if isinstance(s, Subprogram):
-                        show_doc = ((not Section.group_getters_and_setters
-                                     and not group[0].name.startswith("Gtk_New"))
-                                    or s == group[-1])
-
-                        result.append(s.spec(pkg=pkg,
-                                             show_doc=show_doc,
-                                             indent=indent))
-                    else:
-                        show_doc = True
-                        result.append(s.spec())
-
-                    if show_doc:
-                        result.append("")
-
-        return "\n".join(result)
+        return result
 
     def body(self, pkg, indent):
         result = []
 
-        body_code = Code.formatlist(self.body_code, indent=indent)
-        if body_code:
-            result.append(body_code)
+        for obj, in_spec in self.__objects:
+            if in_spec or not isinstance(obj, Code):
+                continue
+            result.append(obj.format(indent=indent))  # ignores obj.add_newline
 
-        self.__subprograms.sort(lambda x, y: cmp(base_name(x[1].name), base_name(y[1].name)))
+        body_subprograms = [(obj, in_spec) for obj, in_spec in self.__objects
+                            if not isinstance(obj, Code)]
+        body_subprograms.sort(key=lambda x: base_name(x[0].name))
 
         # First output for the subprograms only defined in the body
 
-        for in_spec, s in self.__subprograms:
+        for obj, in_spec in body_subprograms:
             if not in_spec:
-                if isinstance(s, Subprogram):
-                    result.append(s.spec(pkg=pkg, indent=indent))
+                if isinstance(obj, Subprogram):
+                    result.append(obj.spec(pkg=pkg, indent=indent))
                 else:
-                    result.append(s.spec())
-
+                    result.append(obj.spec())
                 result.append("")
 
         # Then output all the bodiesx
 
-        for in_spec, s in self.__subprograms:
-            if isinstance(s, Subprogram):
-                b = s.body(pkg=pkg, indent=indent)
+        for obj, in_spec in body_subprograms:
+            if isinstance(obj, Subprogram):
+                b = obj.body(pkg=pkg, indent=indent)
             else:
-                b = s.body() + "\n"
-
+                b = obj.body() + "\n"
             if b:
                 result.append(b)
 
@@ -1985,13 +2002,17 @@ class Package(object):
 
                  # Then non-primitive (so that we can freeze the type, for
                  # instance by instantiating lists)
-                 "Interfaces": 7,
                  "Functions": 8,
                  "Lists": 9,
 
                  # General data independent of the type
                  "Properties": 10,
-                 "Signals": 11}
+                 "Signals": 11,
+
+                 # Instantiating new generic packages freezes the types, so
+                 # should be last
+                 "Interfaces": 12,
+                 }
         return order.get(name, 1000)
 
     def spec(self):
@@ -2020,7 +2041,7 @@ class Package(object):
         if self.formal_params:
             result.append(indent + "generic")
             result.append(indent + "   %s" % self.formal_params)
-        result.append(indent + "package %s is" % self.name)
+        result.append(indent + "package %s is\n" % self.name)
 
         self.sections.sort(lambda x, y: cmp(self.section_order(x.name),
                                             self.section_order(y.name)))
@@ -2028,7 +2049,7 @@ class Package(object):
         for s in self.sections:
             sec = s.spec(pkg=self, indent=indent + "   ")
             if sec:
-                result.append(sec)
+                result.append(sec.strip("\n") + "\n")
 
         if self.private:
             result.append(indent + "private")

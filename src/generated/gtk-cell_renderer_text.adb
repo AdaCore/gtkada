@@ -79,4 +79,37 @@ package body Gtk.Cell_Renderer_Text is
       Internal (Get_Object (Self), Number_Of_Rows);
    end Set_Fixed_Height_From_Font;
 
+   ---------------
+   -- On_Edited --
+   ---------------
+
+   procedure On_Edited
+      (Self : not null access Gtk_Cell_Renderer_Text_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Renderer_Text_Record'Class;
+          Path     : UTF8_String;
+          New_Text : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Edited;
+
+   ---------------
+   -- On_Edited --
+   ---------------
+
+   procedure On_Edited
+      (Self : not null access Gtk_Cell_Renderer_Text_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Path     : UTF8_String;
+          New_Text : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Edited;
+
 end Gtk.Cell_Renderer_Text;

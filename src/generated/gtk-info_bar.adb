@@ -243,4 +243,63 @@ package body Gtk.Info_Bar is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure (Self : access Gtk_Info_Bar_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Close;
+
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Close;
+
+   -----------------
+   -- On_Response --
+   -----------------
+
+   procedure On_Response
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Info_Bar_Record'Class;
+          Response_Id : Gint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Response;
+
+   -----------------
+   -- On_Response --
+   -----------------
+
+   procedure On_Response
+      (Self : not null access Gtk_Info_Bar_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Response_Id : Gint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Response;
+
 end Gtk.Info_Bar;

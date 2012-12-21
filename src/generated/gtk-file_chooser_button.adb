@@ -220,7 +220,6 @@ package body Gtk.File_Chooser_Button is
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_add_filter");
@@ -619,7 +618,6 @@ package body Gtk.File_Chooser_Button is
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_remove_filter");
@@ -869,7 +867,6 @@ package body Gtk.File_Chooser_Button is
    procedure Set_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_file_chooser_set_filter");
@@ -1049,5 +1046,34 @@ package body Gtk.File_Chooser_Button is
       Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
    end Unselect_Uri;
+
+   -----------------
+   -- On_File_Set --
+   -----------------
+
+   procedure On_File_Set
+      (Self : not null access Gtk_File_Chooser_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_File_Chooser_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_File_Set;
+
+   -----------------
+   -- On_File_Set --
+   -----------------
+
+   procedure On_File_Set
+      (Self : not null access Gtk_File_Chooser_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_File_Set;
 
 end Gtk.File_Chooser_Button;

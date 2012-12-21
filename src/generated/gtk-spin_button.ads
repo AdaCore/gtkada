@@ -232,8 +232,7 @@ package Gtk.Spin_Button is
 
    procedure Set_Adjustment
       (Spin_Button : not null access Gtk_Spin_Button_Record;
-       Adjustment  : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      ;
+       Adjustment  : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Replaces the Gtk.Adjustment.Gtk_Adjustment associated with Spin_Button.
    --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment to replace the existing
    --  adjustment
@@ -435,6 +434,124 @@ package Gtk.Spin_Button is
        End_Pos   : Gint := -1);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Adjustment_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Adjustment.Gtk_Adjustment
+
+   Climb_Rate_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
+   The_Digits_Property : constant Glib.Properties.Property_Uint;
+
+   Numeric_Property : constant Glib.Properties.Property_Boolean;
+
+   Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean;
+
+   Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy;
+   --  Type: Gtk_Spin_Button_Update_Policy
+
+   Value_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
+   Wrap_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   Signal_Change_Value : constant Glib.Signal_Name := "change-value";
+   procedure On_Change_Value
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self   : access Gtk_Spin_Button_Record'Class;
+          Object : Gtk.Enums.Gtk_Scroll_Type));
+   procedure On_Change_Value
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   Signal_Input : constant Glib.Signal_Name := "input";
+   procedure On_Input
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self      : access Gtk_Spin_Button_Record'Class;
+          New_Value : access Gdouble) return Gint);
+   procedure On_Input
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self      : access Glib.Object.GObject_Record'Class;
+          New_Value : access Gdouble) return Gint;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::input signal can be used to influence the conversion of the users
+   --  input into a double value. The signal handler is expected to use
+   --  Gtk.GEntry.Get_Text to retrieve the text of the entry and set New_Value
+   --  to the new value.
+   --
+   --  The default conversion uses g_strtod.
+   --
+   --  was not handled, and GTK_INPUT_ERROR if the conversion failed.
+   -- 
+   --  Callback parameters:
+   --    --  "new_value": return location for the new value
+   --    --  Returns True for a successful conversion, False if the input
+
+   Signal_Output : constant Glib.Signal_Name := "output";
+   procedure On_Output
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self : access Gtk_Spin_Button_Record'Class) return Boolean);
+   procedure On_Output
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The ::output signal can be used to change to formatting of the value
+   --  that is displayed in the spin buttons entry. |[ /* show leading zeros */
+   --  static gboolean on_output (GtkSpinButton *spin, gpointer data) {
+   --  GtkAdjustment *adjustment; gchar *text; int value;
+   --
+   --  adjustment = gtk_spin_button_get_adjustment (spin); value =
+   --  (int)gtk_adjustment_get_value (adjustment); text = g_strdup_printf
+   --  ("%02d", value); gtk_entry_set_text (GTK_ENTRY (spin), text); g_free
+   --  (text);
+   --
+   --  return TRUE; } ]|
+   -- 
+   --  Callback parameters:
+   --    --  Returns True if the value has been displayed
+
+   Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Spin_Button_Record'Class));
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+
+   Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
+   procedure On_Wrapped
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Spin_Button_Record'Class));
+   procedure On_Wrapped
+      (Self : not null access Gtk_Spin_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
+   --  The wrapped signal is emitted right after the spinbutton wraps from its
+   --  maximum to minimum value or vice-versa.
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -477,82 +594,6 @@ package Gtk.Spin_Button is
      (Interf : Gtk.Editable.Gtk_Editable)
    return Gtk_Spin_Button
    renames Implements_Gtk_Editable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Adjustment_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Adjustment.Gtk_Adjustment
-
-   Climb_Rate_Property : constant Glib.Properties.Property_Double;
-   --  Type: Gdouble
-
-   The_Digits_Property : constant Glib.Properties.Property_Uint;
-
-   Numeric_Property : constant Glib.Properties.Property_Boolean;
-
-   Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean;
-
-   Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy;
-   --  Type: Gtk_Spin_Button_Update_Policy
-
-   Value_Property : constant Glib.Properties.Property_Double;
-   --  Type: Gdouble
-
-   Wrap_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-
-   Signal_Change_Value : constant Glib.Signal_Name := "change-value";
-   --     procedure Handler
-   --       (Self   : access Gtk_Spin_Button_Record'Class;
-   --        Object : Gtk.Enums.Gtk_Scroll_Type);
-
-   Signal_Input : constant Glib.Signal_Name := "input";
-   --  The ::input signal can be used to influence the conversion of the users
-   --  input into a double value. The signal handler is expected to use
-   --  Gtk.GEntry.Get_Text to retrieve the text of the entry and set New_Value
-   --  to the new value.
-   --
-   --  The default conversion uses g_strtod.
-   --
-   --  was not handled, and GTK_INPUT_ERROR if the conversion failed.
-   --
-   --  Returns True for a successful conversion, False if the input
-   --     function Handler
-   --       (Self      : access Gtk_Spin_Button_Record'Class;
-   --        New_Value : access Gdouble) return Gint;
-   --    --  "new_value": return location for the new value
-
-   Signal_Output : constant Glib.Signal_Name := "output";
-   --  The ::output signal can be used to change to formatting of the value
-   --  that is displayed in the spin buttons entry. |[ /* show leading zeros */
-   --  static gboolean on_output (GtkSpinButton *spin, gpointer data) {
-   --  GtkAdjustment *adjustment; gchar *text; int value;
-   --
-   --  adjustment = gtk_spin_button_get_adjustment (spin); value =
-   --  (int)gtk_adjustment_get_value (adjustment); text = g_strdup_printf
-   --  ("%02d", value); gtk_entry_set_text (GTK_ENTRY (spin), text); g_free
-   --  (text);
-   --
-   --  return TRUE; } ]|
-   --
-   --  Returns True if the value has been displayed
-   --     function Handler
-   --       (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
-
-   Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
-   --     procedure Handler (Self : access Gtk_Spin_Button_Record'Class);
-
-   Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
-   --  The wrapped signal is emitted right after the spinbutton wraps from its
-   --  maximum to minimum value or vice-versa.
-   --     procedure Handler (Self : access Gtk_Spin_Button_Record'Class);
 
 private
    Wrap_Property : constant Glib.Properties.Property_Boolean :=

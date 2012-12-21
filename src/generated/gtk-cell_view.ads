@@ -99,13 +99,11 @@ package Gtk.Cell_View is
    procedure Gtk_New_With_Context
       (Cell_View : out Gtk_Cell_View;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
-       Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
-      ;
+       Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class);
    procedure Initialize_With_Context
       (Cell_View : not null access Gtk_Cell_View_Record'Class;
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
-       Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class)
-      ;
+       Context   : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class);
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget with a specific
    --  Gtk.Cell_Area.Gtk_Cell_Area to layout cells and a specific
    --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context.
@@ -368,8 +366,7 @@ package Gtk.Cell_View is
 
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Cell_View_Record;
-       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      ;
+       Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Cell_View_Record)
@@ -397,50 +394,6 @@ package Gtk.Cell_View is
    procedure Set_Orientation
       (Self        : not null access Gtk_Cell_View_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-   --
-   --  - "CellLayout"
-   --
-   --  - "Orientable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Cell_View_Record, Gtk_Cell_View);
-   function "+"
-     (Widget : access Gtk_Cell_View_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Cell_View
-   renames Implements_Gtk_Buildable.To_Object;
-
-   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
-     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Cell_View_Record, Gtk_Cell_View);
-   function "+"
-     (Widget : access Gtk_Cell_View_Record'Class)
-   return Gtk.Cell_Layout.Gtk_Cell_Layout
-   renames Implements_Gtk_Cell_Layout.To_Interface;
-   function "-"
-     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
-   return Gtk_Cell_View
-   renames Implements_Gtk_Cell_Layout.To_Object;
-
-   package Implements_Gtk_Orientable is new Glib.Types.Implements
-     (Gtk.Orientable.Gtk_Orientable, Gtk_Cell_View_Record, Gtk_Cell_View);
-   function "+"
-     (Widget : access Gtk_Cell_View_Record'Class)
-   return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Gtk_Orientable.To_Interface;
-   function "-"
-     (Interf : Gtk.Orientable.Gtk_Orientable)
-   return Gtk_Cell_View
-   renames Implements_Gtk_Orientable.To_Object;
 
    ----------------
    -- Properties --
@@ -499,6 +452,50 @@ package Gtk.Cell_View is
    --  size doesnt change when different items are selected).
    --
    --  since 3.0
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+   --
+   --  - "CellLayout"
+   --
+   --  - "Orientable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Cell_View_Record, Gtk_Cell_View);
+   function "+"
+     (Widget : access Gtk_Cell_View_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Cell_View
+   renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
+     (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Cell_View_Record, Gtk_Cell_View);
+   function "+"
+     (Widget : access Gtk_Cell_View_Record'Class)
+   return Gtk.Cell_Layout.Gtk_Cell_Layout
+   renames Implements_Gtk_Cell_Layout.To_Interface;
+   function "-"
+     (Interf : Gtk.Cell_Layout.Gtk_Cell_Layout)
+   return Gtk_Cell_View
+   renames Implements_Gtk_Cell_Layout.To_Object;
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Cell_View_Record, Gtk_Cell_View);
+   function "+"
+     (Widget : access Gtk_Cell_View_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Cell_View
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Fit_Model_Property : constant Glib.Properties.Property_Boolean :=

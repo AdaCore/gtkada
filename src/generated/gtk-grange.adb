@@ -234,7 +234,6 @@ package body Gtk.GRange is
    procedure Set_Adjustment
       (The_Range  : not null access Gtk_Range_Record;
        Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-      
    is
       procedure Internal
          (The_Range  : System.Address;
@@ -472,5 +471,128 @@ package body Gtk.GRange is
    begin
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
+
+   ----------------------
+   -- On_Adjust_Bounds --
+   ----------------------
+
+   procedure On_Adjust_Bounds
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self  : access Gtk_Range_Record'Class;
+          Value : Gdouble))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Adjust_Bounds;
+
+   ----------------------
+   -- On_Adjust_Bounds --
+   ----------------------
+
+   procedure On_Adjust_Bounds
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Value : Gdouble);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Adjust_Bounds;
+
+   ---------------------
+   -- On_Change_Value --
+   ---------------------
+
+   procedure On_Change_Value
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access function
+         (Self   : access Gtk_Range_Record'Class;
+          Scroll : Gtk.Enums.Gtk_Scroll_Type;
+          Value  : Gdouble) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Change_Value;
+
+   ---------------------
+   -- On_Change_Value --
+   ---------------------
+
+   procedure On_Change_Value
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access function
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Scroll : Gtk.Enums.Gtk_Scroll_Type;
+          Value  : Gdouble) return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Change_Value;
+
+   --------------------
+   -- On_Move_Slider --
+   --------------------
+
+   procedure On_Move_Slider
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Range_Record'Class;
+          Step : Gtk.Enums.Gtk_Scroll_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Slider;
+
+   --------------------
+   -- On_Move_Slider --
+   --------------------
+
+   procedure On_Move_Slider
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class;
+          Step : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Slider;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure (Self : access Gtk_Range_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Value_Changed;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self : not null access Gtk_Range_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Value_Changed;
 
 end Gtk.GRange;

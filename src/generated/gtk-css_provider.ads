@@ -824,24 +824,6 @@ package Gtk.Css_Provider is
        Value : out Glib.Values.GValue;
        Found : out Boolean);
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "StyleProvider"
-
-   package Implements_Gtk_Style_Provider is new Glib.Types.Implements
-     (Gtk.Style_Provider.Gtk_Style_Provider, Gtk_Css_Provider_Record, Gtk_Css_Provider);
-   function "+"
-     (Widget : access Gtk_Css_Provider_Record'Class)
-   return Gtk.Style_Provider.Gtk_Style_Provider
-   renames Implements_Gtk_Style_Provider.To_Interface;
-   function "-"
-     (Interf : Gtk.Style_Provider.Gtk_Style_Provider)
-   return Gtk_Css_Provider
-   renames Implements_Gtk_Style_Provider.To_Object;
-
    ---------------
    -- Functions --
    ---------------
@@ -865,6 +847,19 @@ package Gtk.Css_Provider is
    -------------
 
    Signal_Parsing_Error : constant Glib.Signal_Name := "parsing-error";
+   procedure On_Parsing_Error
+      (Self : not null access Gtk_Css_Provider_Record;
+       Call : not null access procedure
+         (Self    : access Gtk_Css_Provider_Record'Class;
+          Section : Gtk.Css_Section.Gtk_Css_Section;
+          Error   : GLib.Error));
+   procedure On_Parsing_Error
+      (Self : not null access Gtk_Css_Provider_Record;
+       Call : not null access procedure
+         (Self    : access Glib.Object.GObject_Record'Class;
+          Section : Gtk.Css_Section.Gtk_Css_Section;
+          Error   : GLib.Error);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Signals that a parsing error occured. the Path, Line and Position
    --  describe the actual location of the error as accurately as possible.
    --
@@ -876,11 +871,27 @@ package Gtk.Css_Provider is
    --  Note that this signal may be emitted at any time as the css provider
    --  may opt to defer parsing parts or all of the input to a later time than
    --  when a loading function was called.
-   --     procedure Handler
-   --       (Self    : access Gtk_Css_Provider_Record'Class;
-   --        Section : Gtk.Css_Section.Gtk_Css_Section;
-   --        Error   : GLib.Error);
+   -- 
+   --  Callback parameters:
    --    --  "section": section the error happened in
    --    --  "error": The parsing error
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "StyleProvider"
+
+   package Implements_Gtk_Style_Provider is new Glib.Types.Implements
+     (Gtk.Style_Provider.Gtk_Style_Provider, Gtk_Css_Provider_Record, Gtk_Css_Provider);
+   function "+"
+     (Widget : access Gtk_Css_Provider_Record'Class)
+   return Gtk.Style_Provider.Gtk_Style_Provider
+   renames Implements_Gtk_Style_Provider.To_Interface;
+   function "-"
+     (Interf : Gtk.Style_Provider.Gtk_Style_Provider)
+   return Gtk_Css_Provider
+   renames Implements_Gtk_Style_Provider.To_Object;
 
 end Gtk.Css_Provider;

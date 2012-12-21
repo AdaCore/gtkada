@@ -314,7 +314,6 @@ package body Gtk.Cell_Area_Box is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;

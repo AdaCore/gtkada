@@ -507,4 +507,88 @@ package body Gdk.Screen is
       return Internal;
    end Width_Mm;
 
+   ---------------------------
+   -- On_Composited_Changed --
+   ---------------------------
+
+   procedure On_Composited_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure (Self : access Gdk_Screen_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Composited_Changed;
+
+   ---------------------------
+   -- On_Composited_Changed --
+   ---------------------------
+
+   procedure On_Composited_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Composited_Changed;
+
+   -------------------------
+   -- On_Monitors_Changed --
+   -------------------------
+
+   procedure On_Monitors_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure (Self : access Gdk_Screen_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Monitors_Changed;
+
+   -------------------------
+   -- On_Monitors_Changed --
+   -------------------------
+
+   procedure On_Monitors_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Monitors_Changed;
+
+   ---------------------
+   -- On_Size_Changed --
+   ---------------------
+
+   procedure On_Size_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure (Self : access Gdk_Screen_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Size_Changed;
+
+   ---------------------
+   -- On_Size_Changed --
+   ---------------------
+
+   procedure On_Size_Changed
+      (Self : not null access Gdk_Screen_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Size_Changed;
+
 end Gdk.Screen;

@@ -325,11 +325,19 @@ package Gtk.Tree_Selection is
    -------------
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
+   procedure On_Changed
+      (Self : not null access Gtk_Tree_Selection_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Tree_Selection_Record'Class));
+   procedure On_Changed
+      (Self : not null access Gtk_Tree_Selection_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted whenever the selection has (possibly) changed. Please note that
    --  this signal is mostly a hint. It may only be emitted once when a range
    --  of rows are selected, and it may occasionally be emitted when nothing
    --  has happened.
-   --     procedure Handler (Self : access Gtk_Tree_Selection_Record'Class);
 
 private
    Mode_Property : constant Gtk.Enums.Property_Gtk_Selection_Mode :=

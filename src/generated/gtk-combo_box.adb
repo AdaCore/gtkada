@@ -1031,7 +1031,6 @@ package body Gtk.Combo_Box is
    procedure Clear_Attributes
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : System.Address;
@@ -1152,5 +1151,122 @@ package body Gtk.Combo_Box is
    begin
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure (Self : access Gtk_Combo_Box_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
+   --------------------
+   -- On_Move_Active --
+   --------------------
+
+   procedure On_Move_Active
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Combo_Box_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Move_Active;
+
+   --------------------
+   -- On_Move_Active --
+   --------------------
+
+   procedure On_Move_Active
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Move_Active;
+
+   ----------------
+   -- On_Popdown --
+   ----------------
+
+   procedure On_Popdown
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access function
+         (Self : access Gtk_Combo_Box_Record'Class) return Boolean)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popdown;
+
+   ----------------
+   -- On_Popdown --
+   ----------------
+
+   procedure On_Popdown
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access function
+         (Self : access Glib.Object.GObject_Record'Class)
+          return Boolean;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popdown;
+
+   --------------
+   -- On_Popup --
+   --------------
+
+   procedure On_Popup
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure (Self : access Gtk_Combo_Box_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Popup;
+
+   --------------
+   -- On_Popup --
+   --------------
+
+   procedure On_Popup
+      (Self : not null access Gtk_Combo_Box_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Popup;
 
 end Gtk.Combo_Box;

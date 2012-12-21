@@ -413,4 +413,39 @@ package body Gtk.Accel_Map is
       Free (Tmp_Accel_Path);
    end Unlock_Path;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Accel_Map_Record;
+       Call : not null access procedure
+         (Self       : access Gtk_Accel_Map_Record'Class;
+          Accel_Path : UTF8_String;
+          Accel_Key  : Guint;
+          Accel_Mods : Gdk.Types.Gdk_Modifier_Type))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Accel_Map_Record;
+       Call : not null access procedure
+         (Self       : access Glib.Object.GObject_Record'Class;
+          Accel_Path : UTF8_String;
+          Accel_Key  : Guint;
+          Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
 end Gtk.Accel_Map;

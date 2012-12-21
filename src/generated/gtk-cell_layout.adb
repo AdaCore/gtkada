@@ -112,7 +112,6 @@ package body Gtk.Cell_Layout is
    procedure Clear_Attributes
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-      
    is
       procedure Internal
          (Cell_Layout : Gtk_Cell_Layout;

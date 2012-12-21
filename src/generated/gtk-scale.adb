@@ -496,4 +496,35 @@ package body Gtk.Scale is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
+   ---------------------
+   -- On_Format_Value --
+   ---------------------
+
+   procedure On_Format_Value
+      (Self : not null access Gtk_Scale_Record;
+       Call : not null access function
+         (Self  : access Gtk_Scale_Record'Class;
+          Value : Gdouble) return UTF8_String)
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Format_Value;
+
+   ---------------------
+   -- On_Format_Value --
+   ---------------------
+
+   procedure On_Format_Value
+      (Self : not null access Gtk_Scale_Record;
+       Call : not null access function
+         (Self  : access Glib.Object.GObject_Record'Class;
+          Value : Gdouble) return UTF8_String;
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Format_Value;
+
 end Gtk.Scale;

@@ -496,31 +496,6 @@ package Gtk.Image is
       Name  : out GNAT.Strings.String_Access;
       Size  : out Gtk.Enums.Gtk_Icon_Size);
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-   --  Methods inherited from the Buildable interface are not duplicated here
-   --  since they are meant to be used by tools, mostly. If you need to call
-   --  them, use an explicit cast through the "-" operator below.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Image_Record, Gtk_Image);
-   function "+"
-     (Widget : access Gtk_Image_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Image
-   renames Implements_Gtk_Buildable.To_Object;
-
    ----------------
    -- Properties --
    ----------------
@@ -563,6 +538,24 @@ package Gtk.Image is
    --  Whether the icon displayed in the GtkImage will use standard icon names
    --  fallback. The value of this property is only relevant for images of type
    --  Gtk.Image.Image_Icon_Name and Gtk.Image.Image_Gicon.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Image_Record, Gtk_Image);
+   function "+"
+     (Widget : access Gtk_Image_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Image
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean :=

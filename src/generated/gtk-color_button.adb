@@ -379,4 +379,33 @@ package body Gtk.Color_Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   ------------------
+   -- On_Color_Set --
+   ------------------
+
+   procedure On_Color_Set
+      (Self : not null access Gtk_Color_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Color_Button_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Color_Set;
+
+   ------------------
+   -- On_Color_Set --
+   ------------------
+
+   procedure On_Color_Set
+      (Self : not null access Gtk_Color_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Color_Set;
+
 end Gtk.Color_Button;

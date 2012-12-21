@@ -65,4 +65,37 @@ package body Gtk.Cell_Renderer_Combo is
       Set_Object (Self, Internal);
    end Initialize;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Cell_Renderer_Combo_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Cell_Renderer_Combo_Record'Class;
+          Path_String : UTF8_String;
+          New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Cell_Renderer_Combo_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Path_String : UTF8_String;
+          New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
 end Gtk.Cell_Renderer_Combo;

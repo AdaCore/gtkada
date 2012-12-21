@@ -207,37 +207,6 @@ package Gtk.Color_Button is
        Action : access Gtk.Action.Gtk_Action_Record'Class);
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Activatable"
-   --
-   --  - "Buildable"
-
-   package Implements_Gtk_Activatable is new Glib.Types.Implements
-     (Gtk.Activatable.Gtk_Activatable, Gtk_Color_Button_Record, Gtk_Color_Button);
-   function "+"
-     (Widget : access Gtk_Color_Button_Record'Class)
-   return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Gtk_Activatable.To_Interface;
-   function "-"
-     (Interf : Gtk.Activatable.Gtk_Activatable)
-   return Gtk_Color_Button
-   renames Implements_Gtk_Activatable.To_Object;
-
-   package Implements_Gtk_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Color_Button_Record, Gtk_Color_Button);
-   function "+"
-     (Widget : access Gtk_Color_Button_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Gtk_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Color_Button
-   renames Implements_Gtk_Buildable.To_Object;
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -267,6 +236,15 @@ package Gtk.Color_Button is
    -------------
 
    Signal_Color_Set : constant Glib.Signal_Name := "color-set";
+   procedure On_Color_Set
+      (Self : not null access Gtk_Color_Button_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Color_Button_Record'Class));
+   procedure On_Color_Set
+      (Self : not null access Gtk_Color_Button_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::color-set signal is emitted when the user selects a color. When
    --  handling this signal, use Gtk.Color_Button.Get_Color and
    --  Gtk.Color_Button.Get_Alpha (or Gtk.Color_Button.Get_Rgba) to find out
@@ -275,7 +253,37 @@ package Gtk.Color_Button is
    --  Note that this signal is only emitted when the *user* changes the
    --  color. If you need to react to programmatic color changes as well, use
    --  the notify::color signal.
-   --     procedure Handler (Self : access Gtk_Color_Button_Record'Class);
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Color_Button_Record, Gtk_Color_Button);
+   function "+"
+     (Widget : access Gtk_Color_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Gtk_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Color_Button
+   renames Implements_Gtk_Activatable.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Color_Button_Record, Gtk_Color_Button);
+   function "+"
+     (Widget : access Gtk_Color_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Color_Button
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean :=

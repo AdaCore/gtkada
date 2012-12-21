@@ -139,16 +139,6 @@ package Gtk.Scrollable is
    --  "policy": the vertical Gtk.Enums.Gtk_Scrollable_Policy
 
    ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Scrollable"
-
-   function "+" (W : Gtk_Scrollable) return Gtk_Scrollable;
-   pragma Inline ("+");
-
-   ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
@@ -173,6 +163,16 @@ package Gtk.Scrollable is
    --  Determines whether vertical scrolling should start once the scrollable
    --  widget is allocated less than its minimum height or less than its
    --  natural height.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Scrollable"
+
+   function "+" (W : Gtk_Scrollable) return Gtk_Scrollable;
+   pragma Inline ("+");
 
 private
    Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy :=

@@ -250,14 +250,25 @@ package Gtk.Cell_Renderer_Text is
    -------------
 
    Signal_Edited : constant Glib.Signal_Name := "edited";
+   procedure On_Edited
+      (Self : not null access Gtk_Cell_Renderer_Text_Record;
+       Call : not null access procedure
+         (Self     : access Gtk_Cell_Renderer_Text_Record'Class;
+          Path     : UTF8_String;
+          New_Text : UTF8_String));
+   procedure On_Edited
+      (Self : not null access Gtk_Cell_Renderer_Text_Record;
+       Call : not null access procedure
+         (Self     : access Glib.Object.GObject_Record'Class;
+          Path     : UTF8_String;
+          New_Text : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class);
    --  This signal is emitted after Renderer has been edited.
    --
    --  It is the responsibility of the application to update the model and
    --  store New_Text at the position indicated by Path.
-   --     procedure Handler
-   --       (Self     : access Gtk_Cell_Renderer_Text_Record'Class;
-   --        Path     : UTF8_String;
-   --        New_Text : UTF8_String);
+   -- 
+   --  Callback parameters:
    --    --  "path": the path identifying the edited cell
    --    --  "new_text": the new text
 

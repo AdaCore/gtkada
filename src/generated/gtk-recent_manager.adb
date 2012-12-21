@@ -310,4 +310,33 @@ package body Gtk.Recent_Manager is
       return Gtk.Recent_Manager.Gtk_Recent_Manager (Get_User_Data (Internal, Stub_Gtk_Recent_Manager));
    end Get_Default;
 
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Recent_Manager_Record;
+       Call : not null access procedure
+         (Self : access Gtk_Recent_Manager_Record'Class))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self : not null access Gtk_Recent_Manager_Record;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Changed;
+
 end Gtk.Recent_Manager;

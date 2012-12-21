@@ -278,6 +278,34 @@ package body Gtk.Tree_Sortable is
 
    end Set_Sort_Func_User_Data;
 
+   ----------------------------
+   -- On_Sort_Column_Changed --
+   ----------------------------
+
+   procedure On_Sort_Column_Changed
+      (Self : Gtk_Tree_Sortable;
+       Call : not null access procedure (Self : Gtk_Tree_Sortable))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Sort_Column_Changed;
+
+   ----------------------------
+   -- On_Sort_Column_Changed --
+   ----------------------------
+
+   procedure On_Sort_Column_Changed
+      (Self : Gtk_Tree_Sortable;
+       Call : not null access procedure
+         (Self : access Glib.Object.GObject_Record'Class);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Sort_Column_Changed;
+
    function "+" (W : Gtk_Tree_Sortable) return Gtk_Tree_Sortable is
    begin
       return W;

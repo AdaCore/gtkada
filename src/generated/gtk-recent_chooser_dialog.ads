@@ -180,8 +180,7 @@ package Gtk.Recent_Chooser_Dialog is
 
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Current_Item
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
@@ -201,8 +200,7 @@ package Gtk.Recent_Chooser_Dialog is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
@@ -278,8 +276,7 @@ package Gtk.Recent_Chooser_Dialog is
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      ;
+       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    procedure Select_All
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record);

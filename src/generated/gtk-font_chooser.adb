@@ -257,6 +257,37 @@ package body Gtk.Font_Chooser is
       Internal (Self, Boolean'Pos (Show_Preview_Entry));
    end Set_Show_Preview_Entry;
 
+   -----------------------
+   -- On_Font_Activated --
+   -----------------------
+
+   procedure On_Font_Activated
+      (Self : Gtk_Font_Chooser;
+       Call : not null access procedure
+         (Self   : Gtk_Font_Chooser;
+          Object : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Font_Activated;
+
+   -----------------------
+   -- On_Font_Activated --
+   -----------------------
+
+   procedure On_Font_Activated
+      (Self : Gtk_Font_Chooser;
+       Call : not null access procedure
+         (Self   : access Glib.Object.GObject_Record'Class;
+          Object : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Font_Activated;
+
    function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser is
    begin
       return W;

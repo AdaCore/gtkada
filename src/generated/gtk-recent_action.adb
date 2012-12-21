@@ -107,7 +107,6 @@ package body Gtk.Recent_Action is
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
        Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
-      
    is
    begin
       Widget := new Gtk_Recent_Action_Record;
@@ -205,7 +204,6 @@ package body Gtk.Recent_Action is
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
        Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
-      
    is
       function Internal
          (Name     : Interfaces.C.Strings.chars_ptr;
@@ -345,7 +343,6 @@ package body Gtk.Recent_Action is
    procedure Add_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_add_filter");
@@ -543,7 +540,6 @@ package body Gtk.Recent_Action is
    procedure Remove_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_remove_filter");
@@ -609,7 +605,6 @@ package body Gtk.Recent_Action is
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
        Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
-      
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_set_filter");

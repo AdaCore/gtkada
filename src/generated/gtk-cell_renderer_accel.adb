@@ -65,4 +65,72 @@ package body Gtk.Cell_Renderer_Accel is
       Set_Object (Self, Internal);
    end Initialize;
 
+   ----------------------
+   -- On_Accel_Cleared --
+   ----------------------
+
+   procedure On_Accel_Cleared
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self        : access Gtk_Cell_Renderer_Accel_Record'Class;
+          Path_String : UTF8_String))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Accel_Cleared;
+
+   ----------------------
+   -- On_Accel_Cleared --
+   ----------------------
+
+   procedure On_Accel_Cleared
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self        : access Glib.Object.GObject_Record'Class;
+          Path_String : UTF8_String);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Accel_Cleared;
+
+   ---------------------
+   -- On_Accel_Edited --
+   ---------------------
+
+   procedure On_Accel_Edited
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
+          Path_String      : UTF8_String;
+          Accel_Key        : Guint;
+          Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
+          Hardware_Keycode : Guint))
+   is
+      pragma Unreferenced (Self, Call);
+   begin
+      null;
+   end On_Accel_Edited;
+
+   ---------------------
+   -- On_Accel_Edited --
+   ---------------------
+
+   procedure On_Accel_Edited
+      (Self : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call : not null access procedure
+         (Self             : access Glib.Object.GObject_Record'Class;
+          Path_String      : UTF8_String;
+          Accel_Key        : Guint;
+          Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
+          Hardware_Keycode : Guint);
+       Slot : not null access Glib.Object.GObject_Record'Class)
+   is
+      pragma Unreferenced (Self, Call, Slot);
+   begin
+      null;
+   end On_Accel_Edited;
+
 end Gtk.Cell_Renderer_Accel;
