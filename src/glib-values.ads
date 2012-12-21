@@ -191,7 +191,8 @@ package Glib.Values is
    function Get_Flags (Value : GValue) return Glib.Guint;
    --  ??? Should really manipulate Glib.Properties.Creation.Flags_Int_Value
 
-   procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject);
+   procedure Set_Object
+      (Value : in out GValue; To : access Glib.Object.GObject_Record'Class);
    function Get_Object (Value : GValue) return Glib.Object.GObject;
    --  These are used to manipulate GObject instances.
 

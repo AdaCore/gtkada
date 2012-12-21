@@ -143,14 +143,16 @@ package body Glib.Values is
    -- Set_Object --
    ----------------
 
-   procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject) is
+   procedure Set_Object
+      (Value : in out GValue; To : access Glib.Object.GObject_Record'Class)
+   is
       procedure Internal
         (Value : in out Glib.Values.GValue;
          To    : System.Address);
       pragma Import (C, Internal, "g_value_set_object");
 
    begin
-      Internal (Value, Glib.Object.Convert (To));
+      Internal (Value, Glib.Object.Convert (Glib.Object.GObject (To)));
    end Set_Object;
 
    ----------------
