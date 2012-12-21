@@ -1889,8 +1889,6 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                     add_newline=False)
 
                 if bind:
-                    # ??? Missing compared to Gtk.Handlers: user_data, access
-                    # to the Handler_Id
                     connect = Subprogram(
                         name="On_%s" % naming.case(name),
                         plist=[Parameter(name="Self", type=on_selftype),

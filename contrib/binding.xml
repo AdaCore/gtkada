@@ -2429,7 +2429,9 @@ __PRE__
      <list ada="Widget_List" ctype="Widget"/>
      <slist ada="Widget_SList" ctype="Widget"/>
 
-     <method id="::query-tooltip" bind="False" />
+     <method id="::query-tooltip">
+        <parameter name="tooltip" ctype="GtkWidget*"/>
+     </method>
 
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
