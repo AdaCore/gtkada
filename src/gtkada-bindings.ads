@@ -134,7 +134,7 @@ package Gtkada.Bindings is
       N_Params        : Glib.Guint;          --  Number of entries in Params
       Params          : Glib.Values.C_GValues;
       Invocation_Hint : System.Address;
-      User_Data       : System.Address);
+      Marsh_Data      : System.Address);
    pragma Convention (C, C_Marshaller);
    --  A function called directly from gtk+ when dispatching signals to
    --  handlers. This procedure is in charge of converting the parameters from
@@ -142,6 +142,7 @@ package Gtkada.Bindings is
    --  proper Ada handler given by the user. This handler is encoded in the
    --  user_data, which has an actual type specific to each of the generic
    --  packages below.
+   --  Marsh_Data is the data passed via Set_Meta_Marshal, null otherwise.
    --  This is meant for internal GtkAda use only.
 
    function CClosure_New
@@ -152,6 +153,12 @@ package Gtkada.Bindings is
 
    procedure Set_Marshal (Closure : GClosure; Marshaller : C_Marshaller);
    pragma Import (C, Set_Marshal, "g_closure_set_marshal");
+
+   procedure Set_Meta_Marshal
+     (Closure    : GClosure;
+      Marsh_Data : System.Address;
+      Marshaller : C_Marshaller);
+   pragma Import (C, Set_Meta_Marshal, "g_closure_set_meta_marshal");
 
    function Get_Data (Closure : GClosure) return System.Address;
    pragma Import (C, Get_Data, "ada_gclosure_get_data");

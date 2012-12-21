@@ -23,19 +23,17 @@
 
 with Ada.Text_IO;          use Ada.Text_IO;
 with GNAT.Strings;         use GNAT.Strings;
-with Glib.Values;          use Glib.Values;
 with Gtk.About_Dialog;     use Gtk.About_Dialog;
 with Gtk.Dialog;           use Gtk.Dialog;
 with Gtk.Frame;            use Gtk.Frame;
 with Gtk.Window;           use Gtk.Window;
-with Gtkada.Handlers;
 with Gtk.Widget;           use Gtk.Widget;
 
 package body Create_About is
 
    function On_Activate_Link
-      (About  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Params : Glib.Values.GValues) return Boolean;
+      (About : access Gtk_About_Dialog_Record'Class;
+       URI   : String) return Boolean;
    --  Called when a link is clicked
 
    ----------------------
@@ -43,10 +41,9 @@ package body Create_About is
    ----------------------
 
    function On_Activate_Link
-      (About  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Params : Glib.Values.GValues) return Boolean
+      (About : access Gtk_About_Dialog_Record'Class;
+       URI   : String) return Boolean
    is
-      URI   : constant String := Get_String (Nth (Params, 1));
       pragma Unreferenced (About);
    begin
       Put_Line ("Url clicked: " & URI);
@@ -77,9 +74,7 @@ package body Create_About is
       Set_Destroy_With_Parent (Dialog, True);
       Set_Modal (Dialog, True);
 
-      Gtkada.Handlers.Return_Callback.Connect
-         (Dialog, Gtk.About_Dialog.Signal_Activate_Link,
-          On_Activate_Link'Access);
+      Dialog.On_Activate_Link (On_Activate_Link'Access);
 
       --  In real applications, you will need to free the allocate strings
       Set_Artists (Dialog, (1 => new String'("Artist1 <artist1@foo.com>"),

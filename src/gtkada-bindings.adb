@@ -234,21 +234,24 @@ package body Gtkada.Bindings is
       use type System.Address;
       Id : Gulong;
       Closure : GClosure;
-      Func_Data : constant System.Address := Get_Object (Slot_Object);
       pragma Unreferenced (Id);
 
    begin
-      Closure := CClosure_New (Handler, Func_Data, Destroy);
+      if Slot_Object /= null then
+         Closure := CClosure_New (Handler, Get_Object (Slot_Object), Destroy);
+         Watch_Closure (Get_Object (Slot_Object), Closure);
+      else
+         Closure := CClosure_New (Handler, System.Null_Address, Destroy);
+      end if;
+
+      --  Could also use Set_Meta_Marshal to pass user data to the marshaller
       Set_Marshal (Closure, Marshaller);
+
       Id := Internal
         (Get_Object (Object),
          C_Name,
          Closure => Closure,
          After   => Boolean'Pos (After));
-
-      if Slot_Object /= null then
-         Watch_Closure (Get_Object (Slot_Object), Closure);
-      end if;
    end Unchecked_Do_Signal_Connect;
 
    ---------------------------------
@@ -276,22 +279,23 @@ package body Gtkada.Bindings is
       Closure : GClosure;
       pragma Unreferenced (Id);
 
-      Func_Data : constant System.Address := Get_Object (Slot_Object);
-
    begin
-      Closure := CClosure_New (Handler, Func_Data, Destroy);
+      if Slot_Object /= null then
+         Closure := CClosure_New (Handler, Get_Object (Slot_Object), Destroy);
+         Watch_Closure (Get_Object (Slot_Object), Closure);
+      else
+         Closure := CClosure_New (Handler, System.Null_Address, Destroy);
+      end if;
+
+      --  Could also use Set_Meta_Marshal to pass user data to the marshaller
       Set_Marshal (Closure, Marshaller);
+
       Id := Internal
         (Object,
          C_Name,
          Closure => Closure,
          After   => Boolean'Pos (After));
-
-      if Slot_Object /= null then
-         Watch_Closure (Get_Object (Slot_Object), Closure);
-      end if;
    end Unchecked_Do_Signal_Connect;
-
    -----------------------
    -- Process_Exception --
    -----------------------

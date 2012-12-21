@@ -4173,30 +4173,30 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Proximity which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
-   type Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean is not null access function
+   type Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean is not null access function
      (Self          : access Gtk_Widget_Record'Class;
       X             : Gint;
       Y             : Gint;
       Keyboard_Mode : Boolean;
-      Tooltip       : not null access Gtk_Widget_Record'Class)
+      Tooltip       : not null access Glib.Object.GObject_Record'Class)
    return Boolean;
 
-   type Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean is not null access function
+   type Cb_GObject_Gint_Gint_Boolean_GObject_Boolean is not null access function
      (Self          : access Glib.Object.GObject_Record'Class;
       X             : Gint;
       Y             : Gint;
       Keyboard_Mode : Boolean;
-      Tooltip       : not null access Gtk_Widget_Record'Class)
+      Tooltip       : not null access Glib.Object.GObject_Record'Class)
    return Boolean;
 
    Signal_Query_Tooltip : constant Glib.Signal_Name := "query-tooltip";
    procedure On_Query_Tooltip
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Call  : Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
        After : Boolean := False);
    procedure On_Query_Tooltip
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Call  : Cb_GObject_Gint_Gint_Boolean_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted when Gtk.Widget.Gtk_Widget:has-tooltip is True and the

@@ -24,7 +24,6 @@
 with Gdk.RGBA;          use Gdk.RGBA;
 with Glib;              use Glib;
 with Glib.Object;       use Glib.Object;
-with Glib.Values;       use Glib.Values;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Check_Button;  use Gtk.Check_Button;
 with Gtk.Enums;         use Gtk.Enums;
@@ -34,7 +33,6 @@ with Gtk.Tooltip;       use Gtk.Tooltip;
 with Gtk.Widget;        use Gtk.Widget;
 with Gtk.Window;        use Gtk.Window;
 with Gtk;               use Gtk;
-with Gtkada.Handlers;   use Gtkada.Handlers;
 
 package body Create_Tooltips is
 
@@ -55,19 +53,18 @@ package body Create_Tooltips is
    ----------------------
 
    function Query_Tooltip_Cb
-      (Widget : access Gtk_Widget_Record'Class;
-       Args   : Glib.Values.GValues) return Boolean
+      (Check        : access Gtk_Widget_Record'Class;
+       X, Y         : Gint;
+       Keyboard_Tip : Boolean;
+       Tooltip      : not null access GObject_Record'Class)
+      return Boolean
    is
-      X : constant Gint := Get_Int (Nth (Args, 1));
-      Y : constant Gint := Get_Int (Nth (Args, 2));
-      Keyboard_Tip : constant Boolean := Get_Boolean (Nth (Args, 3));
-      Tooltip      : constant Gtk_Tooltip :=
-         Gtk_Tooltip (Get_Object (Nth (Args, 4)));
       pragma Unreferenced (X, Y, Keyboard_Tip);
    begin
-      Tooltip.Set_Markup ("The text of the widget is <b>"""
-         & Gtk_Check_Button (Widget).Get_Label & """</b>");
-      Tooltip.Set_Icon_From_Stock (Stock_Delete, Icon_Size_Menu);
+      Gtk_Tooltip (Tooltip).Set_Markup
+         ("The text of the widget is <b>"""
+          & Gtk_Check_Button (Check).Get_Label & """</b>");
+      Gtk_Tooltip (Tooltip).Set_Icon_From_Stock (Stock_Delete, Icon_Size_Menu);
       return True;
    end Query_Tooltip_Cb;
 
@@ -76,10 +73,14 @@ package body Create_Tooltips is
    -----------------------------
 
    function Query_Tooltip_Custom_Cb
-      (Widget : access Gtk_Widget_Record'Class) return Boolean
+      (Check        : access Gtk_Widget_Record'Class;
+       X, Y         : Gint;
+       Keyboard_Tip : Boolean;
+       Tooltip      : not null access GObject_Record'Class)
+      return Boolean
    is
-      Window : constant Gtk_Window :=
-         Gtk_Window (Widget.Get_Tooltip_Window);
+      pragma Unreferenced (X, Y, Keyboard_Tip, Tooltip);
+      Window : constant Gtk_Window := Gtk_Window (Check.Get_Tooltip_Window);
       Color  : constant Gdk_RGBA := (0.0, 0.0, 1.0, 0.5);
    begin
       Window.Override_Background_Color (Gtk_State_Flag_Normal, Color);
@@ -116,8 +117,7 @@ package body Create_Tooltips is
       Gtk_New (Check, "Using the query-tooltip signal");
       Box1.Pack_Start (Check, False, False, 0);
       Check.Set_Has_Tooltip (True);
-      Return_Callback.Connect
-         (Check, "query-tooltip", Query_Tooltip_Cb'Access);
+      Check.On_Query_Tooltip (Query_Tooltip_Cb'Access);
 
       --  A label
 
@@ -144,8 +144,7 @@ package body Create_Tooltips is
       Box1.Pack_Start (Check, False, False, 0);
       Check.Set_Tooltip_Window (Tooltip_Window);
       Check.Set_Has_Tooltip (True);
-      Return_Callback.Connect
-         (Check, "query-tooltip", Query_Tooltip_Custom_Cb'Access);
+      Check.On_Query_Tooltip (Query_Tooltip_Custom_Cb'Access);
 
       --  An insensitive button
 

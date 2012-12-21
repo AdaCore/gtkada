@@ -3712,14 +3712,14 @@ package body Gtk.Widget is
      (System.Address, Cb_GObject_Gdk_Event_Proximity_Boolean);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean, System.Address);
+     (Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean);
+     (System.Address, Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean, System.Address);
+     (Cb_GObject_Gint_Gint_Boolean_GObject_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean);
+     (System.Address, Cb_GObject_Gint_Gint_Boolean_GObject_Boolean);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Widget_Gdk_Screen_Void, System.Address);
@@ -4024,7 +4024,7 @@ package body Gtk.Widget is
    procedure Connect
       (Object  : access Gtk_Widget_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Handler : Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
        After   : Boolean);
 
    procedure Connect
@@ -4312,7 +4312,7 @@ package body Gtk.Widget is
    procedure Connect_Slot
       (Object  : access Gtk_Widget_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Handler : Cb_GObject_Gint_Gint_Boolean_GObject_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
@@ -4661,14 +4661,14 @@ package body Gtk.Widget is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gdk_Screen_Void);
 
-   procedure Marsh_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean
+   procedure Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean);
+   pragma Convention (C, Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean);
 
    procedure Marsh_GObject_Gtk_Direction_Type_Boolean
       (Closure         : GClosure;
@@ -5048,14 +5048,14 @@ package body Gtk.Widget is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Widget_Gdk_Screen_Void);
 
-   procedure Marsh_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean
+   procedure Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean);
+   pragma Convention (C, Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean);
 
    procedure Marsh_Gtk_Widget_Gtk_Direction_Type_Boolean
       (Closure         : GClosure;
@@ -5751,14 +5751,14 @@ package body Gtk.Widget is
    procedure Connect
       (Object  : access Gtk_Widget_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Handler : Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean'Access,
+         Marshaller  => Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -6628,7 +6628,7 @@ package body Gtk.Widget is
    procedure Connect_Slot
       (Object  : access Gtk_Widget_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Handler : Cb_GObject_Gint_Gint_Boolean_GObject_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -6636,7 +6636,7 @@ package body Gtk.Widget is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean'Access,
+         Marshaller  => Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -7495,11 +7495,11 @@ package body Gtk.Widget is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Screen_Void;
 
-   --------------------------------------------------------
-   -- Marsh_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean --
-   --------------------------------------------------------
+   -----------------------------------------------------
+   -- Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean --
+   -----------------------------------------------------
 
-   procedure Marsh_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean
+   procedure Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -7508,13 +7508,13 @@ package body Gtk.Widget is
        User_Data       : System.Address)
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_Gint_Gint_Boolean_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 4)));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+   end Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean;
 
    ----------------------------------------------
    -- Marsh_GObject_Gtk_Direction_Type_Boolean --
@@ -8380,11 +8380,11 @@ package body Gtk.Widget is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Gdk_Screen_Void;
 
-   -----------------------------------------------------------
-   -- Marsh_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean --
-   -----------------------------------------------------------
+   --------------------------------------------------------
+   -- Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean --
+   --------------------------------------------------------
 
-   procedure Marsh_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean
+   procedure Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -8393,13 +8393,13 @@ package body Gtk.Widget is
        User_Data       : System.Address)
    is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
-      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 4)));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+   end Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
 
    -------------------------------------------------
    -- Marsh_Gtk_Widget_Gtk_Direction_Type_Boolean --
@@ -9939,7 +9939,7 @@ package body Gtk.Widget is
 
    procedure On_Query_Tooltip
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_Gtk_Widget_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Call  : Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
        After : Boolean := False)
    is
    begin
@@ -9952,7 +9952,7 @@ package body Gtk.Widget is
 
    procedure On_Query_Tooltip
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_GObject_Gint_Gint_Boolean_Gtk_Widget_Boolean;
+       Call  : Cb_GObject_Gint_Gint_Boolean_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

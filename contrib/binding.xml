@@ -2430,7 +2430,7 @@ __PRE__
      <slist ada="Widget_SList" ctype="Widget"/>
 
      <method id="::query-tooltip">
-        <parameter name="tooltip" ctype="GtkWidget*"/>
+        <parameter name="tooltip" ctype="GObject*"/>
      </method>
 
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
