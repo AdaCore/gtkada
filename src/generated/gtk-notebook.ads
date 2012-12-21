@@ -65,18 +65,32 @@
 --  <testgtk>create_notebook.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Container;   use Gtk.Container;
-with Gtk.Enums;       use Gtk.Enums;
-with Gtk.Widget;      use Gtk.Widget;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Container;           use Gtk.Container;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.Notebook is
 
    type Gtk_Notebook_Record is new Gtk_Container_Record with null record;
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
+
+   type Gtk_Notebook_Tab is (
+      Notebook_Tab_First,
+      Notebook_Tab_Last);
+   pragma Convention (C, Gtk_Notebook_Tab);
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Notebook_Tab_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Notebook_Tab);
+   type Property_Gtk_Notebook_Tab is new Gtk_Notebook_Tab_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -568,12 +582,12 @@ package Gtk.Notebook is
       (Self : not null access Gtk_Notebook_Record;
        Call : not null access function
          (Self   : access Gtk_Notebook_Record'Class;
-          Object : Notebook_Tab) return Boolean);
+          Object : Gtk_Notebook_Tab) return Boolean);
    procedure On_Focus_Tab
       (Self : not null access Gtk_Notebook_Record;
        Call : not null access function
          (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Notebook_Tab) return Boolean;
+          Object : Gtk_Notebook_Tab) return Boolean;
        Slot : not null access Glib.Object.GObject_Record'Class);
 
    Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";

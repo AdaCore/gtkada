@@ -79,6 +79,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;       use GNAT.Strings;
 with Gdk.Display;        use Gdk.Display;
+with Gdk.Event;          use Gdk.Event;
 with Gdk.Pixbuf;         use Gdk.Pixbuf;
 with Gdk.Types;          use Gdk.Types;
 with Glib;               use Glib;
@@ -669,12 +670,12 @@ package Gtk.Clipboard is
       (Self : not null access Gtk_Clipboard_Record;
        Call : not null access procedure
          (Self  : access Gtk_Clipboard_Record'Class;
-          Event : Gdk.Event_Owner_Change));
+          Event : Gdk.Event.Gdk_Event_Owner_Change));
    procedure On_Owner_Change
       (Self : not null access Gtk_Clipboard_Record;
        Call : not null access procedure
          (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event_Owner_Change);
+          Event : Gdk.Event.Gdk_Event_Owner_Change);
        Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::owner-change signal is emitted when GTK+ receives an event that
    --  indicates that the ownership of the selection associated with Clipboard

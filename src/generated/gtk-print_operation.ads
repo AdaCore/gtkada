@@ -86,8 +86,10 @@ with Glib.Properties;             use Glib.Properties;
 with Glib.Types;                  use Glib.Types;
 with Gtk.Enums;                   use Gtk.Enums;
 with Gtk.Page_Setup;              use Gtk.Page_Setup;
+with Gtk.Print_Context;           use Gtk.Print_Context;
 with Gtk.Print_Operation_Preview; use Gtk.Print_Operation_Preview;
 with Gtk.Print_Settings;          use Gtk.Print_Settings;
+with Gtk.Widget;                  use Gtk.Widget;
 with Gtk.Window;                  use Gtk.Window;
 
 package Gtk.Print_Operation is

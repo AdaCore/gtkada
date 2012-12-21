@@ -247,6 +247,7 @@ with Glib.Properties;         use Glib.Properties;
 with Glib.Values;             use Glib.Values;
 with Gtk.Accel_Group;         use Gtk.Accel_Group;
 with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Selection_Data;      use Gtk.Selection_Data;
 with Gtk.Style;               use Gtk.Style;
 with Pango.Context;           use Pango.Context;
 with Pango.Font;              use Pango.Font;
@@ -4018,25 +4019,6 @@ package Gtk.Widget is
    --    --  Returns True to stop other handlers from being invoked for the event.
 
    Signal_Query_Tooltip : constant Glib.Signal_Name := "query-tooltip";
-   procedure On_Query_Tooltip
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self          : access Gtk_Widget_Record'Class;
-          X             : Gint;
-          Y             : Gint;
-          Keyboard_Mode : Boolean;
-          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
-          return Boolean);
-   procedure On_Query_Tooltip
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self          : access Glib.Object.GObject_Record'Class;
-          X             : Gint;
-          Y             : Gint;
-          Keyboard_Mode : Boolean;
-          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
    --  Emitted when Gtk.Widget.Gtk_Widget:has-tooltip is True and the
    --  Gtk.Settings.Gtk_Settings:gtk-tooltip-timeout has expired with the
    --  cursor hovering "above" Widget; or emitted when Widget got focus in
@@ -4049,6 +4031,13 @@ package Gtk.Widget is
    --
    --  The signal handler is free to manipulate Tooltip with the therefore
    --  destined function calls.
+   --    function Handler
+   --       (Self          : access Gtk_Widget_Record'Class;
+   --        X             : Gint;
+   --        Y             : Gint;
+   --        Keyboard_Mode : Boolean;
+   --        Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+   --        return Boolean
    -- 
    --  Callback parameters:
    --    --  "x": the x coordinate of the cursor position where the request has been

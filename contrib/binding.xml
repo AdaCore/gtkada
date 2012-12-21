@@ -688,6 +688,7 @@ then both "Foo" and "Baz" will be underlined, but not "Bar".
         ###################################################-->
 
    <package id="GtkNotebook">
+      <enum ctype="GtkNotebookTab"/>
       <doc screenshot="gtk-notebook" group="Layout containers"
            testgtk="create_notebook.adb"/>
       <parameter name="self" ada="Notebook"/>
@@ -2421,6 +2422,8 @@ __PRE__
      <list ada="Widget_List" ctype="Widget"/>
      <slist ada="Widget_SList" ctype="Widget"/>
 
+     <method id="::query-tooltip" bind="False" />
+
      <method id="gtk_widget_new" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get" bind="False" /> <!-- varargs -->
      <method id="gtk_widget_style_get_valist" bind="False"/><!-- varargs -->
@@ -3619,6 +3622,7 @@ __PRE__
 
    <package id="GtkTextTag">
      <parameter name="self" ada="Tag"/>
+     <method id="::event" bind="False" />
      <method id="gtk_text_tag_new">
        <doc extend="true">
 Newly created tags must be added to the tags table for the buffer you
@@ -3633,6 +3637,7 @@ creating a tag.
    </package>
 
    <package id="GtkCssProvider">
+     <method id="::parsing-error" bind="False" />
      <method id="gtk_css_provider_load_from_data">
        <parameter name="data" ctype="char*"/>
        <parameter name="length" default="-1" ada=""/>
@@ -3774,6 +3779,7 @@ creating a tag.
      <enum ctype="GdkWMFunction" prefix="GDK_"/>
      <enum ctype="GdkGravity" prefix="GDK_"/>
      <list ada="Gdk_Window_List" ctype="GdkWindow"/>
+     <method id="::pick-embedded-child" bind="False" />
      <method id="gdk_window_add_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_remove_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_get_children" return="GdkWindowList"/>

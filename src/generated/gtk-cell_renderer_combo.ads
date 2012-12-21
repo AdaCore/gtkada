@@ -47,6 +47,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;                   use Glib;
 with Glib.Properties;        use Glib.Properties;
 with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
+with Gtk.Tree_Model;         use Gtk.Tree_Model;
 
 package Gtk.Cell_Renderer_Combo is
 

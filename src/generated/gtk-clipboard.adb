@@ -1085,7 +1085,7 @@ package body Gtk.Clipboard is
       (Self : not null access Gtk_Clipboard_Record;
        Call : not null access procedure
          (Self  : access Gtk_Clipboard_Record'Class;
-          Event : Gdk.Event_Owner_Change))
+          Event : Gdk.Event.Gdk_Event_Owner_Change))
    is
       pragma Unreferenced (Self, Call);
    begin
@@ -1100,7 +1100,7 @@ package body Gtk.Clipboard is
       (Self : not null access Gtk_Clipboard_Record;
        Call : not null access procedure
          (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event_Owner_Change);
+          Event : Gdk.Event.Gdk_Event_Owner_Change);
        Slot : not null access Glib.Object.GObject_Record'Class)
    is
       pragma Unreferenced (Self, Call, Slot);

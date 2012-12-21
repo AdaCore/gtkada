@@ -174,6 +174,7 @@ with Glib.Properties;  use Glib.Properties;
 with Glib.Types;       use Glib.Types;
 with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Menu;         use Gtk.Menu;
 with Gtk.Misc;         use Gtk.Misc;
 with Gtk.Widget;       use Gtk.Widget;
 with Pango.Attributes; use Pango.Attributes;

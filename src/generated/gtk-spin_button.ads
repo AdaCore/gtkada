@@ -97,6 +97,7 @@ with Gtk.Adjustment;          use Gtk.Adjustment;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Cell_Editable;       use Gtk.Cell_Editable;
 with Gtk.Editable;            use Gtk.Editable;
+with Gtk.Enums;               use Gtk.Enums;
 with Gtk.GEntry;              use Gtk.GEntry;
 
 package Gtk.Spin_Button is

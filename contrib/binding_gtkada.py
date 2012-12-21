@@ -54,7 +54,7 @@ Where the package node is defined as follows:
                                 associated with
                                     "gtkada_%s_get_%s" % (adapkg, field_name)
                                 methods
-                                For signals, we use "package::signal"
+                                For signals, we use "::signal-name"
                            -->
            ada="..."       <!-- optional, name of the Ada subprogram -->
            bind="true"     <!-- optional, if false no binding generated -->

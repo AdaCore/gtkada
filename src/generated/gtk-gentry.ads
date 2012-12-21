@@ -87,6 +87,7 @@ with Gtk.Entry_Buffer;        use Gtk.Entry_Buffer;
 with Gtk.Entry_Completion;    use Gtk.Entry_Completion;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Image;               use Gtk.Image;
+with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Style;               use Gtk.Style;
 with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Widget;              use Gtk.Widget;

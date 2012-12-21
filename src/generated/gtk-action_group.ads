@@ -77,6 +77,7 @@ with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Gtk.Action;           use Gtk.Action;
 with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Widget;           use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package Gtk.Action_Group is

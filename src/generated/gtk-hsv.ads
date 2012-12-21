@@ -34,6 +34,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
 with Glib.Types;    use Glib.Types;
 with Gtk.Buildable; use Gtk.Buildable;
+with Gtk.Enums;     use Gtk.Enums;
 with Gtk.Widget;    use Gtk.Widget;
 
 package Gtk.Hsv is

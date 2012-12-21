@@ -1571,9 +1571,10 @@ See Glib.Properties for more information on properties)""")
 
             for s in signals:
                 gtkmethod = self.gtkpkg.get_method(
-                    cname="%s::%s" % (self.name, s.get("name")))
-                profile = SubprogramProfile.parse(
-                    node=s, gtkmethod=gtkmethod, pkg=None)
+                    cname="::%s" % (s.get("name")))
+                bind = gtkmethod.bind()
+
+                name = s.get("name")
 
                 if self.is_gobject:
                     selftype = GObject("%(typename)s" % self._subst,
@@ -1583,67 +1584,81 @@ See Glib.Properties for more information on properties)""")
                 else:
                     on_selftype = selftype = "%(typename)s" % self._subst
 
+                if bind:
+                    profile = SubprogramProfile.parse(
+                        node=s, gtkmethod=gtkmethod, pkg=self.pkg)
+
+                else:
+                    profile = SubprogramProfile.parse(
+                        node=s, gtkmethod=gtkmethod, pkg=None)
+
                 sub = Subprogram(
                     name="",
-                    plist=[
-                      Parameter(name="Self", type=selftype)]
-                      + profile.params,
-                    code="null",
-                    allow_none=False,
-                    returns=profile.returns)
-                obj_sub = Subprogram(
-                    name="",
-                    plist=[
-                      Parameter(
-                         name="Self",
-                         type=GObject("Glib.Object.GObject", allow_none=True,
-                                      classwide=True))]
-                      + profile.params,
+                    plist=[Parameter(name="Self", type=selftype)]
+                        + profile.params,
                     code="null",
                     allow_none=False,
                     returns=profile.returns)
 
-                name = s.get("name")
                 section.add(
-                    Code(
-                       '   Signal_%s : constant Glib.Signal_Name := "%s";' % (
-                       naming.case(name), name)),
+                    Code('   Signal_%s : constant Glib.Signal_Name := "%s";' %
+                        (naming.case(name), name)),
                     add_newline=False)
 
-                connect = Subprogram(
-                    name="On_%s" % naming.case(name),
-                    plist=[Parameter(name="Self", type=on_selftype),
+                if bind:
+                    obj_sub = Subprogram(
+                        name="",
+                        plist=[
                            Parameter(
-                            name="Call",
-                            type=Proxy(sub.profile(pkg=self.pkg, maxlen=69,
-                                                   indent="      ")))],
-                    code="null")
-                section.add(connect, add_newline=False)
-
-                obj_connect = Subprogram(
-                    name="On_%s" % naming.case(name),
-                    plist=[Parameter(name="Self", type=on_selftype),
-                           Parameter(
-                             name="Call",
-                             type=Proxy(obj_sub.profile(pkg=self.pkg, maxlen=69,
-                                                         indent="      "))),
-                           Parameter(
-                             name="Slot",
+                             name="Self",
                              type=GObject("Glib.Object.GObject",
-                                          allow_none=False, classwide=True))],
-                    code="null")
-                section.add(obj_connect)
+                                          allow_none=True,
+                                          classwide=True))]
+                          + profile.params,
+                        code="null",
+                        allow_none=False,
+                        returns=profile.returns)
 
-                sub.name = "Handler"
+                    connect = Subprogram(
+                        name="On_%s" % naming.case(name),
+                        plist=[Parameter(name="Self", type=on_selftype),
+                               Parameter(
+                                name="Call",
+                                type=Proxy(sub.profile(
+                                    pkg=self.pkg, maxlen=69,
+                                    indent="      ")))],
+                        code="null")
+                    section.add(connect, add_newline=False)
+
+                    obj_connect = Subprogram(
+                        name="On_%s" % naming.case(name),
+                        plist=[Parameter(name="Self", type=on_selftype),
+                               Parameter(
+                                 name="Call",
+                                 type=Proxy(obj_sub.profile(
+                                     pkg=self.pkg, maxlen=69,
+                                     indent="      "))),
+                               Parameter(
+                                 name="Slot",
+                                 type=GObject("Glib.Object.GObject",
+                                              allow_none=False,
+                                              classwide=True))],
+                        code="null")
+                    section.add(obj_connect)
 
                 doc = s.findtext(ndoc, "")
                 if doc:
                     section.add(Code("  %s""" % doc, iscomment=True))
 
-                if profile.returns_doc or len(profile.params) > 1:
-                    doc = "\n Callback parameters:"
-                    doc += sub.formatted_doc()
+                if not bind:
+                    sub.name = "Handler"
+                    section.add(
+                      Code(
+                         sub.profile(pkg=self.pkg, maxlen=69),
+                         fill=False, iscomment=True))
 
+                if profile.returns_doc or len(profile.params) > 1:
+                    doc = "\n Callback parameters:" + sub.formatted_doc()
                     if profile.returns_doc:
                         doc += "\n   --  %s" % profile.returns_doc
                     section.add(Code(doc, fill=False, iscomment=True))

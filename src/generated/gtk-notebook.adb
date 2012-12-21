@@ -867,7 +867,7 @@ package body Gtk.Notebook is
       (Self : not null access Gtk_Notebook_Record;
        Call : not null access function
          (Self   : access Gtk_Notebook_Record'Class;
-          Object : Notebook_Tab) return Boolean)
+          Object : Gtk_Notebook_Tab) return Boolean)
    is
       pragma Unreferenced (Self, Call);
    begin
@@ -882,7 +882,7 @@ package body Gtk.Notebook is
       (Self : not null access Gtk_Notebook_Record;
        Call : not null access function
          (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Notebook_Tab) return Boolean;
+          Object : Gtk_Notebook_Tab) return Boolean;
        Slot : not null access Glib.Object.GObject_Record'Class)
    is
       pragma Unreferenced (Self, Call, Slot);

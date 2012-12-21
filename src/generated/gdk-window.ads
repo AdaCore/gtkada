@@ -1915,13 +1915,13 @@ package Gdk.Window is
        Call : not null access function
          (Self   : Gdk_Window;
           Width  : Gint;
-          Height : Gint) return cairo.Surface);
+          Height : Gint) return Cairo.Cairo_Surface);
    procedure On_Create_Surface
       (Self : Gdk_Window;
        Call : not null access function
          (Self   : access Glib.Object.GObject_Record'Class;
           Width  : Gint;
-          Height : Gint) return cairo.Surface;
+          Height : Gint) return Cairo.Cairo_Surface;
        Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::create-surface signal is emitted when an offscreen window needs
    --  its surface (re)created, which happens either when the the window is
@@ -1970,23 +1970,14 @@ package Gdk.Window is
    --    --  window
 
    Signal_Pick_Embedded_Child : constant Glib.Signal_Name := "pick-embedded-child";
-   procedure On_Pick_Embedded_Child
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self : Gdk_Window;
-          X    : Gdouble;
-          Y    : Gdouble) return Gtk.Window.Gtk_Window);
-   procedure On_Pick_Embedded_Child
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          X    : Gdouble;
-          Y    : Gdouble) return Gtk.Window.Gtk_Window;
-       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::pick-embedded-child signal is emitted to find an embedded child
    --  at the given position.
    --
    --  X, Y, or null
+   --    function Handler
+   --       (Self : Gdk_Window;
+   --        X    : Gdouble;
+   --        Y    : Gdouble) return Gtk.Window.Gtk_Window
    -- 
    --  Callback parameters:
    --    --  "x": x coordinate in the window

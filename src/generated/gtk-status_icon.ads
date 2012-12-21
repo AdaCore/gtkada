@@ -49,6 +49,7 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Event;       use Gdk.Event;
 with Gdk.Pixbuf;      use Gdk.Pixbuf;
 with Gdk.Screen;      use Gdk.Screen;
 with Glib;            use Glib;
@@ -58,6 +59,7 @@ with Glib.Properties; use Glib.Properties;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Image;       use Gtk.Image;
 with Gtk.Menu;        use Gtk.Menu;
+with Gtk.Tooltip;     use Gtk.Tooltip;
 
 package Gtk.Status_Icon is
 

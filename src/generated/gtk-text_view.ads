@@ -40,6 +40,7 @@ with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Container;         use Gtk.Container;
 with Gtk.Enums;             use Gtk.Enums;
+with Gtk.Menu;              use Gtk.Menu;
 with Gtk.Scrollable;        use Gtk.Scrollable;
 with Gtk.Text_Attributes;   use Gtk.Text_Attributes;
 with Gtk.Text_Buffer;       use Gtk.Text_Buffer;

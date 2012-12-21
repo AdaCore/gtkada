@@ -904,7 +904,7 @@ package body Gdk.Window is
        Call : not null access function
          (Self   : Gdk_Window;
           Width  : Gint;
-          Height : Gint) return cairo.Surface)
+          Height : Gint) return Cairo.Cairo_Surface)
    is
       pragma Unreferenced (Self, Call);
    begin
@@ -920,7 +920,7 @@ package body Gdk.Window is
        Call : not null access function
          (Self   : access Glib.Object.GObject_Record'Class;
           Width  : Gint;
-          Height : Gint) return cairo.Surface;
+          Height : Gint) return Cairo.Cairo_Surface;
        Slot : not null access Glib.Object.GObject_Record'Class)
    is
       pragma Unreferenced (Self, Call, Slot);
@@ -964,39 +964,6 @@ package body Gdk.Window is
    begin
       null;
    end On_From_Embedder;
-
-   ----------------------------
-   -- On_Pick_Embedded_Child --
-   ----------------------------
-
-   procedure On_Pick_Embedded_Child
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self : Gdk_Window;
-          X    : Gdouble;
-          Y    : Gdouble) return Gtk.Window.Gtk_Window)
-   is
-      pragma Unreferenced (Self, Call);
-   begin
-      null;
-   end On_Pick_Embedded_Child;
-
-   ----------------------------
-   -- On_Pick_Embedded_Child --
-   ----------------------------
-
-   procedure On_Pick_Embedded_Child
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          X    : Gdouble;
-          Y    : Gdouble) return Gtk.Window.Gtk_Window;
-       Slot : not null access Glib.Object.GObject_Record'Class)
-   is
-      pragma Unreferenced (Self, Call, Slot);
-   begin
-      null;
-   end On_Pick_Embedded_Child;
 
    --------------------
    -- On_To_Embedder --
