@@ -23,15 +23,13 @@
 
 with Ada.Text_IO;
 with Glib;           use Glib;
+with Glib.Object;    use Glib.Object;
 with Gtk.Box;        use Gtk.Box;
 with Gtk.Button;     use Gtk.Button;
-with Gtk.Handlers;   use Gtk.Handlers;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk;            use Gtk;
 
 package body Create_Status is
-
-   package Status_Cb is new Handlers.Callback (Gtk_Status_Bar_Record);
 
    Counter : Gint := 1;
 
@@ -57,11 +55,12 @@ package body Create_Status is
    -- Push --
    ----------
 
-   procedure Push (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Push (Status : access GObject_Record'Class) is
       Id : Message_Id;
+      S : constant Gtk_Status_Bar := Gtk_Status_Bar (Status);
       pragma Unreferenced (Id);
    begin
-      Id := Push (Status, 1, "Something" & Gint'Image (Counter));
+      Id := Push (S, 1, "Something" & Gint'Image (Counter));
       Counter := Counter + 1;
    end Push;
 
@@ -69,51 +68,54 @@ package body Create_Status is
    -- Pop --
    ---------
 
-   procedure Pop (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Pop (Status : access GObject_Record'Class) is
+      S : constant Gtk_Status_Bar := Gtk_Status_Bar (Status);
    begin
-      Pop (Status, 1);
+      Pop (S, 1);
    end Pop;
 
    -----------
    -- Steal --
    -----------
 
-   procedure Steal (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Steal (Status : access GObject_Record'Class) is
+      S : constant Gtk_Status_Bar := Gtk_Status_Bar (Status);
    begin
-      Remove (Status, 1, 4);
+      Remove (S, 1, 4);
    end Steal;
 
    --------------
    -- Contexts --
    --------------
 
-   procedure Contexts (Status : access Gtk_Status_Bar_Record'Class) is
+   procedure Contexts (Status : access GObject_Record'Class) is
+      S : constant Gtk_Status_Bar := Gtk_Status_Bar (Status);
    begin
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "any context"
                             & "  Id="
                             & Context_Id'Image (Get_Context_Id
-                                          (Status, "any context")));
+                                          (S, "any context")));
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "idle messages"
                             & "  Id="
                             & Context_Id'Image (Get_Context_Id
-                                          (Status, "idle message")));
+                                          (S, "idle message")));
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "some text"
                             & "  Id="
                             & Context_Id'Image (Get_Context_Id
-                                          (Status, "some text")));
+                                          (S, "some text")));
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "hit the mouse"
                             & "  Id="
                             & Context_Id'Image (Get_Context_Id
-                                          (Status, "hit the mouse")));
+                                          (S, "hit the mouse")));
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "hit the mouse2"
                             & "  Id="
                             & Context_Id'Image (Get_Context_Id
-                                          (Status, "hit the mouse2")));
+                                          (S, "hit the mouse2")));
    end Contexts;
 
    ---------
@@ -141,27 +143,19 @@ package body Create_Status is
 
       Gtk_New (Button, "Push Something");
       Pack_Start (Box2, Button, False, False, 0);
-      Status_Cb.Object_Connect (Button, "clicked",
-                                Push'Access,
-                                Slot_Object => Status);
+      Button.On_Clicked (Push'Access, Status);
 
       Gtk_New (Button, "Pop");
       Pack_Start (Box2, Button, False, False, 0);
-      Status_Cb.Object_Connect (Button, "clicked",
-                                Pop'Access,
-                                Slot_Object => Status);
+      Button.On_Clicked (Pop'Access, Status);
 
       Gtk_New (Button, "Steal Message_Id #4");
       Pack_Start (Box2, Button, False, False, 0);
-      Status_Cb.Object_Connect (Button, "clicked",
-                                Steal'Access,
-                                Slot_Object => Status);
+      Button.On_Clicked (Steal'Access, Status);
 
       Gtk_New (Button, "Test contexts");
       Pack_Start (Box2, Button, False, False, 0);
-      Status_Cb.Object_Connect (Button, "clicked",
-                                Contexts'Access,
-                                Slot_Object => Status);
+      Button.On_Clicked (Contexts'Access, Status);
 
       Show_All (Frame);
    end Run;

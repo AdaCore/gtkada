@@ -22,10 +22,10 @@
 ------------------------------------------------------------------------------
 
 with Glib.Error;   use Glib.Error;
+with Glib.Object;  use Glib.Object;
 with Gdk.Pixbuf;   use Gdk.Pixbuf;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.GEntry;   use Gtk.GEntry;
-with Gtk.Handlers; use Gtk.Handlers;
 with Gtk.Image;    use Gtk.Image;
 with Gtk.Separator_Tool_Item; use Gtk.Separator_Tool_Item;
 with Gtk.Tool_Button;         use Gtk.Tool_Button;
@@ -34,8 +34,6 @@ with Gtk.Widget;   use Gtk.Widget;
 with Gtk;          use Gtk;
 
 package body Create_Toolbar is
-
-   package Toolbar_Cb is new Handlers.Callback (Gtk_Toolbar_Record);
 
    ----------
    -- Help --
@@ -74,47 +72,45 @@ package body Create_Toolbar is
    -- Set_Horizontal --
    --------------------
 
-   procedure Set_Horizontal
-      (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Horizontal (Toolbar : access GObject_Record'Class) is
    begin
-      Set_Orientation (Toolbar, Orientation_Horizontal);
+      Gtk_Toolbar (Toolbar).Set_Orientation (Orientation_Horizontal);
    end Set_Horizontal;
 
    ------------------
    -- Set_Vertical --
    ------------------
 
-   procedure Set_Vertical
-      (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Vertical (Toolbar : access GObject_Record'Class) is
    begin
-      Set_Orientation (Toolbar, Orientation_Vertical);
+      Gtk_Toolbar (Toolbar).Set_Orientation (Orientation_Vertical);
    end Set_Vertical;
 
    ---------------
    -- Set_Icons --
    ---------------
 
-   procedure Set_Icons (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Icons (Toolbar : access GObject_Record'Class) is
    begin
-      Set_Style (Toolbar, Toolbar_Icons);
+      Gtk_Toolbar (Toolbar).Set_Style (Toolbar_Icons);
    end Set_Icons;
 
    --------------
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Text (Toolbar : access GObject_Record'Class) is
    begin
-      Set_Style (Toolbar, Toolbar_Text);
+      Gtk_Toolbar (Toolbar).Set_Style (Toolbar_Text);
    end Set_Text;
 
    --------------
    -- Set_Both --
    --------------
 
-   procedure Set_Both (Toolbar : access Gtk_Toolbar_Record'Class) is
+   procedure Set_Both (Toolbar : access GObject_Record'Class) is
    begin
-      Set_Style (Toolbar, Toolbar_Both);
+      Gtk_Toolbar (Toolbar).Set_Style (Toolbar_Both);
    end Set_Both;
 
    ------------------
@@ -137,14 +133,12 @@ package body Create_Toolbar is
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Horizontal");
       Button.Set_Tooltip_Text ("Horizontal toolbar layout");
       Insert (Toolbar, Button);
-      Toolbar_Cb.Object_Connect
-        (Button, "clicked", Set_Horizontal'Access, Slot_Object => Toolbar);
+      Button.On_Clicked (Set_Horizontal'Access, Toolbar);
 
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Vertical");
       Button.Set_Tooltip_Text ("Vertical toolbar layout");
       Insert (Toolbar, Button);
-      Toolbar_Cb.Object_Connect
-        (Button, "clicked", Set_Vertical'Access, Slot_Object => Toolbar);
+      Button.On_Clicked (Set_Vertical'Access, Toolbar);
 
       Gtk_New (Separator);
       Insert (Toolbar, Separator);
@@ -152,20 +146,17 @@ package body Create_Toolbar is
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Icons");
       Button.Set_Tooltip_Text ("Only show toolbar icons");
       Insert (Toolbar, Button);
-      Toolbar_Cb.Object_Connect
-        (Button, "clicked", Set_Icons'Access, Slot_Object => Toolbar);
+      Button.On_Clicked (Set_Icons'Access, Toolbar);
 
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Text");
       Button.Set_Tooltip_Text ("Only show toolbar text");
       Insert (Toolbar, Button);
-      Toolbar_Cb.Object_Connect
-        (Button, "clicked", Set_Text'Access, Slot_Object => Toolbar);
+      Button.On_Clicked (Set_Text'Access, Toolbar);
 
       Gtk_New (Button, New_Pixmap ("test.xpm"), "Both");
       Button.Set_Tooltip_Text ("Show toolbar icons and text");
       Insert (Toolbar, Button);
-      Toolbar_Cb.Object_Connect
-        (Button, "clicked", Set_Both'Access, Slot_Object => Toolbar);
+      Button.On_Clicked (Set_Both'Access, Toolbar);
 
       Gtk_New (Separator);
       Insert (Toolbar, Separator);

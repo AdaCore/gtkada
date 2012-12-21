@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
 with Gtk.Adjustment;    use Gtk.Adjustment;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
@@ -41,7 +42,6 @@ package body Create_Spin is
    --  This is basic Gtk_Button, except that is has an extra internal
    --  data.
 
-   package Spin_O_Cb is new Handlers.Callback (Gtk_Spin_Button_Record);
    package Spin_Cb is new Handlers.User_Callback
      (Gtk_Toggle_Button_Record, Gtk_Spin_Button);
    package Button_Cb is new Handlers.User_Callback (My_Button_Record, Gint);
@@ -67,10 +67,10 @@ package body Create_Spin is
    -- Change_Digits --
    -------------------
 
-   procedure Change_Digits
-      (Spin : access Gtk_Spin_Button_Record'Class) is
+   procedure Change_Digits (Spin : access GObject_Record'Class) is
+      S : constant Gtk_Spin_Button := Gtk_Spin_Button (Spin);
    begin
-      Set_Digits (Spinner1, Guint (Get_Value_As_Int (Spin)));
+      Set_Digits (Spinner1, Guint (S.Get_Value_As_Int));
    end Change_Digits;
 
    -----------------
@@ -207,8 +207,7 @@ package body Create_Spin is
       Gtk_New (Adj, 2.0, 1.0, 5.0, 1.0, 1.0, 0.0);
       Gtk_New (Spinner2, Adj, 0.0, 0);
       Set_Wrap (Spinner2, True);
-      Spin_O_Cb.Object_Connect
-        (Adj, "value_changed", Change_Digits'Access, Slot_Object => Spinner2);
+      Adj.On_Value_Changed (Change_Digits'Access, Spinner2);
 
       Pack_Start (Vbox2, Spinner2, False, False, 0);
 
