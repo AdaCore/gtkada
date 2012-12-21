@@ -134,18 +134,24 @@ package Gtk.Cell_Renderer_Toggle is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Cell_Renderer_Toggle_UTF8_String_Void is not null access procedure
+     (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
+      Path : UTF8_String);
+
+   type Cb_GObject_UTF8_String_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Path : UTF8_String);
+
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
    procedure On_Toggled
-      (Self : not null access Gtk_Cell_Renderer_Toggle_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Cell_Renderer_Toggle_Record'Class;
-          Path : UTF8_String));
+      (Self  : not null access Gtk_Cell_Renderer_Toggle_Record;
+       Call  : Cb_Gtk_Cell_Renderer_Toggle_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Toggled
-      (Self : not null access Gtk_Cell_Renderer_Toggle_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Path : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Renderer_Toggle_Record;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::toggled signal is emitted when the cell is toggled.
 
 private

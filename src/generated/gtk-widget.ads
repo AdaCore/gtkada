@@ -2940,28 +2940,40 @@ package Gtk.Widget is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Widget_Void is not null access procedure (Self : access Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Accel_Closures_Changed : constant Glib.Signal_Name := "accel-closures-changed";
    procedure On_Accel_Closures_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Accel_Closures_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gdk_Event_Button_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Button_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
 
    Signal_Button_Press_Event : constant Glib.Signal_Name := "button-press-event";
    procedure On_Button_Press_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Button_Boolean;
+       After : Boolean := False);
    procedure On_Button_Press_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Button_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
    --
@@ -2978,16 +2990,14 @@ package Gtk.Widget is
 
    Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    procedure On_Button_Release_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Button_Boolean;
+       After : Boolean := False);
    procedure On_Button_Release_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Button_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
    --
@@ -3002,18 +3012,24 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Guint_Boolean is not null access function
+     (Self      : access Gtk_Widget_Record'Class;
+      Signal_Id : Guint) return Boolean;
+
+   type Cb_GObject_Guint_Boolean is not null access function
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Signal_Id : Guint) return Boolean;
+
    Signal_Can_Activate_Accel : constant Glib.Signal_Name := "can-activate-accel";
    procedure On_Can_Activate_Accel
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self      : access Gtk_Widget_Record'Class;
-          Signal_Id : Guint) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Guint_Boolean;
+       After : Boolean := False);
    procedure On_Can_Activate_Accel
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Signal_Id : Guint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Guint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Determines whether an accelerator that activates the signal identified
    --  by Signal_Id can currently be activated. This signal is present to allow
    --  applications and derived widgets to override the default
@@ -3024,46 +3040,59 @@ package Gtk.Widget is
    --    --  "signal_id": the ID of a signal installed on Widget
    --    --  Returns True if the signal can be activated.
 
+   type Cb_Gtk_Widget_Param_Spec_Void is not null access procedure
+     (Self  : access Gtk_Widget_Record'Class;
+      Pspec : Glib.Param_Spec);
+
+   type Cb_GObject_Param_Spec_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Pspec : Glib.Param_Spec);
+
    Signal_Child_Notify : constant Glib.Signal_Name := "child-notify";
    procedure On_Child_Notify
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Widget_Record'Class;
-          Pspec : Glib.Param_Spec));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Param_Spec_Void;
+       After : Boolean := False);
    procedure On_Child_Notify
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Pspec : Glib.Param_Spec);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Param_Spec_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::child-notify signal is emitted for each <link
    --  linkend="child-properties">child property</link> that has changed on an
    --  object. The signal's detail holds the property name.
 
    Signal_Composited_Changed : constant Glib.Signal_Name := "composited-changed";
    procedure On_Composited_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Composited_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::composited-changed signal is emitted when the composited status
    --  of Widget<!-- -->s screen changes. See Gdk.Screen.Is_Composited.
 
+   type Cb_Gtk_Widget_Gdk_Event_Configure_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Configure) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Configure_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Configure) return Boolean;
+
    Signal_Configure_Event : constant Glib.Signal_Name := "configure-event";
    procedure On_Configure_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Configure) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Configure_Boolean;
+       After : Boolean := False);
    procedure On_Configure_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Configure) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Configure_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::configure-event signal will be emitted when the size, position or
    --  stacking of the Widget's window has changed.
    --
@@ -3077,18 +3106,24 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Configure which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gdk_Event_Expose_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Expose) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Expose_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Expose) return Boolean;
+
    Signal_Damage_Event : constant Glib.Signal_Name := "damage-event";
    procedure On_Damage_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Expose) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Expose_Boolean;
+       After : Boolean := False);
    procedure On_Damage_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Expose) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Expose_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when a redirected window belonging to Widget gets drawn into.
    --  The region/area members of the event shows what area of the redirected
    --  drawable was drawn into.
@@ -3099,18 +3134,24 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Expose event
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gdk_Event_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event) return Boolean;
+
    Signal_Delete_Event : constant Glib.Signal_Name := "delete-event";
    procedure On_Delete_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Boolean;
+       After : Boolean := False);
    procedure On_Delete_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::delete-event signal is emitted if a user requests that a toplevel
    --  window is closed. The default handler for this signal destroys the
    --  window. Connecting Gtk.Widget.Hide_On_Delete to this signal will cause
@@ -3125,29 +3166,28 @@ package Gtk.Widget is
 
    Signal_Destroy : constant Glib.Signal_Name := "destroy";
    procedure On_Destroy
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Destroy
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Signals that all holders of a reference to the widget should release
    --  the reference that they hold. May result in finalization of the widget
    --  if all references are released.
 
    Signal_Destroy_Event : constant Glib.Signal_Name := "destroy-event";
    procedure On_Destroy_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Boolean;
+       After : Boolean := False);
    procedure On_Destroy_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::destroy-event signal is emitted when a Gdk.Gdk_Window is
    --  destroyed. You rarely get this signal, because most widgets disconnect
    --  themselves from their window before they destroy it, so no widget owns
@@ -3163,33 +3203,45 @@ package Gtk.Widget is
    --    --  "event": the event which triggered this signal
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gtk_Text_Direction_Void is not null access procedure
+     (Self               : access Gtk_Widget_Record'Class;
+      Previous_Direction : Gtk.Enums.Gtk_Text_Direction);
+
+   type Cb_GObject_Gtk_Text_Direction_Void is not null access procedure
+     (Self               : access Glib.Object.GObject_Record'Class;
+      Previous_Direction : Gtk.Enums.Gtk_Text_Direction);
+
    Signal_Direction_Changed : constant Glib.Signal_Name := "direction-changed";
    procedure On_Direction_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self               : access Gtk_Widget_Record'Class;
-          Previous_Direction : Gtk.Enums.Gtk_Text_Direction));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Text_Direction_Void;
+       After : Boolean := False);
    procedure On_Direction_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self               : access Glib.Object.GObject_Record'Class;
-          Previous_Direction : Gtk.Enums.Gtk_Text_Direction);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Text_Direction_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::direction-changed signal is emitted when the text direction of a
    --  widget changes.
 
+   type Cb_Gtk_Widget_Drag_Context_Void is not null access procedure
+     (Self         : access Gtk_Widget_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+
+   type Cb_GObject_Drag_Context_Void is not null access procedure
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+
    Signal_Drag_Begin : constant Glib.Signal_Name := "drag-begin";
    procedure On_Drag_Begin
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Void;
+       After : Boolean := False);
    procedure On_Drag_Begin
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-begin signal is emitted on the drag source when a drag is
    --  started. A typical reason to connect to this signal is to set up a
    --  custom drag icon with gtk_drag_source_set_icon.
@@ -3200,40 +3252,44 @@ package Gtk.Widget is
 
    Signal_Drag_Data_Delete : constant Glib.Signal_Name := "drag-data-delete";
    procedure On_Drag_Data_Delete
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Void;
+       After : Boolean := False);
    procedure On_Drag_Data_Delete
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-data-delete signal is emitted on the drag source when a drag
    --  with the action Gdk.Drag_Contexts.Action_Move is successfully completed.
    --  The signal handler is responsible for deleting the data that has been
    --  dropped. What "delete" means depends on the context of the drag
    --  operation.
 
+   type Cb_Gtk_Widget_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
+     (Self         : access Gtk_Widget_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info         : Guint;
+      Time         : Guint);
+
+   type Cb_GObject_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info         : Guint;
+      Time         : Guint);
+
    Signal_Drag_Data_Get : constant Glib.Signal_Name := "drag-data-get";
    procedure On_Drag_Data_Get
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-          Info         : Guint;
-          Time         : Guint));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void;
+       After : Boolean := False);
    procedure On_Drag_Data_Get
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-          Info         : Guint;
-          Time         : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-data-get signal is emitted on the drag source when the drop
    --  site requests the data which is dragged. It is the responsibility of the
    --  signal handler to fill Data with the data in the format which is
@@ -3248,28 +3304,34 @@ package Gtk.Widget is
    --    --  Gtk.Target_List.Gtk_Target_List
    --    --  "time": the timestamp at which the data was requested
 
+   type Cb_Gtk_Widget_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
+     (Self         : access Gtk_Widget_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X            : Gint;
+      Y            : Gint;
+      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info         : Guint;
+      Time         : Guint);
+
+   type Cb_GObject_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X            : Gint;
+      Y            : Gint;
+      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info         : Guint;
+      Time         : Guint);
+
    Signal_Drag_Data_Received : constant Glib.Signal_Name := "drag-data-received";
    procedure On_Drag_Data_Received
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          X            : Gint;
-          Y            : Gint;
-          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-          Info         : Guint;
-          Time         : Guint));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void;
+       After : Boolean := False);
    procedure On_Drag_Data_Received
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          X            : Gint;
-          Y            : Gint;
-          Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-          Info         : Guint;
-          Time         : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-data-received signal is emitted on the drop site when the
    --  dragged data has been received. If the data was received in order to
    --  determine whether the drop will be accepted, the handler is expected to
@@ -3309,24 +3371,30 @@ package Gtk.Widget is
    --    --  Gtk.Target_List.Gtk_Target_List
    --    --  "time": the timestamp at which the data was received
 
+   type Cb_Gtk_Widget_Drag_Context_Gint_Gint_Guint_Boolean is not null access function
+     (Self         : access Gtk_Widget_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X            : Gint;
+      Y            : Gint;
+      Time         : Guint) return Boolean;
+
+   type Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean is not null access function
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X            : Gint;
+      Y            : Gint;
+      Time         : Guint) return Boolean;
+
    Signal_Drag_Drop : constant Glib.Signal_Name := "drag-drop";
    procedure On_Drag_Drop
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          X            : Gint;
-          Y            : Gint;
-          Time         : Guint) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Gint_Gint_Guint_Boolean;
+       After : Boolean := False);
    procedure On_Drag_Drop
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          X            : Gint;
-          Y            : Gint;
-          Time         : Guint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-drop signal is emitted on the drop site when the user drops
    --  the data onto the widget. The signal handler must determine whether the
    --  cursor position is in a drop zone or not. If it is not in a drop zone,
@@ -3347,34 +3415,38 @@ package Gtk.Widget is
 
    Signal_Drag_End : constant Glib.Signal_Name := "drag-end";
    procedure On_Drag_End
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Void;
+       After : Boolean := False);
    procedure On_Drag_End
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-end signal is emitted on the drag source when a drag is
    --  finished. A typical reason to connect to this signal is to undo things
    --  done in Gtk.Widget.Gtk_Widget::drag-begin.
 
+   type Cb_Gtk_Widget_Drag_Context_Gtk_Drag_Result_Boolean is not null access function
+     (Self         : access Gtk_Widget_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean;
+
+   type Cb_GObject_Drag_Context_Gtk_Drag_Result_Boolean is not null access function
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean;
+
    Signal_Drag_Failed : constant Glib.Signal_Name := "drag-failed";
    procedure On_Drag_Failed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Gtk_Drag_Result_Boolean;
+       After : Boolean := False);
    procedure On_Drag_Failed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Gtk_Drag_Result_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-failed signal is emitted on the drag source when a drag has
    --  failed. The signal handler may hook custom code to handle a failed DND
    --  operation based on the type of error, it returns True is the failure has
@@ -3386,20 +3458,26 @@ package Gtk.Widget is
    --    --  "result": the result of the drag operation
    --    --  Returns True if the failed drag operation has been already handled.
 
+   type Cb_Gtk_Widget_Drag_Context_Guint_Void is not null access procedure
+     (Self         : access Gtk_Widget_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Time         : Guint);
+
+   type Cb_GObject_Drag_Context_Guint_Void is not null access procedure
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Time         : Guint);
+
    Signal_Drag_Leave : constant Glib.Signal_Name := "drag-leave";
    procedure On_Drag_Leave
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          Time         : Guint));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Guint_Void;
+       After : Boolean := False);
    procedure On_Drag_Leave
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          Time         : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::drag-leave signal is emitted on the drop site when the cursor
    --  leaves the widget. A typical reason to connect to this signal is to undo
    --  things done in Gtk.Widget.Gtk_Widget::drag-motion, e.g. undo
@@ -3411,22 +3489,14 @@ package Gtk.Widget is
 
    Signal_Drag_Motion : constant Glib.Signal_Name := "drag-motion";
    procedure On_Drag_Motion
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self         : access Gtk_Widget_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          X            : Gint;
-          Y            : Gint;
-          Time         : Guint) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Drag_Context_Gint_Gint_Guint_Boolean;
+       After : Boolean := False);
    procedure On_Drag_Motion
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-          X            : Gint;
-          Y            : Gint;
-          Time         : Guint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The drag-motion signal is emitted on the drop site when the user moves
    --  the cursor over the widget during a drag. The signal handler must
    --  determine whether the cursor position is in a drop zone or not. If it is
@@ -3486,18 +3556,24 @@ package Gtk.Widget is
    --    --  "time": the timestamp of the motion event
    --    --  Returns whether the cursor position is in a drop zone
 
+   type Cb_Gtk_Widget_Cairo_Context_Boolean is not null access function
+     (Self : access Gtk_Widget_Record'Class;
+      Cr   : Cairo.Cairo_Context) return Boolean;
+
+   type Cb_GObject_Cairo_Context_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      Cr   : Cairo.Cairo_Context) return Boolean;
+
    Signal_Draw : constant Glib.Signal_Name := "draw";
    procedure On_Draw
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self : access Gtk_Widget_Record'Class;
-          Cr   : Cairo.Cairo_Context) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Cairo_Context_Boolean;
+       After : Boolean := False);
    procedure On_Draw
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Cr   : Cairo.Cairo_Context) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Cairo_Context_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when a widget is supposed to render itself. The
    --  Widget's top left corner must be painted at the origin of the passed in
    --  context and be sized to the values returned by
@@ -3508,18 +3584,24 @@ package Gtk.Widget is
    --  signal emission takes care of calling cairo_save before and
    --  cairo_restore after invoking the handler.
 
+   type Cb_Gtk_Widget_Gdk_Event_Crossing_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Crossing) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Crossing_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Crossing) return Boolean;
+
    Signal_Enter_Notify_Event : constant Glib.Signal_Name := "enter-notify-event";
    procedure On_Enter_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Crossing_Boolean;
+       After : Boolean := False);
    procedure On_Enter_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Crossing_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::enter-notify-event will be emitted when the pointer enters the
    --  Widget's window.
    --
@@ -3536,16 +3618,14 @@ package Gtk.Widget is
 
    Signal_Event : constant Glib.Signal_Name := "event";
    procedure On_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Boolean;
+       After : Boolean := False);
    procedure On_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The GTK+ main loop will emit three signals for each GDK event delivered
    --  to a widget: one generic ::event signal, another, more specific, signal
    --  that matches the type of event delivered (e.g.
@@ -3561,52 +3641,70 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event which triggered this signal
    --    --  Returns True to stop other handlers from being invoked for the event
 
+   type Cb_Gtk_Widget_Gdk_Event_Void is not null access procedure
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event);
+
+   type Cb_GObject_Gdk_Event_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event);
+
    Signal_Event_After : constant Glib.Signal_Name := "event-after";
    procedure On_Event_After
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Void;
+       After : Boolean := False);
    procedure On_Event_After
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  After the emission of the Gtk.Widget.Gtk_Widget::event signal and
    --  (optionally) the second more specific signal, ::event-after will be
    --  emitted regardless of the previous two signals handlers return values.
 
+   type Cb_Gtk_Widget_Gtk_Direction_Type_Boolean is not null access function
+     (Self    : access Gtk_Widget_Record'Class;
+      Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+
+   type Cb_GObject_Gtk_Direction_Type_Boolean is not null access function
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+
    Signal_Focus : constant Glib.Signal_Name := "focus";
    procedure On_Focus
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self    : access Gtk_Widget_Record'Class;
-          Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Direction_Type_Boolean;
+       After : Boolean := False);
    procedure On_Focus
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
    --    --  "returns": True to stop other handlers from being invoked for the
    --    --  event. False to propagate the event further.
    --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
+   type Cb_Gtk_Widget_Gdk_Event_Focus_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Focus) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Focus_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Focus) return Boolean;
+
    Signal_Focus_In_Event : constant Glib.Signal_Name := "focus-in-event";
    procedure On_Focus_In_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Focus) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Focus_Boolean;
+       After : Boolean := False);
    procedure On_Focus_In_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Focus) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Focus_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::focus-in-event signal will be emitted when the keyboard focus
    --  enters the Widget's window.
    --
@@ -3621,16 +3719,14 @@ package Gtk.Widget is
 
    Signal_Focus_Out_Event : constant Glib.Signal_Name := "focus-out-event";
    procedure On_Focus_Out_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Focus) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Focus_Boolean;
+       After : Boolean := False);
    procedure On_Focus_Out_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Focus) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Focus_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::focus-out-event signal will be emitted when the keyboard focus
    --  leaves the Widget's window.
    --
@@ -3643,18 +3739,24 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Focus which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gdk_Event_Grab_Broken_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Grab_Broken) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Grab_Broken_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Grab_Broken) return Boolean;
+
    Signal_Grab_Broken_Event : constant Glib.Signal_Name := "grab-broken-event";
    procedure On_Grab_Broken_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Grab_Broken) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Grab_Broken_Boolean;
+       After : Boolean := False);
    procedure On_Grab_Broken_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Grab_Broken) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Grab_Broken_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when a pointer or keyboard grab on a window belonging to Widget
    --  gets broken.
    --
@@ -3670,26 +3772,33 @@ package Gtk.Widget is
 
    Signal_Grab_Focus : constant Glib.Signal_Name := "grab-focus";
    procedure On_Grab_Focus
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Grab_Focus
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Boolean_Void is not null access procedure
+     (Self        : access Gtk_Widget_Record'Class;
+      Was_Grabbed : Boolean);
+
+   type Cb_GObject_Boolean_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Was_Grabbed : Boolean);
 
    Signal_Grab_Notify : constant Glib.Signal_Name := "grab-notify";
    procedure On_Grab_Notify
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Widget_Record'Class;
-          Was_Grabbed : Boolean));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Boolean_Void;
+       After : Boolean := False);
    procedure On_Grab_Notify
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Was_Grabbed : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::grab-notify signal is emitted when a widget becomes shadowed by a
    --  GTK+ grab (not a pointer or keyboard grab) on another widget, or when it
    --  becomes unshadowed due to a grab being removed.
@@ -3699,43 +3808,56 @@ package Gtk.Widget is
 
    Signal_Hide : constant Glib.Signal_Name := "hide";
    procedure On_Hide
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Hide
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gtk_Widget_Void is not null access procedure
+     (Self              : access Gtk_Widget_Record'Class;
+      Previous_Toplevel : access Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self              : access Glib.Object.GObject_Record'Class;
+      Previous_Toplevel : access Gtk_Widget_Record'Class);
 
    Signal_Hierarchy_Changed : constant Glib.Signal_Name := "hierarchy-changed";
    procedure On_Hierarchy_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self              : access Gtk_Widget_Record'Class;
-          Previous_Toplevel : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Hierarchy_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self              : access Glib.Object.GObject_Record'Class;
-          Previous_Toplevel : access Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::hierarchy-changed signal is emitted when the anchored state of a
    --  widget changes. A widget is 'anchored' when its toplevel ancestor is a
    --  Gtk.Window.Gtk_Window. This signal is emitted when a widget changes from
    --  un-anchored to anchored or vice-versa.
 
+   type Cb_Gtk_Widget_Gdk_Event_Key_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Key) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Key_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Key) return Boolean;
+
    Signal_Key_Press_Event : constant Glib.Signal_Name := "key-press-event";
    procedure On_Key_Press_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Key) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Key_Boolean;
+       After : Boolean := False);
    procedure On_Key_Press_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Key) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Key_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::key-press-event signal is emitted when a key is pressed. The
    --  signal emission will reoccur at the key-repeat rate when the key is kept
    --  pressed.
@@ -3753,16 +3875,14 @@ package Gtk.Widget is
 
    Signal_Key_Release_Event : constant Glib.Signal_Name := "key-release-event";
    procedure On_Key_Release_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Key) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Key_Boolean;
+       After : Boolean := False);
    procedure On_Key_Release_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Key) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Key_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::key-release-event signal is emitted when a key is released.
    --
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
@@ -3778,16 +3898,14 @@ package Gtk.Widget is
 
    Signal_Keynav_Failed : constant Glib.Signal_Name := "keynav-failed";
    procedure On_Keynav_Failed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self      : access Gtk_Widget_Record'Class;
-          Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Direction_Type_Boolean;
+       After : Boolean := False);
    procedure On_Keynav_Failed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted if keyboard navigation fails. See Gtk.Widget.Keynav_Failed
    --  for details.
    --
@@ -3800,16 +3918,14 @@ package Gtk.Widget is
 
    Signal_Leave_Notify_Event : constant Glib.Signal_Name := "leave-notify-event";
    procedure On_Leave_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Crossing_Boolean;
+       After : Boolean := False);
    procedure On_Leave_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Crossing) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Crossing_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::leave-notify-event will be emitted when the pointer leaves the
    --  Widget's window.
    --
@@ -3826,26 +3942,33 @@ package Gtk.Widget is
 
    Signal_Map : constant Glib.Signal_Name := "map";
    procedure On_Map
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Map
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gdk_Event_Any_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Any) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Any_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Any) return Boolean;
 
    Signal_Map_Event : constant Glib.Signal_Name := "map-event";
    procedure On_Map_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Any) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Any_Boolean;
+       After : Boolean := False);
    procedure On_Map_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Any) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Any_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::map-event signal will be emitted when the Widget's window is
    --  mapped. A window is mapped when it becomes visible on the screen.
    --
@@ -3859,31 +3982,43 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Any which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Boolean_Boolean is not null access function
+     (Self   : access Gtk_Widget_Record'Class;
+      Object : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Boolean) return Boolean;
+
    Signal_Mnemonic_Activate : constant Glib.Signal_Name := "mnemonic-activate";
    procedure On_Mnemonic_Activate
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self   : access Gtk_Widget_Record'Class;
-          Object : Boolean) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Mnemonic_Activate
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gdk_Event_Motion_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Motion) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Motion_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Motion) return Boolean;
 
    Signal_Motion_Notify_Event : constant Glib.Signal_Name := "motion-notify-event";
    procedure On_Motion_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Motion) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Motion_Boolean;
+       After : Boolean := False);
    procedure On_Motion_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Motion) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Motion_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::motion-notify-event signal is emitted when the pointer moves over
    --  the widget's Gdk.Gdk_Window.
    --
@@ -3898,45 +4033,55 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Motion which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gtk_Direction_Type_Void is not null access procedure
+     (Self   : access Gtk_Widget_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type);
+
+   type Cb_GObject_Gtk_Direction_Type_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type);
+
    Signal_Move_Focus : constant Glib.Signal_Name := "move-focus";
    procedure On_Move_Focus
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Widget_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Direction_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Focus
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Parent_Set : constant Glib.Signal_Name := "parent-set";
    procedure On_Parent_Set
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self       : access Gtk_Widget_Record'Class;
-          Old_Parent : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Parent_Set
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Old_Parent : access Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::parent-set signal is emitted when a new parent has been set on a
    --  widget.
 
+   type Cb_Gtk_Widget_Boolean is not null access function
+     (Self : access Gtk_Widget_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Popup_Menu : constant Glib.Signal_Name := "popup-menu";
    procedure On_Popup_Menu
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self : access Gtk_Widget_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Boolean;
+       After : Boolean := False);
    procedure On_Popup_Menu
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal gets emitted whenever a widget should pop up a context
    --  menu. This usually happens through the standard key binding mechanism;
    --  by pressing a certain key while a widget is focused, the user can cause
@@ -3948,18 +4093,24 @@ package Gtk.Widget is
    --  Callback parameters:
    --    --  Returns True if a menu was activated
 
+   type Cb_Gtk_Widget_Gdk_Event_Property_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Property) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Property_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Property) return Boolean;
+
    Signal_Property_Notify_Event : constant Glib.Signal_Name := "property-notify-event";
    procedure On_Property_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Property) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Property_Boolean;
+       After : Boolean := False);
    procedure On_Property_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Property) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Property_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::property-notify-event signal will be emitted when a property on
    --  the Widget's window has been changed or deleted.
    --
@@ -3972,18 +4123,24 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Property which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gdk_Event_Proximity_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Proximity) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Proximity_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Proximity) return Boolean;
+
    Signal_Proximity_In_Event : constant Glib.Signal_Name := "proximity-in-event";
    procedure On_Proximity_In_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Proximity_Boolean;
+       After : Boolean := False);
    procedure On_Proximity_In_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Proximity_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  To receive this signal the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_PROXIMITY_IN_MASK mask.
    --
@@ -3997,16 +4154,14 @@ package Gtk.Widget is
 
    Signal_Proximity_Out_Event : constant Glib.Signal_Name := "proximity-out-event";
    procedure On_Proximity_Out_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Proximity_Boolean;
+       After : Boolean := False);
    procedure On_Proximity_Out_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Proximity) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Proximity_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  To receive this signal the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_PROXIMITY_OUT_MASK mask.
    --
@@ -4050,41 +4205,54 @@ package Gtk.Widget is
 
    Signal_Realize : constant Glib.Signal_Name := "realize";
    procedure On_Realize
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Realize
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gdk_Screen_Void is not null access procedure
+     (Self            : access Gtk_Widget_Record'Class;
+      Previous_Screen : access Gdk.Screen.Gdk_Screen_Record'Class);
+
+   type Cb_GObject_Gdk_Screen_Void is not null access procedure
+     (Self            : access Glib.Object.GObject_Record'Class;
+      Previous_Screen : access Gdk.Screen.Gdk_Screen_Record'Class);
 
    Signal_Screen_Changed : constant Glib.Signal_Name := "screen-changed";
    procedure On_Screen_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self            : access Gtk_Widget_Record'Class;
-          Previous_Screen : access Gdk.Screen.Gdk_Screen_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Screen_Void;
+       After : Boolean := False);
    procedure On_Screen_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self            : access Glib.Object.GObject_Record'Class;
-          Previous_Screen : access Gdk.Screen.Gdk_Screen_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Screen_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::screen-changed signal gets emitted when the screen of a widget
    --  has changed.
 
+   type Cb_Gtk_Widget_Gdk_Event_Scroll_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Scroll_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
+
    Signal_Scroll_Event : constant Glib.Signal_Name := "scroll-event";
    procedure On_Scroll_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Scroll_Boolean;
+       After : Boolean := False);
    procedure On_Scroll_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Scroll_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::scroll-event signal is emitted when a button in the 4 to 7 range
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.
@@ -4100,18 +4268,24 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gdk_Event_Selection_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Selection_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
+
    Signal_Selection_Clear_Event : constant Glib.Signal_Name := "selection-clear-event";
    procedure On_Selection_Clear_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Selection) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Selection_Boolean;
+       After : Boolean := False);
    procedure On_Selection_Clear_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Selection_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::selection-clear-event signal will be emitted when the the
    --  Widget's window has lost ownership of a selection.
    --
@@ -4121,70 +4295,78 @@ package Gtk.Widget is
    --    --  "event": the Gdk.Event.Gdk_Event_Selection which triggered this signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
+     (Self   : access Gtk_Widget_Record'Class;
+      Object : Gtk.Selection_Data.Gtk_Selection_Data;
+      P0     : Guint;
+      P1     : Guint);
+
+   type Cb_GObject_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Selection_Data.Gtk_Selection_Data;
+      P0     : Guint;
+      P1     : Guint);
+
    Signal_Selection_Get : constant Glib.Signal_Name := "selection-get";
    procedure On_Selection_Get
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Widget_Record'Class;
-          Object : Gtk.Selection_Data.Gtk_Selection_Data;
-          P0     : Guint;
-          P1     : Guint));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Guint_Void;
+       After : Boolean := False);
    procedure On_Selection_Get
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Selection_Data.Gtk_Selection_Data;
-          P0     : Guint;
-          P1     : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Selection_Data_Guint_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
 
    Signal_Selection_Notify_Event : constant Glib.Signal_Name := "selection-notify-event";
    procedure On_Selection_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Selection) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Selection_Boolean;
+       After : Boolean := False);
    procedure On_Selection_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Selection_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
    --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
+   type Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Void is not null access procedure
+     (Self   : access Gtk_Widget_Record'Class;
+      Object : Gtk.Selection_Data.Gtk_Selection_Data;
+      P0     : Guint);
+
+   type Cb_GObject_Gtk_Selection_Data_Guint_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Selection_Data.Gtk_Selection_Data;
+      P0     : Guint);
+
    Signal_Selection_Received : constant Glib.Signal_Name := "selection-received";
    procedure On_Selection_Received
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Widget_Record'Class;
-          Object : Gtk.Selection_Data.Gtk_Selection_Data;
-          P0     : Guint));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Void;
+       After : Boolean := False);
    procedure On_Selection_Received
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Selection_Data.Gtk_Selection_Data;
-          P0     : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Selection_Data_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
 
    Signal_Selection_Request_Event : constant Glib.Signal_Name := "selection-request-event";
    procedure On_Selection_Request_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Selection) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Selection_Boolean;
+       After : Boolean := False);
    procedure On_Selection_Request_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Selection) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Selection_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::selection-request-event signal will be emitted when another
    --  client requests ownership of the selection owned by the Widget's window.
    --
@@ -4196,82 +4378,113 @@ package Gtk.Widget is
 
    Signal_Show : constant Glib.Signal_Name := "show";
    procedure On_Show
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Show
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gtk_Widget_Help_Type_Boolean is not null access function
+     (Self   : access Gtk_Widget_Record'Class;
+      Object : Gtk_Widget_Help_Type) return Boolean;
+
+   type Cb_GObject_Gtk_Widget_Help_Type_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk_Widget_Help_Type) return Boolean;
 
    Signal_Show_Help : constant Glib.Signal_Name := "show-help";
    procedure On_Show_Help
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self   : access Gtk_Widget_Record'Class;
-          Object : Gtk_Widget_Help_Type) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Widget_Help_Type_Boolean;
+       After : Boolean := False);
    procedure On_Show_Help
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk_Widget_Help_Type) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Widget_Help_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Cairo_Rectangle_Void is not null access procedure
+     (Self   : access Gtk_Widget_Record'Class;
+      Object : Cairo.Cairo_Rectangle);
+
+   type Cb_GObject_Cairo_Rectangle_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Cairo.Cairo_Rectangle);
 
    Signal_Size_Allocate : constant Glib.Signal_Name := "size-allocate";
    procedure On_Size_Allocate
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Widget_Record'Class;
-          Object : Cairo.Cairo_Rectangle));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Cairo_Rectangle_Void;
+       After : Boolean := False);
    procedure On_Size_Allocate
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Cairo.Cairo_Rectangle);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Cairo_Rectangle_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gtk_State_Type_Void is not null access procedure
+     (Self  : access Gtk_Widget_Record'Class;
+      State : Gtk.Enums.Gtk_State_Type);
+
+   type Cb_GObject_Gtk_State_Type_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      State : Gtk.Enums.Gtk_State_Type);
 
    Signal_State_Changed : constant Glib.Signal_Name := "state-changed";
    procedure On_State_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Widget_Record'Class;
-          State : Gtk.Enums.Gtk_State_Type));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_State_Type_Void;
+       After : Boolean := False);
    procedure On_State_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          State : Gtk.Enums.Gtk_State_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_State_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::state-changed signal is emitted when the widget state changes.
    --  See Gtk.Widget.Get_State.
 
+   type Cb_Gtk_Widget_Gtk_State_Flags_Void is not null access procedure
+     (Self  : access Gtk_Widget_Record'Class;
+      Flags : Gtk.Enums.Gtk_State_Flags);
+
+   type Cb_GObject_Gtk_State_Flags_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Flags : Gtk.Enums.Gtk_State_Flags);
+
    Signal_State_Flags_Changed : constant Glib.Signal_Name := "state-flags-changed";
    procedure On_State_Flags_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Widget_Record'Class;
-          Flags : Gtk.Enums.Gtk_State_Flags));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_State_Flags_Void;
+       After : Boolean := False);
    procedure On_State_Flags_Changed
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Flags : Gtk.Enums.Gtk_State_Flags);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_State_Flags_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::state-flags-changed signal is emitted when the widget state
    --  changes, see Gtk.Widget.Get_State_Flags.
 
+   type Cb_Gtk_Widget_Gtk_Style_Void is not null access procedure
+     (Self           : access Gtk_Widget_Record'Class;
+      Previous_Style : access Gtk.Style.Gtk_Style_Record'Class);
+
+   type Cb_GObject_Gtk_Style_Void is not null access procedure
+     (Self           : access Glib.Object.GObject_Record'Class;
+      Previous_Style : access Gtk.Style.Gtk_Style_Record'Class);
+
    Signal_Style_Set : constant Glib.Signal_Name := "style-set";
    procedure On_Style_Set
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self           : access Gtk_Widget_Record'Class;
-          Previous_Style : access Gtk.Style.Gtk_Style_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gtk_Style_Void;
+       After : Boolean := False);
    procedure On_Style_Set
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self           : access Glib.Object.GObject_Record'Class;
-          Previous_Style : access Gtk.Style.Gtk_Style_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gtk_Style_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::style-set signal is emitted when a new style has been set on a
    --  widget. Note that style-modifying functions like Gtk.Widget.Modify_Base
    --  also cause this signal to be emitted.
@@ -4285,13 +4498,14 @@ package Gtk.Widget is
 
    Signal_Style_Updated : constant Glib.Signal_Name := "style-updated";
    procedure On_Style_Updated
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Style_Updated
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::style-updated signal is emitted when the
    --  Gtk.Style_Context.Gtk_Style_Context of a widget is changed. Note that
    --  style-modifying functions like Gtk.Widget.Override_Color also cause this
@@ -4299,26 +4513,25 @@ package Gtk.Widget is
 
    Signal_Unmap : constant Glib.Signal_Name := "unmap";
    procedure On_Unmap
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Unmap
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Unmap_Event : constant Glib.Signal_Name := "unmap-event";
    procedure On_Unmap_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Any) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Any_Boolean;
+       After : Boolean := False);
    procedure On_Unmap_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Any) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Any_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::unmap-event signal will be emitted when the Widget's window is
    --  unmapped. A window is unmapped when it becomes invisible on the screen.
    --
@@ -4334,26 +4547,33 @@ package Gtk.Widget is
 
    Signal_Unrealize : constant Glib.Signal_Name := "unrealize";
    procedure On_Unrealize
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure (Self : access Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Unrealize
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Widget_Gdk_Event_Visibility_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Visibility) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Visibility_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Visibility) return Boolean;
 
    Signal_Visibility_Notify_Event : constant Glib.Signal_Name := "visibility-notify-event";
    procedure On_Visibility_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Visibility) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Visibility_Boolean;
+       After : Boolean := False);
    procedure On_Visibility_Notify_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Visibility) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Visibility_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::visibility-notify-event will be emitted when the Widget's window
    --  is obscured or unobscured.
    --
@@ -4367,18 +4587,24 @@ package Gtk.Widget is
    --    --  signal.
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Widget_Gdk_Event_Window_State_Boolean is not null access function
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Window_State) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Window_State_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Window_State) return Boolean;
+
    Signal_Window_State_Event : constant Glib.Signal_Name := "window-state-event";
    procedure On_Window_State_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Gtk_Widget_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Window_State) return Boolean);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Window_State_Boolean;
+       After : Boolean := False);
    procedure On_Window_State_Event
-      (Self : not null access Gtk_Widget_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Window_State) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Window_State_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::window-state-event will be emitted when the state of the toplevel
    --  window associated to the Widget changes.
    --

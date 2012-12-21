@@ -372,18 +372,24 @@ package Gtk.Scale is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Scale_Gdouble_UTF8_String is not null access function
+     (Self  : access Gtk_Scale_Record'Class;
+      Value : Gdouble) return UTF8_String;
+
+   type Cb_GObject_Gdouble_UTF8_String is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Value : Gdouble) return UTF8_String;
+
    Signal_Format_Value : constant Glib.Signal_Name := "format-value";
    procedure On_Format_Value
-      (Self : not null access Gtk_Scale_Record;
-       Call : not null access function
-         (Self  : access Gtk_Scale_Record'Class;
-          Value : Gdouble) return UTF8_String);
+      (Self  : not null access Gtk_Scale_Record;
+       Call  : Cb_Gtk_Scale_Gdouble_UTF8_String;
+       After : Boolean := False);
    procedure On_Format_Value
-      (Self : not null access Gtk_Scale_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Value : Gdouble) return UTF8_String;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Scale_Record;
+       Call  : Cb_GObject_Gdouble_UTF8_String;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Signal which allows you to change how the scale value is displayed.
    --  Connect a signal handler which returns an allocated string representing
    --  Value. That string will then be used to display the scale's value.

@@ -328,16 +328,22 @@ package Gtk.Recent_Manager is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Recent_Manager_Void is not null access procedure
+     (Self : access Gtk_Recent_Manager_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Recent_Manager_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Recent_Manager_Record'Class));
+      (Self  : not null access Gtk_Recent_Manager_Record;
+       Call  : Cb_Gtk_Recent_Manager_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Recent_Manager_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Recent_Manager_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the current recently used resources manager changes its
    --  contents, either by calling Gtk.Recent_Manager.Add_Item or by another
    --  application.

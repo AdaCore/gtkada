@@ -375,17 +375,23 @@ package Gtk.Tool_Item is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Tool_Item_Boolean is not null access function
+     (Self : access Gtk_Tool_Item_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Create_Menu_Proxy : constant Glib.Signal_Name := "create-menu-proxy";
    procedure On_Create_Menu_Proxy
-      (Self : not null access Gtk_Tool_Item_Record;
-       Call : not null access function
-         (Self : access Gtk_Tool_Item_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Tool_Item_Record;
+       Call  : Cb_Gtk_Tool_Item_Boolean;
+       After : Boolean := False);
    procedure On_Create_Menu_Proxy
-      (Self : not null access Gtk_Tool_Item_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tool_Item_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the toolbar needs information from
    --  Tool_Item about whether the item should appear in the toolbar overflow
    --  menu. In response the tool item should either
@@ -409,15 +415,21 @@ package Gtk.Tool_Item is
    --  Callback parameters:
    --    --  Returns True if the signal was handled, False if not
 
+   type Cb_Gtk_Tool_Item_Void is not null access procedure (Self : access Gtk_Tool_Item_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Toolbar_Reconfigured : constant Glib.Signal_Name := "toolbar-reconfigured";
    procedure On_Toolbar_Reconfigured
-      (Self : not null access Gtk_Tool_Item_Record;
-       Call : not null access procedure (Self : access Gtk_Tool_Item_Record'Class));
+      (Self  : not null access Gtk_Tool_Item_Record;
+       Call  : Cb_Gtk_Tool_Item_Void;
+       After : Boolean := False);
    procedure On_Toolbar_Reconfigured
-      (Self : not null access Gtk_Tool_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tool_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when some property of the toolbar that the item
    --  is a child of changes. For custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item, the default handler of this signal use the

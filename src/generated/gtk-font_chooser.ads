@@ -220,18 +220,24 @@ package Gtk.Font_Chooser is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Font_Chooser_UTF8_String_Void is not null access procedure
+     (Self   : Gtk_Font_Chooser;
+      Object : UTF8_String);
+
+   type Cb_GObject_UTF8_String_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : UTF8_String);
+
    Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
    procedure On_Font_Activated
-      (Self : Gtk_Font_Chooser;
-       Call : not null access procedure
-         (Self   : Gtk_Font_Chooser;
-          Object : UTF8_String));
+      (Self  : Gtk_Font_Chooser;
+       Call  : Cb_Gtk_Font_Chooser_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Font_Activated
-      (Self : Gtk_Font_Chooser;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Font_Chooser;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

@@ -1070,16 +1070,22 @@ package Gtk.Style_Context is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Style_Context_Void is not null access procedure
+     (Self : access Gtk_Style_Context_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Style_Context_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Style_Context_Record'Class));
+      (Self  : not null access Gtk_Style_Context_Record;
+       Call  : Cb_Gtk_Style_Context_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Style_Context_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Style_Context_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
 private
    Screen_Property : constant Glib.Properties.Property_Object :=

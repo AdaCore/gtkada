@@ -24,7 +24,9 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Radio_Tool_Button is
 

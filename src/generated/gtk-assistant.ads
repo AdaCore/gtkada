@@ -392,15 +392,21 @@ package Gtk.Assistant is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Assistant_Void is not null access procedure (Self : access Gtk_Assistant_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Apply : constant Glib.Signal_Name := "apply";
    procedure On_Apply
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class));
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Void;
+       After : Boolean := False);
    procedure On_Apply
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::apply signal is emitted when the apply button is clicked.
    --
    --  The default behavior of the Gtk.Assistant.Gtk_Assistant is to switch to
@@ -416,40 +422,48 @@ package Gtk.Assistant is
 
    Signal_Cancel : constant Glib.Signal_Name := "cancel";
    procedure On_Cancel
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class));
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Void;
+       After : Boolean := False);
    procedure On_Cancel
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::cancel signal is emitted when then the cancel button is clicked.
 
    Signal_Close : constant Glib.Signal_Name := "close";
    procedure On_Close
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure (Self : access Gtk_Assistant_Record'Class));
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Void;
+       After : Boolean := False);
    procedure On_Close
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::close signal is emitted either when the close button of a summary
    --  page is clicked, or when the apply button in the last page in the flow
    --  (of type Gtk.Assistant.Gtk_Assistant_Page_Confirm) is clicked.
 
+   type Cb_Gtk_Assistant_Gtk_Widget_Void is not null access procedure
+     (Self : access Gtk_Assistant_Record'Class;
+      Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
    Signal_Prepare : constant Glib.Signal_Name := "prepare";
    procedure On_Prepare
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Assistant_Record'Class;
-          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Prepare
-      (Self : not null access Gtk_Assistant_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::prepare signal is emitted when a new page is set as the
    --  assistant's current page, before making the new page visible.
    --

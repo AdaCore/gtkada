@@ -23,9 +23,15 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Print_Operation is
 
@@ -533,19 +539,1235 @@ package body Gtk.Print_Operation is
       Internal (Get_Object (Preview), Page_Nr);
    end Render_Page;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Print_Context_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Print_Context_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Print_Context_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Print_Context_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_GObject, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_GObject);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_GObject, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_GObject);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Widget_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Widget_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Print_Operation_Result_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Print_Operation_Result_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Print_Context_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Print_Context_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Print_Context_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Print_Context_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_GObject;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Widget_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_GObject;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Operation_Result_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_GObject
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_GObject);
+
+   procedure Marsh_GObject_Gtk_Print_Context_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Print_Context_Boolean);
+
+   procedure Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void);
+
+   procedure Marsh_GObject_Gtk_Print_Context_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Print_Context_Gint_Void);
+
+   procedure Marsh_GObject_Gtk_Print_Context_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Print_Context_Void);
+
+   procedure Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean);
+
+   procedure Marsh_GObject_Gtk_Print_Operation_Result_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Print_Operation_Result_Void);
+
+   procedure Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void);
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Widget_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Print_Operation_GObject
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_GObject);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Print_Context_Void);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void);
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Gtk_Widget_Void);
+
+   procedure Marsh_Gtk_Print_Operation_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Print_Operation_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Print_Context_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_GObject;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_GObject'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Widget_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Print_Context_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_GObject;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_GObject'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Operation_Result_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Print_Operation_Result_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Print_Context_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Print_Context_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Print_Operation_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------
+   -- Marsh_GObject_GObject --
+   ---------------------------
+
+   procedure Marsh_GObject_GObject
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_GObject := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased not null access Glib.Object.GObject_Record'Class := H (Obj);
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_GObject;
+
+   ---------------------------------------------
+   -- Marsh_GObject_Gtk_Print_Context_Boolean --
+   ---------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Print_Context_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Print_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Print_Context_Boolean;
+
+   --------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void --
+   --------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 3)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+
+   -----------------------------------------------
+   -- Marsh_GObject_Gtk_Print_Context_Gint_Void --
+   -----------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Print_Context_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Print_Context_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Print_Context_Gint_Void;
+
+   ------------------------------------------
+   -- Marsh_GObject_Gtk_Print_Context_Void --
+   ------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Print_Context_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Print_Context_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Print_Context_Void;
+
+   ------------------------------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean --
+   ------------------------------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+
+   ---------------------------------------------------
+   -- Marsh_GObject_Gtk_Print_Operation_Result_Void --
+   ---------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Print_Operation_Result_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Print_Operation_Result_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Print_Operation_Result (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Print_Operation_Result_Void;
+
+   ---------------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void --
+   ---------------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 2)), Gtk.Print_Settings.Gtk_Print_Settings (Unchecked_To_Object (Params, 3)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+
+   -----------------------------------
+   -- Marsh_GObject_Gtk_Widget_Void --
+   -----------------------------------
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Widget_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ---------------------------------------
+   -- Marsh_Gtk_Print_Operation_GObject --
+   ---------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_GObject
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_GObject := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      V   : aliased not null access Glib.Object.GObject_Record'Class := H (Obj);
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_GObject;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Print_Context_Boolean;
+
+   --------------------------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void --
+   --------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 3)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+
+   -----------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void --
+   -----------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)), Unchecked_To_Gint (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void;
+
+   ------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Print_Context_Void --
+   ------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Context_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Context_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Print_Context_Void;
+
+   ------------------------------------------------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean --
+   ------------------------------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview (Unchecked_To_Interface (Params, 1)), Gtk.Print_Context.Gtk_Print_Context (Unchecked_To_Object (Params, 2)), Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 3)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+
+   ---------------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void --
+   ---------------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Print_Operation_Result (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void;
+
+   ---------------------------------------------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void --
+   ---------------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Gtk.Page_Setup.Gtk_Page_Setup (Unchecked_To_Object (Params, 2)), Gtk.Print_Settings.Gtk_Print_Settings (Unchecked_To_Object (Params, 3)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+
+   -----------------------------------------------
+   -- Marsh_Gtk_Print_Operation_Gtk_Widget_Void --
+   -----------------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Gtk_Widget_Void;
+
+   ------------------------------------
+   -- Marsh_Gtk_Print_Operation_Void --
+   ------------------------------------
+
+   procedure Marsh_Gtk_Print_Operation_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Print_Operation_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Print_Operation_Record'Class := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Print_Operation_Void;
+
    --------------------
    -- On_Begin_Print --
    --------------------
 
    procedure On_Begin_Print
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Print_Operation_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Context_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "begin-print" & ASCII.NUL, Call, After);
    end On_Begin_Print;
 
    --------------------
@@ -553,15 +1775,13 @@ package body Gtk.Print_Operation is
    --------------------
 
    procedure On_Begin_Print
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Context_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "begin-print" & ASCII.NUL, Call, After, Slot);
    end On_Begin_Print;
 
    -----------------------------
@@ -569,14 +1789,12 @@ package body Gtk.Print_Operation is
    -----------------------------
 
    procedure On_Create_Custom_Widget
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access function
-         (Self : access Gtk_Print_Operation_Record'Class)
-          return Glib.Object.GObject)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_GObject;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "create-custom-widget" & ASCII.NUL, Call, After);
    end On_Create_Custom_Widget;
 
    -----------------------------
@@ -584,15 +1802,13 @@ package body Gtk.Print_Operation is
    -----------------------------
 
    procedure On_Create_Custom_Widget
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Glib.Object.GObject;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_GObject;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "create-custom-widget" & ASCII.NUL, Call, After, Slot);
    end On_Create_Custom_Widget;
 
    ----------------------------
@@ -600,14 +1816,12 @@ package body Gtk.Print_Operation is
    ----------------------------
 
    procedure On_Custom_Widget_Apply
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Print_Operation_Record'Class;
-          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Widget_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "custom-widget-apply" & ASCII.NUL, Call, After);
    end On_Custom_Widget_Apply;
 
    ----------------------------
@@ -615,15 +1829,13 @@ package body Gtk.Print_Operation is
    ----------------------------
 
    procedure On_Custom_Widget_Apply
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "custom-widget-apply" & ASCII.NUL, Call, After, Slot);
    end On_Custom_Widget_Apply;
 
    -------------
@@ -631,14 +1843,12 @@ package body Gtk.Print_Operation is
    -------------
 
    procedure On_Done
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Print_Operation_Record'Class;
-          Result : Gtk_Print_Operation_Result))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Result_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "done" & ASCII.NUL, Call, After);
    end On_Done;
 
    -------------
@@ -646,15 +1856,13 @@ package body Gtk.Print_Operation is
    -------------
 
    procedure On_Done
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Result : Gtk_Print_Operation_Result);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Operation_Result_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "done" & ASCII.NUL, Call, After, Slot);
    end On_Done;
 
    ------------------
@@ -662,15 +1870,12 @@ package body Gtk.Print_Operation is
    ------------------
 
    procedure On_Draw_Page
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Print_Operation_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Page_Nr : Gint))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "draw-page" & ASCII.NUL, Call, After);
    end On_Draw_Page;
 
    ------------------
@@ -678,16 +1883,13 @@ package body Gtk.Print_Operation is
    ------------------
 
    procedure On_Draw_Page
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Page_Nr : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Context_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "draw-page" & ASCII.NUL, Call, After, Slot);
    end On_Draw_Page;
 
    ------------------
@@ -695,14 +1897,12 @@ package body Gtk.Print_Operation is
    ------------------
 
    procedure On_End_Print
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Print_Operation_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Context_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "end-print" & ASCII.NUL, Call, After);
    end On_End_Print;
 
    ------------------
@@ -710,15 +1910,13 @@ package body Gtk.Print_Operation is
    ------------------
 
    procedure On_End_Print
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Context_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "end-print" & ASCII.NUL, Call, After, Slot);
    end On_End_Print;
 
    -----------------
@@ -726,15 +1924,12 @@ package body Gtk.Print_Operation is
    -----------------
 
    procedure On_Paginate
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access function
-         (Self    : access Gtk_Print_Operation_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
-          return Boolean)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Context_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "paginate" & ASCII.NUL, Call, After);
    end On_Paginate;
 
    -----------------
@@ -742,16 +1937,13 @@ package body Gtk.Print_Operation is
    -----------------
 
    procedure On_Paginate
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access function
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Context_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "paginate" & ASCII.NUL, Call, After, Slot);
    end On_Paginate;
 
    ----------------
@@ -759,17 +1951,12 @@ package body Gtk.Print_Operation is
    ----------------
 
    procedure On_Preview
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access function
-         (Self    : access Gtk_Print_Operation_Record'Class;
-          Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Parent  : access Gtk.Window.Gtk_Window_Record'Class)
-          return Boolean)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "preview" & ASCII.NUL, Call, After);
    end On_Preview;
 
    ----------------
@@ -777,18 +1964,13 @@ package body Gtk.Print_Operation is
    ----------------
 
    procedure On_Preview
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access function
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Parent  : access Gtk.Window.Gtk_Window_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "preview" & ASCII.NUL, Call, After, Slot);
    end On_Preview;
 
    ---------------------------
@@ -796,16 +1978,12 @@ package body Gtk.Print_Operation is
    ---------------------------
 
    procedure On_Request_Page_Setup
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Print_Operation_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Page_Nr : Gint;
-          Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "request-page-setup" & ASCII.NUL, Call, After);
    end On_Request_Page_Setup;
 
    ---------------------------
@@ -813,17 +1991,13 @@ package body Gtk.Print_Operation is
    ---------------------------
 
    procedure On_Request_Page_Setup
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Page_Nr : Gint;
-          Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "request-page-setup" & ASCII.NUL, Call, After, Slot);
    end On_Request_Page_Setup;
 
    -----------------------
@@ -831,13 +2005,12 @@ package body Gtk.Print_Operation is
    -----------------------
 
    procedure On_Status_Changed
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Print_Operation_Record'Class))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "status-changed" & ASCII.NUL, Call, After);
    end On_Status_Changed;
 
    -----------------------
@@ -845,14 +2018,13 @@ package body Gtk.Print_Operation is
    -----------------------
 
    procedure On_Status_Changed
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "status-changed" & ASCII.NUL, Call, After, Slot);
    end On_Status_Changed;
 
    -----------------------------
@@ -860,16 +2032,12 @@ package body Gtk.Print_Operation is
    -----------------------------
 
    procedure On_Update_Custom_Widget
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Print_Operation_Record'Class;
-          Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
-          Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class))
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "update-custom-widget" & ASCII.NUL, Call, After);
    end On_Update_Custom_Widget;
 
    -----------------------------
@@ -877,17 +2045,13 @@ package body Gtk.Print_Operation is
    -----------------------------
 
    procedure On_Update_Custom_Widget
-      (Self : not null access Gtk_Print_Operation_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Setup    : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
-          Settings : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Print_Operation_Record;
+       Call  : Cb_GObject_Gtk_Widget_Gtk_Page_Setup_Gtk_Print_Settings_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "update-custom-widget" & ASCII.NUL, Call, After, Slot);
    end On_Update_Custom_Widget;
 
 end Gtk.Print_Operation;

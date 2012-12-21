@@ -23,9 +23,15 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Window is
 
@@ -1766,17 +1772,261 @@ package body Gtk.Window is
       Free (Tmp_Name);
    end Set_Default_Icon_Name;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Window_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Window_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Window_Gtk_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Window_Gtk_Widget_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Widget_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Window_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Window_Gtk_Widget_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Widget_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Window_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Window_Gtk_Widget_Void);
+
+   procedure Marsh_Gtk_Window_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Window_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Window_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Window_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Window_Gtk_Widget_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Window_Gtk_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   -----------------------------------
+   -- Marsh_GObject_Gtk_Widget_Void --
+   -----------------------------------
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Widget_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   --------------------------------------
+   -- Marsh_Gtk_Window_Gtk_Widget_Void --
+   --------------------------------------
+
+   procedure Marsh_Gtk_Window_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Window_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Window_Record'Class := Gtk_Window (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Window_Gtk_Widget_Void;
+
+   ---------------------------
+   -- Marsh_Gtk_Window_Void --
+   ---------------------------
+
+   procedure Marsh_Gtk_Window_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Window_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Window_Record'Class := Gtk_Window (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Window_Void;
+
    -------------------------
    -- On_Activate_Default --
    -------------------------
 
    procedure On_Activate_Default
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure (Self : access Gtk_Window_Record'Class))
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "activate-default" & ASCII.NUL, Call, After);
    end On_Activate_Default;
 
    -------------------------
@@ -1784,14 +2034,13 @@ package body Gtk.Window is
    -------------------------
 
    procedure On_Activate_Default
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "activate-default" & ASCII.NUL, Call, After, Slot);
    end On_Activate_Default;
 
    -----------------------
@@ -1799,12 +2048,12 @@ package body Gtk.Window is
    -----------------------
 
    procedure On_Activate_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure (Self : access Gtk_Window_Record'Class))
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "activate-focus" & ASCII.NUL, Call, After);
    end On_Activate_Focus;
 
    -----------------------
@@ -1812,14 +2061,13 @@ package body Gtk.Window is
    -----------------------
 
    procedure On_Activate_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "activate-focus" & ASCII.NUL, Call, After, Slot);
    end On_Activate_Focus;
 
    ---------------------
@@ -1827,12 +2075,12 @@ package body Gtk.Window is
    ---------------------
 
    procedure On_Keys_Changed
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure (Self : access Gtk_Window_Record'Class))
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "keys-changed" & ASCII.NUL, Call, After);
    end On_Keys_Changed;
 
    ---------------------
@@ -1840,14 +2088,13 @@ package body Gtk.Window is
    ---------------------
 
    procedure On_Keys_Changed
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "keys-changed" & ASCII.NUL, Call, After, Slot);
    end On_Keys_Changed;
 
    ------------------
@@ -1855,14 +2102,12 @@ package body Gtk.Window is
    ------------------
 
    procedure On_Set_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Window_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Gtk_Widget_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "set-focus" & ASCII.NUL, Call, After);
    end On_Set_Focus;
 
    ------------------
@@ -1870,15 +2115,13 @@ package body Gtk.Window is
    ------------------
 
    procedure On_Set_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "set-focus" & ASCII.NUL, Call, After, Slot);
    end On_Set_Focus;
 
 end Gtk.Window;

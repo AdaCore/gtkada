@@ -235,16 +235,22 @@ package Gtk.Color_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Color_Button_Void is not null access procedure
+     (Self : access Gtk_Color_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Color_Set : constant Glib.Signal_Name := "color-set";
    procedure On_Color_Set
-      (Self : not null access Gtk_Color_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Color_Button_Record'Class));
+      (Self  : not null access Gtk_Color_Button_Record;
+       Call  : Cb_Gtk_Color_Button_Void;
+       After : Boolean := False);
    procedure On_Color_Set
-      (Self : not null access Gtk_Color_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Color_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::color-set signal is emitted when the user selects a color. When
    --  handling this signal, use Gtk.Color_Button.Get_Color and
    --  Gtk.Color_Button.Get_Alpha (or Gtk.Color_Button.Get_Rgba) to find out

@@ -464,31 +464,43 @@ package Gtk.Spin_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Spin_Button_Gtk_Scroll_Type_Void is not null access procedure
+     (Self   : access Gtk_Spin_Button_Record'Class;
+      Object : Gtk.Enums.Gtk_Scroll_Type);
+
+   type Cb_GObject_Gtk_Scroll_Type_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Enums.Gtk_Scroll_Type);
+
    Signal_Change_Value : constant Glib.Signal_Name := "change-value";
    procedure On_Change_Value
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Spin_Button_Record'Class;
-          Object : Gtk.Enums.Gtk_Scroll_Type));
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_Gtk_Spin_Button_Gtk_Scroll_Type_Void;
+       After : Boolean := False);
    procedure On_Change_Value
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Scroll_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Spin_Button_Gdouble_Gint is not null access function
+     (Self      : access Gtk_Spin_Button_Record'Class;
+      New_Value : access Gdouble) return Gint;
+
+   type Cb_GObject_Gdouble_Gint is not null access function
+     (Self      : access Glib.Object.GObject_Record'Class;
+      New_Value : access Gdouble) return Gint;
 
    Signal_Input : constant Glib.Signal_Name := "input";
    procedure On_Input
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access function
-         (Self      : access Gtk_Spin_Button_Record'Class;
-          New_Value : access Gdouble) return Gint);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_Gtk_Spin_Button_Gdouble_Gint;
+       After : Boolean := False);
    procedure On_Input
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access function
-         (Self      : access Glib.Object.GObject_Record'Class;
-          New_Value : access Gdouble) return Gint;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_GObject_Gdouble_Gint;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::input signal can be used to influence the conversion of the users
    --  input into a double value. The signal handler is expected to use
    --  Gtk.GEntry.Get_Text to retrieve the text of the entry and set New_Value
@@ -502,17 +514,23 @@ package Gtk.Spin_Button is
    --    --  "new_value": return location for the new value
    --    --  Returns True for a successful conversion, False if the input
 
+   type Cb_Gtk_Spin_Button_Boolean is not null access function
+     (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Output : constant Glib.Signal_Name := "output";
    procedure On_Output
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access function
-         (Self : access Gtk_Spin_Button_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_Gtk_Spin_Button_Boolean;
+       After : Boolean := False);
    procedure On_Output
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::output signal can be used to change to formatting of the value
    --  that is displayed in the spin buttons entry. |[ /* show leading zeros */
    --  static gboolean on_output (GtkSpinButton *spin, gpointer data) {
@@ -528,27 +546,33 @@ package Gtk.Spin_Button is
    --  Callback parameters:
    --    --  Returns True if the value has been displayed
 
+   type Cb_Gtk_Spin_Button_Void is not null access procedure
+     (Self : access Gtk_Spin_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
    procedure On_Value_Changed
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Spin_Button_Record'Class));
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_Gtk_Spin_Button_Void;
+       After : Boolean := False);
    procedure On_Value_Changed
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
    procedure On_Wrapped
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Spin_Button_Record'Class));
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_Gtk_Spin_Button_Void;
+       After : Boolean := False);
    procedure On_Wrapped
-      (Self : not null access Gtk_Spin_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Spin_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The wrapped signal is emitted right after the spinbutton wraps from its
    --  maximum to minimum value or vice-versa.
 

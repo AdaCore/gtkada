@@ -169,6 +169,7 @@ with Cairo;
 with Glib.Values;
 with Gdk.Event;
 with Glib.Object;
+with Glib.Types;
 with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
@@ -207,6 +208,26 @@ package Gtk.Handlers is
    --  This function can be used to provide your own global exception handler,
    --  which presumably will simply log the exception in application-specific
    --  manner.
+
+   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence);
+   --  Process the exception through the handler set by Set_On_Exception.
+   --  This procedure never raises an exception.
+
+   type C_Marshaller is access procedure
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;  --  Will contain returned value
+      N_Params        : Glib.Guint;          --  Number of entries in Params
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address);
+   pragma Convention (C, C_Marshaller);
+   --  A function called directly from gtk+ when dispatching signals to
+   --  handlers. This procedure is in charge of converting the parameters from
+   --  the array of GValues in Params to suitable formats for calling the
+   --  proper Ada handler given by the user. This handler is encoded in the
+   --  user_data, which has an actual type specific to each of the generic
+   --  packages below.
+   --  This is meant for internal GtkAda use only.
 
    ---------------------------------------------------------
    --  These handlers should return a value
@@ -429,10 +450,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -636,10 +658,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -1016,10 +1039,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -1259,10 +1283,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -1461,6 +1486,78 @@ package Gtk.Handlers is
      (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id);
    --  See Handler_Block.
+
+   function Get_Callback (C : GClosure) return System.Address;
+   pragma Import (C, Get_Callback, "ada_cclosure_get_callback");
+   --  Return the user handler set in the closure. This is the procedure that
+   --  should process the signal.
+
+   --------------
+   -- Internal --
+   --------------
+   --  The following subprograms are used internally by GtkAda, and should not
+   --  be used directly from applications.
+
+   function Do_Signal_Connect
+     (Object              : Glib.Object.GObject;
+      Name                : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Func_Data           : System.Address;
+      Destroy             : System.Address;
+      After               : Boolean;
+      Slot_Object         : System.Address := System.Null_Address;
+      Expect_Return_Value : Boolean) return Handler_Id;
+   --  Internal function used to connect the signal.
+   --  * Object is the object that will emit the signal.
+   --  * Marshaller is the C convention subprogram that will be called directly
+   --    by gtk+, and is in charge of translating the arguments into a form
+   --    suitable for calling the user's Handler callback. This subprogram
+   --    does not check the profile of the Handler and whether the Marshaller
+   --    will call it with the proper format, so is potentially dangerous.
+   --  * Func_Data is an extra parameter passed to Handler by the Marshaller.
+   --    It might be ignored, depending on the Marshaller.
+   --  * Destroy is called when the handler is destroyed, for instance because
+   --    the object itself is destroyed.
+   --  * After indicates whether the handler is called after or before the
+   --    default handler set by gtk+ for this signal.
+   --  * Slot_Object is the object passed to the handler, if any. When this
+   --    object is destroyed, the handler should be automatically disconnected.
+   --    This object is not automatically connected to the handler, only the
+   --    watch to destroy the handler is set in place.
+   --  * Expect_Return_Value should be true if the user is connecting a
+   --    function to the signal, False if he is connecting a procedure. This is
+   --    used to check that the user has used the proper form of handler.
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : not null access Glib.Object.GObject_Record'Class;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Func_Data           : System.Address := System.Null_Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : System.Address := System.Null_Address);
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : Glib.Types.GType_Interface;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Func_Data           : System.Address := System.Null_Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : System.Address := System.Null_Address);
+   --  Same as above, but this removes a number of check, like whether the
+   --  signal exists, and whether the user has properly passed a procedure or
+   --  function depending on the signal type.
+   --
+   --  * C_Name must be NUL-terminated.
+
+   procedure Set_Value (Value : Glib.Values.GValue; Val : System.Address);
+   pragma Import (C, Set_Value, "ada_gvalue_set");
+   --  Function used internally to specify the value returned by a callback.
+   --  Val will be dereferenced as appropriate, depending on the type expected
+   --  by Value.
 
    --  </doc_ignore>
 

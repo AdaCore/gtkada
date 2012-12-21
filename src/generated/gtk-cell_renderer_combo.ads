@@ -110,20 +110,26 @@ package Gtk.Cell_Renderer_Combo is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Cell_Renderer_Combo_UTF8_String_Gtk_Tree_Iter_Void is not null access procedure
+     (Self        : access Gtk_Cell_Renderer_Combo_Record'Class;
+      Path_String : UTF8_String;
+      New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
+
+   type Cb_GObject_UTF8_String_Gtk_Tree_Iter_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Path_String : UTF8_String;
+      New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Cell_Renderer_Combo_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Cell_Renderer_Combo_Record'Class;
-          Path_String : UTF8_String;
-          New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter));
+      (Self  : not null access Gtk_Cell_Renderer_Combo_Record;
+       Call  : Cb_Gtk_Cell_Renderer_Combo_UTF8_String_Gtk_Tree_Iter_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Cell_Renderer_Combo_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Path_String : UTF8_String;
-          New_Iter    : Gtk.Tree_Model.Gtk_Tree_Iter);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Renderer_Combo_Record;
+       Call  : Cb_GObject_UTF8_String_Gtk_Tree_Iter_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted each time after the user selected an item in the
    --  combo box, either by using the mouse or the arrow keys. Contrary to
    --  GtkComboBox, GtkCellRendererCombo::changed is not emitted for changes

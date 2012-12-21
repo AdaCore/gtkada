@@ -264,16 +264,22 @@ package Gtk.Color_Selection is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Color_Selection_Void is not null access procedure
+     (Self : access Gtk_Color_Selection_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Color_Changed : constant Glib.Signal_Name := "color-changed";
    procedure On_Color_Changed
-      (Self : not null access Gtk_Color_Selection_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Color_Selection_Record'Class));
+      (Self  : not null access Gtk_Color_Selection_Record;
+       Call  : Cb_Gtk_Color_Selection_Void;
+       After : Boolean := False);
    procedure On_Color_Changed
-      (Self : not null access Gtk_Color_Selection_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Color_Selection_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the color changes in the
    --  Gtk.Color_Selection.Gtk_Color_Selection according to its update policy.
 

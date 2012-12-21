@@ -23,9 +23,15 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Text_Buffer is
 
@@ -1421,21 +1427,1108 @@ package body Gtk.Text_Buffer is
       Internal (Get_Object (Buffer), Format);
    end Unregister_Serialize_Format;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Mark_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Mark_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Clipboard_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Clipboard_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Mark_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Clipboard_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Clipboard_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Clipboard_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Mark_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Clipboard_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Clipboard_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void);
+
+   procedure Marsh_Gtk_Text_Buffer_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Buffer_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Buffer_Gtk_Clipboard_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Mark_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Mark_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Clipboard_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Clipboard_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   --------------------------------------
+   -- Marsh_GObject_Gtk_Clipboard_Void --
+   --------------------------------------
+
+   procedure Marsh_GObject_Gtk_Clipboard_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Clipboard_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Clipboard.Gtk_Clipboard (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Clipboard_Void;
+
+   -------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void --
+   -------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gdk.Pixbuf.Gdk_Pixbuf (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+
+   ------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void --
+   ------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+
+   ----------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void --
+   ----------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+
+   ----------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void --
+   ----------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+
+   -------------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void --
+   -------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Gint (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void;
+
+   --------------------------------------
+   -- Marsh_GObject_Gtk_Text_Mark_Void --
+   --------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Mark_Void;
+
+   -----------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void --
+   -----------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ----------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Clipboard_Void --
+   ----------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Clipboard_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Clipboard.Gtk_Clipboard (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Clipboard_Void;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gdk.Pixbuf.Gdk_Pixbuf (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+
+   --------------------------------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void --
+   --------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+
+   ------------------------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void --
+   ------------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+
+   ------------------------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void --
+   ------------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+
+   ---------------------------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void --
+   ---------------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Gint (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void;
+
+   ----------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void --
+   ----------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void;
+
+   -------------------------------------------------------------------------
+   -- Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void --
+   -------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+
+   --------------------------------
+   -- Marsh_Gtk_Text_Buffer_Void --
+   --------------------------------
+
+   procedure Marsh_Gtk_Text_Buffer_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Buffer_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Buffer_Record'Class := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Buffer_Void;
+
    ------------------
    -- On_Apply_Tag --
    ------------------
 
    procedure On_Apply_Tag
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Text_Buffer_Record'Class;
-          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-          The_End : Gtk.Text_Iter.Gtk_Text_Iter))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "apply-tag" & ASCII.NUL, Call, After);
    end On_Apply_Tag;
 
    ------------------
@@ -1443,17 +2536,13 @@ package body Gtk.Text_Buffer is
    ------------------
 
    procedure On_Apply_Tag
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "apply-tag" & ASCII.NUL, Call, After, Slot);
    end On_Apply_Tag;
 
    --------------------------
@@ -1461,13 +2550,12 @@ package body Gtk.Text_Buffer is
    --------------------------
 
    procedure On_Begin_User_Action
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Buffer_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "begin-user-action" & ASCII.NUL, Call, After);
    end On_Begin_User_Action;
 
    --------------------------
@@ -1475,14 +2563,13 @@ package body Gtk.Text_Buffer is
    --------------------------
 
    procedure On_Begin_User_Action
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "begin-user-action" & ASCII.NUL, Call, After, Slot);
    end On_Begin_User_Action;
 
    ----------------
@@ -1490,13 +2577,12 @@ package body Gtk.Text_Buffer is
    ----------------
 
    procedure On_Changed
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Buffer_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "changed" & ASCII.NUL, Call, After);
    end On_Changed;
 
    ----------------
@@ -1504,14 +2590,13 @@ package body Gtk.Text_Buffer is
    ----------------
 
    procedure On_Changed
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "changed" & ASCII.NUL, Call, After, Slot);
    end On_Changed;
 
    ---------------------
@@ -1519,15 +2604,12 @@ package body Gtk.Text_Buffer is
    ---------------------
 
    procedure On_Delete_Range
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Text_Buffer_Record'Class;
-          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-          The_End : Gtk.Text_Iter.Gtk_Text_Iter))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "delete-range" & ASCII.NUL, Call, After);
    end On_Delete_Range;
 
    ---------------------
@@ -1535,16 +2617,13 @@ package body Gtk.Text_Buffer is
    ---------------------
 
    procedure On_Delete_Range
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "delete-range" & ASCII.NUL, Call, After, Slot);
    end On_Delete_Range;
 
    ------------------------
@@ -1552,13 +2631,12 @@ package body Gtk.Text_Buffer is
    ------------------------
 
    procedure On_End_User_Action
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Buffer_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "end-user-action" & ASCII.NUL, Call, After);
    end On_End_User_Action;
 
    ------------------------
@@ -1566,14 +2644,13 @@ package body Gtk.Text_Buffer is
    ------------------------
 
    procedure On_End_User_Action
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "end-user-action" & ASCII.NUL, Call, After, Slot);
    end On_End_User_Action;
 
    ----------------------------
@@ -1581,15 +2658,12 @@ package body Gtk.Text_Buffer is
    ----------------------------
 
    procedure On_Insert_Child_Anchor
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Text_Buffer_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "insert-child-anchor" & ASCII.NUL, Call, After);
    end On_Insert_Child_Anchor;
 
    ----------------------------
@@ -1597,16 +2671,13 @@ package body Gtk.Text_Buffer is
    ----------------------------
 
    procedure On_Insert_Child_Anchor
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Anchor   : not null access Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "insert-child-anchor" & ASCII.NUL, Call, After, Slot);
    end On_Insert_Child_Anchor;
 
    ----------------------
@@ -1614,15 +2685,12 @@ package body Gtk.Text_Buffer is
    ----------------------
 
    procedure On_Insert_Pixbuf
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Text_Buffer_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "insert-pixbuf" & ASCII.NUL, Call, After);
    end On_Insert_Pixbuf;
 
    ----------------------
@@ -1630,16 +2698,13 @@ package body Gtk.Text_Buffer is
    ----------------------
 
    procedure On_Insert_Pixbuf
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Pixbuf   : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Iter_Gdk_Pixbuf_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "insert-pixbuf" & ASCII.NUL, Call, After, Slot);
    end On_Insert_Pixbuf;
 
    --------------------
@@ -1647,16 +2712,12 @@ package body Gtk.Text_Buffer is
    --------------------
 
    procedure On_Insert_Text
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Text_Buffer_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Text     : UTF8_String;
-          Len      : Gint))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "insert-text" & ASCII.NUL, Call, After);
    end On_Insert_Text;
 
    --------------------
@@ -1664,17 +2725,13 @@ package body Gtk.Text_Buffer is
    --------------------
 
    procedure On_Insert_Text
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Text     : UTF8_String;
-          Len      : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "insert-text" & ASCII.NUL, Call, After, Slot);
    end On_Insert_Text;
 
    ---------------------
@@ -1682,14 +2739,12 @@ package body Gtk.Text_Buffer is
    ---------------------
 
    procedure On_Mark_Deleted
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Buffer_Record'Class;
-          Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Mark_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "mark-deleted" & ASCII.NUL, Call, After);
    end On_Mark_Deleted;
 
    ---------------------
@@ -1697,15 +2752,13 @@ package body Gtk.Text_Buffer is
    ---------------------
 
    procedure On_Mark_Deleted
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Mark : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Mark_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "mark-deleted" & ASCII.NUL, Call, After, Slot);
    end On_Mark_Deleted;
 
    -----------------
@@ -1713,15 +2766,12 @@ package body Gtk.Text_Buffer is
    -----------------
 
    procedure On_Mark_Set
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Text_Buffer_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "mark-set" & ASCII.NUL, Call, After);
    end On_Mark_Set;
 
    -----------------
@@ -1729,16 +2779,13 @@ package body Gtk.Text_Buffer is
    -----------------
 
    procedure On_Mark_Set
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Location : Gtk.Text_Iter.Gtk_Text_Iter;
-          Mark     : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "mark-set" & ASCII.NUL, Call, After, Slot);
    end On_Mark_Set;
 
    -------------------------
@@ -1746,13 +2793,12 @@ package body Gtk.Text_Buffer is
    -------------------------
 
    procedure On_Modified_Changed
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Buffer_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "modified-changed" & ASCII.NUL, Call, After);
    end On_Modified_Changed;
 
    -------------------------
@@ -1760,14 +2806,13 @@ package body Gtk.Text_Buffer is
    -------------------------
 
    procedure On_Modified_Changed
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "modified-changed" & ASCII.NUL, Call, After, Slot);
    end On_Modified_Changed;
 
    -------------------
@@ -1775,14 +2820,12 @@ package body Gtk.Text_Buffer is
    -------------------
 
    procedure On_Paste_Done
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Text_Buffer_Record'Class;
-          Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "paste-done" & ASCII.NUL, Call, After);
    end On_Paste_Done;
 
    -------------------
@@ -1790,15 +2833,13 @@ package body Gtk.Text_Buffer is
    -------------------
 
    procedure On_Paste_Done
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Clipboard_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "paste-done" & ASCII.NUL, Call, After, Slot);
    end On_Paste_Done;
 
    -------------------
@@ -1806,16 +2847,12 @@ package body Gtk.Text_Buffer is
    -------------------
 
    procedure On_Remove_Tag
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Text_Buffer_Record'Class;
-          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-          The_End : Gtk.Text_Iter.Gtk_Text_Iter))
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "remove-tag" & ASCII.NUL, Call, After);
    end On_Remove_Tag;
 
    -------------------
@@ -1823,17 +2860,13 @@ package body Gtk.Text_Buffer is
    -------------------
 
    procedure On_Remove_Tag
-      (Self : not null access Gtk_Text_Buffer_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Tag     : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
-          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Buffer_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "remove-tag" & ASCII.NUL, Call, After, Slot);
    end On_Remove_Tag;
 
 end Gtk.Text_Buffer;

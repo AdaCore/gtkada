@@ -257,18 +257,24 @@ package Gtk.Toolbar is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Toolbar_Boolean_Boolean is not null access function
+     (Self       : access Gtk_Toolbar_Record'Class;
+      Focus_Home : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Focus_Home : Boolean) return Boolean;
+
    Signal_Focus_Home_Or_End : constant Glib.Signal_Name := "focus-home-or-end";
    procedure On_Focus_Home_Or_End
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access function
-         (Self       : access Gtk_Toolbar_Record'Class;
-          Focus_Home : Boolean) return Boolean);
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_Gtk_Toolbar_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Focus_Home_Or_End
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access function
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Focus_Home : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A keybinding signal used internally by GTK+. This signal can't be used
    --  in application code
    -- 
@@ -276,36 +282,48 @@ package Gtk.Toolbar is
    --    --  "focus_home": True if the first item should be focused
    --    --  Returns True if the signal was handled, False if not
 
+   type Cb_Gtk_Toolbar_Gtk_Orientation_Void is not null access procedure
+     (Self        : access Gtk_Toolbar_Record'Class;
+      Orientation : Gtk.Enums.Gtk_Orientation);
+
+   type Cb_GObject_Gtk_Orientation_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Orientation : Gtk.Enums.Gtk_Orientation);
+
    Signal_Orientation_Changed : constant Glib.Signal_Name := "orientation-changed";
    procedure On_Orientation_Changed
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Toolbar_Record'Class;
-          Orientation : Gtk.Enums.Gtk_Orientation));
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_Gtk_Toolbar_Gtk_Orientation_Void;
+       After : Boolean := False);
    procedure On_Orientation_Changed
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Orientation : Gtk.Enums.Gtk_Orientation);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_GObject_Gtk_Orientation_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the orientation of the toolbar changes.
+
+   type Cb_Gtk_Toolbar_Gint_Gint_Gint_Boolean is not null access function
+     (Self   : access Gtk_Toolbar_Record'Class;
+      X      : Gint;
+      Y      : Gint;
+      Button : Gint) return Boolean;
+
+   type Cb_GObject_Gint_Gint_Gint_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      X      : Gint;
+      Y      : Gint;
+      Button : Gint) return Boolean;
 
    Signal_Popup_Context_Menu : constant Glib.Signal_Name := "popup-context-menu";
    procedure On_Popup_Context_Menu
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access function
-         (Self   : access Gtk_Toolbar_Record'Class;
-          X      : Gint;
-          Y      : Gint;
-          Button : Gint) return Boolean);
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_Gtk_Toolbar_Gint_Gint_Gint_Boolean;
+       After : Boolean := False);
    procedure On_Popup_Context_Menu
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          X      : Gint;
-          Y      : Gint;
-          Button : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_GObject_Gint_Gint_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the user right-clicks the toolbar or uses the keybinding
    --  to display a popup menu.
    --
@@ -321,18 +339,24 @@ package Gtk.Toolbar is
    --    --  "button": the mouse button the user pressed, or -1
    --    --  Returns return True if the signal was handled, False if not
 
+   type Cb_Gtk_Toolbar_Gtk_Toolbar_Style_Void is not null access procedure
+     (Self  : access Gtk_Toolbar_Record'Class;
+      Style : Gtk.Enums.Gtk_Toolbar_Style);
+
+   type Cb_GObject_Gtk_Toolbar_Style_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Style : Gtk.Enums.Gtk_Toolbar_Style);
+
    Signal_Style_Changed : constant Glib.Signal_Name := "style-changed";
    procedure On_Style_Changed
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Toolbar_Record'Class;
-          Style : Gtk.Enums.Gtk_Toolbar_Style));
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_Gtk_Toolbar_Gtk_Toolbar_Style_Void;
+       After : Boolean := False);
    procedure On_Style_Changed
-      (Self : not null access Gtk_Toolbar_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Style : Gtk.Enums.Gtk_Toolbar_Style);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Toolbar_Record;
+       Call  : Cb_GObject_Gtk_Toolbar_Style_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the style of the toolbar changes.
 
    ----------------

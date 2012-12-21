@@ -25,7 +25,12 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Text_Tag_Table is
 
@@ -225,19 +230,261 @@ package body Gtk.Text_Tag_Table is
       Internal (Get_Object (Table), Get_Object (Tag));
    end Remove;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Tag_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Tag_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Tag_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Tag_Boolean_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Tag_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Tag_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Text_Tag_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Tag_Boolean_Void);
+
+   procedure Marsh_GObject_Gtk_Text_Tag_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Tag_Void);
+
+   procedure Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void);
+
+   procedure Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Tag_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Tag_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_Tag_Table_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Tag_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Tag_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Tag_Boolean_Void --
+   ---------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Tag_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Tag_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Boolean (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Tag_Boolean_Void;
+
+   -------------------------------------
+   -- Marsh_GObject_Gtk_Text_Tag_Void --
+   -------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Tag_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Text_Tag_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Tag_Void;
+
+   --------------------------------------------------------
+   -- Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void --
+   --------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Tag_Table_Record'Class := Gtk_Text_Tag_Table (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Boolean (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void;
+
+   ------------------------------------------------
+   -- Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void --
+   ------------------------------------------------
+
+   procedure Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Text_Tag_Table_Record'Class := Gtk_Text_Tag_Table (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+
    ------------------
    -- On_Tag_Added --
    ------------------
 
    procedure On_Tag_Added
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Tag_Table_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class))
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "tag-added" & ASCII.NUL, Call, After);
    end On_Tag_Added;
 
    ------------------
@@ -245,15 +492,13 @@ package body Gtk.Text_Tag_Table is
    ------------------
 
    procedure On_Tag_Added
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "tag-added" & ASCII.NUL, Call, After, Slot);
    end On_Tag_Added;
 
    --------------------
@@ -261,15 +506,12 @@ package body Gtk.Text_Tag_Table is
    --------------------
 
    procedure On_Tag_Changed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Text_Tag_Table_Record'Class;
-          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Size_Changed : Boolean))
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "tag-changed" & ASCII.NUL, Call, After);
    end On_Tag_Changed;
 
    --------------------
@@ -277,16 +519,13 @@ package body Gtk.Text_Tag_Table is
    --------------------
 
    procedure On_Tag_Changed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Size_Changed : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "tag-changed" & ASCII.NUL, Call, After, Slot);
    end On_Tag_Changed;
 
    --------------------
@@ -294,14 +533,12 @@ package body Gtk.Text_Tag_Table is
    --------------------
 
    procedure On_Tag_Removed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Tag_Table_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class))
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "tag-removed" & ASCII.NUL, Call, After);
    end On_Tag_Removed;
 
    --------------------
@@ -309,15 +546,13 @@ package body Gtk.Text_Tag_Table is
    --------------------
 
    procedure On_Tag_Removed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "tag-removed" & ASCII.NUL, Call, After, Slot);
    end On_Tag_Removed;
 
 end Gtk.Text_Tag_Table;

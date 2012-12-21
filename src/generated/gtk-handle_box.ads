@@ -150,33 +150,37 @@ package Gtk.Handle_Box is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Handle_Box_Gtk_Widget_Void is not null access procedure
+     (Self   : access Gtk_Handle_Box_Record'Class;
+      Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
    Signal_Child_Attached : constant Glib.Signal_Name := "child-attached";
    procedure On_Child_Attached
-      (Self : not null access Gtk_Handle_Box_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Handle_Box_Record'Class;
-          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Handle_Box_Record;
+       Call  : Cb_Gtk_Handle_Box_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Child_Attached
-      (Self : not null access Gtk_Handle_Box_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Handle_Box_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the contents of the handlebox are
    --  reattached to the main window.
 
    Signal_Child_Detached : constant Glib.Signal_Name := "child-detached";
    procedure On_Child_Detached
-      (Self : not null access Gtk_Handle_Box_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Handle_Box_Record'Class;
-          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Handle_Box_Record;
+       Call  : Cb_Gtk_Handle_Box_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Child_Detached
-      (Self : not null access Gtk_Handle_Box_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Handle_Box_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the contents of the handlebox are detached
    --  from the main window.
 

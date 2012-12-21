@@ -186,16 +186,22 @@ package Gtk.Radio_Menu_Item is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Radio_Menu_Item_Void is not null access procedure
+     (Self : access Gtk_Radio_Menu_Item_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
    procedure On_Group_Changed
-      (Self : not null access Gtk_Radio_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Radio_Menu_Item_Record'Class));
+      (Self  : not null access Gtk_Radio_Menu_Item_Record;
+       Call  : Cb_Gtk_Radio_Menu_Item_Void;
+       After : Boolean := False);
    procedure On_Group_Changed
-      (Self : not null access Gtk_Radio_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Radio_Menu_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

@@ -25,6 +25,9 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
+with Glib.Values;              use Glib.Values;
+with Gtk.Arguments;            use Gtk.Arguments;
+with Gtk.Handlers;             use Gtk.Handlers;
 
 package body Gtk.Tree_Sortable is
 
@@ -278,17 +281,140 @@ package body Gtk.Tree_Sortable is
 
    end Set_Sort_Func_User_Data;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_Sortable_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_Sortable_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   procedure Connect
+      (Object  : Gtk_Tree_Sortable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_Sortable_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : Gtk_Tree_Sortable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Tree_Sortable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_Sortable_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : Gtk_Tree_Sortable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_Sortable_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Glib.Types.GType_Interface (Object),
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_Sortable_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : Gtk_Tree_Sortable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Glib.Types.GType_Interface (Object),
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ----------------------------------
+   -- Marsh_Gtk_Tree_Sortable_Void --
+   ----------------------------------
+
+   procedure Marsh_Gtk_Tree_Sortable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_Sortable_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Tree_Sortable := Gtk_Tree_Sortable (Unchecked_To_Interface (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_Sortable_Void;
+
    ----------------------------
    -- On_Sort_Column_Changed --
    ----------------------------
 
    procedure On_Sort_Column_Changed
-      (Self : Gtk_Tree_Sortable;
-       Call : not null access procedure (Self : Gtk_Tree_Sortable))
+      (Self  : Gtk_Tree_Sortable;
+       Call  : Cb_Gtk_Tree_Sortable_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "sort-column-changed" & ASCII.NUL, Call, After);
    end On_Sort_Column_Changed;
 
    ----------------------------
@@ -296,14 +422,13 @@ package body Gtk.Tree_Sortable is
    ----------------------------
 
    procedure On_Sort_Column_Changed
-      (Self : Gtk_Tree_Sortable;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : Gtk_Tree_Sortable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "sort-column-changed" & ASCII.NUL, Call, After, Slot);
    end On_Sort_Column_Changed;
 
    function "+" (W : Gtk_Tree_Sortable) return Gtk_Tree_Sortable is

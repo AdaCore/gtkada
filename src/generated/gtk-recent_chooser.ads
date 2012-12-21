@@ -389,28 +389,35 @@ package Gtk.Recent_Chooser is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Recent_Chooser_Void is not null access procedure (Self : Gtk_Recent_Chooser);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
    procedure On_Item_Activated
-      (Self : Gtk_Recent_Chooser;
-       Call : not null access procedure (Self : Gtk_Recent_Chooser));
+      (Self  : Gtk_Recent_Chooser;
+       Call  : Cb_Gtk_Recent_Chooser_Void;
+       After : Boolean := False);
    procedure On_Item_Activated
-      (Self : Gtk_Recent_Chooser;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Recent_Chooser;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the user "activates" a recent item in the
    --  recent chooser. This can happen by double-clicking on an item in the
    --  recently used resources list, or by pressing 'Enter'.
 
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
    procedure On_Selection_Changed
-      (Self : Gtk_Recent_Chooser;
-       Call : not null access procedure (Self : Gtk_Recent_Chooser));
+      (Self  : Gtk_Recent_Chooser;
+       Call  : Cb_Gtk_Recent_Chooser_Void;
+       After : Boolean := False);
    procedure On_Selection_Changed
-      (Self : Gtk_Recent_Chooser;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Recent_Chooser;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when there is a change in the set of selected
    --  recently used resources. This can happen when a user modifies the
    --  selection with the mouse or the keyboard, or when explicitely calling

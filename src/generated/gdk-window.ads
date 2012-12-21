@@ -1910,19 +1910,6 @@ package Gdk.Window is
    -------------
 
    Signal_Create_Surface : constant Glib.Signal_Name := "create-surface";
-   procedure On_Create_Surface
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self   : Gdk_Window;
-          Width  : Gint;
-          Height : Gint) return Cairo.Cairo_Surface);
-   procedure On_Create_Surface
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Width  : Gint;
-          Height : Gint) return Cairo.Cairo_Surface;
-       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::create-surface signal is emitted when an offscreen window needs
    --  its surface (re)created, which happens either when the the window is
    --  first drawn to, or when the window is being resized. The first signal
@@ -1932,6 +1919,10 @@ package Gdk.Window is
    --  Note that it is not possible to access the window's previous surface
    --  from within any callback of this signal. Calling
    --  gdk_offscreen_window_get_surface will lead to a crash.
+   --    function Handler
+   --       (Self   : Gdk_Window;
+   --        Width  : Gint;
+   --        Height : Gint) return Cairo.Cairo_Surface
    -- 
    --  Callback parameters:
    --    --  "width": the width of the offscreen surface to create
@@ -1939,27 +1930,16 @@ package Gdk.Window is
    --    --  Returns the newly created cairo_surface_t for the offscreen window
 
    Signal_From_Embedder : constant Glib.Signal_Name := "from-embedder";
-   procedure On_From_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : Gdk_Window;
-          Embedder_X  : Gdouble;
-          Embedder_Y  : Gdouble;
-          Offscreen_X : out Gdouble;
-          Offscreen_Y : out Gdouble));
-   procedure On_From_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Embedder_X  : Gdouble;
-          Embedder_Y  : Gdouble;
-          Offscreen_X : out Gdouble;
-          Offscreen_Y : out Gdouble);
-       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::from-embedder signal is emitted to translate coordinates in the
    --  embedder of an offscreen window to the offscreen window.
    --
    --  See also Gtk.Window.Gtk_Window::to-embedder.
+   --    procedure Handler
+   --       (Self        : Gdk_Window;
+   --        Embedder_X  : Gdouble;
+   --        Embedder_Y  : Gdouble;
+   --        Offscreen_X : out Gdouble;
+   --        Offscreen_Y : out Gdouble)
    -- 
    --  Callback parameters:
    --    --  "embedder-x": x coordinate in the embedder window
@@ -1985,27 +1965,16 @@ package Gdk.Window is
    --    --  Returns the Gdk.Gdk_Window of the embedded child at
 
    Signal_To_Embedder : constant Glib.Signal_Name := "to-embedder";
-   procedure On_To_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : Gdk_Window;
-          Offscreen_X : Gdouble;
-          Offscreen_Y : Gdouble;
-          Embedder_X  : out Gdouble;
-          Embedder_Y  : out Gdouble));
-   procedure On_To_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Offscreen_X : Gdouble;
-          Offscreen_Y : Gdouble;
-          Embedder_X  : out Gdouble;
-          Embedder_Y  : out Gdouble);
-       Slot : not null access Glib.Object.GObject_Record'Class);
    --  The ::to-embedder signal is emitted to translate coordinates in an
    --  offscreen window to its embedder.
    --
    --  See also Gtk.Window.Gtk_Window::from-embedder.
+   --    procedure Handler
+   --       (Self        : Gdk_Window;
+   --        Offscreen_X : Gdouble;
+   --        Offscreen_Y : Gdouble;
+   --        Embedder_X  : out Gdouble;
+   --        Embedder_Y  : out Gdouble)
    -- 
    --  Callback parameters:
    --    --  "offscreen-x": x coordinate in the offscreen window

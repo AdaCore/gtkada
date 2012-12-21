@@ -354,15 +354,21 @@ package Gtk.Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Button_Void is not null access procedure (Self : access Gtk_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate : constant Glib.Signal_Name := "activate";
    procedure On_Activate
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class));
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False);
    procedure On_Activate
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::activate signal on GtkButton is an action signal and emitting it
    --  causes the button to animate press then release. Applications should
    --  never connect to this signal, but use the Gtk.Button.Gtk_Button::clicked
@@ -370,57 +376,62 @@ package Gtk.Button is
 
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
    procedure On_Clicked
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class));
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False);
    procedure On_Clicked
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the button has been activated (pressed and released).
 
    Signal_Enter : constant Glib.Signal_Name := "enter";
    procedure On_Enter
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class));
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False);
    procedure On_Enter
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the pointer enters the button.
 
    Signal_Leave : constant Glib.Signal_Name := "leave";
    procedure On_Leave
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class));
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False);
    procedure On_Leave
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the pointer leaves the button.
 
    Signal_Pressed : constant Glib.Signal_Name := "pressed";
    procedure On_Pressed
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class));
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False);
    procedure On_Pressed
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the button is pressed.
 
    Signal_Released : constant Glib.Signal_Name := "released";
    procedure On_Released
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class));
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False);
    procedure On_Released
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the button is released.
 
    ----------------

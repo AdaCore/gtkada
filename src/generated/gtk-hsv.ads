@@ -139,28 +139,40 @@ package Gtk.Hsv is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Hsv_Void is not null access procedure (Self : access Gtk_Hsv_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Hsv_Record;
-       Call : not null access procedure (Self : access Gtk_Hsv_Record'Class));
+      (Self  : not null access Gtk_Hsv_Record;
+       Call  : Cb_Gtk_Hsv_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Hsv_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Hsv_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Hsv_Gtk_Direction_Type_Void is not null access procedure
+     (Self   : access Gtk_Hsv_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type);
+
+   type Cb_GObject_Gtk_Direction_Type_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type);
 
    Signal_Move : constant Glib.Signal_Name := "move";
    procedure On_Move
-      (Self : not null access Gtk_Hsv_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Hsv_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type));
+      (Self  : not null access Gtk_Hsv_Record;
+       Call  : Cb_Gtk_Hsv_Gtk_Direction_Type_Void;
+       After : Boolean := False);
    procedure On_Move
-      (Self : not null access Gtk_Hsv_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Hsv_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

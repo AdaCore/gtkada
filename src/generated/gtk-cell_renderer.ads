@@ -448,36 +448,48 @@ package Gtk.Cell_Renderer is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Cell_Renderer_Void is not null access procedure
+     (Self : access Gtk_Cell_Renderer_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Editing_Canceled : constant Glib.Signal_Name := "editing-canceled";
    procedure On_Editing_Canceled
-      (Self : not null access Gtk_Cell_Renderer_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Cell_Renderer_Record'Class));
+      (Self  : not null access Gtk_Cell_Renderer_Record;
+       Call  : Cb_Gtk_Cell_Renderer_Void;
+       After : Boolean := False);
    procedure On_Editing_Canceled
-      (Self : not null access Gtk_Cell_Renderer_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Renderer_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal gets emitted when the user cancels the process of editing a
    --  cell. For example, an editable cell renderer could be written to cancel
    --  editing when the user presses Escape.
    --
    --  See also: Gtk.Cell_Renderer.Stop_Editing.
 
+   type Cb_Gtk_Cell_Renderer_Gtk_Cell_Editable_UTF8_String_Void is not null access procedure
+     (Self     : access Gtk_Cell_Renderer_Record'Class;
+      Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
+      Path     : UTF8_String);
+
+   type Cb_GObject_Gtk_Cell_Editable_UTF8_String_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
+      Path     : UTF8_String);
+
    Signal_Editing_Started : constant Glib.Signal_Name := "editing-started";
    procedure On_Editing_Started
-      (Self : not null access Gtk_Cell_Renderer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Cell_Renderer_Record'Class;
-          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
-          Path     : UTF8_String));
+      (Self  : not null access Gtk_Cell_Renderer_Record;
+       Call  : Cb_Gtk_Cell_Renderer_Gtk_Cell_Editable_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Editing_Started
-      (Self : not null access Gtk_Cell_Renderer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable;
-          Path     : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Renderer_Record;
+       Call  : Cb_GObject_Gtk_Cell_Editable_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal gets emitted when a cell starts to be edited. The intended
    --  use of this signal is to do special setup on Editable, e.g. adding a
    --  Gtk.Entry_Completion.Gtk_Entry_Completion or setting up additional

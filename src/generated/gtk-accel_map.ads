@@ -317,22 +317,28 @@ package Gtk.Accel_Map is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void is not null access procedure
+     (Self       : access Gtk_Accel_Map_Record'Class;
+      Accel_Path : UTF8_String;
+      Accel_Key  : Guint;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
+
+   type Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void is not null access procedure
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Accel_Path : UTF8_String;
+      Accel_Key  : Guint;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Accel_Map_Record;
-       Call : not null access procedure
-         (Self       : access Gtk_Accel_Map_Record'Class;
-          Accel_Path : UTF8_String;
-          Accel_Key  : Guint;
-          Accel_Mods : Gdk.Types.Gdk_Modifier_Type));
+      (Self  : not null access Gtk_Accel_Map_Record;
+       Call  : Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Accel_Map_Record;
-       Call : not null access procedure
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Accel_Path : UTF8_String;
-          Accel_Key  : Guint;
-          Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Accel_Map_Record;
+       Call  : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Notifies of a change in the global accelerator map. The path is also
    --  used as the detail for the signal, so it is possible to connect to
    --  changed::<replaceable>accel_path</replaceable>.

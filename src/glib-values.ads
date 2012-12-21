@@ -50,6 +50,9 @@ package Glib.Values is
    --  table can be of any type.
    --  The index of the first element is always 1.
 
+   type C_GValues is new System.Address;
+   --  An array of GValues
+
    type GValue_Array is array (Gint range <>) of GValue;
 
    function Make_Values (Nb : Guint) return GValues;
@@ -57,7 +60,7 @@ package Glib.Values is
    --  causes the allocation of an underlying C array, and this memory
    --  should be deallocated after use using procedure Free (see below).
 
-   function Make_Values (Nb : Guint; Val : System.Address) return GValues;
+   function Make_Values (Nb : Guint; Val : C_GValues) return GValues;
    --  Build a GValues structure from the given C array. Nb should be the
    --  number of elements in the Values array.
 
@@ -66,6 +69,37 @@ package Glib.Values is
 
    function Nth (Val : GValues; Num : Guint) return GValue;
    --  Return the Num-th element from Values.
+   --  In general, the returned value does not need to be unset, since it is
+   --  still handled by C (in particular when processing the parameters for a
+   --  callback).
+
+   --  <doc_ignore>
+
+   procedure Unsafe_Nth (Values : C_GValues; Num : Guint; V : in out GValue);
+   pragma Import (C, Unsafe_Nth, "ada_gvalue_nth");
+   --  This returns the Num-th element, starting at 0. This procedure does
+   --  not check that Values contains at least Num elements, so is potentially
+   --  dangerous.
+   --  In general, the returned value does not need to be unset, since it is
+   --  still handled by C (in particular when processing the parameters for a
+   --  callback).
+
+   generic
+      type T is private;
+   function Unsafe_Proxy_Nth (Values : C_GValues; Num : Guint) return T;
+   pragma Inline (Unsafe_Proxy_Nth);
+   --  Extract a point from Values (at index Num, 0-based), and convert it to
+   --  T. This is unsafe because no check is made that Num is a valid index,
+   --  and no check is made that casting to T makes sense.
+
+   generic
+      type T is (<>);
+   function Unsafe_Enum_Nth
+     (Values : C_GValues; Num : Guint) return T;
+   pragma Inline (Unsafe_Enum_Nth);
+   --  Used for enumeration types
+
+   --  </doc_ignore>
 
    -------------------------------------------------
    -- Conversion functions, interfacing to GValue --
@@ -174,7 +208,7 @@ private
 
    type GValues is record
       Nb  : Guint;
-      Arr : System.Address;
+      Arr : C_GValues;
    end record;
 
    pragma Import (C, Set_Char, "g_value_set_char");

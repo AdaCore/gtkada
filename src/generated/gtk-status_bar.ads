@@ -161,20 +161,26 @@ package Gtk.Status_Bar is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void is not null access procedure
+     (Self    : access Gtk_Status_Bar_Record'Class;
+      Context : Context_Id;
+      Text    : UTF8_String);
+
+   type Cb_GObject_Context_Id_UTF8_String_Void is not null access procedure
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : Context_Id;
+      Text    : UTF8_String);
+
    Signal_Text_Popped : constant Glib.Signal_Name := "text-popped";
    procedure On_Text_Popped
-      (Self : not null access Gtk_Status_Bar_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Status_Bar_Record'Class;
-          Context : Context_Id;
-          Text    : UTF8_String));
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Text_Popped
-      (Self : not null access Gtk_Status_Bar_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : Context_Id;
-          Text    : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_GObject_Context_Id_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Is emitted whenever a new message is popped off a statusbar's stack.
    -- 
    --  Callback parameters:
@@ -183,18 +189,14 @@ package Gtk.Status_Bar is
 
    Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
    procedure On_Text_Pushed
-      (Self : not null access Gtk_Status_Bar_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Status_Bar_Record'Class;
-          Context : Context_Id;
-          Text    : UTF8_String));
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Text_Pushed
-      (Self : not null access Gtk_Status_Bar_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : Context_Id;
-          Text    : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_GObject_Context_Id_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
    -- 
    --  Callback parameters:

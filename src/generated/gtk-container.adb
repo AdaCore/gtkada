@@ -26,7 +26,11 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Container is
 
@@ -596,19 +600,261 @@ package body Gtk.Container is
       Internal (Get_Object (Container));
    end Unset_Focus_Chain;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Container_Gtk_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Container_Gtk_Widget_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Widget_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Container_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Container_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Container_Gtk_Widget_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Container_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Widget_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Container_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Container_Gtk_Widget_Void);
+
+   procedure Marsh_Gtk_Container_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Container_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Container_Gtk_Widget_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Container_Gtk_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Container_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Container_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Widget_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Container_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   -----------------------------------
+   -- Marsh_GObject_Gtk_Widget_Void --
+   -----------------------------------
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Widget_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   -----------------------------------------
+   -- Marsh_Gtk_Container_Gtk_Widget_Void --
+   -----------------------------------------
+
+   procedure Marsh_Gtk_Container_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Container_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Container_Record'Class := Gtk_Container (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Container_Gtk_Widget_Void;
+
+   ------------------------------
+   -- Marsh_Gtk_Container_Void --
+   ------------------------------
+
+   procedure Marsh_Gtk_Container_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Container_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Container_Record'Class := Gtk_Container (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Container_Void;
+
    ------------
    -- On_Add --
    ------------
 
    procedure On_Add
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Container_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Gtk_Widget_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "add" & ASCII.NUL, Call, After);
    end On_Add;
 
    ------------
@@ -616,15 +862,13 @@ package body Gtk.Container is
    ------------
 
    procedure On_Add
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "add" & ASCII.NUL, Call, After, Slot);
    end On_Add;
 
    ---------------------
@@ -632,12 +876,12 @@ package body Gtk.Container is
    ---------------------
 
    procedure On_Check_Resize
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure (Self : access Gtk_Container_Record'Class))
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "check-resize" & ASCII.NUL, Call, After);
    end On_Check_Resize;
 
    ---------------------
@@ -645,14 +889,13 @@ package body Gtk.Container is
    ---------------------
 
    procedure On_Check_Resize
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "check-resize" & ASCII.NUL, Call, After, Slot);
    end On_Check_Resize;
 
    ---------------
@@ -660,14 +903,12 @@ package body Gtk.Container is
    ---------------
 
    procedure On_Remove
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Container_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Gtk_Widget_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "remove" & ASCII.NUL, Call, After);
    end On_Remove;
 
    ---------------
@@ -675,15 +916,13 @@ package body Gtk.Container is
    ---------------
 
    procedure On_Remove
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "remove" & ASCII.NUL, Call, After, Slot);
    end On_Remove;
 
    ------------------------
@@ -691,14 +930,12 @@ package body Gtk.Container is
    ------------------------
 
    procedure On_Set_Focus_Child
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Container_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class))
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Gtk_Widget_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "set-focus-child" & ASCII.NUL, Call, After);
    end On_Set_Focus_Child;
 
    ------------------------
@@ -706,15 +943,13 @@ package body Gtk.Container is
    ------------------------
 
    procedure On_Set_Focus_Child
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "set-focus-child" & ASCII.NUL, Call, After, Slot);
    end On_Set_Focus_Child;
 
 end Gtk.Container;

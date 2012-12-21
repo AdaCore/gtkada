@@ -23,20 +23,147 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
+with Glib.Values;              use Glib.Values;
+with Gtk.Arguments;            use Gtk.Arguments;
+with Gtk.Handlers;             use Gtk.Handlers;
 
 package body Gtk.Cell_Editable is
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Cell_Editable_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Cell_Editable_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   procedure Connect
+      (Object  : Gtk_Cell_Editable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Editable_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : Gtk_Cell_Editable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Cell_Editable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Cell_Editable_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : Gtk_Cell_Editable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Editable_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Glib.Types.GType_Interface (Object),
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Cell_Editable_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : Gtk_Cell_Editable;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Glib.Types.GType_Interface (Object),
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ----------------------------------
+   -- Marsh_Gtk_Cell_Editable_Void --
+   ----------------------------------
+
+   procedure Marsh_Gtk_Cell_Editable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Cell_Editable_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Cell_Editable := Gtk_Cell_Editable (Unchecked_To_Interface (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Cell_Editable_Void;
 
    ---------------------
    -- On_Editing_Done --
    ---------------------
 
    procedure On_Editing_Done
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure (Self : Gtk_Cell_Editable))
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_Gtk_Cell_Editable_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "editing-done" & ASCII.NUL, Call, After);
    end On_Editing_Done;
 
    ---------------------
@@ -44,14 +171,13 @@ package body Gtk.Cell_Editable is
    ---------------------
 
    procedure On_Editing_Done
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "editing-done" & ASCII.NUL, Call, After, Slot);
    end On_Editing_Done;
 
    ----------------------
@@ -59,12 +185,12 @@ package body Gtk.Cell_Editable is
    ----------------------
 
    procedure On_Remove_Widget
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure (Self : Gtk_Cell_Editable))
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_Gtk_Cell_Editable_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "remove-widget" & ASCII.NUL, Call, After);
    end On_Remove_Widget;
 
    ----------------------
@@ -72,14 +198,13 @@ package body Gtk.Cell_Editable is
    ----------------------
 
    procedure On_Remove_Widget
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "remove-widget" & ASCII.NUL, Call, After, Slot);
    end On_Remove_Widget;
 
    function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable is

@@ -527,34 +527,46 @@ package Gtk.Status_Icon is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Status_Icon_Void is not null access procedure
+     (Self : access Gtk_Status_Icon_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate : constant Glib.Signal_Name := "activate";
    procedure On_Activate
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Status_Icon_Record'Class));
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Void;
+       After : Boolean := False);
    procedure On_Activate
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when the user activates the status icon. If and how status
    --  icons can activated is platform-dependent.
    --
    --  Unlike most G_SIGNAL_ACTION signals, this signal is meant to be used by
    --  applications and should be wrapped by language bindings.
 
+   type Cb_Gtk_Status_Icon_Gdk_Event_Button_Boolean is not null access function
+     (Self  : access Gtk_Status_Icon_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Button_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+
    Signal_Button_Press_Event : constant Glib.Signal_Name := "button-press-event";
    procedure On_Button_Press_Event
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self  : access Gtk_Status_Icon_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Gdk_Event_Button_Boolean;
+       After : Boolean := False);
    procedure On_Button_Press_Event
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Gdk_Event_Button_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::button-press-event signal will be emitted when a button
    --  (typically from a mouse) is pressed.
    --
@@ -569,16 +581,14 @@ package Gtk.Status_Icon is
 
    Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    procedure On_Button_Release_Event
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self  : access Gtk_Status_Icon_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Gdk_Event_Button_Boolean;
+       After : Boolean := False);
    procedure On_Button_Release_Event
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Button) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Gdk_Event_Button_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::button-release-event signal will be emitted when a button
    --  (typically from a mouse) is released.
    --
@@ -591,20 +601,26 @@ package Gtk.Status_Icon is
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
    --    --  Returns True to stop other handlers from being invoked
 
+   type Cb_Gtk_Status_Icon_Guint_Guint_Void is not null access procedure
+     (Self          : access Gtk_Status_Icon_Record'Class;
+      Button        : Guint;
+      Activate_Time : Guint);
+
+   type Cb_GObject_Guint_Guint_Void is not null access procedure
+     (Self          : access Glib.Object.GObject_Record'Class;
+      Button        : Guint;
+      Activate_Time : Guint);
+
    Signal_Popup_Menu : constant Glib.Signal_Name := "popup-menu";
    procedure On_Popup_Menu
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access procedure
-         (Self          : access Gtk_Status_Icon_Record'Class;
-          Button        : Guint;
-          Activate_Time : Guint));
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Guint_Guint_Void;
+       After : Boolean := False);
    procedure On_Popup_Menu
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access procedure
-         (Self          : access Glib.Object.GObject_Record'Class;
-          Button        : Guint;
-          Activate_Time : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Guint_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when the user brings up the context menu of the status
    --  icon. Whether status icons can have context menus and how these are
    --  activated is platform-dependent.
@@ -621,26 +637,32 @@ package Gtk.Status_Icon is
    --    --  "activate_time": the timestamp of the event that triggered the signal
    --    --  emission
 
+   type Cb_Gtk_Status_Icon_Gint_Gint_Boolean_Gtk_Tooltip_Boolean is not null access function
+     (Self          : access Gtk_Status_Icon_Record'Class;
+      X             : Gint;
+      Y             : Gint;
+      Keyboard_Mode : Boolean;
+      Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+   return Boolean;
+
+   type Cb_GObject_Gint_Gint_Boolean_Gtk_Tooltip_Boolean is not null access function
+     (Self          : access Glib.Object.GObject_Record'Class;
+      X             : Gint;
+      Y             : Gint;
+      Keyboard_Mode : Boolean;
+      Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
+   return Boolean;
+
    Signal_Query_Tooltip : constant Glib.Signal_Name := "query-tooltip";
    procedure On_Query_Tooltip
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self          : access Gtk_Status_Icon_Record'Class;
-          X             : Gint;
-          Y             : Gint;
-          Keyboard_Mode : Boolean;
-          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
-          return Boolean);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Gint_Gint_Boolean_Gtk_Tooltip_Boolean;
+       After : Boolean := False);
    procedure On_Query_Tooltip
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self          : access Glib.Object.GObject_Record'Class;
-          X             : Gint;
-          Y             : Gint;
-          Keyboard_Mode : Boolean;
-          Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Gint_Gint_Boolean_Gtk_Tooltip_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the Gtk.Settings.Gtk_Settings:gtk-tooltip-timeout has
    --  expired with the cursor hovering above Status_Icon; or emitted when
    --  Status_Icon got focus in keyboard mode.
@@ -666,18 +688,24 @@ package Gtk.Status_Icon is
    --    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
    --    --  Returns True if Tooltip should be shown right now, False otherwise.
 
+   type Cb_Gtk_Status_Icon_Gdk_Event_Scroll_Boolean is not null access function
+     (Self  : access Gtk_Status_Icon_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
+
+   type Cb_GObject_Gdk_Event_Scroll_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
+
    Signal_Scroll_Event : constant Glib.Signal_Name := "scroll-event";
    procedure On_Scroll_Event
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self  : access Gtk_Status_Icon_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Gdk_Event_Scroll_Boolean;
+       After : Boolean := False);
    procedure On_Scroll_Event
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Event : Gdk.Event.Gdk_Event_Scroll) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Gdk_Event_Scroll_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::scroll-event signal is emitted when a button in the 4 to 7 range
    --  is pressed. Wheel mice are usually configured to generate button press
    --  events for buttons 4 and 5 when the wheel is turned.
@@ -690,18 +718,24 @@ package Gtk.Status_Icon is
    --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
    --    --  Returns True to stop other handlers from being invoked for the event.
 
+   type Cb_Gtk_Status_Icon_Gint_Boolean is not null access function
+     (Self : access Gtk_Status_Icon_Record'Class;
+      Size : Gint) return Boolean;
+
+   type Cb_GObject_Gint_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      Size : Gint) return Boolean;
+
    Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
    procedure On_Size_Changed
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self : access Gtk_Status_Icon_Record'Class;
-          Size : Gint) return Boolean);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_Gtk_Status_Icon_Gint_Boolean;
+       After : Boolean := False);
    procedure On_Size_Changed
-      (Self : not null access Gtk_Status_Icon_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Size : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Status_Icon_Record;
+       Call  : Cb_GObject_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when the size available for the image changes, e.g.
    --  because the notification area got resized.
    --

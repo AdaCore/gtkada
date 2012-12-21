@@ -183,18 +183,24 @@ package Gtk.Radio_Action is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Radio_Action_Gtk_Radio_Action_Void is not null access procedure
+     (Self    : access Gtk_Radio_Action_Record'Class;
+      Current : not null access Gtk_Radio_Action_Record'Class);
+
+   type Cb_GObject_Gtk_Radio_Action_Void is not null access procedure
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Current : not null access Gtk_Radio_Action_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Radio_Action_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Radio_Action_Record'Class;
-          Current : not null access Gtk_Radio_Action_Record'Class));
+      (Self  : not null access Gtk_Radio_Action_Record;
+       Call  : Cb_Gtk_Radio_Action_Gtk_Radio_Action_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Radio_Action_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Current : not null access Gtk_Radio_Action_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Radio_Action_Record;
+       Call  : Cb_GObject_Gtk_Radio_Action_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::changed signal is emitted on every member of a radio group when
    --  the active member is changed. The signal gets emitted after the
    --  ::activate signals for the previous and current active members.

@@ -25,8 +25,13 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
+with Glib.Values;              use Glib.Values;
+with Gtk.Arguments;            use Gtk.Arguments;
+with Gtk.Handlers;             use Gtk.Handlers;
 with Gtkada.Bindings;          use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Font_Chooser is
 
@@ -257,19 +262,140 @@ package body Gtk.Font_Chooser is
       Internal (Self, Boolean'Pos (Show_Preview_Entry));
    end Set_Show_Preview_Entry;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Font_Chooser_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Font_Chooser_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_Void);
+
+   procedure Connect
+      (Object  : Gtk_Font_Chooser;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Font_Chooser_UTF8_String_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : Gtk_Font_Chooser;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Void);
+
+   procedure Marsh_Gtk_Font_Chooser_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Font_Chooser_UTF8_String_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : Gtk_Font_Chooser;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Font_Chooser_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Glib.Types.GType_Interface (Object),
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Font_Chooser_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : Gtk_Font_Chooser;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Glib.Types.GType_Interface (Object),
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------------------
+   -- Marsh_GObject_UTF8_String_Void --
+   ------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_Void;
+
+   ---------------------------------------------
+   -- Marsh_Gtk_Font_Chooser_UTF8_String_Void --
+   ---------------------------------------------
+
+   procedure Marsh_Gtk_Font_Chooser_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Font_Chooser_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Font_Chooser := Gtk_Font_Chooser (Unchecked_To_Interface (Params, 0));
+   begin
+      H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Font_Chooser_UTF8_String_Void;
+
    -----------------------
    -- On_Font_Activated --
    -----------------------
 
    procedure On_Font_Activated
-      (Self : Gtk_Font_Chooser;
-       Call : not null access procedure
-         (Self   : Gtk_Font_Chooser;
-          Object : UTF8_String))
+      (Self  : Gtk_Font_Chooser;
+       Call  : Cb_Gtk_Font_Chooser_UTF8_String_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "font-activated" & ASCII.NUL, Call, After);
    end On_Font_Activated;
 
    -----------------------
@@ -277,15 +403,13 @@ package body Gtk.Font_Chooser is
    -----------------------
 
    procedure On_Font_Activated
-      (Self : Gtk_Font_Chooser;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : Gtk_Font_Chooser;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "font-activated" & ASCII.NUL, Call, After, Slot);
    end On_Font_Activated;
 
    function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser is

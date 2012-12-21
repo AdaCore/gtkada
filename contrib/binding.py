@@ -20,6 +20,11 @@ import copy
 from binding_gtkada import GtkAda
 from data import enums, interfaces, binding, user_data_params, destroy_data_params
 
+# Unfortunately, generating the slot marshallers in a separate package
+# does not work since we end up with circularities in a number of
+# cases. For now, we simply duplicate them as needed
+SHARED_SLOT_MARSHALLERS = False
+
 # For parsing command line options
 from optparse import OptionParser
 
@@ -82,6 +87,17 @@ class GIR(object):
         self.constants = dict() # Maps C "name" to a GIR XML node for constants
 
         self.bound = set()  # C names for the entities that have an Ada binding
+
+        # The marshallers that have been generated when we use a slot object.
+        # These can be shared among all packages, since the profiles of the
+        # handlers are the same.
+        if SHARED_SLOT_MARSHALLERS:
+            self.slot_marshallers = set()
+            self.slot_marshaller_pkg = self.get_package(
+                name="Gtkada.Marshallers",
+                ctype=None,
+                doc="Automatically generated, used internally by GtkAda")
+            self.slot_marshaller_section = self.slot_marshaller_pkg.section("")
 
         for filename in files:
             _tree = parse(filename)
@@ -653,6 +669,8 @@ class GIRClass(object):
         self.pkg = None  # Instance of Package(), that we are generating
 
         self.conversions = dict() # List of Convert(...) functions that were implemented
+
+        self.__marshallers = set() # The generated marshallers
 
         # Search for the GtkAda binding information
 
@@ -1560,12 +1578,277 @@ See Glib.Properties for more information on properties)""")
                     self.pkg.add_private(
                         d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)
 
+    def _compute_marshaller_suffix(self, selftype, profile):
+        """Computes the suffix for the connect and marshallers types based on
+           the profile of the signal.
+        """
+        return "_".join(
+            [base_name(selftype.ada)]
+            + [base_name(p.type.ada) for p in profile.params]
+            + [(base_name(profile.returns.ada) if profile.returns else "Void")])
+
+    def _marshall_gvalue(self, profile):
+        """Return the arguments to parse to an Ada callback, after extracting
+           them from a GValue. Returns a list of local variables for the
+           marshaller, and its body
+        """
+        call_params = []
+        for index, p in enumerate(profile.params):
+           if isinstance(p.type, Tagged):
+              call_params.append(
+                "%s.From_Object (Unchecked_To_Address (Params, %d))" %
+                (package_name(p.type.ada), index + 1))
+           elif isinstance(p.type, Interface):
+              call_params.append(
+                "%s (Unchecked_To_Interface (Params, %d))" %
+                (p.type.ada, index + 1))
+           elif isinstance(p.type, GObject):
+              if p.type.ada != "Glib.Object.GObject":
+                  call_params.append(
+                    "%s (Unchecked_To_Object (Params, %d))" % (
+                       p.type.ada, index + 1))
+              else:
+                  call_params.append(
+                    "Unchecked_To_Object (Params, %d)" % (index + 1, ))
+           else:
+              if p.mode != "in":
+                  call_params.append(
+                    "Unchecked_To_%s_Access (Params, %d)" % (
+                       base_name (p.type.ada), index + 1))
+              else:
+                  call_params.append(
+                    "Unchecked_To_%s (Params, %d)" % (
+                       base_name (p.type.ada), index + 1))
+
+        if call_params:
+            call = "H (Obj, %s)" % ", ".join(call_params)
+        else:
+            call = "H (Obj)"
+
+        if profile.returns:
+            marsh_local = [
+                Local_Var("V", profile.returns, aliased=True, default=call)]
+            marsh_body = "Set_Value (Return_Value, V'Address);"
+        else:
+            marsh_local = []
+            marsh_body = "%s;" % call
+
+        marsh_body += "exception when E : others => Process_Exception (E);"
+
+        return marsh_local, marsh_body
+
+    def _generate_slot_marshaller(self, section, selftype, node, gtkmethod):
+        """Generate connect+marshaller when connect takes a slot object. These
+           procedure are independent of the specific widget, and can be shared.
+           Returns the name for the hander type.
+        """
+
+        if SHARED_SLOT_MARSHALLERS:
+            pkg = gir.slot_marshaller_pkg
+            section = gir.slot_marshaller_section
+            existing_marshallers = gir.slot_marshallers
+        else:
+            pkg = self.pkg
+            section = section
+            existing_marshallers = self.__marshallers
+
+        profile = SubprogramProfile.parse(
+            node=node, gtkmethod=gtkmethod, pkg=pkg)
+
+        callback_selftype = GObject(
+            "Glib.Object.GObject", classwide=True, allow_none=True)
+
+        name_suffix = self._compute_marshaller_suffix(
+            callback_selftype, profile)
+        slot_name = "Cb_%s" % name_suffix
+        marshname = "Marsh_%s" % name_suffix
+
+        callback = Subprogram(
+            name="",
+            plist=[Parameter(name="Self", type=callback_selftype)]
+               + profile.params,
+            code="null",
+            allow_none=False,
+            returns=profile.returns)
+
+        if not slot_name in existing_marshallers:
+            existing_marshallers.add(slot_name)
+
+            slot_handler_type = "type %s is %s;" % (
+                slot_name, callback.profile(
+                    pkg=pkg,
+                    maxlen=69, indent="      "))
+            section.add(Code(slot_handler_type), in_spec=True)
+
+            section.add(Code(
+"""function Cb_To_Address is new Ada.Unchecked_Conversion
+   (%s, System.Address);
+function Address_To_Cb is new Ada.Unchecked_Conversion
+   (System.Address, %s);
+""" % (slot_name, slot_name)),
+                in_spec=False)
+
+            if isinstance(selftype, Interface):
+                obj_in_body = "Glib.Types.GType_Interface (Object)"
+            else:
+                obj_in_body = "Object"
+
+            connect_slot_body = """
+      Unchecked_Do_Signal_Connect
+        (Object      => %s,
+         C_Name      => C_Name,
+         Marshaller  => %s'Access,
+         Handler     => Cb_To_Address (Handler),  --  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After)""" % (obj_in_body, marshname)
+
+            marsh_local, marsh_body = self._marshall_gvalue(profile)
+
+            connect_slot = Subprogram(
+                name="Connect_Slot",
+                plist=[Parameter("Object", selftype),
+                       Parameter("C_Name", "Glib.Signal_Name"),
+                       Parameter("Handler", slot_name),
+                       Parameter("After", "Boolean"),
+                       Parameter("Slot", GObject(
+                            "Glib.Object.GObject", allow_none=True,
+                             classwide=True), default="null")
+                       ],
+                code=connect_slot_body)
+            section.add(connect_slot, in_spec=False)
+
+            addr_to_obj = "Glib.Object.Convert (User_Data)"
+
+            marsh = Subprogram(
+                name=marshname,
+                plist=[Parameter("Closure", "GClosure"),
+                       Parameter("Return_Value", "Glib.Values.GValue"),
+                       Parameter("N_Params", "Glib.Guint"),
+                       Parameter("Params", "Glib.Values.C_GValues"),
+                       Parameter("Invocation_Hint", "System.Address"),
+                       Parameter("User_Data", "System.Address")],
+                local_vars=[
+                       Local_Var("H", "constant %s" % slot_name,
+                                 "Address_To_Cb (Get_Callback (Closure))"),
+                       Local_Var("Obj", callback_selftype, constant=True,
+                                 default=addr_to_obj)
+                       ] + marsh_local,
+                convention="C",
+                code=marsh_body)
+            section.add(marsh, in_spec=False)
+
+        return slot_name, callback
+
+    def _generate_marshaller(self, section, selftype, node, gtkmethod):
+        """Generate, if needed, a connect+marshaller for signals with this
+           profile.
+           Returns the name of the type that contains the subprogram profile
+        """
+
+        profile = SubprogramProfile.parse(
+            node=node, gtkmethod=gtkmethod,
+            pkg=self.pkg if gtkmethod.bind() else None)
+
+        name_suffix = self._compute_marshaller_suffix(selftype, profile)
+        marshname = "Marsh_%s" % name_suffix
+        name = "Cb_%s" % name_suffix
+
+        callback = Subprogram(
+            name="",
+            plist=[Parameter(name="Self", type=selftype)] + profile.params,
+            code="null",
+            allow_none=False,
+            returns=profile.returns)
+
+        if gtkmethod.bind() and not name in self.__marshallers:
+            self.__marshallers.add(name)
+
+            handler_type = "type %s is %s;" % (
+               name, callback.profile(
+                  pkg=self.pkg, maxlen=69, indent="      "))
+            section.add(Code(handler_type), in_spec=True)
+
+            section.add(Code(
+"""function Cb_To_Address is new Ada.Unchecked_Conversion
+   (%s, System.Address);
+function Address_To_Cb is new Ada.Unchecked_Conversion
+   (System.Address, %s);
+""" % (name, name)),
+                in_spec=False)
+
+            if isinstance(selftype, Interface):
+                obj_in_body = "Glib.Types.GType_Interface (Object)"
+            else:
+                obj_in_body = "Object"
+
+            connect_body = """
+      Unchecked_Do_Signal_Connect
+        (Object      => %s,
+         C_Name      => C_Name,
+         Marshaller  => %s'Access,
+         Handler     => Cb_To_Address (Handler),  --  Set in the closure
+         After       => After)""" % (obj_in_body, marshname)
+
+            marsh_local, marsh_body = self._marshall_gvalue(profile)
+
+            connect = Subprogram(
+                name="Connect",
+                plist=[Parameter("Object", selftype),
+                       Parameter("C_Name", "Glib.Signal_Name"),
+                       Parameter("Handler", name),
+                       Parameter("After", "Boolean"),
+                       ],
+                code=connect_body)
+            section.add(connect, in_spec=False)
+
+            if isinstance(selftype, Interface):
+                addr_to_obj = \
+                    "%s (Unchecked_To_Interface (Params, 0))" % selftype.ada
+            else:
+                addr_to_obj = \
+                    "%s (Unchecked_To_Object (Params, 0))" % selftype.ada
+
+            marsh = Subprogram(
+                name=marshname,
+                plist=[Parameter("Closure", "GClosure"),
+                       Parameter("Return_Value", "Glib.Values.GValue"),
+                       Parameter("N_Params", "Glib.Guint"),
+                       Parameter("Params", "Glib.Values.C_GValues"),
+                       Parameter("Invocation_Hint", "System.Address"),
+                       Parameter("User_Data", "System.Address")],
+                local_vars=[
+                       Local_Var("H", "constant %s" % name,
+                                 "Address_To_Cb (Get_Callback (Closure))"),
+                       Local_Var("Obj", selftype, constant=True,
+                                 default=addr_to_obj)
+                       ] + marsh_local,
+                convention="C",
+                code=marsh_body)
+            section.add(marsh, in_spec=False)
+
+        return name, callback, profile
+
     def _signals(self):
         signals = list(self.node.findall(gsignal))
         if signals:
             adasignals = []
             section = self.pkg.section("Signals")
             section.sort_objects = False  # preserve insertion order
+
+            # If at least one signal gets a On_* procedure
+            for s in signals:
+               if self.gtkpkg.get_method(
+                  cname="::%s" % s.get("name")).bind():
+                   section.add(Code("use type System.Address;"), in_spec=False)
+                   self.pkg.add_with("Gtk.Handlers", specs=False)
+                   self.pkg.add_with("Glib.Values", specs=False)
+                   self.pkg.add_with("Gtk.Arguments", specs=False)
+
+                   if SHARED_SLOT_MARSHALLERS:
+                       self.pkg.add_with("Gtkada.Marshallers")
+                   self.pkg.add_with(
+                     "Ada.Unchecked_Conversion", specs=False, do_use=False)
+                   break
 
             signals.sort(key=lambda x: x.get("name"))
 
@@ -1581,24 +1864,24 @@ See Glib.Properties for more information on properties)""")
                                        allow_none=True, classwide=True)
                     on_selftype = GObject("%(typename)s" % self._subst,
                                        allow_none=False, classwide=False)
+                elif self.is_interface:
+                    on_selftype = selftype = Interface(
+                        "%(typename)s" % self._subst)
                 else:
-                    on_selftype = selftype = "%(typename)s" % self._subst
+                    on_selftype = selftype = Proxy(
+                        "%(typename)s" % self._subst)
+
+                # We need to parse the profile twice, so that the with
+                # statements are set both in self.pkg and in
+                # gtkada.marshallers
+                handler_type_name, sub, profile = \
+                    self._generate_marshaller(
+                       section, selftype, node=s, gtkmethod=gtkmethod)
 
                 if bind:
-                    profile = SubprogramProfile.parse(
-                        node=s, gtkmethod=gtkmethod, pkg=self.pkg)
-
-                else:
-                    profile = SubprogramProfile.parse(
-                        node=s, gtkmethod=gtkmethod, pkg=None)
-
-                sub = Subprogram(
-                    name="",
-                    plist=[Parameter(name="Self", type=selftype)]
-                        + profile.params,
-                    code="null",
-                    allow_none=False,
-                    returns=profile.returns)
+                    slot_handler_type_name, obj_sub = \
+                       self._generate_slot_marshaller(
+                           section, selftype, node=s, gtkmethod=gtkmethod)
 
                 section.add(
                     Code('   Signal_%s : constant Glib.Signal_Name := "%s";' %
@@ -1606,28 +1889,20 @@ See Glib.Properties for more information on properties)""")
                     add_newline=False)
 
                 if bind:
-                    obj_sub = Subprogram(
-                        name="",
-                        plist=[
-                           Parameter(
-                             name="Self",
-                             type=GObject("Glib.Object.GObject",
-                                          allow_none=True,
-                                          classwide=True))]
-                          + profile.params,
-                        code="null",
-                        allow_none=False,
-                        returns=profile.returns)
-
+                    # ??? Missing compared to Gtk.Handlers: user_data, access
+                    # to the Handler_Id
                     connect = Subprogram(
                         name="On_%s" % naming.case(name),
                         plist=[Parameter(name="Self", type=on_selftype),
                                Parameter(
                                 name="Call",
-                                type=Proxy(sub.profile(
-                                    pkg=self.pkg, maxlen=69,
-                                    indent="      ")))],
-                        code="null")
+                                type=Proxy(handler_type_name)),
+                               Parameter(
+                                 name="After",
+                                 type="Boolean",
+                                 default="False")],
+                        code='Connect (Self, "%s" & ASCII.NUL, Call, After);' %
+                           name)
                     section.add(connect, add_newline=False)
 
                     obj_connect = Subprogram(
@@ -1635,15 +1910,18 @@ See Glib.Properties for more information on properties)""")
                         plist=[Parameter(name="Self", type=on_selftype),
                                Parameter(
                                  name="Call",
-                                 type=Proxy(obj_sub.profile(
-                                     pkg=self.pkg, maxlen=69,
-                                     indent="      "))),
+                                 type=Proxy(slot_handler_type_name)),
                                Parameter(
                                  name="Slot",
                                  type=GObject("Glib.Object.GObject",
                                               allow_none=False,
-                                              classwide=True))],
-                        code="null")
+                                              classwide=True)),
+                               Parameter(
+                                 name="After",
+                                 type="Boolean",
+                                 default="False")],
+                       code='Connect_Slot (Self, "%s" & ASCII.NUL, Call, After, Slot);' %
+                           name)
                     section.add(obj_connect)
 
                 doc = s.findtext(ndoc, "")
@@ -2396,6 +2674,7 @@ This file is automatically generated from the .gir files
 */
 #include <gtk/gtk.h>
 """
+
 
 for the_ctype in enums:
     node = Element(

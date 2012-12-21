@@ -23,9 +23,15 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.GEntry is
 
@@ -1348,17 +1354,745 @@ package body Gtk.GEntry is
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Delete_Type_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Delete_Type_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Gtk_Menu_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Gtk_Menu_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Menu_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Menu_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_UTF8_String_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Menu_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Delete_Type_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Menu_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Delete_Type_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Delete_Type_Gint_Void);
+
+   procedure Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void);
+
+   procedure Marsh_GObject_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Menu_Void);
+
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   procedure Marsh_GObject_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Entry_Gtk_Delete_Type_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Gtk_Delete_Type_Gint_Void);
+
+   procedure Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void);
+
+   procedure Marsh_Gtk_Entry_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Gtk_Menu_Void);
+
+   procedure Marsh_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   procedure Marsh_Gtk_Entry_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_UTF8_String_Void);
+
+   procedure Marsh_Gtk_Entry_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Gtk_Delete_Type_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Gtk_Menu_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Gtk_Menu_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Delete_Type_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Delete_Type_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Menu_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Menu_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------------------------
+   -- Marsh_GObject_Gtk_Delete_Type_Gint_Void --
+   ---------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Delete_Type_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Delete_Type_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Delete_Type (Params, 1), Unchecked_To_Gint (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Delete_Type_Gint_Void;
+
+   -----------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void --
+   -----------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1), Unchecked_To_Gdk_Event_Button (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+
+   ---------------------------------
+   -- Marsh_GObject_Gtk_Menu_Void --
+   ---------------------------------
+
+   procedure Marsh_GObject_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Menu_Void;
+
+   -------------------------------------------------------
+   -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void --
+   -------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+
+   ------------------------------------
+   -- Marsh_GObject_UTF8_String_Void --
+   ------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   -----------------------------------------------
+   -- Marsh_Gtk_Entry_Gtk_Delete_Type_Gint_Void --
+   -----------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Gtk_Delete_Type_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Delete_Type (Params, 1), Unchecked_To_Gint (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Gtk_Delete_Type_Gint_Void;
+
+   -------------------------------------------------------------------
+   -- Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void --
+   -------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1), Unchecked_To_Gdk_Event_Button (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+
+   -----------------------------------
+   -- Marsh_Gtk_Entry_Gtk_Menu_Void --
+   -----------------------------------
+
+   procedure Marsh_Gtk_Entry_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Gtk_Menu_Void;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void;
+
+   --------------------------------------
+   -- Marsh_Gtk_Entry_UTF8_String_Void --
+   --------------------------------------
+
+   procedure Marsh_Gtk_Entry_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_UTF8_String_Void;
+
+   --------------------------
+   -- Marsh_Gtk_Entry_Void --
+   --------------------------
+
+   procedure Marsh_Gtk_Entry_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Record'Class := Gtk_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Void;
+
    -----------------
    -- On_Activate --
    -----------------
 
    procedure On_Activate
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "activate" & ASCII.NUL, Call, After);
    end On_Activate;
 
    -----------------
@@ -1366,14 +2100,13 @@ package body Gtk.GEntry is
    -----------------
 
    procedure On_Activate
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "activate" & ASCII.NUL, Call, After, Slot);
    end On_Activate;
 
    ------------------
@@ -1381,12 +2114,12 @@ package body Gtk.GEntry is
    ------------------
 
    procedure On_Backspace
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "backspace" & ASCII.NUL, Call, After);
    end On_Backspace;
 
    ------------------
@@ -1394,14 +2127,13 @@ package body Gtk.GEntry is
    ------------------
 
    procedure On_Backspace
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "backspace" & ASCII.NUL, Call, After, Slot);
    end On_Backspace;
 
    -----------------------
@@ -1409,12 +2141,12 @@ package body Gtk.GEntry is
    -----------------------
 
    procedure On_Copy_Clipboard
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "copy-clipboard" & ASCII.NUL, Call, After);
    end On_Copy_Clipboard;
 
    -----------------------
@@ -1422,14 +2154,13 @@ package body Gtk.GEntry is
    -----------------------
 
    procedure On_Copy_Clipboard
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "copy-clipboard" & ASCII.NUL, Call, After, Slot);
    end On_Copy_Clipboard;
 
    ----------------------
@@ -1437,12 +2168,12 @@ package body Gtk.GEntry is
    ----------------------
 
    procedure On_Cut_Clipboard
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "cut-clipboard" & ASCII.NUL, Call, After);
    end On_Cut_Clipboard;
 
    ----------------------
@@ -1450,14 +2181,13 @@ package body Gtk.GEntry is
    ----------------------
 
    procedure On_Cut_Clipboard
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "cut-clipboard" & ASCII.NUL, Call, After, Slot);
    end On_Cut_Clipboard;
 
    ---------------------------
@@ -1465,15 +2195,12 @@ package body Gtk.GEntry is
    ---------------------------
 
    procedure On_Delete_From_Cursor
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Record'Class;
-          The_Type : Gtk.Enums.Gtk_Delete_Type;
-          Count    : Gint))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "delete-from-cursor" & ASCII.NUL, Call, After);
    end On_Delete_From_Cursor;
 
    ---------------------------
@@ -1481,16 +2208,13 @@ package body Gtk.GEntry is
    ---------------------------
 
    procedure On_Delete_From_Cursor
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          The_Type : Gtk.Enums.Gtk_Delete_Type;
-          Count    : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Gtk_Delete_Type_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "delete-from-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Delete_From_Cursor;
 
    -------------------
@@ -1498,15 +2222,12 @@ package body Gtk.GEntry is
    -------------------
 
    procedure On_Icon_Press
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Record'Class;
-          Icon_Pos : Gtk_Entry_Icon_Position;
-          Event    : Gdk.Event.Gdk_Event_Button))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "icon-press" & ASCII.NUL, Call, After);
    end On_Icon_Press;
 
    -------------------
@@ -1514,16 +2235,13 @@ package body Gtk.GEntry is
    -------------------
 
    procedure On_Icon_Press
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Icon_Pos : Gtk_Entry_Icon_Position;
-          Event    : Gdk.Event.Gdk_Event_Button);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "icon-press" & ASCII.NUL, Call, After, Slot);
    end On_Icon_Press;
 
    ---------------------
@@ -1531,15 +2249,12 @@ package body Gtk.GEntry is
    ---------------------
 
    procedure On_Icon_Release
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Record'Class;
-          Icon_Pos : Gtk_Entry_Icon_Position;
-          Event    : Gdk.Event.Gdk_Event_Button))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "icon-release" & ASCII.NUL, Call, After);
    end On_Icon_Release;
 
    ---------------------
@@ -1547,16 +2262,13 @@ package body Gtk.GEntry is
    ---------------------
 
    procedure On_Icon_Release
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Icon_Pos : Gtk_Entry_Icon_Position;
-          Event    : Gdk.Event.Gdk_Event_Button);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "icon-release" & ASCII.NUL, Call, After, Slot);
    end On_Icon_Release;
 
    -------------------------
@@ -1564,14 +2276,12 @@ package body Gtk.GEntry is
    -------------------------
 
    procedure On_Insert_At_Cursor
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Entry_Record'Class;
-          String : UTF8_String))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_UTF8_String_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "insert-at-cursor" & ASCII.NUL, Call, After);
    end On_Insert_At_Cursor;
 
    -------------------------
@@ -1579,15 +2289,13 @@ package body Gtk.GEntry is
    -------------------------
 
    procedure On_Insert_At_Cursor
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          String : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "insert-at-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Insert_At_Cursor;
 
    --------------------
@@ -1595,16 +2303,12 @@ package body Gtk.GEntry is
    --------------------
 
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self             : access Gtk_Entry_Record'Class;
-          Step             : Gtk.Enums.Gtk_Movement_Step;
-          Count            : Gint;
-          Extend_Selection : Boolean))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "move-cursor" & ASCII.NUL, Call, After);
    end On_Move_Cursor;
 
    --------------------
@@ -1612,17 +2316,13 @@ package body Gtk.GEntry is
    --------------------
 
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self             : access Glib.Object.GObject_Record'Class;
-          Step             : Gtk.Enums.Gtk_Movement_Step;
-          Count            : Gint;
-          Extend_Selection : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "move-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Move_Cursor;
 
    ------------------------
@@ -1630,12 +2330,12 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure On_Paste_Clipboard
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "paste-clipboard" & ASCII.NUL, Call, After);
    end On_Paste_Clipboard;
 
    ------------------------
@@ -1643,14 +2343,13 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure On_Paste_Clipboard
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "paste-clipboard" & ASCII.NUL, Call, After, Slot);
    end On_Paste_Clipboard;
 
    -----------------------
@@ -1658,14 +2357,12 @@ package body Gtk.GEntry is
    -----------------------
 
    procedure On_Populate_Popup
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Entry_Record'Class;
-          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Gtk_Menu_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "populate-popup" & ASCII.NUL, Call, After);
    end On_Populate_Popup;
 
    -----------------------
@@ -1673,15 +2370,13 @@ package body Gtk.GEntry is
    -----------------------
 
    procedure On_Populate_Popup
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Gtk_Menu_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "populate-popup" & ASCII.NUL, Call, After, Slot);
    end On_Populate_Popup;
 
    ------------------------
@@ -1689,14 +2384,12 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure On_Preedit_Changed
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self    : access Gtk_Entry_Record'Class;
-          Preedit : UTF8_String))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_UTF8_String_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "preedit-changed" & ASCII.NUL, Call, After);
    end On_Preedit_Changed;
 
    ------------------------
@@ -1704,15 +2397,13 @@ package body Gtk.GEntry is
    ------------------------
 
    procedure On_Preedit_Changed
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Preedit : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "preedit-changed" & ASCII.NUL, Call, After, Slot);
    end On_Preedit_Changed;
 
    -------------------------
@@ -1720,12 +2411,12 @@ package body Gtk.GEntry is
    -------------------------
 
    procedure On_Toggle_Overwrite
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure (Self : access Gtk_Entry_Record'Class))
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "toggle-overwrite" & ASCII.NUL, Call, After);
    end On_Toggle_Overwrite;
 
    -------------------------
@@ -1733,14 +2424,13 @@ package body Gtk.GEntry is
    -------------------------
 
    procedure On_Toggle_Overwrite
-      (Self : not null access Gtk_Entry_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "toggle-overwrite" & ASCII.NUL, Call, After, Slot);
    end On_Toggle_Overwrite;
 
 end Gtk.GEntry;

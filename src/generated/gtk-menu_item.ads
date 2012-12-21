@@ -318,75 +318,96 @@ package Gtk.Menu_Item is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Menu_Item_Void is not null access procedure (Self : access Gtk_Menu_Item_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate : constant Glib.Signal_Name := "activate";
    procedure On_Activate
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_Gtk_Menu_Item_Void;
+       After : Boolean := False);
    procedure On_Activate
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the item is activated.
 
    Signal_Activate_Item : constant Glib.Signal_Name := "activate-item";
    procedure On_Activate_Item
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_Gtk_Menu_Item_Void;
+       After : Boolean := False);
    procedure On_Activate_Item
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the item is activated, but also if the menu item has a
    --  submenu. For normal applications, the relevant signal is
    --  Gtk.Menu_Item.Gtk_Menu_Item::activate.
 
    Signal_Deselect : constant Glib.Signal_Name := "deselect";
    procedure On_Deselect
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_Gtk_Menu_Item_Void;
+       After : Boolean := False);
    procedure On_Deselect
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Gtk_Select : constant Glib.Signal_Name := "select";
    procedure On_Gtk_Select
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Item_Record'Class));
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_Gtk_Menu_Item_Void;
+       After : Boolean := False);
    procedure On_Gtk_Select
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Menu_Item_Gint_Void is not null access procedure
+     (Self   : access Gtk_Menu_Item_Record'Class;
+      Object : Gint);
+
+   type Cb_GObject_Gint_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gint);
 
    Signal_Toggle_Size_Allocate : constant Glib.Signal_Name := "toggle-size-allocate";
    procedure On_Toggle_Size_Allocate
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Menu_Item_Record'Class;
-          Object : Gint));
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_Gtk_Menu_Item_Gint_Void;
+       After : Boolean := False);
    procedure On_Toggle_Size_Allocate
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_GObject_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Menu_Item_Address_Void is not null access procedure
+     (Self   : access Gtk_Menu_Item_Record'Class;
+      Object : System.Address);
+
+   type Cb_GObject_Address_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : System.Address);
 
    Signal_Toggle_Size_Request : constant Glib.Signal_Name := "toggle-size-request";
    procedure On_Toggle_Size_Request
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Menu_Item_Record'Class;
-          Object : System.Address));
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_Gtk_Menu_Item_Address_Void;
+       After : Boolean := False);
    procedure On_Toggle_Size_Request
-      (Self : not null access Gtk_Menu_Item_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : System.Address);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Item_Record;
+       Call  : Cb_GObject_Address_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

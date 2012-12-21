@@ -76,20 +76,26 @@ package Gtk.Print_Operation_Preview is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Page_Setup_Void is not null access procedure
+     (Self       : Gtk_Print_Operation_Preview;
+      Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+      Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+
+   type Cb_GObject_Gtk_Print_Context_Gtk_Page_Setup_Void is not null access procedure
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
+      Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+
    Signal_Got_Page_Size : constant Glib.Signal_Name := "got-page-size";
    procedure On_Got_Page_Size
-      (Self : Gtk_Print_Operation_Preview;
-       Call : not null access procedure
-         (Self       : Gtk_Print_Operation_Preview;
-          Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class));
+      (Self  : Gtk_Print_Operation_Preview;
+       Call  : Cb_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Page_Setup_Void;
+       After : Boolean := False);
    procedure On_Got_Page_Size
-      (Self : Gtk_Print_Operation_Preview;
-       Call : not null access procedure
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-          Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Print_Operation_Preview;
+       Call  : Cb_GObject_Gtk_Print_Context_Gtk_Page_Setup_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::got-page-size signal is emitted once for each page that gets
    --  rendered to the preview.
    --
@@ -101,18 +107,24 @@ package Gtk.Print_Operation_Preview is
    --    --  "context": the current Gtk.Print_Context.Gtk_Print_Context
    --    --  "page_setup": the Gtk.Page_Setup.Gtk_Page_Setup for the current page
 
+   type Cb_Gtk_Print_Operation_Preview_Gtk_Print_Context_Void is not null access procedure
+     (Self    : Gtk_Print_Operation_Preview;
+      Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+
+   type Cb_GObject_Gtk_Print_Context_Void is not null access procedure
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
+
    Signal_Ready : constant Glib.Signal_Name := "ready";
    procedure On_Ready
-      (Self : Gtk_Print_Operation_Preview;
-       Call : not null access procedure
-         (Self    : Gtk_Print_Operation_Preview;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class));
+      (Self  : Gtk_Print_Operation_Preview;
+       Call  : Cb_Gtk_Print_Operation_Preview_Gtk_Print_Context_Void;
+       After : Boolean := False);
    procedure On_Ready
-      (Self : Gtk_Print_Operation_Preview;
-       Call : not null access procedure
-         (Self    : access Glib.Object.GObject_Record'Class;
-          Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Print_Operation_Preview;
+       Call  : Cb_GObject_Gtk_Print_Context_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::ready signal gets emitted once per preview operation, before the
    --  first page is rendered.
    --

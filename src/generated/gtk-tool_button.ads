@@ -287,16 +287,22 @@ package Gtk.Tool_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Tool_Button_Void is not null access procedure
+     (Self : access Gtk_Tool_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Clicked : constant Glib.Signal_Name := "clicked";
    procedure On_Clicked
-      (Self : not null access Gtk_Tool_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Tool_Button_Record'Class));
+      (Self  : not null access Gtk_Tool_Button_Record;
+       Call  : Cb_Gtk_Tool_Button_Void;
+       After : Boolean := False);
    procedure On_Clicked
-      (Self : not null access Gtk_Tool_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tool_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the tool button is clicked with the mouse
    --  or activated with the keyboard.
 

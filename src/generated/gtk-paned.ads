@@ -249,17 +249,23 @@ package Gtk.Paned is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Paned_Boolean is not null access function
+     (Self : access Gtk_Paned_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";
    procedure On_Accept_Position
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self : access Gtk_Paned_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False);
    procedure On_Accept_Position
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::accept-position signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle when moving it using key
@@ -269,15 +275,14 @@ package Gtk.Paned is
 
    Signal_Cancel_Position : constant Glib.Signal_Name := "cancel-position";
    procedure On_Cancel_Position
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self : access Gtk_Paned_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False);
    procedure On_Cancel_Position
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::cancel-position signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cancel moving the position of the handle using key bindings. The
@@ -285,18 +290,24 @@ package Gtk.Paned is
    --
    --  The default binding for this signal is Escape.
 
+   type Cb_Gtk_Paned_Boolean_Boolean is not null access function
+     (Self     : access Gtk_Paned_Record'Class;
+      Reversed : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Reversed : Boolean) return Boolean;
+
    Signal_Cycle_Child_Focus : constant Glib.Signal_Name := "cycle-child-focus";
    procedure On_Cycle_Child_Focus
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self     : access Gtk_Paned_Record'Class;
-          Reversed : Boolean) return Boolean);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Cycle_Child_Focus
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Reversed : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::cycle-child-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle the focus between the children of the paned.
@@ -305,16 +316,14 @@ package Gtk.Paned is
 
    Signal_Cycle_Handle_Focus : constant Glib.Signal_Name := "cycle-handle-focus";
    procedure On_Cycle_Handle_Focus
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self     : access Gtk_Paned_Record'Class;
-          Reversed : Boolean) return Boolean);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Cycle_Handle_Focus
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Reversed : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::cycle-handle-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to cycle whether the paned should grab focus to allow the user to change
@@ -322,33 +331,38 @@ package Gtk.Paned is
    --
    --  The default binding for this signal is f8.
 
+   type Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean is not null access function
+     (Self        : access Gtk_Paned_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+
+   type Cb_GObject_Gtk_Scroll_Type_Boolean is not null access function
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+
    Signal_Move_Handle : constant Glib.Signal_Name := "move-handle";
    procedure On_Move_Handle
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self        : access Gtk_Paned_Record'Class;
-          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean;
+       After : Boolean := False);
    procedure On_Move_Handle
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::move-handle signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to move the handle when the user is using key bindings to move it.
 
    Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
    procedure On_Toggle_Handle_Focus
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self : access Gtk_Paned_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False);
    procedure On_Toggle_Handle_Focus
-      (Self : not null access Gtk_Paned_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::toggle-handle-focus is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to accept the current position of the handle and then move focus to the

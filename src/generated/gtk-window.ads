@@ -1423,56 +1423,70 @@ package Gtk.Window is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Window_Void is not null access procedure (Self : access Gtk_Window_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate_Default : constant Glib.Signal_Name := "activate-default";
    procedure On_Activate_Default
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure (Self : access Gtk_Window_Record'Class));
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Void;
+       After : Boolean := False);
    procedure On_Activate_Default
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::activate-default signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user activates the default widget of Window.
 
    Signal_Activate_Focus : constant Glib.Signal_Name := "activate-focus";
    procedure On_Activate_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure (Self : access Gtk_Window_Record'Class));
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Void;
+       After : Boolean := False);
    procedure On_Activate_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::activate-focus signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user activates the currently focused widget of Window.
 
    Signal_Keys_Changed : constant Glib.Signal_Name := "keys-changed";
    procedure On_Keys_Changed
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure (Self : access Gtk_Window_Record'Class));
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Void;
+       After : Boolean := False);
    procedure On_Keys_Changed
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::keys-changed signal gets emitted when the set of accelerators or
    --  mnemonics that are associated with Window changes.
 
+   type Cb_Gtk_Window_Gtk_Widget_Void is not null access procedure
+     (Self   : access Gtk_Window_Record'Class;
+      Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
    Signal_Set_Focus : constant Glib.Signal_Name := "set-focus";
    procedure On_Set_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Window_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Set_Focus
-      (Self : not null access Gtk_Window_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

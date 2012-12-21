@@ -934,17 +934,23 @@ package Gtk.Icon_View is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Icon_View_Boolean is not null access function
+     (Self : access Gtk_Icon_View_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Activate_Cursor_Item : constant Glib.Signal_Name := "activate-cursor-item";
    procedure On_Activate_Cursor_Item
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Icon_View_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Boolean;
+       After : Boolean := False);
    procedure On_Activate_Cursor_Item
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates the currently focused item.
    --
@@ -954,37 +960,49 @@ package Gtk.Icon_View is
    --
    --  The default bindings for this signal are Space, Return and Enter.
 
+   type Cb_Gtk_Icon_View_Gtk_Tree_Path_Void is not null access procedure
+     (Self : access Gtk_Icon_View_Record'Class;
+      Path : Gtk.Tree_Model.Gtk_Tree_Path);
+
+   type Cb_GObject_Gtk_Tree_Path_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Path : Gtk.Tree_Model.Gtk_Tree_Path);
+
    Signal_Item_Activated : constant Glib.Signal_Name := "item-activated";
    procedure On_Item_Activated
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Icon_View_Record'Class;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path));
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Gtk_Tree_Path_Void;
+       After : Boolean := False);
    procedure On_Item_Activated
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Path_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::item-activated signal is emitted when the method
    --  Gtk.Icon_View.Item_Activated is called or the user double clicks an
    --  item. It is also emitted when a non-editable item is selected and one of
    --  the keys: Space, Return or Enter is pressed.
 
+   type Cb_Gtk_Icon_View_Gtk_Movement_Step_Gint_Boolean is not null access function
+     (Self  : access Gtk_Icon_View_Record'Class;
+      Step  : Gtk.Enums.Gtk_Movement_Step;
+      Count : Gint) return Boolean;
+
+   type Cb_GObject_Gtk_Movement_Step_Gint_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Step  : Gtk.Enums.Gtk_Movement_Step;
+      Count : Gint) return Boolean;
+
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access function
-         (Self  : access Gtk_Icon_View_Record'Class;
-          Step  : Gtk.Enums.Gtk_Movement_Step;
-          Count : Gint) return Boolean);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Gtk_Movement_Step_Gint_Boolean;
+       After : Boolean := False);
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Step  : Gtk.Enums.Gtk_Movement_Step;
-          Count : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement.
@@ -1008,15 +1026,21 @@ package Gtk.Icon_View is
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
 
+   type Cb_Gtk_Icon_View_Void is not null access procedure (Self : access Gtk_Icon_View_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Select_All : constant Glib.Signal_Name := "select-all";
    procedure On_Select_All
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class));
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Void;
+       After : Boolean := False);
    procedure On_Select_All
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user selects all items.
    --
@@ -1028,13 +1052,14 @@ package Gtk.Icon_View is
 
    Signal_Select_Cursor_Item : constant Glib.Signal_Name := "select-cursor-item";
    procedure On_Select_Cursor_Item
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class));
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Void;
+       After : Boolean := False);
    procedure On_Select_Cursor_Item
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user selects the item that is currently focused.
    --
@@ -1046,25 +1071,27 @@ package Gtk.Icon_View is
 
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
    procedure On_Selection_Changed
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class));
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Void;
+       After : Boolean := False);
    procedure On_Selection_Changed
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::selection-changed signal is emitted when the selection (i.e. the
    --  set of selected items) changes.
 
    Signal_Toggle_Cursor_Item : constant Glib.Signal_Name := "toggle-cursor-item";
    procedure On_Toggle_Cursor_Item
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class));
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Void;
+       After : Boolean := False);
    procedure On_Toggle_Cursor_Item
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user toggles whether the currently focused item is
    --  selected or not. The exact effect of this depend on the selection mode.
@@ -1077,13 +1104,14 @@ package Gtk.Icon_View is
 
    Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
    procedure On_Unselect_All
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure (Self : access Gtk_Icon_View_Record'Class));
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_Gtk_Icon_View_Void;
+       After : Boolean := False);
    procedure On_Unselect_All
-      (Self : not null access Gtk_Icon_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Icon_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user unselects all items.
    --

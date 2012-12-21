@@ -422,20 +422,26 @@ package Gtk.Action_Group is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Action_Group_Gtk_Action_Gtk_Widget_Void is not null access procedure
+     (Self   : access Gtk_Action_Group_Record'Class;
+      Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+      Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Gtk_Action_Gtk_Widget_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Action : not null access Gtk.Action.Gtk_Action_Record'Class;
+      Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
    Signal_Connect_Proxy : constant Glib.Signal_Name := "connect-proxy";
    procedure On_Connect_Proxy
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Action_Group_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
-          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_Gtk_Action_Group_Gtk_Action_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Connect_Proxy
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
-          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_GObject_Gtk_Action_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::connect-proxy signal is emitted after connecting a proxy to an
    --  action in the group. Note that the proxy may have been connected to a
    --  different action before.
@@ -454,18 +460,14 @@ package Gtk.Action_Group is
 
    Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
    procedure On_Disconnect_Proxy
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Action_Group_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
-          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_Gtk_Action_Group_Gtk_Action_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Disconnect_Proxy
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class;
-          Proxy  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_GObject_Gtk_Action_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::disconnect-proxy signal is emitted after disconnecting a proxy
    --  from an action in the group.
    --
@@ -477,18 +479,24 @@ package Gtk.Action_Group is
    --    --  "action": the action
    --    --  "proxy": the proxy
 
+   type Cb_Gtk_Action_Group_Gtk_Action_Void is not null access procedure
+     (Self   : access Gtk_Action_Group_Record'Class;
+      Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+
+   type Cb_GObject_Gtk_Action_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+
    Signal_Post_Activate : constant Glib.Signal_Name := "post-activate";
    procedure On_Post_Activate
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Action_Group_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class));
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_Gtk_Action_Group_Gtk_Action_Void;
+       After : Boolean := False);
    procedure On_Post_Activate
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_GObject_Gtk_Action_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::post-activate signal is emitted just after the Action in the
    --  Action_Group is activated
    --
@@ -497,16 +505,14 @@ package Gtk.Action_Group is
 
    Signal_Pre_Activate : constant Glib.Signal_Name := "pre-activate";
    procedure On_Pre_Activate
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Action_Group_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class));
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_Gtk_Action_Group_Gtk_Action_Void;
+       After : Boolean := False);
    procedure On_Pre_Activate
-      (Self : not null access Gtk_Action_Group_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Action : not null access Gtk.Action.Gtk_Action_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Action_Group_Record;
+       Call  : Cb_GObject_Gtk_Action_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::pre-activate signal is emitted just before the Action in the
    --  Action_Group is activated
    --

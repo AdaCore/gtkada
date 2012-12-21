@@ -24,7 +24,9 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gdk.Window is
 
@@ -894,112 +896,5 @@ package body Gdk.Window is
    begin
       Internal (Boolean'Pos (Setting));
    end Set_Debug_Updates;
-
-   -----------------------
-   -- On_Create_Surface --
-   -----------------------
-
-   procedure On_Create_Surface
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self   : Gdk_Window;
-          Width  : Gint;
-          Height : Gint) return Cairo.Cairo_Surface)
-   is
-      pragma Unreferenced (Self, Call);
-   begin
-      null;
-   end On_Create_Surface;
-
-   -----------------------
-   -- On_Create_Surface --
-   -----------------------
-
-   procedure On_Create_Surface
-      (Self : Gdk_Window;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Width  : Gint;
-          Height : Gint) return Cairo.Cairo_Surface;
-       Slot : not null access Glib.Object.GObject_Record'Class)
-   is
-      pragma Unreferenced (Self, Call, Slot);
-   begin
-      null;
-   end On_Create_Surface;
-
-   ----------------------
-   -- On_From_Embedder --
-   ----------------------
-
-   procedure On_From_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : Gdk_Window;
-          Embedder_X  : Gdouble;
-          Embedder_Y  : Gdouble;
-          Offscreen_X : out Gdouble;
-          Offscreen_Y : out Gdouble))
-   is
-      pragma Unreferenced (Self, Call);
-   begin
-      null;
-   end On_From_Embedder;
-
-   ----------------------
-   -- On_From_Embedder --
-   ----------------------
-
-   procedure On_From_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Embedder_X  : Gdouble;
-          Embedder_Y  : Gdouble;
-          Offscreen_X : out Gdouble;
-          Offscreen_Y : out Gdouble);
-       Slot : not null access Glib.Object.GObject_Record'Class)
-   is
-      pragma Unreferenced (Self, Call, Slot);
-   begin
-      null;
-   end On_From_Embedder;
-
-   --------------------
-   -- On_To_Embedder --
-   --------------------
-
-   procedure On_To_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : Gdk_Window;
-          Offscreen_X : Gdouble;
-          Offscreen_Y : Gdouble;
-          Embedder_X  : out Gdouble;
-          Embedder_Y  : out Gdouble))
-   is
-      pragma Unreferenced (Self, Call);
-   begin
-      null;
-   end On_To_Embedder;
-
-   --------------------
-   -- On_To_Embedder --
-   --------------------
-
-   procedure On_To_Embedder
-      (Self : Gdk_Window;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Offscreen_X : Gdouble;
-          Offscreen_Y : Gdouble;
-          Embedder_X  : out Gdouble;
-          Embedder_Y  : out Gdouble);
-       Slot : not null access Glib.Object.GObject_Record'Class)
-   is
-      pragma Unreferenced (Self, Call, Slot);
-   begin
-      null;
-   end On_To_Embedder;
 
 end Gdk.Window;

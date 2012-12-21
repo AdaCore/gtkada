@@ -142,33 +142,45 @@ package Gtk.Text_Tag_Table is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void is not null access procedure
+     (Self : access Gtk_Text_Tag_Table_Record'Class;
+      Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+
+   type Cb_GObject_Gtk_Text_Tag_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+
    Signal_Tag_Added : constant Glib.Signal_Name := "tag-added";
    procedure On_Tag_Added
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Tag_Table_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class));
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+       After : Boolean := False);
    procedure On_Tag_Added
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void is not null access procedure
+     (Self         : access Gtk_Text_Tag_Table_Record'Class;
+      Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+      Size_Changed : Boolean);
+
+   type Cb_GObject_Gtk_Text_Tag_Boolean_Void is not null access procedure
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
+      Size_Changed : Boolean);
 
    Signal_Tag_Changed : constant Glib.Signal_Name := "tag-changed";
    procedure On_Tag_Changed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self         : access Gtk_Text_Tag_Table_Record'Class;
-          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Size_Changed : Boolean));
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void;
+       After : Boolean := False);
    procedure On_Tag_Changed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self         : access Glib.Object.GObject_Record'Class;
-          Tag          : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-          Size_Changed : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
    --    --  "tag": the changed tag.
@@ -176,16 +188,14 @@ package Gtk.Text_Tag_Table is
 
    Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
    procedure On_Tag_Removed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Text_Tag_Table_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class));
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
+       After : Boolean := False);
    procedure On_Tag_Removed
-      (Self : not null access Gtk_Text_Tag_Table_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Text_Tag_Table_Record;
+       Call  : Cb_GObject_Gtk_Text_Tag_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

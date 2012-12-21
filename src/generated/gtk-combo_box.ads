@@ -684,47 +684,65 @@ package Gtk.Combo_Box is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Combo_Box_Void is not null access procedure (Self : access Gtk_Combo_Box_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access procedure (Self : access Gtk_Combo_Box_Record'Class));
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_Gtk_Combo_Box_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The changed signal is emitted when the active item is changed. The can
    --  be due to the user selecting a different item from the list, or due to a
    --  call to Gtk.Combo_Box.Set_Active_Iter. It will also be emitted while
    --  typing into the entry of a combo box with an entry.
 
+   type Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void is not null access procedure
+     (Self        : access Gtk_Combo_Box_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+
+   type Cb_GObject_Gtk_Scroll_Type_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+
    Signal_Move_Active : constant Glib.Signal_Name := "move-active";
    procedure On_Move_Active
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Combo_Box_Record'Class;
-          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type));
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Active
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::move-active signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to move the active selection.
 
+   type Cb_Gtk_Combo_Box_Boolean is not null access function
+     (Self : access Gtk_Combo_Box_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Popdown : constant Glib.Signal_Name := "popdown";
    procedure On_Popdown
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access function
-         (Self : access Gtk_Combo_Box_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_Gtk_Combo_Box_Boolean;
+       After : Boolean := False);
    procedure On_Popdown
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popdown the combo box list.
    --
@@ -732,13 +750,14 @@ package Gtk.Combo_Box is
 
    Signal_Popup : constant Glib.Signal_Name := "popup";
    procedure On_Popup
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access procedure (Self : access Gtk_Combo_Box_Record'Class));
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_Gtk_Combo_Box_Void;
+       After : Boolean := False);
    procedure On_Popup
-      (Self : not null access Gtk_Combo_Box_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popup the combo box list.
    --

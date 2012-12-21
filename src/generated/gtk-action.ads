@@ -493,15 +493,21 @@ package Gtk.Action is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Action_Void is not null access procedure (Self : access Gtk_Action_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate : constant Glib.Signal_Name := "activate";
    procedure On_Activate
-      (Self : not null access Gtk_Action_Record;
-       Call : not null access procedure (Self : access Gtk_Action_Record'Class));
+      (Self  : not null access Gtk_Action_Record;
+       Call  : Cb_Gtk_Action_Void;
+       After : Boolean := False);
    procedure On_Activate
-      (Self : not null access Gtk_Action_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Action_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The "activate" signal is emitted when the action is activated.
 
    ----------------

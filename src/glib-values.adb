@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Glib.Values is
@@ -30,11 +31,11 @@ package body Glib.Values is
    ----------
 
    procedure Free (Val : in out GValues) is
-      procedure Internal (Value_Array : System.Address);
+      procedure Internal (Value_Array : C_GValues);
       pragma Import (C, Internal, "g_value_array_free");
    begin
       Internal (Val.Arr);
-      Val := (Nb => 0, Arr => System.Null_Address);
+      Val := (Nb => 0, Arr => C_GValues (System.Null_Address));
    end Free;
 
    -----------------
@@ -98,13 +99,13 @@ package body Glib.Values is
    -----------------
 
    function Make_Values (Nb : Guint) return GValues is
-      function Internal (N_Prealloced : Guint) return System.Address;
+      function Internal (N_Prealloced : Guint) return C_GValues;
       pragma Import (C, Internal, "g_value_array_new");
    begin
       return (Nb => Nb, Arr => Internal (Nb));
    end Make_Values;
 
-   function Make_Values (Nb : Guint; Val : System.Address) return GValues is
+   function Make_Values (Nb : Guint; Val : C_GValues) return GValues is
    begin
       return (Nb => Nb, Arr => Val);
    end Make_Values;
@@ -114,8 +115,7 @@ package body Glib.Values is
    ---------
 
    function Nth (Val : GValues; Num : Guint) return GValue is
-      procedure Internal
-        (Val : System.Address; Num : Guint; V : in out GValue);
+      procedure Internal (Val : C_GValues; Num : Guint; V : in out GValue);
       pragma Import (C, Internal, "ada_gvalue_nth");
       V : GValue;
    begin
@@ -176,6 +176,32 @@ package body Glib.Values is
       Internal (Value, G_Type);
    end Init;
 
+   ----------------------
+   -- Unsafe_Proxy_Nth --
+   ----------------------
+
+   function Unsafe_Proxy_Nth (Values : C_GValues; Num : Guint) return T is
+      type T_Access is access T;
+      function Convert is new Ada.Unchecked_Conversion (C_Proxy, T_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Values, Num, Val);
+      return Convert (Get_Proxy (Val)).all;
+   end Unsafe_Proxy_Nth;
+
+   ---------------------
+   -- Unsafe_Enum_Nth --
+   ---------------------
+
+   function Unsafe_Enum_Nth
+     (Values : C_GValues; Num : Guint) return T
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Values, Num, Val);
+      return T'Val (Get_Int (Val));
+   end Unsafe_Enum_Nth;
+
    function C_Gvalue_Size return Natural;
    pragma Import (C, C_Gvalue_Size, "ada_c_gvalue_size");
 
@@ -183,4 +209,5 @@ begin
    if GValue'Size /= C_Gvalue_Size * 8 then
       raise Program_Error;
    end if;
+
 end Glib.Values;

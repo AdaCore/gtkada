@@ -25,7 +25,9 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Pango.Attributes is
 

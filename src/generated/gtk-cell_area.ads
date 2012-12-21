@@ -1122,24 +1122,30 @@ package Gtk.Cell_Area is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void is not null access procedure
+     (Self      : access Gtk_Cell_Area_Record'Class;
+      Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
+      Cell_Area : Cairo.Cairo_Rectangle;
+      Path      : UTF8_String);
+
+   type Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void is not null access procedure
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
+      Cell_Area : Cairo.Cairo_Rectangle;
+      Path      : UTF8_String);
+
    Signal_Add_Editable : constant Glib.Signal_Name := "add-editable";
    procedure On_Add_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self      : access Gtk_Cell_Area_Record'Class;
-          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-          Cell_Area : Cairo.Cairo_Rectangle;
-          Path      : UTF8_String));
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Add_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-          Cell_Area : Cairo.Cairo_Rectangle;
-          Path      : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Indicates that editing has started on Renderer and that Editable should
    --  be added to the owning cell-layouting widget at Cell_Area.
    -- 
@@ -1152,24 +1158,30 @@ package Gtk.Cell_Area is
    --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path string this edit was initiated
    --    --  for
 
+   type Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void is not null access procedure
+     (Self        : access Gtk_Cell_Area_Record'Class;
+      Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Is_Expander : Boolean;
+      Is_Expanded : Boolean);
+
+   type Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Model       : Gtk.Tree_Model.Gtk_Tree_Model;
+      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Is_Expander : Boolean;
+      Is_Expanded : Boolean);
+
    Signal_Apply_Attributes : constant Glib.Signal_Name := "apply-attributes";
    procedure On_Apply_Attributes
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Cell_Area_Record'Class;
-          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Is_Expander : Boolean;
-          Is_Expanded : Boolean));
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       After : Boolean := False);
    procedure On_Apply_Attributes
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Is_Expander : Boolean;
-          Is_Expanded : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted whenever applying attributes to Area from Model
    -- 
    --  Callback parameters:
@@ -1180,20 +1192,26 @@ package Gtk.Cell_Area is
    --    --  "is_expanded": whether the view is currently showing the children of
    --    --  this row
 
+   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void is not null access procedure
+     (Self     : access Gtk_Cell_Area_Record'Class;
+      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Path     : UTF8_String);
+
+   type Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Path     : UTF8_String);
+
    Signal_Focus_Changed : constant Glib.Signal_Name := "focus-changed";
    procedure On_Focus_Changed
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Cell_Area_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Path     : UTF8_String));
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Focus_Changed
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Path     : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Indicates that focus changed on this Area. This signal is emitted
    --  either as a result of focus handling or event handling.
    --
@@ -1205,20 +1223,26 @@ package Gtk.Cell_Area is
    --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
    --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
 
+   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void is not null access procedure
+     (Self     : access Gtk_Cell_Area_Record'Class;
+      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
+
+   type Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
+
    Signal_Remove_Editable : constant Glib.Signal_Name := "remove-editable";
    procedure On_Remove_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Cell_Area_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable));
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       After : Boolean := False);
    procedure On_Remove_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Indicates that editing finished on Renderer and that Editable should be
    --  removed from the owning cell-layouting widget.
    -- 

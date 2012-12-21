@@ -217,16 +217,22 @@ package Gtk.Scale_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Scale_Button_Void is not null access procedure
+     (Self : access Gtk_Scale_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Popdown : constant Glib.Signal_Name := "popdown";
    procedure On_Popdown
-      (Self : not null access Gtk_Scale_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Scale_Button_Record'Class));
+      (Self  : not null access Gtk_Scale_Button_Record;
+       Call  : Cb_Gtk_Scale_Button_Void;
+       After : Boolean := False);
    procedure On_Popdown
-      (Self : not null access Gtk_Scale_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Scale_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popdown the scale widget.
    --
@@ -234,31 +240,37 @@ package Gtk.Scale_Button is
 
    Signal_Popup : constant Glib.Signal_Name := "popup";
    procedure On_Popup
-      (Self : not null access Gtk_Scale_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Scale_Button_Record'Class));
+      (Self  : not null access Gtk_Scale_Button_Record;
+       Call  : Cb_Gtk_Scale_Button_Void;
+       After : Boolean := False);
    procedure On_Popup
-      (Self : not null access Gtk_Scale_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Scale_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted to popup the scale widget.
    --
    --  The default bindings for this signal are Space, Enter and Return.
 
+   type Cb_Gtk_Scale_Button_Gdouble_Void is not null access procedure
+     (Self  : access Gtk_Scale_Button_Record'Class;
+      Value : Gdouble);
+
+   type Cb_GObject_Gdouble_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Value : Gdouble);
+
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
    procedure On_Value_Changed
-      (Self : not null access Gtk_Scale_Button_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Scale_Button_Record'Class;
-          Value : Gdouble));
+      (Self  : not null access Gtk_Scale_Button_Record;
+       Call  : Cb_Gtk_Scale_Button_Gdouble_Void;
+       After : Boolean := False);
    procedure On_Value_Changed
-      (Self : not null access Gtk_Scale_Button_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Value : Gdouble);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Scale_Button_Record;
+       Call  : Cb_GObject_Gdouble_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::value-changed signal is emitted when the value field has changed.
 
    ----------------

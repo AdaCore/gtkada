@@ -42,20 +42,6 @@ package body Gtk.Handlers is
    --  Convenience function that returns the number of arguments for this
    --  signal
 
-   function Do_Signal_Connect
-     (Object              : Glib.Object.GObject;
-      Name                : Glib.Signal_Name;
-      Marshaller          : System.Address;
-      Handler             : System.Address;
-      Func_Data           : System.Address;
-      Destroy             : System.Address;
-      After               : Boolean;
-      Slot_Object         : System.Address := System.Null_Address;
-      Expect_Return_Value : Boolean) return Handler_Id;
-   --  Internal function used to connect the signal.
-   --  Expect_Return_Value should be true if the user is connecting a function
-   --  to the signal, False if he is connecting a procedure
-
    function G_Signal_Parse_Name
      (Detailed_Signal    : Glib.Signal_Name;
       Itype              : GType;
@@ -80,10 +66,6 @@ package body Gtk.Handlers is
      (Name : Glib.Signal_Name; IType : GType) return Signal_Id;
    pragma Import (C, Signal_Lookup, "g_signal_lookup");
 
-   procedure Set_Value (Value : GValue; Val : System.Address);
-   pragma Import (C, Set_Value, "ada_gvalue_set");
-   --  Function used internally to specify the value returned by a callback.
-
    --------------------------------
    -- Glib.Closure small binding --
    --------------------------------
@@ -94,7 +76,7 @@ package body Gtk.Handlers is
       Destroy   : System.Address) return GClosure;
    pragma Import (C, CClosure_New, "g_cclosure_new");
 
-   procedure Set_Marshal (Closure : GClosure; Marshaller : System.Address);
+   procedure Set_Marshal (Closure : GClosure; Marshaller : C_Marshaller);
    pragma Import (C, Set_Marshal, "g_closure_set_marshal");
 
    function Get_Data (Closure : GClosure) return System.Address;
@@ -154,7 +136,7 @@ package body Gtk.Handlers is
    function Do_Signal_Connect
      (Object              : Glib.Object.GObject;
       Name                : Glib.Signal_Name;
-      Marshaller          : System.Address;
+      Marshaller          : C_Marshaller;
       Handler             : System.Address;
       Func_Data           : System.Address;
       Destroy             : System.Address;
@@ -178,12 +160,6 @@ package body Gtk.Handlers is
       Q       : Signal_Query;
 
    begin
-      --  When the handler is destroyed, for instance because Object is
-      --  destroyed, then the closure is destroyed as well, and Destroy gets
-      --  called.
-      --  The closure is invoked when the signal is emitted. As a result,
-      --  Handler is called, with Func_Data as a parameter.
-
       Success := G_Signal_Parse_Name
         (Detailed_Signal    => Name & ASCII.NUL,
          Itype              => Get_Type (Object),
@@ -234,6 +210,82 @@ package body Gtk.Handlers is
 
       return Id;
    end Do_Signal_Connect;
+
+   ---------------------------------
+   -- Unchecked_Do_Signal_Connect --
+   ---------------------------------
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : not null access Glib.Object.GObject_Record'Class;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Func_Data           : System.Address := System.Null_Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : System.Address := System.Null_Address)
+   is
+      function Internal
+        (Instance : System.Address;
+         Detailed_Signal : Glib.Signal_Name;
+         Closure  : GClosure;
+         After    : Gint := 0) return Gulong;
+      pragma Import (C, Internal, "g_signal_connect_closure");
+
+      use type System.Address;
+      Id      : Handler_Id;
+
+   begin
+      Id.Closure := CClosure_New (Handler, Func_Data, Destroy);
+      Set_Marshal (Id.Closure, Marshaller);
+      Id.Id := Internal
+        (Get_Object (Object),
+         C_Name,
+         Closure => Id.Closure,
+         After   => Boolean'Pos (After));
+
+      if Slot_Object /= System.Null_Address then
+         Watch_Closure (Slot_Object, Id.Closure);
+      end if;
+   end Unchecked_Do_Signal_Connect;
+
+   ---------------------------------
+   -- Unchecked_Do_Signal_Connect --
+   ---------------------------------
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : Glib.Types.GType_Interface;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Func_Data           : System.Address := System.Null_Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : System.Address := System.Null_Address)
+   is
+      function Internal
+        (Instance : Glib.Types.GType_Interface;
+         Detailed_Signal : Glib.Signal_Name;
+         Closure  : GClosure;
+         After    : Gint := 0) return Gulong;
+      pragma Import (C, Internal, "g_signal_connect_closure");
+
+      use type System.Address;
+      Id      : Handler_Id;
+
+   begin
+      Id.Closure := CClosure_New (Handler, Func_Data, Destroy);
+      Set_Marshal (Id.Closure, Marshaller);
+      Id.Id := Internal
+        (Object,
+         C_Name,
+         Closure => Id.Closure,
+         After   => Boolean'Pos (After));
+
+      if Slot_Object /= System.Null_Address then
+         Watch_Closure (Slot_Object, Id.Closure);
+      end if;
+   end Unchecked_Do_Signal_Connect;
 
    ---------------
    -- Add_Watch --
@@ -387,7 +439,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -435,12 +487,7 @@ package body Gtk.Handlers is
 
       exception
          when E : others =>
-            begin
-               On_Exception (E);
-            exception when E : others =>
-               Default_Exception_Handler (E);
-            end;
-            --  never propagate the exception to C
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -462,7 +509,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -491,7 +538,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -520,7 +567,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -549,7 +596,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -625,7 +672,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -669,12 +716,7 @@ package body Gtk.Handlers is
 
       exception
          when E : others =>
-            begin
-               On_Exception (E);
-            exception when E : others =>
-               Default_Exception_Handler (E);
-            end;
-            --  never propagate the exception to C
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -811,7 +853,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -840,7 +882,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -869,7 +911,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -898,7 +940,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -971,7 +1013,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -1012,12 +1054,7 @@ package body Gtk.Handlers is
          end if;
       exception
          when E : others =>
-            begin
-               On_Exception (E);
-            exception when E : others =>
-               Default_Exception_Handler (E);
-            end;
-            --  never propagate the exception to C
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -1146,7 +1183,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1175,7 +1212,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1202,7 +1239,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1231,7 +1268,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1302,7 +1339,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -1342,12 +1379,7 @@ package body Gtk.Handlers is
          end if;
       exception
          when E : others =>
-            begin
-               On_Exception (E);
-            exception when E : others =>
-                  Default_Exception_Handler (E);
-            end;
-            --  never propagate the exception to C
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -1483,7 +1515,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1512,7 +1544,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1542,7 +1574,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1571,7 +1603,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -2080,6 +2112,20 @@ package body Gtk.Handlers is
    begin
       return Get_Object (Path);
    end To_Address;
+
+   -----------------------
+   -- Process_Exception --
+   -----------------------
+
+   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence) is
+   begin
+      On_Exception (E);
+   exception
+      when E : others =>
+         --  never propagate the exception to C
+         Default_Exception_Handler (E);
+   end Process_Exception;
+
 end Gtk.Handlers;
 
 --  Design of the package:

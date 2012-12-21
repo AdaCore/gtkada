@@ -598,18 +598,24 @@ package Gtk.Menu is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Menu_Gtk_Scroll_Type_Void is not null access procedure
+     (Self        : access Gtk_Menu_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+
+   type Cb_GObject_Gtk_Scroll_Type_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
+
    Signal_Move_Scroll : constant Glib.Signal_Name := "move-scroll";
    procedure On_Move_Scroll
-      (Self : not null access Gtk_Menu_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Menu_Record'Class;
-          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type));
+      (Self  : not null access Gtk_Menu_Record;
+       Call  : Cb_Gtk_Menu_Gtk_Scroll_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Scroll
-      (Self : not null access Gtk_Menu_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Scroll_Type : Gtk.Enums.Gtk_Scroll_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

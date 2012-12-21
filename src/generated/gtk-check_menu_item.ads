@@ -187,16 +187,22 @@ package Gtk.Check_Menu_Item is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Check_Menu_Item_Void is not null access procedure
+     (Self : access Gtk_Check_Menu_Item_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
    procedure On_Toggled
-      (Self : not null access Gtk_Check_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Check_Menu_Item_Record'Class));
+      (Self  : not null access Gtk_Check_Menu_Item_Record;
+       Call  : Cb_Gtk_Check_Menu_Item_Void;
+       After : Boolean := False);
    procedure On_Toggled
-      (Self : not null access Gtk_Check_Menu_Item_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Check_Menu_Item_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when the state of the check box is changed.
    --
    --  A signal handler can use Gtk.Check_Menu_Item.Get_Active to discover the

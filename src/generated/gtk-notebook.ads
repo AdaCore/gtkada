@@ -532,35 +532,47 @@ package Gtk.Notebook is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Notebook_Gint_Boolean is not null access function
+     (Self   : access Gtk_Notebook_Record'Class;
+      Object : Gint) return Boolean;
+
+   type Cb_GObject_Gint_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gint) return Boolean;
+
    Signal_Change_Current_Page : constant Glib.Signal_Name := "change-current-page";
    procedure On_Change_Current_Page
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Gtk_Notebook_Record'Class;
-          Object : Gint) return Boolean);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gint_Boolean;
+       After : Boolean := False);
    procedure On_Change_Current_Page
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Notebook_Gtk_Widget_Gint_Gint_Gtk_Notebook is not null access function
+     (Self : access Gtk_Notebook_Record'Class;
+      Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      X    : Gint;
+      Y    : Gint) return Gtk_Notebook;
+
+   type Cb_GObject_Gtk_Widget_Gint_Gint_Gtk_Notebook is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      X    : Gint;
+      Y    : Gint) return Gtk_Notebook;
 
    Signal_Create_Window : constant Glib.Signal_Name := "create-window";
    procedure On_Create_Window
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self : access Gtk_Notebook_Record'Class;
-          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          X    : Gint;
-          Y    : Gint) return Gtk_Notebook);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Widget_Gint_Gint_Gtk_Notebook;
+       After : Boolean := False);
    procedure On_Create_Window
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          X    : Gint;
-          Y    : Gint) return Gtk_Notebook;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Widget_Gint_Gint_Gtk_Notebook;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::create-window signal is emitted when a detachable tab is dropped
    --  on the root window.
    --
@@ -577,46 +589,64 @@ package Gtk.Notebook is
    --    --  "y": the Y coordinate where the drop happens
    --    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
 
+   type Cb_Gtk_Notebook_Gtk_Notebook_Tab_Boolean is not null access function
+     (Self   : access Gtk_Notebook_Record'Class;
+      Object : Gtk_Notebook_Tab) return Boolean;
+
+   type Cb_GObject_Gtk_Notebook_Tab_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk_Notebook_Tab) return Boolean;
+
    Signal_Focus_Tab : constant Glib.Signal_Name := "focus-tab";
    procedure On_Focus_Tab
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Gtk_Notebook_Record'Class;
-          Object : Gtk_Notebook_Tab) return Boolean);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Notebook_Tab_Boolean;
+       After : Boolean := False);
    procedure On_Focus_Tab
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk_Notebook_Tab) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Notebook_Tab_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Notebook_Gtk_Direction_Type_Void is not null access procedure
+     (Self   : access Gtk_Notebook_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type);
+
+   type Cb_GObject_Gtk_Direction_Type_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type);
 
    Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
    procedure On_Move_Focus_Out
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Notebook_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type));
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Direction_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Focus_Out
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Notebook_Gtk_Widget_Guint_Void is not null access procedure
+     (Self     : access Gtk_Notebook_Record'Class;
+      Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Page_Num : Guint);
+
+   type Cb_GObject_Gtk_Widget_Guint_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Page_Num : Guint);
 
    Signal_Page_Added : constant Glib.Signal_Name := "page-added";
    procedure On_Page_Added
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Notebook_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint));
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Widget_Guint_Void;
+       After : Boolean := False);
    procedure On_Page_Added
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Widget_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  the ::page-added signal is emitted in the notebook right after a page
    --  is added to the notebook.
    -- 
@@ -626,18 +656,14 @@ package Gtk.Notebook is
 
    Signal_Page_Removed : constant Glib.Signal_Name := "page-removed";
    procedure On_Page_Removed
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Notebook_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint));
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Widget_Guint_Void;
+       After : Boolean := False);
    procedure On_Page_Removed
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Widget_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  the ::page-removed signal is emitted in the notebook right after a page
    --  is removed from the notebook.
    -- 
@@ -647,18 +673,14 @@ package Gtk.Notebook is
 
    Signal_Page_Reordered : constant Glib.Signal_Name := "page-reordered";
    procedure On_Page_Reordered
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Notebook_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint));
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Widget_Guint_Void;
+       After : Boolean := False);
    procedure On_Page_Reordered
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Widget_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  the ::page-reordered signal is emitted in the notebook right after a
    --  page has been reordered.
    -- 
@@ -666,50 +688,58 @@ package Gtk.Notebook is
    --    --  "child": the child Gtk.Widget.Gtk_Widget affected
    --    --  "page_num": the new page number for Child
 
+   type Cb_Gtk_Notebook_Gtk_Direction_Type_Boolean_Boolean is not null access function
+     (Self   : access Gtk_Notebook_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type;
+      P0     : Boolean) return Boolean;
+
+   type Cb_GObject_Gtk_Direction_Type_Boolean_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Enums.Gtk_Direction_Type;
+      P0     : Boolean) return Boolean;
+
    Signal_Reorder_Tab : constant Glib.Signal_Name := "reorder-tab";
    procedure On_Reorder_Tab
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Gtk_Notebook_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type;
-          P0     : Boolean) return Boolean);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Direction_Type_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Reorder_Tab
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Direction_Type;
-          P0     : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
 
+   type Cb_Gtk_Notebook_Boolean_Boolean is not null access function
+     (Self   : access Gtk_Notebook_Record'Class;
+      Object : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Boolean) return Boolean;
+
    Signal_Select_Page : constant Glib.Signal_Name := "select-page";
    procedure On_Select_Page
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Gtk_Notebook_Record'Class;
-          Object : Boolean) return Boolean);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Select_Page
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Switch_Page : constant Glib.Signal_Name := "switch-page";
    procedure On_Switch_Page
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Notebook_Record'Class;
-          Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint));
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_Gtk_Notebook_Gtk_Widget_Guint_Void;
+       After : Boolean := False);
    procedure On_Switch_Page
-      (Self : not null access Gtk_Notebook_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Page     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Page_Num : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Notebook_Record;
+       Call  : Cb_GObject_Gtk_Widget_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the user or a function changes the current page.
    -- 
    --  Callback parameters:

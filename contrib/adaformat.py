@@ -493,7 +493,8 @@ class UTF8(CType):
     def add_with(self, pkg):
         super(UTF8, self).add_with(pkg)
         if pkg:
-            pkg.add_with("Interfaces.C.Strings", specs=False)
+            pkg.add_with("Interfaces.C.Strings", specs=False,
+                         might_be_unused=True)
 
 
 class UTF8_List(CType):
@@ -589,10 +590,15 @@ class Record(CType):
 
 
 class Proxy(CType):
-    def __init__(self, ada, property=None, val_or_null=None):
+    def __init__(self, ada, property=None, val_or_null=None,
+                 from_gvalue=None):
         """:param val_or_null: is used when GIR indicates the parameter has
            allow-none=1, and is used to test whether we should pass NULL
            to C or a pointer to the Ada data.
+
+           :param from_gvalue: is the function used to retrieve this type from
+           a GValue, in particular when processing callbacks. The default is to
+           retrieve a C_Proxy and Cast as appropriate.
         """
 
         if property is None:
@@ -828,6 +834,9 @@ class AdaNaming(object):
            the parameter is passed as "access" rather than "not null access".
            'use_record' is only used for GObject types.
         """
+
+        if cname is None:
+            cname = self.girname_to_ctype.get(name, None)
 
         if cname == "gchar**" or name == "array_of_utf8" or name == "array_of_filename":
             t = UTF8_List()
@@ -1188,13 +1197,14 @@ VariableCall = namedtuple('VariableCall',
                           ['call', 'precall', 'postcall', 'tmpvars'])
 
 class Local_Var(object):
-    __slots__ = ["name", "type", "default", "aliased"]
+    __slots__ = ["name", "type", "default", "aliased", "constant"]
 
-    def __init__(self, name, type, default="", aliased=False):
+    def __init__(self, name, type, default="", aliased=False, constant=False):
         self.set_type(type)
         self.name = name
         self.default = default
         self.aliased = aliased
+        self.constant = constant
 
     def __repr__(self):
         return "<Local_Var name=%s type=%s>" % (self.name, self.type)
@@ -1227,8 +1237,10 @@ class Local_Var(object):
             aliased = "aliased "
 
         if self.default and show_default:
-            return "%-*s : %s%s := %s" % (
-                length, self.name, aliased, t, self.default)
+            return "%-*s : %s%s%s := %s" % (
+                length, self.name,
+                "constant " if self.constant else "",
+                aliased, t, self.default)
         else:
             return "%-*s : %s%s" % (length, self.name, aliased, t)
 
@@ -1273,7 +1285,7 @@ class Parameter(Local_Var):
         assert mode in ("in", "out", "in out", "not null access",
                         "access"), "Incorrect mode: %s" % mode
 
-        super(Parameter, self).__init__(name, type, default)
+        super(Parameter, self).__init__(name, type, default=default)
         self.mode = mode
         self.doc  = doc
         self.ada_binding = ada_binding
@@ -1381,7 +1393,7 @@ class Subprogram(object):
            'code' can be the empty string, in which case no body is output.
            'lang' is the language for the types of parameters (see comment at
                the top of this file).
-           'allow_none': when this is an anonumous subprogram (and therefore
+           'allow_none': when this is an anonymous subprogram (and therefore
                used for a callback), this indicates whether the callback can be
                null or not).
            The code will be automatically pretty-printed, and the appropriate
@@ -1949,10 +1961,13 @@ class Package(object):
         self.sections.append(s)
         return s
 
-    def add_with(self, pkg, specs=True, do_use=True):
+    def add_with(self, pkg, specs=True, do_use=True, might_be_unused=False):
         """Add a with+use clause for pkg, where pkg can also be a list.
            Automatic casing is performed. If specs is True, the withs are
-           added to the specs of the package, otherwise to the body
+           added to the specs of the package, otherwise to the body.
+
+           :param:`might_be_unused` True if the package might not be used and
+              requires a pragma Warnings Off.
         """
         if pkg in ("", "System"):
             return
@@ -1962,11 +1977,16 @@ class Package(object):
         for p in pkg:
             if p.lower() == self.name.lower():
                 continue   # No dependence on self
+
+            p_info = (
+                do_use or self.spec_withs.get(p, False),   # do_use
+                might_be_unused)
+
             if specs:
-                self.spec_withs[p] = do_use or self.spec_withs.get(p, False)
+                self.spec_withs[p] = p_info
                 self.body_withs.pop(p, None) # Remove same with in body
             elif p not in self.spec_withs:
-                self.body_withs[p] = do_use or self.body_withs.get(p, False)
+                self.body_withs[p] = p_info
 
     def add_private(self, code, at_end=False):
         if at_end:
@@ -1979,11 +1999,19 @@ class Package(object):
             result = []
             m = max_length(withs)
             for w in sorted(withs.keys()):
-                if withs[w]:
+                do_use, might_be_unused = withs[w]
+
+                if might_be_unused:
+                    result.append("pragma Warnings(Off);  --  might be unused")
+
+                if do_use:
                     result.append(
                         "with %-*s use %s;" % (m + 1, w + ";", w))
                 else:
                     result.append("with %s;" % w)
+
+                if might_be_unused:
+                    result.append("pragma Warnings(On);")
 
             return "\n".join(result) + "\n"
         return ""

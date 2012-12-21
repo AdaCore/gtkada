@@ -189,15 +189,21 @@ package Gtk.Style is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Style_Void is not null access procedure (Self : access Gtk_Style_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Realize : constant Glib.Signal_Name := "realize";
    procedure On_Realize
-      (Self : not null access Gtk_Style_Record;
-       Call : not null access procedure (Self : access Gtk_Style_Record'Class));
+      (Self  : not null access Gtk_Style_Record;
+       Call  : Cb_Gtk_Style_Void;
+       After : Boolean := False);
    procedure On_Realize
-      (Self : not null access Gtk_Style_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Style_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the style has been initialized for a particular visual.
    --  Connecting to this signal is probably seldom useful since most of the
    --  time applications and widgets only deal with styles that have been
@@ -205,13 +211,14 @@ package Gtk.Style is
 
    Signal_Unrealize : constant Glib.Signal_Name := "unrealize";
    procedure On_Unrealize
-      (Self : not null access Gtk_Style_Record;
-       Call : not null access procedure (Self : access Gtk_Style_Record'Class));
+      (Self  : not null access Gtk_Style_Record;
+       Call  : Cb_Gtk_Style_Void;
+       After : Boolean := False);
    procedure On_Unrealize
-      (Self : not null access Gtk_Style_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Style_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the aspects of the style specific to a particular visual
    --  is being cleaned up. A connection to this signal can be useful if a
    --  widget wants to cache objects as object data on Gtk.Style.Gtk_Style.

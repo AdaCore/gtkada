@@ -309,27 +309,34 @@ package Gtk.Adjustment is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Adjustment_Void is not null access procedure (Self : access Gtk_Adjustment_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : not null access Gtk_Adjustment_Record;
-       Call : not null access procedure (Self : access Gtk_Adjustment_Record'Class));
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_Gtk_Adjustment_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : not null access Gtk_Adjustment_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when one or more of the Gtk.Adjustment.Gtk_Adjustment fields
    --  have been changed, other than the value field.
 
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
    procedure On_Value_Changed
-      (Self : not null access Gtk_Adjustment_Record;
-       Call : not null access procedure (Self : access Gtk_Adjustment_Record'Class));
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_Gtk_Adjustment_Void;
+       After : Boolean := False);
    procedure On_Value_Changed
-      (Self : not null access Gtk_Adjustment_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the Gtk.Adjustment.Gtk_Adjustment value field has been
    --  changed.
 

@@ -559,54 +559,62 @@ package Gtk.Container is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Container_Gtk_Widget_Void is not null access procedure
+     (Self   : access Gtk_Container_Record'Class;
+      Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+
    Signal_Add : constant Glib.Signal_Name := "add";
    procedure On_Add
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Container_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Add
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Container_Void is not null access procedure (Self : access Gtk_Container_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
 
    Signal_Check_Resize : constant Glib.Signal_Name := "check-resize";
    procedure On_Check_Resize
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure (Self : access Gtk_Container_Record'Class));
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Void;
+       After : Boolean := False);
    procedure On_Check_Resize
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Remove : constant Glib.Signal_Name := "remove";
    procedure On_Remove
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Container_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Remove
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Set_Focus_Child : constant Glib.Signal_Name := "set-focus-child";
    procedure On_Set_Focus_Child
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Container_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class));
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_Gtk_Container_Gtk_Widget_Void;
+       After : Boolean := False);
    procedure On_Set_Focus_Child
-      (Self : not null access Gtk_Container_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Container_Record;
+       Call  : Cb_GObject_Gtk_Widget_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

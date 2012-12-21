@@ -200,15 +200,21 @@ package Gtk.Editable is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Editable_Void is not null access procedure (Self : Gtk_Editable);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
-      (Self : Gtk_Editable;
-       Call : not null access procedure (Self : Gtk_Editable));
+      (Self  : Gtk_Editable;
+       Call  : Cb_Gtk_Editable_Void;
+       After : Boolean := False);
    procedure On_Changed
-      (Self : Gtk_Editable;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::changed signal is emitted at the end of a single user-visible
    --  operation on the contents of the Gtk.Editable.Gtk_Editable.
    --
@@ -217,20 +223,26 @@ package Gtk.Editable is
    --  first deleting the selection, then inserting the new content, and may
    --  cause multiple ::notify::text signals to be emitted).
 
+   type Cb_Gtk_Editable_Gint_Gint_Void is not null access procedure
+     (Self      : Gtk_Editable;
+      Start_Pos : Gint;
+      End_Pos   : Gint);
+
+   type Cb_GObject_Gint_Gint_Void is not null access procedure
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Start_Pos : Gint;
+      End_Pos   : Gint);
+
    Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
    procedure On_Delete_Text
-      (Self : Gtk_Editable;
-       Call : not null access procedure
-         (Self      : Gtk_Editable;
-          Start_Pos : Gint;
-          End_Pos   : Gint));
+      (Self  : Gtk_Editable;
+       Call  : Cb_Gtk_Editable_Gint_Gint_Void;
+       After : Boolean := False);
    procedure On_Delete_Text
-      (Self : Gtk_Editable;
-       Call : not null access procedure
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Editable;
+       Call  : Cb_GObject_Gint_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when text is deleted from the widget by the
    --  user. The default handler for this signal will normally be responsible
    --  for deleting the text, so by connecting to this signal and then stopping
@@ -243,22 +255,28 @@ package Gtk.Editable is
    --    --  "start_pos": the starting position
    --    --  "end_pos": the end position
 
+   type Cb_Gtk_Editable_UTF8_String_Gint_Gint_Void is not null access procedure
+     (Self            : Gtk_Editable;
+      New_Text        : UTF8_String;
+      New_Text_Length : Gint;
+      Position        : access Gint);
+
+   type Cb_GObject_UTF8_String_Gint_Gint_Void is not null access procedure
+     (Self            : access Glib.Object.GObject_Record'Class;
+      New_Text        : UTF8_String;
+      New_Text_Length : Gint;
+      Position        : access Gint);
+
    Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
    procedure On_Insert_Text
-      (Self : Gtk_Editable;
-       Call : not null access procedure
-         (Self            : Gtk_Editable;
-          New_Text        : UTF8_String;
-          New_Text_Length : Gint;
-          Position        : in out Gint));
+      (Self  : Gtk_Editable;
+       Call  : Cb_Gtk_Editable_UTF8_String_Gint_Gint_Void;
+       After : Boolean := False);
    procedure On_Insert_Text
-      (Self : Gtk_Editable;
-       Call : not null access procedure
-         (Self            : access Glib.Object.GObject_Record'Class;
-          New_Text        : UTF8_String;
-          New_Text_Length : Gint;
-          Position        : in out Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Editable;
+       Call  : Cb_GObject_UTF8_String_Gint_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when text is inserted into the widget by the
    --  user. The default handler for this signal will normally be responsible
    --  for inserting the text, so by connecting to this signal and then

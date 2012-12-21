@@ -28,6 +28,10 @@ package body Gtk.Arguments is
 
    use Glib.Values;
 
+   type Cairo_Rectangle_Access is access Cairo.Cairo_Rectangle;
+   type Gint_Access is access Gint;
+   type Gdouble_Access is access Gdouble;
+
    -------------
    -- To_Gint --
    -------------
@@ -153,5 +157,186 @@ package body Gtk.Arguments is
    begin
       return Get_String (Nth (Args, Guint (Num)));
    end To_String;
+
+   --------------------------
+   -- Unchecked_To_Boolean --
+   --------------------------
+
+   function Unchecked_To_Boolean
+     (Args : Glib.Values.C_GValues; Num : Guint) return Boolean
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Boolean (Val);
+   end Unchecked_To_Boolean;
+
+   --------------------------
+   -- Unchecked_To_Gdouble --
+   --------------------------
+
+   function Unchecked_To_Gdouble
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdouble
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Double (Val);
+   end Unchecked_To_Gdouble;
+
+   -----------------------
+   -- Unchecked_To_Gint --
+   -----------------------
+
+   function Unchecked_To_Gint
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gint
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Int (Val);
+   end Unchecked_To_Gint;
+
+   ------------------------------
+   -- Unchecked_To_Gint_Access --
+   ------------------------------
+
+   function Unchecked_To_Gint_Access
+     (Args : Glib.Values.C_GValues; Num : Guint) return access Gint
+   is
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Gint_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Address (Val));
+   end Unchecked_To_Gint_Access;
+
+   ---------------------------------
+   -- Unchecked_To_Gdouble_Access --
+   ---------------------------------
+
+   function Unchecked_To_Gdouble_Access
+     (Args : Glib.Values.C_GValues; Num : Guint) return access Gdouble
+   is
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Gdouble_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Address (Val));
+   end Unchecked_To_Gdouble_Access;
+
+   ------------------------
+   -- Unchecked_To_Guint --
+   ------------------------
+
+   function Unchecked_To_Guint
+     (Args : Glib.Values.C_GValues; Num : Guint) return Guint
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Uint (Val);
+   end Unchecked_To_Guint;
+
+   -----------------------------
+   -- Unchecked_To_Context_Id --
+   -----------------------------
+
+   function Unchecked_To_Context_Id
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gtk.Status_Bar.Context_Id
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gtk.Status_Bar.Context_Id (Get_Uint (Val));
+   end Unchecked_To_Context_Id;
+
+   ------------------------------
+   -- Unchecked_To_UTF8_String --
+   ------------------------------
+
+   function Unchecked_To_UTF8_String
+     (Args : Glib.Values.C_GValues; Num : Guint) return UTF8_String
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_String (Val);
+   end Unchecked_To_UTF8_String;
+
+   --------------------------
+   -- Unchecked_To_Address --
+   --------------------------
+
+   function Unchecked_To_Address
+     (Args : Glib.Values.C_GValues; Num : Guint) return System.Address
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Address (Val);
+   end Unchecked_To_Address;
+
+   -------------------------
+   -- Unchecked_To_Object --
+   -------------------------
+
+   function Unchecked_To_Object
+     (Args : Glib.Values.C_GValues; Num : Guint) return Glib.Object.GObject
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Glib.Object.Convert (Get_Address (Val));
+   end Unchecked_To_Object;
+
+   ----------------------------
+   -- Unchecked_To_Interface --
+   ----------------------------
+
+   function Unchecked_To_Interface
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Glib.Types.GType_Interface
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Glib.Types.GType_Interface (Get_Address (Val));
+   end Unchecked_To_Interface;
+
+   -----------------------------------------
+   -- Unchecked_To_Cairo_Rectangle_Access --
+   -----------------------------------------
+
+   function Unchecked_To_Cairo_Rectangle_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return access Cairo.Cairo_Rectangle
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Cairo_Rectangle_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Proxy (Val));
+   end Unchecked_To_Cairo_Rectangle_Access;
+
+   ----------------------------------
+   -- Unchecked_To_Cairo_Rectangle --
+   ----------------------------------
+
+   function Unchecked_To_Cairo_Rectangle
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Cairo.Cairo_Rectangle
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Cairo_Rectangle_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Proxy (Val)).all;
+   end Unchecked_To_Cairo_Rectangle;
 
 end Gtk.Arguments;

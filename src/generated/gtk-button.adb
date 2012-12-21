@@ -23,9 +23,15 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Button is
 
@@ -562,17 +568,140 @@ package body Gtk.Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Button_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Button_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Button_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Button_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Button_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Button_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Button_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Button_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Button_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Button_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Button_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ---------------------------
+   -- Marsh_Gtk_Button_Void --
+   ---------------------------
+
+   procedure Marsh_Gtk_Button_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Button_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Button_Record'Class := Gtk_Button (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Button_Void;
+
    -----------------
    -- On_Activate --
    -----------------
 
    procedure On_Activate
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "activate" & ASCII.NUL, Call, After);
    end On_Activate;
 
    -----------------
@@ -580,14 +709,13 @@ package body Gtk.Button is
    -----------------
 
    procedure On_Activate
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "activate" & ASCII.NUL, Call, After, Slot);
    end On_Activate;
 
    ----------------
@@ -595,12 +723,12 @@ package body Gtk.Button is
    ----------------
 
    procedure On_Clicked
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "clicked" & ASCII.NUL, Call, After);
    end On_Clicked;
 
    ----------------
@@ -608,14 +736,13 @@ package body Gtk.Button is
    ----------------
 
    procedure On_Clicked
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "clicked" & ASCII.NUL, Call, After, Slot);
    end On_Clicked;
 
    --------------
@@ -623,12 +750,12 @@ package body Gtk.Button is
    --------------
 
    procedure On_Enter
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "enter" & ASCII.NUL, Call, After);
    end On_Enter;
 
    --------------
@@ -636,14 +763,13 @@ package body Gtk.Button is
    --------------
 
    procedure On_Enter
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "enter" & ASCII.NUL, Call, After, Slot);
    end On_Enter;
 
    --------------
@@ -651,12 +777,12 @@ package body Gtk.Button is
    --------------
 
    procedure On_Leave
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "leave" & ASCII.NUL, Call, After);
    end On_Leave;
 
    --------------
@@ -664,14 +790,13 @@ package body Gtk.Button is
    --------------
 
    procedure On_Leave
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "leave" & ASCII.NUL, Call, After, Slot);
    end On_Leave;
 
    ----------------
@@ -679,12 +804,12 @@ package body Gtk.Button is
    ----------------
 
    procedure On_Pressed
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "pressed" & ASCII.NUL, Call, After);
    end On_Pressed;
 
    ----------------
@@ -692,14 +817,13 @@ package body Gtk.Button is
    ----------------
 
    procedure On_Pressed
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "pressed" & ASCII.NUL, Call, After, Slot);
    end On_Pressed;
 
    -----------------
@@ -707,12 +831,12 @@ package body Gtk.Button is
    -----------------
 
    procedure On_Released
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure (Self : access Gtk_Button_Record'Class))
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_Gtk_Button_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "released" & ASCII.NUL, Call, After);
    end On_Released;
 
    -----------------
@@ -720,14 +844,13 @@ package body Gtk.Button is
    -----------------
 
    procedure On_Released
-      (Self : not null access Gtk_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "released" & ASCII.NUL, Call, After, Slot);
    end On_Released;
 
 end Gtk.Button;

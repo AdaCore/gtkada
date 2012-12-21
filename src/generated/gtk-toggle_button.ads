@@ -242,16 +242,22 @@ package Gtk.Toggle_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Toggle_Button_Void is not null access procedure
+     (Self : access Gtk_Toggle_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
    procedure On_Toggled
-      (Self : not null access Gtk_Toggle_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Toggle_Button_Record'Class));
+      (Self  : not null access Gtk_Toggle_Button_Record;
+       Call  : Cb_Gtk_Toggle_Button_Void;
+       After : Boolean := False);
    procedure On_Toggled
-      (Self : not null access Gtk_Toggle_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Toggle_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Should be connected if you wish to perform an action whenever the
    --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
 

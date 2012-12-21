@@ -81,15 +81,21 @@ package Gtk.Cell_Editable is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Cell_Editable_Void is not null access procedure (Self : Gtk_Cell_Editable);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";
    procedure On_Editing_Done
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure (Self : Gtk_Cell_Editable));
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_Gtk_Cell_Editable_Void;
+       After : Boolean := False);
    procedure On_Editing_Done
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is a sign for the cell renderer to update its value from
    --  the Cell_Editable.
    --
@@ -102,13 +108,14 @@ package Gtk.Cell_Editable is
 
    Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";
    procedure On_Remove_Widget
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure (Self : Gtk_Cell_Editable));
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_Gtk_Cell_Editable_Void;
+       After : Boolean := False);
    procedure On_Remove_Widget
-      (Self : Gtk_Cell_Editable;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is meant to indicate that the cell is finished editing, and
    --  the widget may now be destroyed.
    --

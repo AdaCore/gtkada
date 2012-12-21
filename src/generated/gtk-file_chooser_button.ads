@@ -414,16 +414,22 @@ package Gtk.File_Chooser_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_File_Chooser_Button_Void is not null access procedure
+     (Self : access Gtk_File_Chooser_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_File_Set : constant Glib.Signal_Name := "file-set";
    procedure On_File_Set
-      (Self : not null access Gtk_File_Chooser_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_File_Chooser_Button_Record'Class));
+      (Self  : not null access Gtk_File_Chooser_Button_Record;
+       Call  : Cb_Gtk_File_Chooser_Button_Void;
+       After : Boolean := False);
    procedure On_File_Set
-      (Self : not null access Gtk_File_Chooser_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_File_Chooser_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::file-set signal is emitted when the user selects a file.
    --
    --  Note that this signal is only emitted when the *user* changes the file.

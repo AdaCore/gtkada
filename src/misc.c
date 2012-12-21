@@ -592,6 +592,11 @@ ada_gclosure_get_data (GClosure *closure)
   return closure->data;
 }
 
+void*
+ada_cclosure_get_callback (GCClosure* closure) {
+   return closure->callback;
+}
+
 /***************************************************
  *  Functions for GValue
  ***************************************************/

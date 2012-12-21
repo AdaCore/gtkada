@@ -200,42 +200,54 @@ package Gtk.Entry_Buffer is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Entry_Buffer_Guint_Guint_Void is not null access procedure
+     (Self     : access Gtk_Entry_Buffer_Record'Class;
+      Position : Guint;
+      N_Chars  : Guint);
+
+   type Cb_GObject_Guint_Guint_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Position : Guint;
+      N_Chars  : Guint);
+
    Signal_Deleted_Text : constant Glib.Signal_Name := "deleted-text";
    procedure On_Deleted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Buffer_Record'Class;
-          Position : Guint;
-          N_Chars  : Guint));
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_Gtk_Entry_Buffer_Guint_Guint_Void;
+       After : Boolean := False);
    procedure On_Deleted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Position : Guint;
-          N_Chars  : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_GObject_Guint_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted after text is deleted from the buffer.
    -- 
    --  Callback parameters:
    --    --  "position": the position the text was deleted at.
    --    --  "n_chars": The number of characters that were deleted.
 
+   type Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void is not null access procedure
+     (Self     : access Gtk_Entry_Buffer_Record'Class;
+      Position : Guint;
+      Chars    : UTF8_String;
+      N_Chars  : Guint);
+
+   type Cb_GObject_Guint_UTF8_String_Guint_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Position : Guint;
+      Chars    : UTF8_String;
+      N_Chars  : Guint);
+
    Signal_Inserted_Text : constant Glib.Signal_Name := "inserted-text";
    procedure On_Inserted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Buffer_Record'Class;
-          Position : Guint;
-          Chars    : UTF8_String;
-          N_Chars  : Guint));
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void;
+       After : Boolean := False);
    procedure On_Inserted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Position : Guint;
-          Chars    : UTF8_String;
-          N_Chars  : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_GObject_Guint_UTF8_String_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted after text is inserted into the buffer.
    -- 
    --  Callback parameters:

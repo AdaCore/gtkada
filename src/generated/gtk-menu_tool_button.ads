@@ -196,16 +196,22 @@ package Gtk.Menu_Tool_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Menu_Tool_Button_Void is not null access procedure
+     (Self : access Gtk_Menu_Tool_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Show_Menu : constant Glib.Signal_Name := "show-menu";
    procedure On_Show_Menu
-      (Self : not null access Gtk_Menu_Tool_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Menu_Tool_Button_Record'Class));
+      (Self  : not null access Gtk_Menu_Tool_Button_Record;
+       Call  : Cb_Gtk_Menu_Tool_Button_Void;
+       After : Boolean := False);
    procedure On_Show_Menu
-      (Self : not null access Gtk_Menu_Tool_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Tool_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::show-menu signal is emitted before the menu is shown.
    --
    --  It can be used to populate the menu on demand, using

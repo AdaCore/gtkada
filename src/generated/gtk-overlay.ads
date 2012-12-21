@@ -94,20 +94,26 @@ package Gtk.Overlay is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Boolean is not null access function
+     (Self       : access Gtk_Overlay_Record'Class;
+      Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Allocation : access Cairo.Cairo_Rectangle) return Boolean;
+
+   type Cb_GObject_Gtk_Widget_Cairo_Rectangle_Boolean is not null access function
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Allocation : access Cairo.Cairo_Rectangle) return Boolean;
+
    Signal_Get_Child_Position : constant Glib.Signal_Name := "get-child-position";
    procedure On_Get_Child_Position
-      (Self : not null access Gtk_Overlay_Record;
-       Call : not null access function
-         (Self       : access Gtk_Overlay_Record'Class;
-          Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Allocation : access Cairo.Cairo_Rectangle) return Boolean);
+      (Self  : not null access Gtk_Overlay_Record;
+       Call  : Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Boolean;
+       After : Boolean := False);
    procedure On_Get_Child_Position
-      (Self : not null access Gtk_Overlay_Record;
-       Call : not null access function
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Allocation : access Cairo.Cairo_Rectangle) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Overlay_Record;
+       Call  : Cb_GObject_Gtk_Widget_Cairo_Rectangle_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::get-child-position signal is emitted to determine the position
    --  and size of any overlay child widgets. A handler for this signal should
    --  fill Allocation with the desired position and size for Widget, relative

@@ -25,8 +25,13 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Entry_Completion is
 
@@ -838,19 +843,386 @@ package body Gtk.Entry_Completion is
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Completion_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Completion_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Completion_UTF8_String_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Completion_UTF8_String_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Completion_Gint_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Completion_UTF8_String_Boolean;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gint_Void);
+
+   procedure Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean);
+
+   procedure Marsh_GObject_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Boolean);
+
+   procedure Marsh_Gtk_Entry_Completion_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Completion_Gint_Void);
+
+   procedure Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean);
+
+   procedure Marsh_Gtk_Entry_Completion_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Completion_UTF8_String_Boolean);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Completion_Gint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Completion_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Completion_UTF8_String_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Completion_UTF8_String_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Completion_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   -----------------------------
+   -- Marsh_GObject_Gint_Void --
+   -----------------------------
+
+   procedure Marsh_GObject_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gint (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gint_Void;
+
+   --------------------------------------------------------
+   -- Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean --
+   --------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+
+   ---------------------------------------
+   -- Marsh_GObject_UTF8_String_Boolean --
+   ---------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_Boolean;
+
+   ------------------------------------------
+   -- Marsh_Gtk_Entry_Completion_Gint_Void --
+   ------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Completion_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Completion_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Completion_Record'Class := Gtk_Entry_Completion (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gint (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Completion_Gint_Void;
+
+   ---------------------------------------------------------------------
+   -- Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean --
+   ---------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Completion_Record'Class := Gtk_Entry_Completion (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+
+   ----------------------------------------------------
+   -- Marsh_Gtk_Entry_Completion_UTF8_String_Boolean --
+   ----------------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Completion_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Completion_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Completion_Record'Class := Gtk_Entry_Completion (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Completion_UTF8_String_Boolean;
+
    -------------------------
    -- On_Action_Activated --
    -------------------------
 
    procedure On_Action_Activated
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Entry_Completion_Record'Class;
-          Index : Gint))
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Gint_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "action-activated" & ASCII.NUL, Call, After);
    end On_Action_Activated;
 
    -------------------------
@@ -858,15 +1230,13 @@ package body Gtk.Entry_Completion is
    -------------------------
 
    procedure On_Action_Activated
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Index : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "action-activated" & ASCII.NUL, Call, After, Slot);
    end On_Action_Activated;
 
    ------------------------
@@ -874,15 +1244,12 @@ package body Gtk.Entry_Completion is
    ------------------------
 
    procedure On_Cursor_On_Match
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Gtk_Entry_Completion_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "cursor-on-match" & ASCII.NUL, Call, After);
    end On_Cursor_On_Match;
 
    ------------------------
@@ -890,16 +1257,13 @@ package body Gtk.Entry_Completion is
    ------------------------
 
    procedure On_Cursor_On_Match
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "cursor-on-match" & ASCII.NUL, Call, After, Slot);
    end On_Cursor_On_Match;
 
    ----------------------
@@ -907,14 +1271,12 @@ package body Gtk.Entry_Completion is
    ----------------------
 
    procedure On_Insert_Prefix
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self   : access Gtk_Entry_Completion_Record'Class;
-          Prefix : UTF8_String) return Boolean)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_UTF8_String_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "insert-prefix" & ASCII.NUL, Call, After);
    end On_Insert_Prefix;
 
    ----------------------
@@ -922,15 +1284,13 @@ package body Gtk.Entry_Completion is
    ----------------------
 
    procedure On_Insert_Prefix
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Prefix : UTF8_String) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_UTF8_String_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "insert-prefix" & ASCII.NUL, Call, After, Slot);
    end On_Insert_Prefix;
 
    -----------------------
@@ -938,15 +1298,12 @@ package body Gtk.Entry_Completion is
    -----------------------
 
    procedure On_Match_Selected
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Gtk_Entry_Completion_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "match-selected" & ASCII.NUL, Call, After);
    end On_Match_Selected;
 
    -----------------------
@@ -954,16 +1311,13 @@ package body Gtk.Entry_Completion is
    -----------------------
 
    procedure On_Match_Selected
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "match-selected" & ASCII.NUL, Call, After, Slot);
    end On_Match_Selected;
 
 end Gtk.Entry_Completion;

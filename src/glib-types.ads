@@ -87,7 +87,7 @@ package Glib.Types is
    --        View : Gtk_Cell_View;
    --        Gtk.Cell_Layout.Pack_Start (+View, Cell, Expand);
 
-   type GType_Interface is private;
+   type GType_Interface is new System.Address;
    Null_Interface : constant GType_Interface;
 
    --  <doc_ignore>
@@ -133,7 +133,6 @@ package Glib.Types is
    --  that signals and properties for an interface have been installed.
 
 private
-   type GType_Interface  is new System.Address;
    Null_Interface : constant GType_Interface := GType_Interface
      (System.Null_Address);
 

@@ -1550,78 +1550,103 @@ package Gtk.Tree_View is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Tree_View_Void is not null access procedure (Self : access Gtk_Tree_View_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Columns_Changed : constant Glib.Signal_Name := "columns-changed";
    procedure On_Columns_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure (Self : access Gtk_Tree_View_Record'Class));
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Void;
+       After : Boolean := False);
    procedure On_Columns_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The number of columns of the treeview has changed.
 
    Signal_Cursor_Changed : constant Glib.Signal_Name := "cursor-changed";
    procedure On_Cursor_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure (Self : access Gtk_Tree_View_Record'Class));
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Void;
+       After : Boolean := False);
    procedure On_Cursor_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The position of the cursor (focused cell) has changed.
+
+   type Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean is not null access function
+     (Self   : access Gtk_Tree_View_Record'Class;
+      Object : Boolean;
+      P0     : Boolean;
+      P1     : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean_Boolean_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Boolean;
+      P0     : Boolean;
+      P1     : Boolean) return Boolean;
 
    Signal_Expand_Collapse_Cursor_Row : constant Glib.Signal_Name := "expand-collapse-cursor-row";
    procedure On_Expand_Collapse_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Object : Boolean;
-          P0     : Boolean;
-          P1     : Boolean) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Expand_Collapse_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Boolean;
-          P0     : Boolean;
-          P1     : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean_Boolean_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
+
+   type Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean is not null access function
+     (Self   : access Gtk_Tree_View_Record'Class;
+      Object : Gtk.Enums.Gtk_Movement_Step;
+      P0     : Gint) return Boolean;
+
+   type Cb_GObject_Gtk_Movement_Step_Gint_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Gtk.Enums.Gtk_Movement_Step;
+      P0     : Gint) return Boolean;
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Object : Gtk.Enums.Gtk_Movement_Step;
-          P0     : Gint) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean;
+       After : Boolean := False);
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Movement_Step;
-          P0     : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    -- 
    --  Callback parameters:
 
+   type Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void is not null access procedure
+     (Self   : access Gtk_Tree_View_Record'Class;
+      Path   : Gtk.Tree_Model.Gtk_Tree_Path;
+      Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
+
+   type Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void is not null access procedure
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Path   : Gtk.Tree_Model.Gtk_Tree_Path;
+      Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
+
    Signal_Row_Activated : constant Glib.Signal_Name := "row-activated";
    procedure On_Row_Activated
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Path   : Gtk.Tree_Model.Gtk_Tree_Path;
-          Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class));
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       After : Boolean := False);
    procedure On_Row_Activated
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Path   : Gtk.Tree_Model.Gtk_Tree_Path;
-          Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The "row-activated" signal is emitted when the method
    --  Gtk.Tree_View.Row_Activated is called or the user double clicks a
    --  treeview row. It is also emitted when a non-editable row is selected and
@@ -1636,20 +1661,26 @@ package Gtk.Tree_View is
    --    --  "column": the Gtk.Tree_View_Column.Gtk_Tree_View_Column in which the
    --    --  activation occurred
 
+   type Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void is not null access procedure
+     (Self : access Gtk_Tree_View_Record'Class;
+      Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Path : Gtk.Tree_Model.Gtk_Tree_Path);
+
+   type Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Path : Gtk.Tree_Model.Gtk_Tree_Path);
+
    Signal_Row_Collapsed : constant Glib.Signal_Name := "row-collapsed";
    procedure On_Row_Collapsed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path));
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After : Boolean := False);
    procedure On_Row_Collapsed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The given row has been collapsed (child nodes are hidden).
    -- 
    --  Callback parameters:
@@ -1658,87 +1689,99 @@ package Gtk.Tree_View is
 
    Signal_Row_Expanded : constant Glib.Signal_Name := "row-expanded";
    procedure On_Row_Expanded
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path));
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After : Boolean := False);
    procedure On_Row_Expanded
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The given row has been expanded (child nodes are shown).
    -- 
    --  Callback parameters:
    --    --  "iter": the tree iter of the expanded row
    --    --  "path": a tree path that points to the row
 
+   type Cb_Gtk_Tree_View_Boolean is not null access function
+     (Self : access Gtk_Tree_View_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Select_All : constant Glib.Signal_Name := "select-all";
    procedure On_Select_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False);
    procedure On_Select_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Select_Cursor_Parent : constant Glib.Signal_Name := "select-cursor-parent";
    procedure On_Select_Cursor_Parent
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False);
    procedure On_Select_Cursor_Parent
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Tree_View_Boolean_Boolean is not null access function
+     (Self   : access Gtk_Tree_View_Record'Class;
+      Object : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : Boolean) return Boolean;
 
    Signal_Select_Cursor_Row : constant Glib.Signal_Name := "select-cursor-row";
    procedure On_Select_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Object : Boolean) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Select_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Start_Interactive_Search : constant Glib.Signal_Name := "start-interactive-search";
    procedure On_Start_Interactive_Search
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False);
    procedure On_Start_Interactive_Search
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
+   type Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean is not null access function
+     (Self : access Gtk_Tree_View_Record'Class;
+      Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+
+   type Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
 
    Signal_Test_Collapse_Row : constant Glib.Signal_Name := "test-collapse-row";
    procedure On_Test_Collapse_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After : Boolean := False);
    procedure On_Test_Collapse_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The given row is about to be collapsed (hide its children nodes). Use
    --  this signal if you need to control the collapsibility of individual
    --  rows.
@@ -1750,18 +1793,14 @@ package Gtk.Tree_View is
 
    Signal_Test_Expand_Row : constant Glib.Signal_Name := "test-expand-row";
    procedure On_Test_Expand_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After : Boolean := False);
    procedure On_Test_Expand_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The given row is about to be expanded (show its children nodes). Use
    --  this signal if you need to control the expandability of individual rows.
    -- 
@@ -1772,27 +1811,25 @@ package Gtk.Tree_View is
 
    Signal_Toggle_Cursor_Row : constant Glib.Signal_Name := "toggle-cursor-row";
    procedure On_Toggle_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False);
    procedure On_Toggle_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
    procedure On_Unselect_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False);
    procedure On_Unselect_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    ----------------
    -- Interfaces --

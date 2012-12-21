@@ -321,16 +321,22 @@ package Gtk.Font_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Font_Button_Void is not null access procedure
+     (Self : access Gtk_Font_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Font_Set : constant Glib.Signal_Name := "font-set";
    procedure On_Font_Set
-      (Self : not null access Gtk_Font_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Font_Button_Record'Class));
+      (Self  : not null access Gtk_Font_Button_Record;
+       Call  : Cb_Gtk_Font_Button_Void;
+       After : Boolean := False);
    procedure On_Font_Set
-      (Self : not null access Gtk_Font_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Font_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::font-set signal is emitted when the user selects a font. When
    --  handling this signal, use Gtk.Font_Button.Get_Font_Name to find out
    --  which font was just selected.

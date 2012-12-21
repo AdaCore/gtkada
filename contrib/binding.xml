@@ -2049,6 +2049,9 @@ __PRE__
 
   <package id="GtkEditable">
      <parameter name="self" ada="Editable"/>
+     <method id="::insert-text">
+        <parameter name="position" direction="access"/>
+     </method>
      <method id="gtk_editable_select_region">
         <parameter name="end_pos" default="-1"/>
      </method>
@@ -3780,6 +3783,9 @@ creating a tag.
      <enum ctype="GdkGravity" prefix="GDK_"/>
      <list ada="Gdk_Window_List" ctype="GdkWindow"/>
      <method id="::pick-embedded-child" bind="False" />
+     <method id="::from-embedder" bind="False" />
+     <method id="::to-embedder" bind="False" />
+     <method id="::create-surface" bind="False" />
      <method id="gdk_window_add_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_remove_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_get_children" return="GdkWindowList"/>

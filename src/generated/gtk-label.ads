@@ -704,15 +704,21 @@ package Gtk.Label is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Label_Void is not null access procedure (Self : access Gtk_Label_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate_Current_Link : constant Glib.Signal_Name := "activate-current-link";
    procedure On_Activate_Current_Link
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure (Self : access Gtk_Label_Record'Class));
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Void;
+       After : Boolean := False);
    procedure On_Activate_Current_Link
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A <link linkend="keybinding-signals">keybinding signal</link> which
    --  gets emitted when the user activates a link in the label.
    --
@@ -721,18 +727,24 @@ package Gtk.Label is
    --
    --  The default bindings for this signal are all forms of the Enter key.
 
+   type Cb_Gtk_Label_UTF8_String_Boolean is not null access function
+     (Self : access Gtk_Label_Record'Class;
+      URI  : UTF8_String) return Boolean;
+
+   type Cb_GObject_UTF8_String_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      URI  : UTF8_String) return Boolean;
+
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
    procedure On_Activate_Link
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access function
-         (Self : access Gtk_Label_Record'Class;
-          URI  : UTF8_String) return Boolean);
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_UTF8_String_Boolean;
+       After : Boolean := False);
    procedure On_Activate_Link
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          URI  : UTF8_String) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_UTF8_String_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().
@@ -743,35 +755,42 @@ package Gtk.Label is
 
    Signal_Copy_Clipboard : constant Glib.Signal_Name := "copy-clipboard";
    procedure On_Copy_Clipboard
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure (Self : access Gtk_Label_Record'Class));
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Void;
+       After : Boolean := False);
    procedure On_Copy_Clipboard
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::copy-clipboard signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  to copy the selection to the clipboard.
    --
    --  The default binding for this signal is Ctrl-c.
 
+   type Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
+     (Self             : access Gtk_Label_Record'Class;
+      Step             : Gtk.Enums.Gtk_Movement_Step;
+      Count            : Gint;
+      Extend_Selection : Boolean);
+
+   type Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
+     (Self             : access Glib.Object.GObject_Record'Class;
+      Step             : Gtk.Enums.Gtk_Movement_Step;
+      Count            : Gint;
+      Extend_Selection : Boolean);
+
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure
-         (Self             : access Gtk_Label_Record'Class;
-          Step             : Gtk.Enums.Gtk_Movement_Step;
-          Count            : Gint;
-          Extend_Selection : Boolean));
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
+       After : Boolean := False);
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure
-         (Self             : access Glib.Object.GObject_Record'Class;
-          Step             : Gtk.Enums.Gtk_Movement_Step;
-          Count            : Gint;
-          Extend_Selection : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::move-cursor signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when the user initiates a cursor movement. If the cursor is not visible
@@ -797,18 +816,24 @@ package Gtk.Label is
    --    --  "count": the number of Step units to move
    --    --  "extend_selection": True if the move should extend the selection
 
+   type Cb_Gtk_Label_Gtk_Menu_Void is not null access procedure
+     (Self : access Gtk_Label_Record'Class;
+      Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+
+   type Cb_GObject_Gtk_Menu_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    procedure On_Populate_Popup
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Label_Record'Class;
-          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class));
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Gtk_Menu_Void;
+       After : Boolean := False);
    procedure On_Populate_Popup
-      (Self : not null access Gtk_Label_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Gtk_Menu_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the label. Note that only selectable labels have context menus.
    --

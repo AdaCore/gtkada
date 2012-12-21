@@ -235,33 +235,45 @@ package Gtk.Info_Bar is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Info_Bar_Void is not null access procedure (Self : access Gtk_Info_Bar_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Close : constant Glib.Signal_Name := "close";
    procedure On_Close
-      (Self : not null access Gtk_Info_Bar_Record;
-       Call : not null access procedure (Self : access Gtk_Info_Bar_Record'Class));
+      (Self  : not null access Gtk_Info_Bar_Record;
+       Call  : Cb_Gtk_Info_Bar_Void;
+       After : Boolean := False);
    procedure On_Close
-      (Self : not null access Gtk_Info_Bar_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Info_Bar_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::close signal is a <link linkend="keybinding-signals">keybinding
    --  signal</link> which gets emitted when the user uses a keybinding to
    --  dismiss the info bar.
    --
    --  The default binding for this signal is the Escape key.
 
+   type Cb_Gtk_Info_Bar_Gint_Void is not null access procedure
+     (Self        : access Gtk_Info_Bar_Record'Class;
+      Response_Id : Gint);
+
+   type Cb_GObject_Gint_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Response_Id : Gint);
+
    Signal_Response : constant Glib.Signal_Name := "response";
    procedure On_Response
-      (Self : not null access Gtk_Info_Bar_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Info_Bar_Record'Class;
-          Response_Id : Gint));
+      (Self  : not null access Gtk_Info_Bar_Record;
+       Call  : Cb_Gtk_Info_Bar_Gint_Void;
+       After : Boolean := False);
    procedure On_Response
-      (Self : not null access Gtk_Info_Bar_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Response_Id : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Info_Bar_Record;
+       Call  : Cb_GObject_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when an action widget is clicked or the application programmer
    --  calls Gtk.Dialog.Response. The Response_Id depends on which action
    --  widget was clicked.

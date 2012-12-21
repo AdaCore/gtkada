@@ -117,15 +117,21 @@ package Gtk.Switch is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Switch_Void is not null access procedure (Self : access Gtk_Switch_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Activate : constant Glib.Signal_Name := "activate";
    procedure On_Activate
-      (Self : not null access Gtk_Switch_Record;
-       Call : not null access procedure (Self : access Gtk_Switch_Record'Class));
+      (Self  : not null access Gtk_Switch_Record;
+       Call  : Cb_Gtk_Switch_Void;
+       After : Boolean := False);
    procedure On_Activate
-      (Self : not null access Gtk_Switch_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Switch_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::activate signal on GtkSwitch is an action signal and emitting it
    --  causes the switch to animate. Applications should never connect to this
    --  signal, but use the notify::active signal.

@@ -310,18 +310,24 @@ package Gtk.Scrolled_Window is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Scrolled_Window_Gtk_Direction_Type_Void is not null access procedure
+     (Self           : access Gtk_Scrolled_Window_Record'Class;
+      Direction_Type : Gtk.Enums.Gtk_Direction_Type);
+
+   type Cb_GObject_Gtk_Direction_Type_Void is not null access procedure
+     (Self           : access Glib.Object.GObject_Record'Class;
+      Direction_Type : Gtk.Enums.Gtk_Direction_Type);
+
    Signal_Move_Focus_Out : constant Glib.Signal_Name := "move-focus-out";
    procedure On_Move_Focus_Out
-      (Self : not null access Gtk_Scrolled_Window_Record;
-       Call : not null access procedure
-         (Self           : access Gtk_Scrolled_Window_Record'Class;
-          Direction_Type : Gtk.Enums.Gtk_Direction_Type));
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_Gtk_Scrolled_Window_Gtk_Direction_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Focus_Out
-      (Self : not null access Gtk_Scrolled_Window_Record;
-       Call : not null access procedure
-         (Self           : access Glib.Object.GObject_Record'Class;
-          Direction_Type : Gtk.Enums.Gtk_Direction_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::move-focus-out signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when focus is moved away from the scrolled window by a keybinding. The
@@ -330,20 +336,26 @@ package Gtk.Scrolled_Window is
    --  default bindings for this signal are ['Tab''Ctrl'] and
    --  ['Tab''Ctrl''Shift'].
 
+   type Cb_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean is not null access function
+     (Self       : access Gtk_Scrolled_Window_Record'Class;
+      Scroll     : Gtk.Enums.Gtk_Scroll_Type;
+      Horizontal : Boolean) return Boolean;
+
+   type Cb_GObject_Gtk_Scroll_Type_Boolean_Boolean is not null access function
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Scroll     : Gtk.Enums.Gtk_Scroll_Type;
+      Horizontal : Boolean) return Boolean;
+
    Signal_Scroll_Child : constant Glib.Signal_Name := "scroll-child";
    procedure On_Scroll_Child
-      (Self : not null access Gtk_Scrolled_Window_Record;
-       Call : not null access function
-         (Self       : access Gtk_Scrolled_Window_Record'Class;
-          Scroll     : Gtk.Enums.Gtk_Scroll_Type;
-          Horizontal : Boolean) return Boolean);
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean;
+       After : Boolean := False);
    procedure On_Scroll_Child
-      (Self : not null access Gtk_Scrolled_Window_Record;
-       Call : not null access function
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Scroll     : Gtk.Enums.Gtk_Scroll_Type;
-          Horizontal : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::scroll-child signal is a <link
    --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
    --  when a keybinding that scrolls is pressed. The horizontal or vertical

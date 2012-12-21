@@ -302,16 +302,22 @@ package Gtk.Radio_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Radio_Button_Void is not null access procedure
+     (Self : access Gtk_Radio_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Group_Changed : constant Glib.Signal_Name := "group-changed";
    procedure On_Group_Changed
-      (Self : not null access Gtk_Radio_Button_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Radio_Button_Record'Class));
+      (Self  : not null access Gtk_Radio_Button_Record;
+       Call  : Cb_Gtk_Radio_Button_Void;
+       After : Boolean := False);
    procedure On_Group_Changed
-      (Self : not null access Gtk_Radio_Button_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Radio_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the group of radio buttons that a radio button belongs to
    --  changes. This is emitted when a radio button switches from being alone
    --  to being part of a group of 2 or more buttons, or vice-versa, and when a

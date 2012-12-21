@@ -359,22 +359,28 @@ package Gtk.Accel_Group is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Accel_Group_GObject_Guint_Gdk_Modifier_Type_Boolean is not null access function
+     (Self          : access Gtk_Accel_Group_Record'Class;
+      Acceleratable : not null access Glib.Object.GObject_Record'Class;
+      Keyval        : Guint;
+      Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+
+   type Cb_GObject_GObject_Guint_Gdk_Modifier_Type_Boolean is not null access function
+     (Self          : access Glib.Object.GObject_Record'Class;
+      Acceleratable : not null access Glib.Object.GObject_Record'Class;
+      Keyval        : Guint;
+      Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
+
    Signal_Accel_Activate : constant Glib.Signal_Name := "accel-activate";
    procedure On_Accel_Activate
-      (Self : not null access Gtk_Accel_Group_Record;
-       Call : not null access function
-         (Self          : access Gtk_Accel_Group_Record'Class;
-          Acceleratable : not null access Glib.Object.GObject_Record'Class;
-          Keyval        : Guint;
-          Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean);
+      (Self  : not null access Gtk_Accel_Group_Record;
+       Call  : Cb_Gtk_Accel_Group_GObject_Guint_Gdk_Modifier_Type_Boolean;
+       After : Boolean := False);
    procedure On_Accel_Activate
-      (Self : not null access Gtk_Accel_Group_Record;
-       Call : not null access function
-         (Self          : access Glib.Object.GObject_Record'Class;
-          Acceleratable : not null access Glib.Object.GObject_Record'Class;
-          Keyval        : Guint;
-          Modifier      : Gdk.Types.Gdk_Modifier_Type) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Accel_Group_Record;
+       Call  : Cb_GObject_GObject_Guint_Gdk_Modifier_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The accel-activate signal is an implementation detail of
    --  Gtk.Accel_Group.Gtk_Accel_Group and not meant to be used by
    --  applications.
@@ -385,22 +391,28 @@ package Gtk.Accel_Group is
    --    --  "modifier": the modifier combination of the accelerator
    --    --  Returns True if the accelerator was activated
 
+   type Cb_Gtk_Accel_Group_Guint_Gdk_Modifier_Type_Address_Void is not null access procedure
+     (Self          : access Gtk_Accel_Group_Record'Class;
+      Keyval        : Guint;
+      Modifier      : Gdk.Types.Gdk_Modifier_Type;
+      Accel_Closure : System.Address);
+
+   type Cb_GObject_Guint_Gdk_Modifier_Type_Address_Void is not null access procedure
+     (Self          : access Glib.Object.GObject_Record'Class;
+      Keyval        : Guint;
+      Modifier      : Gdk.Types.Gdk_Modifier_Type;
+      Accel_Closure : System.Address);
+
    Signal_Accel_Changed : constant Glib.Signal_Name := "accel-changed";
    procedure On_Accel_Changed
-      (Self : not null access Gtk_Accel_Group_Record;
-       Call : not null access procedure
-         (Self          : access Gtk_Accel_Group_Record'Class;
-          Keyval        : Guint;
-          Modifier      : Gdk.Types.Gdk_Modifier_Type;
-          Accel_Closure : System.Address));
+      (Self  : not null access Gtk_Accel_Group_Record;
+       Call  : Cb_Gtk_Accel_Group_Guint_Gdk_Modifier_Type_Address_Void;
+       After : Boolean := False);
    procedure On_Accel_Changed
-      (Self : not null access Gtk_Accel_Group_Record;
-       Call : not null access procedure
-         (Self          : access Glib.Object.GObject_Record'Class;
-          Keyval        : Guint;
-          Modifier      : Gdk.Types.Gdk_Modifier_Type;
-          Accel_Closure : System.Address);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Accel_Group_Record;
+       Call  : Cb_GObject_Guint_Gdk_Modifier_Type_Address_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
    --  added to or removed from the accel group.
    --

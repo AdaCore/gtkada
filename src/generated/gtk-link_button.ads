@@ -179,17 +179,23 @@ package Gtk.Link_Button is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Link_Button_Boolean is not null access function
+     (Self : access Gtk_Link_Button_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
    procedure On_Activate_Link
-      (Self : not null access Gtk_Link_Button_Record;
-       Call : not null access function
-         (Self : access Gtk_Link_Button_Record'Class) return Boolean);
+      (Self  : not null access Gtk_Link_Button_Record;
+       Call  : Cb_Gtk_Link_Button_Boolean;
+       After : Boolean := False);
    procedure On_Activate_Link
-      (Self : not null access Gtk_Link_Button_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Link_Button_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::activate-link signal is emitted each time the
    --  Gtk.Link_Button.Gtk_Link_Button has been clicked.
    --

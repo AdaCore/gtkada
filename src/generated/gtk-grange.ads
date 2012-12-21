@@ -340,35 +340,47 @@ package Gtk.GRange is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Range_Gdouble_Void is not null access procedure
+     (Self  : access Gtk_Range_Record'Class;
+      Value : Gdouble);
+
+   type Cb_GObject_Gdouble_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Value : Gdouble);
+
    Signal_Adjust_Bounds : constant Glib.Signal_Name := "adjust-bounds";
    procedure On_Adjust_Bounds
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Range_Record'Class;
-          Value : Gdouble));
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_Gtk_Range_Gdouble_Void;
+       After : Boolean := False);
    procedure On_Adjust_Bounds
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Value : Gdouble);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_GObject_Gdouble_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted before clamping a value, to give the application a chance to
    --  adjust the bounds.
 
+   type Cb_Gtk_Range_Gtk_Scroll_Type_Gdouble_Boolean is not null access function
+     (Self   : access Gtk_Range_Record'Class;
+      Scroll : Gtk.Enums.Gtk_Scroll_Type;
+      Value  : Gdouble) return Boolean;
+
+   type Cb_GObject_Gtk_Scroll_Type_Gdouble_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Scroll : Gtk.Enums.Gtk_Scroll_Type;
+      Value  : Gdouble) return Boolean;
+
    Signal_Change_Value : constant Glib.Signal_Name := "change-value";
    procedure On_Change_Value
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access function
-         (Self   : access Gtk_Range_Record'Class;
-          Scroll : Gtk.Enums.Gtk_Scroll_Type;
-          Value  : Gdouble) return Boolean);
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_Gtk_Range_Gtk_Scroll_Type_Gdouble_Boolean;
+       After : Boolean := False);
    procedure On_Change_Value
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Scroll : Gtk.Enums.Gtk_Scroll_Type;
-          Value  : Gdouble) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Gdouble_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The Gtk.GRange.Gtk_Range::change-value signal is emitted when a scroll
    --  action is performed on a range. It allows an application to determine
    --  the type of scroll event that occurred and the resultant new value. The
@@ -389,29 +401,41 @@ package Gtk.GRange is
    --    --  "value": the new value resulting from the scroll action
    --    --  Returns True to prevent other handlers from being invoked for the signal, False to propagate the signal further
 
+   type Cb_Gtk_Range_Gtk_Scroll_Type_Void is not null access procedure
+     (Self : access Gtk_Range_Record'Class;
+      Step : Gtk.Enums.Gtk_Scroll_Type);
+
+   type Cb_GObject_Gtk_Scroll_Type_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Step : Gtk.Enums.Gtk_Scroll_Type);
+
    Signal_Move_Slider : constant Glib.Signal_Name := "move-slider";
    procedure On_Move_Slider
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Range_Record'Class;
-          Step : Gtk.Enums.Gtk_Scroll_Type));
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_Gtk_Range_Gtk_Scroll_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Slider
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Step : Gtk.Enums.Gtk_Scroll_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Virtual function that moves the slider. Used for keybindings.
+
+   type Cb_Gtk_Range_Void is not null access procedure (Self : access Gtk_Range_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
 
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
    procedure On_Value_Changed
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access procedure (Self : access Gtk_Range_Record'Class));
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_Gtk_Range_Void;
+       After : Boolean := False);
    procedure On_Value_Changed
-      (Self : not null access Gtk_Range_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Range_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted when the range value changes.
 
    ----------------

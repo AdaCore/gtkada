@@ -425,18 +425,24 @@ package Gtk.About_Dialog is
    -- Signals --
    -------------
 
+   type Cb_Gtk_About_Dialog_UTF8_String_Boolean is not null access function
+     (Self : access Gtk_About_Dialog_Record'Class;
+      URI  : UTF8_String) return Boolean;
+
+   type Cb_GObject_UTF8_String_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      URI  : UTF8_String) return Boolean;
+
    Signal_Activate_Link : constant Glib.Signal_Name := "activate-link";
    procedure On_Activate_Link
-      (Self : not null access Gtk_About_Dialog_Record;
-       Call : not null access function
-         (Self : access Gtk_About_Dialog_Record'Class;
-          URI  : UTF8_String) return Boolean);
+      (Self  : not null access Gtk_About_Dialog_Record;
+       Call  : Cb_Gtk_About_Dialog_UTF8_String_Boolean;
+       After : Boolean := False);
    procedure On_Activate_Link
-      (Self : not null access Gtk_About_Dialog_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          URI  : UTF8_String) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_About_Dialog_Record;
+       Call  : Cb_GObject_UTF8_String_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
    --  gtk_show_uri().

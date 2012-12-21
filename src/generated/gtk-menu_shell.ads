@@ -178,73 +178,98 @@ package Gtk.Menu_Shell is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Menu_Shell_Boolean_Void is not null access procedure
+     (Self       : access Gtk_Menu_Shell_Record'Class;
+      Force_Hide : Boolean);
+
+   type Cb_GObject_Boolean_Void is not null access procedure
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Force_Hide : Boolean);
+
    Signal_Activate_Current : constant Glib.Signal_Name := "activate-current";
    procedure On_Activate_Current
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self       : access Gtk_Menu_Shell_Record'Class;
-          Force_Hide : Boolean));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Boolean_Void;
+       After : Boolean := False);
    procedure On_Activate_Current
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self       : access Glib.Object.GObject_Record'Class;
-          Force_Hide : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  An action signal that activates the current menu item within the menu
    --  shell.
 
+   type Cb_Gtk_Menu_Shell_Void is not null access procedure (Self : access Gtk_Menu_Shell_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
    Signal_Cancel : constant Glib.Signal_Name := "cancel";
    procedure On_Cancel
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Shell_Record'Class));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Void;
+       After : Boolean := False);
    procedure On_Cancel
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  An action signal which cancels the selection within the menu shell.
    --  Causes the Gtk.Menu_Shell.Gtk_Menu_Shell::selection-done signal to be
    --  emitted.
 
+   type Cb_Gtk_Menu_Shell_Gtk_Direction_Type_Void is not null access procedure
+     (Self      : access Gtk_Menu_Shell_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type);
+
+   type Cb_GObject_Gtk_Direction_Type_Void is not null access procedure
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type);
+
    Signal_Cycle_Focus : constant Glib.Signal_Name := "cycle-focus";
    procedure On_Cycle_Focus
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self      : access Gtk_Menu_Shell_Record'Class;
-          Direction : Gtk.Enums.Gtk_Direction_Type));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Gtk_Direction_Type_Void;
+       After : Boolean := False);
    procedure On_Cycle_Focus
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Direction : Gtk.Enums.Gtk_Direction_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Gtk_Direction_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  A keybinding signal which moves the focus in the given Direction.
 
    Signal_Deactivate : constant Glib.Signal_Name := "deactivate";
    procedure On_Deactivate
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Shell_Record'Class));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Void;
+       After : Boolean := False);
    procedure On_Deactivate
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when a menu shell is deactivated.
+
+   type Cb_Gtk_Menu_Shell_Gtk_Widget_Gint_Void is not null access procedure
+     (Self     : access Gtk_Menu_Shell_Record'Class;
+      Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint);
+
+   type Cb_GObject_Gtk_Widget_Gint_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint);
 
    Signal_Insert : constant Glib.Signal_Name := "insert";
    procedure On_Insert
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Menu_Shell_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Position : Gint));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Gtk_Widget_Gint_Void;
+       After : Boolean := False);
    procedure On_Insert
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-          Position : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Gtk_Widget_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::insert signal is emitted when a new Gtk.Menu_Item.Gtk_Menu_Item
    --  is added to a Gtk.Menu_Shell.Gtk_Menu_Shell. A separate signal is used
    --  instead of GtkContainer::add because of the need for an additional
@@ -256,33 +281,45 @@ package Gtk.Menu_Shell is
    --    --  "child": the Gtk.Menu_Item.Gtk_Menu_Item that is being inserted
    --    --  "position": the position at which the insert occurs
 
+   type Cb_Gtk_Menu_Shell_Gtk_Menu_Direction_Type_Void is not null access procedure
+     (Self      : access Gtk_Menu_Shell_Record'Class;
+      Direction : Gtk.Enums.Gtk_Menu_Direction_Type);
+
+   type Cb_GObject_Gtk_Menu_Direction_Type_Void is not null access procedure
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Direction : Gtk.Enums.Gtk_Menu_Direction_Type);
+
    Signal_Move_Current : constant Glib.Signal_Name := "move-current";
    procedure On_Move_Current
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self      : access Gtk_Menu_Shell_Record'Class;
-          Direction : Gtk.Enums.Gtk_Menu_Direction_Type));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Gtk_Menu_Direction_Type_Void;
+       After : Boolean := False);
    procedure On_Move_Current
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Direction : Gtk.Enums.Gtk_Menu_Direction_Type);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Gtk_Menu_Direction_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  An keybinding signal which moves the current menu item in the direction
    --  specified by Direction.
 
+   type Cb_Gtk_Menu_Shell_Gint_Boolean is not null access function
+     (Self     : access Gtk_Menu_Shell_Record'Class;
+      Distance : Gint) return Boolean;
+
+   type Cb_GObject_Gint_Boolean is not null access function
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Distance : Gint) return Boolean;
+
    Signal_Move_Selected : constant Glib.Signal_Name := "move-selected";
    procedure On_Move_Selected
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access function
-         (Self     : access Gtk_Menu_Shell_Record'Class;
-          Distance : Gint) return Boolean);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Gint_Boolean;
+       After : Boolean := False);
    procedure On_Move_Selected
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access function
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Distance : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::move-selected signal is emitted to move the selection to another
    --  item.
    -- 
@@ -292,13 +329,14 @@ package Gtk.Menu_Shell is
 
    Signal_Selection_Done : constant Glib.Signal_Name := "selection-done";
    procedure On_Selection_Done
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure (Self : access Gtk_Menu_Shell_Record'Class));
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_Gtk_Menu_Shell_Void;
+       After : Boolean := False);
    procedure On_Selection_Done
-      (Self : not null access Gtk_Menu_Shell_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Menu_Shell_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted when a selection has been completed within a
    --  menu shell.
 

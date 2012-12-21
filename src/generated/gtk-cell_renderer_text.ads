@@ -249,20 +249,26 @@ package Gtk.Cell_Renderer_Text is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Cell_Renderer_Text_UTF8_String_UTF8_String_Void is not null access procedure
+     (Self     : access Gtk_Cell_Renderer_Text_Record'Class;
+      Path     : UTF8_String;
+      New_Text : UTF8_String);
+
+   type Cb_GObject_UTF8_String_UTF8_String_Void is not null access procedure
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Path     : UTF8_String;
+      New_Text : UTF8_String);
+
    Signal_Edited : constant Glib.Signal_Name := "edited";
    procedure On_Edited
-      (Self : not null access Gtk_Cell_Renderer_Text_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Cell_Renderer_Text_Record'Class;
-          Path     : UTF8_String;
-          New_Text : UTF8_String));
+      (Self  : not null access Gtk_Cell_Renderer_Text_Record;
+       Call  : Cb_Gtk_Cell_Renderer_Text_UTF8_String_UTF8_String_Void;
+       After : Boolean := False);
    procedure On_Edited
-      (Self : not null access Gtk_Cell_Renderer_Text_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Path     : UTF8_String;
-          New_Text : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Cell_Renderer_Text_Record;
+       Call  : Cb_GObject_UTF8_String_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  This signal is emitted after Renderer has been edited.
    --
    --  It is the responsibility of the application to update the model and

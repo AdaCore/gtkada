@@ -25,8 +25,12 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Cell_Area is
 
@@ -1277,22 +1281,503 @@ package body Gtk.Cell_Area is
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void);
+
+   procedure Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void);
+
+   procedure Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void);
+
+   procedure Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void);
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void);
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void);
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void);
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Cell_Area_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ----------------------------------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void --
+   ----------------------------------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)), Unchecked_To_Cairo_Rectangle (Params, 3), Unchecked_To_UTF8_String (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+
+   ------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void --
+   ------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+
+   ------------------------------------------------------
+   -- Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void --
+   ------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Unchecked_To_UTF8_String (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
+
+   ---------------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void --
+   ---------------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+
+   ----------------------------------------------------------------------------------------------
+   -- Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void --
+   ----------------------------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Cell_Area_Record'Class := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)), Unchecked_To_Cairo_Rectangle (Params, 3), Unchecked_To_UTF8_String (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+
+   ------------------------------------------------------------------
+   -- Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void --
+   ------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Cell_Area_Record'Class := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+
+   ------------------------------------------------------------
+   -- Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void --
+   ------------------------------------------------------------
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Cell_Area_Record'Class := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Unchecked_To_UTF8_String (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
+
+   ---------------------------------------------------------------------------
+   -- Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void --
+   ---------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Cell_Area_Record'Class := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+
    ---------------------
    -- On_Add_Editable --
    ---------------------
 
    procedure On_Add_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self      : access Gtk_Cell_Area_Record'Class;
-          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-          Cell_Area : Cairo.Cairo_Rectangle;
-          Path      : UTF8_String))
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "add-editable" & ASCII.NUL, Call, After);
    end On_Add_Editable;
 
    ---------------------
@@ -1300,18 +1785,13 @@ package body Gtk.Cell_Area is
    ---------------------
 
    procedure On_Add_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self      : access Glib.Object.GObject_Record'Class;
-          Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-          Cell_Area : Cairo.Cairo_Rectangle;
-          Path      : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "add-editable" & ASCII.NUL, Call, After, Slot);
    end On_Add_Editable;
 
    -------------------------
@@ -1319,17 +1799,12 @@ package body Gtk.Cell_Area is
    -------------------------
 
    procedure On_Apply_Attributes
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self        : access Gtk_Cell_Area_Record'Class;
-          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Is_Expander : Boolean;
-          Is_Expanded : Boolean))
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "apply-attributes" & ASCII.NUL, Call, After);
    end On_Apply_Attributes;
 
    -------------------------
@@ -1337,18 +1812,13 @@ package body Gtk.Cell_Area is
    -------------------------
 
    procedure On_Apply_Attributes
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self        : access Glib.Object.GObject_Record'Class;
-          Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Is_Expander : Boolean;
-          Is_Expanded : Boolean);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "apply-attributes" & ASCII.NUL, Call, After, Slot);
    end On_Apply_Attributes;
 
    ----------------------
@@ -1356,15 +1826,12 @@ package body Gtk.Cell_Area is
    ----------------------
 
    procedure On_Focus_Changed
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Cell_Area_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Path     : UTF8_String))
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "focus-changed" & ASCII.NUL, Call, After);
    end On_Focus_Changed;
 
    ----------------------
@@ -1372,16 +1839,13 @@ package body Gtk.Cell_Area is
    ----------------------
 
    procedure On_Focus_Changed
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Path     : UTF8_String);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "focus-changed" & ASCII.NUL, Call, After, Slot);
    end On_Focus_Changed;
 
    ------------------------
@@ -1389,15 +1853,12 @@ package body Gtk.Cell_Area is
    ------------------------
 
    procedure On_Remove_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Cell_Area_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable))
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "remove-editable" & ASCII.NUL, Call, After);
    end On_Remove_Editable;
 
    ------------------------
@@ -1405,16 +1866,13 @@ package body Gtk.Cell_Area is
    ------------------------
 
    procedure On_Remove_Editable
-      (Self : not null access Gtk_Cell_Area_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-          Editable : Gtk.Cell_Editable.Gtk_Cell_Editable);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Cell_Area_Record;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "remove-editable" & ASCII.NUL, Call, After, Slot);
    end On_Remove_Editable;
 
 end Gtk.Cell_Area;

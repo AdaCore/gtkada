@@ -26,8 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Tree_View is
 
@@ -2592,17 +2597,997 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Self), Policy);
    end Set_Vscroll_Policy;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Boolean_Boolean_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Boolean_Boolean_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Movement_Step_Gint_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Boolean_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Boolean);
+
+   procedure Marsh_GObject_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Boolean_Boolean);
+
+   procedure Marsh_GObject_Boolean_Boolean_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Boolean_Boolean_Boolean_Boolean);
+
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Boolean);
+
+   procedure Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean);
+
+   procedure Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void);
+
+   procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Tree_View_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Boolean);
+
+   procedure Marsh_Gtk_Tree_View_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Boolean_Boolean);
+
+   procedure Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean);
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean);
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean);
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void);
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void);
+
+   procedure Marsh_Gtk_Tree_View_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Tree_View_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Boolean_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Boolean_Boolean_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Tree_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------
+   -- Marsh_GObject_Boolean --
+   ---------------------------
+
+   procedure Marsh_GObject_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj);
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Boolean;
+
+   -----------------------------------
+   -- Marsh_GObject_Boolean_Boolean --
+   -----------------------------------
+
+   procedure Marsh_GObject_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Boolean_Boolean;
+
+   ---------------------------------------------------
+   -- Marsh_GObject_Boolean_Boolean_Boolean_Boolean --
+   ---------------------------------------------------
+
+   procedure Marsh_GObject_Boolean_Boolean_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Boolean_Boolean_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1), Unchecked_To_Boolean (Params, 2), Unchecked_To_Boolean (Params, 3));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Boolean_Boolean_Boolean_Boolean;
+
+   --------------------------------------------------
+   -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean --
+   --------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean;
+
+   -------------------------------------------------------
+   -- Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean --
+   -------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+
+   ----------------------------------------------------
+   -- Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void --
+   ----------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+
+   -----------------------------------------------------------
+   -- Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void --
+   -----------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Gtk.Tree_View_Column.Gtk_Tree_View_Column (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ---------------------------------
+   -- Marsh_Gtk_Tree_View_Boolean --
+   ---------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj);
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Boolean;
+
+   -----------------------------------------
+   -- Marsh_Gtk_Tree_View_Boolean_Boolean --
+   -----------------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Boolean_Boolean;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1), Unchecked_To_Boolean (Params, 2), Unchecked_To_Boolean (Params, 3));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean;
+
+   --------------------------------------------------------
+   -- Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean --
+   --------------------------------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean;
+
+   -------------------------------------------------------------
+   -- Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean --
+   -------------------------------------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+
+   ----------------------------------------------------------
+   -- Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void --
+   ----------------------------------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+
+   -----------------------------------------------------------------
+   -- Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void --
+   -----------------------------------------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Gtk.Tree_View_Column.Gtk_Tree_View_Column (Unchecked_To_Object (Params, 2)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+
+   ------------------------------
+   -- Marsh_Gtk_Tree_View_Void --
+   ------------------------------
+
+   procedure Marsh_Gtk_Tree_View_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Tree_View_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Tree_View_Record'Class := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Tree_View_Void;
+
    ------------------------
    -- On_Columns_Changed --
    ------------------------
 
    procedure On_Columns_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure (Self : access Gtk_Tree_View_Record'Class))
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "columns-changed" & ASCII.NUL, Call, After);
    end On_Columns_Changed;
 
    ------------------------
@@ -2610,14 +3595,13 @@ package body Gtk.Tree_View is
    ------------------------
 
    procedure On_Columns_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "columns-changed" & ASCII.NUL, Call, After, Slot);
    end On_Columns_Changed;
 
    -----------------------
@@ -2625,12 +3609,12 @@ package body Gtk.Tree_View is
    -----------------------
 
    procedure On_Cursor_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure (Self : access Gtk_Tree_View_Record'Class))
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "cursor-changed" & ASCII.NUL, Call, After);
    end On_Cursor_Changed;
 
    -----------------------
@@ -2638,14 +3622,13 @@ package body Gtk.Tree_View is
    -----------------------
 
    procedure On_Cursor_Changed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "cursor-changed" & ASCII.NUL, Call, After, Slot);
    end On_Cursor_Changed;
 
    -----------------------------------
@@ -2653,16 +3636,12 @@ package body Gtk.Tree_View is
    -----------------------------------
 
    procedure On_Expand_Collapse_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Object : Boolean;
-          P0     : Boolean;
-          P1     : Boolean) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "expand-collapse-cursor-row" & ASCII.NUL, Call, After);
    end On_Expand_Collapse_Cursor_Row;
 
    -----------------------------------
@@ -2670,17 +3649,13 @@ package body Gtk.Tree_View is
    -----------------------------------
 
    procedure On_Expand_Collapse_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Boolean;
-          P0     : Boolean;
-          P1     : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean_Boolean_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "expand-collapse-cursor-row" & ASCII.NUL, Call, After, Slot);
    end On_Expand_Collapse_Cursor_Row;
 
    --------------------
@@ -2688,15 +3663,12 @@ package body Gtk.Tree_View is
    --------------------
 
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Object : Gtk.Enums.Gtk_Movement_Step;
-          P0     : Gint) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "move-cursor" & ASCII.NUL, Call, After);
    end On_Move_Cursor;
 
    --------------------
@@ -2704,16 +3676,13 @@ package body Gtk.Tree_View is
    --------------------
 
    procedure On_Move_Cursor
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Gtk.Enums.Gtk_Movement_Step;
-          P0     : Gint) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "move-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Move_Cursor;
 
    ----------------------
@@ -2721,15 +3690,12 @@ package body Gtk.Tree_View is
    ----------------------
 
    procedure On_Row_Activated
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Path   : Gtk.Tree_Model.Gtk_Tree_Path;
-          Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class))
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "row-activated" & ASCII.NUL, Call, After);
    end On_Row_Activated;
 
    ----------------------
@@ -2737,16 +3703,13 @@ package body Gtk.Tree_View is
    ----------------------
 
    procedure On_Row_Activated
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Path   : Gtk.Tree_Model.Gtk_Tree_Path;
-          Column : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "row-activated" & ASCII.NUL, Call, After, Slot);
    end On_Row_Activated;
 
    ----------------------
@@ -2754,15 +3717,12 @@ package body Gtk.Tree_View is
    ----------------------
 
    procedure On_Row_Collapsed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path))
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "row-collapsed" & ASCII.NUL, Call, After);
    end On_Row_Collapsed;
 
    ----------------------
@@ -2770,16 +3730,13 @@ package body Gtk.Tree_View is
    ----------------------
 
    procedure On_Row_Collapsed
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "row-collapsed" & ASCII.NUL, Call, After, Slot);
    end On_Row_Collapsed;
 
    ---------------------
@@ -2787,15 +3744,12 @@ package body Gtk.Tree_View is
    ---------------------
 
    procedure On_Row_Expanded
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path))
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "row-expanded" & ASCII.NUL, Call, After);
    end On_Row_Expanded;
 
    ---------------------
@@ -2803,16 +3757,13 @@ package body Gtk.Tree_View is
    ---------------------
 
    procedure On_Row_Expanded
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access procedure
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "row-expanded" & ASCII.NUL, Call, After, Slot);
    end On_Row_Expanded;
 
    -------------------
@@ -2820,13 +3771,12 @@ package body Gtk.Tree_View is
    -------------------
 
    procedure On_Select_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "select-all" & ASCII.NUL, Call, After);
    end On_Select_All;
 
    -------------------
@@ -2834,15 +3784,13 @@ package body Gtk.Tree_View is
    -------------------
 
    procedure On_Select_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "select-all" & ASCII.NUL, Call, After, Slot);
    end On_Select_All;
 
    -----------------------------
@@ -2850,13 +3798,12 @@ package body Gtk.Tree_View is
    -----------------------------
 
    procedure On_Select_Cursor_Parent
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "select-cursor-parent" & ASCII.NUL, Call, After);
    end On_Select_Cursor_Parent;
 
    -----------------------------
@@ -2864,15 +3811,13 @@ package body Gtk.Tree_View is
    -----------------------------
 
    procedure On_Select_Cursor_Parent
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "select-cursor-parent" & ASCII.NUL, Call, After, Slot);
    end On_Select_Cursor_Parent;
 
    --------------------------
@@ -2880,14 +3825,12 @@ package body Gtk.Tree_View is
    --------------------------
 
    procedure On_Select_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Gtk_Tree_View_Record'Class;
-          Object : Boolean) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "select-cursor-row" & ASCII.NUL, Call, After);
    end On_Select_Cursor_Row;
 
    --------------------------
@@ -2895,15 +3838,13 @@ package body Gtk.Tree_View is
    --------------------------
 
    procedure On_Select_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Object : Boolean) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "select-cursor-row" & ASCII.NUL, Call, After, Slot);
    end On_Select_Cursor_Row;
 
    ---------------------------------
@@ -2911,13 +3852,12 @@ package body Gtk.Tree_View is
    ---------------------------------
 
    procedure On_Start_Interactive_Search
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "start-interactive-search" & ASCII.NUL, Call, After);
    end On_Start_Interactive_Search;
 
    ---------------------------------
@@ -2925,15 +3865,13 @@ package body Gtk.Tree_View is
    ---------------------------------
 
    procedure On_Start_Interactive_Search
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "start-interactive-search" & ASCII.NUL, Call, After, Slot);
    end On_Start_Interactive_Search;
 
    --------------------------
@@ -2941,15 +3879,12 @@ package body Gtk.Tree_View is
    --------------------------
 
    procedure On_Test_Collapse_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "test-collapse-row" & ASCII.NUL, Call, After);
    end On_Test_Collapse_Row;
 
    --------------------------
@@ -2957,16 +3892,13 @@ package body Gtk.Tree_View is
    --------------------------
 
    procedure On_Test_Collapse_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "test-collapse-row" & ASCII.NUL, Call, After, Slot);
    end On_Test_Collapse_Row;
 
    ------------------------
@@ -2974,15 +3906,12 @@ package body Gtk.Tree_View is
    ------------------------
 
    procedure On_Test_Expand_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "test-expand-row" & ASCII.NUL, Call, After);
    end On_Test_Expand_Row;
 
    ------------------------
@@ -2990,16 +3919,13 @@ package body Gtk.Tree_View is
    ------------------------
 
    procedure On_Test_Expand_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class;
-          Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "test-expand-row" & ASCII.NUL, Call, After, Slot);
    end On_Test_Expand_Row;
 
    --------------------------
@@ -3007,13 +3933,12 @@ package body Gtk.Tree_View is
    --------------------------
 
    procedure On_Toggle_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "toggle-cursor-row" & ASCII.NUL, Call, After);
    end On_Toggle_Cursor_Row;
 
    --------------------------
@@ -3021,15 +3946,13 @@ package body Gtk.Tree_View is
    --------------------------
 
    procedure On_Toggle_Cursor_Row
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "toggle-cursor-row" & ASCII.NUL, Call, After, Slot);
    end On_Toggle_Cursor_Row;
 
    ---------------------
@@ -3037,13 +3960,12 @@ package body Gtk.Tree_View is
    ---------------------
 
    procedure On_Unselect_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Gtk_Tree_View_Record'Class) return Boolean)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_Gtk_Tree_View_Boolean;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "unselect-all" & ASCII.NUL, Call, After);
    end On_Unselect_All;
 
    ---------------------
@@ -3051,15 +3973,13 @@ package body Gtk.Tree_View is
    ---------------------
 
    procedure On_Unselect_All
-      (Self : not null access Gtk_Tree_View_Record;
-       Call : not null access function
-         (Self : access Glib.Object.GObject_Record'Class)
-          return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Tree_View_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "unselect-all" & ASCII.NUL, Call, After, Slot);
    end On_Unselect_All;
 
 end Gtk.Tree_View;

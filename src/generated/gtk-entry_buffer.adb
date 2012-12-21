@@ -23,9 +23,15 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Handlers;               use Gtk.Handlers;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Entry_Buffer is
 
@@ -256,20 +262,261 @@ package body Gtk.Entry_Buffer is
       Free (Tmp_Chars);
    end Set_Text;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Buffer_Guint_Guint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Buffer_Guint_Guint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Guint_Guint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Guint_Guint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Guint_UTF8_String_Guint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Guint_UTF8_String_Guint_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Buffer_Guint_Guint_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Guint_Guint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Guint_UTF8_String_Guint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Guint_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Guint_Guint_Void);
+
+   procedure Marsh_GObject_Guint_UTF8_String_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Guint_UTF8_String_Guint_Void);
+
+   procedure Marsh_Gtk_Entry_Buffer_Guint_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Buffer_Guint_Guint_Void);
+
+   procedure Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Buffer_Guint_Guint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Buffer_Guint_Guint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Guint_Guint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Guint_Guint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Entry_Buffer_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Guint_UTF8_String_Guint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Guint_UTF8_String_Guint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Func_Data   => Get_Object (Slot),
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------------------
+   -- Marsh_GObject_Guint_Guint_Void --
+   ------------------------------------
+
+   procedure Marsh_GObject_Guint_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Guint_Guint_Void;
+
+   ------------------------------------------------
+   -- Marsh_GObject_Guint_UTF8_String_Guint_Void --
+   ------------------------------------------------
+
+   procedure Marsh_GObject_Guint_UTF8_String_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint);
+      H   : constant Cb_GObject_Guint_UTF8_String_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Glib.Object.GObject_Record'Class := Glib.Object.Convert (User_Data);
+   begin
+      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Guint (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Guint_UTF8_String_Guint_Void;
+
+   ---------------------------------------------
+   -- Marsh_Gtk_Entry_Buffer_Guint_Guint_Void --
+   ---------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Buffer_Guint_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Buffer_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Buffer_Record'Class := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Buffer_Guint_Guint_Void;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant access Gtk_Entry_Buffer_Record'Class := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Guint (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void;
+
    ---------------------
    -- On_Deleted_Text --
    ---------------------
 
    procedure On_Deleted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Buffer_Record'Class;
-          Position : Guint;
-          N_Chars  : Guint))
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_Gtk_Entry_Buffer_Guint_Guint_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "deleted-text" & ASCII.NUL, Call, After);
    end On_Deleted_Text;
 
    ---------------------
@@ -277,16 +524,13 @@ package body Gtk.Entry_Buffer is
    ---------------------
 
    procedure On_Deleted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Position : Guint;
-          N_Chars  : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_GObject_Guint_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "deleted-text" & ASCII.NUL, Call, After, Slot);
    end On_Deleted_Text;
 
    ----------------------
@@ -294,16 +538,12 @@ package body Gtk.Entry_Buffer is
    ----------------------
 
    procedure On_Inserted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Gtk_Entry_Buffer_Record'Class;
-          Position : Guint;
-          Chars    : UTF8_String;
-          N_Chars  : Guint))
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call);
    begin
-      null;
+      Connect (Self, "inserted-text" & ASCII.NUL, Call, After);
    end On_Inserted_Text;
 
    ----------------------
@@ -311,17 +551,13 @@ package body Gtk.Entry_Buffer is
    ----------------------
 
    procedure On_Inserted_Text
-      (Self : not null access Gtk_Entry_Buffer_Record;
-       Call : not null access procedure
-         (Self     : access Glib.Object.GObject_Record'Class;
-          Position : Guint;
-          Chars    : UTF8_String;
-          N_Chars  : Guint);
-       Slot : not null access Glib.Object.GObject_Record'Class)
+      (Self  : not null access Gtk_Entry_Buffer_Record;
+       Call  : Cb_GObject_Guint_UTF8_String_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
    is
-      pragma Unreferenced (Self, Call, Slot);
    begin
-      null;
+      Connect_Slot (Self, "inserted-text" & ASCII.NUL, Call, After, Slot);
    end On_Inserted_Text;
 
 end Gtk.Entry_Buffer;

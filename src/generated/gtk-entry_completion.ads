@@ -526,34 +526,46 @@ package Gtk.Entry_Completion is
    -- Signals --
    -------------
 
+   type Cb_Gtk_Entry_Completion_Gint_Void is not null access procedure
+     (Self  : access Gtk_Entry_Completion_Record'Class;
+      Index : Gint);
+
+   type Cb_GObject_Gint_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Index : Gint);
+
    Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
    procedure On_Action_Activated
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access procedure
-         (Self  : access Gtk_Entry_Completion_Record'Class;
-          Index : Gint));
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Gint_Void;
+       After : Boolean := False);
    procedure On_Action_Activated
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access procedure
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Index : Gint);
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when an action is activated.
+
+   type Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean is not null access function
+     (Self  : access Gtk_Entry_Completion_Record'Class;
+      Model : Gtk.Tree_Model.Gtk_Tree_Model;
+      Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+
+   type Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Model : Gtk.Tree_Model.Gtk_Tree_Model;
+      Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
 
    Signal_Cursor_On_Match : constant Glib.Signal_Name := "cursor-on-match";
    procedure On_Cursor_On_Match
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Gtk_Entry_Completion_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After : Boolean := False);
    procedure On_Cursor_On_Match
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when a match from the cursor is on a match of the list.
    --  The default behaviour is to replace the contents of the entry with the
    --  contents of the text column in the row pointed to by Iter.
@@ -566,18 +578,24 @@ package Gtk.Entry_Completion is
    --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
    --    --  Returns True if the signal has been handled
 
+   type Cb_Gtk_Entry_Completion_UTF8_String_Boolean is not null access function
+     (Self   : access Gtk_Entry_Completion_Record'Class;
+      Prefix : UTF8_String) return Boolean;
+
+   type Cb_GObject_UTF8_String_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Prefix : UTF8_String) return Boolean;
+
    Signal_Insert_Prefix : constant Glib.Signal_Name := "insert-prefix";
    procedure On_Insert_Prefix
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self   : access Gtk_Entry_Completion_Record'Class;
-          Prefix : UTF8_String) return Boolean);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_UTF8_String_Boolean;
+       After : Boolean := False);
    procedure On_Insert_Prefix
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self   : access Glib.Object.GObject_Record'Class;
-          Prefix : UTF8_String) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_UTF8_String_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when the inline autocompletion is triggered. The default
    --  behaviour is to make the entry display the whole prefix and select the
    --  newly inserted part.
@@ -593,18 +611,14 @@ package Gtk.Entry_Completion is
 
    Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
    procedure On_Match_Selected
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Gtk_Entry_Completion_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       After : Boolean := False);
    procedure On_Match_Selected
-      (Self : not null access Gtk_Entry_Completion_Record;
-       Call : not null access function
-         (Self  : access Glib.Object.GObject_Record'Class;
-          Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-       Slot : not null access Glib.Object.GObject_Record'Class);
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when a match from the list is selected. The default
    --  behaviour is to replace the contents of the entry with the contents of
    --  the text column in the row pointed to by Iter.
