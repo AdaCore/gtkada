@@ -101,7 +101,7 @@ package Gtk.Cell_Editable is
    --
    --  Gtk.Cell_Editable.Editing_Done is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
-   --     procedure Handler (Self : access Gtk_Cell_Editable);
+   --     procedure Handler (Self : Gtk_Cell_Editable);
 
    Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";
    --  This signal is meant to indicate that the cell is finished editing, and
@@ -115,7 +115,7 @@ package Gtk.Cell_Editable is
    --
    --  Gtk.Cell_Editable.Remove_Widget is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::remove-widget.
-   --     procedure Handler (Self : access Gtk_Cell_Editable);
+   --     procedure Handler (Self : Gtk_Cell_Editable);
 
 private
    Editing_Canceled_Property : constant Glib.Properties.Property_Boolean :=

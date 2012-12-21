@@ -218,7 +218,7 @@ package Gtk.Editable is
    --  will cause only one signal emission (even though it is implemented by
    --  first deleting the selection, then inserting the new content, and may
    --  cause multiple ::notify::text signals to be emitted).
-   --     procedure Handler (Self : access Gtk_Editable);
+   --     procedure Handler (Self : Gtk_Editable);
 
    Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
    --  This signal is emitted when text is deleted from the widget by the
@@ -229,7 +229,7 @@ package Gtk.Editable is
    --  Start_Pos and End_Pos parameters are interpreted as for
    --  Gtk.Editable.Delete_Text.
    --     procedure Handler
-   --       (Self      : access Gtk_Editable;
+   --       (Self      : Gtk_Editable;
    --        Start_Pos : Gint;
    --        End_Pos   : Gint);
    --    --  "start_pos": the starting position
@@ -242,7 +242,7 @@ package Gtk.Editable is
    --  stopping the signal with g_signal_stop_emission, it is possible to
    --  modify the inserted text, or prevent it from being inserted entirely.
    --     procedure Handler
-   --       (Self            : access Gtk_Editable;
+   --       (Self            : Gtk_Editable;
    --        New_Text        : UTF8_String;
    --        New_Text_Length : Gint;
    --        Position        : in out Gint);

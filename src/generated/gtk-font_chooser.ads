@@ -231,9 +231,7 @@ package Gtk.Font_Chooser is
    -------------
 
    Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
-   --     procedure Handler
-   --       (Self   : access Gtk_Font_Chooser;
-   --        Object : UTF8_String);
+   --     procedure Handler (Self : Gtk_Font_Chooser; Object : UTF8_String);
 
 private
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean :=

@@ -92,7 +92,7 @@ package Gtk.Print_Operation_Preview is
    --  Page_Setup and set up a suitable cairo context, using
    --  Gtk.Print_Context.Set_Cairo_Context.
    --     procedure Handler
-   --       (Self       : access Gtk_Print_Operation_Preview;
+   --       (Self       : Gtk_Print_Operation_Preview;
    --        Context    : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
    --        Page_Setup : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class)
    --       ;
@@ -105,7 +105,7 @@ package Gtk.Print_Operation_Preview is
    --
    --  A handler for this signal can be used for setup tasks.
    --     procedure Handler
-   --       (Self    : access Gtk_Print_Operation_Preview;
+   --       (Self    : Gtk_Print_Operation_Preview;
    --        Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class)
    --       ;
    --    --  "context": the current Gtk.Print_Context.Gtk_Print_Context

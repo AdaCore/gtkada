@@ -399,12 +399,13 @@ class Enum(CType):
 
 
 class GObject(CType):
-    def __init__(self, ada, userecord=True):
+    def __init__(self, ada, userecord=True, allow_none=False, classwide=False):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.cparam = "System.Address"
         self.is_ptr = False
-        self.classwide = False  # Parameter should include "'Class"
+        self.classwide = classwide  # Parameter should include "'Class"
         self.userecord = userecord  # Parameter should be "access .._Record"
+        self.allow_none=allow_none
 
     def convert_from_c(self):
         stub = "Stub_%s" % (base_name(self.ada), )
@@ -1285,13 +1286,13 @@ class Parameter(Local_Var):
         if lang == "ada->c" and mode != "in" and self.for_function:
             mode = "access"
 
-        if mode == "in" or not hasattr(self.type, "userecord"):
-            t = super(Parameter, self)._type(lang=lang, pkg=pkg)
-        else:
+        if mode in ("in out", "out") and hasattr(self.type, "userecord"):
             userec = self.type.userecord
             self.type.userecord = False
             t = super(Parameter, self)._type(lang=lang, pkg=pkg)
             self.type.userecord = userec
+        else:
+            t = super(Parameter, self)._type(lang=lang, pkg=pkg)
 
         if mode != "in":
             return "%s %s" % (mode, t)
@@ -1432,7 +1433,7 @@ class Subprogram(object):
         """Overrides the body of the subprogram (after "is")"""
         self._manual_body = body
 
-    def _profile(self, pkg, indent="   ", maxlen=max_profile_length):
+    def profile(self, pkg, indent="   ", maxlen=max_profile_length):
         """Compute the profile for the subprogram"""
 
         returns = self.returns and self.returns.as_return(pkg=pkg)
@@ -1490,7 +1491,7 @@ class Subprogram(object):
         else:
             doc = []
 
-        result = self._profile(pkg=pkg, indent=indent, maxlen=maxlen) + ";"
+        result = self.profile(pkg=pkg, indent=indent, maxlen=maxlen) + ";"
 
         if self._import:
             result += "\n" + indent + self._import
@@ -1541,7 +1542,7 @@ class Subprogram(object):
             return ""
 
         result = box(base_name(self.name), indent=indent) + "\n\n"
-        profile = self._profile(pkg=pkg, indent=indent)
+        profile = self.profile(pkg=pkg, indent=indent)
         result += profile
 
         if profile.find("\n") != -1:

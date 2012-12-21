@@ -774,7 +774,7 @@ package Gtk.Tree_Model is
    Signal_Row_Changed : constant Glib.Signal_Name := "row-changed";
    --  This signal is emitted when a row in the model has changed.
    --     procedure Handler
-   --       (Self : access Gtk_Tree_Model;
+   --       (Self : Gtk_Tree_Model;
    --        Path : Gtk_Tree_Path;
    --        Iter : Gtk_Tree_Iter);
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the changed row
@@ -790,16 +790,14 @@ package Gtk.Tree_Model is
    --  This should be called by models after a row has been removed. The
    --  location pointed to by Path should be the location that the row
    --  previously was at. It may not be a valid location anymore.
-   --     procedure Handler
-   --       (Self : access Gtk_Tree_Model;
-   --        Path : Gtk_Tree_Path);
+   --     procedure Handler (Self : Gtk_Tree_Model; Path : Gtk_Tree_Path);
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
 
    Signal_Row_Has_Child_Toggled : constant Glib.Signal_Name := "row-has-child-toggled";
    --  This signal is emitted when a row has gotten the first child row or
    --  lost its last child row.
    --     procedure Handler
-   --       (Self : access Gtk_Tree_Model;
+   --       (Self : Gtk_Tree_Model;
    --        Path : Gtk_Tree_Path;
    --        Iter : Gtk_Tree_Iter);
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the row
@@ -812,7 +810,7 @@ package Gtk.Tree_Model is
    --  common pattern to first insert an empty row, and then fill it with the
    --  desired values.
    --     procedure Handler
-   --       (Self : access Gtk_Tree_Model;
+   --       (Self : Gtk_Tree_Model;
    --        Path : Gtk_Tree_Path;
    --        Iter : Gtk_Tree_Iter);
    --    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path identifying the new row
@@ -825,7 +823,7 @@ package Gtk.Tree_Model is
    --  Note that this signal is *not* emitted when rows are reordered by DND,
    --  since this is implemented by removing and then reinserting the row.
    --     procedure Handler
-   --       (Self      : access Gtk_Tree_Model;
+   --       (Self      : Gtk_Tree_Model;
    --        Path      : Gtk_Tree_Path;
    --        Iter      : Gtk_Tree_Iter;
    --        New_Order : System.Address);

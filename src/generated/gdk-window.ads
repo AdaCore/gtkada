@@ -1922,7 +1922,7 @@ package Gdk.Window is
    --
    --  Returns the newly created cairo_surface_t for the offscreen window
    --     function Handler
-   --       (Self   : access Gdk_Window;
+   --       (Self   : Gdk_Window;
    --        Width  : Gint;
    --        Height : Gint) return cairo.Surface;
    --    --  "width": the width of the offscreen surface to create
@@ -1934,7 +1934,7 @@ package Gdk.Window is
    --
    --  See also Gtk.Window.Gtk_Window::to-embedder.
    --     procedure Handler
-   --       (Self        : access Gdk_Window;
+   --       (Self        : Gdk_Window;
    --        Embedder_X  : Gdouble;
    --        Embedder_Y  : Gdouble;
    --        Offscreen_X : out Gdouble;
@@ -1954,7 +1954,7 @@ package Gdk.Window is
    --
    --  Returns the Gdk.Gdk_Window of the embedded child at
    --     function Handler
-   --       (Self : access Gdk_Window;
+   --       (Self : Gdk_Window;
    --        X    : Gdouble;
    --        Y    : Gdouble) return Gtk.Window.Gtk_Window;
    --    --  "x": x coordinate in the window
@@ -1966,7 +1966,7 @@ package Gdk.Window is
    --
    --  See also Gtk.Window.Gtk_Window::from-embedder.
    --     procedure Handler
-   --       (Self        : access Gdk_Window;
+   --       (Self        : Gdk_Window;
    --        Offscreen_X : Gdouble;
    --        Offscreen_Y : Gdouble;
    --        Embedder_X  : out Gdouble;

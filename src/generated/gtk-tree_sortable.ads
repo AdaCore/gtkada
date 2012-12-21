@@ -250,7 +250,7 @@ package Gtk.Tree_Sortable is
    --  The ::sort-column-changed signal is emitted when the sort column or
    --  sort order of Sortable is changed. The signal is emitted before the
    --  contents of Sortable are resorted.
-   --     procedure Handler (Self : access Gtk_Tree_Sortable);
+   --     procedure Handler (Self : Gtk_Tree_Sortable);
 
 private
 

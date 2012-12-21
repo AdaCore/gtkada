@@ -1575,15 +1575,17 @@ See Glib.Properties for more information on properties)""")
                     node=s, gtkmethod=gtkmethod, pkg=None)
 
                 if self.is_gobject:
-                    selftype = "%(typename)s_Record'Class" % self._subst
+                    selftype = GObject("%(typename)s" % self._subst,
+                                       allow_none=True, classwide=True)
+                    on_selftype = GObject("%(typename)s" % self._subst,
+                                       allow_none=False, classwide=False)
                 else:
-                    selftype = "%(typename)s" % self._subst
+                    on_selftype = selftype = "%(typename)s" % self._subst
 
                 sub = Subprogram(
                     name="Handler",
                     plist=[
-                      Parameter(
-                          name="Self", type=selftype, mode="access", doc="")]
+                      Parameter(name="Self", type=selftype)]
                       + profile.params,
                     code="null",
                     returns=profile.returns)
@@ -1601,6 +1603,21 @@ See Glib.Properties for more information on properties)""")
 
                 spec = sub.spec(pkg=self.pkg, maxlen=69)
                 section.add(Code(" %s""" % spec, fill=False, iscomment=True))
+
+                sub.name = ""
+                connect = Subprogram(
+                    name="On_%s" % naming.case(name),
+                    plist=[Parameter(name="Self", type=on_selftype),
+                           Parameter(
+                             name="Call",
+                             type=Proxy(sub.profile(pkg=self.pkg, maxlen=69))),
+                           Parameter(
+                             name="Slot",
+                             type=GObject("Glib.Object.GObject",
+                                          allow_none=True, classwide=True),
+                             default="null")],
+                    code="null")
+                #section.add(Code(connect.spec(pkg=self.pkg)))
 
     def _implements(self):
         """Bind the interfaces that a class implements"""
