@@ -346,6 +346,9 @@ package Gdk.Screen is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Font_Options_Property : constant Glib.Properties.Property_String :=
+   Glib.Properties.Build ("font-options");--  Unknown type: gpointer
+
    Resolution_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
 

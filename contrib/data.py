@@ -484,6 +484,7 @@ naming.girname_to_ctype = {
     "cairo.RectangleInt":  "cairo_rectangle_int_t*",
     "ModifierType":        "GdkModifierType",
     "TreePath":            "GtkTreePath*",
+    "TreeModel":           "GtkTreeModel*",
     "GObject.InitiallyUnowned": "GObject*",  # An alias
     "GObject.ParamSpec":   "GParamSpec",
 }

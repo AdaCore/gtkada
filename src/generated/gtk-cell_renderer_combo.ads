@@ -95,6 +95,11 @@ package Gtk.Cell_Renderer_Combo is
    --  If True, the cell renderer will include an entry and allow to enter
    --  values other than the ones in the popup list.
 
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+   --  Holds a tree model containing the possible values for the combo box.
+   --  Use the text_column property to specify the column holding the values.
+
    Text_Column_Property : constant Glib.Properties.Property_Int;
    --  Specifies the model column which holds the possible values for the
    --  combo box.
@@ -151,6 +156,8 @@ package Gtk.Cell_Renderer_Combo is
 private
    Text_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("text-column");
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
    Has_Entry_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-entry");
 end Gtk.Cell_Renderer_Combo;

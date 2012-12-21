@@ -562,6 +562,9 @@ package Gtk.Tree_Model_Filter is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Child_Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+
    Virtual_Root_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Tree_Model.Gtk_Tree_Path
 
@@ -599,4 +602,6 @@ package Gtk.Tree_Model_Filter is
 private
    Virtual_Root_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("virtual-root");
+   Child_Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("child-model");
 end Gtk.Tree_Model_Filter;

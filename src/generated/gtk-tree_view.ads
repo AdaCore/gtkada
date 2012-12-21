@@ -1533,6 +1533,9 @@ package Gtk.Tree_View is
    Level_Indentation_Property : constant Glib.Properties.Property_Int;
    --  Extra indentation for each level.
 
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+
    Reorderable_Property : constant Glib.Properties.Property_Boolean;
 
    Rubber_Banding_Property : constant Glib.Properties.Property_Boolean;
@@ -1875,6 +1878,8 @@ private
      Glib.Properties.Build ("rubber-banding");
    Reorderable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("reorderable");
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
    Level_Indentation_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("level-indentation");
    Hover_Selection_Property : constant Glib.Properties.Property_Boolean :=

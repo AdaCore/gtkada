@@ -113,6 +113,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
+with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
 with Glib.Values;          use Glib.Values;
 with Gtk.Enums;            use Gtk.Enums;
@@ -545,6 +546,15 @@ package Gtk.Tree_Model_Sort is
       (Sortable : not null access Gtk_Tree_Model_Sort_Record);
 
    ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+
+   ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
@@ -588,4 +598,7 @@ package Gtk.Tree_Model_Sort is
    return Gtk_Tree_Model_Sort
    renames Implements_Gtk_Tree_Sortable.To_Object;
 
+private
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
 end Gtk.Tree_Model_Sort;

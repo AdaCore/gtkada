@@ -351,4 +351,40 @@ package body Glib.Properties is
       return A;
    end Get_Property;
 
+   ------------------
+   -- Set_Property --
+   ------------------
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Interface;
+      Value  : Glib.Types.GType_Interface)
+   is
+      procedure Internal
+        (Object : System.Address;
+         Name   : Property;
+         Value  : Glib.Types.GType_Interface);
+      pragma Import (C, Internal, "ada_g_object_set_ptr");
+   begin
+      Internal (Get_Object (Object), Property (Name), Value);
+   end Set_Property;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Interface) return Glib.Types.GType_Interface
+   is
+      Value : GValue;
+      A     : Glib.Types.GType_Interface;
+   begin
+      Init (Value, GType_Object);
+      Get (Get_Object (Object), Property (Name), Value);
+      A := Glib.Types.GType_Interface (Get_Address (Value));
+      Unset (Value);
+      return A;
+   end Get_Property;
+
 end Glib.Properties;

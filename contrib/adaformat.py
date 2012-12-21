@@ -635,7 +635,7 @@ class Callback(CType):
 
 class Interface(CType):
     def __init__(self, ada):
-        CType.__init__(self, ada, "")
+        CType.__init__(self, ada, "Glib.Properties.Property_Interface")
         self.cparam = ada
         self.is_ptr = False
 

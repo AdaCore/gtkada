@@ -504,6 +504,9 @@ package Gtk.Entry_Completion is
 
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int;
 
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+
    Popup_Completion_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the possible completions should be shown in a popup
    --  window.
@@ -671,6 +674,8 @@ private
      Glib.Properties.Build ("popup-set-width");
    Popup_Completion_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("popup-completion");
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
    Minimum_Key_Length_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("minimum-key-length");
    Inline_Selection_Property : constant Glib.Properties.Property_Boolean :=

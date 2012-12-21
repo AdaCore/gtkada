@@ -205,6 +205,9 @@ package Gtk.Scale_Button is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Icons_Property : constant Glib.Properties.Property_String :=
+   Glib.Properties.Build ("icons");--  Unknown type: unspecified
+
    Adjustment_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Adjustment.Gtk_Adjustment
 

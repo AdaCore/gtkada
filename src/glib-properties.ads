@@ -68,6 +68,7 @@ with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with System;
+with Glib.Types;
 with Glib.Values;
 
 package Glib.Properties is
@@ -111,6 +112,7 @@ package Glib.Properties is
    type Property_Ulong     is new Ulong_Properties.Property;
    type Property_Unichar   is new Unichar_Properties.Property;
    type Property_C_Proxy   is new Glib.Property;
+   type Property_Interface is new Glib.Property;
    type Property_String_RO is new Glib.Property;
    type Property_String_WO is new Glib.Property;
    type Property_String    is new Glib.Property;
@@ -233,5 +235,14 @@ package Glib.Properties is
    function Get_Property
      (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_C_Proxy) return C_Proxy;
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Interface;
+      Value  : Glib.Types.GType_Interface);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Interface) return Glib.Types.GType_Interface;
 
 end Glib.Properties;

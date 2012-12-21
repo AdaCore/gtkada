@@ -654,6 +654,10 @@ package Gtk.Combo_Box is
    --  The column in the combo box's model that provides string IDs for the
    --  values in the model, if != -1.
 
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+   --  The model from which the combo box takes the values shown in the list.
+
    Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the popup's width should be a fixed width matching the
    --  allocated width of the combo box.
@@ -818,6 +822,8 @@ private
      Glib.Properties.Build ("popup-shown");
    Popup_Fixed_Width_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("popup-fixed-width");
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
    Id_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("id-column");
    Has_Frame_Property : constant Glib.Properties.Property_Boolean :=

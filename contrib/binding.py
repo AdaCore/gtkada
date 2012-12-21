@@ -1537,6 +1537,14 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                     if pkg:
                         self.pkg.add_with(pkg)
                 else:
+                    section = self.pkg.section("Properties")
+                    section.add(
+                        ('   %(name)s_Property : constant Glib.Properties.Property_String :='
+                        + '\n      Glib.Properties.Build ("%(cname)s"); --  Unknown type: %(type)s') % {
+                            "name": naming.case(p.get("name")),
+                            "type": (p.find(ntype).get("name") if p.find(ntype) is not None else "unspecified"),
+                            "cname": p.get("name")})
+                    self.pkg.add_with("Glib.Properties")
                     continue
 
                 adaprops.append({

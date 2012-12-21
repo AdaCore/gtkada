@@ -148,6 +148,9 @@ package Gtk.Accel_Label is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Accel_Closure_Property : constant Glib.Properties.Property_String :=
+   Glib.Properties.Build ("accel-closure");--  Unknown type: GObject.Closure
+
    Accel_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
 

@@ -354,6 +354,15 @@ package Gtk.About_Dialog is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Artists_Property : constant Glib.Properties.Property_String :=
+   Glib.Properties.Build ("artists");--  Unknown type: unspecified
+
+   Authors_Property : constant Glib.Properties.Property_String :=
+   Glib.Properties.Build ("authors");--  Unknown type: unspecified
+
+   Documenters_Property : constant Glib.Properties.Property_String :=
+   Glib.Properties.Build ("documenters");--  Unknown type: unspecified
+
    Comments_Property : constant Glib.Properties.Property_String;
    --  Comments about the program. This string is displayed in a label in the
    --  main dialog, thus it should be a short explanation of the main purpose

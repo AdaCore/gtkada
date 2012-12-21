@@ -899,6 +899,9 @@ package Gtk.Icon_View is
    --  are both set to column numbers, it overrides the text column. If both
    --  are set to -1, no texts are displayed.
 
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+
    Pixbuf_Column_Property : constant Glib.Properties.Property_Int;
    --  The ::pixbuf-column property contains the number of the model column
    --  containing the pixbufs which are displayed. The pixbuf column must be of
@@ -1180,6 +1183,8 @@ private
      Glib.Properties.Build ("reorderable");
    Pixbuf_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("pixbuf-column");
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
    Markup_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("markup-column");
    Margin_Property : constant Glib.Properties.Property_Int :=

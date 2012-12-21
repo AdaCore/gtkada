@@ -1107,6 +1107,13 @@ package Gtk.Cell_Area is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Edit_Widget_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Cell_Editable.Gtk_Cell_Editable
+   --  The widget currently editing the edited cell
+   --
+   --  This property is read-only and only changes as a result of a call
+   --  Gtk.Cell_Area.Activate_Cell.
+
    Edited_Cell_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Renderer.Gtk_Cell_Renderer
    --  The cell in the area that is currently edited
@@ -1287,4 +1294,6 @@ private
      Glib.Properties.Build ("focus-cell");
    Edited_Cell_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("edited-cell");
+   Edit_Widget_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("edit-widget");
 end Gtk.Cell_Area;

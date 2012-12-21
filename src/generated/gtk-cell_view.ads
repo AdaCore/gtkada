@@ -453,6 +453,12 @@ package Gtk.Cell_View is
    --
    --  since 3.0
 
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Gtk.Tree_Model.Gtk_Tree_Model
+   --  The model for cell view
+   --
+   --  since 2.10
+
    ----------------
    -- Interfaces --
    ----------------
@@ -498,6 +504,8 @@ package Gtk.Cell_View is
    renames Implements_Gtk_Orientable.To_Object;
 
 private
+   Model_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("model");
    Fit_Model_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("fit-model");
    Draw_Sensitive_Property : constant Glib.Properties.Property_Boolean :=
