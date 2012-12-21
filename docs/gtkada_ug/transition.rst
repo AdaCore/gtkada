@@ -78,7 +78,7 @@ Pango
 =====
 
 Pango.Font
-__________
+----------
 
 The type ``Pango_Font_Metrics`` is now declared in its own package ``Pango.Font_Metrics.``
 
@@ -93,7 +93,7 @@ Glib
 ====
 
 Glib.Object
-___________
+-----------
 
 ``Initialize_Class_Record`` now returns the type ``Ada_GObject_Class,`` not
 ``GObject_Class.``

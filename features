@@ -12,6 +12,13 @@ of the feature.
 New features in GtkAda 3.4.1
 ----------------------------
 
+L726-002 New On_* procedures to ease signal connection (2012-12-20)
+
+  Each widget has a number of additional primitives to ease signal
+  connection. For instance, one can use
+      Button.On_Clicked (Handler'Access);
+  now. See the user's guide for more information.
+
 LB30-013 New subprogram Gtk.Handlers.Set_On_Exception (2012-11-30)
 
   It was always recommended that Ada callbacks should not propagate
