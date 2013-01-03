@@ -31,11 +31,9 @@ This library has been tested using Gtk+ 2.24.8 on the following systems:
 
    - GNU Linux/x86
    - GNU Linux/x86-64
-   - GNU Linux/ia64
    - Solaris/sparc
    - Solaris/x86
    - Windows XP/Vista/7
-   - Darwin/x86-64
 
 Disclaimer
 ==========
