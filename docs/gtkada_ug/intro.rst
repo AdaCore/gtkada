@@ -40,7 +40,6 @@ This toolkit was tested on the following systems:
 
 * GNU Linux/x86
 * GNU Linux/x86-64
-* GNU Linux/ia64
 * Solaris/sparc
 * Solaris/sparc64
 * Windows XP/Vista/7
