@@ -4,7 +4,7 @@
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                     Copyright (C) 2003 ACT Europe                 --
---                    Copyright (C) 2010, AdaCore                    --
+--                    Copyright (C) 2010-2013, AdaCore               --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2010, AdaCore
+ * Copyright (C) 2009-2013, AdaCore
  */
 
 /* GTK - The GIMP Toolkit

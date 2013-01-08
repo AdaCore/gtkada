@@ -1,9 +1,9 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2013, AdaCore                  --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                 Copyright (C) 2000-2008, AdaCore                  --
+--                 Copyright (C) 2000-2013, AdaCore                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
