@@ -17,7 +17,7 @@ project Shared is
       case Build is
          when "Debug" =>
              for Default_Switches ("Ada") use
-                ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O1");
+                ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0");
          when "Production" =>
              for Default_Switches ("Ada") use
                 ("-gnatQ", "-O2", "-gnatn", "-gnatws");
