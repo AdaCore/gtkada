@@ -1,3 +1,10 @@
+2013-01-09	Nicolas Setton <setton@adacore.com>
+
+	(gio/gresource.c): Fix loading of gresource files on big-endian
+	platforms.
+	This patch is already in glib-2.32.2 and above.
+	<https://bugzilla.gnome.org/show_bug.cgi?id=673409>
+
 2012-04-02	Nicolas Setton  <setton@adacore.com>
 
 	(glib/gthread-posix.c, glib/tests/thread.c): Some old versions
@@ -115,3 +122,24 @@
  
    return NULL;
  }
+--- gio/gresource.c.orig	2013-01-09 11:37:43.136887171 +0100
++++ gio/gresource.c	2013-01-09 11:38:29.297722363 +0100
+@@ -287,7 +287,7 @@
+       free_path[path_len-1] = 0;
+     }
+ 
+-  value = gvdb_table_get_value (resource->table, path);
++  value = gvdb_table_get_raw_value (resource->table, path);
+ 
+   if (value == NULL)
+     {
+@@ -305,6 +305,9 @@
+                      &_flags,
+                      &array);
+ 
++      _size = GUINT_FROM_LE (_size);
++      _flags = GUINT_FROM_LE (_flags);
++
+       if (size)
+         *size = _size;
+       if (flags)
