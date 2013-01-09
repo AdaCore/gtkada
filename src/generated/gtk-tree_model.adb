@@ -50,9 +50,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Gint;
-         Dummy      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out Gint);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
       A : Gint;
    begin
       if Iter = Null_Iter then
@@ -115,9 +114,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Glib.C_Proxy;
-         Dummy      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out Glib.C_Proxy);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
       A : Glib.C_Proxy;
    begin
       if Iter = Null_Iter then
@@ -145,9 +143,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Interfaces.C.Strings.chars_ptr;
-         Dummy      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
       A : Interfaces.C.Strings.chars_ptr;
    begin
       if Iter = Null_Iter then
@@ -184,9 +181,8 @@ package body Gtk.Tree_Model is
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out System.Address;
-         Dummy      : Gint := -1);
-      pragma Import (C, Internal, "gtk_tree_model_get");
+         Value      : out System.Address);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
       A : System.Address;
    begin
       if Iter = Null_Iter then
