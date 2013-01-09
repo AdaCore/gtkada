@@ -235,6 +235,15 @@ c_sprintf (char *s, char *format, int arg1, int arg2, int arg3)
   sprintf (s, format, arg1, arg2, arg3);
 }
 
+void
+ada_gtk_tree_model_get (GtkTreeModel *tree_model,
+                        GtkTreeIter  *iter,
+			gint         column,
+			void         *data)
+{
+   gtk_tree_model_get (tree_model, iter, column, data, -1);
+}
+
 /********************************************************************
  **  This function should only be used for debug purposes.
  ********************************************************************/
