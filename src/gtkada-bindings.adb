@@ -296,6 +296,7 @@ package body Gtkada.Bindings is
          Closure => Closure,
          After   => Boolean'Pos (After));
    end Unchecked_Do_Signal_Connect;
+
    -----------------------
    -- Process_Exception --
    -----------------------

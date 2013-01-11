@@ -6640,15 +6640,14 @@ package body Gtkada.MDI is
             end if;
          end;
 
-         Reset_Title_Bars_And_Colors (MDI);
-
-         Show_All (MDI);
-
          if not MDI.Independent_Perspectives then
             Realize (MDI.Central);
             Show_All (MDI.Central);
             Unref (MDI.Central);
          end if;
+
+         Show_All (MDI);
+         Reset_Title_Bars_And_Colors (MDI);
 
          MDI.Loading_Desktop := False;
          Thaw (MDI);
