@@ -28,3 +28,14 @@
  AM_CPPFLAGS = \
  	$(glib_INCLUDES) 		\
  	$(pcre_inc) 			\
+--- gobject/Makefile.in.orig	2013-01-11 12:31:13.908839000 +0100
++++ gobject/Makefile.in	2013-01-11 12:31:40.156360000 +0100
+@@ -465,7 +465,7 @@
+ # GObject - GLib Type, Object, Parameter and Signal Library
+ # Copyright (C) 1997,98,99,2000 Tim Janik and Red Hat, Inc.
+ #
+-SUBDIRS = . tests
++SUBDIRS = . 
+ BUILT_SOURCES = $(am__append_1)
+ CLEANFILES = $(am__append_2) gobject-public-headers.txt $(gen_sources) \
+ 	libgobject-gdb.py
