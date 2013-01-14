@@ -5344,6 +5344,17 @@ package body Gtkada.MDI is
          end if;
 
          Indent_Debug (-1);
+
+         exception
+            when E : others =>
+               pragma Debug
+                 (Put_Line
+                    ("Unexpected exception: " & Exception_Information (E)));
+
+               if Traces then
+                  Print_Debug ("Unexpected exception "
+                               & Exception_Information (E));
+               end if;
       end Parse_Child_Node;
 
       ---------------------
