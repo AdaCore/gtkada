@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Glib.Object;     use Glib.Object;
+with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtk.Tree_Model;  use Gtk.Tree_Model;
 with Interfaces.C.Strings;
 with System;
@@ -173,6 +174,10 @@ package body Gtkada.Abstract_Tree_Model is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
       return T.Get_Column_Type (Index);
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return Glib.GType_None;
    end Dispatch_Get_Column_Type;
 
    function Get_Column_Type
@@ -194,6 +199,10 @@ package body Gtkada.Abstract_Tree_Model is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
       return T.Get_Flags;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Get_Flags;
 
    function Get_Flags
@@ -224,6 +233,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Get_Iter;
 
    function Get_Iter
@@ -246,6 +259,10 @@ package body Gtkada.Abstract_Tree_Model is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
       return T.Get_Path (Iter.all).Get_Object;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return System.Null_Address;
    end Dispatch_Get_Path;
 
    function Get_Path
@@ -267,6 +284,10 @@ package body Gtkada.Abstract_Tree_Model is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
       return T.Get_N_Columns;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Get_N_Columns;
 
    function Get_N_Columns
@@ -292,6 +313,10 @@ package body Gtkada.Abstract_Tree_Model is
          raise Program_Error with "passing a null_iter to Get_Value";
       end if;
       T.Get_Value (Iter.all, Column, Value);
+   exception
+      when E : others =>
+         Process_Exception (E);
+         Glib.Values.Unset (Value);
    end Dispatch_Get_Value;
 
    procedure Get_Value
@@ -333,6 +358,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Children;
 
    function Children
@@ -359,6 +388,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return 0;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Has_Child;
 
    function Has_Child
@@ -385,6 +418,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return T.N_Children (Iter.all);
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_N_Children;
 
    function N_Children
@@ -412,6 +449,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Next;
 
    procedure Next
@@ -447,6 +488,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Nth_Child;
 
    function Nth_Child
@@ -475,6 +520,10 @@ package body Gtkada.Abstract_Tree_Model is
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Parent;
 
    function Parent
@@ -497,6 +546,9 @@ package body Gtkada.Abstract_Tree_Model is
       if Iter /= null then
          T.Ref_Node (Iter.all);
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
    end Dispatch_Ref_Node;
 
    procedure Ref_Node
@@ -524,6 +576,9 @@ package body Gtkada.Abstract_Tree_Model is
       if Iter /= null then
          T.Unref_Node (Iter.all);
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
    end Dispatch_Unref_Node;
 
    procedure Unref_Node
