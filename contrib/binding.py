@@ -575,13 +575,6 @@ class SubprogramProfile(object):
                 return None
 
             if not default and allow_none and isinstance(type, UTF8):
-                # We cannot set a "null" default for a GObject, since the
-                # following is not allowed in Ada05:
-                #    procedure P (A : access GObject_Record'Class := null);
-                # We need a named type instead, ie:
-                #    procedure P (A : GObject := null);
-                # but then this needs an extra cast in user code.
-
                 default = '""'
 
             if (p.get("scope", "") in ("notified", "call", "async")
