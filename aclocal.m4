@@ -372,32 +372,6 @@ main ()
 
 #############################################################
 #
-#  Checking for PANGO_UNDERLINE_ERROR
-#
-#############################################################
-
-AC_DEFUN(AM_PANGO_UNDERLINE_ERROR,
-[   
-  ac_save_CFLAGS="$CFLAGS"
-  ac_save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $GTK_CFLAGS"
-  LIBS="$LIBS $GTK_LIBS"
-  CFLAGS="$CFLAGS $GTK_CFLAGS"
-  LIBS="$LIBS $GTK_LIBS"
-  DEFINE_UNDERLINE_ERROR="#undef HAVE_PANGO_UNDERLINE_ERROR"
-  AC_MSG_CHECKING(for PANGO_UNDERLINE_ERROR)
-  AC_TRY_LINK([ #include <pango/pango.h> ],
-    [ PangoUnderline underline = PANGO_UNDERLINE_ERROR; ],
-    [ AC_MSG_RESULT(yes)
-      DEFINE_UNDERLINE_ERROR="#define HAVE_PANGO_UNDERLINE_ERROR" ],
-    AC_MSG_RESULT(no))
-  AC_SUBST(DEFINE_UNDERLINE_ERROR)
-  CFLAGS="$ac_save_CFLAGS"
-  LIBS="$ac_save_LIBS"
-])
-
-#############################################################
-#
 #  Checking for openGL
 #
 #############################################################
