@@ -69,12 +69,15 @@ package body Create_Layout is
       (Layout : access Gtk_Layout_Record'Class;
        Cr     : Cairo_Context) return Boolean
    is
-      pragma Unreferenced (Layout);
       Imin, Imax : Gdouble;
       Jmin, Jmax : Gdouble;
       Xmin, Xmax : Gint;
       Ymin, Ymax : Gint;
+      X, Y : Gint;
    begin
+      Gdk.Window.Get_Position (Layout.Get_Bin_Window, X, Y);
+      Cairo.Translate (Cr, Gdouble (X), Gdouble (Y));
+
       Clip_Extents (Cr, Imin, Jmin, Imax, Jmax);
       Xmin := Gint (Imin / 10.0);
       Xmax := Gint ((Imax + 9.0) / 10.0);
