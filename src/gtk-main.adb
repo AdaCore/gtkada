@@ -555,8 +555,14 @@ package body Gtk.Main is
          Required_Micro : Guint)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_check_version");
+      C : constant Interfaces.C.Strings.chars_ptr :=
+         Internal (Required_Major, Required_Minor, Required_Micro);
    begin
-      return Value (Internal (Required_Major, Required_Minor, Required_Micro));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
    end Check_Version;
 
    -----------------------------
