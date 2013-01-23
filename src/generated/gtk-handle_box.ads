@@ -55,6 +55,8 @@ with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Handle_Box is
 
+   pragma Obsolescent;
+
    type Gtk_Handle_Box_Record is new Gtk_Bin_Record with null record;
    type Gtk_Handle_Box is access all Gtk_Handle_Box_Record'Class;
 

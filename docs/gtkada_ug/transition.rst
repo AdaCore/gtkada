@@ -548,6 +548,12 @@ Gtk.GRange
 ``Set_Update_Policy`` has been removed, with no replacement. If you require
 delayed updates, you will need to code it yourself.
 
+Gtk.Handle_Box
+--------------
+
+This package is now marked as deprecated in C, and is likely to be removed
+in future versions of gtk+, so we encourage you to stop using it as well.
+
 Gtk.HRuler
 ----------
 

@@ -2131,7 +2131,7 @@ __PRE__
       </extra>
    </package>
 
-   <package id="GtkHandleBox">
+   <package id="GtkHandleBox" obsolescent="True">
      <parameter name="self" ada="Handle_Box"/>
    </package>
 
