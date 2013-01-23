@@ -180,7 +180,7 @@ package body Gtk.Recent_Manager is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Add_Item;
 
    ---------------
@@ -216,7 +216,7 @@ package body Gtk.Recent_Manager is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Has_Item;
 
    -----------------
@@ -265,7 +265,7 @@ package body Gtk.Recent_Manager is
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI, Tmp_New_Uri);
       Free (Tmp_New_Uri);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Move_Item;
 
    -----------------
@@ -298,7 +298,7 @@ package body Gtk.Recent_Manager is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Remove_Item;
 
    -----------------

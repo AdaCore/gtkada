@@ -107,7 +107,7 @@ package body Pango.Tabs is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_tab_array_get_positions_in_pixels");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Positions_In_Pixels;
 
    --------------

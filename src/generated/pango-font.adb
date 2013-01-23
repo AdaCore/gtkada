@@ -151,7 +151,7 @@ package body Pango.Font is
           New_Match : Pango_Font_Description) return Integer;
       pragma Import (C, Internal, "pango_font_description_better_match");
    begin
-      return Boolean'Val (Internal (Self, Old_Match, New_Match));
+      return Internal (Self, Old_Match, New_Match) /= 0;
    end Better_Match;
 
    --------------
@@ -197,7 +197,7 @@ package body Pango.Font is
           Desc2 : Pango_Font_Description) return Integer;
       pragma Import (C, Internal, "pango_font_description_equal");
    begin
-      return Boolean'Val (Internal (Self, Desc2));
+      return Internal (Self, Desc2) /= 0;
    end Equal;
 
    ----------------
@@ -260,7 +260,7 @@ package body Pango.Font is
       function Internal (Self : Pango_Font_Description) return Integer;
       pragma Import (C, Internal, "pango_font_description_get_size_is_absolute");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Size_Is_Absolute;
 
    -----------

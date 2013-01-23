@@ -325,7 +325,7 @@ package body Gtk.Cell_View is
       function Internal (Cell_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_view_get_draw_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (Cell_View)));
+      return Internal (Get_Object (Cell_View)) /= 0;
    end Get_Draw_Sensitive;
 
    -------------------
@@ -338,7 +338,7 @@ package body Gtk.Cell_View is
       function Internal (Cell_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_view_get_fit_model");
    begin
-      return Boolean'Val (Internal (Get_Object (Cell_View)));
+      return Internal (Get_Object (Cell_View)) /= 0;
    end Get_Fit_Model;
 
    ---------------
@@ -378,7 +378,7 @@ package body Gtk.Cell_View is
       Tmp_Return := Internal (Get_Object (Cell_View), Get_Object (Path), Tmp_Acc_Requisition'Access);
       Acc_Requisition := Tmp_Acc_Requisition;
       Requisition.all := Acc_Requisition;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Size_Of_Row;
 
    --------------------------

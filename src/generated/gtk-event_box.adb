@@ -75,7 +75,7 @@ package body Gtk.Event_Box is
       function Internal (Event_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_event_box_get_above_child");
    begin
-      return Boolean'Val (Internal (Get_Object (Event_Box)));
+      return Internal (Get_Object (Event_Box)) /= 0;
    end Get_Above_Child;
 
    ------------------------
@@ -88,7 +88,7 @@ package body Gtk.Event_Box is
       function Internal (Event_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_event_box_get_visible_window");
    begin
-      return Boolean'Val (Internal (Get_Object (Event_Box)));
+      return Internal (Get_Object (Event_Box)) /= 0;
    end Get_Visible_Window;
 
    ---------------------

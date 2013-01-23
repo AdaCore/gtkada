@@ -164,7 +164,7 @@ package body Gtk.Text_View is
           Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Integer;
       pragma Import (C, Internal, "gtk_text_view_backward_display_line");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter));
+      return Internal (Get_Object (View), Iter) /= 0;
    end Backward_Display_Line;
 
    ---------------------------------
@@ -180,7 +180,7 @@ package body Gtk.Text_View is
           Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Integer;
       pragma Import (C, Internal, "gtk_text_view_backward_display_line_start");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter));
+      return Internal (Get_Object (View), Iter) /= 0;
    end Backward_Display_Line_Start;
 
    -----------------------------
@@ -220,7 +220,7 @@ package body Gtk.Text_View is
           Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Integer;
       pragma Import (C, Internal, "gtk_text_view_forward_display_line");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter));
+      return Internal (Get_Object (View), Iter) /= 0;
    end Forward_Display_Line;
 
    ------------------------------
@@ -236,7 +236,7 @@ package body Gtk.Text_View is
           Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Integer;
       pragma Import (C, Internal, "gtk_text_view_forward_display_line_end");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter));
+      return Internal (Get_Object (View), Iter) /= 0;
    end Forward_Display_Line_End;
 
    ---------------------
@@ -249,7 +249,7 @@ package body Gtk.Text_View is
       function Internal (View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_view_get_accepts_tab");
    begin
-      return Boolean'Val (Internal (Get_Object (View)));
+      return Internal (Get_Object (View)) /= 0;
    end Get_Accepts_Tab;
 
    ----------------------------
@@ -313,7 +313,7 @@ package body Gtk.Text_View is
       function Internal (View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_view_get_cursor_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (View)));
+      return Internal (Get_Object (View)) /= 0;
    end Get_Cursor_Visible;
 
    ----------------------------
@@ -342,7 +342,7 @@ package body Gtk.Text_View is
       function Internal (View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_view_get_editable");
    begin
-      return Boolean'Val (Internal (Get_Object (View)));
+      return Internal (Get_Object (View)) /= 0;
    end Get_Editable;
 
    ----------------
@@ -502,7 +502,7 @@ package body Gtk.Text_View is
       function Internal (View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_view_get_overwrite");
    begin
-      return Boolean'Val (Internal (Get_Object (View)));
+      return Internal (Get_Object (View)) /= 0;
    end Get_Overwrite;
 
    ----------------------------
@@ -647,7 +647,7 @@ package body Gtk.Text_View is
           Event : Gdk.Event.Gdk_Event_Key) return Integer;
       pragma Import (C, Internal, "gtk_text_view_im_context_filter_keypress");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Event));
+      return Internal (Get_Object (View), Event) /= 0;
    end Im_Context_Filter_Keypress;
 
    ----------------
@@ -684,7 +684,7 @@ package body Gtk.Text_View is
           Mark : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_view_move_mark_onscreen");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Get_Object (Mark)));
+      return Internal (Get_Object (View), Get_Object (Mark)) /= 0;
    end Move_Mark_Onscreen;
 
    -------------------
@@ -702,7 +702,7 @@ package body Gtk.Text_View is
           Count : Gint) return Integer;
       pragma Import (C, Internal, "gtk_text_view_move_visually");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter, Count));
+      return Internal (Get_Object (View), Iter, Count) /= 0;
    end Move_Visually;
 
    ---------------------------
@@ -715,7 +715,7 @@ package body Gtk.Text_View is
       function Internal (View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_view_place_cursor_onscreen");
    begin
-      return Boolean'Val (Internal (Get_Object (View)));
+      return Internal (Get_Object (View)) /= 0;
    end Place_Cursor_Onscreen;
 
    ----------------------
@@ -764,7 +764,7 @@ package body Gtk.Text_View is
           Yalign        : Gdouble) return Integer;
       pragma Import (C, Internal, "gtk_text_view_scroll_to_iter");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter, Within_Margin, Boolean'Pos (Use_Align), Xalign, Yalign));
+      return Internal (Get_Object (View), Iter, Within_Margin, Boolean'Pos (Use_Align), Xalign, Yalign) /= 0;
    end Scroll_To_Iter;
 
    --------------------
@@ -1022,7 +1022,7 @@ package body Gtk.Text_View is
           Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Integer;
       pragma Import (C, Internal, "gtk_text_view_starts_display_line");
    begin
-      return Boolean'Val (Internal (Get_Object (View), Iter));
+      return Internal (Get_Object (View), Iter) /= 0;
    end Starts_Display_Line;
 
    -----------------------------

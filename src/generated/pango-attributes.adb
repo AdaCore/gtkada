@@ -151,7 +151,7 @@ package body Pango.Attributes is
           Attr2 : Pango_Attribute) return Integer;
       pragma Import (C, Internal, "pango_attribute_equal");
    begin
-      return Boolean'Val (Internal (Self, Attr2));
+      return Internal (Self, Attr2) /= 0;
    end Equal;
 
    ------------

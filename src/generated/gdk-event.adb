@@ -283,7 +283,7 @@ package body Gdk.Event is
    begin
       Tmp_Return := Internal (Event, Event2, Acc_Angle'Access);
       Angle.all := Acc_Angle;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Angle;
 
    ----------------
@@ -309,7 +309,7 @@ package body Gdk.Event is
       Tmp_Return := Internal (Event, Event2, Acc_X'Access, Acc_Y'Access);
       X.all := Acc_X;
       Y.all := Acc_Y;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Center;
 
    ------------------
@@ -331,7 +331,7 @@ package body Gdk.Event is
    begin
       Tmp_Return := Internal (Event, Event2, Acc_Distance'Access);
       Distance.all := Acc_Distance;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Distance;
 
    -----------------
@@ -411,7 +411,7 @@ package body Gdk.Event is
       function Internal return Integer;
       pragma Import (C, Internal, "gdk_events_pending");
    begin
-      return Boolean'Val (Internal);
+      return Internal /= 0;
    end Events_Pending;
 
    ---------------------
@@ -422,7 +422,7 @@ package body Gdk.Event is
       function Internal return Integer;
       pragma Import (C, Internal, "gdk_get_show_events");
    begin
-      return Boolean'Val (Internal);
+      return Internal /= 0;
    end Get_Show_Events;
 
    ---------------------

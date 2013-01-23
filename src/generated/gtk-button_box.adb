@@ -86,7 +86,7 @@ package body Gtk.Button_Box is
           Child  : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_box_get_child_non_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Child)));
+      return Internal (Get_Object (Widget), Get_Object (Child)) /= 0;
    end Get_Child_Non_Homogeneous;
 
    -------------------------
@@ -103,7 +103,7 @@ package body Gtk.Button_Box is
           Child  : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_box_get_child_secondary");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Child)));
+      return Internal (Get_Object (Widget), Get_Object (Child)) /= 0;
    end Get_Child_Secondary;
 
    ----------------

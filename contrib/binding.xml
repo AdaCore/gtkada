@@ -2072,6 +2072,20 @@ __PRE__
         <parameter name="user_data" ada="Icon" type="Glib.Object.GObject"/>
         <parameter name="x" direction="inout" />
         <parameter name="y" direction="inout" />
+        <body>
+      procedure Internal
+         (Menu    : System.Address;
+          X       : in out Gint;
+          Y       : in out Gint;
+          Push_In : out Integer;
+          Icon    : System.Address);
+      pragma Import (C, Internal, "gtk_status_icon_position_menu");
+      --  Custom body because we need to initialize to 0 here (on OSX).
+      Tmp_Push_In : aliased Integer := 0;
+   begin
+      Internal (Get_Object (Menu), X, Y, Tmp_Push_In, Get_Object (Icon));
+      Push_In := Tmp_Push_In /= 0;
+        </body>
       </method>
    </package>
 

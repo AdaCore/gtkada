@@ -645,7 +645,7 @@ package body Gtk.Tree_Model_Filter is
           Path : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_delete");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Path)));
+      return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
    end Drag_Data_Delete;
 
    -------------------
@@ -670,7 +670,7 @@ package body Gtk.Tree_Model_Filter is
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Path), Tmp_Acc_Selection_Data'Access);
       Acc_Selection_Data := From_Object (Tmp_Acc_Selection_Data);
       Selection_Data.all := Acc_Selection_Data;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Drag_Data_Get;
 
    ---------------------
@@ -851,7 +851,7 @@ package body Gtk.Tree_Model_Filter is
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_model_iter_has_child");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Model), Iter));
+      return Internal (Get_Object (Tree_Model), Iter) /= 0;
    end Has_Child;
 
    ----------------
@@ -1018,7 +1018,7 @@ package body Gtk.Tree_Model_Filter is
           Path : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_row_draggable");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Path)));
+      return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
    end Row_Draggable;
 
    ---------------------------

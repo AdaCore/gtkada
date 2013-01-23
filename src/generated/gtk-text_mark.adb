@@ -121,7 +121,7 @@ package body Gtk.Text_Mark is
       function Internal (Mark : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_mark_get_deleted");
    begin
-      return Boolean'Val (Internal (Get_Object (Mark)));
+      return Internal (Get_Object (Mark)) /= 0;
    end Get_Deleted;
 
    ----------------------
@@ -134,7 +134,7 @@ package body Gtk.Text_Mark is
       function Internal (Mark : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_mark_get_left_gravity");
    begin
-      return Boolean'Val (Internal (Get_Object (Mark)));
+      return Internal (Get_Object (Mark)) /= 0;
    end Get_Left_Gravity;
 
    --------------
@@ -161,7 +161,7 @@ package body Gtk.Text_Mark is
       function Internal (Mark : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_mark_get_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Mark)));
+      return Internal (Get_Object (Mark)) /= 0;
    end Get_Visible;
 
    -----------------

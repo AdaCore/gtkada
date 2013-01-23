@@ -273,7 +273,7 @@ package body Gtk.Cell_Area is
           Edit_Only : Integer) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Flags, Boolean'Pos (Edit_Only)));
+      return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Flags, Boolean'Pos (Edit_Only)) /= 0;
    end Activate;
 
    -------------------
@@ -298,7 +298,7 @@ package body Gtk.Cell_Area is
           return Integer;
       pragma Import (C, Internal, "gtk_cell_area_activate_cell");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Flags));
+      return Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Flags) /= 0;
    end Activate_Cell;
 
    ---------
@@ -511,7 +511,7 @@ package body Gtk.Cell_Area is
           Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Direction));
+      return Internal (Get_Object (Self), Direction) /= 0;
    end Focus;
 
    -------------
@@ -911,7 +911,7 @@ package body Gtk.Cell_Area is
           Renderer : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_has_renderer");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Renderer)));
+      return Internal (Get_Object (Self), Get_Object (Renderer)) /= 0;
    end Has_Renderer;
 
    ---------------------
@@ -944,7 +944,7 @@ package body Gtk.Cell_Area is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_is_activatable");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Is_Activatable;
 
    ----------------------
@@ -963,7 +963,7 @@ package body Gtk.Cell_Area is
           Sibling  : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_area_is_focus_sibling");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Renderer), Get_Object (Sibling)));
+      return Internal (Get_Object (Self), Get_Object (Renderer), Get_Object (Sibling)) /= 0;
    end Is_Focus_Sibling;
 
    ------------

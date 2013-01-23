@@ -144,7 +144,7 @@ package body Gtk.Toggle_Button is
       function Internal (Toggle_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_button_get_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Toggle_Button)));
+      return Internal (Get_Object (Toggle_Button)) /= 0;
    end Get_Active;
 
    ----------------------
@@ -158,7 +158,7 @@ package body Gtk.Toggle_Button is
       function Internal (Toggle_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_button_get_inconsistent");
    begin
-      return Boolean'Val (Internal (Get_Object (Toggle_Button)));
+      return Internal (Get_Object (Toggle_Button)) /= 0;
    end Get_Inconsistent;
 
    --------------
@@ -172,7 +172,7 @@ package body Gtk.Toggle_Button is
       function Internal (Toggle_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_button_get_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Toggle_Button)));
+      return Internal (Get_Object (Toggle_Button)) /= 0;
    end Get_Mode;
 
    ----------------
@@ -273,7 +273,7 @@ package body Gtk.Toggle_Button is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

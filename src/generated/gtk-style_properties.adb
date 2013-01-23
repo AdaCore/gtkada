@@ -103,7 +103,7 @@ package body Gtk.Style_Properties is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Property, State, Acc_Value'Access);
       Free (Tmp_Property);
       Value := Acc_Value;
-      Exists := Boolean'Val (Tmp_Return);
+      Exists := Tmp_Return /= 0;
    end Get_Property;
 
    ------------------
@@ -232,7 +232,7 @@ package body Gtk.Style_Properties is
       Tmp_Return := Internal (Get_Object (Self), Path, State, Acc_Pspec'Access, Acc_Value'Access);
       Pspec := Acc_Pspec;
       Value := Acc_Value;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Get_Style_Property;
 
 end Gtk.Style_Properties;

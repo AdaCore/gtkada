@@ -172,7 +172,7 @@ package body Gtk.Font_Selection_Dialog is
    begin
       Tmp_Return := Internal (Get_Object (Dialog), Tmp_Fontname);
       Free (Tmp_Fontname);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Font_Name;
 
    ----------------------

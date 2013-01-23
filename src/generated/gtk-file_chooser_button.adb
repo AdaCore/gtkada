@@ -141,7 +141,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_button_get_focus_on_click");
    begin
-      return Boolean'Val (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button)) /= 0;
    end Get_Focus_On_Click;
 
    ---------------
@@ -249,7 +249,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_Folder);
       Free (Tmp_Folder);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Add_Shortcut_Folder;
 
    -----------------------------
@@ -269,7 +269,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Add_Shortcut_Folder_Uri;
 
    ----------------
@@ -299,7 +299,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_create_folders");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Create_Folders;
 
    ------------------------
@@ -343,7 +343,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_do_overwrite_confirmation");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Do_Overwrite_Confirmation;
 
    ----------------------
@@ -418,7 +418,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_local_only");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Local_Only;
 
    ---------------------
@@ -492,7 +492,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_preview_widget_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Preview_Widget_Active;
 
    -------------------------
@@ -506,7 +506,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_select_multiple");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Select_Multiple;
 
    ---------------------
@@ -520,7 +520,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_show_hidden");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Show_Hidden;
 
    -------------
@@ -565,7 +565,7 @@ package body Gtk.File_Chooser_Button is
       function Internal (Chooser : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_file_chooser_get_use_preview_label");
    begin
-      return Boolean'Val (Internal (Get_Object (Chooser)));
+      return Internal (Get_Object (Chooser)) /= 0;
    end Get_Use_Preview_Label;
 
    ------------------
@@ -647,7 +647,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_Folder);
       Free (Tmp_Folder);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Remove_Shortcut_Folder;
 
    --------------------------------
@@ -667,7 +667,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Remove_Shortcut_Folder_Uri;
 
    ----------------
@@ -700,7 +700,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_Filename);
       Free (Tmp_Filename);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Select_Filename;
 
    ----------------
@@ -720,7 +720,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Select_Uri;
 
    ----------------
@@ -772,7 +772,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_Filename);
       Free (Tmp_Filename);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Current_Folder;
 
    ----------------------------
@@ -792,7 +792,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Current_Folder_Uri;
 
    ----------------------
@@ -862,7 +862,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_Filename);
       Free (Tmp_Filename);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Filename;
 
    ----------------
@@ -986,7 +986,7 @@ package body Gtk.File_Chooser_Button is
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Uri;
 
    ---------------------------

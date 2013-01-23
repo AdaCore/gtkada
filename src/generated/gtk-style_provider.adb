@@ -52,7 +52,7 @@ package body Gtk.Style_Provider is
       Tmp_Return := Internal (Self, Path, State, Acc_Pspec'Access, Acc_Value'Access);
       Pspec := Acc_Pspec;
       Value := Acc_Value;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Get_Style_Property;
 
    function "+" (W : Gtk_Style_Provider) return Gtk_Style_Provider is

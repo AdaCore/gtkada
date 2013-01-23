@@ -135,7 +135,7 @@ package body Gtk.Accel_Group is
           Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_accel_group_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Accel_Group), Accel_Quark, Get_Object (Acceleratable), Accel_Key, Accel_Mods));
+      return Internal (Get_Object (Accel_Group), Accel_Quark, Get_Object (Acceleratable), Accel_Key, Accel_Mods) /= 0;
    end Activate;
 
    -------------
@@ -193,7 +193,7 @@ package body Gtk.Accel_Group is
           Closure     : C_Gtk_Accel_Group_Activate) return Integer;
       pragma Import (C, Internal, "gtk_accel_group_disconnect");
    begin
-      return Boolean'Val (Internal (Get_Object (Accel_Group), Closure));
+      return Internal (Get_Object (Accel_Group), Closure) /= 0;
    end Disconnect;
 
    --------------------
@@ -211,7 +211,7 @@ package body Gtk.Accel_Group is
           Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_accel_group_disconnect_key");
    begin
-      return Boolean'Val (Internal (Get_Object (Accel_Group), Accel_Key, Accel_Mods));
+      return Internal (Get_Object (Accel_Group), Accel_Key, Accel_Mods) /= 0;
    end Disconnect_Key;
 
    ----------
@@ -291,7 +291,7 @@ package body Gtk.Accel_Group is
       function Internal (Accel_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_accel_group_get_is_locked");
    begin
-      return Boolean'Val (Internal (Get_Object (Accel_Group)));
+      return Internal (Get_Object (Accel_Group)) /= 0;
    end Get_Is_Locked;
 
    -----------------------
@@ -346,7 +346,7 @@ package body Gtk.Accel_Group is
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_accel_groups_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Object), Accel_Key, Accel_Mods));
+      return Internal (Get_Object (Object), Accel_Key, Accel_Mods) /= 0;
    end Accel_Groups_Activate;
 
    ---------------------------
@@ -416,7 +416,7 @@ package body Gtk.Accel_Group is
           Modifiers : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_accelerator_valid");
    begin
-      return Boolean'Val (Internal (Keyval, Modifiers));
+      return Internal (Keyval, Modifiers) /= 0;
    end Accelerator_Valid;
 
    ------------------------

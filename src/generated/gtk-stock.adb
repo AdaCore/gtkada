@@ -115,7 +115,7 @@ package body Gtk.Stock is
       Acc_Item := Tmp_Acc_Item;
       Free (Tmp_Stock_Id);
       Item := Acc_Item;
-      Success := Boolean'Val (Tmp_Return);
+      Success := Tmp_Return /= 0;
    end Lookup;
 
 end Gtk.Stock;

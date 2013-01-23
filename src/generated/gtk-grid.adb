@@ -140,7 +140,7 @@ package body Gtk.Grid is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_grid_get_column_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Column_Homogeneous;
 
    ------------------------
@@ -166,7 +166,7 @@ package body Gtk.Grid is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_grid_get_row_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Row_Homogeneous;
 
    ---------------------

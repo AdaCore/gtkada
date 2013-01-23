@@ -79,7 +79,7 @@ package body Gtk.Handle_Box is
       function Internal (Handle_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_handle_box_get_child_detached");
    begin
-      return Boolean'Val (Internal (Get_Object (Handle_Box)));
+      return Internal (Get_Object (Handle_Box)) /= 0;
    end Get_Child_Detached;
 
    -------------------------

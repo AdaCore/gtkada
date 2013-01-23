@@ -98,7 +98,7 @@ package body Gtk.Tool_Item is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_expand");
    begin
-      return Boolean'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item)) /= 0;
    end Get_Expand;
 
    ---------------------
@@ -111,7 +111,7 @@ package body Gtk.Tool_Item is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item)) /= 0;
    end Get_Homogeneous;
 
    -------------------
@@ -139,7 +139,7 @@ package body Gtk.Tool_Item is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_is_important");
    begin
-      return Boolean'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item)) /= 0;
    end Get_Is_Important;
 
    ---------------------
@@ -262,7 +262,7 @@ package body Gtk.Tool_Item is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_use_drag_window");
    begin
-      return Boolean'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item)) /= 0;
    end Get_Use_Drag_Window;
 
    ----------------------------
@@ -275,7 +275,7 @@ package body Gtk.Tool_Item is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_visible_horizontal");
    begin
-      return Boolean'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item)) /= 0;
    end Get_Visible_Horizontal;
 
    --------------------------
@@ -288,7 +288,7 @@ package body Gtk.Tool_Item is
       function Internal (Tool_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_get_visible_vertical");
    begin
-      return Boolean'Val (Internal (Get_Object (Tool_Item)));
+      return Internal (Get_Object (Tool_Item)) /= 0;
    end Get_Visible_Vertical;
 
    ------------------
@@ -517,7 +517,7 @@ package body Gtk.Tool_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

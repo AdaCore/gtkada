@@ -177,7 +177,7 @@ package body Gtk.Tree_Row_Reference is
       function Internal (Reference : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_row_reference_valid");
    begin
-      return Boolean'Val (Internal (Get_Object (Reference)));
+      return Internal (Get_Object (Reference)) /= 0;
    end Valid;
 
    -------------

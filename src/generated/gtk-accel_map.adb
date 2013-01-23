@@ -94,7 +94,7 @@ package body Gtk.Accel_Map is
    is
       Func : constant Gtk_Accel_Map_Foreach := To_Gtk_Accel_Map_Foreach (Data);
    begin
-      Func (Gtkada.Bindings.Value_Allowing_Null (Accel_Path), Accel_Key, Accel_Mods, Boolean'Val (Changed));
+      Func (Gtkada.Bindings.Value_Allowing_Null (Accel_Path), Accel_Key, Accel_Mods, Changed /= 0);
    end Internal_Gtk_Accel_Map_Foreach;
 
    package Type_Conversion_Gtk_Accel_Map is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -183,7 +183,7 @@ package body Gtk.Accel_Map is
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         To_Gtk_Accel_Map_Foreach (D.Func) (D.Data.all, Gtkada.Bindings.Value_Allowing_Null (Accel_Path), Accel_Key, Accel_Mods, Boolean'Val (Changed));
+         To_Gtk_Accel_Map_Foreach (D.Func) (D.Data.all, Gtkada.Bindings.Value_Allowing_Null (Accel_Path), Accel_Key, Accel_Mods, Changed /= 0);
       end Internal_Cb;
 
    end Foreach_Unfiltered_User_Data;
@@ -244,7 +244,7 @@ package body Gtk.Accel_Map is
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
-         To_Gtk_Accel_Map_Foreach (D.Func) (D.Data.all, Gtkada.Bindings.Value_Allowing_Null (Accel_Path), Accel_Key, Accel_Mods, Boolean'Val (Changed));
+         To_Gtk_Accel_Map_Foreach (D.Func) (D.Data.all, Gtkada.Bindings.Value_Allowing_Null (Accel_Path), Accel_Key, Accel_Mods, Changed /= 0);
       end Internal_Cb;
 
    end Foreach_User_Data;
@@ -303,7 +303,7 @@ package body Gtk.Accel_Map is
    begin
       Tmp_Return := Internal (Tmp_Accel_Path, Accel_Key, Accel_Mods, Boolean'Pos (Replace));
       Free (Tmp_Accel_Path);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Change_Entry;
 
    ---------
@@ -377,7 +377,7 @@ package body Gtk.Accel_Map is
       Acc_Key := Tmp_Acc_Key;
       Free (Tmp_Accel_Path);
       Key := Acc_Key;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Lookup_Entry;
 
    ----------

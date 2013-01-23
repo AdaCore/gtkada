@@ -90,7 +90,7 @@ package body Gdk.RGBA is
       function Internal (Self : Gdk_RGBA; P2 : Gdk_RGBA) return Integer;
       pragma Import (C, Internal, "gdk_rgba_equal");
    begin
-      return Boolean'Val (Internal (Self, P2));
+      return Internal (Self, P2) /= 0;
    end Equal;
 
    -----------
@@ -115,7 +115,7 @@ package body Gdk.RGBA is
       Free (Tmp_Spec);
       Acc_Self := Tmp_Acc_Self;
       Self := Acc_Self;
-      Success := Boolean'Val (Tmp_Return);
+      Success := Tmp_Return /= 0;
    end Parse;
 
    ---------------

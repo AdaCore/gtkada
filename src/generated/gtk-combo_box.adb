@@ -436,7 +436,7 @@ package body Gtk.Combo_Box is
       function Internal (Combo_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_combo_box_get_add_tearoffs");
    begin
-      return Boolean'Val (Internal (Get_Object (Combo_Box)));
+      return Internal (Get_Object (Combo_Box)) /= 0;
    end Get_Add_Tearoffs;
 
    ----------------------------
@@ -490,7 +490,7 @@ package body Gtk.Combo_Box is
       function Internal (Combo_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_combo_box_get_focus_on_click");
    begin
-      return Boolean'Val (Internal (Get_Object (Combo_Box)));
+      return Internal (Get_Object (Combo_Box)) /= 0;
    end Get_Focus_On_Click;
 
    -------------------
@@ -503,7 +503,7 @@ package body Gtk.Combo_Box is
       function Internal (Combo_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_combo_box_get_has_entry");
    begin
-      return Boolean'Val (Internal (Get_Object (Combo_Box)));
+      return Internal (Get_Object (Combo_Box)) /= 0;
    end Get_Has_Entry;
 
    -------------------
@@ -544,7 +544,7 @@ package body Gtk.Combo_Box is
       function Internal (Combo_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_combo_box_get_popup_fixed_width");
    begin
-      return Boolean'Val (Internal (Get_Object (Combo_Box)));
+      return Internal (Get_Object (Combo_Box)) /= 0;
    end Get_Popup_Fixed_Width;
 
    ----------------------------
@@ -658,7 +658,7 @@ package body Gtk.Combo_Box is
       end if;
       Tmp_Return := Internal (Get_Object (Combo_Box), Tmp_Active_Id);
       Free (Tmp_Active_Id);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Active_Id;
 
    ---------------------

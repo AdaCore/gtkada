@@ -188,7 +188,7 @@ package body Gtk.Table is
       function Internal (Table : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_table_get_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Table)));
+      return Internal (Get_Object (Table)) /= 0;
    end Get_Homogeneous;
 
    ---------------------

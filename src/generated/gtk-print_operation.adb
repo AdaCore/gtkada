@@ -121,7 +121,7 @@ package body Gtk.Print_Operation is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_get_embed_page_setup");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Embed_Page_Setup;
 
    ---------------
@@ -145,7 +145,7 @@ package body Gtk.Print_Operation is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_get_has_selection");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Has_Selection;
 
    --------------------------
@@ -214,7 +214,7 @@ package body Gtk.Print_Operation is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_get_support_selection");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Support_Selection;
 
    -----------------
@@ -227,7 +227,7 @@ package body Gtk.Print_Operation is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_is_finished");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Is_Finished;
 
    ---------
@@ -521,7 +521,7 @@ package body Gtk.Print_Operation is
           Page_Nr : Gint) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
    begin
-      return Boolean'Val (Internal (Get_Object (Preview), Page_Nr));
+      return Internal (Get_Object (Preview), Page_Nr) /= 0;
    end Is_Selected;
 
    -----------------

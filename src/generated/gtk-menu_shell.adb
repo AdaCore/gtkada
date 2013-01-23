@@ -142,7 +142,7 @@ package body Gtk.Menu_Shell is
       function Internal (Menu_Shell : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_menu_shell_get_take_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Menu_Shell)));
+      return Internal (Get_Object (Menu_Shell)) /= 0;
    end Get_Take_Focus;
 
    ------------

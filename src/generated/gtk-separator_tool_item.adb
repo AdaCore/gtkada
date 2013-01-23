@@ -75,7 +75,7 @@ package body Gtk.Separator_Tool_Item is
       function Internal (Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_separator_tool_item_get_draw");
    begin
-      return Boolean'Val (Internal (Get_Object (Item)));
+      return Internal (Get_Object (Item)) /= 0;
    end Get_Draw;
 
    --------------
@@ -131,7 +131,7 @@ package body Gtk.Separator_Tool_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

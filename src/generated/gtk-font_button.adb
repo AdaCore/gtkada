@@ -188,7 +188,7 @@ package body Gtk.Font_Button is
       function Internal (Font_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_font_button_get_show_size");
    begin
-      return Boolean'Val (Internal (Get_Object (Font_Button)));
+      return Internal (Get_Object (Font_Button)) /= 0;
    end Get_Show_Size;
 
    --------------------
@@ -201,7 +201,7 @@ package body Gtk.Font_Button is
       function Internal (Font_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_font_button_get_show_style");
    begin
-      return Boolean'Val (Internal (Get_Object (Font_Button)));
+      return Internal (Get_Object (Font_Button)) /= 0;
    end Get_Show_Style;
 
    ---------------
@@ -230,7 +230,7 @@ package body Gtk.Font_Button is
       function Internal (Font_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_font_button_get_use_font");
    begin
-      return Boolean'Val (Internal (Get_Object (Font_Button)));
+      return Internal (Get_Object (Font_Button)) /= 0;
    end Get_Use_Font;
 
    ------------------
@@ -243,7 +243,7 @@ package body Gtk.Font_Button is
       function Internal (Font_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_font_button_get_use_size");
    begin
-      return Boolean'Val (Internal (Get_Object (Font_Button)));
+      return Internal (Get_Object (Font_Button)) /= 0;
    end Get_Use_Size;
 
    ---------------------
@@ -337,7 +337,7 @@ package body Gtk.Font_Button is
    begin
       Tmp_Return := Internal (Get_Object (Font_Button), Tmp_Fontname);
       Free (Tmp_Fontname);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Font_Name;
 
    -------------------
@@ -541,7 +541,7 @@ package body Gtk.Font_Button is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_font_chooser_get_show_preview_entry");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Show_Preview_Entry;
 
    -------------------------------
@@ -554,7 +554,7 @@ package body Gtk.Font_Button is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    --------------

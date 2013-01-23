@@ -522,7 +522,7 @@ package body Gtk.Tree_Store is
           Descendant : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_store_is_ancestor");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Store), Iter, Descendant));
+      return Internal (Get_Object (Tree_Store), Iter, Descendant) /= 0;
    end Is_Ancestor;
 
    ----------------
@@ -554,7 +554,7 @@ package body Gtk.Tree_Store is
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_store_iter_is_valid");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Store), Iter));
+      return Internal (Get_Object (Tree_Store), Iter) /= 0;
    end Iter_Is_Valid;
 
    ----------------
@@ -912,7 +912,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Path : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_delete");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Path)));
+      return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
    end Drag_Data_Delete;
 
    -------------------
@@ -937,7 +937,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Path), Tmp_Acc_Selection_Data'Access);
       Acc_Selection_Data := From_Object (Tmp_Acc_Selection_Data);
       Selection_Data.all := Acc_Selection_Data;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Drag_Data_Get;
 
    ------------------------
@@ -956,7 +956,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_dest_drag_data_received");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Dest), Get_Object (Selection_Data)));
+      return Internal (Get_Object (Self), Get_Object (Dest), Get_Object (Selection_Data)) /= 0;
    end Drag_Data_Received;
 
    ---------------------
@@ -1154,7 +1154,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_model_iter_has_child");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Model), Iter));
+      return Internal (Get_Object (Tree_Model), Iter) /= 0;
    end Has_Child;
 
    ---------------------------
@@ -1167,7 +1167,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
       function Internal (Sortable : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_sortable_has_default_sort_func");
    begin
-      return Boolean'Val (Internal (Get_Object (Sortable)));
+      return Internal (Get_Object (Sortable)) /= 0;
    end Has_Default_Sort_Func;
 
    ----------------
@@ -1334,7 +1334,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Path : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_row_draggable");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Path)));
+      return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
    end Row_Draggable;
 
    -----------------------
@@ -1353,7 +1353,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_dest_row_drop_possible");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Dest_Path), Get_Object (Selection_Data)));
+      return Internal (Get_Object (Self), Get_Object (Dest_Path), Get_Object (Selection_Data)) /= 0;
    end Row_Drop_Possible;
 
    ---------------------------

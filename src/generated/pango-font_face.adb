@@ -74,7 +74,7 @@ package body Pango.Font_Face is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_font_face_is_synthesized");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Is_Synthesized;
 
    ----------------

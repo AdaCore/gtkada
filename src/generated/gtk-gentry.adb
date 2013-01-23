@@ -130,7 +130,7 @@ package body Gtk.GEntry is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_activates_default");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Activates_Default;
 
    -------------------
@@ -214,7 +214,7 @@ package body Gtk.GEntry is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_has_frame");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Has_Frame;
 
    --------------------------
@@ -230,7 +230,7 @@ package body Gtk.GEntry is
           Icon_Pos  : Gtk_Entry_Icon_Position) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_icon_activatable");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry), Icon_Pos));
+      return Internal (Get_Object (The_Entry), Icon_Pos) /= 0;
    end Get_Icon_Activatable;
 
    -------------------
@@ -332,7 +332,7 @@ package body Gtk.GEntry is
           Icon_Pos  : Gtk_Entry_Icon_Position) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_icon_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry), Icon_Pos));
+      return Internal (Get_Object (The_Entry), Icon_Pos) /= 0;
    end Get_Icon_Sensitive;
 
    --------------------
@@ -487,7 +487,7 @@ package body Gtk.GEntry is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_overwrite_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Overwrite_Mode;
 
    --------------------------
@@ -583,7 +583,7 @@ package body Gtk.GEntry is
       function Internal (The_Entry : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_get_visibility");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry)));
+      return Internal (Get_Object (The_Entry)) /= 0;
    end Get_Visibility;
 
    ---------------------
@@ -612,7 +612,7 @@ package body Gtk.GEntry is
           Event     : Gdk.Event.Gdk_Event_Key) return Integer;
       pragma Import (C, Internal, "gtk_entry_im_context_filter_keypress");
    begin
-      return Boolean'Val (Internal (Get_Object (The_Entry), Event));
+      return Internal (Get_Object (The_Entry), Event) /= 0;
    end Im_Context_Filter_Keypress;
 
    --------------------------------
@@ -1204,7 +1204,7 @@ package body Gtk.GEntry is
       function Internal (Editable : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
-      return Boolean'Val (Internal (Get_Object (Editable)));
+      return Internal (Get_Object (Editable)) /= 0;
    end Get_Editable;
 
    ------------------
@@ -1242,7 +1242,7 @@ package body Gtk.GEntry is
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
       Start_Pos := Acc_Start_Pos;
       End_Pos := Acc_End_Pos;
-      Has_Selection := Boolean'Val (Tmp_Return);
+      Has_Selection := Tmp_Return /= 0;
    end Get_Selection_Bounds;
 
    -----------------

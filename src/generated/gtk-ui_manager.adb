@@ -229,7 +229,7 @@ package body Gtk.UI_Manager is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_ui_manager_get_add_tearoffs");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Add_Tearoffs;
 
    -------------------

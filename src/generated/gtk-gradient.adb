@@ -188,7 +188,7 @@ package body Gtk.Gradient is
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Props), Acc_Resolved_Gradient'Access);
       Resolved_Gradient.all := Acc_Resolved_Gradient;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Resolve;
 
    ---------------

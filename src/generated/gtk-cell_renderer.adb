@@ -75,7 +75,7 @@ package body Gtk.Cell_Renderer is
    begin
       Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
       Free (Tmp_Path);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Activate;
 
    ----------------------
@@ -287,7 +287,7 @@ package body Gtk.Cell_Renderer is
       function Internal (Cell : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_get_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (Cell)));
+      return Internal (Get_Object (Cell)) /= 0;
    end Get_Sensitive;
 
    --------------
@@ -346,7 +346,7 @@ package body Gtk.Cell_Renderer is
       function Internal (Cell : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_get_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Cell)));
+      return Internal (Get_Object (Cell)) /= 0;
    end Get_Visible;
 
    --------------------
@@ -359,7 +359,7 @@ package body Gtk.Cell_Renderer is
       function Internal (Cell : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_is_activatable");
    begin
-      return Boolean'Val (Internal (Get_Object (Cell)));
+      return Internal (Get_Object (Cell)) /= 0;
    end Is_Activatable;
 
    ------------

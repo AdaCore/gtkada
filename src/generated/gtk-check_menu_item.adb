@@ -144,7 +144,7 @@ package body Gtk.Check_Menu_Item is
       function Internal (Check_Menu_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_check_menu_item_get_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Check_Menu_Item)));
+      return Internal (Get_Object (Check_Menu_Item)) /= 0;
    end Get_Active;
 
    -----------------------
@@ -158,7 +158,7 @@ package body Gtk.Check_Menu_Item is
       function Internal (Check_Menu_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_check_menu_item_get_draw_as_radio");
    begin
-      return Boolean'Val (Internal (Get_Object (Check_Menu_Item)));
+      return Internal (Get_Object (Check_Menu_Item)) /= 0;
    end Get_Draw_As_Radio;
 
    ----------------------
@@ -172,7 +172,7 @@ package body Gtk.Check_Menu_Item is
       function Internal (Check_Menu_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_check_menu_item_get_inconsistent");
    begin
-      return Boolean'Val (Internal (Get_Object (Check_Menu_Item)));
+      return Internal (Get_Object (Check_Menu_Item)) /= 0;
    end Get_Inconsistent;
 
    ----------------
@@ -275,7 +275,7 @@ package body Gtk.Check_Menu_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

@@ -75,7 +75,7 @@ package body Gtk.Text_Child_Anchor is
       function Internal (Anchor : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_child_anchor_get_deleted");
    begin
-      return Boolean'Val (Internal (Get_Object (Anchor)));
+      return Internal (Get_Object (Anchor)) /= 0;
    end Get_Deleted;
 
    -----------------

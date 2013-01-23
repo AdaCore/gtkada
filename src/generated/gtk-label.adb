@@ -249,7 +249,7 @@ package body Gtk.Label is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_line_wrap");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Line_Wrap;
 
    ------------------------
@@ -318,7 +318,7 @@ package body Gtk.Label is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_selectable");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Selectable;
 
    --------------------------
@@ -343,7 +343,7 @@ package body Gtk.Label is
       Tmp_Return := Internal (Get_Object (Label), Acc_Start'Access, Acc_The_End'Access);
       Start := Acc_Start;
       The_End := Acc_The_End;
-      Has_Selection := Boolean'Val (Tmp_Return);
+      Has_Selection := Tmp_Return /= 0;
    end Get_Selection_Bounds;
 
    --------------------------
@@ -356,7 +356,7 @@ package body Gtk.Label is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_single_line_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Single_Line_Mode;
 
    --------------
@@ -383,7 +383,7 @@ package body Gtk.Label is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_track_visited_links");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Track_Visited_Links;
 
    --------------------
@@ -396,7 +396,7 @@ package body Gtk.Label is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_use_markup");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Use_Markup;
 
    -----------------------
@@ -409,7 +409,7 @@ package body Gtk.Label is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_use_underline");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Use_Underline;
 
    ---------------------

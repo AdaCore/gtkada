@@ -436,7 +436,7 @@ package body Gtk.Action_Group is
       function Internal (Action_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_group_get_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (Action_Group)));
+      return Internal (Get_Object (Action_Group)) /= 0;
    end Get_Sensitive;
 
    -----------------
@@ -450,7 +450,7 @@ package body Gtk.Action_Group is
       function Internal (Action_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_group_get_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Action_Group)));
+      return Internal (Get_Object (Action_Group)) /= 0;
    end Get_Visible;
 
    ------------------

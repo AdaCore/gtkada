@@ -126,7 +126,7 @@ package body Gtk.Toggle_Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_action_get_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Active;
 
    -----------------------
@@ -139,7 +139,7 @@ package body Gtk.Toggle_Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toggle_action_get_draw_as_radio");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Draw_As_Radio;
 
    ----------------

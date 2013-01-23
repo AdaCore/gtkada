@@ -256,7 +256,7 @@ package body Gtk.File_Filter is
           Filter_Info : Gtk_File_Filter_Info) return Integer;
       pragma Import (C, Internal, "gtk_file_filter_filter");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Filter_Info));
+      return Internal (Get_Object (Self), Filter_Info) /= 0;
    end Filter;
 
    --------------

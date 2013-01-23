@@ -131,7 +131,7 @@ package body Gtk.Print_Context is
       Bottom.all := Acc_Bottom;
       Left.all := Acc_Left;
       Right.all := Acc_Right;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Hard_Margins;
 
    ----------------

@@ -222,7 +222,7 @@ package body Gtk.Menu_Item is
       function Internal (Menu_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_menu_item_get_reserve_indicator");
    begin
-      return Boolean'Val (Internal (Get_Object (Menu_Item)));
+      return Internal (Get_Object (Menu_Item)) /= 0;
    end Get_Reserve_Indicator;
 
    -------------------------
@@ -235,7 +235,7 @@ package body Gtk.Menu_Item is
       function Internal (Menu_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_menu_item_get_right_justified");
    begin
-      return Boolean'Val (Internal (Get_Object (Menu_Item)));
+      return Internal (Get_Object (Menu_Item)) /= 0;
    end Get_Right_Justified;
 
    -----------------
@@ -263,7 +263,7 @@ package body Gtk.Menu_Item is
       function Internal (Menu_Item : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_menu_item_get_use_underline");
    begin
-      return Boolean'Val (Internal (Get_Object (Menu_Item)));
+      return Internal (Get_Object (Menu_Item)) /= 0;
    end Get_Use_Underline;
 
    ----------------
@@ -447,7 +447,7 @@ package body Gtk.Menu_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

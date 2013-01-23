@@ -79,7 +79,7 @@ package body Gtk.Recent_Info is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_recent_info_exists");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Exists;
 
    ---------------
@@ -187,7 +187,7 @@ package body Gtk.Recent_Info is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_recent_info_get_private_hint");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Private_Hint;
 
    --------------------
@@ -254,7 +254,7 @@ package body Gtk.Recent_Info is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_App_Name);
       Free (Tmp_App_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Has_Application;
 
    ---------------
@@ -274,7 +274,7 @@ package body Gtk.Recent_Info is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Group_Name);
       Free (Tmp_Group_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Has_Group;
 
    --------------
@@ -285,7 +285,7 @@ package body Gtk.Recent_Info is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_recent_info_is_local");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Is_Local;
 
    ----------------------
@@ -313,7 +313,7 @@ package body Gtk.Recent_Info is
           Info_B : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_recent_info_match");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Info_B)));
+      return Internal (Get_Object (Self), Get_Object (Info_B)) /= 0;
    end Match;
 
    ---------

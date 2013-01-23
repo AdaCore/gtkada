@@ -215,7 +215,7 @@ package body Gtk.Image_Menu_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_image_menu_item_get_always_show_image");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Always_Show_Image;
 
    ---------------
@@ -243,7 +243,7 @@ package body Gtk.Image_Menu_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_image_menu_item_get_use_stock");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Stock;
 
    ---------------------
@@ -343,7 +343,7 @@ package body Gtk.Image_Menu_Item is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

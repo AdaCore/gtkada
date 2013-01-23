@@ -250,7 +250,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_get_always_show_image");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Always_Show_Image;
 
    ---------------
@@ -290,7 +290,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_get_is_important");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Is_Important;
 
    ---------------
@@ -347,7 +347,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_get_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Sensitive;
 
    ---------------------
@@ -402,7 +402,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_get_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Visible;
 
    ----------------------------
@@ -415,7 +415,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_get_visible_horizontal");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Visible_Horizontal;
 
    --------------------------
@@ -428,7 +428,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_get_visible_vertical");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Get_Visible_Vertical;
 
    ------------------
@@ -441,7 +441,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_is_sensitive");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Is_Sensitive;
 
    ----------------
@@ -454,7 +454,7 @@ package body Gtk.Action is
       function Internal (Action : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_action_is_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Action)));
+      return Internal (Get_Object (Action)) /= 0;
    end Is_Visible;
 
    ---------------------

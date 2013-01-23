@@ -97,7 +97,7 @@ package body Gtk.Size_Group is
       function Internal (Size_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_size_group_get_ignore_hidden");
    begin
-      return Boolean'Val (Internal (Get_Object (Size_Group)));
+      return Internal (Get_Object (Size_Group)) /= 0;
    end Get_Ignore_Hidden;
 
    --------------

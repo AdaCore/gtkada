@@ -157,7 +157,7 @@ package body Gtk.Tool_Palette is
           Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_palette_get_exclusive");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Group)));
+      return Internal (Get_Object (Self), Get_Object (Group)) /= 0;
    end Get_Exclusive;
 
    ----------------
@@ -174,7 +174,7 @@ package body Gtk.Tool_Palette is
           Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_palette_get_expand");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Get_Object (Group)));
+      return Internal (Get_Object (Self), Get_Object (Group)) /= 0;
    end Get_Expand;
 
    ------------------------

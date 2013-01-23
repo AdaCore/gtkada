@@ -110,7 +110,7 @@ package body Gtk.Progress_Bar is
       function Internal (Progress_Bar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_progress_bar_get_inverted");
    begin
-      return Boolean'Val (Internal (Get_Object (Progress_Bar)));
+      return Internal (Get_Object (Progress_Bar)) /= 0;
    end Get_Inverted;
 
    --------------------
@@ -138,7 +138,7 @@ package body Gtk.Progress_Bar is
       function Internal (Progress_Bar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_progress_bar_get_show_text");
    begin
-      return Boolean'Val (Internal (Get_Object (Progress_Bar)));
+      return Internal (Get_Object (Progress_Bar)) /= 0;
    end Get_Show_Text;
 
    --------------

@@ -164,7 +164,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_ensure_native");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Ensure_Native;
 
    ----------------------
@@ -175,7 +175,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_get_accept_focus");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Accept_Focus;
 
    ------------------
@@ -201,7 +201,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_get_composited");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Composited;
 
    ---------------------
@@ -222,7 +222,7 @@ package body Gdk.Window is
    begin
       Tmp_Return := Internal (Self, Acc_Decorations'Access);
       Decorations := Acc_Decorations;
-      Has_Decorations := Boolean'Val (Tmp_Return);
+      Has_Decorations := Tmp_Return /= 0;
    end Get_Decorations;
 
    -----------------------
@@ -313,7 +313,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_get_focus_on_map");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Focus_On_Map;
 
    --------------------
@@ -324,7 +324,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_get_modal_hint");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Modal_Hint;
 
    -----------------
@@ -377,7 +377,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_get_support_multidevice");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Support_Multidevice;
 
    ----------------
@@ -388,7 +388,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_has_native");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Has_Native;
 
    ------------------------------
@@ -506,7 +506,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_is_destroyed");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Is_Destroyed;
 
    -------------------
@@ -517,7 +517,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_is_input_only");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Is_Input_Only;
 
    ---------------
@@ -528,7 +528,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_is_shaped");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Is_Shaped;
 
    -----------------
@@ -539,7 +539,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_is_viewable");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Is_Viewable;
 
    ----------------
@@ -550,7 +550,7 @@ package body Gdk.Window is
       function Internal (Self : Gdk.Gdk_Window) return Integer;
       pragma Import (C, Internal, "gdk_window_is_visible");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Is_Visible;
 
    -------------------
@@ -818,7 +818,7 @@ package body Gdk.Window is
           Use_Static : Integer) return Integer;
       pragma Import (C, Internal, "gdk_window_set_static_gravities");
    begin
-      return Boolean'Val (Internal (Self, Boolean'Pos (Use_Static)));
+      return Internal (Self, Boolean'Pos (Use_Static)) /= 0;
    end Set_Static_Gravities;
 
    -----------------------------

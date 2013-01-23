@@ -279,7 +279,7 @@ package body Gtk.Icon_Theme is
    begin
       Tmp_Return := Internal (Get_Object (Icon_Info), Acc_Rectangle'Access);
       Rectangle := Acc_Rectangle;
-      Has_Embedded_Rectangle := Boolean'Val (Tmp_Return);
+      Has_Embedded_Rectangle := Tmp_Return /= 0;
    end Get_Embedded_Rect;
 
    ---------------------------
@@ -375,7 +375,7 @@ package body Gtk.Icon_Theme is
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Has_Icon;
 
    -------------------
@@ -484,7 +484,7 @@ package body Gtk.Icon_Theme is
       Tmp_Return           : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Info), Fg, Gdk.RGBA.Gdk_RGBA_Or_Null (Success_Color'Address), Gdk.RGBA.Gdk_RGBA_Or_Null (Warning_Color'Address), Gdk.RGBA.Gdk_RGBA_Or_Null (Error_Color'Address), Tmp_Acc_Was_Symbolic'Access);
-      Acc_Was_Symbolic := Boolean'Val (Tmp_Acc_Was_Symbolic);
+      Acc_Was_Symbolic := Tmp_Acc_Was_Symbolic /= 0;
       if Was_Symbolic /= null then
          Was_Symbolic.all := Acc_Was_Symbolic;
       end if;
@@ -511,7 +511,7 @@ package body Gtk.Icon_Theme is
       Tmp_Return           : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Info), Get_Object (Context), Tmp_Acc_Was_Symbolic'Access);
-      Acc_Was_Symbolic := Boolean'Val (Tmp_Acc_Was_Symbolic);
+      Acc_Was_Symbolic := Tmp_Acc_Was_Symbolic /= 0;
       if Was_Symbolic /= null then
          Was_Symbolic.all := Acc_Was_Symbolic;
       end if;
@@ -540,7 +540,7 @@ package body Gtk.Icon_Theme is
       Tmp_Return           : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Info), Get_Object (Style), State, Tmp_Acc_Was_Symbolic'Access);
-      Acc_Was_Symbolic := Boolean'Val (Tmp_Acc_Was_Symbolic);
+      Acc_Was_Symbolic := Tmp_Acc_Was_Symbolic /= 0;
       if Was_Symbolic /= null then
          Was_Symbolic.all := Acc_Was_Symbolic;
       end if;
@@ -619,7 +619,7 @@ package body Gtk.Icon_Theme is
       function Internal (Icon_Theme : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_theme_rescan_if_needed");
    begin
-      return Boolean'Val (Internal (Get_Object (Icon_Theme)));
+      return Internal (Get_Object (Icon_Theme)) /= 0;
    end Rescan_If_Needed;
 
    ----------------------

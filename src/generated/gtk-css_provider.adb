@@ -93,7 +93,7 @@ package body Gtk.Css_Provider is
       if Error /= null then
          Error.all := Acc_Error;
       end if;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Load_From_Data;
 
    --------------------
@@ -117,7 +117,7 @@ package body Gtk.Css_Provider is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Acc_Error'Access);
       Free (Tmp_Path);
       Error.all := Acc_Error;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Load_From_Path;
 
    ---------------
@@ -160,7 +160,7 @@ package body Gtk.Css_Provider is
       Tmp_Return := Internal (Get_Object (Self), Path, State, Acc_Pspec'Access, Acc_Value'Access);
       Pspec := Acc_Pspec;
       Value := Acc_Value;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Get_Style_Property;
 
    -----------------

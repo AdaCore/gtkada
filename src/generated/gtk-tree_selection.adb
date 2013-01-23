@@ -144,7 +144,7 @@ package body Gtk.Tree_Selection is
       Func                    : constant Gtk_Tree_Selection_Func := To_Gtk_Tree_Selection_Func (Data);
       Stub_Gtk_Tree_Selection : Gtk_Tree_Selection_Record;
    begin
-      return Boolean'Pos (Func (Gtk.Tree_Selection.Gtk_Tree_Selection (Get_User_Data (Selection, Stub_Gtk_Tree_Selection)), Model, From_Object (Path), Boolean'Val (Path_Currently_Selected)));
+      return Boolean'Pos (Func (Gtk.Tree_Selection.Gtk_Tree_Selection (Get_User_Data (Selection, Stub_Gtk_Tree_Selection)), Model, From_Object (Path), Path_Currently_Selected /= 0));
    end Internal_Gtk_Tree_Selection_Func;
 
    package Type_Conversion_Gtk_Tree_Selection is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -254,7 +254,7 @@ package body Gtk.Tree_Selection is
           Iter      : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_selection_iter_is_selected");
    begin
-      return Boolean'Val (Internal (Get_Object (Selection), Iter));
+      return Internal (Get_Object (Selection), Iter) /= 0;
    end Iter_Is_Selected;
 
    ----------------------
@@ -270,7 +270,7 @@ package body Gtk.Tree_Selection is
           Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_selection_path_is_selected");
    begin
-      return Boolean'Val (Internal (Get_Object (Selection), Get_Object (Path)));
+      return Internal (Get_Object (Selection), Get_Object (Path)) /= 0;
    end Path_Is_Selected;
 
    ----------------
@@ -482,7 +482,7 @@ package body Gtk.Tree_Selection is
          D                       : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Tree_Selection : Gtk.Tree_Selection.Gtk_Tree_Selection_Record;
       begin
-         return Boolean'Pos (To_Gtk_Tree_Selection_Func (D.Func) (Gtk.Tree_Selection.Gtk_Tree_Selection (Get_User_Data (Selection, Stub_Gtk_Tree_Selection)), Model, From_Object (Path), Boolean'Val (Path_Currently_Selected), D.Data.all));
+         return Boolean'Pos (To_Gtk_Tree_Selection_Func (D.Func) (Gtk.Tree_Selection.Gtk_Tree_Selection (Get_User_Data (Selection, Stub_Gtk_Tree_Selection)), Model, From_Object (Path), Path_Currently_Selected /= 0, D.Data.all));
       end Internal_Cb;
 
       -------------------------

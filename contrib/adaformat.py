@@ -358,7 +358,13 @@ class Enum(CType):
 
     def convert_from_c(self):
         if self.ada.lower() == "boolean":
-            conv = "%s'Val (%%(var)s)" % self.ada
+            if self.ada == "Boolean":
+                # Do not use Boolean'Val for more flexibility, in case C
+                # returns another value than 0 and 1 (as is the case for
+                # gtk_status_icon_position_menu on OSX for instance).
+                conv = "%(var)s /= 0"
+            else:
+                conv = "%s'Val (%%(var)s)" % self.ada
             return (self.param, self.cparam, conv, [],
 
                     # for out parameters

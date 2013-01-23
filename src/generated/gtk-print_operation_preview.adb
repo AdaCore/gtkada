@@ -43,7 +43,7 @@ package body Gtk.Print_Operation_Preview is
           Page_Nr : Gint) return Integer;
       pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
    begin
-      return Boolean'Val (Internal (Preview, Page_Nr));
+      return Internal (Preview, Page_Nr) /= 0;
    end Is_Selected;
 
    use type System.Address;

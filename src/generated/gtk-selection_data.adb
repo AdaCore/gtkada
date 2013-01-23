@@ -295,7 +295,7 @@ package body Gtk.Selection_Data is
           Pixbuf    : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_selection_data_set_pixbuf");
    begin
-      return Boolean'Val (Internal (Get_Object (Selection), Get_Object (Pixbuf)));
+      return Internal (Get_Object (Selection), Get_Object (Pixbuf)) /= 0;
    end Set_Pixbuf;
 
    --------------
@@ -317,7 +317,7 @@ package body Gtk.Selection_Data is
    begin
       Tmp_Return := Internal (Get_Object (Selection), Tmp_Str, Len);
       Free (Tmp_Str);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Text;
 
    --------------
@@ -337,7 +337,7 @@ package body Gtk.Selection_Data is
    begin
       Tmp_Return := Internal (Get_Object (Selection), Tmp_Uris);
       GtkAda.Types.Free (Tmp_Uris);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Uris;
 
    ---------------------------
@@ -353,7 +353,7 @@ package body Gtk.Selection_Data is
           Writable  : Integer) return Integer;
       pragma Import (C, Internal, "gtk_selection_data_targets_include_image");
    begin
-      return Boolean'Val (Internal (Get_Object (Selection), Boolean'Pos (Writable)));
+      return Internal (Get_Object (Selection), Boolean'Pos (Writable)) /= 0;
    end Targets_Include_Image;
 
    --------------------------
@@ -366,7 +366,7 @@ package body Gtk.Selection_Data is
       function Internal (Selection : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_selection_data_targets_include_text");
    begin
-      return Boolean'Val (Internal (Get_Object (Selection)));
+      return Internal (Get_Object (Selection)) /= 0;
    end Targets_Include_Text;
 
    -------------------------
@@ -379,7 +379,7 @@ package body Gtk.Selection_Data is
       function Internal (Selection : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_selection_data_targets_include_uri");
    begin
-      return Boolean'Val (Internal (Get_Object (Selection)));
+      return Internal (Get_Object (Selection)) /= 0;
    end Targets_Include_Uri;
 
 end Gtk.Selection_Data;

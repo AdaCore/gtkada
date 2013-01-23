@@ -114,7 +114,7 @@ package body Gtk.Icon_Source is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_source_get_direction_wildcarded");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Direction_Wildcarded;
 
    ------------------
@@ -173,7 +173,7 @@ package body Gtk.Icon_Source is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_source_get_size_wildcarded");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Size_Wildcarded;
 
    ---------------
@@ -198,7 +198,7 @@ package body Gtk.Icon_Source is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_source_get_state_wildcarded");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_State_Wildcarded;
 
    -------------------

@@ -204,7 +204,7 @@ package body Gtk.Font_Selection is
    begin
       Tmp_Return := Internal (Get_Object (Fontsel), Tmp_Fontname);
       Free (Tmp_Fontname);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Font_Name;
 
    ----------------------

@@ -217,7 +217,7 @@ package body Gtk.Assistant is
           Page      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_assistant_get_page_complete");
    begin
-      return Boolean'Val (Internal (Get_Object (Assistant), Get_Object (Page)));
+      return Internal (Get_Object (Assistant), Get_Object (Page)) /= 0;
    end Get_Page_Complete;
 
    ---------------------------

@@ -64,7 +64,7 @@ package body Gtk.Activatable is
       function Internal (Self : Gtk_Activatable) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

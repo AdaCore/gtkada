@@ -283,7 +283,7 @@ package body Gtk.Entry_Completion is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_inline_completion");
    begin
-      return Boolean'Val (Internal (Get_Object (Completion)));
+      return Internal (Get_Object (Completion)) /= 0;
    end Get_Inline_Completion;
 
    --------------------------
@@ -297,7 +297,7 @@ package body Gtk.Entry_Completion is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_inline_selection");
    begin
-      return Boolean'Val (Internal (Get_Object (Completion)));
+      return Internal (Get_Object (Completion)) /= 0;
    end Get_Inline_Selection;
 
    ----------------------------
@@ -339,7 +339,7 @@ package body Gtk.Entry_Completion is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_completion");
    begin
-      return Boolean'Val (Internal (Get_Object (Completion)));
+      return Internal (Get_Object (Completion)) /= 0;
    end Get_Popup_Completion;
 
    -------------------------
@@ -353,7 +353,7 @@ package body Gtk.Entry_Completion is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_set_width");
    begin
-      return Boolean'Val (Internal (Get_Object (Completion)));
+      return Internal (Get_Object (Completion)) /= 0;
    end Get_Popup_Set_Width;
 
    ----------------------------
@@ -367,7 +367,7 @@ package body Gtk.Entry_Completion is
       function Internal (Completion : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_single_match");
    begin
-      return Boolean'Val (Internal (Get_Object (Completion)));
+      return Internal (Get_Object (Completion)) /= 0;
    end Get_Popup_Single_Match;
 
    ---------------------

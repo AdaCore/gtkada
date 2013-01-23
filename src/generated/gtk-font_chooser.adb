@@ -138,7 +138,7 @@ package body Gtk.Font_Chooser is
       function Internal (Self : Gtk_Font_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_font_chooser_get_show_preview_entry");
    begin
-      return Boolean'Val (Internal (Self));
+      return Internal (Self) /= 0;
    end Get_Show_Preview_Entry;
 
    ---------------------

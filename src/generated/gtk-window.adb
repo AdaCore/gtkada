@@ -128,7 +128,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_activate_default");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Activate_Default;
 
    --------------------
@@ -141,7 +141,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_activate_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Activate_Focus;
 
    ------------------
@@ -157,7 +157,7 @@ package body Gtk.Window is
           Event  : Gdk.Event.Gdk_Event_Key) return Integer;
       pragma Import (C, Internal, "gtk_window_activate_key");
    begin
-      return Boolean'Val (Internal (Get_Object (Window), Event));
+      return Internal (Get_Object (Window), Event) /= 0;
    end Activate_Key;
 
    ---------------------
@@ -288,7 +288,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_accept_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Accept_Focus;
 
    -----------------------------
@@ -335,7 +335,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_decorated");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Decorated;
 
    ----------------------
@@ -381,7 +381,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_deletable");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Deletable;
 
    -----------------------------
@@ -394,7 +394,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_destroy_with_parent");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Destroy_With_Parent;
 
    ---------------
@@ -422,7 +422,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_focus_on_map");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Focus_On_Map;
 
    -----------------------
@@ -435,7 +435,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_focus_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Focus_Visible;
 
    -----------------
@@ -477,7 +477,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_has_resize_grip");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Has_Resize_Grip;
 
    --------------
@@ -550,7 +550,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_mnemonics_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Mnemonics_Visible;
 
    ---------------
@@ -563,7 +563,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_modal");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Modal;
 
    -----------------
@@ -607,7 +607,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_resizable");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Resizable;
 
    --------------------------
@@ -628,7 +628,7 @@ package body Gtk.Window is
    begin
       Tmp_Return := Internal (Get_Object (Window), Acc_Rect'Access);
       Rect := Acc_Rect;
-      retrieved := Boolean'Val (Tmp_Return);
+      retrieved := Tmp_Return /= 0;
    end Get_Resize_Grip_Area;
 
    --------------
@@ -688,7 +688,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_skip_pager_hint");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Skip_Pager_Hint;
 
    ---------------------------
@@ -701,7 +701,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_skip_taskbar_hint");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Skip_Taskbar_Hint;
 
    ---------------
@@ -757,7 +757,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_get_urgency_hint");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Get_Urgency_Hint;
 
    ---------------------
@@ -785,7 +785,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_has_group");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Has_Group;
 
    ------------------------
@@ -798,7 +798,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_has_toplevel_focus");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Has_Toplevel_Focus;
 
    -------------
@@ -822,7 +822,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_is_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Is_Active;
 
    ------------------
@@ -868,7 +868,7 @@ package body Gtk.Window is
           Modifier : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_window_mnemonic_activate");
    begin
-      return Boolean'Val (Internal (Get_Object (Window), Keyval, Modifier));
+      return Internal (Get_Object (Window), Keyval, Modifier) /= 0;
    end Mnemonic_Activate;
 
    ----------
@@ -903,7 +903,7 @@ package body Gtk.Window is
    begin
       Tmp_Return := Internal (Get_Object (Window), Tmp_Geometry);
       Free (Tmp_Geometry);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Parse_Geometry;
 
    -------------
@@ -944,7 +944,7 @@ package body Gtk.Window is
           Event  : Gdk.Event.Gdk_Event_Key) return Integer;
       pragma Import (C, Internal, "gtk_window_propagate_key_event");
    begin
-      return Boolean'Val (Internal (Get_Object (Window), Event));
+      return Internal (Get_Object (Window), Event) /= 0;
    end Propagate_Key_Event;
 
    ------------------------
@@ -1038,7 +1038,7 @@ package body Gtk.Window is
       function Internal (Window : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_window_resize_grip_is_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Window)));
+      return Internal (Get_Object (Window)) /= 0;
    end Resize_Grip_Is_Visible;
 
    ------------------------
@@ -1304,7 +1304,7 @@ package body Gtk.Window is
    begin
       Tmp_Return := Internal (Get_Object (Window), Tmp_Filename);
       Free (Tmp_Filename);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Icon_From_File;
 
    -------------------
@@ -1742,7 +1742,7 @@ package body Gtk.Window is
    begin
       Tmp_Return := Internal (Tmp_Filename);
       Free (Tmp_Filename);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Default_Icon_From_File;
 
    ---------------------------

@@ -87,7 +87,7 @@ package body Gtk.Tool_Item_Group is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tool_item_group_get_collapsed");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Collapsed;
 
    -------------------

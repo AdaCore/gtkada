@@ -117,7 +117,7 @@ package body Pango.Layout is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_iter_at_last_line");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end At_Last_Line;
 
    ---------------------
@@ -206,7 +206,7 @@ package body Pango.Layout is
       function Internal (Layout : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_get_auto_dir");
    begin
-      return Boolean'Val (Internal (Get_Object (Layout)));
+      return Internal (Get_Object (Layout)) /= 0;
    end Get_Auto_Dir;
 
    ------------------
@@ -424,7 +424,7 @@ package body Pango.Layout is
       function Internal (Layout : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_get_justify");
    begin
-      return Boolean'Val (Internal (Get_Object (Layout)));
+      return Internal (Get_Object (Layout)) /= 0;
    end Get_Justify;
 
    ----------------
@@ -628,7 +628,7 @@ package body Pango.Layout is
       function Internal (Layout : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_get_single_paragraph_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Layout)));
+      return Internal (Get_Object (Layout)) /= 0;
    end Get_Single_Paragraph_Mode;
 
    --------------
@@ -781,7 +781,7 @@ package body Pango.Layout is
       function Internal (Layout : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_is_ellipsized");
    begin
-      return Boolean'Val (Internal (Get_Object (Layout)));
+      return Internal (Get_Object (Layout)) /= 0;
    end Is_Ellipsized;
 
    ----------------
@@ -794,7 +794,7 @@ package body Pango.Layout is
       function Internal (Layout : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_is_wrapped");
    begin
-      return Boolean'Val (Internal (Get_Object (Layout)));
+      return Internal (Get_Object (Layout)) /= 0;
    end Is_Wrapped;
 
    --------------------------
@@ -831,7 +831,7 @@ package body Pango.Layout is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_iter_next_char");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Next_Char;
 
    ------------------
@@ -842,7 +842,7 @@ package body Pango.Layout is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_iter_next_cluster");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Next_Cluster;
 
    ---------------
@@ -853,7 +853,7 @@ package body Pango.Layout is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_iter_next_line");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Next_Line;
 
    --------------
@@ -864,7 +864,7 @@ package body Pango.Layout is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_layout_iter_next_run");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Next_Run;
 
    -------------------
@@ -1145,7 +1145,7 @@ package body Pango.Layout is
       Tmp_Return := Internal (Get_Object (Layout), X, Y, Acc_Index'Access, Acc_Trailing'Access);
       Index := Acc_Index;
       Trailing := Acc_Trailing;
-      Exact := Boolean'Val (Tmp_Return);
+      Exact := Tmp_Return /= 0;
    end Xy_To_Index;
 
 end Pango.Layout;

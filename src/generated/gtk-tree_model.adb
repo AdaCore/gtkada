@@ -685,7 +685,7 @@ package body Gtk.Tree_Model is
           Iter       : Gtk_Tree_Iter) return Integer;
       pragma Import (C, Internal, "gtk_tree_model_iter_has_child");
    begin
-      return Boolean'Val (Internal (Tree_Model, Iter));
+      return Internal (Tree_Model, Iter) /= 0;
    end Has_Child;
 
    -----------------
@@ -701,7 +701,7 @@ package body Gtk.Tree_Model is
           Descendant : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_path_is_ancestor");
    begin
-      return Boolean'Val (Internal (Get_Object (Path), Get_Object (Descendant)));
+      return Internal (Get_Object (Path), Get_Object (Descendant)) /= 0;
    end Is_Ancestor;
 
    -------------------
@@ -717,7 +717,7 @@ package body Gtk.Tree_Model is
           Ancestor : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_path_is_descendant");
    begin
-      return Boolean'Val (Internal (Get_Object (Path), Get_Object (Ancestor)));
+      return Internal (Get_Object (Path), Get_Object (Ancestor)) /= 0;
    end Is_Descendant;
 
    ----------------
@@ -837,7 +837,7 @@ package body Gtk.Tree_Model is
       function Internal (Path : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_path_prev");
    begin
-      return Boolean'Val (Internal (Get_Object (Path)));
+      return Internal (Get_Object (Path)) /= 0;
    end Prev;
 
    --------------
@@ -967,7 +967,7 @@ package body Gtk.Tree_Model is
       function Internal (Path : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_path_up");
    begin
-      return Boolean'Val (Internal (Get_Object (Path)));
+      return Internal (Get_Object (Path)) /= 0;
    end Up;
 
    function Convert (R : Gtk.Tree_Model.Gtk_Tree_Path) return System.Address is

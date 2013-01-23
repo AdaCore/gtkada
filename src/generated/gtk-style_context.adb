@@ -419,7 +419,7 @@ package body Gtk.Style_Context is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Class_Name);
       Free (Tmp_Class_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Has_Class;
 
    ----------------
@@ -445,7 +445,7 @@ package body Gtk.Style_Context is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Region_Name, Acc_Flags_Return'Access);
       Free (Tmp_Region_Name);
       Flags_Return := Acc_Flags_Return;
-      Is_Defined := Boolean'Val (Tmp_Return);
+      Is_Defined := Tmp_Return /= 0;
    end Has_Region;
 
    ----------------
@@ -513,7 +513,7 @@ package body Gtk.Style_Context is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Color_Name, Acc_Color'Access);
       Free (Tmp_Color_Name);
       Color := Acc_Color;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Lookup_Color;
 
    -------------------------
@@ -771,7 +771,7 @@ package body Gtk.Style_Context is
    begin
       Tmp_Return := Internal (Get_Object (Self), State, Acc_Progress'Access);
       Progress := Acc_Progress;
-      Is_Running := Boolean'Val (Tmp_Return);
+      Is_Running := Tmp_Return /= 0;
    end State_Is_Running;
 
    -----------------------------

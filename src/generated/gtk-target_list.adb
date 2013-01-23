@@ -155,7 +155,7 @@ package body Gtk.Target_List is
    begin
       Tmp_Return := Internal (Get_Object (List), Target, Acc_Info'Access);
       Info := Acc_Info;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Find;
 
    ---------

@@ -282,7 +282,7 @@ package body Gtk.About_Dialog is
       function Internal (About : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_about_dialog_get_wrap_license");
    begin
-      return Boolean'Val (Internal (Get_Object (About)));
+      return Internal (Get_Object (About)) /= 0;
    end Get_Wrap_License;
 
    -----------------

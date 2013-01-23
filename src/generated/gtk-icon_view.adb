@@ -377,7 +377,7 @@ package body Gtk.Icon_View is
       Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Cell := Acc_Cell;
-      Cursor_Is_Set := Boolean'Val (Tmp_Return);
+      Cursor_Is_Set := Tmp_Return /= 0;
    end Get_Cursor;
 
    --------------------------
@@ -408,7 +408,7 @@ package body Gtk.Icon_View is
       Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Pos := Acc_Pos;
-      Has_Item := Boolean'Val (Tmp_Return);
+      Has_Item := Tmp_Return /= 0;
    end Get_Dest_Item_At_Pos;
 
    ------------------------
@@ -462,7 +462,7 @@ package body Gtk.Icon_View is
       Acc_Path := From_Object (Tmp_Acc_Path);
       Path := Acc_Path;
       Cell := Acc_Cell;
-      Has_Item := Boolean'Val (Tmp_Return);
+      Has_Item := Tmp_Return /= 0;
    end Get_Item_At_Pos;
 
    ---------------------
@@ -620,7 +620,7 @@ package body Gtk.Icon_View is
       function Internal (Icon_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_get_reorderable");
    begin
-      return Boolean'Val (Internal (Get_Object (Icon_View)));
+      return Internal (Get_Object (Icon_View)) /= 0;
    end Get_Reorderable;
 
    ---------------------
@@ -746,7 +746,7 @@ package body Gtk.Icon_View is
       Model := Acc_Model;
       Path := Acc_Path;
       Iter := Acc_Iter;
-      Success := Boolean'Val (Tmp_Return);
+      Success := Tmp_Return /= 0;
    end Get_Tooltip_Context;
 
    -----------------------
@@ -798,7 +798,7 @@ package body Gtk.Icon_View is
           Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_icon_view_path_is_selected");
    begin
-      return Boolean'Val (Internal (Get_Object (Icon_View), Get_Object (Path)));
+      return Internal (Get_Object (Icon_View), Get_Object (Path)) /= 0;
    end Path_Is_Selected;
 
    --------------------

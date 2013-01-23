@@ -99,7 +99,7 @@ package body Pango.Language is
           Script : Pango_Script) return Integer;
       pragma Import (C, Internal, "pango_language_includes_script");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Script));
+      return Internal (Get_Object (Self), Script) /= 0;
    end Includes_Script;
 
    -------------
@@ -119,7 +119,7 @@ package body Pango.Language is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Range_List);
       Free (Tmp_Range_List);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Matches;
 
    ---------------

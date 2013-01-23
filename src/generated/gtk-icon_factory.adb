@@ -166,7 +166,7 @@ package body Gtk.Icon_Factory is
       Tmp_Return := Internal (Size, Acc_Width'Access, Acc_Height'Access);
       Width := Acc_Width;
       Height := Acc_Height;
-      Result := Boolean'Val (Tmp_Return);
+      Result := Tmp_Return /= 0;
    end Icon_Size_Lookup;
 
    -----------------------------------
@@ -193,7 +193,7 @@ package body Gtk.Icon_Factory is
       Tmp_Return := Internal (Get_Object (Settings), Size, Acc_Width'Access, Acc_Height'Access);
       Width := Acc_Width;
       Height := Acc_Height;
-      Result := Boolean'Val (Tmp_Return);
+      Result := Tmp_Return /= 0;
    end Icon_Size_Lookup_For_Settings;
 
    ------------------------

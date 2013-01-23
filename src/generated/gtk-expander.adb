@@ -138,7 +138,7 @@ package body Gtk.Expander is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_expanded");
    begin
-      return Boolean'Val (Internal (Get_Object (Expander)));
+      return Internal (Get_Object (Expander)) /= 0;
    end Get_Expanded;
 
    ---------------
@@ -165,7 +165,7 @@ package body Gtk.Expander is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_label_fill");
    begin
-      return Boolean'Val (Internal (Get_Object (Expander)));
+      return Internal (Get_Object (Expander)) /= 0;
    end Get_Label_Fill;
 
    ----------------------
@@ -193,7 +193,7 @@ package body Gtk.Expander is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_resize_toplevel");
    begin
-      return Boolean'Val (Internal (Get_Object (Expander)));
+      return Internal (Get_Object (Expander)) /= 0;
    end Get_Resize_Toplevel;
 
    -----------------
@@ -219,7 +219,7 @@ package body Gtk.Expander is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_use_markup");
    begin
-      return Boolean'Val (Internal (Get_Object (Expander)));
+      return Internal (Get_Object (Expander)) /= 0;
    end Get_Use_Markup;
 
    -----------------------
@@ -232,7 +232,7 @@ package body Gtk.Expander is
       function Internal (Expander : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_expander_get_use_underline");
    begin
-      return Boolean'Val (Internal (Get_Object (Expander)));
+      return Internal (Get_Object (Expander)) /= 0;
    end Get_Use_Underline;
 
    ------------------

@@ -313,7 +313,7 @@ package body Gtk.Status_Icon is
       function Internal (Status_Icon : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_status_icon_get_has_tooltip");
    begin
-      return Boolean'Val (Internal (Get_Object (Status_Icon)));
+      return Internal (Get_Object (Status_Icon)) /= 0;
    end Get_Has_Tooltip;
 
    -------------------
@@ -464,7 +464,7 @@ package body Gtk.Status_Icon is
       function Internal (Status_Icon : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_status_icon_get_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Status_Icon)));
+      return Internal (Get_Object (Status_Icon)) /= 0;
    end Get_Visible;
 
    -----------------------
@@ -490,7 +490,7 @@ package body Gtk.Status_Icon is
       function Internal (Status_Icon : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_status_icon_is_embedded");
    begin
-      return Boolean'Val (Internal (Get_Object (Status_Icon)));
+      return Internal (Get_Object (Status_Icon)) /= 0;
    end Is_Embedded;
 
    -------------------
@@ -715,11 +715,12 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Menu    : System.Address;
-          X       : out Gint;
-          Y       : out Gint;
+          X       : in out Gint;
+          Y       : in out Gint;
           Push_In : out Integer;
           Icon    : System.Address);
       pragma Import (C, Internal, "gtk_status_icon_position_menu");
+      --  Custom body because we need to initialize to 0 here (on OSX).
       Tmp_Push_In : aliased Integer := 0;
    begin
       Internal (Get_Object (Menu), X, Y, Tmp_Push_In, Get_Object (Icon));

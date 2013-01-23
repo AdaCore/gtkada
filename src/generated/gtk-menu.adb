@@ -336,7 +336,7 @@ package body Gtk.Menu is
       function Internal (Menu : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_menu_get_reserve_toggle_size");
    begin
-      return Boolean'Val (Internal (Get_Object (Menu)));
+      return Internal (Get_Object (Menu)) /= 0;
    end Get_Reserve_Toggle_Size;
 
    -----------------------
@@ -349,7 +349,7 @@ package body Gtk.Menu is
       function Internal (Menu : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_menu_get_tearoff_state");
    begin
-      return Boolean'Val (Internal (Get_Object (Menu)));
+      return Internal (Get_Object (Menu)) /= 0;
    end Get_Tearoff_State;
 
    ---------------

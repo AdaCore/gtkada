@@ -324,7 +324,7 @@ package body Gtk.Print_Settings is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Bool;
 
    -----------------
@@ -337,7 +337,7 @@ package body Gtk.Print_Settings is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_settings_get_collate");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Collate;
 
    ------------------------
@@ -792,7 +792,7 @@ package body Gtk.Print_Settings is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_settings_get_reverse");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Reverse;
 
    ---------------
@@ -818,7 +818,7 @@ package body Gtk.Print_Settings is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_print_settings_get_use_color");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Color;
 
    -------------
@@ -838,7 +838,7 @@ package body Gtk.Print_Settings is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Has_Key;
 
    ---------------
@@ -858,7 +858,7 @@ package body Gtk.Print_Settings is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Load_File;
 
    -------------------
@@ -885,7 +885,7 @@ package body Gtk.Print_Settings is
       end if;
       Tmp_Return := Internal (Get_Object (Self), Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Load_Key_File;
 
    ---------
@@ -1420,7 +1420,7 @@ package body Gtk.Print_Settings is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end To_File;
 
    -----------------

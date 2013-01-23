@@ -449,7 +449,7 @@ package body Gtk.Builder is
       Free (Tmp_String);
       Pspec := Acc_Pspec;
       Value := Acc_Value;
-      Success := Boolean'Val (Tmp_Return);
+      Success := Tmp_Return /= 0;
    end Value_From_String;
 
    ----------------------------
@@ -475,7 +475,7 @@ package body Gtk.Builder is
       Tmp_Return := Internal (Get_Object (Builder), The_Type, Tmp_String, Acc_Value'Access);
       Free (Tmp_String);
       Value.all := Acc_Value;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Value_From_String_Type;
 
 end Gtk.Builder;

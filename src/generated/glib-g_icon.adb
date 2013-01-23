@@ -38,7 +38,7 @@ package body Glib.G_Icon is
       function Internal (Self : G_Icon; Icon2 : G_Icon) return Integer;
       pragma Import (C, Internal, "g_icon_equal");
    begin
-      return Boolean'Val (Internal (Self, Icon2));
+      return Internal (Self, Icon2) /= 0;
    end Equal;
 
    ---------------

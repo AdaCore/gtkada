@@ -162,7 +162,7 @@ package body Gtk.Recent_Chooser is
       function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_recent_chooser_get_local_only");
    begin
-      return Boolean'Val (Internal (Chooser));
+      return Internal (Chooser) /= 0;
    end Get_Local_Only;
 
    -------------------------
@@ -175,7 +175,7 @@ package body Gtk.Recent_Chooser is
       function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_recent_chooser_get_select_multiple");
    begin
-      return Boolean'Val (Internal (Chooser));
+      return Internal (Chooser) /= 0;
    end Get_Select_Multiple;
 
    --------------------
@@ -186,7 +186,7 @@ package body Gtk.Recent_Chooser is
       function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_icons");
    begin
-      return Boolean'Val (Internal (Chooser));
+      return Internal (Chooser) /= 0;
    end Get_Show_Icons;
 
    ------------------------
@@ -197,7 +197,7 @@ package body Gtk.Recent_Chooser is
       function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_not_found");
    begin
-      return Boolean'Val (Internal (Chooser));
+      return Internal (Chooser) /= 0;
    end Get_Show_Not_Found;
 
    ----------------------
@@ -208,7 +208,7 @@ package body Gtk.Recent_Chooser is
       function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_private");
    begin
-      return Boolean'Val (Internal (Chooser));
+      return Internal (Chooser) /= 0;
    end Get_Show_Private;
 
    -------------------
@@ -219,7 +219,7 @@ package body Gtk.Recent_Chooser is
       function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_tips");
    begin
-      return Boolean'Val (Internal (Chooser));
+      return Internal (Chooser) /= 0;
    end Get_Show_Tips;
 
    ------------------
@@ -271,7 +271,7 @@ package body Gtk.Recent_Chooser is
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Select_Uri;
 
    ---------------------
@@ -291,7 +291,7 @@ package body Gtk.Recent_Chooser is
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Current_Uri;
 
    ----------------

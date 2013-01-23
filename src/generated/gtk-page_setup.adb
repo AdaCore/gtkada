@@ -353,7 +353,7 @@ package body Gtk.Page_Setup is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Load_File;
 
    -------------------
@@ -380,7 +380,7 @@ package body Gtk.Page_Setup is
       end if;
       Tmp_Return := Internal (Get_Object (Self), Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Load_Key_File;
 
    -----------------------
@@ -516,7 +516,7 @@ package body Gtk.Page_Setup is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end To_File;
 
    -----------------

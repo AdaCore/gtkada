@@ -212,7 +212,7 @@ package body Gtk.Spin_Button is
       function Internal (Spin_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_spin_button_get_numeric");
    begin
-      return Boolean'Val (Internal (Get_Object (Spin_Button)));
+      return Internal (Get_Object (Spin_Button)) /= 0;
    end Get_Numeric;
 
    ---------------
@@ -243,7 +243,7 @@ package body Gtk.Spin_Button is
       function Internal (Spin_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_spin_button_get_snap_to_ticks");
    begin
-      return Boolean'Val (Internal (Get_Object (Spin_Button)));
+      return Internal (Get_Object (Spin_Button)) /= 0;
    end Get_Snap_To_Ticks;
 
    -----------------------
@@ -297,7 +297,7 @@ package body Gtk.Spin_Button is
       function Internal (Spin_Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_spin_button_get_wrap");
    begin
-      return Boolean'Val (Internal (Get_Object (Spin_Button)));
+      return Internal (Get_Object (Spin_Button)) /= 0;
    end Get_Wrap;
 
    --------------------
@@ -567,7 +567,7 @@ package body Gtk.Spin_Button is
       function Internal (Editable : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
-      return Boolean'Val (Internal (Get_Object (Editable)));
+      return Internal (Get_Object (Editable)) /= 0;
    end Get_Editable;
 
    ------------------
@@ -605,7 +605,7 @@ package body Gtk.Spin_Button is
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
       Start_Pos := Acc_Start_Pos;
       End_Pos := Acc_End_Pos;
-      Has_Selection := Boolean'Val (Tmp_Return);
+      Has_Selection := Tmp_Return /= 0;
    end Get_Selection_Bounds;
 
    -----------------

@@ -200,7 +200,7 @@ package body Gtk.Style is
       function Internal (Style : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_style_has_context");
    begin
-      return Boolean'Val (Internal (Get_Object (Style)));
+      return Internal (Get_Object (Style)) /= 0;
    end Has_Context;
 
    ------------------
@@ -225,7 +225,7 @@ package body Gtk.Style is
       Tmp_Return := Internal (Get_Object (Style), Tmp_Color_Name, Acc_Color'Access);
       Free (Tmp_Color_Name);
       Color := Acc_Color;
-      Found := Boolean'Val (Tmp_Return);
+      Found := Tmp_Return /= 0;
    end Lookup_Color;
 
    --------------------

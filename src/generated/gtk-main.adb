@@ -231,7 +231,7 @@ package body Gtk.Main is
       function Internal return Integer;
       pragma Import (C, Internal, "gtk_events_pending");
    begin
-      return Boolean'Val (Internal);
+      return Internal /= 0;
    end Events_Pending;
 
    -----------
@@ -242,7 +242,7 @@ package body Gtk.Main is
       function Internal return Integer;
       pragma Import (C, Internal, "gtk_false");
    begin
-      return Boolean'Val (Internal);
+      return Internal /= 0;
    end False;
 
    --------------------
@@ -295,7 +295,7 @@ package body Gtk.Main is
    begin
       Tmp_Return := Internal (Acc_State'Access);
       State := Acc_State;
-      Has_Current_Event := Boolean'Val (Tmp_Return);
+      Has_Current_Event := Tmp_Return /= 0;
    end Get_Current_Event_State;
 
    ----------------------------
@@ -431,7 +431,7 @@ package body Gtk.Main is
       function Internal return Integer;
       pragma Import (C, Internal, "gtk_main_iteration");
    begin
-      return Boolean'Val (Internal);
+      return Internal /= 0;
    end Main_Iteration;
 
    -----------------------
@@ -442,7 +442,7 @@ package body Gtk.Main is
       function Internal (Blocking : Integer) return Integer;
       pragma Import (C, Internal, "gtk_main_iteration_do");
    begin
-      return Boolean'Val (Internal (Boolean'Pos (Blocking)));
+      return Internal (Boolean'Pos (Blocking)) /= 0;
    end Main_Iteration_Do;
 
    ----------------
@@ -491,7 +491,7 @@ package body Gtk.Main is
       function Internal return Integer;
       pragma Import (C, Internal, "gtk_true");
    begin
-      return Boolean'Val (Internal);
+      return Internal /= 0;
    end True;
 
 end Gtk.Main;

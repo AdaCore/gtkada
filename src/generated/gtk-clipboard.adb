@@ -983,7 +983,7 @@ package body Gtk.Clipboard is
       function Internal (Clipboard : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_image_available");
    begin
-      return Boolean'Val (Internal (Get_Object (Clipboard)));
+      return Internal (Get_Object (Clipboard)) /= 0;
    end Wait_Is_Image_Available;
 
    ---------------------------------
@@ -1000,7 +1000,7 @@ package body Gtk.Clipboard is
           Buffer    : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_rich_text_available");
    begin
-      return Boolean'Val (Internal (Get_Object (Clipboard), Get_Object (Buffer)));
+      return Internal (Get_Object (Clipboard), Get_Object (Buffer)) /= 0;
    end Wait_Is_Rich_Text_Available;
 
    ------------------------------
@@ -1016,7 +1016,7 @@ package body Gtk.Clipboard is
           Target    : Gdk.Types.Gdk_Atom) return Integer;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_target_available");
    begin
-      return Boolean'Val (Internal (Get_Object (Clipboard), Target));
+      return Internal (Get_Object (Clipboard), Target) /= 0;
    end Wait_Is_Target_Available;
 
    ----------------------------
@@ -1029,7 +1029,7 @@ package body Gtk.Clipboard is
       function Internal (Clipboard : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_text_available");
    begin
-      return Boolean'Val (Internal (Get_Object (Clipboard)));
+      return Internal (Get_Object (Clipboard)) /= 0;
    end Wait_Is_Text_Available;
 
    ----------------------------
@@ -1042,7 +1042,7 @@ package body Gtk.Clipboard is
       function Internal (Clipboard : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_uris_available");
    begin
-      return Boolean'Val (Internal (Get_Object (Clipboard)));
+      return Internal (Get_Object (Clipboard)) /= 0;
    end Wait_Is_Uris_Available;
 
    ---------

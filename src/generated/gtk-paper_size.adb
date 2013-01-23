@@ -411,7 +411,7 @@ package body Gtk.Paper_Size is
       function Internal (Widget : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_paper_size_is_custom");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget)) /= 0;
    end Is_Custom;
 
    --------------
@@ -427,7 +427,7 @@ package body Gtk.Paper_Size is
           Size2  : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_paper_size_is_equal");
    begin
-      return Boolean'Val (Internal (Get_Object (Widget), Get_Object (Size2)));
+      return Internal (Get_Object (Widget), Get_Object (Size2)) /= 0;
    end Is_Equal;
 
    --------------

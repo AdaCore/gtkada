@@ -333,7 +333,7 @@ package body Gtk.Text_Buffer is
           Default_Editable : Integer) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_backspace");
    begin
-      return Boolean'Val (Internal (Get_Object (Buffer), Iter, Boolean'Pos (Interactive), Boolean'Pos (Default_Editable)));
+      return Internal (Get_Object (Buffer), Iter, Boolean'Pos (Interactive), Boolean'Pos (Default_Editable)) /= 0;
    end Backspace;
 
    -----------------------
@@ -471,7 +471,7 @@ package body Gtk.Text_Buffer is
           Default_Editable : Integer) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_delete_interactive");
    begin
-      Result := Boolean'Val (Internal (Get_Object (Buffer), Start_Iter, End_Iter, Boolean'Pos (Default_Editable)));
+      Result := Internal (Get_Object (Buffer), Start_Iter, End_Iter, Boolean'Pos (Default_Editable)) /= 0;
    end Delete_Interactive;
 
    -----------------
@@ -521,7 +521,7 @@ package body Gtk.Text_Buffer is
           Default_Editable : Integer) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_delete_selection");
    begin
-      return Boolean'Val (Internal (Get_Object (Buffer), Boolean'Pos (Interactive), Boolean'Pos (Default_Editable)));
+      return Internal (Get_Object (Buffer), Boolean'Pos (Interactive), Boolean'Pos (Default_Editable)) /= 0;
    end Delete_Selection;
 
    -------------------------------------
@@ -537,7 +537,7 @@ package body Gtk.Text_Buffer is
           Format : Gdk.Types.Gdk_Atom) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_deserialize_get_can_create_tags");
    begin
-      return Boolean'Val (Internal (Get_Object (Buffer), Format));
+      return Internal (Get_Object (Buffer), Format) /= 0;
    end Deserialize_Get_Can_Create_Tags;
 
    -------------------------------------
@@ -648,7 +648,7 @@ package body Gtk.Text_Buffer is
       function Internal (Buffer : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_get_has_selection");
    begin
-      return Boolean'Val (Internal (Get_Object (Buffer)));
+      return Internal (Get_Object (Buffer)) /= 0;
    end Get_Has_Selection;
 
    ----------------
@@ -834,7 +834,7 @@ package body Gtk.Text_Buffer is
       function Internal (Buffer : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_get_modified");
    begin
-      return Boolean'Val (Internal (Get_Object (Buffer)));
+      return Internal (Get_Object (Buffer)) /= 0;
    end Get_Modified;
 
    ---------------------------
@@ -892,7 +892,7 @@ package body Gtk.Text_Buffer is
       Acc_Start := Tmp_Acc_Start;
       Start := Acc_Start;
       The_End := Acc_The_End;
-      Result := Boolean'Val (Tmp_Return);
+      Result := Tmp_Return /= 0;
    end Get_Selection_Bounds;
 
    ---------------
@@ -1056,7 +1056,7 @@ package body Gtk.Text_Buffer is
       Free (Tmp_Text);
       Acc_Iter := Tmp_Acc_Iter;
       Iter.all := Acc_Iter;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Insert_Interactive;
 
    ----------------------------------
@@ -1079,7 +1079,7 @@ package body Gtk.Text_Buffer is
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Text, -1, Boolean'Pos (Default_Editable));
       Free (Tmp_Text);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Insert_Interactive_At_Cursor;
 
    -------------------
@@ -1139,7 +1139,7 @@ package body Gtk.Text_Buffer is
           Default_Editable : Integer) return Integer;
       pragma Import (C, Internal, "gtk_text_buffer_insert_range_interactive");
    begin
-      return Boolean'Val (Internal (Get_Object (Buffer), Iter, Start, The_End, Boolean'Pos (Default_Editable)));
+      return Internal (Get_Object (Buffer), Iter, Start, The_End, Boolean'Pos (Default_Editable)) /= 0;
    end Insert_Range_Interactive;
 
    ---------------

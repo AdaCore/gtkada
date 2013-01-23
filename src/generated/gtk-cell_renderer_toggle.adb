@@ -83,7 +83,7 @@ package body Gtk.Cell_Renderer_Toggle is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_get_activatable");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Activatable;
 
    ----------------
@@ -97,7 +97,7 @@ package body Gtk.Cell_Renderer_Toggle is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_get_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Active;
 
    ---------------
@@ -111,7 +111,7 @@ package body Gtk.Cell_Renderer_Toggle is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_get_radio");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Radio;
 
    ---------------------

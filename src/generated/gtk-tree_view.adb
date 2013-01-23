@@ -498,7 +498,7 @@ package body Gtk.Tree_View is
           Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_collapse_row");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View), Get_Object (Path)));
+      return Internal (Get_Object (Tree_View), Get_Object (Path)) /= 0;
    end Collapse_Row;
 
    ----------------------
@@ -728,7 +728,7 @@ package body Gtk.Tree_View is
           Open_All  : Integer) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_expand_row");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View), Get_Object (Path), Boolean'Pos (Open_All)));
+      return Internal (Get_Object (Tree_View), Get_Object (Path), Boolean'Pos (Open_All)) /= 0;
    end Expand_Row;
 
    --------------------
@@ -886,7 +886,7 @@ package body Gtk.Tree_View is
       if Pos /= null then
          Pos.all := Acc_Pos;
       end if;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Get_Dest_Row_At_Pos;
 
    -----------------------
@@ -919,7 +919,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_enable_search");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Enable_Search;
 
    ---------------------------
@@ -932,7 +932,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_enable_tree_lines");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Enable_Tree_Lines;
 
    -------------------------
@@ -960,7 +960,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_fixed_height_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Fixed_Height_Mode;
 
    --------------------
@@ -989,7 +989,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_headers_clickable");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Headers_Clickable;
 
    -------------------------
@@ -1002,7 +1002,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_headers_visible");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Headers_Visible;
 
    ----------------------
@@ -1015,7 +1015,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_hover_expand");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Hover_Expand;
 
    -------------------------
@@ -1028,7 +1028,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_hover_selection");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Hover_Selection;
 
    ---------------------------
@@ -1098,7 +1098,7 @@ package body Gtk.Tree_View is
       Column := Acc_Column;
       Cell_X := Acc_Cell_X;
       Cell_Y := Acc_Cell_Y;
-      Row_Found := Boolean'Val (Tmp_Return);
+      Row_Found := Tmp_Return /= 0;
    end Get_Path_At_Pos;
 
    ---------------------
@@ -1111,7 +1111,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_reorderable");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Reorderable;
 
    ----------------------------
@@ -1137,7 +1137,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_rubber_banding");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Rubber_Banding;
 
    --------------------
@@ -1150,7 +1150,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_rules_hint");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Rules_Hint;
 
    -----------------------
@@ -1232,7 +1232,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_get_show_expanders");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Get_Show_Expanders;
 
    ------------------------
@@ -1288,7 +1288,7 @@ package body Gtk.Tree_View is
       Model := Acc_Model;
       Path := Acc_Path;
       Iter := Acc_Iter;
-      Success := Boolean'Val (Tmp_Return);
+      Success := Tmp_Return /= 0;
    end Get_Tooltip_Context;
 
    -----------------------
@@ -1317,7 +1317,7 @@ package body Gtk.Tree_View is
       Acc_Start_Path := From_Object (Tmp_Acc_Start_Path);
       Start_Path := Acc_Start_Path;
       End_Path := Acc_End_Path;
-      Success := Boolean'Val (Tmp_Return);
+      Success := Tmp_Return /= 0;
    end Get_Visible_Range;
 
    ----------------------
@@ -1504,7 +1504,7 @@ package body Gtk.Tree_View is
       if Cell_Y /= null then
          Cell_Y.all := Acc_Cell_Y;
       end if;
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Is_Blank_At_Pos;
 
    ------------------------------
@@ -1517,7 +1517,7 @@ package body Gtk.Tree_View is
       function Internal (Tree_View : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_is_rubber_banding_active");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View)));
+      return Internal (Get_Object (Tree_View)) /= 0;
    end Is_Rubber_Banding_Active;
 
    -----------------------
@@ -1657,7 +1657,7 @@ package body Gtk.Tree_View is
           Path      : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_view_row_expanded");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_View), Get_Object (Path)));
+      return Internal (Get_Object (Tree_View), Get_Object (Path)) /= 0;
    end Row_Expanded;
 
    --------------------

@@ -172,7 +172,7 @@ package body Gtk.Toolbar is
       function Internal (Toolbar : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_toolbar_get_show_arrow");
    begin
-      return Boolean'Val (Internal (Get_Object (Toolbar)));
+      return Internal (Get_Object (Toolbar)) /= 0;
    end Get_Show_Arrow;
 
    ---------------

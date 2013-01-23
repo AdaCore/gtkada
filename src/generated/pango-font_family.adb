@@ -59,7 +59,7 @@ package body Pango.Font_Family is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "pango_font_family_is_monospace");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Is_Monospace;
 
    ----------------

@@ -193,7 +193,7 @@ package body Gtk.Box is
       function Internal (Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_box_get_homogeneous");
    begin
-      return Boolean'Val (Internal (Get_Object (Box)));
+      return Internal (Get_Object (Box)) /= 0;
    end Get_Homogeneous;
 
    -----------------
@@ -275,8 +275,8 @@ package body Gtk.Box is
       Tmp_Fill   : aliased Integer;
    begin
       Internal (Get_Object (Box), Get_Object (Child), Tmp_Expand, Tmp_Fill, Padding, Pack_Type);
-      Fill := Boolean'Val (Tmp_Fill);
-      Expand := Boolean'Val (Tmp_Expand);
+      Fill := Tmp_Fill /= 0;
+      Expand := Tmp_Expand /= 0;
    end Query_Child_Packing;
 
    -------------------

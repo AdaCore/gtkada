@@ -122,7 +122,7 @@ package body Gdk.Device is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gdk_device_get_has_cursor");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Has_Cursor;
 
    --------------
@@ -262,7 +262,7 @@ package body Gdk.Device is
           Mode : Gdk_Input_Mode) return Integer;
       pragma Import (C, Internal, "gdk_device_set_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Self), Mode));
+      return Internal (Get_Object (Self), Mode) /= 0;
    end Set_Mode;
 
    ------------

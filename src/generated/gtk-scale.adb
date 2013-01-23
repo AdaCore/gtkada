@@ -376,7 +376,7 @@ package body Gtk.Scale is
       function Internal (Scale : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_scale_get_draw_value");
    begin
-      return Boolean'Val (Internal (Get_Object (Scale)));
+      return Internal (Get_Object (Scale)) /= 0;
    end Get_Draw_Value;
 
    ----------------

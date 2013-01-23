@@ -406,7 +406,7 @@ package body Gdk.Screen is
       function Internal (Screen : System.Address) return Integer;
       pragma Import (C, Internal, "gdk_screen_is_composited");
    begin
-      return Boolean'Val (Internal (Get_Object (Screen)));
+      return Internal (Get_Object (Screen)) /= 0;
    end Is_Composited;
 
    -----------------------

@@ -302,7 +302,7 @@ package body Gtk.Font_Chooser_Widget is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_font_chooser_get_show_preview_entry");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Show_Preview_Entry;
 
    --------------

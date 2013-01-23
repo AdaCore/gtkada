@@ -319,7 +319,7 @@ package body Gtk.Recent_Filter is
           Filter_Info : Gtk_Recent_Filter_Info) return Integer;
       pragma Import (C, Internal, "gtk_recent_filter_filter");
    begin
-      return Boolean'Val (Internal (Get_Object (Filter), Filter_Info));
+      return Internal (Get_Object (Filter), Filter_Info) /= 0;
    end Filter;
 
    --------------

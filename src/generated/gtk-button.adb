@@ -238,7 +238,7 @@ package body Gtk.Button is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_focus_on_click");
    begin
-      return Boolean'Val (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button)) /= 0;
    end Get_Focus_On_Click;
 
    ---------------
@@ -310,7 +310,7 @@ package body Gtk.Button is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_use_stock");
    begin
-      return Boolean'Val (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button)) /= 0;
    end Get_Use_Stock;
 
    -----------------------
@@ -323,7 +323,7 @@ package body Gtk.Button is
       function Internal (Button : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_button_get_use_underline");
    begin
-      return Boolean'Val (Internal (Get_Object (Button)));
+      return Internal (Get_Object (Button)) /= 0;
    end Get_Use_Underline;
 
    -----------
@@ -522,7 +522,7 @@ package body Gtk.Button is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
 
    ------------------------

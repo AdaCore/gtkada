@@ -174,7 +174,7 @@ package body Gtk.Calendar is
           Day      : Guint) return Integer;
       pragma Import (C, Internal, "gtk_calendar_get_day_is_marked");
    begin
-      return Boolean'Val (Internal (Get_Object (Calendar), Day));
+      return Internal (Get_Object (Calendar), Day) /= 0;
    end Get_Day_Is_Marked;
 
    ----------------------------

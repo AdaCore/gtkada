@@ -261,7 +261,7 @@ package body Gtk.Notebook is
       function Internal (Notebook : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_notebook_get_scrollable");
    begin
-      return Boolean'Val (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook)) /= 0;
    end Get_Scrollable;
 
    ---------------------
@@ -274,7 +274,7 @@ package body Gtk.Notebook is
       function Internal (Notebook : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_notebook_get_show_border");
    begin
-      return Boolean'Val (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook)) /= 0;
    end Get_Show_Border;
 
    -------------------
@@ -287,7 +287,7 @@ package body Gtk.Notebook is
       function Internal (Notebook : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_notebook_get_show_tabs");
    begin
-      return Boolean'Val (Internal (Get_Object (Notebook)));
+      return Internal (Get_Object (Notebook)) /= 0;
    end Get_Show_Tabs;
 
    ------------------------
@@ -304,7 +304,7 @@ package body Gtk.Notebook is
           Child    : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_notebook_get_tab_detachable");
    begin
-      return Boolean'Val (Internal (Get_Object (Notebook), Get_Object (Child)));
+      return Internal (Get_Object (Notebook), Get_Object (Child)) /= 0;
    end Get_Tab_Detachable;
 
    ---------------------
@@ -384,7 +384,7 @@ package body Gtk.Notebook is
           Child    : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_notebook_get_tab_reorderable");
    begin
-      return Boolean'Val (Internal (Get_Object (Notebook), Get_Object (Child)));
+      return Internal (Get_Object (Notebook), Get_Object (Child)) /= 0;
    end Get_Tab_Reorderable;
 
    ---------------------
