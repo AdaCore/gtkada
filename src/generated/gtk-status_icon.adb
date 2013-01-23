@@ -708,8 +708,8 @@ package body Gtk.Status_Icon is
 
    procedure Position_Menu
       (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-       X       : out Gint;
-       Y       : out Gint;
+       X       : in out Gint;
+       Y       : in out Gint;
        Push_In : out Boolean;
        Icon    : Glib.Object.GObject)
    is
@@ -720,10 +720,10 @@ package body Gtk.Status_Icon is
           Push_In : out Integer;
           Icon    : System.Address);
       pragma Import (C, Internal, "gtk_status_icon_position_menu");
-      Tmp_Push_In : aliased Integer;
+      Tmp_Push_In : aliased Integer := 0;
    begin
       Internal (Get_Object (Menu), X, Y, Tmp_Push_In, Get_Object (Icon));
-      Push_In := Boolean'Val (Tmp_Push_In);
+      Push_In := Tmp_Push_In /= 0;
    end Position_Menu;
 
    use type System.Address;

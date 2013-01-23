@@ -29,10 +29,8 @@ with Gdk.Screen;  use Gdk.Screen;
 
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Handlers;
 with Gtk.Label;        use Gtk.Label;
-with Gtk.Main;         use Gtk.Main;
 with Gtk.Menu;         use Gtk.Menu;
 with Gtk.Menu_Item;    use Gtk.Menu_Item;
 with Gtk.Status_Icon;  use Gtk.Status_Icon;
@@ -41,14 +39,6 @@ with Gtk.Stock;        use Gtk.Stock;
 with Common; use Common;
 
 package body Create_Status_Icons is
-
-   Initialized  : Boolean := False;
-   --  Whether we have already initialized our library-level variables.
-
-   Display      : Gdk_Display;
-   Num_Displays : Gint;
-   --  Parameters that we'll set when Run is called.  Treat these as
-   --  constant, otherwise.
 
    type Image_Type is (Info, Warning, Error);
    Current_Image : Image_Type := Info;
@@ -62,14 +52,12 @@ package body Create_Status_Icons is
 
    package Menu_Item_Handler is
      new Gtk.Handlers.Callback (Gtk_Menu_Item_Record);
-   package Status_Icon_Handler is
-     new Gtk.Handlers.Callback (Gtk_Status_Icon_Record);
 
    procedure Change_Icon_Cb (Button : access Gtk_Button_Record'Class);
    procedure Popup_Menu_Cb
-      (Status_Icon : access Gtk_Status_Icon_Record'Class);
-   procedure Show_Icon_Cb
-     (Check_Button : access Gtk_Check_Button_Record'Class);
+      (Status_Icon   : access Gtk_Status_Icon_Record'Class;
+       Button        : Guint;
+       Activate_Time : Guint);
    --  Callback procedures
 
    package Widget_Popups is new Popup_User_Data (GObject);
@@ -79,6 +67,8 @@ package body Create_Status_Icons is
    -----------------
 
    procedure Change_Icon is
+      Display   : constant Gdk_Display := Get_Default;
+      N_Screens : constant Gint := Display.Get_N_Screens;
    begin
       --  Advance to next image
       if Current_Image = Image_Type'Last then
@@ -88,16 +78,16 @@ package body Create_Status_Icons is
       end if;
 
       --  Change all images on all displays.
-      for I in 1 .. Num_Displays loop
+      for I in 1 .. N_Screens loop
          case Current_Image is
             when Info =>
-               Set_From_Icon_Name (Icons (I), Stock_Ok);
+               Set_From_Stock (Icons (I), Stock_Ok);
                Set_Tooltip_Text (Icons (I), "Some Information ...");
             when Warning =>
-               Set_From_Icon_Name (Icons (I), Stock_Dialog_Warning);
+               Set_From_Stock (Icons (I), Stock_Dialog_Warning);
                Set_Tooltip_Text (Icons (I), "Some Warning ...");
             when Error =>
-               Set_From_Icon_Name (Icons (I), Stock_Dialog_Error);
+               Set_From_Stock (Icons (I), Stock_Dialog_Error);
                Set_Tooltip_Text (Icons (I), "Some Error ...");
          end case;
       end loop;
@@ -147,14 +137,14 @@ package body Create_Status_Icons is
    -------------------
 
    procedure Popup_Menu_Cb
-     (Status_Icon : access Gtk_Status_Icon_Record'Class)
+      (Status_Icon   : access Gtk_Status_Icon_Record'Class;
+       Button        : Guint;
+       Activate_Time : Guint)
    is
-      Menu      : Gtk_Menu;
+      Menu      : constant Gtk_Menu := Gtk_Menu_New;
       Menu_Item : Gtk_Menu_Item;
    begin
-      Gtk_New (Menu);
-
-      Set_Screen (Menu, Get_Screen (Status_Icon));
+      Menu.Set_Screen (Status_Icon.Get_Screen);
 
       Gtk_New (Menu_Item, "Change Icon");
       Menu_Item_Handler.Connect (Menu_Item, "activate", Change_Icon_Cb'Access);
@@ -165,7 +155,8 @@ package body Create_Status_Icons is
         (Menu          => Menu,
          Func          => Gtk.Status_Icon.Position_Menu'Access,
          Data          => GObject (Status_Icon),
-         Activate_Time => Get_Current_Event_Time);
+         Button        => Button,
+         Activate_Time => Guint32 (Activate_Time));
    end Popup_Menu_Cb;
 
    ---------
@@ -175,35 +166,23 @@ package body Create_Status_Icons is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1          : Gtk_Box;
       Button1       : Gtk_Button;
-      Check_Button1 : Gtk_Check_Button;
       Label1        : Gtk_Label;
+      Display       : constant Gdk_Display := Get_Default;
+      N_Screens     : constant Gint := Display.Get_N_Screens;
+
    begin
-      if not Initialized then
-         --  We can't define these as constants (i.e. at elaboration time)
-         --  because it's too early then.  Define them now, when the
-         --  infrastructure is active and after this test is invoked.
-         Display := Get_Default;
-         Num_Displays := Get_N_Screens (Display);
+      if Icons = null then
+         Icons := new Icon_Array (1 .. N_Screens);
 
-         --  Create and dock all of our status icons.  Start them off as
-         --  hidden.
-         Icons := new Icon_Array (1 .. Num_Displays);
-         for I in 1 .. Num_Displays loop
-            Gtk_New (Icons (I));
-            Set_Screen (Icons (I), Get_Screen (Display, I - 1));
-            Status_Icon_Handler.Connect
-              (Icons (I), "popup-menu", Popup_Menu_Cb'Access);
+         --  Reset all of our icons' variable settings.
+         for I in 1 .. N_Screens loop
+            Icons (I) := Gtk_Status_Icon_New;
+            Icons (I).Set_Screen (Get_Screen (Display, I - 1));
+            Icons (I).Set_From_Stock (Stock_Ok);
+            Icons (I).Set_Tooltip_Text ("Some question...");
+            Icons (I).On_Popup_Menu (Popup_Menu_Cb'Access);
          end loop;
-
-         Initialized := True;
       end if;
-
-      --  Reset all of our icons' variable settings.
-      for I in 1 .. Num_Displays loop
-         Set_From_Icon_Name (Icons (I), Stock_Ok);
-         Set_Tooltip_Text (Icons (I), "Some Information ...");
-         Set_Visible (Icons (I), True);
-      end loop;
 
       Gtk.Frame.Set_Label (Frame, "Status_Icons");
 
@@ -215,30 +194,11 @@ package body Create_Status_Icons is
       Gtk_New (Label1, "Click on Help for more information.");
       Pack_Start (Box1, Label1, False, False, 10);
 
-      Gtk_New (Check_Button1, "Show Icon");
-      Check_Handler.Connect (Check_Button1, "clicked", Show_Icon_Cb'Access);
-      Set_Active (Check_Button1, True);
-      Pack_Start (Box1, Check_Button1, False, False, 0);
-
       Gtk_New (Button1, "Change Icon (Info/Warning/Error)");
       Button_Handler.Connect (Button1, "clicked", Change_Icon_Cb'Access);
       Pack_Start (Box1, Button1, False, False, 0);
 
       Show_All (Box1);
    end Run;
-
-   ------------------
-   -- Show_Icon_Cb --
-   ------------------
-
-   procedure Show_Icon_Cb
-     (Check_Button : access Gtk_Check_Button_Record'Class)
-   is
-      Show : constant Boolean := Get_Active (Check_Button);
-   begin
-      for I in 1 .. Num_Displays loop
-         Set_Visible (Icons (I), Show);
-      end loop;
-   end Show_Icon_Cb;
 
 end Create_Status_Icons;

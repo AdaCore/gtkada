@@ -108,8 +108,8 @@ package Gtk.Menu is
 
    type Gtk_Menu_Position_Func is access procedure
      (Menu    : not null access Gtk_Menu_Record'Class;
-      X       : out Gint;
-      Y       : out Gint;
+      X       : in out Gint;
+      Y       : in out Gint;
       Push_In : out Boolean);
    --  A user function supplied when calling Gtk.Menu.Popup which controls the
    --  positioning of the menu when it is displayed. The function sets the X
@@ -354,8 +354,8 @@ package Gtk.Menu is
 
       type Gtk_Menu_Position_Func is access procedure
         (Menu      : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-         X         : out Gint;
-         Y         : out Gint;
+         X         : in out Gint;
+         Y         : in out Gint;
          Push_In   : out Boolean;
          User_Data : User_Data_Type);
       --  A user function supplied when calling Gtk.Menu.Popup which controls the
