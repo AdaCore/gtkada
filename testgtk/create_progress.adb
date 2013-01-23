@@ -47,8 +47,6 @@ package body Create_Progress is
    type ProgressData is record
       Pbar            : Gtk_Progress_Bar;
       Block_Spin      : Gtk_Spin_Button;
-      Step_Spin       : Gtk_Spin_Button;
-      Act_Blocks_Spin : Gtk_Spin_Button;
       Label           : Gtk_Label;
       Omenu1          : Gtk_Combo_Box_Text;
       Omenu1_Group    : Widget_SList.GSlist;
@@ -56,6 +54,7 @@ package body Create_Progress is
       Omenu2_Group    : Widget_SList.GSlist;
       Gentry          : Gtk_Entry;
       Timer           : G_Source_Id;
+      Activity        : Boolean := False;
    end record;
 
    Pdata : ProgressData;
@@ -81,13 +80,18 @@ package body Create_Progress is
       New_Val : Gdouble;
    begin
       New_Val := Get_Fraction (Pdata.Pbar);
-
-      New_Val := New_Val + 0.05;
+      New_Val := New_Val + 0.01;
       if New_Val > 1.0 then
          New_Val := 0.0;
       end if;
 
-      Set_Fraction (Pdata.Pbar, New_Val);
+      if Pdata.Activity then
+         Pdata.Pbar.Pulse;
+         Pdata.Label.Set_Text ("???");
+      else
+         Set_Fraction (Pdata.Pbar, New_Val);
+         Pdata.Label.Set_Text (Integer'Image (Integer (New_Val * 100.0)));
+      end if;
 
       return True;
    end Progress_Timeout;
@@ -160,17 +164,7 @@ package body Create_Progress is
      (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
-      if Get_Active (Widget) then
-         --  Calling Pulse will cause the progress bar to enter activity
-         --  mode.
-         Pulse (Pdata.Pbar);
-      else
-         --  Calling Set_Fraction should cause the progress bar to enter
-         --  normal "fill in" mode.
-         Set_Fraction (Pdata.Pbar, 0.0);
-      end if;
-      Set_Sensitive (Pdata.Step_Spin, Get_Active (Widget));
-      Set_Sensitive (Pdata.Act_Blocks_Spin, Get_Active (Widget));
+      Pdata.Activity := Get_Active (Widget);
    end Toggle_Activity_Mode;
 
    -------------------
@@ -352,47 +346,6 @@ package body Create_Progress is
       Check_Handler.Connect (Check, "clicked", Toggle_Activity_Mode'Access);
       Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
-
-      Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 5, 6, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      --  Step Size
-
-      Gtk_New (Label, "Step size :");
-      Pack_Start (Hbox, Label, False, True, 0);
-
-      Gtk_New (Adj,
-               Value          => 3.0,
-               Lower          => 1.0,
-               Upper          => 20.0,
-               Step_Increment => 1.0,
-               Page_Increment => 5.0,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.Step_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
-      Pack_Start (Hbox, Pdata.Step_Spin, False, True, 0);
-      Set_Sensitive (Pdata.Step_Spin, False);
-
-      Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 6, 7, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      --  Blocks
-
-      Gtk_New (Label, "Blocks :");
-      Pack_Start (Hbox, Label, False, True, 0);
-
-      Gtk_New (Adj,
-               Value          => 5.0,
-               Lower          => 2.0,
-               Upper          => 10.0,
-               Step_Increment => 1.0,
-               Page_Increment => 5.0,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.Act_Blocks_Spin, Adj, Climb_Rate => 0.0,
-               The_Digits => 0);
-      Pack_Start (Hbox, Pdata.Act_Blocks_Spin, False, True, 0);
-      Set_Sensitive (Pdata.Act_Blocks_Spin, False);
 
       Show_All (Vbox);
    end Run;
