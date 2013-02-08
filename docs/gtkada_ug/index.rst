@@ -25,7 +25,7 @@ GtkAda User's Guide
 
 Copyright C 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
-Copyright C 2000-2011, AdaCore
+Copyright C 2000-2013, AdaCore
 
 Permission is granted to copy, distribute and/or modify this document under the
 terms of the GNU Free Documentation License, Version 1.1 or any later version
