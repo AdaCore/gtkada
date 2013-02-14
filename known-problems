@@ -1,3 +1,15 @@
+Known problems fixed in GtkAda 3.4.2
+
+- M212-027 Link errors under Windows
+  Problem:    When linking a GtkAda program under Windows, an error is raised
+              about a missing -lgtk-win32-3.0/-lgdk-win32-3.0
+  Workaround: In the directory <gtkada_install_dir>\lib\, copy
+              libgdk-3.dll.a and libgtk-3.dll.a respectively to
+              libgdk-win32-3.0.dll.a and libgtk-win32-3.0.dll.a. 
+              And in the directory <gtkada_install_dir>\bin, copy
+              libgdk-3.dll and libgtk-3.dll respectively to 
+              libgdk-win32-3.0.dll and libgtk-win32-3.0.dll.
+
 Known problems fixed in GtkAda 3.4.0
 
 - L615-005 Constraint Error using the GtkAda.Canvas
