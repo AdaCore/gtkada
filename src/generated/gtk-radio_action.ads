@@ -98,10 +98,10 @@ package Gtk.Radio_Action is
 
    function Get_Group
       (Action : access Gtk_Radio_Action_Record)
-       return Gtk.Widget.Widget_SList.GSList;
+       return Gtk.Widget.Widget_SList.GSlist;
    procedure Set_Group
       (Action : access Gtk_Radio_Action_Record;
-       Group  : Gtk.Widget.Widget_SList.GSList);
+       Group  : Gtk.Widget.Widget_SList.GSlist);
    --  Sets the radio group for the radio action object.
    --  A common way to set up a group of radio group is the following:
    --       Group  : GSlist := null;

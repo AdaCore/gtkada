@@ -66,7 +66,7 @@ package Gtk.List is
 
    procedure Append_Items
       (List  : access Gtk_List_Record;
-       Items : Gtk.Widget.Widget_List.GList);
+       Items : Gtk.Widget.Widget_List.Glist);
 
    function Child_Position
       (List  : access Gtk_List_Record;
@@ -91,20 +91,20 @@ package Gtk.List is
 
    procedure Insert_Items
       (List     : access Gtk_List_Record;
-       Items    : Gtk.Widget.Widget_List.GList;
+       Items    : Gtk.Widget.Widget_List.Glist;
        Position : Gint);
 
    procedure Prepend_Items
       (List  : access Gtk_List_Record;
-       Items : Gtk.Widget.Widget_List.GList);
+       Items : Gtk.Widget.Widget_List.Glist);
 
    procedure Remove_Items
       (List  : access Gtk_List_Record;
-       Items : Gtk.Widget.Widget_List.GList);
+       Items : Gtk.Widget.Widget_List.Glist);
 
    procedure Remove_Items_No_Unref
       (List  : access Gtk_List_Record;
-       Items : Gtk.Widget.Widget_List.GList);
+       Items : Gtk.Widget.Widget_List.Glist);
 
    procedure Scroll_Horizontal
       (List        : access Gtk_List_Record;

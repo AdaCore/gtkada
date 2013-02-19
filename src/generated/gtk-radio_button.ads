@@ -63,11 +63,11 @@ package Gtk.Radio_Button is
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "");
    procedure Initialize
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String := "");
    --  Creates or initializes a new radio button, belonging to Group. If Label
    --  is left as the empty string, then the button will not have any child and
@@ -94,11 +94,11 @@ package Gtk.Radio_Button is
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String);
    procedure Initialize_With_Mnemonic
       (Radio_Button : access Gtk_Radio_Button_Record'Class;
-       Group        : Gtk.Widget.Widget_SList.GSList := Widget_SList.Null_List;
+       Group        : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
        Label        : UTF8_String);
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
@@ -127,10 +127,10 @@ package Gtk.Radio_Button is
 
    function Get_Group
       (Radio_Button : access Gtk_Radio_Button_Record)
-       return Gtk.Widget.Widget_SList.GSList;
+       return Gtk.Widget.Widget_SList.GSlist;
    procedure Set_Group
       (Radio_Button : access Gtk_Radio_Button_Record;
-       Group        : Gtk.Widget.Widget_SList.GSList);
+       Group        : Gtk.Widget.Widget_SList.GSlist);
    --  Sets a Gtk.Radio_Button.Gtk_Radio_Button's group. It should be noted
    --  that this does not change the layout of your interface in any way, so if
    --  you are changing the group, it is likely you will need to re-arrange the
