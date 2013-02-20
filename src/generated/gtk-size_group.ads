@@ -128,7 +128,7 @@ package Gtk.Size_Group is
 
    function Get_Widgets
       (Size_Group : access Gtk_Size_Group_Record)
-       return Gtk.Widget.Widget_SList.GSList;
+       return Gtk.Widget.Widget_SList.GSlist;
    --  Returns the list of widgets associated with Size_Group. widgets. The
    --  list is owned by GTK+ and should not be modified.
    --  Since: gtk+ 2.10
