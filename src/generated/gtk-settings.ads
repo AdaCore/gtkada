@@ -91,7 +91,7 @@ package Gtk.Settings is
    procedure Set_Long_Property
       (Self   : not null access Gtk_Settings_Record;
        Name   : UTF8_String;
-       V_Long : glong;
+       V_Long : Glong;
        Origin : UTF8_String);
 
    procedure Set_String_Property

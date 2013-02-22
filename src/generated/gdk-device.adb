@@ -271,9 +271,9 @@ package body Gdk.Device is
 
    procedure Ungrab
       (Self : not null access Gdk_Device_Record;
-       Time : guint32)
+       Time : Guint32)
    is
-      procedure Internal (Self : System.Address; Time : guint32);
+      procedure Internal (Self : System.Address; Time : Guint32);
       pragma Import (C, Internal, "gdk_device_ungrab");
    begin
       Internal (Get_Object (Self), Time);

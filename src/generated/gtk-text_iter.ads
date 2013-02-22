@@ -580,7 +580,7 @@ package Gtk.Text_Iter is
    --  Returns the number of bytes in the line containing Iter, including the
    --  paragraph delimiters.
 
-   function Get_Char (Iter : Gtk_Text_Iter) return gunichar;
+   function Get_Char (Iter : Gtk_Text_Iter) return Gunichar;
    pragma Import (C, Get_Char, "gtk_text_iter_get_char");
    --  Returns the Unicode character at this iterator. (Equivalent to
    --  operator* on a C++ iterator.) If the element at this iterator is a
@@ -688,7 +688,7 @@ package Gtk.Text_Iter is
    --  "end": iterator at end of a range
 
    function Get_Tags
-      (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSList;
+      (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSlist;
    --  Returns a list of tags that apply to Iter, in ascending order of
    --  priority (highest-priority tags are last). The Gtk.Text_Tag.Gtk_Text_Tag
    --  in the list don't have a reference added, but you have to free the list
@@ -705,7 +705,7 @@ package Gtk.Text_Iter is
 
    function Get_Toggled_Tags
       (Iter       : Gtk_Text_Iter;
-       Toggled_On : Boolean) return Gtk.Text_Tag.Text_Tag_List.GSList;
+       Toggled_On : Boolean) return Gtk.Text_Tag.Text_Tag_List.GSlist;
    --  Returns a list of Gtk.Text_Tag.Gtk_Text_Tag that are toggled on or off
    --  at this point. (If Toggled_On is True, the list contains tags that are
    --  toggled on.) If a tag is toggled on at Iter, then some non-empty range

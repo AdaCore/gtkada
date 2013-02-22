@@ -617,7 +617,7 @@ package Gtk.Widget is
       (Widget  : not null access Gtk_Widget_Record;
        Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
        Target  : Gdk.Types.Gdk_Atom;
-       Time    : guint32);
+       Time    : Guint32);
    --  Gets the data associated with a drag. When the data is received or the
    --  retrieval fails, GTK+ will emit a
    --  Gtk.Widget.Gtk_Widget::drag-data-received signal. Failure of the

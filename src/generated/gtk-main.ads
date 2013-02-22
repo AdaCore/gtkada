@@ -322,7 +322,7 @@ package Gtk.Main is
    --  null if there is no current event. The returned event must be freed
    --  with Gdk.Event.Free.
 
-   function Get_Current_Event_Time return guint32;
+   function Get_Current_Event_Time return Guint32;
    --  If there is a current event and it has a timestamp, return that
    --  timestamp, otherwise return GDK_CURRENT_TIME.
    --  or GDK_CURRENT_TIME.

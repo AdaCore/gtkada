@@ -426,14 +426,14 @@ package Gtk.GEntry is
    --  "border": a Gtk.Style.Gtk_Border, or null
 
    function Get_Invisible_Char
-      (The_Entry : not null access Gtk_Entry_Record) return gunichar;
+      (The_Entry : not null access Gtk_Entry_Record) return Gunichar;
    --  Retrieves the character displayed in place of the real characters for
    --  entries with visibility set to false. See Gtk.GEntry.Set_Invisible_Char.
    --  show invisible text at all.
 
    procedure Set_Invisible_Char
       (The_Entry : not null access Gtk_Entry_Record;
-       Char      : gunichar);
+       Char      : Gunichar);
    --  Sets the character to use in place of the actual text when
    --  Gtk.GEntry.Set_Visibility has been called to set text visibility to
    --  False. i.e. this is the character used in "password mode" to show the

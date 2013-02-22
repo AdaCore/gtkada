@@ -209,11 +209,11 @@ package body Gtk.UI_Manager is
 
    function Get_Action_Groups
       (Self : not null access Gtk_UI_Manager_Record)
-       return Glib.Object.Object_Simple_List.GList
+       return Glib.Object.Object_Simple_List.Glist
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_ui_manager_get_action_groups");
-      Tmp_Return : Glib.Object.Object_Simple_List.GList;
+      Tmp_Return : Glib.Object.Object_Simple_List.Glist;
    begin
       Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal (Get_Object (Self)));
       return Tmp_Return;

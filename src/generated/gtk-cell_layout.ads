@@ -198,7 +198,7 @@ package Gtk.Cell_Layout is
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
    --  Returns the cell renderers which have been added to Cell_Layout.
    --  a list of cell renderers. The list, but not the renderers has been
    --  newly allocated and should be freed with g_list_free when no longer

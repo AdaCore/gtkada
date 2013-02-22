@@ -472,9 +472,9 @@ package body Gtk.Status_Icon is
    -----------------------
 
    function Get_X11_Window_Id
-      (Status_Icon : not null access Gtk_Status_Icon_Record) return guint32
+      (Status_Icon : not null access Gtk_Status_Icon_Record) return Guint32
    is
-      function Internal (Status_Icon : System.Address) return guint32;
+      function Internal (Status_Icon : System.Address) return Guint32;
       pragma Import (C, Internal, "gtk_status_icon_get_x11_window_id");
    begin
       return Internal (Get_Object (Status_Icon));

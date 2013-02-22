@@ -323,7 +323,7 @@ package Gtk.Menu is
        Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
        Func              : Gtk_Menu_Position_Func := null;
        Button            : Guint := 1;
-       Activate_Time     : guint32 := 0);
+       Activate_Time     : Guint32 := 0);
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
    --  and will typically supply null for the Parent_Menu_Shell,
@@ -387,7 +387,7 @@ package Gtk.Menu is
           Func              : Gtk_Menu_Position_Func := null;
           Data              : User_Data_Type;
           Button            : Guint := 1;
-          Activate_Time     : guint32 := 0);
+          Activate_Time     : Guint32 := 0);
       --  Displays a menu and makes it available for selection.
       --  Applications can use this function to display context-sensitive
       --  menus, and will typically supply null for the Parent_Menu_Shell,
@@ -422,7 +422,7 @@ package Gtk.Menu is
        Parent_Menu_Item  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Func              : Gtk_Menu_Position_Func;
        Button            : Guint;
-       Activate_Time     : guint32);
+       Activate_Time     : Guint32);
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
    --  and will typically supply null for the Parent_Menu_Shell,
@@ -490,7 +490,7 @@ package Gtk.Menu is
           Func              : Gtk_Menu_Position_Func;
           Data              : User_Data_Type;
           Button            : Guint;
-          Activate_Time     : guint32);
+          Activate_Time     : Guint32);
       --  Displays a menu and makes it available for selection.
       --  Applications can use this function to display context-sensitive
       --  menus, and will typically supply null for the Parent_Menu_Shell,

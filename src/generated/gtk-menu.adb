@@ -55,7 +55,7 @@ package body Gtk.Menu is
        Func              : System.Address;
        Data              : System.Address;
        Button            : Guint;
-       Activate_Time     : guint32);
+       Activate_Time     : Guint32);
    pragma Import (C, C_Gtk_Menu_Popup, "gtk_menu_popup");
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
@@ -90,7 +90,7 @@ package body Gtk.Menu is
        Data              : System.Address;
        Destroy           : System.Address;
        Button            : Guint;
-       Activate_Time     : guint32);
+       Activate_Time     : Guint32);
    pragma Import (C, C_Gtk_Menu_Popup_For_Device, "gtk_menu_popup_for_device");
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
@@ -387,7 +387,7 @@ package body Gtk.Menu is
        Parent_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item := null;
        Func              : Gtk_Menu_Position_Func := null;
        Button            : Guint := 1;
-       Activate_Time     : guint32 := 0)
+       Activate_Time     : Guint32 := 0)
    is
    begin
       if Func = null then
@@ -408,7 +408,7 @@ package body Gtk.Menu is
        Parent_Menu_Item  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Func              : Gtk_Menu_Position_Func;
        Button            : Guint;
-       Activate_Time     : guint32)
+       Activate_Time     : Guint32)
    is
    begin
       if Func = null then
@@ -490,7 +490,7 @@ package body Gtk.Menu is
           Func              : Gtk_Menu_Position_Func;
           Data              : User_Data_Type;
           Button            : Guint;
-          Activate_Time     : guint32)
+          Activate_Time     : Guint32)
       is
       begin
          if Func = null then
@@ -573,7 +573,7 @@ package body Gtk.Menu is
           Func              : Gtk_Menu_Position_Func := null;
           Data              : User_Data_Type;
           Button            : Guint := 1;
-          Activate_Time     : guint32 := 0)
+          Activate_Time     : Guint32 := 0)
       is
       begin
          if Func = null then

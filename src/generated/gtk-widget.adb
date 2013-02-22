@@ -513,13 +513,13 @@ package body Gtk.Widget is
       (Widget  : not null access Gtk_Widget_Record;
        Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
        Target  : Gdk.Types.Gdk_Atom;
-       Time    : guint32)
+       Time    : Guint32)
    is
       procedure Internal
          (Widget  : System.Address;
           Context : System.Address;
           Target  : Gdk.Types.Gdk_Atom;
-          Time    : guint32);
+          Time    : Guint32);
       pragma Import (C, Internal, "gtk_drag_get_data");
    begin
       Internal (Get_Object (Widget), Get_Object (Context), Target, Time);

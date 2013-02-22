@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
-with GtkAda.Types;            use GtkAda.Types;
+with Gtkada.Types;            use Gtkada.Types;
 with Pango.Attributes;        use Pango.Attributes;
 with Pango.Context;           use Pango.Context;
 with Pango.Enums;             use Pango.Enums;
@@ -624,8 +624,8 @@ package Pango.Layout is
       (Layout       : not null access Pango_Layout_Record;
        Markup       : UTF8_String;
        Length       : Gint;
-       Accel_Marker : gunichar;
-       Accel_Char   : out gunichar);
+       Accel_Marker : Gunichar;
+       Accel_Char   : out Gunichar);
    --  Sets the layout text and attribute list from marked-up text (see <link
    --  linkend="PangoMarkupFormat">markup format</link>). Replaces the current
    --  text and attribute list.
@@ -767,7 +767,7 @@ package Pango.Layout is
    ----------------------
 
    function Get_Text (Layout : access Pango_Layout_Record)
-   return GtkAda.Types.Chars_Ptr;
+   return Gtkada.Types.Chars_Ptr;
    --  Same a Get_Text, but return directly the C string, which is more
    --  efficient. The returned value should not be freed or modified.
 

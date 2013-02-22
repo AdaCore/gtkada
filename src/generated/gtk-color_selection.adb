@@ -27,8 +27,8 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with GtkAda.C;                   use GtkAda.C;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+with Gtkada.C;                   use Gtkada.C;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Color_Selection is

@@ -182,7 +182,7 @@ package Gtk.Window is
        Button    : Gint;
        Root_X    : Gint;
        Root_Y    : Gint;
-       Timestamp : guint32);
+       Timestamp : Guint32);
    --  Starts moving a window. This function is used if an application has
    --  window movement grips. When GDK can support it, the window movement will
    --  be done using the standard mechanism for the <link
@@ -201,7 +201,7 @@ package Gtk.Window is
        Button    : Gint;
        Root_X    : Gint;
        Root_Y    : Gint;
-       Timestamp : guint32);
+       Timestamp : Guint32);
    --  Starts resizing a window. This function is used if an application has
    --  window resizing controls. When GDK can support it, the resize will be
    --  done using the standard mechanism for the <link
@@ -459,13 +459,13 @@ package Gtk.Window is
 
    function Get_Icon_List
       (Window : not null access Gtk_Window_Record)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
    --  Retrieves the list of icons set by Gtk.Window.Set_Icon_List. The list
    --  is copied, but the reference count on each member won't be incremented.
 
    procedure Set_Icon_List
       (Window : not null access Gtk_Window_Record;
-       List   : Glib.Object.Object_Simple_List.GList);
+       List   : Glib.Object.Object_Simple_List.Glist);
    --  Sets up the icon representing a Gtk.Window.Gtk_Window. The icon is used
    --  when the window is minimized (also known as iconified). Some window
    --  managers or desktop environments may also place it in the window frame,
@@ -538,7 +538,7 @@ package Gtk.Window is
 
    procedure Set_Modal
       (Window : not null access Gtk_Window_Record;
-       Modal  : Boolean := true);
+       Modal  : Boolean := True);
    --  Sets a window modal or non-modal. Modal windows prevent interaction
    --  with other windows in the same application. To keep modal dialogs on top
    --  of main application windows, use Gtk.Window.Set_Transient_For to make
@@ -958,7 +958,7 @@ package Gtk.Window is
 
    procedure Present_With_Time
       (Window    : not null access Gtk_Window_Record;
-       Timestamp : guint32);
+       Timestamp : Guint32);
    --  Presents a window to the user in response to a user interaction. If you
    --  need to present a window without a timestamp, use Gtk.Window.Present.
    --  See Gtk.Window.Present for details.
@@ -1241,13 +1241,13 @@ package Gtk.Window is
    -- Functions --
    ---------------
 
-   function Get_Default_Icon_List return Glib.Object.Object_Simple_List.GList;
+   function Get_Default_Icon_List return Glib.Object.Object_Simple_List.Glist;
    --  Gets the value set by Gtk.Window.Set_Default_Icon_List. The list is a
    --  copy and should be freed with g_list_free, but the pixbufs in the list
    --  have not had their reference count incremented.
 
    procedure Set_Default_Icon_List
-      (List : Glib.Object.Object_Simple_List.GList);
+      (List : Glib.Object.Object_Simple_List.Glist);
    --  Sets an icon list to be used as fallback for windows that haven't had
    --  Gtk.Window.Set_Icon_List called on them to set up a window-specific icon
    --  list. This function allows you to set up the icon for all windows in

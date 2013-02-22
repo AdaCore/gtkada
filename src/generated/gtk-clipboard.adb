@@ -27,8 +27,8 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with GtkAda.C;                   use GtkAda.C;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+with Gtkada.C;                   use Gtkada.C;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 
 package body Gtk.Clipboard is
@@ -234,8 +234,8 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
        Format    : Gdk.Types.Gdk_Atom;
-       Text      : in out guint8;
-       Length    : gsize;
+       Text      : in out Guint8;
+       Length    : Gsize;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Rich_Text_Received_Func);
 
@@ -305,8 +305,8 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
        Format    : Gdk.Types.Gdk_Atom;
-       Text      : in out guint8;
-       Length    : gsize;
+       Text      : in out Guint8;
+       Length    : Gsize;
        Data      : System.Address)
    is
       Func               : constant Gtk_Clipboard_Rich_Text_Received_Func := To_Gtk_Clipboard_Rich_Text_Received_Func (Data);
@@ -588,8 +588,8 @@ package body Gtk.Clipboard is
       procedure Internal_Cb
          (Clipboard : System.Address;
           Format    : Gdk.Types.Gdk_Atom;
-          Text      : in out guint8;
-          Length    : gsize;
+          Text      : in out Guint8;
+          Length    : Gsize;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
 
@@ -600,8 +600,8 @@ package body Gtk.Clipboard is
       procedure Internal_Cb
          (Clipboard : System.Address;
           Format    : Gdk.Types.Gdk_Atom;
-          Text      : in out guint8;
-          Length    : gsize;
+          Text      : in out Guint8;
+          Length    : Gsize;
           Data      : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);

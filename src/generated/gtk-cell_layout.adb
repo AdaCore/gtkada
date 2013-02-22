@@ -129,12 +129,12 @@ package body Gtk.Cell_Layout is
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
-       return Glib.Object.Object_Simple_List.GList
+       return Glib.Object.Object_Simple_List.Glist
    is
       function Internal
          (Cell_Layout : Gtk_Cell_Layout) return System.Address;
       pragma Import (C, Internal, "gtk_cell_layout_get_cells");
-      Tmp_Return : Glib.Object.Object_Simple_List.GList;
+      Tmp_Return : Glib.Object.Object_Simple_List.Glist;
    begin
       Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal (Cell_Layout));
       return Tmp_Return;

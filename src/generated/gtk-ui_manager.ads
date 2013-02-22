@@ -382,7 +382,7 @@ package Gtk.UI_Manager is
 
    function Get_Action_Groups
       (Self : not null access Gtk_UI_Manager_Record)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
    --  Returns the list of action groups associated with Manager.
    --  action groups. The list is owned by GTK+ and should not be modified.
    --  Since: gtk+ 2.4

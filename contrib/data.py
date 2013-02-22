@@ -520,11 +520,19 @@ naming.type_exceptions = {
                               "Glib.Properties.Property_Boolean"),
     "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "double":   Proxy("Gdouble", "Glib.Properties.Property_Double"),
+    "gshort":   Proxy("Gshort",  "Glib.Properties.Property_Int"),
     "int":      Proxy("Gint",    "Glib.Properties.Property_Int"),
     "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
+    "gint8":    Proxy("Gint8",   "Glib.Properties.Property_Int"),
+    "gint16":   Proxy("Gint16",  "Glib.Properties.Property_Int"),
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
+    "guint8":   Proxy("Guint8",  "Glib.Properties.Property_Uint"),
     "guint16":  Proxy("Guint16", "Glib.Properties.Property_Uint"),
+    "guint32":  Proxy("Guint32", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
+    "glong":    Proxy("Glong",   "Glib.Properties.Property_Long"),
+    "gsize":    Proxy("Gsize"),
+    "gunichar": Proxy("Gunichar"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
     # These should not be necessary, but if we don't put them the gnerated
@@ -561,13 +569,13 @@ naming.type_exceptions = {
     "GdkAtom":           Proxy("Gdk.Types.Gdk_Atom"),
 
     # Specific to this binding generator (referenced from binding.xml)
-    "VisualList":  List("Gdk.Visual.Gdk_Visual_List.GList"),
-    "ObjectList":  List("Glib.Object.Object_Simple_List.GList"),
+    "VisualList":  List("Gdk.Visual.Gdk_Visual_List.Glist"),
+    "ObjectList":  List("Glib.Object.Object_Simple_List.Glist"),
     "ObjectSList": List("Glib.Object.Object_List.GSlist"),
     "StringList":  List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
     "TreePathList": List("Gtk.Tree_Model.Gtk_Tree_Path_List.Glist"),
-    "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSList"),
+    "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSlist"),
 
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),

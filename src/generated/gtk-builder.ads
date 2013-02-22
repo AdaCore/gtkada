@@ -328,7 +328,7 @@ package Gtk.Builder is
    function Add_Objects_From_String
       (Builder    : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
-       Length     : gsize;
+       Length     : Gsize;
        Object_Ids : GNAT.Strings.String_List) return Guint;
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them

@@ -578,7 +578,7 @@ package Gtk.Combo_Box is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Combo_Box_Record)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Combo_Box_Record;

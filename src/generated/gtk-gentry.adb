@@ -423,9 +423,9 @@ package body Gtk.GEntry is
    ------------------------
 
    function Get_Invisible_Char
-      (The_Entry : not null access Gtk_Entry_Record) return gunichar
+      (The_Entry : not null access Gtk_Entry_Record) return Gunichar
    is
-      function Internal (The_Entry : System.Address) return gunichar;
+      function Internal (The_Entry : System.Address) return Gunichar;
       pragma Import (C, Internal, "gtk_entry_get_invisible_char");
    begin
       return Internal (Get_Object (The_Entry));
@@ -957,9 +957,9 @@ package body Gtk.GEntry is
 
    procedure Set_Invisible_Char
       (The_Entry : not null access Gtk_Entry_Record;
-       Char      : gunichar)
+       Char      : Gunichar)
    is
-      procedure Internal (The_Entry : System.Address; Char : gunichar);
+      procedure Internal (The_Entry : System.Address; Char : Gunichar);
       pragma Import (C, Internal, "gtk_entry_set_invisible_char");
    begin
       Internal (Get_Object (The_Entry), Char);

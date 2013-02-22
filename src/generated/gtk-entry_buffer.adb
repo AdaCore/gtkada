@@ -155,9 +155,9 @@ package body Gtk.Entry_Buffer is
    ---------------
 
    function Get_Bytes
-      (Self : not null access Gtk_Entry_Buffer_Record) return gsize
+      (Self : not null access Gtk_Entry_Buffer_Record) return Gsize
    is
-      function Internal (Self : System.Address) return gsize;
+      function Internal (Self : System.Address) return Gsize;
       pragma Import (C, Internal, "gtk_entry_buffer_get_bytes");
    begin
       return Internal (Get_Object (Self));

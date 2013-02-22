@@ -1051,11 +1051,11 @@ package body Gtk.Text_Iter is
    --------------
 
    function Get_Tags
-      (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSList
+      (Iter : Gtk_Text_Iter) return Gtk.Text_Tag.Text_Tag_List.GSlist
    is
       function Internal (Iter : Gtk_Text_Iter) return System.Address;
       pragma Import (C, Internal, "gtk_text_iter_get_tags");
-      Tmp_Return : Gtk.Text_Tag.Text_Tag_List.GSList;
+      Tmp_Return : Gtk.Text_Tag.Text_Tag_List.GSlist;
    begin
       Gtk.Text_Tag.Text_Tag_List.Set_Object (Tmp_Return, Internal (Iter));
       return Tmp_Return;
@@ -1083,13 +1083,13 @@ package body Gtk.Text_Iter is
 
    function Get_Toggled_Tags
       (Iter       : Gtk_Text_Iter;
-       Toggled_On : Boolean) return Gtk.Text_Tag.Text_Tag_List.GSList
+       Toggled_On : Boolean) return Gtk.Text_Tag.Text_Tag_List.GSlist
    is
       function Internal
          (Iter       : Gtk_Text_Iter;
           Toggled_On : Integer) return System.Address;
       pragma Import (C, Internal, "gtk_text_iter_get_toggled_tags");
-      Tmp_Return : Gtk.Text_Tag.Text_Tag_List.GSList;
+      Tmp_Return : Gtk.Text_Tag.Text_Tag_List.GSlist;
    begin
       Gtk.Text_Tag.Text_Tag_List.Set_Object (Tmp_Return, Internal (Iter, Boolean'Pos (Toggled_On)));
       return Tmp_Return;

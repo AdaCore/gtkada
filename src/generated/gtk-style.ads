@@ -56,10 +56,10 @@ package Gtk.Style is
    type Gtk_Style is access all Gtk_Style_Record'Class;
 
    type Gtk_Border is record
-      Left : gint16;
-      Right : gint16;
-      Top : gint16;
-      Bottom : gint16;
+      Left : Gint16;
+      Right : Gint16;
+      Top : Gint16;
+      Bottom : Gint16;
    end record;
    pragma Convention (C, Gtk_Border);
 

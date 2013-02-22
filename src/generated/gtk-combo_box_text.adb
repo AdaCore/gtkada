@@ -486,11 +486,11 @@ package body Gtk.Combo_Box_Text is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record)
-       return Glib.Object.Object_Simple_List.GList
+       return Glib.Object.Object_Simple_List.Glist
    is
       function Internal (Cell_Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_layout_get_cells");
-      Tmp_Return : Glib.Object.Object_Simple_List.GList;
+      Tmp_Return : Glib.Object.Object_Simple_List.Glist;
    begin
       Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal (Get_Object (Cell_Layout)));
       return Tmp_Return;

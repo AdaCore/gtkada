@@ -461,7 +461,7 @@ package Gtk.Entry_Completion is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Entry_Completion_Record)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;

@@ -161,7 +161,7 @@ package body Gtk.Builder is
       function Internal
          (Builder : System.Address;
           Buffer  : Interfaces.C.Strings.chars_ptr;
-          Length  : gsize) return Guint;
+          Length  : Gsize) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_string");
       Tmp_Buffer : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
       Tmp_Return : Guint;
@@ -202,13 +202,13 @@ package body Gtk.Builder is
    function Add_Objects_From_String
       (Builder    : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
-       Length     : gsize;
+       Length     : Gsize;
        Object_Ids : GNAT.Strings.String_List) return Guint
    is
       function Internal
          (Builder    : System.Address;
           Buffer     : Interfaces.C.Strings.chars_ptr;
-          Length     : gsize;
+          Length     : Gsize;
           Object_Ids : Interfaces.C.Strings.chars_ptr_array) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_string");
       Tmp_Buffer     : Interfaces.C.Strings.chars_ptr := New_String (Buffer);

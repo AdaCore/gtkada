@@ -302,8 +302,8 @@ package body Gtk.Main is
    -- Get_Current_Event_Time --
    ----------------------------
 
-   function Get_Current_Event_Time return guint32 is
-      function Internal return guint32;
+   function Get_Current_Event_Time return Guint32 is
+      function Internal return Guint32;
       pragma Import (C, Internal, "gtk_get_current_event_time");
    begin
       return Internal;

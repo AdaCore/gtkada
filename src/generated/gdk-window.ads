@@ -375,7 +375,7 @@ package Gdk.Window is
        Button    : Gint;
        Root_X    : Gint;
        Root_Y    : Gint;
-       Timestamp : guint32);
+       Timestamp : Guint32);
    pragma Import (C, Begin_Move_Drag, "gdk_window_begin_move_drag");
    --  Begins a window move operation (for a toplevel window). You might use
    --  this function to implement a "window move grip," for example. The
@@ -442,7 +442,7 @@ package Gdk.Window is
        Button    : Gint;
        Root_X    : Gint;
        Root_Y    : Gint;
-       Timestamp : guint32);
+       Timestamp : Guint32);
    pragma Import (C, Begin_Resize_Drag, "gdk_window_begin_resize_drag");
    --  Begins a window resize operation (for a toplevel window). You might use
    --  this function to implement a "window resize grip," for example; in fact
@@ -609,7 +609,7 @@ package Gdk.Window is
    --  automatically before sending the expose event.
    --  Since: gtk+ 2.18
 
-   procedure Focus (Self : Gdk.Gdk_Window; Timestamp : guint32);
+   procedure Focus (Self : Gdk.Gdk_Window; Timestamp : Guint32);
    pragma Import (C, Focus, "gdk_window_focus");
    --  Sets keyboard focus to Window. In most cases, Gtk.Window.Present should
    --  be used on a Gtk.Window.Gtk_Window, rather than calling this function.

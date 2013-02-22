@@ -743,7 +743,7 @@ package Gtk.Cell_Area is
    function Get_Focus_Siblings
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
    --  Gets the focus sibling cell renderers for Renderer.
    --  The returned list is internal and should not be freed.
    --  Since: gtk+ 3.0
@@ -1084,7 +1084,7 @@ package Gtk.Cell_Area is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Cell_Area_Record)
-       return Glib.Object.Object_Simple_List.GList;
+       return Glib.Object.Object_Simple_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Cell_Area_Record;

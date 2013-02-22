@@ -91,13 +91,13 @@ package body Gtk.Settings is
    procedure Set_Long_Property
       (Self   : not null access Gtk_Settings_Record;
        Name   : UTF8_String;
-       V_Long : glong;
+       V_Long : Glong;
        Origin : UTF8_String)
    is
       procedure Internal
          (Self   : System.Address;
           Name   : Interfaces.C.Strings.chars_ptr;
-          V_Long : glong;
+          V_Long : Glong;
           Origin : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_settings_set_long_property");
       Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);

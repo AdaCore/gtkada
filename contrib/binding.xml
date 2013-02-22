@@ -433,7 +433,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
    --  Encodes a palette as a string, useful for persistent storage.
         </spec>
 
-        <with_body pkg="GtkAda.C"/>
+        <with_body pkg="Gtkada.C"/>
         <with_body pkg="Interfaces.C.Strings"/>
 
         <body>
@@ -953,7 +953,7 @@ on how all the parameters for the boxes work.
    --  This function waits for the data to be received using the main
    --  loop, so events, timeouts, etc, may be dispatched during the wait.
          </spec>
-         <with_body pkg="GtkAda.C" />
+         <with_body pkg="Gtkada.C" />
          <body>
     package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
      (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
@@ -1050,7 +1050,7 @@ on how all the parameters for the boxes work.
    --  Create a pixmap given a window and a buffer.
             </spec>
             <body>
-   Dummy_Pixmap : constant GtkAda.Types.chars_ptr_array :=
+   Dummy_Pixmap : constant Gtkada.Types.chars_ptr_array :=
      (New_String ("1 1 1 1"),
       New_String ("c None"),
       New_String (" "));
@@ -3026,7 +3026,7 @@ __PRE__
      </method>
      <method id="gtk_window_get_resize_grip_area" return_as_param="retrieved"/>
      <method id="gtk_window_set_modal">
-       <parameter name="modal" default="true"/>
+       <parameter name="modal" default="True"/>
      </method>
 
      <method id="gtk_window_get_application" bind="False"/> <!-- Missing binding for Gtk.Application -->
@@ -3304,7 +3304,7 @@ __PRE__
      <method id="gtk_text_buffer_insert_with_tags" bind="False"/><!-- vararg, bound manually below -->
 
      <extra>
-       <with_spec pkg="GtkAda.Types"/>
+       <with_spec pkg="Gtkada.Types"/>
        <spec>
    procedure Insert
      (Buffer : access Gtk_Text_Buffer_Record;
@@ -4605,10 +4605,10 @@ creating a tag.
        <parameter name="length" default="-1" ada=""/>
      </method>
      <extra>
-       <with_spec pkg="GtkAda.Types" />
+       <with_spec pkg="Gtkada.Types" />
        <spec>
    function Get_Text (Layout : access Pango_Layout_Record)
-      return GtkAda.Types.Chars_Ptr;
+      return Gtkada.Types.Chars_Ptr;
    --  Same a Get_Text, but return directly the C string, which is more
    --  efficient. The returned value should not be freed or modified.
        </spec>

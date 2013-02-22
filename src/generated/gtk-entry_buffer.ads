@@ -115,7 +115,7 @@ package Gtk.Entry_Buffer is
    --  "n_chars": number of characters inserted
 
    function Get_Bytes
-      (Self : not null access Gtk_Entry_Buffer_Record) return gsize;
+      (Self : not null access Gtk_Entry_Buffer_Record) return Gsize;
    --  Retrieves the length in bytes of the buffer. See
    --  Gtk.Entry_Buffer.Get_Length.
    --  Since: gtk+ 2.18

@@ -118,8 +118,8 @@ package Gtk.Clipboard is
    type Gtk_Clipboard_Rich_Text_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
       Format    : Gdk.Types.Gdk_Atom;
-      Text      : in out guint8;
-      Length    : gsize);
+      Text      : in out Guint8;
+      Length    : Gsize);
 
    type Gtk_Clipboard_Targets_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
@@ -299,8 +299,8 @@ package Gtk.Clipboard is
       type Gtk_Clipboard_Rich_Text_Received_Func is access procedure
         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
          Format    : Gdk.Types.Gdk_Atom;
-         Text      : in out guint8;
-         Length    : gsize;
+         Text      : in out Guint8;
+         Length    : Gsize;
          Data      : User_Data_Type);
 
       procedure Request_Rich_Text

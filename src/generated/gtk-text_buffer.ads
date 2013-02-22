@@ -42,7 +42,7 @@ with Gtk.Text_Iter;         use Gtk.Text_Iter;
 with Gtk.Text_Mark;         use Gtk.Text_Mark;
 with Gtk.Text_Tag;          use Gtk.Text_Tag;
 with Gtk.Text_Tag_Table;    use Gtk.Text_Tag_Table;
-with GtkAda.Types;          use GtkAda.Types;
+with Gtkada.Types;          use Gtkada.Types;
 
 package Gtk.Text_Buffer is
 

@@ -177,7 +177,7 @@ package Gdk.Device is
 
    procedure Ungrab
       (Self : not null access Gdk_Device_Record;
-       Time : guint32);
+       Time : Guint32);
    --  Release any grab on Device.
    --  Since: gtk+ 3.0
    --  "time_": a timestap (e.g. GDK_CURRENT_TIME).

@@ -219,14 +219,14 @@ package body Gtk.Window is
        Button    : Gint;
        Root_X    : Gint;
        Root_Y    : Gint;
-       Timestamp : guint32)
+       Timestamp : Guint32)
    is
       procedure Internal
          (Window    : System.Address;
           Button    : Gint;
           Root_X    : Gint;
           Root_Y    : Gint;
-          Timestamp : guint32);
+          Timestamp : Guint32);
       pragma Import (C, Internal, "gtk_window_begin_move_drag");
    begin
       Internal (Get_Object (Window), Button, Root_X, Root_Y, Timestamp);
@@ -242,7 +242,7 @@ package body Gtk.Window is
        Button    : Gint;
        Root_X    : Gint;
        Root_Y    : Gint;
-       Timestamp : guint32)
+       Timestamp : Guint32)
    is
       procedure Internal
          (Window    : System.Address;
@@ -250,7 +250,7 @@ package body Gtk.Window is
           Button    : Gint;
           Root_X    : Gint;
           Root_Y    : Gint;
-          Timestamp : guint32);
+          Timestamp : Guint32);
       pragma Import (C, Internal, "gtk_window_begin_resize_drag");
    begin
       Internal (Get_Object (Window), Edge, Button, Root_X, Root_Y, Timestamp);
@@ -501,11 +501,11 @@ package body Gtk.Window is
 
    function Get_Icon_List
       (Window : not null access Gtk_Window_Record)
-       return Glib.Object.Object_Simple_List.GList
+       return Glib.Object.Object_Simple_List.Glist
    is
       function Internal (Window : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_icon_list");
-      Tmp_Return : Glib.Object.Object_Simple_List.GList;
+      Tmp_Return : Glib.Object.Object_Simple_List.Glist;
    begin
       Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal (Get_Object (Window)));
       return Tmp_Return;
@@ -923,9 +923,9 @@ package body Gtk.Window is
 
    procedure Present_With_Time
       (Window    : not null access Gtk_Window_Record;
-       Timestamp : guint32)
+       Timestamp : Guint32)
    is
-      procedure Internal (Window : System.Address; Timestamp : guint32);
+      procedure Internal (Window : System.Address; Timestamp : Guint32);
       pragma Import (C, Internal, "gtk_window_present_with_time");
    begin
       Internal (Get_Object (Window), Timestamp);
@@ -1313,7 +1313,7 @@ package body Gtk.Window is
 
    procedure Set_Icon_List
       (Window : not null access Gtk_Window_Record;
-       List   : Glib.Object.Object_Simple_List.GList)
+       List   : Glib.Object.Object_Simple_List.Glist)
    is
       procedure Internal (Window : System.Address; List : System.Address);
       pragma Import (C, Internal, "gtk_window_set_icon_list");
@@ -1408,7 +1408,7 @@ package body Gtk.Window is
 
    procedure Set_Modal
       (Window : not null access Gtk_Window_Record;
-       Modal  : Boolean := true)
+       Modal  : Boolean := True)
    is
       procedure Internal (Window : System.Address; Modal : Integer);
       pragma Import (C, Internal, "gtk_window_set_modal");
@@ -1670,10 +1670,10 @@ package body Gtk.Window is
    -- Get_Default_Icon_List --
    ---------------------------
 
-   function Get_Default_Icon_List return Glib.Object.Object_Simple_List.GList is
+   function Get_Default_Icon_List return Glib.Object.Object_Simple_List.Glist is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_window_get_default_icon_list");
-      Tmp_Return : Glib.Object.Object_Simple_List.GList;
+      Tmp_Return : Glib.Object.Object_Simple_List.Glist;
    begin
       Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal);
       return Tmp_Return;
@@ -1750,7 +1750,7 @@ package body Gtk.Window is
    ---------------------------
 
    procedure Set_Default_Icon_List
-      (List : Glib.Object.Object_Simple_List.GList)
+      (List : Glib.Object.Object_Simple_List.Glist)
    is
       procedure Internal (List : System.Address);
       pragma Import (C, Internal, "gtk_window_set_default_icon_list");

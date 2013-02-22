@@ -1012,15 +1012,15 @@ package body Pango.Layout is
       (Layout       : not null access Pango_Layout_Record;
        Markup       : UTF8_String;
        Length       : Gint;
-       Accel_Marker : gunichar;
-       Accel_Char   : out gunichar)
+       Accel_Marker : Gunichar;
+       Accel_Char   : out Gunichar)
    is
       procedure Internal
          (Layout       : System.Address;
           Markup       : Interfaces.C.Strings.chars_ptr;
           Length       : Gint;
-          Accel_Marker : gunichar;
-          Accel_Char   : out gunichar);
+          Accel_Marker : Gunichar;
+          Accel_Char   : out Gunichar);
       pragma Import (C, Internal, "pango_layout_set_markup_with_accel");
       Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
    begin

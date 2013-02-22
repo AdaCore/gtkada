@@ -265,7 +265,7 @@ package Gdk.Event is
    type Gdk_Event_Any is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
    end record;
    pragma Convention (C, Gdk_Event_Any);
 
@@ -278,8 +278,8 @@ package Gdk.Event is
    type Gdk_Event_Button is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
-      Time : guint32;
+      Send_Event : Gint8;
+      Time : Guint32;
       X : Gdouble;
       Y : Gdouble;
       Axes : access Gdouble;
@@ -342,7 +342,7 @@ package Gdk.Event is
    type Gdk_Event_Expose is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Region : Cairo.Region.Cairo_Region;
       Count : Gint;
@@ -357,7 +357,7 @@ package Gdk.Event is
    type Gdk_Event_Visibility is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       State : Gdk_Visibility_State;
    end record;
    pragma Convention (C, Gdk_Event_Visibility);
@@ -369,13 +369,13 @@ package Gdk.Event is
    type Gdk_Event_Motion is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
-      Time : guint32;
+      Send_Event : Gint8;
+      Time : Guint32;
       X : Gdouble;
       Y : Gdouble;
       Axes : access Gdouble;
       State : Gdk.Types.Gdk_Modifier_Type;
-      Is_Hint : gint16;
+      Is_Hint : Gint16;
       Device : System.Address;
       X_Root : Gdouble;
       Y_Root : Gdouble;
@@ -389,8 +389,8 @@ package Gdk.Event is
    type Gdk_Event_Scroll is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
-      Time : guint32;
+      Send_Event : Gint8;
+      Time : Guint32;
       X : Gdouble;
       Y : Gdouble;
       State : Gdk.Types.Gdk_Modifier_Type;
@@ -410,14 +410,14 @@ package Gdk.Event is
    type Gdk_Event_Key is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
-      Time : guint32;
+      Send_Event : Gint8;
+      Time : Guint32;
       State : Gdk.Types.Gdk_Modifier_Type;
       Keyval : Gdk.Types.Gdk_Key_Type;
       Length : Gint;
       String : Interfaces.C.Strings.chars_ptr;
       Hardware_Keycode : Guint16;
-      Group : guint8;
+      Group : Guint8;
       Is_Modifier : Guint;
    end record;
    pragma Convention (C, Gdk_Event_Key);
@@ -429,9 +429,9 @@ package Gdk.Event is
    type Gdk_Event_Crossing is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Subwindow : Gdk.Gdk_Window;
-      Time : guint32;
+      Time : Guint32;
       X : Gdouble;
       Y : Gdouble;
       X_Root : Gdouble;
@@ -450,8 +450,8 @@ package Gdk.Event is
    type Gdk_Event_Focus is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
-      Gtk_In : gint16;
+      Send_Event : Gint8;
+      Gtk_In : Gint16;
    end record;
    pragma Convention (C, Gdk_Event_Focus);
 
@@ -462,7 +462,7 @@ package Gdk.Event is
    type Gdk_Event_Configure is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       X : Gint;
       Y : Gint;
       Width : Gint;
@@ -477,9 +477,9 @@ package Gdk.Event is
    type Gdk_Event_Property is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Atom : Gdk.Types.Gdk_Atom;
-      Time : guint32;
+      Time : Guint32;
       State : Guint;
    end record;
    pragma Convention (C, Gdk_Event_Property);
@@ -491,11 +491,11 @@ package Gdk.Event is
    type Gdk_Event_Selection is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Selection : Gdk.Types.Gdk_Atom;
       Target : Gdk.Types.Gdk_Atom;
       Property : Gdk.Types.Gdk_Atom;
-      Time : guint32;
+      Time : Guint32;
       Requestor : Gdk.Gdk_Window;
    end record;
    pragma Convention (C, Gdk_Event_Selection);
@@ -508,12 +508,12 @@ package Gdk.Event is
    type Gdk_Event_Owner_Change is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Owner : Gdk.Gdk_Window;
       Reason : Gdk_Owner_Change;
       Selection : Gdk.Types.Gdk_Atom;
-      Time : guint32;
-      Selection_Time : guint32;
+      Time : Guint32;
+      Selection_Time : Guint32;
    end record;
    pragma Convention (C, Gdk_Event_Owner_Change);
 
@@ -526,8 +526,8 @@ package Gdk.Event is
    type Gdk_Event_Proximity is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
-      Time : guint32;
+      Send_Event : Gint8;
+      Time : Guint32;
       Device : System.Address;
    end record;
    pragma Convention (C, Gdk_Event_Proximity);
@@ -547,11 +547,11 @@ package Gdk.Event is
    type Gdk_Event_DND is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Context : System.Address;
-      Time : guint32;
-      X_Root : gshort;
-      Y_Root : gshort;
+      Time : Guint32;
+      X_Root : Gshort;
+      Y_Root : Gshort;
    end record;
    pragma Convention (C, Gdk_Event_DND);
 
@@ -562,7 +562,7 @@ package Gdk.Event is
    type Gdk_Event_Window_State is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Changed_Mask : Gdk_Window_State;
       New_Window_State : Gdk_Window_State;
    end record;
@@ -575,7 +575,7 @@ package Gdk.Event is
    type Gdk_Event_Setting is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Action : Gdk_Setting_Action;
       Name : Interfaces.C.Strings.chars_ptr;
    end record;
@@ -588,7 +588,7 @@ package Gdk.Event is
    type Gdk_Event_Grab_Broken is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
-      Send_Event : gint8;
+      Send_Event : Gint8;
       Keyboard : Boolean;
       Implicit : Boolean;
       Grab_Window : Gdk.Gdk_Window;
@@ -877,7 +877,7 @@ package Gdk.Event is
    --  Since: gtk+ 3.2
    --  "direction": location to store the scroll direction
 
-   function Get_Time (Event : Gdk_Event) return guint32;
+   function Get_Time (Event : Gdk_Event) return Guint32;
    pragma Import (C, Get_Time, "gdk_event_get_time");
    --  Returns the time stamp from Event, if there is one; otherwise returns
    --  GDK_CURRENT_TIME. If Event is null, returns GDK_CURRENT_TIME.
