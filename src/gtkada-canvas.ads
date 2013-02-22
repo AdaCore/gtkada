@@ -1047,7 +1047,8 @@ private
 
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
       Canvas           : Interactive_Canvas := null;
-      Coord            : aliased Cairo.Region.Cairo_Rectangle_Int;
+      Coord            : aliased Cairo.Region.Cairo_Rectangle_Int :=
+        (0, 0, 0, 0);
       --  This is the bounding box of the item
 
       Visible          : Boolean := True;
