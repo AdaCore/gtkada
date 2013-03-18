@@ -1,3 +1,8 @@
+2013-03-18  Vadim Godunko <godunko@adacome.com>
+
+        * gtk/gtktreeview.c (gtk_tree_view_draw_grid_lines): Take in sense
+        current direction when drawing vertical lines of the grid.
+
 2012-04-20	Nicolas Setton  <setton@adacore.com>
 
 	(gtk/gtkcellarea.c): Fix build error.
@@ -107,3 +112,59 @@
    /**
     * GtkCellArea::add-editable:
     * @area: the #GtkCellArea where editing started
+--- gtk/gtktreeview.c.old	2013-01-07 14:50:05.000000000 +0400
++++ gtk/gtktreeview.c	2013-03-18 15:29:59.425991349 +0400
+@@ -4646,31 +4646,31 @@
+                          
+ static void
+ gtk_tree_view_draw_grid_lines (GtkTreeView    *tree_view,
+-			       cairo_t        *cr,
+-			       gint            n_visible_columns)
++			       cairo_t        *cr)
+ {
+-  GList *list = tree_view->priv->columns;
+-  gint i = 0;
++  GList *list;
++  GtkTreeViewColumn *last;
++  gboolean rtl;
+   gint current_x = 0;
+ 
+   if (tree_view->priv->grid_lines != GTK_TREE_VIEW_GRID_LINES_VERTICAL
+       && tree_view->priv->grid_lines != GTK_TREE_VIEW_GRID_LINES_BOTH)
+     return;
+ 
+-  /* Only draw the lines for visible rows and columns */
+-  for (list = tree_view->priv->columns; list; list = list->next, i++)
++  rtl = (gtk_widget_get_direction (GTK_WIDGET (tree_view)) == GTK_TEXT_DIR_RTL);
++
++  for (list = (rtl ? g_list_last (tree_view->priv->columns) : g_list_first (tree_view->priv->columns)),
++       last = (rtl ? g_list_first (tree_view->priv->columns) : g_list_last (tree_view->priv->columns))->data;
++       list;
++       list = (rtl ? list->prev : list->next))
+     {
+       GtkTreeViewColumn *column = list->data;
+ 
+-      /* We don't want a line for the last column */
+-      if (i == n_visible_columns - 1)
+-	break;
+-
+-      if (!gtk_tree_view_column_get_visible (column))
+-	continue;
+-
+       current_x += gtk_tree_view_column_get_width (column);
+ 
++      /* We don't want a line for the last column */
++      if (column == last) break;
++
+       gtk_tree_view_draw_line (tree_view, cr,
+                                GTK_TREE_VIEW_GRID_LINE,
+                                current_x - 1, 0,
+@@ -5327,7 +5327,7 @@
+   while (y_offset < clip.height);
+ 
+ done:
+-  gtk_tree_view_draw_grid_lines (tree_view, cr, n_visible_columns);
++  gtk_tree_view_draw_grid_lines (tree_view, cr);
+ 
+   if (tree_view->priv->rubber_band_status == RUBBER_BAND_ACTIVE)
+     gtk_tree_view_paint_rubber_band (tree_view, cr);
