@@ -7,9 +7,6 @@ Resource files
 Resource files let you parametrize aspects of the widgets in a GtkAda
 application without having to recompile it.
 
-A resource file needs to be loaded (`Gtk.Rc.Parse`) `before` setting the
-corresponding window.
-
 In this file, it is possible to specify visual characteristics of widgets, such
 as their colors and fonts.  Under X, the `xfontsel` command allows you to
 easily select a font.  The FontSelection widget is also a simple way to select

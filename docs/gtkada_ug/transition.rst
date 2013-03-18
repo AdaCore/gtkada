@@ -747,6 +747,12 @@ from "``Pbar"`` to "``Progress_Bar".``
 If you intend to show text over the progress bar, you need to call
 ``Set_Text`` as before, but also call ``Set_Show_Text(True)``.
 
+Gtk.Rc
+------
+
+This package is now mostly obsolete. The gtk+ library no longer supports
+the :file:`*.rc` files, since it uses CSS-like files instead.
+
 Gtk.Recent_Manager
 ------------------
 
