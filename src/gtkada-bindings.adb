@@ -143,7 +143,6 @@ package body Gtkada.Bindings is
       type T_Access is access all T;
       function Convert is new Ada.Unchecked_Conversion
         (System.Address, T_Access);
-
    begin
       if Convert (Val).all = Null_T then
          return System.Null_Address;

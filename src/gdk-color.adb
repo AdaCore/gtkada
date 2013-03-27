@@ -222,7 +222,7 @@ package body Gdk.Color is
 
    function Gdk_Color_Or_Null (Val : System.Address) return System.Address is
       function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
-        (Gdk_Color, Null_Color);
+        (Gdk_Color, Null_Color, Equal);
    begin
       return Internal (Val);
    end Gdk_Color_Or_Null;

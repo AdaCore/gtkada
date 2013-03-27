@@ -43,6 +43,7 @@ package Gtkada.Bindings is
    generic
       type T is private;
       Null_T : T;
+      with function "=" (T1, T2 : T) return Boolean is <>;
    function Generic_To_Address_Or_Null
      (Val : System.Address) return System.Address;
    --  Return either a Null_Address or a pointer to Val, depending on
