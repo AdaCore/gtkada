@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2013, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  To provide internationalization in your application, you must install a
 --  number of files along with your application, and modify your code to
 --  highlight the strings to translate. This translation is based on the
---  gettext() library. Reading its documentation is recommanded since it
+--  gettext() library. Reading its documentation is recommended since it
 --  explains best practices for handling translations.
 --
 --  Preparing your code
@@ -47,7 +47,7 @@
 --  Gettext needs to information to locate the translation files: a language,
 --  as setup by the user (see User Setup below), and a domain, hard-coded in
 --  the application. The domain is the name of your application. Given these
---  two informations, the translation file will be found in:
+--  two pieces of information, the translation file will be found in:
 --     $prefix/<lang>/LC_MESSAGES/<domain>.mo
 --
 --  Where $prefix is either one of the standard search paths, or specified
@@ -59,7 +59,7 @@
 --  through a call to Setlocale.
 --
 --  An application can be associated with several domains, although it is
---  generally recommanded to have one default domain, specify through a call to
+--  generally recommended to have one default domain, specify through a call to
 --  Text_Domain. Each string can then be translated through a call to Gettext,
 --  without specifying the domain every time.
 --  A convenient shortcut is provided in the form of the "-" operator.
@@ -70,7 +70,7 @@
 --       Text_Domain ("application");
 --       Bind_Text_Domain ("application", "/usr/local/share/locale");
 --       ...
---       Put_Line (-"Internalized string");
+--       Put_Line (-"I18n string");
 --    end;
 --
 --  Preparing and installing the translation files
@@ -104,11 +104,6 @@
 --
 --  $ msgfmt gtkada-fr.po -o gtkada-fr.gmo
 --  $ cp gtkada-fr.gmo /usr/share/locale/fr/LC_MESSAGES/gtkada.mo
---
---  If your program uses GtkAda, there are also a number of strings that need
---  to be translated in that library. The recommanded approach is to merge the
---  .po files found in the GtkAda distribution in the "po/" directory, and use
---  the tool msgmerge to merge these into your applications' translation file.
 --
 --  User setup
 --  ==========
