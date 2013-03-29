@@ -109,7 +109,7 @@ package body Gdk.Color is
 
    begin
       if Internal (Spec & ASCII.NUL, Color'Address) = 0 then
-         raise Wrong_Color;
+         raise Wrong_Color with "Invalid color: '" & Spec & "'";
       end if;
 
       return Color;
