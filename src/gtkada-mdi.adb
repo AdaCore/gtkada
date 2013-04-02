@@ -1254,7 +1254,7 @@ package body Gtkada.MDI is
       Focus_Title_Color         : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars           : Title_Bars_Policy   := Always;
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
-        Gtk.Enums.Pos_Bottom;
+        Gtk.Enums.Pos_Top;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic;
       Homogeneous_Tabs          : Boolean := True;
       Hardcode_Theme            : Boolean := True)
