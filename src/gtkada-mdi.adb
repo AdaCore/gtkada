@@ -1673,6 +1673,7 @@ package body Gtkada.MDI is
          Update_Selection_Dialog (MDI, +1);
       end if;
 
+      Unref (C.Title_Icon);
       Free (C.Title);
       Free (C.Short_Title);
       Free (C.XML_Node_Name);
@@ -2316,7 +2317,9 @@ package body Gtkada.MDI is
         (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
 
       Gtk_New (Event);
+      Event.Set_App_Paintable (True);  --  prevent standard gtk_event_box_draw
       Gtk_New (Child.Title_Icon);
+      Ref (Child.Title_Icon);  --  floating a child should not destroy icon
       Event.Add (Child.Title_Icon);
       Event.Set_Visible_Window (False);   --  to get a transparent background
       Child.Title_Box.Pack_Start (Event, Expand => False);
@@ -2588,14 +2591,19 @@ package body Gtkada.MDI is
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf) is
    begin
       Child.Title_Icon.Set (Icon);
-      Child.Tab_Icon.Set (Icon);
-
       if Icon /= null then
          Child.Title_Icon.Show;
-         Child.Tab_Icon.Show;
       else
          Child.Title_Icon.Hide;
-         Child.Tab_Icon.Hide;
+      end if;
+
+      if Child.Tab_Icon /= null then
+         Child.Tab_Icon.Set (Icon);
+         if Icon /= null then
+            Child.Tab_Icon.Show;
+         else
+            Child.Tab_Icon.Hide;
+         end if;
       end if;
 
       Update_Menu_Item (Child);
@@ -3219,6 +3227,7 @@ package body Gtkada.MDI is
 
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated
+
          Ref (Child);
 
          --  This could be called before the child even has a parent if
@@ -3755,6 +3764,7 @@ package body Gtkada.MDI is
             Gtk_New (Event);
          end if;
 
+         Event.Set_App_Paintable (True);  --  prevent gtk_event_box_draw
          Event.Set_Visible_Window (False);
 
          Gtk_New_Hbox (Box, Homogeneous => False);
@@ -4188,6 +4198,7 @@ package body Gtkada.MDI is
 
       Child := MDI_Child (C);
       Child.Tab_Label := null;
+      Child.Tab_Icon := null;
       Set_State (Child, Normal);
 
       if Child.MDI.Focus_Child = Child then
