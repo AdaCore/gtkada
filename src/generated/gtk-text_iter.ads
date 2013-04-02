@@ -58,6 +58,8 @@ package Gtk.Text_Iter is
    --  objects and data types related to the text widget and how they work
    --  together.
 
+   Null_Text_Iter : constant Gtk_Text_Iter;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -148,7 +150,7 @@ package Gtk.Text_Iter is
        Flags       : Gtk_Text_Search_Flags;
        Match_Start : out Gtk_Text_Iter;
        Match_End   : out Gtk_Text_Iter;
-       Limit       : Gtk_Text_Iter;
+       Limit       : Gtk_Text_Iter := Null_Text_Iter;
        Result      : out Boolean);
    --  Same as Gtk.Text_Iter.Forward_Search, but moves backward.
    --  "str": search string
@@ -416,7 +418,7 @@ package Gtk.Text_Iter is
        Flags       : Gtk_Text_Search_Flags;
        Match_Start : out Gtk_Text_Iter;
        Match_End   : out Gtk_Text_Iter;
-       Limit       : Gtk_Text_Iter;
+       Limit       : Gtk_Text_Iter := Null_Text_Iter;
        Result      : out Boolean);
    --  Searches forward for Str. Any match is returned by setting Match_Start
    --  to the first character of the match and Match_End to the first character
@@ -851,6 +853,9 @@ package Gtk.Text_Iter is
    --  format. If this is not the case, use the Get_Char function that
    --  returns a Gunichar instead.
 
+   function Iter_Or_Null (Iter : System.Address) return System.Address;
+   --  Internal function for GtkAda
+
    -------------------------------
    -- Converting to/from GValue --
    -------------------------------
@@ -896,4 +901,10 @@ type Gtk_Text_Iter is record
 end record;
 pragma Convention (C, Gtk_Text_Iter);
 
+
+   Null_Text_Iter : constant Gtk_Text_Iter :=
+     (System.Null_Address, System.Null_Address, 0, 0, 0, 0, 0, 0,
+      System.Null_Address, System.Null_Address, 0, 0, 0,
+      System.Null_Address);
+        
 end Gtk.Text_Iter;

@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Gtkada.Bindings;                      use Gtkada.Bindings;
 with System.Address_To_Access_Conversions;
 
@@ -34,6 +35,24 @@ package body Gtk.Text_Iter is
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
+
+   type Gtk_Text_Iter_Access is access Gtk_Text_Iter;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Text_Iter_Access);
+   use type System.Address;
+
+   ------------------
+   -- Iter_Or_Null --
+   ------------------
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address is
+   begin
+      if Convert (Iter).all = Null_Text_Iter then--  null iter
+         return System.Null_Address;
+      else
+         return Iter;
+      end if;
+   end Iter_Or_Null;
 
    ----------
    -- Copy --
@@ -221,7 +240,7 @@ package body Gtk.Text_Iter is
        Flags       : Gtk_Text_Search_Flags;
        Match_Start : out Gtk_Text_Iter;
        Match_End   : out Gtk_Text_Iter;
-       Limit       : Gtk_Text_Iter;
+       Limit       : Gtk_Text_Iter := Null_Text_Iter;
        Result      : out Boolean)
    is
       function Internal
@@ -230,7 +249,7 @@ package body Gtk.Text_Iter is
           Flags           : Gtk_Text_Search_Flags;
           Acc_Match_Start : access Gtk_Text_Iter;
           Acc_Match_End   : access Gtk_Text_Iter;
-          Limit           : Gtk_Text_Iter) return Integer;
+          Limit           : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_iter_backward_search");
       Acc_Iter            : aliased Gtk_Text_Iter := Iter;
       Acc_Match_Start     : aliased Gtk_Text_Iter;
@@ -240,7 +259,7 @@ package body Gtk.Text_Iter is
       Tmp_Acc_Match_End   : aliased Gtk_Text_Iter;
       Tmp_Return          : Integer;
    begin
-      Tmp_Return := Internal (Acc_Iter'Access, Tmp_Str, Flags, Tmp_Acc_Match_Start'Access, Tmp_Acc_Match_End'Access, Limit);
+      Tmp_Return := Internal (Acc_Iter'Access, Tmp_Str, Flags, Tmp_Acc_Match_Start'Access, Tmp_Acc_Match_End'Access, Iter_Or_Null (Limit'Address));
       Acc_Match_End := Tmp_Acc_Match_End;
       Acc_Match_Start := Tmp_Acc_Match_Start;
       Free (Tmp_Str);
@@ -703,7 +722,7 @@ package body Gtk.Text_Iter is
        Flags       : Gtk_Text_Search_Flags;
        Match_Start : out Gtk_Text_Iter;
        Match_End   : out Gtk_Text_Iter;
-       Limit       : Gtk_Text_Iter;
+       Limit       : Gtk_Text_Iter := Null_Text_Iter;
        Result      : out Boolean)
    is
       function Internal
@@ -712,7 +731,7 @@ package body Gtk.Text_Iter is
           Flags           : Gtk_Text_Search_Flags;
           Acc_Match_Start : access Gtk_Text_Iter;
           Acc_Match_End   : access Gtk_Text_Iter;
-          Limit           : Gtk_Text_Iter) return Integer;
+          Limit           : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_text_iter_forward_search");
       Acc_Iter            : aliased Gtk_Text_Iter := Iter;
       Acc_Match_Start     : aliased Gtk_Text_Iter;
@@ -722,7 +741,7 @@ package body Gtk.Text_Iter is
       Tmp_Acc_Match_End   : aliased Gtk_Text_Iter;
       Tmp_Return          : Integer;
    begin
-      Tmp_Return := Internal (Acc_Iter'Access, Tmp_Str, Flags, Tmp_Acc_Match_Start'Access, Tmp_Acc_Match_End'Access, Limit);
+      Tmp_Return := Internal (Acc_Iter'Access, Tmp_Str, Flags, Tmp_Acc_Match_Start'Access, Tmp_Acc_Match_End'Access, Iter_Or_Null (Limit'Address));
       Acc_Match_End := Tmp_Acc_Match_End;
       Acc_Match_Start := Tmp_Acc_Match_Start;
       Free (Tmp_Str);

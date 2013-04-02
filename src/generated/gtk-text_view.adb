@@ -295,12 +295,12 @@ package body Gtk.Text_View is
    is
       procedure Internal
          (View   : System.Address;
-          Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+          Iter   : System.Address;
           Strong : out Gdk.Rectangle.Gdk_Rectangle;
           Weak   : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_text_view_get_cursor_locations");
    begin
-      Internal (Get_Object (View), Iter, Strong, Weak);
+      Internal (Get_Object (View), Iter_Or_Null (Iter'Address), Strong, Weak);
    end Get_Cursor_Locations;
 
    ------------------------

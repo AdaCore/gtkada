@@ -559,6 +559,8 @@ naming.type_exceptions = {
                                    "Pango.Font.Property_Font_Description"),
     "GtkTreeIter*":    Record("Gtk.Tree_Model.Gtk_Tree_Iter",
                               val_or_null="Iter_Or_Null"),
+    "GtkTextIter*":    Record("Gtk.Text_Iter.Gtk_Text_Iter",
+                              val_or_null="Iter_Or_Null"),
 
     "GError*":           Proxy("Glib.Error.GError"),
     "GObject*":          GObject("Glib.Object.GObject"),
