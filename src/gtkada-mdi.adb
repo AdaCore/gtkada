@@ -3190,10 +3190,13 @@ package body Gtkada.MDI is
       Groups      : Object_List.GSlist;
       W, H        : Gint;
    begin
-      Print_Debug
-        ("Float_Child " & Get_Title (Child)
-         & " State=" & State_Type'Image (Child.State)
-         & " Float=" & Boolean'Image (Float), Debug_Increase);
+      if Traces then
+         Print_Debug
+           ("Float_Child " & Get_Title (Child)
+            & " State=" & State_Type'Image (Child.State)
+            & " Float=" & Boolean'Image (Float),
+            Debug_Increase);
+      end if;
 
       --  If the Child already has a window, the resulting floating window
       --  should have the same size.
@@ -3208,8 +3211,8 @@ package body Gtkada.MDI is
          end if;
 
       elsif Child.Get_Mapped then
-         W := Child.Get_Allocated_Width;
-         H := Child.Get_Allocated_Height;
+         W := Child.Get_Parent.Get_Allocated_Width;
+         H := Child.Get_Parent.Get_Allocated_Height;
          if Traces then
             Print_Debug ("Size from allocated:" & Gint'Image (W) & "x"
                          & Gint'Image (H));
