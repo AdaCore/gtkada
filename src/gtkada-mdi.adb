@@ -2878,7 +2878,6 @@ package body Gtkada.MDI is
    is
       Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
       Note          : Gtk_Notebook;
-      Current_Focus : MDI_Child;
       Give          : Boolean := Give_Focus;
    begin
       Show (Child);  --  Make sure the child is visible
@@ -2888,15 +2887,14 @@ package body Gtkada.MDI is
 
       if Child.State = Normal then
          Note := Get_Notebook (Child);
-         Current_Focus := Child.MDI.Focus_Child;
 
          --  We'll have to transfer the focus if the current focus window is in
          --  the same dock, since otherwise that means an invisible window
          --  would have the focus.
 
-         if Current_Focus /= null
-           and then Current_Focus.State = Normal
-           and then Get_Notebook (Current_Focus) = Note
+         if Old_Focus /= null
+           and then Old_Focus.State = Normal
+           and then Get_Notebook (Old_Focus) = Note
          then
             Give := True;
          end if;
@@ -2910,7 +2908,8 @@ package body Gtkada.MDI is
          if Note /= null then
             Set_Current_Page (Note, Page_Num (Note, Child));
          end if;
-         Child.MDI.Focus_Child := Current_Focus;
+
+         Child.MDI.Focus_Child := Old_Focus;
 
       elsif Child.State = Floating
         and then Give_Focus
@@ -3033,7 +3032,9 @@ package body Gtkada.MDI is
       Show (C);  --  Make sure the child is visible
       Child.MDI.Focus_Child := C;
 
-      Print_Debug ("Set_Focus_Child on " & Get_Title (C));
+      if Traces then
+         Print_Debug ("Set_Focus_Child on " & Get_Title (C));
+      end if;
 
       if Previous_Focus_Child /= null then
          Update_Tab_Color (Get_Notebook (Previous_Focus_Child), False);
