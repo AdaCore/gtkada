@@ -31,6 +31,7 @@ with Gtk.Text_Tag;    use Gtk.Text_Tag;
 with Gtk.Text_Iter;   use Gtk.Text_Iter;
 with Gtk.Text_Buffer; use Gtk.Text_Buffer;
 with Gtk.Text_View;   use Gtk.Text_View;
+with Gtk.Text_Mark;   use Gtk.Text_Mark;
 with Gtk.Frame;       use Gtk.Frame;
 with Gtk.Widget;      use Gtk.Widget;
 with Pango.Font;      use Pango.Font;
@@ -83,7 +84,6 @@ package body Create_Text_View is
 
       if Tag = "" then
          Insert (Buffer, Iter, Text & ASCII.LF);
-
       else
          Table := Get_Tag_Table (Buffer);
          T := Lookup (Table, Tag);
@@ -115,13 +115,18 @@ package body Create_Text_View is
       --  text.
 
       Parse (Color, "red", Success);
-      Gtk_New (Tag, "red");
+      Gtk_New (Tag, "red_tag");
       Add (Tags, Tag);
       Set_Property (Tag, Foreground_Rgba_Property, Color);
 
-      Gtk_New (Tag, "courier");
+      Gtk_New (Tag, "courier_tag");
       Add (Tags, Tag);
       Set_Property (Tag, Font_Desc_Property, From_String ("Courier bold"));
+
+      Parse (Color, "green", Success);
+      Gtk_New (Tag, "green_tag");
+      Add (Tags, Tag);
+      Set_Property (Tag, Foreground_Rgba_Property, Color);
 
       --  Create the buffer and the views as appropriate
 
@@ -132,16 +137,16 @@ package body Create_Text_View is
 
       --  Insert some random text
 
-      for Lien in 1 .. 50 loop
+      for Lien in 1 .. 2 loop
          for Count in 1 .. 10 loop
             Insert_With_Tag
               (Buffer, "", "A normal line with no special highlight");
          end loop;
 
          Insert_With_Tag
-           (Buffer, "red", "Some text in red, notice the use of tags");
+           (Buffer, "red_tag", "Some text in red, notice the use of tags");
          Insert_With_Tag
-           (Buffer, "courier", "The font can also be changed");
+           (Buffer, "courier_tag", "The font can also be changed");
       end loop;
 
       --  Insert the view in the frame
@@ -152,6 +157,83 @@ package body Create_Text_View is
 
       Show_All (Scrolled);
       Add (Frame, Scrolled);
+
+      declare
+         Iter, Begin_Result, End_Result : Gtk_Text_Iter;
+         Success : Boolean := False;
+         Mark : Gtk_Text_Mark;
+
+      begin
+         --  Create a mark referencing the first line in courier
+
+         Gtk_New (Mark, "My mark", True);
+         Get_Iter_At_Line (Buffer, Iter, 12);
+         Add_Mark (Buffer, Mark, Iter);
+
+         --  Replace the five first occurrences of the word "placeholder"
+
+         for J in 1 .. 5 loop
+            Get_Iter_At_Offset (Buffer, Iter, Char_Offset => 0);
+
+            --  Use forward search to find the next occurrence
+
+            Forward_Search (Iter, "special", Case_Insensitive,
+                            Match_Start => Begin_Result,
+                            Match_End => End_Result,
+                            Result => Success);
+
+            --  Replace "special" with "particular"
+
+            if Success then
+               Delete (Buffer, Begin_Result, End_Result);
+               Insert (Buffer, Begin_Result, "particular");
+            end if;
+         end loop;
+
+         Forward_Line (Begin_Result, Success);
+
+         --  Delete the next five lines
+
+         for J in 1 .. 5 loop
+            if Success then
+               End_Result := Begin_Result;
+               Forward_To_Line_End (End_Result, Success);
+               Forward_Char (End_Result, Success);
+
+               if Success then
+                  Delete (Buffer, Begin_Result, End_Result);
+               end if;
+            end if;
+         end loop;
+
+         --  See that the mark moved with the deletions
+         --  By modifying and coloring the line where the mark was set at
+
+         Get_Iter_At_Mark (Buffer, Iter, Mark);
+
+         Forward_Search (Iter, "normal", Case_Insensitive,
+                         Match_Start => Begin_Result,
+                         Match_End => End_Result,
+                         Result => Success);
+         Forward_To_Line_End (End_Result, Success);
+
+         if Success then
+            Delete (Buffer, Begin_Result, End_Result);
+            Insert (Buffer, Begin_Result, "green line");
+         end if;
+
+         --  Color the whole modified line in green
+
+         Tag := Lookup (Tags, "green_tag");
+         Get_Iter_At_Mark (Buffer, Begin_Result, Mark);
+         End_Result := Begin_Result;
+         Forward_To_Line_End (End_Result, Success);
+         Apply_Tag (Buffer, Tag, Begin_Result, End_Result);
+
+         --  Remove the mark, we no longer need it
+
+         Delete_Mark (Buffer, Mark);
+      end;
    end Run;
 
 end Create_Text_View;
