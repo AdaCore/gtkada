@@ -1,3 +1,10 @@
+Known problems fixed in GtkAda 2.24.4
+
+- L615-005 Constraint Error using the GtkAda.Canvas
+  Problem:    The GtkAda.Canvas might raise a Constraint_Error when moving
+              the mouse and a button has never been pressed.
+  Workaround: None known.
+
 Known problems fixed in GtkAda 2.24.3
 
 - L924-024 GtkAda.Canvas default layout incorrect with self links
