@@ -394,19 +394,6 @@ package Gtk.Text_Buffer is
    --  "line_number": line number counting from 0
    --  "byte_index": byte index from start of line
 
-   procedure Get_Iter_At_Line_Offset
-      (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint;
-       Char_Offset : Gint);
-   --  Obtains an iterator pointing to Char_Offset within the given line. The
-   --  Char_Offset must exist, offsets off the end of the line are not allowed.
-   --  Note *characters*, not bytes; UTF-8 may encode one character as multiple
-   --  bytes.
-   --  "iter": iterator to initialize
-   --  "line_number": line number counting from 0
-   --  "char_offset": char offset from start of line
-
    procedure Get_Iter_At_Mark
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Iter   : out Gtk.Text_Iter.Gtk_Text_Iter;
@@ -858,6 +845,19 @@ package Gtk.Text_Buffer is
    --
    --  If Tag_Name is NULL, the tag is anonymous, otherwise a tag called
    --  Tag_Name must not already exist in the tag table for this buffer.
+
+   procedure Get_Iter_At_Line_Offset
+     (Buffer      : not null access Gtk_Text_Buffer_Record;
+      Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
+      Line_Number : Gint;
+      Char_Offset : Gint);
+   --  Obtains an iterator pointing to Char_Offset within the given line. The
+   --  Char_Offset must exist, offsets off the end of the line are not allowed.
+   --  Note *characters*, not bytes; UTF-8 may encode one character as multiple
+   --  bytes.
+   --  "iter": iterator to initialize
+   --  "line_number": line number counting from 0
+   --  "char_offset": char offset from start of line
 
    ----------------
    -- Properties --
