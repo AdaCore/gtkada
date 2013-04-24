@@ -195,36 +195,6 @@ package body Gtk.Text_Buffer is
       return Tag;
    end Create_Tag;
 
-   -----------------------------
-   -- Get_Iter_At_Line_Offset --
-   -----------------------------
-
-   procedure Get_Iter_At_Line_Offset
-     (Buffer      : not null access Gtk_Text_Buffer_Record;
-      Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-      Line_Number : Gint;
-      Char_Offset : Gint)
-   is
-      procedure Internal
-        (Buffer      : System.Address;
-         Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-         Line_Number : Gint;
-         Char_Offset : Gint);
-      pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line_offset");
-      Result   : Boolean;
-   begin
-      --  Prevent critical crashes from gtk+ if Char_Offset is invalid
-      Internal (Get_Object (Buffer), Iter, Line_Number, 0);
-
-      if not Ends_Line (Iter) then
-         Forward_To_Line_End (Iter, Result);
-
-         if Char_Offset <= Get_Line_Offset (Iter) then
-            Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
-         end if;
-      end if;
-   end Get_Iter_At_Line_Offset;
-
    package Type_Conversion_Gtk_Text_Buffer is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Text_Buffer_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Text_Buffer);
@@ -757,6 +727,36 @@ package body Gtk.Text_Buffer is
       Internal (Get_Object (Buffer), Tmp_Iter, Line_Number, Byte_Index);
       Iter := Tmp_Iter;
    end Get_Iter_At_Line_Index;
+
+   -----------------------------
+   -- Get_Iter_At_Line_Offset --
+   -----------------------------
+
+   procedure Get_Iter_At_Line_Offset
+      (Buffer      : not null access Gtk_Text_Buffer_Record;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Line_Number : Gint;
+       Char_Offset : Gint)
+   is
+      procedure Internal
+         (Buffer      : System.Address;
+          Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
+          Line_Number : Gint;
+          Char_Offset : Gint);
+      pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line_offset");
+      Result   : Boolean;
+   begin
+      --  Prevent critical crashes from gtk+ if Char_Offset is invalid
+      Internal (Get_Object (Buffer), Iter, Line_Number, 0);
+
+      if not Ends_Line (Iter) then
+         Forward_To_Line_End (Iter, Result);
+
+         if Char_Offset <= Get_Line_Offset (Iter) then
+            Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
+         end if;
+      end if;
+   end Get_Iter_At_Line_Offset;
 
    ----------------------
    -- Get_Iter_At_Mark --
