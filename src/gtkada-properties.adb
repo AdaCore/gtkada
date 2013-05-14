@@ -981,8 +981,7 @@ package body Gtkada.Properties is
             Table         => Editor.Table,
             Prop_Type     => Property_Standard,
             T             => T,
-            Properties    => Class_List_Properties
-              (GObject_Class (Class_Peek (T))));
+            Properties    => Class_List_Properties (Class_Peek (T)));
       end if;
    end Show_Properties_From_Type;
 

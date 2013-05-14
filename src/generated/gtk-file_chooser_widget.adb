@@ -75,7 +75,9 @@ package body Gtk.File_Chooser_Widget is
           return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_widget_new");
    begin
-      Set_Object (Self, Internal (Action));
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Action));
+      end if;
    end Initialize;
 
    ----------------

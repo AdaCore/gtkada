@@ -62,7 +62,9 @@ package body Gtk.Volume_Button is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_volume_button_new");
    begin
-      Set_Object (Widget, Internal);
+      if not Widget.Is_Created then
+         Set_Object (Widget, Internal);
+      end if;
    end Initialize;
 
    ---------------------------

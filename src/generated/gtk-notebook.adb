@@ -101,7 +101,9 @@ package body Gtk.Notebook is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_notebook_new");
    begin
-      Set_Object (Notebook, Internal);
+      if not Notebook.Is_Created then
+         Set_Object (Notebook, Internal);
+      end if;
    end Initialize;
 
    -----------------

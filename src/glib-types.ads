@@ -42,8 +42,8 @@ with System;
 
 package Glib.Types is
 
-   function Class_Peek (T : GType) return Glib.GType_Class;
-   function Class_Ref  (T : GType) return Glib.GType_Class;
+   function Class_Peek (T : GType) return Glib.Object.GObject_Class;
+   function Class_Ref  (T : GType) return Glib.Object.GObject_Class;
    --  Return the class structure encapsulated in T.
    --  Class_Ref will create the class on-demand if it doesn't exist yet, but
    --  Class_Peek might return null if the class hasn't been referenced before.

@@ -172,27 +172,29 @@ package body Gtk.Recent_Action is
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
       Tmp_Return   : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Widget.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         if Tooltip = "" then
+            Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Tooltip := New_String (Tooltip);
+         end if;
+         if Stock_Id = "" then
+            Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Stock_Id := New_String (Stock_Id);
+         end if;
+         Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id);
+         Free (Tmp_Stock_Id);
+         Free (Tmp_Tooltip);
+         Free (Tmp_Label);
+         Free (Tmp_Name);
+         Set_Object (Widget, Tmp_Return);
       end if;
-      if Tooltip = "" then
-         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Tooltip := New_String (Tooltip);
-      end if;
-      if Stock_Id = "" then
-         Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Stock_Id := New_String (Stock_Id);
-      end if;
-      Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id);
-      Free (Tmp_Stock_Id);
-      Free (Tmp_Tooltip);
-      Free (Tmp_Label);
-      Free (Tmp_Name);
-      Set_Object (Widget, Tmp_Return);
    end Initialize;
 
    ----------------------------
@@ -220,27 +222,29 @@ package body Gtk.Recent_Action is
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
       Tmp_Return   : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Widget.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         if Tooltip = "" then
+            Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Tooltip := New_String (Tooltip);
+         end if;
+         if Stock_Id = "" then
+            Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Stock_Id := New_String (Stock_Id);
+         end if;
+         Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id, Get_Object_Or_Null (GObject (Manager)));
+         Free (Tmp_Stock_Id);
+         Free (Tmp_Tooltip);
+         Free (Tmp_Label);
+         Free (Tmp_Name);
+         Set_Object (Widget, Tmp_Return);
       end if;
-      if Tooltip = "" then
-         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Tooltip := New_String (Tooltip);
-      end if;
-      if Stock_Id = "" then
-         Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Stock_Id := New_String (Stock_Id);
-      end if;
-      Tmp_Return := Internal (Tmp_Name, Tmp_Label, Tmp_Tooltip, Tmp_Stock_Id, Get_Object_Or_Null (GObject (Manager)));
-      Free (Tmp_Stock_Id);
-      Free (Tmp_Tooltip);
-      Free (Tmp_Label);
-      Free (Tmp_Name);
-      Set_Object (Widget, Tmp_Return);
    end Initialize_For_Manager;
 
    ----------------------

@@ -229,7 +229,9 @@ package body Gtk.Cell_View is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_new");
    begin
-      Set_Object (Cell_View, Internal);
+      if not Cell_View.Is_Created then
+         Set_Object (Cell_View, Internal);
+      end if;
    end Initialize;
 
    -----------------------------
@@ -246,7 +248,9 @@ package body Gtk.Cell_View is
           Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_new_with_context");
    begin
-      Set_Object (Cell_View, Internal (Get_Object (Area), Get_Object (Context)));
+      if not Cell_View.Is_Created then
+         Set_Object (Cell_View, Internal (Get_Object (Area), Get_Object (Context)));
+      end if;
    end Initialize_With_Context;
 
    ----------------------------
@@ -263,9 +267,11 @@ package body Gtk.Cell_View is
       Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Markup);
-      Free (Tmp_Markup);
-      Set_Object (Cell_View, Tmp_Return);
+      if not Cell_View.Is_Created then
+         Tmp_Return := Internal (Tmp_Markup);
+         Free (Tmp_Markup);
+         Set_Object (Cell_View, Tmp_Return);
+      end if;
    end Initialize_With_Markup;
 
    ----------------------------
@@ -279,7 +285,9 @@ package body Gtk.Cell_View is
       function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_new_with_pixbuf");
    begin
-      Set_Object (Cell_View, Internal (Get_Object (Pixbuf)));
+      if not Cell_View.Is_Created then
+         Set_Object (Cell_View, Internal (Get_Object (Pixbuf)));
+      end if;
    end Initialize_With_Pixbuf;
 
    --------------------------
@@ -296,9 +304,11 @@ package body Gtk.Cell_View is
       Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Text);
-      Free (Tmp_Text);
-      Set_Object (Cell_View, Tmp_Return);
+      if not Cell_View.Is_Created then
+         Tmp_Return := Internal (Tmp_Text);
+         Free (Tmp_Text);
+         Set_Object (Cell_View, Tmp_Return);
+      end if;
    end Initialize_With_Text;
 
    -----------------------

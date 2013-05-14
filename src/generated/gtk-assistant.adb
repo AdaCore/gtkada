@@ -113,7 +113,9 @@ package body Gtk.Assistant is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_assistant_new");
    begin
-      Set_Object (Assistant, Internal);
+      if not Assistant.Is_Created then
+         Set_Object (Assistant, Internal);
+      end if;
    end Initialize;
 
    -----------------------

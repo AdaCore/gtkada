@@ -108,6 +108,10 @@ package Gtkada.MDI is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Glib.GType;
+   function Child_Get_Type return Glib.GType;
+   --  Return the type describing the MDI or a MDI_Child
+
    procedure Setup_Toplevel_Window
      (MDI    : access MDI_Window_Record;
       Parent : access Gtk.Window.Gtk_Window_Record'Class);

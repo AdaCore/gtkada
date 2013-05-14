@@ -95,7 +95,9 @@ package body Gtk.Toggle_Tool_Button is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_toggle_tool_button_new");
    begin
-      Set_Object (Button, Internal);
+      if not Button.Is_Created then
+         Set_Object (Button, Internal);
+      end if;
    end Initialize;
 
    ---------------------------
@@ -112,9 +114,11 @@ package body Gtk.Toggle_Tool_Button is
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Stock_Id);
-      Free (Tmp_Stock_Id);
-      Set_Object (Button, Tmp_Return);
+      if not Button.Is_Created then
+         Tmp_Return := Internal (Tmp_Stock_Id);
+         Free (Tmp_Stock_Id);
+         Set_Object (Button, Tmp_Return);
+      end if;
    end Initialize_From_Stock;
 
    ----------------

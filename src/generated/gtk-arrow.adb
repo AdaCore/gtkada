@@ -73,7 +73,9 @@ package body Gtk.Arrow is
           Shadow_Type : Gtk.Enums.Gtk_Shadow_Type) return System.Address;
       pragma Import (C, Internal, "gtk_arrow_new");
    begin
-      Set_Object (Arrow, Internal (Arrow_Type, Shadow_Type));
+      if not Arrow.Is_Created then
+         Set_Object (Arrow, Internal (Arrow_Type, Shadow_Type));
+      end if;
    end Initialize;
 
    ---------

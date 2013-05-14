@@ -183,26 +183,67 @@ See also the example in :file:`examples/tutorial/gtkdial` for a more complex
 widget, that implements a gauge where the user can move the arrow to select
 a new value.
 
-Once again, the only two functions that you must create are `Gtk_New` and
-`Initialize`.  This time, `Initialize` has to do two things::
+Since we are creating a totally new widget from scratch, with potentially
+its own signals, we need to do slightly more work. In particular, we need to
+provide a function ``Get_Type`` similar to what all the predefined widgets
+provide::
 
-  Parent_Package.Initialize (Widget);
+   type My_Widget_Record is new Gtk_Button_Record with record
+       ...
+   end record;
+   type My_Widget is access all My_Widget_Record'Class;
 
-  --  The above line calls the Initialize function from the parent.
-  --  This creates the underlying C widget, which we are going to
-  --  modify with the following call:
+   Klass : aliased Ada_GObject_Class := Uninitialized_Class;
+   
+   function Get_Type return GType is
+   begin
+      if Initialize_Class_Record
+         (Ancestor     => Gtk.Button.Get_Type,
+          Class_Record => Klass'Access,
+          Type_Name    => "My_Widget")
+      begin
+         --  Add interfaces if needed
+         Add_Interface (Klass, ..., new GInterface_Info'(...));
+   
+         --  Override the inherited methods
+         Gtk.Widget.Set_Default_Draw_Handler (...);
+   
+         --  Install properties
+         Install_Style_Property
+            (Glib.Types.Class_Ref (Klass),
+             Gnew_Int (...));
+      end if;
+      return Klass.The_Type;
+   end Get_Type;
 
-  Gtk.Object.Initialize_Class_Record
-    (Widget, Signals, Class_Record);
-  --  This initializes the "class record" for the widget and
-  --  creates the signals.
+You should also create the usual functions ``Gtk_New`` and
+``Initialize``::
+
+   procedure Gtk_New (Self : out My_Widget) is
+   begin
+      Self := new My_Widget_Record;  --  create the Ada wrapper
+      Initialize (Self);
+   end Gtk_New;
+   
+   procedure Initialize (Self : not null access My_Widget_Record'Class) is
+   begin
+      G_New (Self, Get_Type); --  allocate the C widget, unless done
+   
+      --  Initialize parent fields.
+
+      Gtk.Button.Initialize (Self);
+   
+      --  Initialization of the Ada types
+
+      Self.Field1 := ...;
+   end Initialize;
+
   
+In the above example, the new part is the ``Get_Type`` subprogram. It takes
+three or four arguments:
 
-In the above example, the new part is the second call. It takes three or four
-arguments:
-
-* `Widget`
-  This is the widget that you want to initialize
+* `Ancestor`
+  This is the GType for the ancestor that is being extended.
 
 * `Signals`
   This is an array of string access containing the name of the signals

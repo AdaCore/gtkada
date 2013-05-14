@@ -127,14 +127,16 @@ package body Gtk.Button is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Button.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Button, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Button, Tmp_Return);
    end Initialize;
 
    ---------------------------
@@ -151,9 +153,11 @@ package body Gtk.Button is
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Stock_Id);
-      Free (Tmp_Stock_Id);
-      Set_Object (Button, Tmp_Return);
+      if not Button.Is_Created then
+         Tmp_Return := Internal (Tmp_Stock_Id);
+         Free (Tmp_Stock_Id);
+         Set_Object (Button, Tmp_Return);
+      end if;
    end Initialize_From_Stock;
 
    ------------------------------
@@ -170,9 +174,11 @@ package body Gtk.Button is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Button, Tmp_Return);
+      if not Button.Is_Created then
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Button, Tmp_Return);
+      end if;
    end Initialize_With_Mnemonic;
 
    -------------

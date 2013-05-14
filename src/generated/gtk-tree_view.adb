@@ -439,7 +439,9 @@ package body Gtk.Tree_View is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_new");
    begin
-      Set_Object (Tree_View, Internal);
+      if not Tree_View.Is_Created then
+         Set_Object (Tree_View, Internal);
+      end if;
    end Initialize;
 
    ----------------
@@ -454,7 +456,9 @@ package body Gtk.Tree_View is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_new_with_model");
    begin
-      Set_Object (Tree_View, Internal (Model));
+      if not Tree_View.Is_Created then
+         Set_Object (Tree_View, Internal (Model));
+      end if;
    end Initialize;
 
    -------------------

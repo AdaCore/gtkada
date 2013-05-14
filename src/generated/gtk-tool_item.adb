@@ -69,7 +69,9 @@ package body Gtk.Tool_Item is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_new");
    begin
-      Set_Object (Tool_Item, Internal);
+      if not Tool_Item.Is_Created then
+         Set_Object (Tool_Item, Internal);
+      end if;
    end Initialize;
 
    ------------------------

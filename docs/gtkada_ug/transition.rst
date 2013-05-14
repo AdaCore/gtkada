@@ -95,8 +95,10 @@ Glib
 Glib.Object
 -----------
 
-``Initialize_Class_Record`` now returns the type ``Ada_GObject_Class,`` not
-``GObject_Class.``
+``Initialize_Class_Record``'s profile was changed to follow more closely what
+is done for C applications. The previous implementation prevented applications
+from implementing interfaces because some internal gtk+ data had to be
+initialized too early. See ``glib-object.ads`` for an extensive documentation.
 
 Glib.G_Icon
 -----------

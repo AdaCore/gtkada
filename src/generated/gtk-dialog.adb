@@ -121,7 +121,9 @@ package body Gtk.Dialog is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new");
    begin
-      Set_Object (Dialog, Internal);
+      if not Dialog.Is_Created then
+         Set_Object (Dialog, Internal);
+      end if;
    end Initialize;
 
    ----------------
@@ -142,9 +144,11 @@ package body Gtk.Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Flags);
-      Free (Tmp_Title);
-      Set_Object (Dialog, Tmp_Return);
+      if not Dialog.Is_Created then
+         Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Flags);
+         Free (Tmp_Title);
+         Set_Object (Dialog, Tmp_Return);
+      end if;
    end Initialize;
 
    -----------------------

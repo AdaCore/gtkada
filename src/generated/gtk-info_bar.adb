@@ -67,7 +67,9 @@ package body Gtk.Info_Bar is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_info_bar_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    -----------------------

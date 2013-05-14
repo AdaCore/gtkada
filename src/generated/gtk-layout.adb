@@ -74,7 +74,9 @@ package body Gtk.Layout is
           Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_new");
    begin
-      Set_Object (Layout, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      if not Layout.Is_Created then
+         Set_Object (Layout, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      end if;
    end Initialize;
 
    --------------------

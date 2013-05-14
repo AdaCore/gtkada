@@ -65,7 +65,9 @@ package body Gtk.Style_Properties is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_style_properties_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    -----------

@@ -80,7 +80,9 @@ package body Gtk.Style_Context is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_style_context_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ---------------

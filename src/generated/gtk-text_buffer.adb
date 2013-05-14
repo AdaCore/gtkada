@@ -237,7 +237,9 @@ package body Gtk.Text_Buffer is
       function Internal (Table : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_new");
    begin
-      Set_Object (Buffer, Internal (Get_Object_Or_Null (GObject (Table))));
+      if not Buffer.Is_Created then
+         Set_Object (Buffer, Internal (Get_Object_Or_Null (GObject (Table))));
+      end if;
    end Initialize;
 
    --------------

@@ -62,6 +62,9 @@ package Gtkada.Multi_Paned is
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class);
    --  Create a new paned window.
 
+   function Get_Type return Glib.GType;
+   --  Return the internal type
+
    function Handle_Size
      (Win : access Gtkada_Multi_Paned_Record'Class) return Gint;
    --  returns the size of the handle

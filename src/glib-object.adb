@@ -49,10 +49,10 @@ package body Glib.Object is
      (System.Address, GObject);
 
    function Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
+     (Ancestor     : GType;
       Class_Record : System.Address;  --   Address of Ada_Gobject_Class
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
      return Boolean;
    --  Internal version of Initialize_Class_Record
@@ -89,10 +89,26 @@ package body Glib.Object is
    -- G_New --
    -----------
 
-   procedure G_New (Object : out GObject) is
+   procedure G_New
+      (Object : not null access GObject_Record'Class; Typ : GType)
+   is
+      function Internal (Typ : GType) return System.Address;
+      pragma Import (C, Internal, "ada_g_object_new");
    begin
-      Object := new GObject_Record;
-      Initialize (Object);
+      if not Object.Is_Created then
+         Set_Object (Object, Internal (Typ));
+      end if;
+   end G_New;
+
+   -----------
+   -- G_New --
+   -----------
+
+   procedure G_New
+      (Object : not null access GObject_Record'Class; Typ : Ada_GObject_Class)
+   is
+   begin
+      G_New (Object, Typ.The_Type);
    end G_New;
 
    ----------------
@@ -100,10 +116,8 @@ package body Glib.Object is
    ----------------
 
    procedure Initialize (Object : access GObject_Record'Class) is
-      function Internal (Typ : GType) return System.Address;
-      pragma Import (C, Internal, "ada_g_object_new");
    begin
-      Set_Object (Object, Internal (GType_Object));
+      G_New (Object, GType_Object);
    end Initialize;
 
    ----------------
@@ -293,42 +307,49 @@ package body Glib.Object is
    -----------------------------
 
    procedure Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
+     (Ancestor     : GType;
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
    is
       Ignored : Boolean;
       pragma Unreferenced (Ignored);
    begin
       Ignored := Initialize_Class_Record
-         (Object, Signals, Class_Record'Address, Type_Name, Parameters);
+         (Ancestor, Class_Record'Address, Type_Name, Signals, Parameters);
    end Initialize_Class_Record;
 
+   -----------------------------
+   -- Initialize_Class_Record --
+   -----------------------------
+
    function Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Class_Record : access Ada_GObject_Class;
+     (Ancestor     : GType;
+      Class_Record : not null access Ada_GObject_Class;
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
-     return Boolean
-   is
+     return Boolean is
    begin
       return Initialize_Class_Record
-         (Object, Signals, Class_Record.all'Address, Type_Name, Parameters);
+         (Ancestor, Class_Record.all'Address, Type_Name, Signals, Parameters);
    end Initialize_Class_Record;
 
+   -----------------------------
+   -- Initialize_Class_Record --
+   -----------------------------
+
    function Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
+     (Ancestor     : GType;
       Class_Record : System.Address;  --   Address of Ada_Gobject_Class
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
      return Boolean
    is
       function Internal
-        (Object         : System.Address;
+        (Ancestor       : GType;
          NSignals       : Gint;
          Signals        : System.Address;
          Parameters     : System.Address;
@@ -350,7 +371,7 @@ package body Glib.Object is
       end if;
 
       return Internal
-        (Get_Object (Object),
+        (Ancestor,
          Signals'Length,
          Signals'Address,
          Pa,
@@ -358,6 +379,21 @@ package body Glib.Object is
          Class_Record,
          Type_Name & ASCII.NUL) /= 0;
    end Initialize_Class_Record;
+
+   -------------------
+   -- Add_Interface --
+   -------------------
+
+   procedure Add_Interface
+      (Klass : Ada_GObject_Class;
+       Iface : GType;
+       Info  : not null access GInterface_Info)
+   is
+      procedure Internal (Klass, Iface : GType; Info : access GInterface_Info);
+      pragma Import (C, Internal, "g_type_add_interface_static");
+   begin
+      Internal (Klass.The_Type, Iface, Info);
+   end Add_Interface;
 
    --------------
    -- List_Ids --

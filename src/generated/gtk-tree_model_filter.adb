@@ -248,7 +248,9 @@ package body Gtk.Tree_Model_Filter is
           Root        : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tree_model_filter_new");
    begin
-      Set_Object (Self, Internal (Child_Model, Get_Object (Root)));
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Child_Model, Get_Object (Root)));
+      end if;
    end Initialize;
 
    -----------------

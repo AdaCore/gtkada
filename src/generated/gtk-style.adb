@@ -97,7 +97,9 @@ package body Gtk.Style is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_style_new");
    begin
-      Set_Object (Style, Internal);
+      if not Style.Is_Created then
+         Set_Object (Style, Internal);
+      end if;
    end Initialize;
 
    ------------------------------

@@ -325,7 +325,9 @@ package body Gtk.Combo_Box is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new");
    begin
-      Set_Object (Combo_Box, Internal);
+      if not Combo_Box.Is_Created then
+         Set_Object (Combo_Box, Internal);
+      end if;
    end Initialize;
 
    --------------------------
@@ -339,7 +341,9 @@ package body Gtk.Combo_Box is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new_with_area");
    begin
-      Set_Object (Combo_Box, Internal (Get_Object (Area)));
+      if not Combo_Box.Is_Created then
+         Set_Object (Combo_Box, Internal (Get_Object (Area)));
+      end if;
    end Initialize_With_Area;
 
    ------------------------------------
@@ -353,7 +357,9 @@ package body Gtk.Combo_Box is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new_with_area_and_entry");
    begin
-      Set_Object (Combo_Box, Internal (Get_Object (Area)));
+      if not Combo_Box.Is_Created then
+         Set_Object (Combo_Box, Internal (Get_Object (Area)));
+      end if;
    end Initialize_With_Area_And_Entry;
 
    ---------------------------
@@ -366,7 +372,9 @@ package body Gtk.Combo_Box is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new_with_entry");
    begin
-      Set_Object (Combo_Box, Internal);
+      if not Combo_Box.Is_Created then
+         Set_Object (Combo_Box, Internal);
+      end if;
    end Initialize_With_Entry;
 
    ---------------------------
@@ -381,7 +389,9 @@ package body Gtk.Combo_Box is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new_with_model");
    begin
-      Set_Object (Combo_Box, Internal (Model));
+      if not Combo_Box.Is_Created then
+         Set_Object (Combo_Box, Internal (Model));
+      end if;
    end Initialize_With_Model;
 
    -------------------------------------
@@ -396,7 +406,9 @@ package body Gtk.Combo_Box is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_combo_box_new_with_model_and_entry");
    begin
-      Set_Object (Combo_Box, Internal (Model));
+      if not Combo_Box.Is_Created then
+         Set_Object (Combo_Box, Internal (Model));
+      end if;
    end Initialize_With_Model_And_Entry;
 
    ----------------

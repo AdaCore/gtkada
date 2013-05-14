@@ -111,9 +111,11 @@ package body Gtk.File_Chooser_Button is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title, Action);
-      Free (Tmp_Title);
-      Set_Object (Button, Tmp_Return);
+      if not Button.Is_Created then
+         Tmp_Return := Internal (Tmp_Title, Action);
+         Free (Tmp_Title);
+         Set_Object (Button, Tmp_Return);
+      end if;
    end Initialize;
 
    ----------------------------
@@ -127,7 +129,9 @@ package body Gtk.File_Chooser_Button is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_file_chooser_button_new_with_dialog");
    begin
-      Set_Object (Button, Internal (Get_Object (Dialog)));
+      if not Button.Is_Created then
+         Set_Object (Button, Internal (Get_Object (Dialog)));
+      end if;
    end Initialize_With_Dialog;
 
    ------------------------

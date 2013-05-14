@@ -74,9 +74,11 @@ package body Gtk.Accel_Label is
       Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_String);
-      Free (Tmp_String);
-      Set_Object (Accel_Label, Tmp_Return);
+      if not Accel_Label.Is_Created then
+         Tmp_Return := Internal (Tmp_String);
+         Free (Tmp_String);
+         Set_Object (Accel_Label, Tmp_Return);
+      end if;
    end Initialize;
 
    ----------------------

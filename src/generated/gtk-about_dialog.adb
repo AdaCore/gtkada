@@ -70,7 +70,9 @@ package body Gtk.About_Dialog is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_new");
    begin
-      Set_Object (About, Internal);
+      if not About.Is_Created then
+         Set_Object (About, Internal);
+      end if;
    end Initialize;
 
    -----------------

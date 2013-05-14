@@ -161,7 +161,9 @@ package body Gtk.Tree_View_Column is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_column_new");
    begin
-      Set_Object (Tree_Column, Internal);
+      if not Tree_Column.Is_Created then
+         Set_Object (Tree_Column, Internal);
+      end if;
    end Initialize;
 
    --------------------------
@@ -175,7 +177,9 @@ package body Gtk.Tree_View_Column is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_column_new_with_area");
    begin
-      Set_Object (Tree_Column, Internal (Get_Object (Area)));
+      if not Tree_Column.Is_Created then
+         Set_Object (Tree_Column, Internal (Get_Object (Area)));
+      end if;
    end Initialize_With_Area;
 
    -----------------------

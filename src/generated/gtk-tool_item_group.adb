@@ -72,9 +72,11 @@ package body Gtk.Tool_Item_Group is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Self, Tmp_Return);
+      if not Self.Is_Created then
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Self, Tmp_Return);
+      end if;
    end Initialize;
 
    -------------------

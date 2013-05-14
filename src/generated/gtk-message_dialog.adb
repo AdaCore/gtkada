@@ -125,14 +125,16 @@ package body Gtk.Message_Dialog is
       Tmp_Message : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : System.Address;
    begin
-      if Message = "" then
-         Tmp_Message := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Message := New_String (Message);
+      if not Dialog.Is_Created then
+         if Message = "" then
+            Tmp_Message := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Message := New_String (Message);
+         end if;
+         Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, System.Null_Address);
+         Free (Tmp_Message);
+         Set_Object (Dialog, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, System.Null_Address);
-      Free (Tmp_Message);
-      Set_Object (Dialog, Tmp_Return);
    end Initialize;
 
    ----------------------------
@@ -158,14 +160,16 @@ package body Gtk.Message_Dialog is
       Tmp_Message : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : System.Address;
    begin
-      if Message = "" then
-         Tmp_Message := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Message := New_String (Message);
+      if not Dialog.Is_Created then
+         if Message = "" then
+            Tmp_Message := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Message := New_String (Message);
+         end if;
+         Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, System.Null_Address);
+         Free (Tmp_Message);
+         Set_Object (Dialog, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, System.Null_Address);
-      Free (Tmp_Message);
-      Set_Object (Dialog, Tmp_Return);
    end Initialize_With_Markup;
 
    -----------------------------

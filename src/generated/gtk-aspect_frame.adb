@@ -90,14 +90,16 @@ package body Gtk.Aspect_Frame is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Aspect_Frame.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_Label, Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));
+         Free (Tmp_Label);
+         Set_Object (Aspect_Frame, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Label, Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));
-      Free (Tmp_Label);
-      Set_Object (Aspect_Frame, Tmp_Return);
    end Initialize;
 
    ---------

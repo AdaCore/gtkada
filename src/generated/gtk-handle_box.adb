@@ -66,7 +66,9 @@ package body Gtk.Handle_Box is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_handle_box_new");
    begin
-      Set_Object (Handle_Box, Internal);
+      if not Handle_Box.Is_Created then
+         Set_Object (Handle_Box, Internal);
+      end if;
    end Initialize;
 
    ------------------------

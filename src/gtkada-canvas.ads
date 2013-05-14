@@ -204,6 +204,9 @@ package Gtkada.Canvas is
       Auto_Layout : Boolean := True);
    --  Internal function used to initialize the canvas.
 
+   function Get_Type return Glib.GType;
+   --  Return the internal type
+
    procedure Configure
      (Canvas : access Interactive_Canvas_Record;
       Grid_Size        : Glib.Guint := Default_Grid_Size;

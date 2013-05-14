@@ -99,9 +99,11 @@ package body Gtk.Expander is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Expander, Tmp_Return);
+      if not Expander.Is_Created then
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Expander, Tmp_Return);
+      end if;
    end Initialize;
 
    ------------------------------
@@ -118,14 +120,16 @@ package body Gtk.Expander is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Expander.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Expander, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Expander, Tmp_Return);
    end Initialize_With_Mnemonic;
 
    ------------------

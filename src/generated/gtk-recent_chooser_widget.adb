@@ -140,7 +140,9 @@ package body Gtk.Recent_Chooser_Widget is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_widget_new");
    begin
-      Set_Object (Widget, Internal);
+      if not Widget.Is_Created then
+         Set_Object (Widget, Internal);
+      end if;
    end Initialize;
 
    ----------------------------
@@ -154,7 +156,9 @@ package body Gtk.Recent_Chooser_Widget is
       function Internal (Manager : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_widget_new_for_manager");
    begin
-      Set_Object (Widget, Internal (Get_Object (Manager)));
+      if not Widget.Is_Created then
+         Set_Object (Widget, Internal (Get_Object (Manager)));
+      end if;
    end Initialize_For_Manager;
 
    -------------------

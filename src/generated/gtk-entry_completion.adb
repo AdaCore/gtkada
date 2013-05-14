@@ -198,7 +198,9 @@ package body Gtk.Entry_Completion is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_new");
    begin
-      Set_Object (Completion, Internal);
+      if not Completion.Is_Created then
+         Set_Object (Completion, Internal);
+      end if;
    end Initialize;
 
    --------------------------
@@ -212,7 +214,9 @@ package body Gtk.Entry_Completion is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_completion_new_with_area");
    begin
-      Set_Object (Completion, Internal (Get_Object (Area)));
+      if not Completion.Is_Created then
+         Set_Object (Completion, Internal (Get_Object (Area)));
+      end if;
    end Initialize_With_Area;
 
    --------------

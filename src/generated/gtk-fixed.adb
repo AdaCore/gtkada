@@ -60,7 +60,9 @@ package body Gtk.Fixed is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_fixed_new");
    begin
-      Set_Object (Fixed, Internal);
+      if not Fixed.Is_Created then
+         Set_Object (Fixed, Internal);
+      end if;
    end Initialize;
 
    ----------

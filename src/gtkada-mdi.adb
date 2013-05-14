@@ -821,15 +821,11 @@ package body Gtkada.MDI is
       Gtkada.MDI.Initialize (MDI, Group, Independent_Perspectives);
    end Gtk_New;
 
-   ----------------
-   -- Initialize --
-   ----------------
+   --------------
+   -- Get_Type --
+   --------------
 
-   procedure Initialize
-     (MDI   : access MDI_Window_Record'Class;
-      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
-      Independent_Perspectives  : Boolean := False)
-   is
+   function Get_Type return Glib.GType is
       Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer),
          2 => (1 => GType_Pointer),
@@ -839,12 +835,31 @@ package body Gtkada.MDI is
          6 => (1 => GType_Pointer),
          7 => (1 => GType_None),
          8 => (1 => GType_None));
+   begin
+      Glib.Object.Initialize_Class_Record
+        (Ancestor     => Gtkada.Multi_Paned.Get_Type,
+         Signals      => MDI_Signals,
+         Class_Record => MDI_Class_Record,
+         Type_Name    => "GtkAdaMDI",
+         Parameters   => Signal_Parameters);
+      return MDI_Class_Record.The_Type;
+   end Get_Type;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (MDI   : access MDI_Window_Record'Class;
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
+      Independent_Perspectives  : Boolean := False)
+   is
       Ctx : Gtk_Style_Context;
       Success : Boolean;
-
    begin
-      Gtkada.Multi_Paned.Initialize (MDI);
+      G_New (MDI, Gtkada.MDI.Get_Type);     --  void if already initialized
+      Gtkada.Multi_Paned.Initialize (MDI);  --  Initialize parent Ada fields
+
       Get_Style_Context (MDI).Add_Class ("mdi");
 
       --  Request a null size, so that the window can be resized at will, even
@@ -874,13 +889,6 @@ package body Gtkada.MDI is
 
       Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
-
-      Glib.Object.Initialize_Class_Record
-        (MDI,
-         Signals      => MDI_Signals,
-         Class_Record => MDI_Class_Record,
-         Type_Name    => "GtkAdaMDI",
-         Parameters   => Signal_Parameters);
 
       Configure
         (MDI,
@@ -2227,6 +2235,29 @@ package body Gtkada.MDI is
       end if;
    end Child_Widget_Shown;
 
+   --------------------
+   -- Child_Get_Type --
+   --------------------
+
+   function Child_Get_Type return Glib.GType is
+      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
+                            (1 => (1 => GType_None),
+                             2 => (1 => GType_None),
+                             3 => (1 => GType_None),
+                             4 => (1 => GType_None));
+   begin
+      if Glib.Object.Initialize_Class_Record
+        (Ancestor     => Gtk.Event_Box.Get_Type,
+         Signals      => Child_Signals,
+         Class_Record => Child_Class_Record'Access,
+         Type_Name    => "GtkAdaMDIChild",
+         Parameters   => Signal_Parameters)
+      then
+         Set_Default_Draw_Handler (Child_Class_Record, Draw_Child'Access);
+      end if;
+      return Child_Class_Record.The_Type;
+   end Child_Get_Type;
+
    -------------
    -- Gtk_New --
    -------------
@@ -2253,11 +2284,6 @@ package body Gtkada.MDI is
       Group        : Child_Group := Group_Default;
       Focus_Widget : Gtk.Widget.Gtk_Widget := null)
    is
-      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
-                            (1 => (1 => GType_None),
-                             2 => (1 => GType_None),
-                             3 => (1 => GType_None),
-                             4 => (1 => GType_None));
       Event             : Gtk_Event_Box;
       Button            : Close_Button.Gtkada_MDI_Close_Button;
 
@@ -2266,21 +2292,11 @@ package body Gtkada.MDI is
          raise Program_Error;
       end if;
 
-      Gtk.Event_Box.Initialize (Child);
+      G_New (Child, Child_Get_Type);
+
       Child.Set_Has_Window (True);
       Child.Set_App_Paintable (True);  --  prevent standard gtk_event_box_draw
-      if Glib.Object.Initialize_Class_Record
-        (Child,
-         Signals      => Child_Signals,
-         Class_Record => Child_Class_Record'Access,
-         Type_Name    => "GtkAdaMDIChild",
-         Parameters   => Signal_Parameters)
-      then
-         Set_Default_Draw_Handler (Child_Class_Record, Draw_Child'Access);
-      end if;
-
-      Set_Border_Width (Child, 0);
-
+      Child.Set_Border_Width (0);
       Child.Initial      := Gtk_Widget (Widget);
       Child.State        := Normal;
       Child.Flags        := Flags;
@@ -3748,11 +3764,10 @@ package body Gtkada.MDI is
       if Note /= null and then Child.State = Normal then
          if Child.MDI.Homogeneous_Tabs then
             Event := new MDI_Tab_Record;
-            Gtk.Event_Box.Initialize (Event);
             MDI_Tab (Event).Timestamp := MDI_Notebook (Note).Timestamp;
 
             if Glib.Object.Initialize_Class_Record
-              (Event,
+              (Ancestor     => Gtk.Event_Box.Get_Type,
                Signals      => (1 .. 0 => Null_Ptr),
                Parameters   => (1 .. 0 => (1 => GType_None)),
                Class_Record => MDI_Tab_Class_Record'Access,
@@ -3764,6 +3779,7 @@ package body Gtkada.MDI is
                  (MDI_Tab_Class_Record, Tab_Get_Preferred_Height'Access);
             end if;
 
+            G_New (Event, MDI_Tab_Class_Record.The_Type);
          else
             Gtk_New (Event);
          end if;

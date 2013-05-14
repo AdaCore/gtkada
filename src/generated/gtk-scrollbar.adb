@@ -128,7 +128,9 @@ package body Gtk.Scrollbar is
           Adjustment  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrollbar_new");
    begin
-      Set_Object (Scrollbar, Internal (Orientation, Get_Object_Or_Null (GObject (Adjustment))));
+      if not Scrollbar.Is_Created then
+         Set_Object (Scrollbar, Internal (Orientation, Get_Object_Or_Null (GObject (Adjustment))));
+      end if;
    end Initialize;
 
    ---------------------------
@@ -142,7 +144,9 @@ package body Gtk.Scrollbar is
       function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscrollbar_new");
    begin
-      Set_Object (Scrollbar, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      if not Scrollbar.Is_Created then
+         Set_Object (Scrollbar, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      end if;
    end Initialize_Hscrollbar;
 
    ---------------------------
@@ -156,7 +160,9 @@ package body Gtk.Scrollbar is
       function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscrollbar_new");
    begin
-      Set_Object (Scrollbar, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      if not Scrollbar.Is_Created then
+         Set_Object (Scrollbar, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      end if;
    end Initialize_Vscrollbar;
 
    ---------------------

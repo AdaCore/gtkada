@@ -62,7 +62,9 @@ package body Gtk.Text_Child_Anchor is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_text_child_anchor_new");
    begin
-      Set_Object (Anchor, Internal);
+      if not Anchor.Is_Created then
+         Set_Object (Anchor, Internal);
+      end if;
    end Initialize;
 
    -----------------

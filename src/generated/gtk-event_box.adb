@@ -62,7 +62,9 @@ package body Gtk.Event_Box is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_event_box_new");
    begin
-      Set_Object (Event_Box, Internal);
+      if not Event_Box.Is_Created then
+         Set_Object (Event_Box, Internal);
+      end if;
    end Initialize;
 
    ---------------------

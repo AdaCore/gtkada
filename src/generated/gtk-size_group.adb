@@ -68,7 +68,9 @@ package body Gtk.Size_Group is
       function Internal (Mode : Size_Group_Mode) return System.Address;
       pragma Import (C, Internal, "gtk_size_group_new");
    begin
-      Set_Object (Size_Group, Internal (Mode));
+      if not Size_Group.Is_Created then
+         Set_Object (Size_Group, Internal (Mode));
+      end if;
    end Initialize;
 
    ----------------

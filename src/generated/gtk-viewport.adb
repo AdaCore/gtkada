@@ -74,7 +74,9 @@ package body Gtk.Viewport is
           Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_new");
    begin
-      Set_Object (Viewport, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      if not Viewport.Is_Created then
+         Set_Object (Viewport, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      end if;
    end Initialize;
 
    --------------------

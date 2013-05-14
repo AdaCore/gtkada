@@ -69,7 +69,9 @@ package body Gtk.Print_Operation is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_print_operation_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ------------

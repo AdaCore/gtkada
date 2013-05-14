@@ -64,7 +64,9 @@ package body Gtk.Hsv is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hsv_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ---------------

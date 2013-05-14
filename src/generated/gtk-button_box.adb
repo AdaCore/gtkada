@@ -69,7 +69,9 @@ package body Gtk.Button_Box is
          (Orientation : Gtk.Enums.Gtk_Orientation) return System.Address;
       pragma Import (C, Internal, "gtk_button_box_new");
    begin
-      Set_Object (Widget, Internal (Orientation));
+      if not Widget.Is_Created then
+         Set_Object (Widget, Internal (Orientation));
+      end if;
    end Initialize;
 
    -------------------------------

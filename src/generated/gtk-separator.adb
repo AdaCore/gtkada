@@ -111,7 +111,9 @@ package body Gtk.Separator is
          (Orientation : Gtk.Enums.Gtk_Orientation) return System.Address;
       pragma Import (C, Internal, "gtk_separator_new");
    begin
-      Set_Object (Separator, Internal (Orientation));
+      if not Separator.Is_Created then
+         Set_Object (Separator, Internal (Orientation));
+      end if;
    end Initialize;
 
    ---------------------------
@@ -124,7 +126,9 @@ package body Gtk.Separator is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hseparator_new");
    begin
-      Set_Object (Separator, Internal);
+      if not Separator.Is_Created then
+         Set_Object (Separator, Internal);
+      end if;
    end Initialize_Hseparator;
 
    ---------------------------
@@ -137,7 +141,9 @@ package body Gtk.Separator is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vseparator_new");
    begin
-      Set_Object (Separator, Internal);
+      if not Separator.Is_Created then
+         Set_Object (Separator, Internal);
+      end if;
    end Initialize_Vseparator;
 
    ---------------------

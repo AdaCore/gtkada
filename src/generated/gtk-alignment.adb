@@ -81,7 +81,9 @@ package body Gtk.Alignment is
           Yscale : Gfloat) return System.Address;
       pragma Import (C, Internal, "gtk_alignment_new");
    begin
-      Set_Object (Alignment, Internal (Xalign, Yalign, Xscale, Yscale));
+      if not Alignment.Is_Created then
+         Set_Object (Alignment, Internal (Xalign, Yalign, Xscale, Yscale));
+      end if;
    end Initialize;
 
    -----------------

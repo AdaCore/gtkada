@@ -40,6 +40,7 @@ with Gtk.Style;         use Gtk.Style;
 with Gtk.Widget;        use Gtk.Widget;
 with Gtk.Css_Provider;   use Gtk.Css_Provider;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
+with GNAT.IO; use GNAT.IO;
 
 package body Gtkada.Style is
 
@@ -690,7 +691,12 @@ package body Gtkada.Style is
                Content => Cairo_Content_Color,
                Width   => Toplevel.Get_Allocated_Width,
                Height  => Toplevel.Get_Allocated_Height);
+            Put_Line ("MANU Create surface "
+                      & Gint'Image (Toplevel.Get_Allocated_Width)
+                      & "x"
+                      & Gint'Image (Toplevel.Get_Allocated_Height));
             Cr2 := Create (Overlay);
+            Reset_Clip (Cr2);
 
             --  ??? Optimization: we could translate and clip Cr2, so that
             --  only the part of Toplevel corresponding to Split is actually
@@ -722,6 +728,8 @@ package body Gtkada.Style is
          Cr      : constant Cairo_Context := Gdk.Cairo.Create (Top_Win);
       begin
          Reset_Clip (Cr);  --  draw on top of child windows
+         Put_Line ("MANU Translate "
+                   & Gint'Image (X) & Gint'Image (Y));
          Translate (Cr, Gdouble (X), Gdouble (Y));
 
          if Hide_Previous then
@@ -756,6 +764,7 @@ package body Gtkada.Style is
    is
    begin
       if Overlay /= Null_Surface then
+         Put_Line ("MANU delete_overlay");
          Surface_Destroy (Overlay);
          Overlay := Null_Surface;
 

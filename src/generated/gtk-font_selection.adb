@@ -66,7 +66,9 @@ package body Gtk.Font_Selection is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_new");
    begin
-      Set_Object (Fontsel, Internal);
+      if not Fontsel.Is_Created then
+         Set_Object (Fontsel, Internal);
+      end if;
    end Initialize;
 
    -------------------

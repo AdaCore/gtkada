@@ -85,14 +85,16 @@ package body Gtk.File_Chooser_Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Title = "" then
-         Tmp_Title := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Title := New_String (Title);
+      if not Dialog.Is_Created then
+         if Title = "" then
+            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Title := New_String (Title);
+         end if;
+         Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Action);
+         Free (Tmp_Title);
+         Set_Object (Dialog, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Action);
-      Free (Tmp_Title);
-      Set_Object (Dialog, Tmp_Return);
    end Initialize;
 
    ----------------

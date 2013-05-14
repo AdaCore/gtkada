@@ -66,7 +66,9 @@ package body Gtk.Progress_Bar is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_progress_bar_new");
    begin
-      Set_Object (Progress_Bar, Internal);
+      if not Progress_Bar.Is_Created then
+         Set_Object (Progress_Bar, Internal);
+      end if;
    end Initialize;
 
    -------------------

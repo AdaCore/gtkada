@@ -79,7 +79,9 @@ package body Gtk.Icon_Factory is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_icon_factory_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ---------

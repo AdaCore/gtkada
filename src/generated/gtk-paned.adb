@@ -115,7 +115,9 @@ package body Gtk.Paned is
          (Orientation : Gtk.Enums.Gtk_Orientation) return System.Address;
       pragma Import (C, Internal, "gtk_paned_new");
    begin
-      Set_Object (Paned, Internal (Orientation));
+      if not Paned.Is_Created then
+         Set_Object (Paned, Internal (Orientation));
+      end if;
    end Initialize;
 
    -----------------------
@@ -128,7 +130,9 @@ package body Gtk.Paned is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hpaned_new");
    begin
-      Set_Object (Paned, Internal);
+      if not Paned.Is_Created then
+         Set_Object (Paned, Internal);
+      end if;
    end Initialize_Hpaned;
 
    -----------------------
@@ -141,7 +145,9 @@ package body Gtk.Paned is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vpaned_new");
    begin
-      Set_Object (Paned, Internal);
+      if not Paned.Is_Created then
+         Set_Object (Paned, Internal);
+      end if;
    end Initialize_Vpaned;
 
    ----------

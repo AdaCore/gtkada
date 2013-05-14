@@ -65,13 +65,6 @@ package Glib.Object is
    -- Life cycle --
    ----------------
 
-   procedure G_New (Object : out GObject);
-   --  Create a new GObject.
-   --  This is only required when you want to create an Ada tagged type to
-   --  which you can attach new signals. Most of the time, you only need to
-   --  directly create the appropriate Gtk Widget by calling the correct
-   --  Gtk_New procedure.
-
    procedure Initialize (Object : access GObject_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
@@ -237,8 +230,6 @@ package Glib.Object is
    Null_GObject_Class : constant GObject_Class;
 
    type Ada_GObject_Class is record
-      C_Class      : GObject_Class := Null_GObject_Class;
-      Parent_Class : System.Address := System.Null_Address;
       The_Type     : GType := 0;
    end record;
    pragma Convention (C, Ada_GObject_Class);
@@ -247,6 +238,9 @@ package Glib.Object is
    --  object or widget. All instances of such an object have a pointer to this
    --  structure, that includes the definition of all the signals that exist
    --  for a given object, all its properties,...
+   --
+   --  A GObject_Class can be retrieved from an Ada_GObject_Class by calling
+   --  Glib.Types.Class_Ref.
 
    type Signal_Parameter_Types is
      array (Natural range <>, Natural range <>) of GType;
@@ -264,34 +258,32 @@ package Glib.Object is
    --  defines two signals, the first with a single Gdk_Event parameter, the
    --  second with two ints parameters.
 
+   No_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
+      (1 .. 0 => Gtkada.Types.Null_Ptr);
    Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
      (others => (others => GType_None));
    --  An empty array, used as a default parameter in Initialize_Class_Record.
 
    procedure Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
+     (Ancestor     : GType;
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
    function Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Class_Record : access Ada_GObject_Class;
+     (Ancestor     : GType;
+      Class_Record : not null access Ada_GObject_Class;
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
       return Boolean;
    --  Create the class record for a new object type.
-   --  It is associated with Signals'Length new signals. A pointer to the
+   --  It is associated with Signals new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
-   --  If Class_Record /= System.Null_Address, no memory allocation is
+   --  If Class_Record /= Uninitialized_Class, no memory allocation is
    --  performed, we just reuse it. As a result, each instantiation of an
    --  object will share the same GObject_Class, exactly as is done for gtk+.
    --
-   --  Note: The underlying C object must already have been initialized
-   --  by a call to its parent's Initialize function.
-   --  Parameters'Length should be the same as Signals'Length, or the result
-   --  is undefined.
    --  As a special case, if Parameters has its default value, all signals are
    --  created with no argument. This is done for backward compatibility
    --  mainly, and you should instead give it an explicit value.
@@ -310,6 +302,105 @@ package Glib.Object is
    --  Class_Record.
    --  See the function Glib.Types.Class_Peek for the opposite function
    --  converting from a GType to a GObject_Class.
+
+   procedure G_New
+      (Object : not null access GObject_Record'Class;
+       Typ    : GType);
+   procedure G_New
+      (Object : not null access GObject_Record'Class;
+       Typ    : Ada_GObject_Class);
+   --  Create a new instance of Typ (at the C level). This has no effect if
+   --  the C object has already been created (so that G_New can be called
+   --  from Initialize (and you can call the parent's Initialize).
+   --
+   --  Object must have been allocated first, but you should not have called
+   --  any of the Gtk_New procedures yet.
+   --  This procedure is meant to be used when you create your own object
+   --  types with own signals, properties,... The code would thus be
+   --
+   --   Klass : aliased Ada_GObject_Class := Uninitialized_Class;
+   --
+   --   function Get_Type return GType is
+   --   begin
+   --      if Initialize_Class_Record
+   --         (Ancestor     => Gtk.Button.Get_Type,
+   --          Class_Record => Klass'Access,
+   --          Type_Name    => "My_Widget")
+   --      begin
+   --         --  Add interfaces if needed
+   --         Add_Interface (Klass, ..., new GInterface_Info'(...));
+   --
+   --         --  Override the inherited methods
+   --         Gtk.Widget.Set_Default_Draw_Handler (...);
+   --
+   --         --  Install properties
+   --         Install_Style_Property
+   --            (Glib.Types.Class_Ref (Klass),
+   --             Gnew_Int (...));
+   --      end if;
+   --      return Klass.The_Type;
+   --   end Get_Type;
+   --
+   --   procedure Gtk_New (Self : out My_Widget) is
+   --   begin
+   --      Self := new My_Widget_Record;  --  create the Ada wrapper
+   --      Initialize (Self);
+   --   end Gtk_New;
+   --
+   --   procedure Initialize (Self : not null access My_Widget_Record'Class) is
+   --   begin
+   --      G_New (Self, Get_Type); --  allocate the C widget, unless done
+   --
+   --      --  Initialize parent fields
+   --
+   --      My_Widget_Parent.Initialize (Self);
+   --
+   --      --  Initialization of the Ada types
+   --      ...
+   --   end Initialize;
+
+   ----------------
+   -- Interfaces --
+   ----------------
+
+   type GInterfaceInitFunc is access procedure
+      (Iface : System.Address;
+       Data  : System.Address);
+   pragma Convention (C, GInterfaceInitFunc);
+   --  The interface initialization function. This function should initialize
+   --  all internal data and allocate any resources required by the interface.
+   --  Iface: the interface structure to initialize. It is allocated
+   --    specifically for each class instance that implements the interface.
+   --    The exact type depends on the interface that is implemented. This is
+   --    in general a record that contains a number of access to procedures
+   --    for the interface methods. See for instance Gtk.Tree_Model.Interfaces
+   --  Data: the data supplied to the GInterface_Info.
+
+   type GInterfaceFinalizeFunc is access procedure
+      (Iface : System.Address;
+       Data  : System.Address);
+   pragma Convention (C, GInterfaceFinalizeFunc);
+   --  The interface finalization function.
+   --  This function should destroy any internal data and release any resources
+   --  allocated by the corresponding init func.
+
+   type GInterface_Info is record
+      Interface_Init     : GInterfaceInitFunc := null;
+      Interface_Finalize : GInterfaceFinalizeFunc := null;
+      Interface_Data     : System.Address := System.Null_Address;
+   end record;
+   pragma Convention (C, GInterface_Info);
+   --  A structure that provides information to the type system which is used
+   --  specifically for managing interface types.
+
+   procedure Add_Interface
+      (Klass : Ada_GObject_Class;
+       Iface : GType;
+       Info  : not null access GInterface_Info);
+   --  State that Klass implements the given interface. It will need to
+   --  override the inherited methods. This is low-level handling.
+   --  Info should be allocated in this call, and is never freed in the
+   --  lifetime of the application.
 
    ------------------------------
    -- Properties introspection --
@@ -486,8 +577,7 @@ private
 
    Null_GObject_Class : constant GObject_Class :=
       GObject_Class (System.Null_Address);
-   Uninitialized_Class : constant Ada_GObject_Class :=
-      (Null_GObject_Class, System.Null_Address, 0);
+   Uninitialized_Class : constant Ada_GObject_Class := (The_Type => 0);
 
    type Signal_Query is record
       Signal_Id    : Guint;

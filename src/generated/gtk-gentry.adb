@@ -103,7 +103,9 @@ package body Gtk.GEntry is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_entry_new");
    begin
-      Set_Object (The_Entry, Internal);
+      if not The_Entry.Is_Created then
+         Set_Object (The_Entry, Internal);
+      end if;
    end Initialize;
 
    ----------------------------
@@ -117,7 +119,9 @@ package body Gtk.GEntry is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_entry_new_with_buffer");
    begin
-      Set_Object (The_Entry, Internal (Get_Object (Buffer)));
+      if not The_Entry.Is_Created then
+         Set_Object (The_Entry, Internal (Get_Object (Buffer)));
+      end if;
    end Initialize_With_Buffer;
 
    ---------------------------

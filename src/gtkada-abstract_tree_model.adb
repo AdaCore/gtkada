@@ -21,10 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with GNAT.IO; use GNAT.IO;
+with Ada.Unchecked_Conversion;
 with Glib.Object;     use Glib.Object;
 with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtk.Tree_Model;  use Gtk.Tree_Model;
-with Interfaces.C.Strings;
 with System;
 
 package body Gtkada.Abstract_Tree_Model is
@@ -33,13 +34,6 @@ package body Gtkada.Abstract_Tree_Model is
 
    type Gtk_Tree_Iter_Access is access all Gtk.Tree_Model.Gtk_Tree_Iter;
    pragma Convention (C, Gtk_Tree_Iter_Access);
-
-   type GInterface_Info is record
-      interface_init     : System.Address := System.Null_Address;
-      interface_finalize : System.Address := System.Null_Address;
-      interface_data     : System.Address := System.Null_Address;
-   end record;
-   pragma Convention (C, GInterface_Info);
 
    type GTypeInterface is record
       g_type          : Glib.GType;
@@ -70,9 +64,13 @@ package body Gtkada.Abstract_Tree_Model is
       ref_node              : System.Address := System.Null_Address;
       unref_node            : System.Address := System.Null_Address;
    end record;
+   type GtkTreeModelInterface_Access is access GtkTreeModelInterface;
    pragma Convention (C, GtkTreeModelInterface);
 
-   procedure Tree_Model_Interface_Init (Iface : in out GtkTreeModelInterface);
+   function Convert is new Ada.Unchecked_Conversion
+      (System.Address, GtkTreeModelInterface_Access);
+
+   procedure Tree_Model_Interface_Init (Iface, Data : System.Address);
    pragma Convention (C, Tree_Model_Interface_Init);
 
    function Dispatch_Get_Flags
@@ -156,11 +154,8 @@ package body Gtkada.Abstract_Tree_Model is
       Iter       : Gtk_Tree_Iter_Access);
    pragma Convention (C, Dispatch_Unref_Node);
 
-   Class_Record : Glib.Object.Ada_GObject_Class :=
+   Class_Record : aliased Glib.Object.Ada_GObject_Class :=
       Glib.Object.Uninitialized_Class;
-   Info         : constant GInterface_Info  :=
-     (interface_init => Tree_Model_Interface_Init'Address,
-      others         => System.Null_Address);
 
    ------------------------------
    -- Dispatch_Get_Column_Type --
@@ -593,61 +588,60 @@ package body Gtkada.Abstract_Tree_Model is
       --  Gtk.Tree_Model.Unref_Node (+Self, Iter);
    end Unref_Node;
 
+   --------------
+   -- Get_Type --
+   --------------
+
+   function Get_Type return Glib.GType is
+   begin
+      if Glib.Object.Initialize_Class_Record
+        (Ancestor     => Glib.GType_Object,
+         Class_Record => Class_Record'Access,
+         Type_Name    => "GtkAdaAbstractTreeModel")
+      then
+         Put_Line ("MANU Add_Interface");
+         Add_Interface
+           (Class_Record,
+            Gtk.Tree_Model.Get_Type,
+            new GInterface_Info'
+               (Interface_Init => Tree_Model_Interface_Init'Access,
+                Interface_Finalize => null,
+                Interface_Data     => System.Null_Address));
+      end if;
+      return Class_Record.The_Type;
+   end Get_Type;
+
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize (Self : access Gtk_Abstract_Tree_Model_Record'Class) is
-      use type Glib.Object.GObject_Class;
-      Empty : Interfaces.C.Strings.chars_ptr_array (1 .. 0);
-
-      procedure Init_Interface
-        (Class : Glib.GType;
-         Iface : Glib.GType;
-         Info  : GInterface_Info);
-      pragma Import (C, Init_Interface, "g_type_add_interface_static");
-
-      Initialized : constant Boolean :=
-        Class_Record /= Glib.Object.Uninitialized_Class;
-
    begin
-      Glib.Object.Initialize (Self);
-      Glib.Object.Initialize_Class_Record
-        (Self,
-         Empty,
-         Class_Record,
-         "GtkAdaAbstractTreeModel");
-
-      if not Initialized then
-         Init_Interface
-           (Glib.Object.Type_From_Class (Class_Record.C_Class),
-            Gtk.Tree_Model.Get_Type,
-            Info);
-      end if;
+      G_New (Self, Get_Type);
    end Initialize;
 
    -------------------------------
    -- Tree_Model_Interface_Init --
    -------------------------------
 
-   procedure Tree_Model_Interface_Init
-     (Iface : in out GtkTreeModelInterface)
-   is
+   procedure Tree_Model_Interface_Init (Iface, Data : System.Address) is
+      pragma Unreferenced (Data);
+      F : constant GtkTreeModelInterface_Access := Convert (Iface);
    begin
-      Iface.get_flags       := Dispatch_Get_Flags'Address;
-      Iface.get_n_columns   := Dispatch_Get_N_Columns'Address;
-      Iface.get_column_type := Dispatch_Get_Column_Type'Address;
-      Iface.get_iter        := Dispatch_Get_Iter'Address;
-      Iface.get_path        := Dispatch_Get_Path'Address;
-      Iface.get_value       := Dispatch_Get_Value'Address;
-      Iface.iter_next       := Dispatch_Iter_Next'Address;
-      Iface.iter_children   := Dispatch_Iter_Children'Address;
-      Iface.iter_has_child  := Dispatch_Iter_Has_Child'Address;
-      Iface.iter_n_children := Dispatch_Iter_N_Children'Address;
-      Iface.iter_nth_child  := Dispatch_Iter_Nth_Child'Address;
-      Iface.iter_parent     := Dispatch_Iter_Parent'Address;
-      Iface.ref_node        := Dispatch_Ref_Node'Address;
-      Iface.unref_node      := Dispatch_Unref_Node'Address;
+      F.get_flags       := Dispatch_Get_Flags'Address;
+      F.get_n_columns   := Dispatch_Get_N_Columns'Address;
+      F.get_column_type := Dispatch_Get_Column_Type'Address;
+      F.get_iter        := Dispatch_Get_Iter'Address;
+      F.get_path        := Dispatch_Get_Path'Address;
+      F.get_value       := Dispatch_Get_Value'Address;
+      F.iter_next       := Dispatch_Iter_Next'Address;
+      F.iter_children   := Dispatch_Iter_Children'Address;
+      F.iter_has_child  := Dispatch_Iter_Has_Child'Address;
+      F.iter_n_children := Dispatch_Iter_N_Children'Address;
+      F.iter_nth_child  := Dispatch_Iter_Nth_Child'Address;
+      F.iter_parent     := Dispatch_Iter_Parent'Address;
+      F.ref_node        := Dispatch_Ref_Node'Address;
+      F.unref_node      := Dispatch_Unref_Node'Address;
    end Tree_Model_Interface_Init;
 
 end Gtkada.Abstract_Tree_Model;

@@ -64,7 +64,9 @@ package body Gtk.Toolbar is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_new");
    begin
-      Set_Object (Toolbar, Internal);
+      if not Toolbar.Is_Created then
+         Set_Object (Toolbar, Internal);
+      end if;
    end Initialize;
 
    --------------------

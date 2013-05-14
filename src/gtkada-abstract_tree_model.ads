@@ -36,6 +36,7 @@ package Gtkada.Abstract_Tree_Model is
       access all Gtk_Abstract_Tree_Model_Record'Class;
 
    procedure Initialize (Self : access Gtk_Abstract_Tree_Model_Record'Class);
+   function Get_Type return Glib.GType;
 
    ------------------------------
    -- Interface implementation --

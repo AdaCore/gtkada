@@ -285,7 +285,9 @@ package body Gtk.Image is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_image_new");
    begin
-      Set_Object (Image, Internal);
+      if not Image.Is_Created then
+         Set_Object (Image, Internal);
+      end if;
    end Initialize;
 
    ----------------
@@ -300,7 +302,9 @@ package body Gtk.Image is
          (Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_animation");
    begin
-      Set_Object (Image, Internal (Animation));
+      if not Image.Is_Created then
+         Set_Object (Image, Internal (Animation));
+      end if;
    end Initialize;
 
    ----------------
@@ -317,9 +321,11 @@ package body Gtk.Image is
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Filename);
-      Free (Tmp_Filename);
-      Set_Object (Image, Tmp_Return);
+      if not Image.Is_Created then
+         Tmp_Return := Internal (Tmp_Filename);
+         Free (Tmp_Filename);
+         Set_Object (Image, Tmp_Return);
+      end if;
    end Initialize;
 
    ----------------
@@ -336,7 +342,9 @@ package body Gtk.Image is
           Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_icon_set");
    begin
-      Set_Object (Image, Internal (Get_Object (Icon_Set), Size));
+      if not Image.Is_Created then
+         Set_Object (Image, Internal (Get_Object (Icon_Set), Size));
+      end if;
    end Initialize;
 
    ----------------
@@ -350,7 +358,9 @@ package body Gtk.Image is
       function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_pixbuf");
    begin
-      Set_Object (Image, Internal (Get_Object_Or_Null (GObject (Pixbuf))));
+      if not Image.Is_Created then
+         Set_Object (Image, Internal (Get_Object_Or_Null (GObject (Pixbuf))));
+      end if;
    end Initialize;
 
    ----------------
@@ -369,9 +379,11 @@ package body Gtk.Image is
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Stock_Id, Size);
-      Free (Tmp_Stock_Id);
-      Set_Object (Image, Tmp_Return);
+      if not Image.Is_Created then
+         Tmp_Return := Internal (Tmp_Stock_Id, Size);
+         Free (Tmp_Stock_Id);
+         Set_Object (Image, Tmp_Return);
+      end if;
    end Initialize;
 
    ---------------------------
@@ -388,7 +400,9 @@ package body Gtk.Image is
           Size : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_gicon");
    begin
-      Set_Object (Image, Internal (Icon, Size));
+      if not Image.Is_Created then
+         Set_Object (Image, Internal (Icon, Size));
+      end if;
    end Initialize_From_Gicon;
 
    -------------------------------
@@ -407,9 +421,11 @@ package body Gtk.Image is
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
       Tmp_Return    : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Icon_Name, Size);
-      Free (Tmp_Icon_Name);
-      Set_Object (Image, Tmp_Return);
+      if not Image.Is_Created then
+         Tmp_Return := Internal (Tmp_Icon_Name, Size);
+         Free (Tmp_Icon_Name);
+         Set_Object (Image, Tmp_Return);
+      end if;
    end Initialize_From_Icon_Name;
 
    -----------

@@ -102,7 +102,9 @@ package body Gtk.Window is
          (The_Type : Gtk.Enums.Gtk_Window_Type) return System.Address;
       pragma Import (C, Internal, "gtk_window_new");
    begin
-      Set_Object (Window, Internal (The_Type));
+      if not Window.Is_Created then
+         Set_Object (Window, Internal (The_Type));
+      end if;
    end Initialize;
 
    ----------------
@@ -115,7 +117,9 @@ package body Gtk.Window is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_window_group_new");
    begin
-      Set_Object (Window_Group, Internal);
+      if not Window_Group.Is_Created then
+         Set_Object (Window_Group, Internal);
+      end if;
    end Initialize;
 
    ----------------------

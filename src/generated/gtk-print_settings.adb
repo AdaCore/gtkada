@@ -157,7 +157,9 @@ package body Gtk.Print_Settings is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_print_settings_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    --------------------------
@@ -174,9 +176,11 @@ package body Gtk.Print_Settings is
       Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
       Tmp_Return    : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_File_Name);
-      Free (Tmp_File_Name);
-      Set_Object (Self, Tmp_Return);
+      if not Self.Is_Created then
+         Tmp_Return := Internal (Tmp_File_Name);
+         Free (Tmp_File_Name);
+         Set_Object (Self, Tmp_Return);
+      end if;
    end Initialize_From_File;
 
    ------------------------------
@@ -195,14 +199,16 @@ package body Gtk.Print_Settings is
       Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
       Tmp_Return     : System.Address;
    begin
-      if Group_Name = "" then
-         Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Group_Name := New_String (Group_Name);
+      if not Self.Is_Created then
+         if Group_Name = "" then
+            Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Group_Name := New_String (Group_Name);
+         end if;
+         Tmp_Return := Internal (Key_File, Tmp_Group_Name);
+         Free (Tmp_Group_Name);
+         Set_Object (Self, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Key_File, Tmp_Group_Name);
-      Free (Tmp_Group_Name);
-      Set_Object (Self, Tmp_Return);
    end Initialize_From_Key_File;
 
    ----------

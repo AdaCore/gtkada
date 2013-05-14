@@ -225,7 +225,9 @@ package body Gtk.Scale is
           Adjustment  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scale_new");
    begin
-      Set_Object (Scale, Internal (Orientation, Get_Object_Or_Null (GObject (Adjustment))));
+      if not Scale.Is_Created then
+         Set_Object (Scale, Internal (Orientation, Get_Object_Or_Null (GObject (Adjustment))));
+      end if;
    end Initialize;
 
    -----------------------
@@ -239,7 +241,9 @@ package body Gtk.Scale is
       function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscale_new");
    begin
-      Set_Object (Scale, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      if not Scale.Is_Created then
+         Set_Object (Scale, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      end if;
    end Initialize_Hscale;
 
    -----------------------
@@ -258,7 +262,9 @@ package body Gtk.Scale is
           Step : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_hscale_new_with_range");
    begin
-      Set_Object (Scale, Internal (Min, Max, Step));
+      if not Scale.Is_Created then
+         Set_Object (Scale, Internal (Min, Max, Step));
+      end if;
    end Initialize_Hscale;
 
    -----------------------
@@ -272,7 +278,9 @@ package body Gtk.Scale is
       function Internal (Adjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscale_new");
    begin
-      Set_Object (Scale, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      if not Scale.Is_Created then
+         Set_Object (Scale, Internal (Get_Object_Or_Null (GObject (Adjustment))));
+      end if;
    end Initialize_Vscale;
 
    -----------------------
@@ -291,7 +299,9 @@ package body Gtk.Scale is
           Step : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_vscale_new_with_range");
    begin
-      Set_Object (Scale, Internal (Min, Max, Step));
+      if not Scale.Is_Created then
+         Set_Object (Scale, Internal (Min, Max, Step));
+      end if;
    end Initialize_Vscale;
 
    ---------------------------
@@ -312,7 +322,9 @@ package body Gtk.Scale is
           Step        : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_scale_new_with_range");
    begin
-      Set_Object (Scale, Internal (Orientation, Min, Max, Step));
+      if not Scale.Is_Created then
+         Set_Object (Scale, Internal (Orientation, Min, Max, Step));
+      end if;
    end Initialize_With_Range;
 
    --------------

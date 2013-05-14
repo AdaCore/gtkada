@@ -158,14 +158,16 @@ package body Gtk.Recent_Chooser_Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Title = "" then
-         Tmp_Title := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Title := New_String (Title);
+      if not Widget.Is_Created then
+         if Title = "" then
+            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Title := New_String (Title);
+         end if;
+         Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)));
+         Free (Tmp_Title);
+         Set_Object (Widget, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)));
-      Free (Tmp_Title);
-      Set_Object (Widget, Tmp_Return);
    end Initialize;
 
    ----------------------------
@@ -186,14 +188,16 @@ package body Gtk.Recent_Chooser_Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Title = "" then
-         Tmp_Title := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Title := New_String (Title);
+      if not Widget.Is_Created then
+         if Title = "" then
+            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Title := New_String (Title);
+         end if;
+         Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Get_Object_Or_Null (GObject (Manager)));
+         Free (Tmp_Title);
+         Set_Object (Widget, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Get_Object_Or_Null (GObject (Manager)));
-      Free (Tmp_Title);
-      Set_Object (Widget, Tmp_Return);
    end Initialize_For_Manager;
 
    -------------------

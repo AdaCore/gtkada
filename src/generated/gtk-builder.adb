@@ -123,7 +123,9 @@ package body Gtk.Builder is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_builder_new");
    begin
-      Set_Object (Builder, Internal);
+      if not Builder.Is_Created then
+         Set_Object (Builder, Internal);
+      end if;
    end Initialize;
 
    -------------------

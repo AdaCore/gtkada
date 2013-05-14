@@ -254,7 +254,9 @@ package body Gtk.Icon_View is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_new");
    begin
-      Set_Object (Icon_View, Internal);
+      if not Icon_View.Is_Created then
+         Set_Object (Icon_View, Internal);
+      end if;
    end Initialize;
 
    --------------------------
@@ -268,7 +270,9 @@ package body Gtk.Icon_View is
       function Internal (Area : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_new_with_area");
    begin
-      Set_Object (Icon_View, Internal (Get_Object (Area)));
+      if not Icon_View.Is_Created then
+         Set_Object (Icon_View, Internal (Get_Object (Area)));
+      end if;
    end Initialize_With_Area;
 
    ---------------------------
@@ -283,7 +287,9 @@ package body Gtk.Icon_View is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_new_with_model");
    begin
-      Set_Object (Icon_View, Internal (Model));
+      if not Icon_View.Is_Created then
+         Set_Object (Icon_View, Internal (Model));
+      end if;
    end Initialize_With_Model;
 
    -----------------------------------------

@@ -113,7 +113,9 @@ package body Gtk.Accel_Group is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_accel_group_new");
    begin
-      Set_Object (Accel_Group, Internal);
+      if not Accel_Group.Is_Created then
+         Set_Object (Accel_Group, Internal);
+      end if;
    end Initialize;
 
    --------------

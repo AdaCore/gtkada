@@ -333,7 +333,9 @@ package body Gtk.Tree_Store is
           Types     : GType_Array) return System.Address;
       pragma Import (C, Internal, "gtk_tree_store_newv");
    begin
-      Set_Object (Tree_Store, Internal (Types'Length, Types));
+      if not Tree_Store.Is_Created then
+         Set_Object (Tree_Store, Internal (Types'Length, Types));
+      end if;
    end Initialize;
 
    ------------

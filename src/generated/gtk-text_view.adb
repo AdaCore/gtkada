@@ -94,7 +94,9 @@ package body Gtk.Text_View is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_text_view_new");
    begin
-      Set_Object (View, Internal);
+      if not View.Is_Created then
+         Set_Object (View, Internal);
+      end if;
    end Initialize;
 
    ----------------
@@ -108,7 +110,9 @@ package body Gtk.Text_View is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_view_new_with_buffer");
    begin
-      Set_Object (View, Internal (Get_Object (Buffer)));
+      if not View.Is_Created then
+         Set_Object (View, Internal (Get_Object (Buffer)));
+      end if;
    end Initialize;
 
    -------------------------

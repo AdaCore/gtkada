@@ -121,7 +121,9 @@ package body Gtk.Menu_Item is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new");
    begin
-      Set_Object (Menu_Item, Internal);
+      if not Menu_Item.Is_Created then
+         Set_Object (Menu_Item, Internal);
+      end if;
    end Initialize;
 
    ---------------------------
@@ -138,9 +140,11 @@ package body Gtk.Menu_Item is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Menu_Item, Tmp_Return);
+      if not Menu_Item.Is_Created then
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Menu_Item, Tmp_Return);
+      end if;
    end Initialize_With_Label;
 
    ------------------------------
@@ -157,9 +161,11 @@ package body Gtk.Menu_Item is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Menu_Item, Tmp_Return);
+      if not Menu_Item.Is_Created then
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Menu_Item, Tmp_Return);
+      end if;
    end Initialize_With_Mnemonic;
 
    --------------

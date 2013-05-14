@@ -87,7 +87,9 @@ package body Gtk.Invisible is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ---------------------------
@@ -101,7 +103,9 @@ package body Gtk.Invisible is
       function Internal (Screen : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new_for_screen");
    begin
-      Set_Object (Self, Internal (Get_Object (Screen)));
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Screen)));
+      end if;
    end Initialize_For_Screen;
 
    ----------------

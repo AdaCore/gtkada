@@ -62,7 +62,9 @@ package body Gtk.Drawing_Area is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin
-      Set_Object (Drawing_Area, Internal);
+      if not Drawing_Area.Is_Created then
+         Set_Object (Drawing_Area, Internal);
+      end if;
    end Initialize;
 
 end Gtk.Drawing_Area;

@@ -130,7 +130,9 @@ package body Gtk.Recent_Filter is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_recent_filter_new");
    begin
-      Set_Object (Filter, Internal);
+      if not Filter.Is_Created then
+         Set_Object (Filter, Internal);
+      end if;
    end Initialize;
 
    -------------

@@ -77,7 +77,9 @@ package body Gtk.Table is
           Homogeneous : Integer) return System.Address;
       pragma Import (C, Internal, "gtk_table_new");
    begin
-      Set_Object (Table, Internal (Rows, Columns, Boolean'Pos (Homogeneous)));
+      if not Table.Is_Created then
+         Set_Object (Table, Internal (Rows, Columns, Boolean'Pos (Homogeneous)));
+      end if;
    end Initialize;
 
    ------------

@@ -62,7 +62,9 @@ package body Gtk.Separator_Menu_Item is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_menu_item_new");
    begin
-      Set_Object (Widget, Internal);
+      if not Widget.Is_Created then
+         Set_Object (Widget, Internal);
+      end if;
    end Initialize;
 
    ---------------------------

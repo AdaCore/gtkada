@@ -186,7 +186,9 @@ package body Gtk.Tree_Model_Sort is
          (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_tree_model_sort_new_with_model");
    begin
-      Set_Object (Self, Internal (Child_Model));
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Child_Model));
+      end if;
    end Initialize_With_Model;
 
    -----------------

@@ -62,7 +62,9 @@ package body Gtk.Tearoff_Menu_Item is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tearoff_menu_item_new");
    begin
-      Set_Object (Menu_Item, Internal);
+      if not Menu_Item.Is_Created then
+         Set_Object (Menu_Item, Internal);
+      end if;
    end Initialize;
 
    ---------------------------

@@ -93,7 +93,9 @@ package body Gtk.Adjustment is
           Page_Size      : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_adjustment_new");
    begin
-      Set_Object (Adjustment, Internal (Value, Lower, Upper, Step_Increment, Page_Increment, Page_Size));
+      if not Adjustment.Is_Created then
+         Set_Object (Adjustment, Internal (Value, Lower, Upper, Step_Increment, Page_Increment, Page_Size));
+      end if;
    end Initialize;
 
    -------------

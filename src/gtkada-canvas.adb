@@ -509,26 +509,11 @@ package body Gtkada.Canvas is
       Height := Gdouble (Layout_Height) / Canvas.Zoom;
    end Get_World_Coordinates;
 
-   -------------
-   -- Gtk_New --
-   -------------
+   --------------
+   -- Get_Type --
+   --------------
 
-   procedure Gtk_New
-     (Canvas : out Interactive_Canvas; Auto_Layout : Boolean := True)
-   is
-   begin
-      Canvas := new Interactive_Canvas_Record;
-      Gtkada.Canvas.Initialize (Canvas, Auto_Layout);
-   end Gtk_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-     (Canvas      : access Interactive_Canvas_Record'Class;
-      Auto_Layout : Boolean := True)
-   is
+   function Get_Type return Glib.GType is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => Gdk.Event.Get_Type,      2 => GType_None),
          2 => (1 => GType_Pointer,           2 => GType_None),
@@ -540,24 +525,40 @@ package body Gtkada.Canvas is
       --  This must be defined in this function rather than at the
       --  library-level, or the value of Gdk_Event.Get_Type is not yet
       --  initialized.
-
    begin
-      Gtk.Layout.Initialize (Canvas);
+      Initialize_Class_Record
+        (Gtk.Layout.Get_Type, Class_Record,
+         "GtkAdaCanvas", Signals, Signal_Parameters);
+      return Class_Record.The_Type;
+   end Get_Type;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+     (Canvas : out Interactive_Canvas; Auto_Layout : Boolean := True) is
+   begin
+      Canvas := new Interactive_Canvas_Record;
+      Gtkada.Canvas.Initialize (Canvas, Auto_Layout);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Canvas      : access Interactive_Canvas_Record'Class;
+      Auto_Layout : Boolean := True) is
+   begin
+      G_New (Canvas, Gtkada.Canvas.Get_Type);
+
       Canvas.Offset_X_World := 0;
       Canvas.Offset_Y_World := 0;
       Canvas.World_X := 0.0;
       Canvas.World_Y := 0.0;
-
       Set_Directed (Canvas.Children, True);
       Canvas.Auto_Layout := Auto_Layout;
-
-      --  The following call is required to initialize the class record,
-      --  and the new signals created for this widget.
-      --  Note also that we keep Class_Record, so that the memory allocation
-      --  is done only once.
-      Initialize_Class_Record
-        (Canvas, Signals, Class_Record,
-         "GtkAdaCanvas", Signal_Parameters);
 
       Return_Callback.Connect
         (Canvas, Signal_Draw,

@@ -101,14 +101,16 @@ package body Gtk.Text_Mark is
       Tmp_Name   : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Name := New_String (Name);
+      if not Mark.Is_Created then
+         if Name = "" then
+            Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Name := New_String (Name);
+         end if;
+         Tmp_Return := Internal (Tmp_Name, Boolean'Pos (Left_Gravity));
+         Free (Tmp_Name);
+         Set_Object (Mark, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Name, Boolean'Pos (Left_Gravity));
-      Free (Tmp_Name);
-      Set_Object (Mark, Tmp_Return);
    end Initialize;
 
    -----------------

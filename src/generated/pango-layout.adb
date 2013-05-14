@@ -92,7 +92,9 @@ package body Pango.Layout is
       function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_layout_new");
    begin
-      Set_Object (Layout, Internal (Get_Object (Context)));
+      if not Layout.Is_Created then
+         Set_Object (Layout, Internal (Get_Object (Context)));
+      end if;
    end Initialize;
 
    ----------------------

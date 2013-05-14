@@ -116,7 +116,9 @@ package body Gtk.Color_Selection is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_new");
    begin
-      Set_Object (Colorsel, Internal);
+      if not Colorsel.Is_Created then
+         Set_Object (Colorsel, Internal);
+      end if;
    end Initialize;
 
    -----------------------

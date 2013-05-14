@@ -62,7 +62,9 @@ package body Gtk.Separator_Tool_Item is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_separator_tool_item_new");
    begin
-      Set_Object (Item, Internal);
+      if not Item.Is_Created then
+         Set_Object (Item, Internal);
+      end if;
    end Initialize;
 
    --------------

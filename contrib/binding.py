@@ -1283,7 +1283,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 plist=initialize_params,
                 local_vars=local_vars + call[2],
                 doc=profile.doc,
-                code="%sSet_Object (%s, %s)" % (call[0], selfname, call[1]),
+                code="if not %s.Is_Created then %sSet_Object (%s, %s); end if" % (
+                    selfname, call[0], selfname, call[1]),
                 ).add_nested(internal)
 
             call = initialize.call(in_pkg=self.pkg)

@@ -245,7 +245,9 @@ package body Gtk.List_Store is
           Types     : GType_Array) return System.Address;
       pragma Import (C, Internal, "gtk_list_store_newv");
    begin
-      Set_Object (List_Store, Internal (Types'Length, Types));
+      if not List_Store.Is_Created then
+         Set_Object (List_Store, Internal (Types'Length, Types));
+      end if;
    end Initialize;
 
    ------------

@@ -129,7 +129,9 @@ package body Gtk.Box is
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_box_new");
    begin
-      Set_Object (Box, Internal (Orientation, Spacing));
+      if not Box.Is_Created then
+         Set_Object (Box, Internal (Orientation, Spacing));
+      end if;
    end Initialize;
 
    ---------------------
@@ -146,7 +148,9 @@ package body Gtk.Box is
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
    begin
-      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
+      if not Box.Is_Created then
+         Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
+      end if;
    end Initialize_Hbox;
 
    ---------------------
@@ -163,7 +167,9 @@ package body Gtk.Box is
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_vbox_new");
    begin
-      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
+      if not Box.Is_Created then
+         Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
+      end if;
    end Initialize_Vbox;
 
    ---------------

@@ -69,7 +69,9 @@ package body Gtk.Status_Bar is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_new");
    begin
-      Set_Object (Statusbar, Internal);
+      if not Statusbar.Is_Created then
+         Set_Object (Statusbar, Internal);
+      end if;
    end Initialize;
 
    --------------------

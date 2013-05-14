@@ -67,7 +67,9 @@ package body Gtk.UI_Manager is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_ui_manager_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ------------

@@ -112,7 +112,9 @@ package body Gtk.Font_Chooser_Widget is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_chooser_widget_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ---------------------

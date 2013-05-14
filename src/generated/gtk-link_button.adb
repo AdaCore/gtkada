@@ -101,9 +101,11 @@ package body Gtk.Link_Button is
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_URI);
-      Free (Tmp_URI);
-      Set_Object (Widget, Tmp_Return);
+      if not Widget.Is_Created then
+         Tmp_Return := Internal (Tmp_URI);
+         Free (Tmp_URI);
+         Set_Object (Widget, Tmp_Return);
+      end if;
    end Initialize;
 
    ---------------------------
@@ -123,15 +125,17 @@ package body Gtk.Link_Button is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Widget.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_URI, Tmp_Label);
+         Free (Tmp_Label);
+         Free (Tmp_URI);
+         Set_Object (Widget, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_URI, Tmp_Label);
-      Free (Tmp_Label);
-      Free (Tmp_URI);
-      Set_Object (Widget, Tmp_Return);
    end Initialize_With_Label;
 
    -------------

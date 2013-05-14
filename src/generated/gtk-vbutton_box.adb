@@ -62,7 +62,9 @@ package body Gtk.Vbutton_Box is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vbutton_box_new");
    begin
-      Set_Object (Widget, Internal);
+      if not Widget.Is_Created then
+         Set_Object (Widget, Internal);
+      end if;
    end Initialize;
 
    ---------------------

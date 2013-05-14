@@ -74,9 +74,11 @@ package body Gtk.Color_Selection_Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title);
-      Free (Tmp_Title);
-      Set_Object (Color_Selection_Dialog, Tmp_Return);
+      if not Color_Selection_Dialog.Is_Created then
+         Tmp_Return := Internal (Tmp_Title);
+         Free (Tmp_Title);
+         Set_Object (Color_Selection_Dialog, Tmp_Return);
+      end if;
    end Initialize;
 
    -------------------------

@@ -140,7 +140,9 @@ package body Gtk.Recent_Chooser_Menu is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_menu_new");
    begin
-      Set_Object (Self, Internal);
+      if not Self.Is_Created then
+         Set_Object (Self, Internal);
+      end if;
    end Initialize;
 
    ----------------------------
@@ -154,7 +156,9 @@ package body Gtk.Recent_Chooser_Menu is
       function Internal (Manager : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_chooser_menu_new_for_manager");
    begin
-      Set_Object (Self, Internal (Get_Object (Manager)));
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Manager)));
+      end if;
    end Initialize_For_Manager;
 
    ----------------------

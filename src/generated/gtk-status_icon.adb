@@ -200,7 +200,9 @@ package body Gtk.Status_Icon is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new");
    begin
-      Set_Object (Status_Icon, Internal);
+      if not Status_Icon.Is_Created then
+         Set_Object (Status_Icon, Internal);
+      end if;
    end Initialize;
 
    --------------------------
@@ -217,9 +219,11 @@ package body Gtk.Status_Icon is
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Filename);
-      Free (Tmp_Filename);
-      Set_Object (Status_Icon, Tmp_Return);
+      if not Status_Icon.Is_Created then
+         Tmp_Return := Internal (Tmp_Filename);
+         Free (Tmp_Filename);
+         Set_Object (Status_Icon, Tmp_Return);
+      end if;
    end Initialize_From_File;
 
    ---------------------------
@@ -233,7 +237,9 @@ package body Gtk.Status_Icon is
       function Internal (Icon : Glib.G_Icon.G_Icon) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new_from_gicon");
    begin
-      Set_Object (Status_Icon, Internal (Icon));
+      if not Status_Icon.Is_Created then
+         Set_Object (Status_Icon, Internal (Icon));
+      end if;
    end Initialize_From_Gicon;
 
    -------------------------------
@@ -250,9 +256,11 @@ package body Gtk.Status_Icon is
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
       Tmp_Return    : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Icon_Name);
-      Free (Tmp_Icon_Name);
-      Set_Object (Status_Icon, Tmp_Return);
+      if not Status_Icon.Is_Created then
+         Tmp_Return := Internal (Tmp_Icon_Name);
+         Free (Tmp_Icon_Name);
+         Set_Object (Status_Icon, Tmp_Return);
+      end if;
    end Initialize_From_Icon_Name;
 
    ----------------------------
@@ -266,7 +274,9 @@ package body Gtk.Status_Icon is
       function Internal (Pixbuf : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new_from_pixbuf");
    begin
-      Set_Object (Status_Icon, Internal (Get_Object (Pixbuf)));
+      if not Status_Icon.Is_Created then
+         Set_Object (Status_Icon, Internal (Get_Object (Pixbuf)));
+      end if;
    end Initialize_From_Pixbuf;
 
    ---------------------------
@@ -283,9 +293,11 @@ package body Gtk.Status_Icon is
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Stock_Id);
-      Free (Tmp_Stock_Id);
-      Set_Object (Status_Icon, Tmp_Return);
+      if not Status_Icon.Is_Created then
+         Tmp_Return := Internal (Tmp_Stock_Id);
+         Free (Tmp_Stock_Id);
+         Set_Object (Status_Icon, Tmp_Return);
+      end if;
    end Initialize_From_Stock;
 
    ---------------

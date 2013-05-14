@@ -78,7 +78,9 @@ package body Gtk.Scrolled_Window is
           Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_new");
    begin
-      Set_Object (Scrolled_Window, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      if not Scrolled_Window.Is_Created then
+         Set_Object (Scrolled_Window, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      end if;
    end Initialize;
 
    -----------------------

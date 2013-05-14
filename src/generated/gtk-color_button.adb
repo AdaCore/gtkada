@@ -121,7 +121,9 @@ package body Gtk.Color_Button is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_color_button_new");
    begin
-      Set_Object (Button, Internal);
+      if not Button.Is_Created then
+         Set_Object (Button, Internal);
+      end if;
    end Initialize;
 
    ---------------------------
@@ -135,7 +137,9 @@ package body Gtk.Color_Button is
       function Internal (Color : Gdk.Color.Gdk_Color) return System.Address;
       pragma Import (C, Internal, "gtk_color_button_new_with_color");
    begin
-      Set_Object (Button, Internal (Color));
+      if not Button.Is_Created then
+         Set_Object (Button, Internal (Color));
+      end if;
    end Initialize_With_Color;
 
    --------------------------
@@ -149,7 +153,9 @@ package body Gtk.Color_Button is
       function Internal (Rgba : Gdk.RGBA.Gdk_RGBA) return System.Address;
       pragma Import (C, Internal, "gtk_color_button_new_with_rgba");
    begin
-      Set_Object (Button, Internal (Rgba));
+      if not Button.Is_Created then
+         Set_Object (Button, Internal (Rgba));
+      end if;
    end Initialize_With_Rgba;
 
    ---------------

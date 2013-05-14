@@ -94,9 +94,11 @@ package body Gtk.Scale_Button is
       Tmp_Icons  : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icons);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Size, Min, Max, Step, Tmp_Icons);
-      GtkAda.Types.Free (Tmp_Icons);
-      Set_Object (Button, Tmp_Return);
+      if not Button.Is_Created then
+         Tmp_Return := Internal (Size, Min, Max, Step, Tmp_Icons);
+         GtkAda.Types.Free (Tmp_Icons);
+         Set_Object (Button, Tmp_Return);
+      end if;
    end Initialize;
 
    --------------------

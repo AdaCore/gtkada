@@ -126,9 +126,11 @@ package body Gtk.Radio_Menu_Item is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Gtk.Widget.Widget_SList.Get_Object (Group), Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Radio_Menu_Item, Tmp_Return);
+      if not Radio_Menu_Item.Is_Created then
+         Tmp_Return := Internal (Gtk.Widget.Widget_SList.Get_Object (Group), Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Radio_Menu_Item, Tmp_Return);
+      end if;
    end Initialize;
 
    ------------------------------
@@ -147,9 +149,11 @@ package body Gtk.Radio_Menu_Item is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Gtk.Widget.Widget_SList.Get_Object (Group), Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Radio_Menu_Item, Tmp_Return);
+      if not Radio_Menu_Item.Is_Created then
+         Tmp_Return := Internal (Gtk.Widget.Widget_SList.Get_Object (Group), Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Radio_Menu_Item, Tmp_Return);
+      end if;
    end Initialize_With_Mnemonic;
 
    ---------------

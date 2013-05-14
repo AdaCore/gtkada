@@ -97,9 +97,11 @@ package body Gtk.Label is
       Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Str);
-      Free (Tmp_Str);
-      Set_Object (Label, Tmp_Return);
+      if not Label.Is_Created then
+         Tmp_Return := Internal (Tmp_Str);
+         Free (Tmp_Str);
+         Set_Object (Label, Tmp_Return);
+      end if;
    end Initialize;
 
    ------------------------------
@@ -116,9 +118,11 @@ package body Gtk.Label is
       Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Str);
-      Free (Tmp_Str);
-      Set_Object (Label, Tmp_Return);
+      if not Label.Is_Created then
+         Tmp_Return := Internal (Tmp_Str);
+         Free (Tmp_Str);
+         Set_Object (Label, Tmp_Return);
+      end if;
    end Initialize_With_Mnemonic;
 
    ---------------

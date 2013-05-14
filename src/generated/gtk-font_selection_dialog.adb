@@ -75,9 +75,11 @@ package body Gtk.Font_Selection_Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title);
-      Free (Tmp_Title);
-      Set_Object (Dialog, Tmp_Return);
+      if not Dialog.Is_Created then
+         Tmp_Return := Internal (Tmp_Title);
+         Free (Tmp_Title);
+         Set_Object (Dialog, Tmp_Return);
+      end if;
    end Initialize;
 
    -----------------------

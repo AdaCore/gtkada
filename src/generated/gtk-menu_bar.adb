@@ -62,7 +62,9 @@ package body Gtk.Menu_Bar is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_bar_new");
    begin
-      Set_Object (Menu_Bar, Internal);
+      if not Menu_Bar.Is_Created then
+         Set_Object (Menu_Bar, Internal);
+      end if;
    end Initialize;
 
    ------------------------------

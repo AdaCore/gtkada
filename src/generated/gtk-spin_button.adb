@@ -114,7 +114,9 @@ package body Gtk.Spin_Button is
           The_Digits : Guint) return System.Address;
       pragma Import (C, Internal, "gtk_spin_button_new");
    begin
-      Set_Object (Spin_Button, Internal (Get_Object_Or_Null (GObject (Adjustment)), Climb_Rate, The_Digits));
+      if not Spin_Button.Is_Created then
+         Set_Object (Spin_Button, Internal (Get_Object_Or_Null (GObject (Adjustment)), Climb_Rate, The_Digits));
+      end if;
    end Initialize;
 
    ----------------
@@ -133,7 +135,9 @@ package body Gtk.Spin_Button is
           Step : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_spin_button_new_with_range");
    begin
-      Set_Object (Spin_Button, Internal (Min, Max, Step));
+      if not Spin_Button.Is_Created then
+         Set_Object (Spin_Button, Internal (Min, Max, Step));
+      end if;
    end Initialize;
 
    ---------------

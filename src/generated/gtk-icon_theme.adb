@@ -126,7 +126,9 @@ package body Gtk.Icon_Theme is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_new");
    begin
-      Set_Object (Icon_Theme, Internal);
+      if not Icon_Theme.Is_Created then
+         Set_Object (Icon_Theme, Internal);
+      end if;
    end Initialize;
 
    ------------------------

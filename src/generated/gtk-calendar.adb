@@ -127,7 +127,9 @@ package body Gtk.Calendar is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_calendar_new");
    begin
-      Set_Object (Calendar, Internal);
+      if not Calendar.Is_Created then
+         Set_Object (Calendar, Internal);
+      end if;
    end Initialize;
 
    -----------------

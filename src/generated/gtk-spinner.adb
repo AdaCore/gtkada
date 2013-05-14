@@ -60,7 +60,9 @@ package body Gtk.Spinner is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_spinner_new");
    begin
-      Set_Object (Spinner, Internal);
+      if not Spinner.Is_Created then
+         Set_Object (Spinner, Internal);
+      end if;
    end Initialize;
 
    -----------

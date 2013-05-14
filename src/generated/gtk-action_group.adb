@@ -341,9 +341,11 @@ package body Gtk.Action_Group is
       Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Name);
-      Free (Tmp_Name);
-      Set_Object (Action_Group, Tmp_Return);
+      if not Action_Group.Is_Created then
+         Tmp_Return := Internal (Tmp_Name);
+         Free (Tmp_Name);
+         Set_Object (Action_Group, Tmp_Return);
+      end if;
    end Initialize;
 
    ----------------

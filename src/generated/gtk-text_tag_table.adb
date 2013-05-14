@@ -105,7 +105,9 @@ package body Gtk.Text_Tag_Table is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_table_new");
    begin
-      Set_Object (Table, Internal);
+      if not Table.Is_Created then
+         Set_Object (Table, Internal);
+      end if;
    end Initialize;
 
    ---------
