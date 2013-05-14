@@ -1,3 +1,9 @@
+2013-05-14	JC Delay  <delay@adacore.com>
+
+	(gdk/quartz/gdkwindow-quartz.c): Fix scroll issue on darwin.
+	(gtk/gtkrange.c): Ditto.
+	(gtk/gtkscrolledwindow.c): Ditto.
+
 --- gdk/quartz/gdkwindow-quartz.c.old	2012-08-06 15:33:18.000000000 +0200
 +++ gdk/quartz/gdkwindow-quartz.c	2012-08-06 15:40:51.000000000 +0200
 @@ -861,10 +861,11 @@
