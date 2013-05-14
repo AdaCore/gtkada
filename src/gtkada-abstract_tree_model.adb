@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with GNAT.IO; use GNAT.IO;
 with Ada.Unchecked_Conversion;
 with Glib.Object;     use Glib.Object;
 with Gtkada.Bindings; use Gtkada.Bindings;
@@ -599,7 +598,6 @@ package body Gtkada.Abstract_Tree_Model is
          Class_Record => Class_Record'Access,
          Type_Name    => "GtkAdaAbstractTreeModel")
       then
-         Put_Line ("MANU Add_Interface");
          Add_Interface
            (Class_Record,
             Gtk.Tree_Model.Get_Type,
