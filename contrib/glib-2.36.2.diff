@@ -23,6 +23,18 @@
  
  fi
  
+--- gio/Makefile.in.orig	2013-05-15 15:50:20.130800000 +0200
++++ gio/Makefile.in	2013-05-15 15:50:36.089600000 +0200
+@@ -92,7 +92,7 @@
+ 
+ @OS_WIN32_TRUE@am__append_22 = gwin32appinfo.c gwin32appinfo.h
+ @OS_WIN32_TRUE@am__append_23 = -lshlwapi -lws2_32 -ldnsapi
+-@BUILD_MODULAR_TESTS_TRUE@am__append_24 = tests 
++@BUILD_MODULAR_TESTS_TRUE@am__append_24 =  
+ 
+ # This is dumb.  The ObjC source file should be properly named .m
+ @OS_COCOA_TRUE@am__append_25 = -xobjective-c
+
 --- ../glib-2.36.2-orig/gio/Makefile.in	2013-05-13 14:28:38.000000000 +0200
 +++ gio/Makefile.in	2013-05-15 11:38:53.154093600 +0200
 @@ -549,7 +549,7 @@
