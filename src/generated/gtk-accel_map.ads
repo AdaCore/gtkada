@@ -234,7 +234,7 @@ package Gtk.Accel_Map is
    --  This function is intended for GTK+ modules that create their own menus,
    --  but don't want them to be saved into the applications accelerator map
    --  dump.
-   --  "filter_pattern": a pattern (see Gpattern.Spec.Gpattern_Spec)
+   --  "filter_pattern": a pattern (see GPattern_Spec)
 
    function Change_Entry
       (Accel_Path : UTF8_String;

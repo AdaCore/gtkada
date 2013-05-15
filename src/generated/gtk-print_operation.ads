@@ -233,7 +233,7 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Operation.Result_Error, either as returned by
    --  Gtk.Print_Operation.Run, or in the
    --  Gtk.Print_Operation.Gtk_Print_Operation::done signal handler. The
-   --  returned Gerror.Gerror will contain more details on what went wrong.
+   --  returned GError will contain more details on what went wrong.
    --  Since: gtk+ 2.10
 
    function Get_Has_Selection

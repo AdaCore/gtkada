@@ -284,9 +284,8 @@ package Gtk.Builder is
        Error    : access Glib.Error.GError) return Guint;
    --  Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> and merges it with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR
-   --  domain.
+   --  Upon errors 0 will be returned and Error will be assigned a GError from
+   --  the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR domain.
    --  Since: gtk+ 2.12
    --  "filename": the name of the file to parse
 
@@ -296,9 +295,8 @@ package Gtk.Builder is
    --  Parses a resource file containing a <link
    --  linkend="BUILDER-UI">GtkBuilder UI definition</link> and merges it with
    --  the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
-   --  G_RESOURCE_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a GError from
+   --  the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_RESOURCE_ERROR domain.
    --  Since: gtk+ 3.4
    --  "resource_path": the path of the resource file to parse
 
@@ -307,8 +305,8 @@ package Gtk.Builder is
        Buffer  : UTF8_String) return Guint;
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> and merges it with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a GError from
+   --  the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
    --  Since: gtk+ 2.12
    --  "buffer": the string to parse
 
@@ -319,9 +317,8 @@ package Gtk.Builder is
    --  Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them
    --  with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR
-   --  domain.
+   --  Upon errors 0 will be returned and Error will be assigned a GError from
+   --  the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR domain.
    --  Note:
    --  If you are adding an object that depends on an object that is not its
    --  child (for instance a Gtk.Tree_View.Gtk_Tree_View that depends on its
@@ -338,9 +335,8 @@ package Gtk.Builder is
    --  Parses a resource file containing a <link
    --  linkend="BUILDER-UI">GtkBuilder UI definition</link> building only the
    --  requested objects and merges them with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
-   --  G_RESOURCE_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a GError from
+   --  the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_RESOURCE_ERROR domain.
    --  Note:
    --  If you are adding an object that depends on an object that is not its
    --  child (for instance a Gtk.Tree_View.Gtk_Tree_View that depends on its
@@ -358,8 +354,8 @@ package Gtk.Builder is
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them
    --  with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a GError from
+   --  the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
    --  Note:
    --  If you are adding an object that depends on an object that is not its
    --  child (for instance a Gtk.Tree_View.Gtk_Tree_View that depends on its
@@ -503,8 +499,8 @@ package Gtk.Builder is
    --  enum, flags, float, double, string, Gdk.Color.Gdk_Color,
    --  Gdk.RGBA.Gdk_RGBA and Gtk.Adjustment.Gtk_Adjustment type values. Support
    --  for Gtk.Widget.Gtk_Widget type values is still to come.
-   --  Upon errors False will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR domain.
+   --  Upon errors False will be returned and Error will be assigned a GError
+   --  from the GTK_BUILDER_ERROR domain.
    --  Since: gtk+ 2.12
    --  "pspec": the Glib.Param_Spec for the property
    --  "string": the string representation of the value
@@ -519,8 +515,8 @@ package Gtk.Builder is
    --  from a string, but takes a GType instead of Glib.Param_Spec. This
    --  function calls g_value_init on the Value argument, so it need not be
    --  initialised beforehand.
-   --  Upon errors False will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR domain.
+   --  Upon errors False will be returned and Error will be assigned a GError
+   --  from the GTK_BUILDER_ERROR domain.
    --  Since: gtk+ 2.12
    --  "type": the GType of the value
    --  "string": the string representation of the value

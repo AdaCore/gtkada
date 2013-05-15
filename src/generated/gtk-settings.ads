@@ -32,9 +32,9 @@
 --  Xsettings manager, GTK+ reads default values for settings from
 --  'settings.ini' files in '/etc/gtk-3.0', '$XDG_CONFIG_DIRS/gtk-3.0' and
 --  '$XDG_CONFIG_HOME/gtk-3.0'. These files must be valid key files (see
---  Gkey.File.Gkey_File), and have a section called Settings. Themes can also
---  provide default values for settings by installing a 'settings.ini' file
---  next to their 'gtk.css' file.
+--  GKey_File), and have a section called Settings. Themes can also provide
+--  default values for settings by installing a 'settings.ini' file next to
+--  their 'gtk.css' file.
 --
 --  Applications can override system-wide settings with
 --  Gtk.Settings.Set_String_Property, Gtk.Settings.Set_Long_Property, etc. This

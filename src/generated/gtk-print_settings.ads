@@ -116,7 +116,7 @@ package Gtk.Print_Settings is
    --  settings, or null if an error occurred. If the file could not be loaded
    --  then error is set to either a GFile_Error or GKey_File_Error.
    --  Since: gtk+ 2.12
-   --  "key_file": the Gkey.File.Gkey_File to retrieve the settings from
+   --  "key_file": the GKey_File to retrieve the settings from
    --  "group_name": the name of the group to use, or null to use the default
    --  "Print Settings"
 
@@ -128,7 +128,7 @@ package Gtk.Print_Settings is
    --  settings, or null if an error occurred. If the file could not be loaded
    --  then error is set to either a GFile_Error or GKey_File_Error.
    --  Since: gtk+ 2.12
-   --  "key_file": the Gkey.File.Gkey_File to retrieve the settings from
+   --  "key_file": the GKey_File to retrieve the settings from
    --  "group_name": the name of the group to use, or null to use the default
    --  "Print Settings"
 
@@ -619,7 +619,7 @@ package Gtk.Print_Settings is
    --  file could not be loaded then error is set to either a GFile_Error or
    --  GKey_File_Error.
    --  Since: gtk+ 2.14
-   --  "key_file": the Gkey.File.Gkey_File to retrieve the settings from
+   --  "key_file": the GKey_File to retrieve the settings from
    --  "group_name": the name of the group to use, or null to use the default
    --  "Print Settings"
 
@@ -657,7 +657,7 @@ package Gtk.Print_Settings is
        Group_Name : UTF8_String);
    --  This function adds the print settings from Settings to Key_File.
    --  Since: gtk+ 2.12
-   --  "key_file": the Gkey.File.Gkey_File to save the print settings to
+   --  "key_file": the GKey_File to save the print settings to
    --  "group_name": the group to add the settings to in Key_File, or null to
    --  use the default "Print Settings"
 
