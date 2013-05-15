@@ -225,7 +225,7 @@
 --  If a custom theming engine is needed, you probably want to implement a
 --  Gtk.Style_Provider.Gtk_Style_Provider yourself so it points to your
 --  Gtk.Theming_Engine.Gtk_Theming_Engine implementation, as
---  Gtk.Css_Provider.Gtk_Css_Provider uses gtk_theming_engine_load which loads
+--  Gtk.Css_Provider.Gtk_Css_Provider uses Gtk.Theming_Engine.Load which loads
 --  the theming engine module from the standard paths.
 --
 --

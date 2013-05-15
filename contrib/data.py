@@ -235,7 +235,11 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkActionGroup",
            "GtkAdjustment",
            "GtkAlignment",
-           #"GtkApplication",
+           #"GtkAppChooserButton",  # Needs GFile
+           #"GtkAppChooserDialog",  # Needs GFile
+           #"GtkAppChooserWidget",  # Needs GFile
+           #"GtkApplication",       # Needs GIO
+           #"GtkApplicationWindow", # Needs GIO
            "GtkArrow",
            "GtkAspectFrame",
            "GtkAssistant",
@@ -252,6 +256,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkCellAreaContext",
            "GtkCellRenderer",
            "GtkCellRendererAccel",
+           "--GtkCellRendererClass",  # Useless in Ada
            "GtkCellRendererCombo",
            "GtkCellRendererPixbuf",
            "GtkCellRendererProgress",
@@ -327,7 +332,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkMenuShell",
            "GtkMenuToolButton",
            "GtkMessageDialog",
-           "--GtkMountOperation",  # Requires a lot of GIO
+           #"GtkMountOperation",  # Requires a lot of GIO
            "GtkNotebook",
            # "GtkNumerableIcon",   # Requires a lot of GIO
            "GtkOffscreenWindow",
@@ -386,6 +391,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkTextTag",
            "GtkTextTagTable",
            "GtkTextView",
+           "GtkThemingEngine",
            "GtkTreeIter",
            "GtkTreeModelFilter",
            "GtkTreeModelSort",

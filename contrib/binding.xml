@@ -7171,6 +7171,14 @@ package body Generic_Set is
      <method id="gtk_actionable_set_action_target_value" bind="False"/>   <!--  Needs GVariant -->
    </package>
 
+   <package id="GtkThemingEngine">
+     <method id="gtk_theming_engine_get_style_valist" bind="False"/> <!-- valist -->
+     <method id="gtk_theming_engine_get_valist" bind="False"/> <!-- valist -->
+
+     <method id="gtk_theming_engine_register_property" bind="False"/> <!-- obsolete and requires GtkStylePropertyParser -->
+   </package>
+
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
