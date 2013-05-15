@@ -33,7 +33,7 @@ with Glib.Main;           use Glib.Main;
 with Gtk.Combo_Box_Text;  use Gtk.Combo_Box_Text;
 with Gtk.Progress_Bar;    use Gtk.Progress_Bar;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
-with Gtk.Table;           use Gtk.Table;
+with Gtk.Grid;            use Gtk.Grid;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk;                 use Gtk;
 with Gtkada.Handlers;     use Gtkada.Handlers;
@@ -192,7 +192,7 @@ package body Create_Progress is
       Align  : Gtk_Alignment;
       Adj    : Gtk_Adjustment;
       Label  : Gtk_Label;
-      Tab    : Gtk_Table;
+      Tab    : Gtk_Grid;
       Check  : Gtk_Check_Button;
 
    begin
@@ -249,17 +249,13 @@ package body Create_Progress is
       Gtk_New_Vbox (Vbox2, False, 5);
       Add (Frame2, Vbox2);
 
-      Gtk_New (Tab,
-               Rows        => 7,
-               Columns     => 2,
-               Homogeneous => False);
+      Gtk_New (Tab);
       Pack_Start (Vbox2, Tab, False, True, 0);
 
       --  Orientation
 
       Gtk_New (Label, "Orientation :");
-      Attach (Tab, Label, 0, 1, 0, 1, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Label, 0, 0);
       Set_Alignment (Label, 0.0, 0.5);
 
       Gtk_New (Pdata.Omenu1);
@@ -269,15 +265,13 @@ package body Create_Progress is
          (Pdata.Omenu1, "changed", Toggle_Orientation'Access);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 0, 1, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 0);
       Pack_Start (Hbox, Pdata.Omenu1, True, True, 0);
 
       --  Inversion
 
       Gtk_New (Label, "Inversion :");
-      Attach (Tab, Label, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Label, 0, 1);
       Set_Alignment (Label, 0.0, 0.5);
 
       Gtk_New (Pdata.Omenu2);
@@ -287,8 +281,7 @@ package body Create_Progress is
          (Pdata.Omenu2, "changed", Toggle_Inversion'Access);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 1, 2, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 1);
       Pack_Start (Hbox, Pdata.Omenu2, True, True, 0);
 
       --  Show Text
@@ -297,12 +290,10 @@ package body Create_Progress is
       Check_Handler.Connect
         (Check, "clicked",
          Check_Handler.To_Marshaller (Toggle_Show_Text'Access));
-      Attach (Tab, Check, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Check, 0, 2);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 2, 3, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 2);
 
       --  Format
 
@@ -321,13 +312,11 @@ package body Create_Progress is
       --  Block Count
 
       Gtk_New (Label, "Block count :");
-      Attach (Tab, Label, 0, 1, 4, 5, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Label, 0, 4);
       Set_Alignment (Label, 0.0, 0.5);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 4, 5, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 4);
 
       Gtk_New (Adj,
                Value          => 10.0,
@@ -344,8 +333,7 @@ package body Create_Progress is
 
       Gtk_New (Check, "Activity mode");
       Check_Handler.Connect (Check, "clicked", Toggle_Activity_Mode'Access);
-      Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Check, 0, 5);
 
       Show_All (Vbox);
    end Run;

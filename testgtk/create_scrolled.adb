@@ -24,7 +24,7 @@
 with Glib;                use Glib;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Table;           use Gtk.Table;
+with Gtk.Grid;            use Gtk.Grid;
 with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
 with Gtk;                 use Gtk;
 
@@ -52,38 +52,33 @@ package body Create_Scrolled is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Table     : Gtk_Table;
+      Table     : Gtk_Grid;
       Scrolled  : Gtk_Scrolled_Window;
       Toggle    : Gtk_Toggle_Button;
 
    begin
-      Set_Label (Frame, "Scrolled Window");
+      Frame.Set_Label ("Scrolled Window");
 
       Gtk_New (Scrolled);
-      Set_Border_Width (Scrolled, Border_Width => 10);
-      Set_Policy (Scrolled,
-                  Hscrollbar_Policy => Policy_Automatic,
-                  Vscrollbar_Policy => Policy_Automatic);
+      Scrolled.Set_Border_Width (Border_Width => 10);
+      Scrolled.Set_Policy (Hscrollbar_Policy => Policy_Automatic,
+                           Vscrollbar_Policy => Policy_Automatic);
       Add (Frame, Scrolled);
 
-      Gtk_New (Table,
-               Rows        => 20,
-               Columns     => 20,
-               Homogeneous => False);
+      Gtk_New (Table);
       Scrolled.Add (Table);
-      Set_Focus_Hadjustment (Table, Get_Hadjustment (Scrolled));
-      Set_Focus_Vadjustment (Table, Get_Vadjustment (Scrolled));
+      Table.Set_Focus_Hadjustment (Get_Hadjustment (Scrolled));
+      Table.Set_Focus_Vadjustment (Get_Vadjustment (Scrolled));
 
       for I in 0 .. 19 loop
          for J in 0 .. 19 loop
             Gtk_New (Toggle, "button (" & Integer'Image (I)
                      & "," & Integer'Image (J) & ")");
-            Attach_Defaults (Table, Toggle, Guint (I), Guint (I + 1),
-                             Guint (J), Guint (J + 1));
+            Table.Attach (Toggle, Gint (I), Gint (J));
          end loop;
       end loop;
 
-      Show_All (Frame);
+      Frame.Show_All;
    end Run;
 
 end Create_Scrolled;

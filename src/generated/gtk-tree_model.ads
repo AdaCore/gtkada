@@ -263,21 +263,6 @@ package Gtk.Tree_Model is
    -- Constructors --
    ------------------
 
-   procedure Gtk_Filter_New
-      (Tree_Model : out Gtk_Tree_Model;
-       Root       : Gtk_Tree_Path);
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child_model and Root as the virtual root.
-   --  Since: gtk+ 2.4
-   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
-
-   function Gtk_Tree_Model_Filter_New
-      (Root : Gtk_Tree_Path) return Gtk_Tree_Model;
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child_model and Root as the virtual root.
-   --  Since: gtk+ 2.4
-   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
-
    procedure Gtk_Sort_New_With_Model (Tree_Model : out Gtk_Tree_Model);
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
    --  child model.

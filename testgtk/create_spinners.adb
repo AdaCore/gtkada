@@ -23,11 +23,10 @@
 
 with Glib.Main;       use Glib.Main;
 with Glib.Properties; use Glib.Properties;
-
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Label;       use Gtk.Label;
 with Gtk.Spinner;     use Gtk.Spinner;
-with Gtk.Table;       use Gtk.Table;
+with Gtk.Grid;        use Gtk.Grid;
 with Gtk.Widget;      use Gtk.Widget;
 
 with Common;          use Common;
@@ -66,40 +65,27 @@ package body Create_Spinners is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Active_Spinner, Transition_Spinner, Inactive_Spinner : Gtk_Spinner;
       Active_Label,   Transition_Label,   Inactive_Label   : Gtk_Label;
-      Table1 : Gtk_Table;
-
+      Table1 : Gtk_Grid;
    begin
       Set_Label (Frame, "Spinners");
 
-      Gtk_New (Table1, Rows => 3, Columns => 2, Homogeneous => False);
-      Add (Frame, Table1);
+      Gtk_New (Table1);
+      Frame.Add (Table1);
 
       Gtk_New (Active_Label, "Active spinner:");
       Gtk_New (Active_Spinner);
-      Attach
-        (Table1, Active_Label, 0, 1, 0, 1,
-         Xpadding => 10, Ypadding => 10);
-      Attach
-        (Table1, Active_Spinner, 1, 2, 0, 1,
-         Xpadding => 25, Ypadding => 25);
+      Table1.Attach (Active_Label, 0, 0);
+      Table1.Attach (Active_Spinner, 1, 0);
 
       Gtk_New (Transition_Label, "On/Off spinner:");
       Gtk_New (Transition_Spinner);
-      Attach
-        (Table1, Transition_Label, 0, 1, 1, 2,
-         Xpadding => 10, Ypadding => 10);
-      Attach
-        (Table1, Transition_Spinner, 1, 2, 1, 2,
-         Xpadding => 25, Ypadding => 25);
+      Table1.Attach (Transition_Label, 0, 1);
+      Table1.Attach (Transition_Spinner, 1, 1);
 
       Gtk_New (Inactive_Label, "Inactive spinner:");
       Gtk_New (Inactive_Spinner);
-      Attach
-        (Table1, Inactive_Label, 0, 1, 2, 3,
-         Xpadding => 10, Ypadding => 10);
-      Attach
-        (Table1, Inactive_Spinner, 1, 2, 2, 3,
-         Xpadding => 25, Ypadding => 25);
+      Table1.Attach (Inactive_Label, 0, 2);
+      Table1.Attach (Inactive_Spinner, 1, 2);
 
       --  Start one spinner, set another pulsing, and don't touch the
       --  third (so that it stays off).

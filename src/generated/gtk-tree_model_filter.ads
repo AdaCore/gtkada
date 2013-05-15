@@ -151,6 +151,30 @@ package Gtk.Tree_Model_Filter is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Self        : out Gtk_Tree_Model_Filter;
+       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path);
+   procedure Initialize
+      (Self        : not null access Gtk_Tree_Model_Filter_Record'Class;
+       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path);
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child_model and Root as the virtual root.
+   --  Since: gtk+ 2.4
+   --  "child_model": A Gtk.Tree_Model.Gtk_Tree_Model.
+   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
+
+   function Gtk_Tree_Model_Filter_Filter_New
+      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
+       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
+       return Gtk_Tree_Model_Filter;
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child_model and Root as the virtual root.
+   --  Since: gtk+ 2.4
+   --  "child_model": A Gtk.Tree_Model.Gtk_Tree_Model.
+   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_model_filter_get_type");
 

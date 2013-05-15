@@ -29,7 +29,7 @@ with Gtk.Target_List; use Gtk.Target_List;
 with Gdk.Types;     use Gdk.Types;
 with Gtk.Enums;     use Gtk.Enums;
 with Gtk.Button;    use Gtk.Button;
-with Gtk.Table;     use Gtk.Table;
+with Gtk.Grid;      use Gtk.Grid;
 with Gtk.Label;     use Gtk.Label;
 with Gtk.Handlers;  use Gtk.Handlers;
 with Gtk.Image;     use Gtk.Image;
@@ -628,7 +628,7 @@ package body Create_Dnd is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Table     : Gtk_Table;
+      Table     : Gtk_Grid;
       Label     : Gtk_Label;
       Button    : Gtk_Button;
       Pixmap    : Gtk_Image;
@@ -639,8 +639,8 @@ package body Create_Dnd is
       Gtk_New_Vbox (Box, Homogeneous => False);
       Add (Frame, Box);
 
-      Gtk_New (Table, 3, 3, False);
-      Pack_Start (Box, Table);
+      Gtk_New (Table);
+      Box.Pack_Start (Table);
 
       Drag_Icon := Gdk_New_From_Xpm_Data (Drag_Icon_Xpm);
       Trashcan_Open := Gdk_New_From_Xpm_Data (Trashcan_Open_Xpm);
@@ -658,7 +658,7 @@ package body Create_Dnd is
                         Dest_Default_All,
                         Target_Table_String, -- only STRING or text/plain
                         Action_Move);
-      Attach (Table, Label, 0, 1, 0, 1);
+      Table.Attach (Label, 0, 0);
 
       Widget_Callback.Connect (Label, "drag_data_received",
                                Label_Drag_Data_Received'Access);
@@ -671,7 +671,7 @@ package body Create_Dnd is
                         Dest_Default_All,
                         Target_Table_Url, -- only urls
                         Action_Copy + Action_Move);
-      Attach (Table, Label, 1, 2, 0, 1);
+      Table.Attach (Label, 1, 0);
 
       Widget_Callback.Connect (Label, "drag_data_received",
                                Label_Drag_Data_Received'Access);
@@ -684,7 +684,7 @@ package body Create_Dnd is
                         Dest_Default_All,
                         Target_Table, -- only urls
                         Action_Copy + Action_Move);
-      Attach (Table, Label, 2, 3, 0, 1);
+      Table.Attach (Label, 2, 0);
 
       Widget_Callback.Connect (Label, "drag_data_received",
                                Label_Drag_Data_Received'Access);
@@ -700,7 +700,7 @@ package body Create_Dnd is
                           Button1_Mask or Button3_Mask,
                           Target_Table_String,
                           Action_Copy + Action_Move);
-      Attach (Table, Button, 0, 1, 1, 2);
+      Table.Attach (Button, 0, 1);
 
       Widget_Callback.Connect (Button, "drag_data_get",
                                Source_Drag_Data_Get'Access);
@@ -716,7 +716,7 @@ package body Create_Dnd is
                           Button1_Mask or Button3_Mask,
                           Target_Table_Url,
                           Action_Copy + Action_Move);
-      Attach (Table, Button, 1, 2, 1, 2);
+      Table.Attach (Button, 1, 1);
 
       Widget_Callback.Connect (Button, "drag_data_get",
                                Source_Drag_Data_Get'Access);
@@ -731,7 +731,7 @@ package body Create_Dnd is
                           Button1_Mask or Button3_Mask,
                           Target_Table,
                           Action_Copy + Action_Move + Action_Ask);
-      Attach (Table, Button, 2, 3, 1, 2);
+      Table.Attach (Button, 2, 1);
 
       Widget_Callback.Connect (Button, "drag_data_get",
                                Source_Drag_Data_Get'Access);
@@ -742,7 +742,7 @@ package body Create_Dnd is
 
       Gtk_New (Pixmap, Trashcan_Closed);
       Gtk.Dnd.Dest_Set (Pixmap);
-      Attach (Table, Pixmap, 0, 1, 2, 3);
+      Table.Attach (Pixmap, 0, 2);
 
       Return_Callback.Connect (Pixmap, "drag_drop",
                                Target_Drag_Drop'Access);

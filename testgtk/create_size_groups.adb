@@ -30,13 +30,13 @@ with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Size_Group;    use Gtk.Size_Group;
-with Gtk.Table;         use Gtk.Table;
+with Gtk.Grid;          use Gtk.Grid;
 
 package body Create_Size_Groups is
 
    procedure Add_Row
-     (Table : access Gtk_Table_Record'Class;
-      Row   : Guint;
+     (Table : access Gtk_Grid_Record'Class;
+      Row   : Gint;
       Group : Gtk_Size_Group;
       Text  : String);
    --  Add a new row in Table, with a label Text .
@@ -75,8 +75,8 @@ package body Create_Size_Groups is
    -------------
 
    procedure Add_Row
-     (Table : access Gtk_Table_Record'Class;
-      Row   : Guint;
+     (Table : access Gtk_Grid_Record'Class;
+      Row   : Gint;
       Group : Gtk_Size_Group;
       Text  : String)
    is
@@ -85,27 +85,11 @@ package body Create_Size_Groups is
    begin
       Gtk_New (Label, Text);
       Set_Alignment (Label, 0.0, 1.0);
-      Attach
-        (Table         => Table,
-         Child         => Label,
-         Left_Attach   => 0,
-         Right_Attach  => 1,
-         Top_Attach    => Row,
-         Bottom_Attach => Row + 1,
-         Xoptions      => Expand or Fill,
-         Yoptions      => 0);
+      Table.Attach (Label, 0, Row);
 
       Gtk_New (Button, Text);
       Gtk.Size_Group.Add_Widget (Group, Button);
-      Attach
-        (Table         => Table,
-         Child         => Button,
-         Left_Attach   => 1,
-         Right_Attach  => 2,
-         Top_Attach    => Row,
-         Bottom_Attach => Row + 1,
-         Xoptions      => 0,  --  !!! Do not force any size, see Help
-         Yoptions      => 0);
+      Table.Attach (Button, 1, Row);
    end Add_Row;
 
    ---------------------
@@ -133,7 +117,7 @@ package body Create_Size_Groups is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Vbox   : Gtk_Box;
       Group  : Gtk_Size_Group;
-      Table  : Gtk_Table;
+      Table  : Gtk_Grid;
       F      : Gtk_Frame;
       Toggle : Gtk_Check_Button;
 
@@ -147,29 +131,29 @@ package body Create_Size_Groups is
       Gtk_New (F, "Options1");
       Pack_Start (Vbox, F, Expand => False, Fill => False);
 
-      Gtk_New (Table, 2, 2, False);
-      Add (F, Table);
-      Set_Border_Width (Table, 5);
+      Gtk_New (Table);
+      F.Add (Table);
+      Table.Set_Border_Width (5);
 
       Add_Row (Table, 0, Group, "foofoofoofoofoofoofoofoofoo");
       Add_Row (Table, 1, Group, "foofoofoo");
 
       Gtk_New (F, "Options2");
-      Pack_Start (Vbox, F, Expand => False, Fill => False);
+      Vbox.Pack_Start (F, Expand => False, Fill => False);
 
-      Gtk_New (Table, 2, 2, False);
-      Add (F, Table);
-      Set_Border_Width (Table, 5);
+      Gtk_New (Table);
+      F.Add (Table);
+      Table.Set_Border_Width (5);
 
       Add_Row (Table, 0, Group, "foo");
       Add_Row (Table, 1, Group, "foofoofoofoofoofoo");
 
       Gtk_New (Toggle, "Enable grouping");
-      Pack_Start (Vbox, Toggle, Expand => False, Fill => False);
-      Set_Active (Toggle, True);
+      Vbox.Pack_Start (Toggle, Expand => False, Fill => False);
+      Toggle.Set_Active (True);
       Toggle_Cb.Connect (Toggle, "toggled", Toggle_Grouping'Access, Group);
 
-      Show_All (Frame);
+      Frame.Show_All;
    end Run;
 
 end Create_Size_Groups;

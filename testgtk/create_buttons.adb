@@ -28,7 +28,7 @@ with Gtk.Box;      use Gtk.Box;
 with Gtk.Button;   use Gtk.Button;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Frame;    use Gtk.Frame;
-with Gtk.Table;    use Gtk.Table;
+with Gtk.Grid;     use Gtk.Grid;
 with Gtk.Widget;   use Gtk.Widget;
 
 package body Create_Buttons is
@@ -67,24 +67,21 @@ package body Create_Buttons is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1    : Gtk_Box;
-      Table   : Gtk_Table;
+      Table   : Gtk_Grid;
       Button  : array (0 .. 8) of Gtk_Button;
-      Left_A  : constant array (0 .. 8) of Guint :=
+      Left_A  : constant array (0 .. 8) of Gint :=
         (0, 1, 2, 0, 2, 1, 1, 2, 0);
-      Right_A : constant array (0 .. 8) of Guint :=
-        (1, 2, 3, 1, 3, 2, 2, 3, 1);
-      Top_A  : constant array (0 .. 8) of Guint := (0, 1, 2, 2, 0, 2, 0, 1, 1);
-      Bott_A : constant array (0 .. 8) of Guint := (1, 2, 3, 3, 1, 3, 1, 2, 2);
+      Top_A  : constant array (0 .. 8) of Gint := (0, 1, 2, 2, 0, 2, 0, 1, 1);
 
    begin
       Gtk.Frame.Set_Label (Frame, "Buttons");
 
       Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-      Add (Frame, Box1);
+      Frame.Add (Box1);
 
-      Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
-      Set_Border_Width (Table, Border_Width => 10);
-      Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
+      Gtk_New (Table);
+      Table.Set_Border_Width (Border_Width => 10);
+      Box1.Pack_Start (Table, Expand => False, Fill => False, Padding => 0);
 
       for J in Button'Range loop
          Gtk_New (Button (J), Label => "Button" & Integer'Image (J));
@@ -93,11 +90,7 @@ package body Create_Buttons is
       for J in Button'Range loop
          Button (J).On_Clicked
             (Button_Window'Access, Button ((J + 1) mod Button'Length));
-         Attach (Table, Button (J),
-                 Left_A (J), Right_A (J),
-                 Top_A (J), Bott_A (J),
-                 Expand + Fill,
-                 Expand + Fill, Xpadding => 0, Ypadding => 0);
+         Table.Attach (Button (J), Left => Left_A (J), Top => Top_A (J));
       end loop;
 
       Show_All (Box1);

@@ -314,20 +314,6 @@ package body Gtk.Tree_Model is
       return Boolean'Pos (Func (Model, From_Object (Path), Iter.all));
    end Internal_Gtk_Tree_Model_Foreach_Func;
 
-   --------------------
-   -- Gtk_Filter_New --
-   --------------------
-
-   procedure Gtk_Filter_New
-      (Tree_Model : out Gtk_Tree_Model;
-       Root       : Gtk_Tree_Path)
-   is
-      function Internal (Root : System.Address) return Gtk_Tree_Model;
-      pragma Import (C, Internal, "gtk_tree_model_filter_new");
-   begin
-      Tree_Model := Internal (Get_Object (Root));
-   end Gtk_Filter_New;
-
    -------------
    -- Gtk_New --
    -------------
@@ -376,21 +362,6 @@ package body Gtk.Tree_Model is
    begin
       Tree_Model := Internal;
    end Gtk_Sort_New_With_Model;
-
-   -------------------------------
-   -- Gtk_Tree_Model_Filter_New --
-   -------------------------------
-
-   function Gtk_Tree_Model_Filter_New
-      (Root : Gtk_Tree_Path) return Gtk_Tree_Model
-   is
-      function Internal (Root : System.Address) return Gtk_Tree_Model;
-      pragma Import (C, Internal, "gtk_tree_model_filter_new");
-      Tree_Model : Gtk_Tree_Model;
-   begin
-      Tree_Model := Internal (Get_Object (Root));
-      return Tree_Model;
-   end Gtk_Tree_Model_Filter_New;
 
    ----------------------------------------
    -- Gtk_Tree_Model_Sort_New_With_Model --

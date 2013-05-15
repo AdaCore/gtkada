@@ -79,8 +79,8 @@ package Gtk.Grid is
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Left   : Gint;
        Top    : Gint;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Gint := 1;
+       Height : Gint := 1);
    --  Adds a widget to the grid.
    --  The position of Child is determined by Left and Top. The number of
    --  'cells' that Child will occupy is determined by Width and Height.
@@ -95,8 +95,8 @@ package Gtk.Grid is
        Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Sibling : access Gtk.Widget.Gtk_Widget_Record'Class;
        Side    : Gtk.Enums.Gtk_Position_Type;
-       Width   : Gint;
-       Height  : Gint);
+       Width   : Gint := 1;
+       Height  : Gint := 1);
    --  Adds a widget to the grid.
    --  The widget is placed next to Sibling, on the side determined by Side.
    --  When Sibling is null, the widget is placed in row (for left or right

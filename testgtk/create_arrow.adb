@@ -27,7 +27,7 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Table; use Gtk.Table;
+with Gtk.Grid;  use Gtk.Grid;
 with Gtk; use Gtk;
 
 package body Create_Arrow is
@@ -46,19 +46,18 @@ package body Create_Arrow is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
-      Table     : Gtk_Table;
+      Table     : Gtk_Grid;
       Arrow     : Gtk_Arrow;
       Label     : Gtk_Label;
-
    begin
-      Set_Label (Frame, "Arrows");
+      Frame.Set_Label ("Arrows");
 
       Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-      Add (Frame, Box1);
+      Frame.Add (Box1);
 
-      Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
-      Set_Border_Width (Table, Border_Width => 10);
-      Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
+      Gtk_New (Table);
+      Table.Set_Border_Width (Border_Width => 10);
+      Box1.Pack_Start (Table, Expand => False, Fill => False, Padding => 0);
 
       Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
       Gtk_New (Arrow,
@@ -67,8 +66,7 @@ package body Create_Arrow is
       Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
       Gtk_New (Label, "Shadow_In");
       Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
-      Attach (Table, Box2, 1, 2, 0, 1,
-              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Table.Attach (Box2, 1, 0);
 
       Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
       Gtk_New (Arrow,
@@ -77,8 +75,7 @@ package body Create_Arrow is
       Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
       Gtk_New (Label, "Shadow_Out");
       Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
-      Attach (Table, Box2, 0, 1, 1, 2,
-              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Table.Attach (Box2, 0, 1);
 
       Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
       Gtk_New (Arrow,
@@ -87,8 +84,7 @@ package body Create_Arrow is
       Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
       Gtk_New (Label, "Shadow_Etched_In");
       Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
-      Attach (Table, Box2, 2, 3, 1, 2,
-              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Table.Attach (Box2, 2, 1);
 
       Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
       Gtk_New (Arrow,
@@ -97,8 +93,7 @@ package body Create_Arrow is
       Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
       Gtk_New (Label, "Shadow_Etched_Out");
       Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
-      Attach (Table, Box2, 1, 2, 2, 3,
-              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Table.Attach (Box2, 1, 2);
 
       Show_All (Box1);
    end Run;

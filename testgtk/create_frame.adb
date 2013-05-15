@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Glib;         use Glib;
-with Gtk.Table;    use Gtk.Table;
+with Gtk.Grid;     use Gtk.Grid;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Frame;    use Gtk.Frame;
 with Gtk.Label;    use Gtk.Label;
@@ -52,59 +52,59 @@ package body Create_Frame is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Table  : Gtk_Table;
+      Table  : Gtk_Grid;
       Label  : Gtk_Label;
       Frame2 : Gtk_Frame;
    begin
       Gtk.Frame.Set_Label (Frame, "Frames");
 
-      Gtk_New (Table, Rows => 3, Columns => 2, Homogeneous => True);
-      Set_Border_Width (Table, Border_Width => 10);
-      Add (Frame, Table);
+      Gtk_New (Table);
+      Table.Set_Border_Width (Border_Width => 10);
+      Frame.Add (Table);
 
       --  First frame
       Gtk_New (Frame2, "");
-      Set_Shadow_Type (Frame2, Gtk.Enums.Shadow_In);
-      Attach_Defaults (Table, Frame2, 0, 1, 0, 1);
+      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_In);
+      Table.Attach (Frame2, 0, 0);
       Gtk_New (Label, "Shadow_In");
-      Add (Frame2, Label);
+      Frame2.Add (Label);
 
       --  Second Frame
       Gtk_New (Frame2, "");
-      Set_Shadow_Type (Frame2, Gtk.Enums.Shadow_Out);
-      Attach_Defaults (Table, Frame2, 1, 2, 0, 1);
+      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Out);
+      Table.Attach (Frame2, 1, 0);
       Gtk_New (Label, "Shadow_Out");
-      Add (Frame2, Label);
+      Frame2.Add (Frame2);
 
       --  Third Frame
       Gtk_New (Frame2, "");
-      Set_Shadow_Type (Frame2, Gtk.Enums.Shadow_Etched_In);
-      Attach_Defaults (Table, Frame2, 0, 1, 1, 2);
+      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Etched_In);
+      Table.Attach (Frame2, 0, 1);
       Gtk_New (Label, "Shadow_Etched_In");
-      Add (Frame2, Label);
+      Frame2.Add (Label);
 
       --  Fourth Frame
       Gtk_New (Frame2, "");
-      Set_Shadow_Type (Frame2, Gtk.Enums.Shadow_Etched_Out);
-      Attach_Defaults (Table, Frame2, 1, 2, 1, 2);
+      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Etched_Out);
+      Table.Attach (Frame2, 1, 1);
       Gtk_New (Label, "Shadow_Etched_Out");
-      Add (Frame2, Label);
+      Frame2.Add (Label);
 
       --  Fifth Frame
       Gtk_New (Frame2, "Title");
-      Set_Label_Align (Frame2, Xalign => 0.2, Yalign => 0.0);
-      Attach_Defaults (Table, Frame2, 0, 1, 2, 3);
+      Frame2.Set_Label_Align (Xalign => 0.2, Yalign => 0.0);
+      Table.Attach (Frame2, 0, 2);
       Gtk_New (Label, "Label_Align: Xalign = 0.2");
-      Add (Frame2, Label);
+      Frame2.Add (Label);
 
       --  Sixth Frame
       Gtk_New (Frame2, "Title");
-      Set_Label_Align (Frame2, Xalign => 0.8, Yalign => 0.0);
-      Attach_Defaults (Table, Frame2, 1, 2, 2, 3);
+      Frame2.Set_Label_Align (Xalign => 0.8, Yalign => 0.0);
+      Table.Attach (Frame2, 1, 2);
       Gtk_New (Label, "Label_Align: Xalign = 0.8");
-      Add (Frame2, Label);
+      Frame2.Add (Label);
 
-      Show_All (Frame);
+      Frame.Show_All;
    end Run;
 
 end Create_Frame;

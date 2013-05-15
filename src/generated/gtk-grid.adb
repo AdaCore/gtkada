@@ -74,8 +74,8 @@ package body Gtk.Grid is
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Left   : Gint;
        Top    : Gint;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Gint := 1;
+       Height : Gint := 1)
    is
       procedure Internal
          (Self   : System.Address;
@@ -98,8 +98,8 @@ package body Gtk.Grid is
        Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Sibling : access Gtk.Widget.Gtk_Widget_Record'Class;
        Side    : Gtk.Enums.Gtk_Position_Type;
-       Width   : Gint;
-       Height  : Gint)
+       Width   : Gint := 1;
+       Height  : Gint := 1)
    is
       procedure Internal
          (Self    : System.Address;

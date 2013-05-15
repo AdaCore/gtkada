@@ -7139,6 +7139,17 @@ package body Generic_Set is
      </extra>
    </package>
 
+   <package id="GtkGrid">
+     <method id="gtk_grid_attach">
+       <parameter name="width" default='1'/>
+       <parameter name="height" default='1'/>
+     </method>
+     <method id="gtk_grid_attach_next_to">
+       <parameter name="width" default='1'/>
+       <parameter name="height" default='1'/>
+     </method>
+   </package>
+
    <package id="GtkCssSection">
      <enum ctype="GtkCssSectionType"/>
 
