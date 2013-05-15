@@ -268,8 +268,12 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
         if t is not None:
             if t.get("name") == "none":
                 return None
+
+            ctype_name = t.get(ctype_qname)
+            if ctype_name:
+                ctype_name = ctype_name.replace("const ", "")
             return naming.type(name=t.get("name"),
-                               cname=t.get(ctype_qname),
+                               cname=ctype_name,
                                userecord=userecord,
                                transfer_ownership=transfer_ownership,
                                allow_access=allow_access,

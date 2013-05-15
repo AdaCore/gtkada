@@ -2714,6 +2714,8 @@ __PRE__
      <enum ctype="GtkJustification"/>
      <enum ctype="GtkMenuDirectionType"/>
      <enum ctype="GtkMovementStep"/>
+     <enum ctype="GtkInputHints"/>
+     <enum ctype="GtkInputPurpose"/>
      <enum ctype="GtkNumberUpLayout" prefix="GTK_NUMBER_UP_LAYOUT_"/>
      <enum ctype="GtkOrientation"/>
      <enum ctype="GtkPackDirection"/>
@@ -3765,6 +3767,7 @@ creating a tag.
      <enum ctype="GdkWMDecoration" prefix="GDK_"/>
      <enum ctype="GdkWMFunction" prefix="GDK_"/>
      <enum ctype="GdkGravity" prefix="GDK_"/>
+     <enum ctype="GdkFullscreenMode" prefix="GDK_FULLSCREEN_" />
      <list ada="Gdk_Window_List" ctype="GdkWindow"/>
      <method id="::pick-embedded-child" bind="False" />
      <method id="::from-embedder" bind="False" />
@@ -3933,6 +3936,8 @@ creating a tag.
      <record ctype="GdkEventDND"/>
      <record ctype="GdkEventWindowState"/>
      <record ctype="GdkEventSetting"/>
+     <record ctype="GdkEventTouch"/>
+     <record ctype="GdkEventSequence"/>
      <record ctype="GdkEventGrabBroken"/>
 
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
@@ -4004,6 +4009,9 @@ creating a tag.
      <method id="gdk_event_set_screen" bind="False"/>
 
      <function id="gdk_events_pending" ada="Events_Pending"/>
+     <method id="gdk_events_get_angle" ada="Get_Angle"/>
+     <method id="gdk_events_get_center" ada="Get_Center"/>
+     <method id="gdk_events_get_distance" ada="Get_Distance"/>
      <function id="gdk_set_show_events" ada="Set_Show_Events"/>
      <function id="gdk_get_show_events" ada="Get_Show_Events"/>
 
@@ -7103,6 +7111,14 @@ package body Generic_Set is
    end Set;
        </body>
      </extra>
+   </package>
+
+   <package id="GtkCssSection">
+     <enum ctype="GtkCssSectionType"/>
+   </package>
+
+   <package id="GdkFrameClock">
+     <enum ctype="GdkFrameClockPhase"/>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

@@ -14,6 +14,7 @@ enums = ("GtkEnums",
 # These are GIR names
 
 interfaces = (
+    "Actionable",
     "Activatable",
     #"AppChooser",
     "--Atk.ImplementorIface",
@@ -76,6 +77,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkDevice",
            "GdkDragContext",
            "GdkEvent",
+           "GdkFrameClock",
+           "GdkFrameTimings",
            "GdkRGBA",
            "GdkScreen",
            "GdkWindow",
@@ -264,6 +267,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkContainer",
            "--GtkContainerClass",
            "GtkCssProvider",
+           "GtkCssSection",
            "GtkDialog",
            "GtkDrawingArea",
            "GtkEntry",
@@ -628,4 +632,6 @@ naming.type_exceptions = {
     "GdkCursor*":        Proxy("Gdk.Gdk_Cursor"),
     "GdkWindow":         Proxy("Gdk.Gdk_Window"),
     "GdkWindow*":        Proxy("Gdk.Gdk_Window"),
+
+    "GdkEventSequence*": Proxy("System.Address"),
 }
