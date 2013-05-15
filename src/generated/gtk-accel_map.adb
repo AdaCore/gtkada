@@ -68,7 +68,7 @@ package body Gtk.Accel_Map is
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;
        Accel_Path : Interfaces.C.Strings.chars_ptr;
-       Accel_Key  : Guint;
+       Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Integer);
    pragma Convention (C, Internal_Gtk_Accel_Map_Foreach);
@@ -88,7 +88,7 @@ package body Gtk.Accel_Map is
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;
        Accel_Path : Interfaces.C.Strings.chars_ptr;
-       Accel_Key  : Guint;
+       Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Integer)
    is
@@ -141,7 +141,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Guint;
+          Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer);
       pragma Convention (C, Internal_Cb);
@@ -177,7 +177,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Guint;
+          Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer)
       is
@@ -202,7 +202,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Guint;
+          Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer);
       pragma Convention (C, Internal_Cb);
@@ -238,7 +238,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Guint;
+          Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer)
       is

@@ -100,7 +100,7 @@ package Gtk.Accel_Map is
 
    type Gtk_Accel_Map_Foreach is access procedure
      (Accel_Path : UTF8_String;
-      Accel_Key  : Guint;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Changed    : Boolean);
    --  "accel_path": Accel path of the current accelerator
@@ -139,7 +139,7 @@ package Gtk.Accel_Map is
       type Gtk_Accel_Map_Foreach is access procedure
         (Data       : User_Data_Type;
          Accel_Path : UTF8_String;
-         Accel_Key  : Guint;
+         Accel_Key  : Gdk.Types.Gdk_Key_Type;
          Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
          Changed    : Boolean);
       --  "data": User data passed to Gtk.Accel_Map.Foreach or
@@ -181,7 +181,7 @@ package Gtk.Accel_Map is
       type Gtk_Accel_Map_Foreach is access procedure
         (Data       : User_Data_Type;
          Accel_Path : UTF8_String;
-         Accel_Key  : Guint;
+         Accel_Key  : Gdk.Types.Gdk_Key_Type;
          Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
          Changed    : Boolean);
       --  "data": User data passed to Gtk.Accel_Map.Foreach or
