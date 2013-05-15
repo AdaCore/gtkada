@@ -85,6 +85,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
 
            "--GApplication", # Not tested yet, from Gio
            "--GApplicationCommandLine", # Not tested yet, from Gio
+           "--GBytes",
            "--GBufferedInputStream", # Not tested yet, from Gio
            "--GBufferedOutputStream", # Not tested yet, from Gio
            "--GCancellable", # Not tested yet, from Gio
@@ -173,6 +174,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GSocketService", # Not tested yet, from Gio
            "--GSrvTarget", # Not tested yet, from Gio
            "--GStaticResource", # Not tested yet, from Gio
+           "--GString",
            "--GTcpConnection", # Not tested yet, from Gio
            "--GTcpWrapperConnection", # Not tested yet, from Gio
            "--GThemedIcon", # Not tested yet, from Gio
@@ -191,6 +193,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GUnixMountPoint", # Not tested yet, from Gio
            "--GUnixOutputStream", # Not tested yet, from Gio
            "--GUnixSocketAddress", # Not tested yet, from Gio
+           "--GVariant",
            "--GVfs", # Not tested yet, from Gio
            "--GVolumeMonitor", # Not tested yet, from Gio
            "--GZlibCompressor", # Not tested yet, from Gio

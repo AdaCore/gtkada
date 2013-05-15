@@ -2293,12 +2293,16 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         constants.sort()
         section.add("\n".join(constants))
 
-    def enumeration_binding(self, section, ctype, type, prefix, asbitfield=False):
+    def enumeration_binding(self, section, ctype, type, prefix,
+                            asbitfield=False, ignore=""):
         """Add to the section the Ada type definition for the <enumeration>
            ctype. type is the corresponding instance of CType().
            This function also handles <bitfield> types.
-           [prefix] is removed from the values to get the default Ada name,
-           which can be overridden in data.cname_to_adaname.
+
+           :param prefix: is removed from the values to get the default Ada name,
+              which can be overridden in data.cname_to_adaname.
+           :param ignore: space-separated list of values that should not be
+              bound.
         """
         base = base_name(type.ada)
         node = gir.enums[ctype]
@@ -2309,9 +2313,14 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         gir.bound.add(ctype)
 
         members = []
+        ignore = set(ignore.split())
 
         for member in node.findall(nmember):
             cname = member.get(cidentifier)
+
+            if cname in ignore:
+                continue
+
             m = naming.adamethod_name(cname, warning_if_not_found=False)
             if m is None:
                 continue
@@ -2529,9 +2538,10 @@ type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
-        for ctype, enum, prefix, asbitfield in self.gtkpkg.enumerations():
+        for ctype, enum, prefix, asbitfield, ignore in self.gtkpkg.enumerations():
             self.enumeration_binding(
-                section, ctype, enum, prefix, asbitfield=asbitfield)
+                section, ctype, enum, prefix, asbitfield=asbitfield,
+                ignore=ignore)
 
         for regexp, prefix in self.gtkpkg.constants():
             self.constants_binding(section, regexp, prefix)

@@ -387,7 +387,7 @@ class Enum(CType):
     @staticmethod
     def register_ada_decl(pkg, ctype, ada=None):
         """Register an enumeration type.
-        [pkg] is the name of the current package in which the enumeration
+        :param pkg: is the name of the current package in which the enumeration
         will be defined.
         """
 

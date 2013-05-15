@@ -941,6 +941,8 @@ on how all the parameters for the boxes work.
          <parameter name="len" default="-1" ada=""/>
       </method>
 
+      <method id="gtk_clipboard_set_with_data" bind="false" /> <!-- low-level -->
+      <method id="gtk_clipboard_set_with_owner" bind="false" /> <!-- low-level -->
       <method id="gtk_clipboard_wait_for_rich_text" bind="false" /> <!--  Returns an array, not practical -->
       <method id="gtk_clipboard_wait_for_targets" bind="false" /> <!-- bound manually below -->
       <extra>
@@ -2411,6 +2413,7 @@ __PRE__
      <method id="gtk_widget_modify_bg" obsolescent="True"/>
      <method id="gtk_widget_modify_text" obsolescent="True"/>
      <method id="gtk_widget_modify_font" obsolescent="True"/>
+     <method id="gtk_widget_insert_action_group" bind="False"/> <!--  needs GAction -->
      <method id="gtk_widget_set_sensitive">
        <parameter name="Sensitive" default="True"/>
      </method>
@@ -2880,6 +2883,7 @@ __PRE__
 
    <package id="GtkMenuShell">
      <parameter name="self" ada="Menu_Shell"/>
+     <method id="gtk_menu_shell_bind_model" bind="False"/> <!--  needs Gmenu -->
    </package>
 
    <package id="GtkMenuToolButton">
@@ -3909,7 +3913,7 @@ creating a tag.
    </package>
 
    <package id="GdkEvent">
-     <enum ctype="GdkEventType" prefix="GDK_"/>
+     <enum ctype="GdkEventType" prefix="GDK_" ignore="GDK_DOUBLE_BUTTON_PRESS GDK_TRIPLE_BUTTON_PRESS"/>
      <enum ctype="GdkEventMask" prefix="GDK_"/>
      <enum ctype="GdkVisibilityState" prefix="GDK_"/>
      <enum ctype="GdkScrollDirection" prefix="GDK_"/>
@@ -4047,6 +4051,9 @@ creating a tag.
        </type>
        <with_spec pkg="Glib.Values" />
        <spec>
+         Double_Button_Press : constant Gdk_Event_Type := Gdk_2button_Press;
+         Triple_Button_Press : constant Gdk_Event_Type := Gdk_3button_Press;
+
          function From_Address (C : System.Address) return Gdk_Event;
          --  Convert a C handler to the matching Event structure.
 
@@ -7115,10 +7122,17 @@ package body Generic_Set is
 
    <package id="GtkCssSection">
      <enum ctype="GtkCssSectionType"/>
+
+     <method id="gtk_css_section_get_file" bind="False"/>  <!--  needs GFile -->
    </package>
 
    <package id="GdkFrameClock">
      <enum ctype="GdkFrameClockPhase"/>
+   </package>
+
+   <package id="GtkActionable">
+     <method id="gtk_actionable_get_action_target_value" bind="False"/>   <!--  Needs GVariant -->
+     <method id="gtk_actionable_set_action_target_value" bind="False"/>   <!--  Needs GVariant -->
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

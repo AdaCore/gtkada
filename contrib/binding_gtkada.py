@@ -127,6 +127,7 @@ Where the package node is defined as follows:
              ada="..."     <!-- optional Ada name (no package info needed) -->
              prefix="GTK_" <!-- remove prefix from values to get Ada name -->
              asbitfield="false" <!--  forces a bitfield -->
+             ignore="value1 value2..."  <!--  values that should not be bound -->
        />
 
        <!-- Support for <record> types -->
@@ -244,7 +245,7 @@ class GtkAdaPackage(object):
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the
-           package. The result is a list of Enum() instances.
+           package. The result is a list of tuples.
         """
         result = []
         if self.node:
@@ -252,7 +253,8 @@ class GtkAdaPackage(object):
                 result.append((enum.get("ctype"),
                                naming.type(name="", cname=enum.get("ctype")),
                                enum.get("prefix", "GTK_"),
-                               enum.get("asbitfield", "false").lower() == "true"
+                               enum.get("asbitfield", "false").lower() == "true",
+                               enum.get("ignore", "")
                                ))
         return result
 
