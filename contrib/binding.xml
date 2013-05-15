@@ -7178,6 +7178,18 @@ package body Generic_Set is
      <method id="gtk_theming_engine_register_property" bind="False"/> <!-- obsolete and requires GtkStylePropertyParser -->
    </package>
 
+   <package id="GtkBindingSet">
+     <method id="gtk_binding_set_new" ada="Gtk_New"/>
+     <record ctype="GtkBindingSet">
+       <field name="widget_path_pspecs" ctype="gpointer"/>  <!-- unused in C -->
+       <field name="widget_class_pspecs" ctype="gpointer"/>  <!-- unused in C -->
+       <field name="class_branch_pspecs" ctype="gpointer"/>  <!-- unused in C -->
+       <field name="current" ctype="gpointer"/>  <!-- implementation detail in C -->
+     </record>
+   </package>
+
+   <package id="GtkBindingEntry" into="GtkBindingSet">
+   </package>
 
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.

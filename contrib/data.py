@@ -244,6 +244,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkAspectFrame",
            "GtkAssistant",
            "GtkBin",
+           "GtkBindingEntry",
+           "GtkBindingSet",
            "GtkBorder",
            "GtkBox",
            "GtkBuilder",

@@ -134,9 +134,10 @@ Where the package node is defined as follows:
        <record ctype="..."
              ada="..."     <!-- optional Ada name (no package info needed) -->
        >
-           <union value="..." field="..."/>  <!--  once for each value of
-                                                   discriminant, mapping to
-                                                   relevant field --
+          <field name="..." ctype="..."/>   <!--  override ctype -->
+          <union value="..." field="..."/>  <!--  once for each value of
+                                                  discriminant, mapping to
+                                                  relevant field --
        </record>
 
        <!-- Instantiates a list of elements. These statements automatically
