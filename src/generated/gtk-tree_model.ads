@@ -263,14 +263,6 @@ package Gtk.Tree_Model is
    -- Constructors --
    ------------------
 
-   procedure Gtk_Sort_New_With_Model (Tree_Model : out Gtk_Tree_Model);
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child model.
-
-   function Gtk_Tree_Model_Sort_New_With_Model return Gtk_Tree_Model;
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child model.
-
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_model_get_type");
 

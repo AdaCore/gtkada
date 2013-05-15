@@ -352,30 +352,6 @@ package body Gtk.Tree_Model is
       Path.Set_Object (Internal);
    end Gtk_New_First;
 
-   -----------------------------
-   -- Gtk_Sort_New_With_Model --
-   -----------------------------
-
-   procedure Gtk_Sort_New_With_Model (Tree_Model : out Gtk_Tree_Model) is
-      function Internal return Gtk_Tree_Model;
-      pragma Import (C, Internal, "gtk_tree_model_sort_new_with_model");
-   begin
-      Tree_Model := Internal;
-   end Gtk_Sort_New_With_Model;
-
-   ----------------------------------------
-   -- Gtk_Tree_Model_Sort_New_With_Model --
-   ----------------------------------------
-
-   function Gtk_Tree_Model_Sort_New_With_Model return Gtk_Tree_Model is
-      function Internal return Gtk_Tree_Model;
-      pragma Import (C, Internal, "gtk_tree_model_sort_new_with_model");
-      Tree_Model : Gtk_Tree_Model;
-   begin
-      Tree_Model := Internal;
-      return Tree_Model;
-   end Gtk_Tree_Model_Sort_New_With_Model;
-
    -----------------------
    -- Gtk_Tree_Path_New --
    -----------------------

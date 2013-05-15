@@ -163,6 +163,23 @@ package Gtk.Tree_Model_Sort is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New_With_Model
+      (Self        : out Gtk_Tree_Model_Sort;
+       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model);
+   procedure Initialize_With_Model
+      (Self        : not null access Gtk_Tree_Model_Sort_Record'Class;
+       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model);
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child model.
+   --  "child_model": A Gtk.Tree_Model.Gtk_Tree_Model
+
+   function Gtk_Tree_Model_Sort_Sort_New_With_Model
+      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
+       return Gtk_Tree_Model_Sort;
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child model.
+   --  "child_model": A Gtk.Tree_Model.Gtk_Tree_Model
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_model_sort_get_type");
 
