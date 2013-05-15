@@ -281,7 +281,8 @@ package Gtk.Text_Tag is
 
    Variant_Set_Property : constant Glib.Properties.Property_Boolean;
 
-   Weight_Property : constant Glib.Properties.Property_Int;
+   Weight_Property : constant Pango.Enums.Property_Weight;
+   --  Type: Pango.Enums.Weight
 
    Weight_Set_Property : constant Glib.Properties.Property_Boolean;
 
@@ -317,8 +318,8 @@ private
      Gtk.Enums.Build ("wrap-mode");
    Weight_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("weight-set");
-   Weight_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("weight");
+   Weight_Property : constant Pango.Enums.Property_Weight :=
+     Pango.Enums.Build ("weight");
    Variant_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("variant-set");
    Variant_Property : constant Pango.Enums.Property_Variant :=
