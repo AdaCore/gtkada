@@ -234,7 +234,8 @@ package Gtk.Cell_Renderer_Text is
 
    Variant_Set_Property : constant Glib.Properties.Property_Boolean;
 
-   Weight_Property : constant Glib.Properties.Property_Int;
+   Weight_Property : constant Pango.Enums.Property_Weight;
+   --  Type: Pango.Enums.Weight
 
    Weight_Set_Property : constant Glib.Properties.Property_Boolean;
 
@@ -297,8 +298,8 @@ private
      Glib.Properties.Build ("width-chars");
    Weight_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("weight-set");
-   Weight_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("weight");
+   Weight_Property : constant Pango.Enums.Property_Weight :=
+     Pango.Enums.Build ("weight");
    Variant_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("variant-set");
    Variant_Property : constant Pango.Enums.Property_Variant :=
