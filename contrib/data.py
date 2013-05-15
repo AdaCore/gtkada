@@ -352,6 +352,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkRadioMenuItem",
            "GtkRadioToolButton",
            "GtkRange",
+           "--GtkRcStyle",  #  manual binding for these deprecated routines
            "GtkRecentAction",
            "GtkRecentChooserDialog",
            "GtkRecentChooserMenu",
