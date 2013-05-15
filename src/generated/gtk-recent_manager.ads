@@ -188,7 +188,6 @@ package Gtk.Recent_Manager is
    --  to gtk_recent_manager_add_full.
    --  See gtk_recent_manager_add_full if you want to explicitly define the
    --  metadata for the resource pointed by Uri.
-   --  to the recently used resources list
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
 
@@ -196,9 +195,6 @@ package Gtk.Recent_Manager is
       (Self : not null access Gtk_Recent_Manager_Record)
        return Gtk_Recent_Info_List.Glist;
    --  Gets the list of recently used resources.
-   --  newly allocated Gtk.Recent_Info.Gtk_Recent_Info objects. Use
-   --  Gtk.Recent_Info.Unref on each item inside the list, and then free the
-   --  list itself using g_list_free.
    --  Since: gtk+ 2.10
 
    function Has_Item
@@ -215,9 +211,6 @@ package Gtk.Recent_Manager is
    --  Searches for a URI inside the recently used resources list, and returns
    --  a structure containing informations about the resource like its MIME
    --  type, or its display name.
-   --  about the resource pointed by Uri, or null if the URI was not
-   --  registered in the recently used resources list. Free with
-   --  Gtk.Recent_Info.Unref.
    --  Since: gtk+ 2.10
    --  "uri": a URI
 
@@ -236,7 +229,6 @@ package Gtk.Recent_Manager is
    function Purge_Items
       (Self : not null access Gtk_Recent_Manager_Record) return Gint;
    --  Purges every item from the recently used resources list.
-   --  recently used resources list.
    --  Since: gtk+ 2.10
 
    function Remove_Item
@@ -244,7 +236,6 @@ package Gtk.Recent_Manager is
        URI  : UTF8_String) return Boolean;
    --  Removes a resource pointed by Uri from the recently used resources list
    --  handled by a recent manager.
-   --  removed by the recently used resources list, and False otherwise.
    --  Since: gtk+ 2.10
    --  "uri": the URI of the item you wish to remove
 

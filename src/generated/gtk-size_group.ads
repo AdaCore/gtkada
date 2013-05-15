@@ -25,7 +25,7 @@
 --  Gtk.Size_Group.Gtk_Size_Group provides a mechanism for grouping a number
 --  of widgets together so they all request the same amount of space. This is
 --  typically useful when you want a column of widgets to have the same size,
---  but you can't use a Gtk.Table.Gtk_Table widget.
+--  but you can't use a Gtk.Grid.Gtk_Grid widget.
 --
 --  In detail, the size requested for each widget in a
 --  Gtk.Size_Group.Gtk_Size_Group is the maximum of the sizes that would have
@@ -192,7 +192,6 @@ package Gtk.Size_Group is
       (Size_Group : not null access Gtk_Size_Group_Record)
        return Gtk.Widget.Widget_SList.GSlist;
    --  Returns the list of widgets associated with Size_Group.
-   --  widgets. The list is owned by GTK+ and should not be modified.
    --  Since: gtk+ 2.10
 
    procedure Remove_Widget

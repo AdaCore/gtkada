@@ -24,8 +24,8 @@
 --  <description>
 --  Gtk.Cell_Layout.Gtk_Cell_Layout is an interface to be implemented by all
 --  objects which want to provide a
---  Gtk.Tree_View_Column.Gtk_Tree_View_Column-like API for packing cells,
---  setting attributes and data funcs.
+--  Gtk.Tree_View_Column.Gtk_Tree_View_Column<!-- -->-like API for packing
+--  cells, setting attributes and data funcs.
 --
 --  One of the notable features provided by implementations of GtkCellLayout
 --  are *attributes*. Attributes let you set the properties in flexible ways.
@@ -41,8 +41,7 @@
 --
 --  Implementations of GtkCellLayout which also implement the GtkBuildable
 --  interface (Gtk.Cell_View.Gtk_Cell_View, Gtk.Icon_View.Gtk_Icon_View,
---  Gtk.Combo_Box.Gtk_Combo_Box, Gtk_Combo_Box_Entry,
---  Gtk.Entry_Completion.Gtk_Entry_Completion,
+--  Gtk.Combo_Box.Gtk_Combo_Box, Gtk.Entry_Completion.Gtk_Entry_Completion,
 --  Gtk.Tree_View_Column.Gtk_Tree_View_Column) accept GtkCellRenderer objects
 --  as <child> elements in UI definitions. They support a custom <attributes>
 --  element for their children, which can contain multiple <attribute>
@@ -200,9 +199,6 @@ package Gtk.Cell_Layout is
       (Cell_Layout : Gtk_Cell_Layout)
        return Glib.Object.Object_Simple_List.Glist;
    --  Returns the cell renderers which have been added to Cell_Layout.
-   --  a list of cell renderers. The list, but not the renderers has been
-   --  newly allocated and should be freed with g_list_free when no longer
-   --  needed.
    --  Since: gtk+ 2.12
 
    procedure Pack_End

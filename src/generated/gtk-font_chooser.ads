@@ -22,19 +22,12 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget widget lists the
---  available fonts, styles and sizes, allowing the user to select a font. It
---  is used in the Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog widget to
---  provide a dialog box for selecting fonts.
---
---  To set the font which is initially selected, use Gtk.Font_Chooser.Set_Font
---  or Gtk.Font_Chooser.Set_Font_Desc.
---
---  To get the selected font use Gtk.Font_Chooser.Get_Font or
---  Gtk.Font_Chooser.Get_Font_Desc.
---
---  To change the text which is shown in the preview area, use
---  Gtk.Font_Chooser.Set_Preview_Text.
+--  Gtk.Font_Chooser.Gtk_Font_Chooser is an interface that can be implemented
+--  by widgets displaying the list of fonts. In GTK+, the main objects that
+--  implement this interface are
+--  Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget,
+--  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog and
+--  Gtk.Font_Button.Gtk_Font_Button.
 --
 --  </description>
 
@@ -84,8 +77,6 @@ package Gtk.Font_Chooser is
    --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
    --  12".
    --  Use Pango.Font.Equal if you want to compare two font descriptions.
-   --  of the current font, or null if no font is selected. You must free this
-   --  string with g_free.
    --  Since: gtk+ 3.2
 
    procedure Set_Font (Self : Gtk_Font_Chooser; Fontname : UTF8_String);
@@ -103,7 +94,6 @@ package Gtk.Font_Chooser is
    --  "Helvetica Italic Bold 12" could be normalized to "Helvetica Bold Italic
    --  12".
    --  Use Pango.Font.Equal if you want to compare two font descriptions.
-   --  current font, or null if no font is selected.
    --  Since: gtk+ 3.2
 
    procedure Set_Font_Desc
@@ -119,8 +109,6 @@ package Gtk.Font_Chooser is
    --  Gets the Pango.Font_Face.Pango_Font_Face representing the selected font
    --  group details (i.e. family, slant, weight, width, etc).
    --  If the selected font is not installed, returns null.
-   --  selected font group details, or null. The returned object is owned by
-   --  Fontchooser and must not be modified or freed.
    --  Since: gtk+ 3.2
 
    function Get_Font_Family
@@ -128,19 +116,15 @@ package Gtk.Font_Chooser is
    --  Gets the Pango.Font_Family.Pango_Font_Family representing the selected
    --  font family. Font families are a collection of font faces.
    --  If the selected font is not installed, returns null.
-   --  selected font family, or null. The returned object is owned by
-   --  Fontchooser and must not be modified or freed.
    --  Since: gtk+ 3.2
 
    function Get_Font_Size (Self : Gtk_Font_Chooser) return Gint;
    pragma Import (C, Get_Font_Size, "gtk_font_chooser_get_font_size");
    --  The selected font size.
-   --  or -1 if no font size is selected.
    --  Since: gtk+ 3.2
 
    function Get_Preview_Text (Self : Gtk_Font_Chooser) return UTF8_String;
    --  Gets the text displayed in the preview area.
-   --  preview area
    --  Since: gtk+ 3.2
 
    procedure Set_Preview_Text (Self : Gtk_Font_Chooser; Text : UTF8_String);
@@ -151,7 +135,6 @@ package Gtk.Font_Chooser is
 
    function Get_Show_Preview_Entry (Self : Gtk_Font_Chooser) return Boolean;
    --  Returns whether the preview entry is shown or not.
-   --  or False if it is hidden.
    --  Since: gtk+ 3.2
 
    procedure Set_Show_Preview_Entry
@@ -221,12 +204,12 @@ package Gtk.Font_Chooser is
    -------------
 
    type Cb_Gtk_Font_Chooser_UTF8_String_Void is not null access procedure
-     (Self   : Gtk_Font_Chooser;
-      Object : UTF8_String);
+     (Self     : Gtk_Font_Chooser;
+      Fontname : UTF8_String);
 
    type Cb_GObject_UTF8_String_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : UTF8_String);
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Fontname : UTF8_String);
 
    Signal_Font_Activated : constant Glib.Signal_Name := "font-activated";
    procedure On_Font_Activated
@@ -238,6 +221,9 @@ package Gtk.Font_Chooser is
        Call  : Cb_GObject_UTF8_String_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  Emitted when a font is activated. This usually happens when the user
+   --  double clicks an item, or an item is selected and the user presses one
+   --  of the keys Space, Shift+Space, Return or Enter.
 
    ----------------
    -- Interfaces --

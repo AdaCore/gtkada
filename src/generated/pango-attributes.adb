@@ -62,7 +62,6 @@ package body Pango.Attributes is
    --  Given a Pango.Attributes.Pango_Attr_List and callback function, removes
    --  any elements of List for which Func returns True and inserts them into a
    --  new list.
-   --  no attributes of the given types were found.
    --  Since: gtk+ 1.2
    --  "func": callback function; returns True if an attribute should be
    --  filtered out.
@@ -76,8 +75,10 @@ package body Pango.Attributes is
 
    function Internal_Pango_Attr_Filter_Func
       (Attribute : access Pango.Attributes.Pango_Attribute;
-       Data      : System.Address) return Integer;
+       User_Data : System.Address) return Integer;
    pragma Convention (C, Internal_Pango_Attr_Filter_Func);
+   --  "attribute": a Pango attribute
+   --  "user_data": user data passed to the function
 
    -------------------------------------
    -- Internal_Pango_Attr_Filter_Func --
@@ -85,9 +86,9 @@ package body Pango.Attributes is
 
    function Internal_Pango_Attr_Filter_Func
       (Attribute : access Pango.Attributes.Pango_Attribute;
-       Data      : System.Address) return Integer
+       User_Data : System.Address) return Integer
    is
-      Func : constant Pango_Attr_Filter_Func := To_Pango_Attr_Filter_Func (Data);
+      Func : constant Pango_Attr_Filter_Func := To_Pango_Attr_Filter_Func (User_Data);
    begin
       return Boolean'Pos (Func (Attribute.all));
    end Internal_Pango_Attr_Filter_Func;
@@ -183,8 +184,11 @@ package body Pango.Attributes is
 
       function Internal_Cb
          (Attribute : access Pango.Attributes.Pango_Attribute;
-          Data      : System.Address) return Integer;
+          User_Data : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
+      --  Type of a function filtering a list of attributes.
+      --  "attribute": a Pango attribute
+      --  "user_data": user data passed to the function
 
       ------------
       -- Filter --
@@ -209,9 +213,9 @@ package body Pango.Attributes is
 
       function Internal_Cb
          (Attribute : access Pango.Attributes.Pango_Attribute;
-          Data      : System.Address) return Integer
+          User_Data : System.Address) return Integer
       is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
          return Boolean'Pos (To_Pango_Attr_Filter_Func (D.Func) (Attribute.all, D.Data.all));
       end Internal_Cb;
@@ -296,7 +300,7 @@ package body Pango.Attributes is
    begin
       Tmp_Return := Internal (Tmp_Family);
       Free (Tmp_Family);
-      return Tmp_Return.all;
+      return From_Object_Free (Tmp_Return);
    end Attr_Family_New;
 
    ----------------------------
@@ -310,7 +314,7 @@ package body Pango.Attributes is
          (Strikethrough : Integer) return access Pango_Attribute;
       pragma Import (C, Internal, "pango_attr_strikethrough_new");
    begin
-      return Internal (Boolean'Pos (Strikethrough)).all;
+      return From_Object_Free (Internal (Boolean'Pos (Strikethrough)));
    end Attr_Strikethrough_New;
 
 end Pango.Attributes;

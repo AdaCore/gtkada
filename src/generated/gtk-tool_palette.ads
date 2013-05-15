@@ -161,8 +161,8 @@ package Gtk.Tool_Palette is
    --  for Palette
    --  "flags": the flags that specify what actions GTK+ should take for drops
    --  on that widget
-   --  "targets": the Gtk_Tool_Palette_Drag_Target<!-- -->s which the widget
-   --  should support
+   --  "targets": the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which the
+   --  widget should support
    --  "actions": the Gdk.Drag_Contexts.Gdk_Drag_Action<!-- -->s which the
    --  widget should suppport
 
@@ -181,7 +181,6 @@ package Gtk.Tool_Palette is
        X    : Gint;
        Y    : Gint) return Gtk.Tool_Item_Group.Gtk_Tool_Item_Group;
    --  Gets the group at position (x, y).
-   --  if there is no such group
    --  Since: gtk+ 2.20
    --  "x": the x position
    --  "y": the y position
@@ -293,8 +292,8 @@ package Gtk.Tool_Palette is
    --  the tool palette as drag sources on button 1 and button 3 press with
    --  copy and move actions. See gtk_drag_source_set.
    --  Since: gtk+ 2.20
-   --  "targets": the Gtk_Tool_Palette_Drag_Target<!-- -->s which the widget
-   --  should support
+   --  "targets": the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which the
+   --  widget should support
 
    procedure Unset_Icon_Size
       (Self : not null access Gtk_Tool_Palette_Record);
@@ -376,8 +375,8 @@ package Gtk.Tool_Palette is
 
    Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The size of the icons in a tool palette is normally determined by the
-   --  Gtk.Settings.Gtk_Settings:toolbar-icon-size setting. When this property
-   --  is set, it overrides the setting.
+   --  Gtk.Settings.Gtk_Settings:gtk-toolbar-icon-size setting. When this
+   --  property is set, it overrides the setting.
    --
    --  This should only be used for special-purpose tool palettes, normal
    --  application tool palettes should respect the user preferences for the

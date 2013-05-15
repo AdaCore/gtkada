@@ -133,6 +133,30 @@ package body Gtk.UI_Manager is
       return Tmp_Return;
    end Add_UI_From_File;
 
+   --------------------------
+   -- Add_UI_From_Resource --
+   --------------------------
+
+   function Add_UI_From_Resource
+      (Self          : not null access Gtk_UI_Manager_Record;
+       Resource_Path : UTF8_String;
+       Error         : access Glib.Error.GError) return Guint
+   is
+      function Internal
+         (Self          : System.Address;
+          Resource_Path : Interfaces.C.Strings.chars_ptr;
+          Acc_Error     : access Glib.Error.GError) return Guint;
+      pragma Import (C, Internal, "gtk_ui_manager_add_ui_from_resource");
+      Acc_Error         : aliased Glib.Error.GError;
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Return        : Guint;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path, Acc_Error'Access);
+      Free (Tmp_Resource_Path);
+      Error.all := Acc_Error;
+      return Tmp_Return;
+   end Add_UI_From_Resource;
+
    ------------------------
    -- Add_UI_From_String --
    ------------------------

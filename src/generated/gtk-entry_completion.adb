@@ -232,6 +232,27 @@ package body Gtk.Entry_Completion is
       Internal (Get_Object (Completion));
    end Complete;
 
+   --------------------
+   -- Compute_Prefix --
+   --------------------
+
+   function Compute_Prefix
+      (Completion : not null access Gtk_Entry_Completion_Record;
+       Key        : UTF8_String) return UTF8_String
+   is
+      function Internal
+         (Completion : System.Address;
+          Key        : Interfaces.C.Strings.chars_ptr)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_entry_completion_compute_prefix");
+      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+   begin
+      Tmp_Return := Internal (Get_Object (Completion), Tmp_Key);
+      Free (Tmp_Key);
+      return Gtkada.Bindings.Value_And_Free (Tmp_Return);
+   end Compute_Prefix;
+
    -------------------
    -- Delete_Action --
    -------------------
@@ -592,7 +613,6 @@ package body Gtk.Entry_Completion is
       --  g_utf8_casefold). If this is not appropriate, match functions have
       --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
       --  (gtk_entry_completion_get_entry (<!-- -->)))'.
-      --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
       --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match

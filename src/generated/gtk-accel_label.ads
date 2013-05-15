@@ -74,6 +74,7 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Types;       use Gdk.Types;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -134,6 +135,19 @@ package Gtk.Accel_Label is
    --  Recreates the string representing the accelerator keys. This should not
    --  be needed since the string is automatically updated whenever
    --  accelerators are added or removed from the associated widget.
+
+   procedure Set_Accel
+      (Accel_Label      : not null access Gtk_Accel_Label_Record;
+       Accelerator_Key  : Guint;
+       Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type);
+   --  Manually sets a keyval and modifier mask as the accelerator rendered by
+   --  Accel_Label.
+   --  If a keyval and modifier are explicitly set then these values are used
+   --  regardless of any associated accel closure or widget.
+   --  Providing an Accelerator_Key of 0 removes the manual setting.
+   --  Since: gtk+ 3.6
+   --  "accelerator_key": a keyval, or 0
+   --  "accelerator_mods": the modifier mask for the accel
 
    procedure Set_Accel_Closure
       (Accel_Label   : not null access Gtk_Accel_Label_Record;

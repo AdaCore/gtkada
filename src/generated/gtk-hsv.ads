@@ -28,6 +28,9 @@
 --  and moving the selection point inside the inner triangle changes value and
 --  saturation.
 --
+--  Gtk.Hsv.Gtk_Hsv has been deprecated together with
+--  Gtk.Color_Selection.Gtk_Color_Selection, where it was used.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -110,8 +113,6 @@ package Gtk.Hsv is
    --  changes are being made to its value, for example, when the user is
    --  adjusting the value with the mouse. This function queries whether the
    --  HSV color selector is being adjusted or not.
-   --  since they may be transitory, or False if they should consider the
-   --  color value status to be final.
    --  Since: gtk+ 2.14
 
    ---------------
@@ -125,8 +126,9 @@ package Gtk.Hsv is
        R : out Gdouble;
        G : out Gdouble;
        B : out Gdouble);
-   --  Converts a color from HSV space to RGB. Input values must be in the
-   --  [0.0, 1.0] range; output values will be in the same range.
+   --  Converts a color from HSV space to RGB.
+   --  Input values must be in the [0.0, 1.0] range; output values will be in
+   --  the same range.
    --  Since: gtk+ 2.14
    --  "h": Hue
    --  "s": Saturation

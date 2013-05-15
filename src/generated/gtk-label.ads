@@ -24,7 +24,8 @@
 --  <description>
 --  The Gtk.Label.Gtk_Label widget displays a small amount of text. As the
 --  name implies, most labels are used to label another widget such as a
---  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a Gtk_Option_Menu.
+--  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a
+--  Gtk.Combo_Box.Gtk_Combo_Box.
 --
 --  == GtkLabel as GtkBuildable ==
 --
@@ -271,7 +272,6 @@ package Gtk.Label is
    --  attributes that come from the labels markup (see Gtk.Label.Set_Markup).
    --  If you want to get the effective attributes for the label, use
    --  pango_layout_get_attribute (gtk_label_get_layout (label)).
-   --  if none was set.
 
    procedure Set_Attributes
       (Label : not null access Gtk_Label_Record;
@@ -295,7 +295,6 @@ package Gtk.Label is
    --  This function is intended for use in a
    --  Gtk.Label.Gtk_Label::activate-link handler or for use in a
    --  Gtk.Widget.Gtk_Widget::query-tooltip handler.
-   --  not be freed or modified.
    --  Since: gtk+ 2.18
 
    function Get_Ellipsize
@@ -333,7 +332,6 @@ package Gtk.Label is
       (Label : not null access Gtk_Label_Record) return UTF8_String;
    --  Fetches the text from a label widget including any embedded underlines
    --  indicating mnemonics and Pango markup. (See Gtk.Label.Get_Text).
-   --  owned by the widget and must not be modified or freed.
 
    procedure Set_Label
       (Label : not null access Gtk_Label_Record;
@@ -421,14 +419,13 @@ package Gtk.Label is
       (Label : not null access Gtk_Label_Record) return Guint;
    --  If the label has been set so that it has an mnemonic key this function
    --  returns the keyval used for the mnemonic accelerator. If there is no
-   --  mnemonic set up it returns GDK_Void_Symbol.
+   --  mnemonic set up it returns GDK_KEY_Void_Symbol.
 
    function Get_Mnemonic_Widget
       (Label : not null access Gtk_Label_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the target of the mnemonic (keyboard shortcut) of this label.
    --  See Gtk.Label.Set_Mnemonic_Widget.
-   --  or null if none has been set and the default algorithm will be used.
 
    procedure Set_Mnemonic_Widget
       (Label  : not null access Gtk_Label_Record;
@@ -486,7 +483,6 @@ package Gtk.Label is
    --  Fetches the text from a label widget, as displayed on the screen. This
    --  does not include any embedded underlines indicating mnemonics or Pango
    --  markup. (See Gtk.Label.Get_Label)
-   --  string used by the label, and must not be modified.
 
    procedure Set_Text
       (Label : not null access Gtk_Label_Record;
@@ -527,7 +523,6 @@ package Gtk.Label is
       (Label : not null access Gtk_Label_Record) return Boolean;
    --  Returns whether an embedded underline in the label indicates a
    --  mnemonic. See Gtk.Label.Set_Use_Underline.
-   --  the mnemonic accelerator keys.
 
    procedure Set_Use_Underline
       (Label   : not null access Gtk_Label_Record;
@@ -632,7 +627,7 @@ package Gtk.Label is
    --  Type: Pango.Layout.Pango_Ellipsize_Mode
    --  The preferred place to ellipsize the string, if the label does not have
    --  enough room to display the entire string, specified as a
-   --  Pango_Ellisize_Mode.
+   --  Pango.Layout.Pango_Ellipsize_Mode.
    --
    --  Note that setting this property to a value other than
    --  Pango.Layout.Ellipsize_None has the side-effect that the label requests

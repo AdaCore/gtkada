@@ -187,22 +187,6 @@ package body Gtk.Color_Button is
       Internal (Get_Object (Button), Color);
    end Get_Color;
 
-   --------------
-   -- Get_Rgba --
-   --------------
-
-   procedure Get_Rgba
-      (Button : not null access Gtk_Color_Button_Record;
-       Rgba   : out Gdk.RGBA.Gdk_RGBA)
-   is
-      procedure Internal
-         (Button : System.Address;
-          Rgba   : out Gdk.RGBA.Gdk_RGBA);
-      pragma Import (C, Internal, "gtk_color_button_get_rgba");
-   begin
-      Internal (Get_Object (Button), Rgba);
-   end Get_Rgba;
-
    ---------------
    -- Get_Title --
    ---------------
@@ -216,19 +200,6 @@ package body Gtk.Color_Button is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Button)));
    end Get_Title;
-
-   -------------------
-   -- Get_Use_Alpha --
-   -------------------
-
-   function Get_Use_Alpha
-      (Button : not null access Gtk_Color_Button_Record) return Boolean
-   is
-      function Internal (Button : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_color_button_get_use_alpha");
-   begin
-      return Internal (Get_Object (Button)) /= 0;
-   end Get_Use_Alpha;
 
    ---------------
    -- Set_Alpha --
@@ -260,20 +231,6 @@ package body Gtk.Color_Button is
       Internal (Get_Object (Button), Color);
    end Set_Color;
 
-   --------------
-   -- Set_Rgba --
-   --------------
-
-   procedure Set_Rgba
-      (Button : not null access Gtk_Color_Button_Record;
-       Rgba   : Gdk.RGBA.Gdk_RGBA)
-   is
-      procedure Internal (Button : System.Address; Rgba : Gdk.RGBA.Gdk_RGBA);
-      pragma Import (C, Internal, "gtk_color_button_set_rgba");
-   begin
-      Internal (Get_Object (Button), Rgba);
-   end Set_Rgba;
-
    ---------------
    -- Set_Title --
    ---------------
@@ -292,19 +249,27 @@ package body Gtk.Color_Button is
       Free (Tmp_Title);
    end Set_Title;
 
-   -------------------
-   -- Set_Use_Alpha --
-   -------------------
+   -----------------
+   -- Add_Palette --
+   -----------------
 
-   procedure Set_Use_Alpha
-      (Button    : not null access Gtk_Color_Button_Record;
-       Use_Alpha : Boolean)
+   procedure Add_Palette
+      (Self            : not null access Gtk_Color_Button_Record;
+       Orientation     : Gtk.Enums.Gtk_Orientation;
+       Colors_Per_Line : Gint;
+       N_Colors        : Gint;
+       Colors          : array_of_Gdk_RGBA)
    is
-      procedure Internal (Button : System.Address; Use_Alpha : Integer);
-      pragma Import (C, Internal, "gtk_color_button_set_use_alpha");
+      procedure Internal
+         (Self            : System.Address;
+          Orientation     : Gtk.Enums.Gtk_Orientation;
+          Colors_Per_Line : Gint;
+          N_Colors        : Gint;
+          Colors          : array_of_Gdk_RGBA);
+      pragma Import (C, Internal, "gtk_color_chooser_add_palette");
    begin
-      Internal (Get_Object (Button), Boolean'Pos (Use_Alpha));
-   end Set_Use_Alpha;
+      Internal (Get_Object (Self), Orientation, Colors_Per_Line, N_Colors, Colors);
+   end Add_Palette;
 
    ---------------------------
    -- Do_Set_Related_Action --
@@ -319,6 +284,20 @@ package body Gtk.Color_Button is
    begin
       Internal (Get_Object (Self), Get_Object (Action));
    end Do_Set_Related_Action;
+
+   ---------------------
+   -- Get_Action_Name --
+   ---------------------
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Color_Button_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_actionable_get_action_name");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Action_Name;
 
    ------------------------
    -- Get_Related_Action --
@@ -335,6 +314,22 @@ package body Gtk.Color_Button is
       return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
+   --------------
+   -- Get_Rgba --
+   --------------
+
+   procedure Get_Rgba
+      (Self  : not null access Gtk_Color_Button_Record;
+       Color : out Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          Color : out Gdk.RGBA.Gdk_RGBA);
+      pragma Import (C, Internal, "gtk_color_chooser_get_rgba");
+   begin
+      Internal (Get_Object (Self), Color);
+   end Get_Rgba;
+
    -------------------------------
    -- Get_Use_Action_Appearance --
    -------------------------------
@@ -347,6 +342,55 @@ package body Gtk.Color_Button is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
+
+   -------------------
+   -- Get_Use_Alpha --
+   -------------------
+
+   function Get_Use_Alpha
+      (Self : not null access Gtk_Color_Button_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_color_chooser_get_use_alpha");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Use_Alpha;
+
+   ---------------------
+   -- Set_Action_Name --
+   ---------------------
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Color_Button_Record;
+       Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Action_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_action_name");
+      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Action_Name);
+      Free (Tmp_Action_Name);
+   end Set_Action_Name;
+
+   ------------------------------
+   -- Set_Detailed_Action_Name --
+   ------------------------------
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Color_Button_Record;
+       Detailed_Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
+      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
+      Free (Tmp_Detailed_Action_Name);
+   end Set_Detailed_Action_Name;
 
    ------------------------
    -- Set_Related_Action --
@@ -362,6 +406,20 @@ package body Gtk.Color_Button is
       Internal (Get_Object (Self), Get_Object (Action));
    end Set_Related_Action;
 
+   --------------
+   -- Set_Rgba --
+   --------------
+
+   procedure Set_Rgba
+      (Self  : not null access Gtk_Color_Button_Record;
+       Color : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal (Self : System.Address; Color : Gdk.RGBA.Gdk_RGBA);
+      pragma Import (C, Internal, "gtk_color_chooser_set_rgba");
+   begin
+      Internal (Get_Object (Self), Color);
+   end Set_Rgba;
+
    -------------------------------
    -- Set_Use_Action_Appearance --
    -------------------------------
@@ -375,6 +433,20 @@ package body Gtk.Color_Button is
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));
    end Set_Use_Action_Appearance;
+
+   -------------------
+   -- Set_Use_Alpha --
+   -------------------
+
+   procedure Set_Use_Alpha
+      (Self      : not null access Gtk_Color_Button_Record;
+       Use_Alpha : Boolean)
+   is
+      procedure Internal (Self : System.Address; Use_Alpha : Integer);
+      pragma Import (C, Internal, "gtk_color_chooser_set_use_alpha");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Use_Alpha));
+   end Set_Use_Alpha;
 
    ----------------------------
    -- Sync_Action_Properties --

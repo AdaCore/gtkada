@@ -151,28 +151,6 @@ package Gtk.Tree_Model_Filter is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New
-      (Self        : out Gtk_Tree_Model_Filter;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path);
-   procedure Initialize
-      (Self        : not null access Gtk_Tree_Model_Filter_Record'Class;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path);
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child_model and Root as the virtual root.
-   --  Since: gtk+ 2.4
-   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
-
-   function Gtk_Tree_Model_Filter_Filter_New
-      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
-       return Gtk_Tree_Model_Filter;
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child_model and Root as the virtual root.
-   --  Since: gtk+ 2.4
-   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
-
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_model_filter_get_type");
 
@@ -197,7 +175,6 @@ package Gtk.Tree_Model_Filter is
    --  Sets Filter_Iter to point to the row in Filter that corresponds to the
    --  row pointed at by Child_Iter. If Filter_Iter was not set, False is
    --  returned.
-   --  valid iterator pointing to a visible row in child model.
    --  Since: gtk+ 2.4
    --  "filter_iter": An uninitialized Gtk.Tree_Model.Gtk_Tree_Iter.
    --  "child_iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to a row on
@@ -444,7 +421,7 @@ package Gtk.Tree_Model_Filter is
    function Drag_Data_Get
       (Self           : not null access Gtk_Tree_Model_Filter_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean;
 
    function Row_Draggable

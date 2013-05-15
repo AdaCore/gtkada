@@ -99,6 +99,20 @@ package body Gtk.Scrolled_Window is
       Internal (Get_Object (Scrolled_Window), Get_Object (Child));
    end Add_With_Viewport;
 
+   ------------------------------
+   -- Get_Capture_Button_Press --
+   ------------------------------
+
+   function Get_Capture_Button_Press
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean
+   is
+      function Internal (Scrolled_Window : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_capture_button_press");
+   begin
+      return Internal (Get_Object (Scrolled_Window)) /= 0;
+   end Get_Capture_Button_Press;
+
    ---------------------
    -- Get_Hadjustment --
    ---------------------
@@ -130,6 +144,20 @@ package body Gtk.Scrolled_Window is
    begin
       return Gtk.Scrollbar.Gtk_Scrollbar (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_Gtk_Scrollbar));
    end Get_Hscrollbar;
+
+   ---------------------------
+   -- Get_Kinetic_Scrolling --
+   ---------------------------
+
+   function Get_Kinetic_Scrolling
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean
+   is
+      function Internal (Scrolled_Window : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_kinetic_scrolling");
+   begin
+      return Internal (Get_Object (Scrolled_Window)) /= 0;
+   end Get_Kinetic_Scrolling;
 
    ----------------------------
    -- Get_Min_Content_Height --
@@ -239,6 +267,22 @@ package body Gtk.Scrolled_Window is
       return Gtk.Scrollbar.Gtk_Scrollbar (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub_Gtk_Scrollbar));
    end Get_Vscrollbar;
 
+   ------------------------------
+   -- Set_Capture_Button_Press --
+   ------------------------------
+
+   procedure Set_Capture_Button_Press
+      (Scrolled_Window      : not null access Gtk_Scrolled_Window_Record;
+       Capture_Button_Press : Boolean)
+   is
+      procedure Internal
+         (Scrolled_Window      : System.Address;
+          Capture_Button_Press : Integer);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_capture_button_press");
+   begin
+      Internal (Get_Object (Scrolled_Window), Boolean'Pos (Capture_Button_Press));
+   end Set_Capture_Button_Press;
+
    ---------------------
    -- Set_Hadjustment --
    ---------------------
@@ -254,6 +298,22 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window), Get_Object (Hadjustment));
    end Set_Hadjustment;
+
+   ---------------------------
+   -- Set_Kinetic_Scrolling --
+   ---------------------------
+
+   procedure Set_Kinetic_Scrolling
+      (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
+       Kinetic_Scrolling : Boolean)
+   is
+      procedure Internal
+         (Scrolled_Window   : System.Address;
+          Kinetic_Scrolling : Integer);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_kinetic_scrolling");
+   begin
+      Internal (Get_Object (Scrolled_Window), Boolean'Pos (Kinetic_Scrolling));
+   end Set_Kinetic_Scrolling;
 
    ----------------------------
    -- Set_Min_Content_Height --

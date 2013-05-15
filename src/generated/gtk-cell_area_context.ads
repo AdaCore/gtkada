@@ -30,7 +30,7 @@
 --  same context.
 --
 --  Gtk.Cell_Layout.Gtk_Cell_Layout widgets can create any number of contexts
---  in which to request and render groups of data rows. However its important
+--  in which to request and render groups of data rows. However, it's important
 --  that the same context which was used to request sizes for a given
 --  Gtk.Tree_Model.Gtk_Tree_Model row also be used for the same row when
 --  calling other Gtk.Cell_Area.Gtk_Cell_Area APIs such as Gtk.Cell_Area.Render

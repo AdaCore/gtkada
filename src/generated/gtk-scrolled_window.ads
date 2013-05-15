@@ -37,14 +37,15 @@
 --  Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class, implementing
 --  scrollability for child widgets that lack their own scrolling capabilities.
 --  Use Gtk.Viewport.Gtk_Viewport to scroll child widgets such as
---  Gtk.Table.Gtk_Table, Gtk.Box.Gtk_Box, and so on.
+--  Gtk.Grid.Gtk_Grid, Gtk.Box.Gtk_Box, and so on.
 --
 --  If a widget has native scrolling abilities, it can be added to the
 --  Gtk.Scrolled_Window.Gtk_Scrolled_Window with Gtk.Container.Add. If a widget
 --  does not, you must first add the widget to a Gtk.Viewport.Gtk_Viewport,
---  then add the Gtk.Viewport.Gtk_Viewport to the scrolled window. The
---  convenience function Gtk.Scrolled_Window.Add_With_Viewport does exactly
---  this, so you can ignore the presence of the viewport.
+--  then add the Gtk.Viewport.Gtk_Viewport to the scrolled window.
+--  Gtk.Container.Add will do this for you for widgets that don't implement
+--  Gtk.Scrollable.Gtk_Scrollable natively, so you can ignore the presence of
+--  the viewport.
 --
 --  The position of the scrollbars is controlled by the scroll adjustments.
 --  See Gtk.Adjustment.Gtk_Adjustment for the fields in an adjustment - for
@@ -59,7 +60,7 @@
 --  If a Gtk.Scrolled_Window.Gtk_Scrolled_Window doesn't behave quite as you
 --  would like, or doesn't have exactly the right layout, it's very possible to
 --  set up your own scrolling with Gtk.Scrollbar.Gtk_Scrollbar and for example
---  a Gtk.Table.Gtk_Table.
+--  a Gtk.Grid.Gtk_Grid.
 --
 --  </description>
 
@@ -121,6 +122,7 @@ package Gtk.Scrolled_Window is
    procedure Add_With_Viewport
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
        Child           : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent (Add_With_Viewport);
    --  Used to add children without native scrolling capabilities. This is
    --  simply a convenience function; it is equivalent to adding the
    --  unscrollable child to a viewport, then adding the viewport to the
@@ -135,7 +137,32 @@ package Gtk.Scrolled_Window is
    --  with the Gtk.Viewport.Gtk_Viewport proxy.
    --  A widget supports scrolling natively if it implements the
    --  Gtk.Scrollable.Gtk_Scrollable interface.
+   --  Deprecated since 3.8, Gtk.Container.Add will now automatically add a
+   --  Gtk.Viewport.Gtk_Viewport if the child doesn't implement
+   --  Gtk.Scrollable.Gtk_Scrollable.
    --  "child": the widget you want to scroll
+
+   function Get_Capture_Button_Press
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean;
+   --  Return whether button presses are captured during kinetic scrolling.
+   --  See Gtk.Scrolled_Window.Set_Capture_Button_Press.
+   --  Since: gtk+ 3.4
+
+   procedure Set_Capture_Button_Press
+      (Scrolled_Window      : not null access Gtk_Scrolled_Window_Record;
+       Capture_Button_Press : Boolean);
+   --  Changes the behaviour of Scrolled_Window wrt. to the initial event that
+   --  possibly starts kinetic scrolling. When Capture_Button_Press is set to
+   --  True, the event is captured by the scrolled window, and then later
+   --  replayed if it is meant to go to the child widget.
+   --  This should be enabled if any child widgets perform non-reversible
+   --  actions on Gtk.Widget.Gtk_Widget::button-press-event. If they don't, and
+   --  handle additionally handle Gtk.Widget.Gtk_Widget::grab-broken-event, it
+   --  might be better to set Capture_Button_Press to False.
+   --  This setting only has an effect if kinetic scrolling is enabled.
+   --  Since: gtk+ 3.4
+   --  "capture_button_press": True to capture button presses
 
    function Get_Hadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
@@ -154,8 +181,21 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Scrollbar.Gtk_Scrollbar;
    --  Returns the horizontal scrollbar of Scrolled_Window.
-   --  or null if it does not have one.
    --  Since: gtk+ 2.8
+
+   function Get_Kinetic_Scrolling
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean;
+   --  Returns the specified kinetic scrolling behavior.
+   --  Since: gtk+ 3.4
+
+   procedure Set_Kinetic_Scrolling
+      (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
+       Kinetic_Scrolling : Boolean);
+   --  Turns kinetic scrolling on or off. Kinetic scrolling only applies to
+   --  devices with source GDK_SOURCE_TOUCHSCREEN.
+   --  Since: gtk+ 3.4
+   --  "kinetic_scrolling": True to enable kinetic scrolling
 
    function Get_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
@@ -192,8 +232,6 @@ package Gtk.Scrolled_Window is
        return Gtk.Enums.Gtk_Corner_Type;
    --  Gets the placement of the contents with respect to the scrollbars for
    --  the scrolled window. See Gtk.Scrolled_Window.Set_Placement.
-   --  See also Gtk.Scrolled_Window.Set_Placement and
-   --  Gtk.Scrolled_Window.Unset_Placement.
 
    procedure Set_Placement
       (Scrolled_Window  : not null access Gtk_Scrolled_Window_Record;
@@ -263,7 +301,6 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Scrollbar.Gtk_Scrollbar;
    --  Returns the vertical scrollbar of Scrolled_Window.
-   --  or null if it does not have one.
    --  Since: gtk+ 2.8
 
    procedure Unset_Placement
@@ -285,6 +322,10 @@ package Gtk.Scrolled_Window is
    --  Type: Gtk.Adjustment.Gtk_Adjustment
 
    Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
+
+   Kinetic_Scrolling_Property : constant Glib.Properties.Property_Boolean;
+   --  The kinetic scrolling behavior flags. Kinetic scrolling only applies to
+   --  devices with source GDK_SOURCE_TOUCHSCREEN
 
    Min_Content_Height_Property : constant Glib.Properties.Property_Int;
    --  The minimum content height of Scrolled_Window, or -1 if not set.
@@ -400,6 +441,8 @@ private
      Glib.Properties.Build ("min-content-width");
    Min_Content_Height_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("min-content-height");
+   Kinetic_Scrolling_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("kinetic-scrolling");
    Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=
      Gtk.Enums.Build ("hscrollbar-policy");
    Hadjustment_Property : constant Glib.Properties.Property_Object :=

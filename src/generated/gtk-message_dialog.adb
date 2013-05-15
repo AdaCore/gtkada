@@ -43,11 +43,12 @@ package body Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "") return Gtk_Message_Dialog
+       Message  : UTF8_String := "";
+       Arg5     : System.Address) return Gtk_Message_Dialog
    is
       Dialog : constant Gtk_Message_Dialog := new Gtk_Message_Dialog_Record;
    begin
-      Gtk.Message_Dialog.Initialize (Dialog, Parent, Flags, The_Type, Buttons, Message);
+      Gtk.Message_Dialog.Initialize (Dialog, Parent, Flags, The_Type, Buttons, Message, Arg5);
       return Dialog;
    end Gtk_Message_Dialog_New;
 
@@ -60,11 +61,12 @@ package body Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "") return Gtk_Message_Dialog
+       Message  : UTF8_String := "";
+       Arg5     : System.Address) return Gtk_Message_Dialog
    is
       Dialog : constant Gtk_Message_Dialog := new Gtk_Message_Dialog_Record;
    begin
-      Gtk.Message_Dialog.Initialize_With_Markup (Dialog, Parent, Flags, The_Type, Buttons, Message);
+      Gtk.Message_Dialog.Initialize_With_Markup (Dialog, Parent, Flags, The_Type, Buttons, Message, Arg5);
       return Dialog;
    end Gtk_Message_Dialog_New_With_Markup;
 
@@ -78,11 +80,12 @@ package body Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "")
+       Message  : UTF8_String := "";
+       Arg5     : System.Address)
    is
    begin
       Dialog := new Gtk_Message_Dialog_Record;
-      Gtk.Message_Dialog.Initialize (Dialog, Parent, Flags, The_Type, Buttons, Message);
+      Gtk.Message_Dialog.Initialize (Dialog, Parent, Flags, The_Type, Buttons, Message, Arg5);
    end Gtk_New;
 
    -------------------------
@@ -95,11 +98,12 @@ package body Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "")
+       Message  : UTF8_String := "";
+       Arg5     : System.Address)
    is
    begin
       Dialog := new Gtk_Message_Dialog_Record;
-      Gtk.Message_Dialog.Initialize_With_Markup (Dialog, Parent, Flags, The_Type, Buttons, Message);
+      Gtk.Message_Dialog.Initialize_With_Markup (Dialog, Parent, Flags, The_Type, Buttons, Message, Arg5);
    end Gtk_New_With_Markup;
 
    ----------------
@@ -112,7 +116,8 @@ package body Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "")
+       Message  : UTF8_String := "";
+       Arg5     : System.Address)
    is
       function Internal
          (Parent   : System.Address;
@@ -120,7 +125,7 @@ package body Gtk.Message_Dialog is
           The_Type : Gtk_Message_Type;
           Buttons  : Gtk_Buttons_Type;
           Message  : Interfaces.C.Strings.chars_ptr;
-          Varargs  : System.Address) return System.Address;
+          Arg5     : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_new");
       Tmp_Message : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : System.Address;
@@ -131,7 +136,7 @@ package body Gtk.Message_Dialog is
          else
             Tmp_Message := New_String (Message);
          end if;
-         Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, System.Null_Address);
+         Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, Arg5);
          Free (Tmp_Message);
          Set_Object (Dialog, Tmp_Return);
       end if;
@@ -147,7 +152,8 @@ package body Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "")
+       Message  : UTF8_String := "";
+       Arg5     : System.Address)
    is
       function Internal
          (Parent   : System.Address;
@@ -155,7 +161,7 @@ package body Gtk.Message_Dialog is
           The_Type : Gtk_Message_Type;
           Buttons  : Gtk_Buttons_Type;
           Message  : Interfaces.C.Strings.chars_ptr;
-          Varargs  : System.Address) return System.Address;
+          Arg5     : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_new_with_markup");
       Tmp_Message : Interfaces.C.Strings.chars_ptr;
       Tmp_Return  : System.Address;
@@ -166,7 +172,7 @@ package body Gtk.Message_Dialog is
          else
             Tmp_Message := New_String (Message);
          end if;
-         Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, System.Null_Address);
+         Tmp_Return := Internal (Get_Object_Or_Null (GObject (Parent)), Flags, The_Type, Buttons, Tmp_Message, Arg5);
          Free (Tmp_Message);
          Set_Object (Dialog, Tmp_Return);
       end if;
@@ -178,16 +184,17 @@ package body Gtk.Message_Dialog is
 
    procedure Format_Secondary_Markup
       (Dialog  : not null access Gtk_Message_Dialog_Record;
-       Message : UTF8_String := "")
+       Message : UTF8_String := "";
+       Arg2    : System.Address)
    is
       procedure Internal
          (Dialog  : System.Address;
           Message : Interfaces.C.Strings.chars_ptr;
-          Varargs : System.Address);
+          Arg2    : System.Address);
       pragma Import (C, Internal, "gtk_message_dialog_format_secondary_markup");
       Tmp_Message : Interfaces.C.Strings.chars_ptr := New_String (Message);
    begin
-      Internal (Get_Object (Dialog), Tmp_Message, System.Null_Address);
+      Internal (Get_Object (Dialog), Tmp_Message, Arg2);
       Free (Tmp_Message);
    end Format_Secondary_Markup;
 

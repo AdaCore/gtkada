@@ -49,6 +49,7 @@ with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
@@ -126,7 +127,6 @@ package Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
    --  Retrieve the accelerator path that was previously set on Menu_Item.
    --  See Gtk.Menu_Item.Set_Accel_Path for details.
-   --  item's functionality, or null if not set
    --  Since: gtk+ 2.14
 
    procedure Set_Accel_Path
@@ -153,7 +153,6 @@ package Gtk.Menu_Item is
    function Get_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
    --  Sets Text on the Menu_Item label
-   --  string used by the label, and must not be modified.
    --  Since: gtk+ 2.16
 
    procedure Set_Label
@@ -167,7 +166,6 @@ package Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
    --  Returns whether the Menu_Item reserves space for the submenu indicator,
    --  regardless if it has a submenu or not.
-   --  submenu indicator
    --  Since: gtk+ 3.0
 
    procedure Set_Reserve_Indicator
@@ -184,7 +182,6 @@ package Gtk.Menu_Item is
    pragma Obsolescent (Get_Right_Justified);
    --  Gets whether the menu item appears justified at the right side of the
    --  menu bar.
-   --  far right if added to a menu bar.
    --  Deprecated since 3.2, See Gtk.Menu_Item.Set_Right_Justified
 
    procedure Set_Right_Justified
@@ -196,8 +193,8 @@ package Gtk.Menu_Item is
    --  considered a bad idea. (If the widget layout is reversed for a
    --  right-to-left language like Hebrew or Arabic, right-justified-menu-items
    --  appear at the left.)
-   --  Gtk.Widget.Set_Hexpand and Gtk.Widget.Set_Halign.
    --  Deprecated since 3.2, If you insist on using it, use
+   --  Gtk.Widget.Set_Hexpand and Gtk.Widget.Set_Halign.
    --  "right_justified": if True the menu item will appear at the far right
    --  if added to a menu bar
 
@@ -218,7 +215,6 @@ package Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
    --  Checks if an underline in the text indicates the next character should
    --  be used for the mnemonic accelerator key.
-   --  indicates the mnemonic accelerator key.
    --  Since: gtk+ 2.16
 
    procedure Set_Use_Underline
@@ -265,6 +261,17 @@ package Gtk.Menu_Item is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Menu_Item_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Menu_Item_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Menu_Item_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Menu_Item_Record;
@@ -414,9 +421,22 @@ package Gtk.Menu_Item is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Menu_Item_Record, Gtk_Menu_Item);
+   function "+"
+     (Widget : access Gtk_Menu_Item_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Menu_Item
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Menu_Item_Record, Gtk_Menu_Item);

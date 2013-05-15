@@ -86,13 +86,13 @@ package body Gtk.Font_Chooser_Dialog is
    ---------------------------------
 
    function Gtk_Font_Chooser_Dialog_New
-      (Title  : UTF8_String;
-       Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+      (Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class)
        return Gtk_Font_Chooser_Dialog
    is
       Self : constant Gtk_Font_Chooser_Dialog := new Gtk_Font_Chooser_Dialog_Record;
    begin
-      Gtk.Font_Chooser_Dialog.Initialize (Self, Title, Window);
+      Gtk.Font_Chooser_Dialog.Initialize (Self, Title, Parent);
       return Self;
    end Gtk_Font_Chooser_Dialog_New;
 
@@ -102,12 +102,12 @@ package body Gtk.Font_Chooser_Dialog is
 
    procedure Gtk_New
       (Self   : out Gtk_Font_Chooser_Dialog;
-       Title  : UTF8_String;
-       Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+       Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class)
    is
    begin
       Self := new Gtk_Font_Chooser_Dialog_Record;
-      Gtk.Font_Chooser_Dialog.Initialize (Self, Title, Window);
+      Gtk.Font_Chooser_Dialog.Initialize (Self, Title, Parent);
    end Gtk_New;
 
    ----------------
@@ -116,18 +116,23 @@ package body Gtk.Font_Chooser_Dialog is
 
    procedure Initialize
       (Self   : not null access Gtk_Font_Chooser_Dialog_Record'Class;
-       Title  : UTF8_String;
-       Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+       Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class)
    is
       function Internal
          (Title  : Interfaces.C.Strings.chars_ptr;
-          Window : System.Address) return System.Address;
+          Parent : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_chooser_dialog_new");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         Tmp_Return := Internal (Tmp_Title, Get_Object (Window));
+         if Title = "" then
+            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Title := New_String (Title);
+         end if;
+         Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)));
          Free (Tmp_Title);
          Set_Object (Self, Tmp_Return);
       end if;

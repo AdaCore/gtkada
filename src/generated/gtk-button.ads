@@ -22,12 +22,12 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk.Button.Gtk_Button widget is generally used to attach a function to
---  that is called when the button is pressed. The various signals and how to
---  use them are outlined below.
+--  The Gtk.Button.Gtk_Button widget is generally used to trigger a callback
+--  function that is called when the button is pressed. The various signals and
+--  how to use them are outlined below.
 --
---  The Gtk.Button.Gtk_Button widget can hold any valid child widget. That is
---  it can hold most any other standard Gtk.Widget.Gtk_Widget. The most
+--  The Gtk.Button.Gtk_Button widget can hold any valid child widget. That is,
+--  it can hold almost any other standard Gtk.Widget.Gtk_Widget. The most
 --  commonly used child is the Gtk.Label.Gtk_Label.
 --
 --  </description>
@@ -41,6 +41,7 @@ with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
@@ -155,6 +156,24 @@ package Gtk.Button is
    --  "yalign": the vertical position of the child, 0.0 is top aligned, 1.0
    --  is bottom aligned
 
+   function Get_Always_Show_Image
+      (Button : not null access Gtk_Button_Record) return Boolean;
+   --  Returns whether the button will ignore the
+   --  Gtk.Settings.Gtk_Settings:gtk-button-images setting and always show the
+   --  image, if available.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Always_Show_Image
+      (Button      : not null access Gtk_Button_Record;
+       Always_Show : Boolean);
+   --  If True, the button will ignore the
+   --  Gtk.Settings.Gtk_Settings:gtk-button-images setting and always show the
+   --  image, if available.
+   --  Use this property if the button would be useless or hard to use without
+   --  the image.
+   --  Since: gtk+ 3.6
+   --  "always_show": True if the menuitem should always show the image
+
    function Get_Event_Window
       (Button : not null access Gtk_Button_Record) return Gdk.Gdk_Window;
    --  Returns the button's event window if it is realized, null otherwise.
@@ -165,7 +184,6 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record) return Boolean;
    --  Returns whether the button grabs focus when it is clicked with the
    --  mouse. See Gtk.Button.Set_Focus_On_Click.
-   --  the mouse.
    --  Since: gtk+ 2.4
 
    procedure Set_Focus_On_Click
@@ -216,7 +234,6 @@ package Gtk.Button is
    --  Gtk.Button.Set_Label. If the label text has not been set the return
    --  value will be null. This will be the case if you create an empty button
    --  with gtk_button_new to use as a container.
-   --  by the widget and must not be modified or freed.
 
    procedure Set_Label
       (Button : not null access Gtk_Button_Record;
@@ -244,7 +261,6 @@ package Gtk.Button is
    function Get_Use_Stock
       (Button : not null access Gtk_Button_Record) return Boolean;
    --  Returns whether the button label is a stock item.
-   --  select a stock item instead of being used directly as the label text.
 
    procedure Set_Use_Stock
       (Button    : not null access Gtk_Button_Record;
@@ -257,7 +273,6 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record) return Boolean;
    --  Returns whether an embedded underline in the button label indicates a
    --  mnemonic. See gtk_button_set_use_underline ().
-   --  indicates the mnemonic accelerator keys.
 
    procedure Set_Use_Underline
       (Button        : not null access Gtk_Button_Record;
@@ -294,6 +309,17 @@ package Gtk.Button is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   function Get_Action_Name
+      (Self : not null access Gtk_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Button_Record;
+       Detailed_Action_Name : UTF8_String);
+
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
@@ -322,6 +348,14 @@ package Gtk.Button is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
+
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
+   --  If True, the button will ignore the
+   --  Gtk.Settings.Gtk_Settings:gtk-button-images setting and always show the
+   --  image, if available.
+   --
+   --  Use this property if the button would be useless or hard to use without
+   --  the image.
 
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
 
@@ -439,9 +473,22 @@ package Gtk.Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Button_Record, Gtk_Button);
+   function "+"
+     (Widget : access Gtk_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Button_Record, Gtk_Button);
@@ -484,4 +531,6 @@ private
      Glib.Properties.Build ("image");
    Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("focus-on-click");
+   Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("always-show-image");
 end Gtk.Button;

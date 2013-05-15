@@ -30,6 +30,8 @@
 --
 --  Accelerator is uniquely defined by:
 --
+-- 
+--
 --     * accelerator path
 --
 --     * accelerator key
@@ -98,7 +100,7 @@ package Gtk.Accel_Map is
 
    type Gtk_Accel_Map_Foreach is access procedure
      (Accel_Path : UTF8_String;
-      Accel_Key  : Gdk.Types.Gdk_Key_Type;
+      Accel_Key  : Guint;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Changed    : Boolean);
    --  "accel_path": Accel path of the current accelerator
@@ -137,7 +139,7 @@ package Gtk.Accel_Map is
       type Gtk_Accel_Map_Foreach is access procedure
         (Data       : User_Data_Type;
          Accel_Path : UTF8_String;
-         Accel_Key  : Gdk.Types.Gdk_Key_Type;
+         Accel_Key  : Guint;
          Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
          Changed    : Boolean);
       --  "data": User data passed to Gtk.Accel_Map.Foreach or
@@ -179,7 +181,7 @@ package Gtk.Accel_Map is
       type Gtk_Accel_Map_Foreach is access procedure
         (Data       : User_Data_Type;
          Accel_Path : UTF8_String;
-         Accel_Key  : Gdk.Types.Gdk_Key_Type;
+         Accel_Key  : Guint;
          Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
          Changed    : Boolean);
       --  "data": User data passed to Gtk.Accel_Map.Foreach or
@@ -216,6 +218,8 @@ package Gtk.Accel_Map is
    --  function should only be called once per Accel_Path with the canonical
    --  Accel_Key and Accel_Mods for this path. To change the accelerator during
    --  runtime programatically, use Gtk.Accel_Map.Change_Entry.
+   --  Set Accel_Key and Accel_Mods to 0 to request a removal of the
+   --  accelerator.
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
@@ -230,7 +234,7 @@ package Gtk.Accel_Map is
    --  This function is intended for GTK+ modules that create their own menus,
    --  but don't want them to be saved into the applications accelerator map
    --  dump.
-   --  "filter_pattern": a pattern (see GPattern_Spec)
+   --  "filter_pattern": a pattern (see Gpattern.Spec.Gpattern_Spec)
 
    function Change_Entry
       (Accel_Path : UTF8_String;
@@ -281,7 +285,7 @@ package Gtk.Accel_Map is
    --  Gtk.Accel_Map.Unlock_Path has been called an equivalent number of times.
    --  Note that locking of individual accelerator paths is independent from
    --  locking the Gtk.Accel_Group.Gtk_Accel_Group containing them. For runtime
-   --  accelerator changes to be possible both the accelerator path and its
+   --  accelerator changes to be possible, both the accelerator path and its
    --  Gtk.Accel_Group.Gtk_Accel_Group have to be unlocked.
    --  Since: gtk+ 2.4
    --  "accel_path": a valid accelerator path
@@ -317,26 +321,26 @@ package Gtk.Accel_Map is
    -- Signals --
    -------------
 
-   type Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void is not null access procedure
+   type Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void is not null access procedure
      (Self       : access Gtk_Accel_Map_Record'Class;
       Accel_Path : UTF8_String;
-      Accel_Key  : Guint;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
 
-   type Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void is not null access procedure
+   type Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void is not null access procedure
      (Self       : access Glib.Object.GObject_Record'Class;
       Accel_Path : UTF8_String;
-      Accel_Key  : Guint;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
 
    Signal_Changed : constant Glib.Signal_Name := "changed";
    procedure On_Changed
       (Self  : not null access Gtk_Accel_Map_Record;
-       Call  : Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Call  : Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        After : Boolean := False);
    procedure On_Changed
       (Self  : not null access Gtk_Accel_Map_Record;
-       Call  : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Call  : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Notifies of a change in the global accelerator map. The path is also

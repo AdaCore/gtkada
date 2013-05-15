@@ -48,9 +48,11 @@ package Gtk.Main is
    -------------
 
    function Key_Snooper_Install (Snooper : Gtk_Key_Snoop_Func) return Guint;
+   pragma Obsolescent (Key_Snooper_Install);
    --  Installs a key snooper function, which will get called on all key
    --  events before delivering them normally.
-   --  Gtk.Main.Key_Snooper_Remove.
+   --  Deprecated since 3.4, Key snooping should not be done. Events should be
+   --  handled by widgets.
    --  "snooper": a Gtk_Key_Snoop_Func
 
    generic
@@ -71,9 +73,11 @@ package Gtk.Main is
       function Key_Snooper_Install
          (Snooper   : Gtk_Key_Snoop_Func;
           Func_Data : User_Data_Type) return Guint;
+      pragma Obsolescent (Key_Snooper_Install);
       --  Installs a key snooper function, which will get called on all key
       --  events before delivering them normally.
-      --  Gtk.Main.Key_Snooper_Remove.
+      --  Deprecated since 3.4, Key snooping should not be done. Events should
+      --  be handled by widgets.
       --  "snooper": a Gtk_Key_Snoop_Func
       --  "func_data": data to pass to Snooper
 
@@ -158,8 +162,6 @@ package Gtk.Main is
    --  may be linked against an old version of GTK+ and calling the old version
    --  of Gtk.Main.Check_Version, but still get loaded into an application
    --  using a newer version of GTK+.
-   --  given version, or a string describing the version mismatch. The
-   --  returned string is owned by GTK+ and should not be modified or freed.
    --  "required_major": the required major version
    --  "required_minor": the required minor version
    --  "required_micro": the required micro version
@@ -180,7 +182,6 @@ package Gtk.Main is
    --  left-to-right text direction.
    --  This function is equivalent to Pango.Language.Get_Default. See that
    --  function for details.
-   --  must not be freed
 
    function Events_Pending return Boolean;
    --  Checks if any events are pending.
@@ -205,7 +206,7 @@ package Gtk.Main is
    --  widgets crossed by the pointer.
    --     * Find the widget which got the event. If the widget can't be
    --  determined the event is thrown away unless it belongs to a INCR
-   --  transaction. In that case it is passed to gtk_selection_incr_event.
+   --  transaction.
    --     * Then the event is pushed onto a stack so you can query the
    --  currently handled event with Gtk.Main.Get_Current_Event.
    --     * The event is sent to a widget. If a grab is active all events for
@@ -218,10 +219,10 @@ package Gtk.Main is
    --     * Leave events are delivered to the event widget if there was an
    --  enter event delivered to it before without the paired leave event.
    --     * Drag events are not redirected because it is unclear what the
-   --  semantics of that would be.
-   --  Another point of interest might be that all key events are first passed
-   --  through the key snooper functions if there are any. Read the description
-   --  of Gtk.Main.Key_Snooper_Install if you need this feature.
+   --  semantics of that would be. Another point of interest might be that all
+   --  key events are first passed through the key snooper functions if there
+   --  are any. Read the description of Gtk.Main.Key_Snooper_Install if you
+   --  need this feature.
    --     * After finishing the delivery the event is popped from the event
    --  stack.
    --  "event": An event to process (normally passed by GDK)
@@ -233,7 +234,6 @@ package Gtk.Main is
 
    function Main_Level return Guint;
    --  Asks for the current nesting level of the main loop.
-   --  of the main loop
 
    procedure Main_Quit;
    --  Makes the innermost invocation of the main loop return when it regains
@@ -245,12 +245,10 @@ package Gtk.Main is
    --  event is noticed. If you don't want to block look at
    --  Gtk.Main.Main_Iteration_Do or check if any events are pending with
    --  Gtk.Main.Events_Pending first.
-   --  innermost mainloop
 
    function Main_Iteration_Do (Blocking : Boolean) return Boolean;
    --  Runs a single iteration of the mainloop. If no events are available
    --  either return or block depending on the value of Blocking.
-   --  innermost mainloop
    --  "blocking": True if you want GTK+ to block if no events are pending
 
    function True return Boolean;
@@ -285,7 +283,6 @@ package Gtk.Main is
 
    function Grab_Get_Current return Gtk.Widget.Gtk_Widget;
    --  Queries the current grab of the default window group.
-   --  has the grab or null if no grab is active
 
    procedure Device_Grab_Add
       (Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -297,7 +294,7 @@ package Gtk.Main is
    --  interact with Widget during the grab.
    --  Since: gtk+ 3.0
    --  "widget": a Gtk.Widget.Gtk_Widget
-   --  "device": a Gtk_Device to grab on.
+   --  "device": a Gdk.Device.Gdk_Device to grab on.
    --  "block_others": True to prevent other devices to interact with Widget.
 
    procedure Device_Grab_Remove
@@ -311,7 +308,10 @@ package Gtk.Main is
    --  "device": a Gdk.Device.Gdk_Device
 
    procedure Key_Snooper_Remove (Snooper_Handler_Id : Guint);
+   pragma Obsolescent (Key_Snooper_Remove);
    --  Removes the key snooper function with the given id.
+   --  Deprecated since 3.4, Key snooping should not be done. Events should be
+   --  handled by widgets.
    --  "snooper_handler_id": Identifies the key snooper to remove
 
    function Get_Current_Event return Gdk.Event.Gdk_Event;
@@ -319,20 +319,16 @@ package Gtk.Main is
    --  For example, if you are handling a Gtk.Button.Gtk_Button::clicked
    --  signal, the current event will be the Gdk.Event.Gdk_Event_Button that
    --  triggered the ::clicked signal.
-   --  null if there is no current event. The returned event must be freed
-   --  with Gdk.Event.Free.
 
    function Get_Current_Event_Time return Guint32;
    --  If there is a current event and it has a timestamp, return that
    --  timestamp, otherwise return GDK_CURRENT_TIME.
-   --  or GDK_CURRENT_TIME.
 
    procedure Get_Current_Event_State
       (State             : out Gdk.Types.Gdk_Modifier_Type;
        Has_Current_Event : out Boolean);
    --  If there is a current event and it has a state field, place that state
    --  field in State and return True, otherwise return False.
-   --  had a state field
    --  "state": a location to store the state of the current event
 
    function Get_Current_Event_Device return Gdk.Device.Gdk_Device;
@@ -344,7 +340,6 @@ package Gtk.Main is
    --  If Event is null or the event was not associated with any widget,
    --  returns null, otherwise returns the widget that received the event
    --  originally.
-   --  received Event, or null
    --  "event": a Gdk.Event.Gdk_Event
 
    procedure Propagate_Event

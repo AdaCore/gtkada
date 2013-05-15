@@ -1181,6 +1181,16 @@ package body Gtk.Combo_Box is
      (System.Address, Cb_GObject_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Combo_Box_UTF8_String_UTF8_String, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Combo_Box_UTF8_String_UTF8_String);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_UTF8_String, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_UTF8_String);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void);
@@ -1209,6 +1219,12 @@ package body Gtk.Combo_Box is
    procedure Connect
       (Object  : access Gtk_Combo_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Combo_Box_UTF8_String_UTF8_String;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Combo_Box_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void;
        After   : Boolean);
 
@@ -1222,6 +1238,13 @@ package body Gtk.Combo_Box is
       (Object  : access Gtk_Combo_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Combo_Box_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_UTF8_String;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
@@ -1257,6 +1280,15 @@ package body Gtk.Combo_Box is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Scroll_Type_Void);
 
+   procedure Marsh_GObject_UTF8_String_UTF8_String
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_UTF8_String);
+
    procedure Marsh_GObject_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1284,6 +1316,15 @@ package body Gtk.Combo_Box is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Combo_Box_Gtk_Scroll_Type_Void);
 
+   procedure Marsh_Gtk_Combo_Box_UTF8_String_UTF8_String
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Combo_Box_UTF8_String_UTF8_String);
+
    procedure Marsh_Gtk_Combo_Box_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1308,6 +1349,25 @@ package body Gtk.Combo_Box is
         (Object      => Object,
          C_Name      => C_Name,
          Marshaller  => Marsh_Gtk_Combo_Box_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Combo_Box_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Combo_Box_UTF8_String_UTF8_String;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Combo_Box_UTF8_String_UTF8_String'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1366,6 +1426,27 @@ package body Gtk.Combo_Box is
         (Object      => Object,
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Combo_Box_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_UTF8_String;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_UTF8_String'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -1454,6 +1535,27 @@ package body Gtk.Combo_Box is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Type_Void;
 
+   -------------------------------------------
+   -- Marsh_GObject_UTF8_String_UTF8_String --
+   -------------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_UTF8_String
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_UTF8_String_UTF8_String := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased UTF8_String := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_UTF8_String;
+
    ------------------------
    -- Marsh_GObject_Void --
    ------------------------
@@ -1515,6 +1617,27 @@ package body Gtk.Combo_Box is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Combo_Box_Gtk_Scroll_Type_Void;
 
+   -------------------------------------------------
+   -- Marsh_Gtk_Combo_Box_UTF8_String_UTF8_String --
+   -------------------------------------------------
+
+   procedure Marsh_Gtk_Combo_Box_UTF8_String_UTF8_String
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Combo_Box_UTF8_String_UTF8_String := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Combo_Box := Gtk_Combo_Box (Unchecked_To_Object (Params, 0));
+      V   : aliased UTF8_String := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Combo_Box_UTF8_String_UTF8_String;
+
    ------------------------------
    -- Marsh_Gtk_Combo_Box_Void --
    ------------------------------
@@ -1561,6 +1684,33 @@ package body Gtk.Combo_Box is
    begin
       Connect_Slot (Self, "changed" & ASCII.NUL, Call, After, Slot);
    end On_Changed;
+
+   --------------------------
+   -- On_Format_Entry_Text --
+   --------------------------
+
+   procedure On_Format_Entry_Text
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_Gtk_Combo_Box_UTF8_String_UTF8_String;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "format-entry-text" & ASCII.NUL, Call, After);
+   end On_Format_Entry_Text;
+
+   --------------------------
+   -- On_Format_Entry_Text --
+   --------------------------
+
+   procedure On_Format_Entry_Text
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_GObject_UTF8_String_UTF8_String;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "format-entry-text" & ASCII.NUL, Call, After, Slot);
+   end On_Format_Entry_Text;
 
    --------------------
    -- On_Move_Active --

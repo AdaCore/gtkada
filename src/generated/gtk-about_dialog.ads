@@ -118,13 +118,20 @@ package Gtk.About_Dialog is
    -- Methods --
    -------------
 
+   procedure Add_Credit_Section
+      (About        : not null access Gtk_About_Dialog_Record;
+       Section_Name : UTF8_String;
+       People       : GNAT.Strings.String_List);
+   --  Creates a new section in the Credits page.
+   --  Since: gtk+ 3.4
+   --  "section_name": The name of the section
+   --  "people": The people who belong to that section
+
    function Get_Artists
       (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List;
    --  Returns the string which are displayed in the artists tab of the
    --  secondary credits dialog.
-   --  null-terminated string array containing the artists. The array is owned
-   --  by the about dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Artists
@@ -140,8 +147,6 @@ package Gtk.About_Dialog is
        return GNAT.Strings.String_List;
    --  Returns the string which are displayed in the authors tab of the
    --  secondary credits dialog.
-   --  null-terminated string array containing the authors. The array is owned
-   --  by the about dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Authors
@@ -155,7 +160,6 @@ package Gtk.About_Dialog is
    function Get_Comments
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the comments string.
-   --  dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Comments
@@ -169,24 +173,21 @@ package Gtk.About_Dialog is
    function Get_Copyright
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the copyright string.
-   --  dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Copyright
       (About     : not null access Gtk_About_Dialog_Record;
-       Copyright : UTF8_String);
+       Copyright : UTF8_String := "");
    --  Sets the copyright string to display in the about dialog. This should
    --  be a short string of one or two lines.
    --  Since: gtk+ 2.6
-   --  "copyright": (allow-none) the copyright string
+   --  "copyright": the copyright string
 
    function Get_Documenters
       (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List;
    --  Returns the string which are displayed in the documenters tab of the
    --  secondary credits dialog.
-   --  null-terminated string array containing the documenters. The array is
-   --  owned by the about dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Documenters
@@ -200,7 +201,6 @@ package Gtk.About_Dialog is
    function Get_License
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the license information.
-   --  dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_License
@@ -230,8 +230,6 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Returns the pixbuf displayed as logo in the about dialog.
-   --  pixbuf is owned by the about dialog. If you want to keep a reference to
-   --  it, you have to call g_object_ref on it.
    --  Since: gtk+ 2.6
 
    procedure Set_Logo
@@ -246,8 +244,6 @@ package Gtk.About_Dialog is
    function Get_Logo_Icon_Name
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the icon name displayed as logo in the about dialog.
-   --  owned by the dialog. If you want to keep a reference to it, you have to
-   --  call g_strdup on it.
    --  Since: gtk+ 2.6
 
    procedure Set_Logo_Icon_Name
@@ -262,7 +258,6 @@ package Gtk.About_Dialog is
    function Get_Program_Name
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the program name displayed in the about dialog.
-   --  dialog and must not be modified.
    --  Since: gtk+ 2.12
 
    procedure Set_Program_Name
@@ -277,7 +272,6 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the translator credits string which is displayed in the
    --  translators tab of the secondary credits dialog.
-   --  owned by the about dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Translator_Credits
@@ -300,7 +294,6 @@ package Gtk.About_Dialog is
    function Get_Version
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the version string.
-   --  dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Version
@@ -313,7 +306,6 @@ package Gtk.About_Dialog is
    function Get_Website
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the website URL.
-   --  dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Website
@@ -326,7 +318,6 @@ package Gtk.About_Dialog is
    function Get_Website_Label
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String;
    --  Returns the label used for the website link.
-   --  owned by the about dialog and must not be modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Website_Label

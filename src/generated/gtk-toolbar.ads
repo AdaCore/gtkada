@@ -93,7 +93,6 @@ package Gtk.Toolbar is
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Icon_Size;
    --  Retrieves the icon size for the toolbar. See Gtk.Toolbar.Set_Icon_Size.
-   --  the toolbar.
 
    procedure Set_Icon_Size
       (Toolbar   : not null access Gtk_Toolbar_Record;
@@ -126,7 +125,6 @@ package Gtk.Toolbar is
        N       : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
    --  Returns the N<!-- -->'th item on Toolbar, or null if the toolbar does
    --  not contain an N<!-- -->'th item.
-   --  or null if there isn't an N<!-- -->'th item.
    --  Since: gtk+ 2.4
    --  "n": A position on the toolbar
 

@@ -155,7 +155,6 @@ package Gtk.Tree_Model_Sort is
    --  For example, if Model is a product catalogue, then a compare function
    --  for the "price" column could be one which returns 'price_of(A) -
    --  price_of(B)'.
-   --  A sorts before, with or after B
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -163,21 +162,6 @@ package Gtk.Tree_Model_Sort is
    ------------------
    -- Constructors --
    ------------------
-
-   procedure Gtk_New_With_Model
-      (Self        : out Gtk_Tree_Model_Sort;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model);
-   procedure Initialize_With_Model
-      (Self        : not null access Gtk_Tree_Model_Sort_Record'Class;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model);
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child model.
-
-   function Gtk_Tree_Model_Sort_Sort_New_With_Model
-      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
-       return Gtk_Tree_Model_Sort;
-   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
-   --  child model.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_model_sort_get_type");
@@ -201,7 +185,6 @@ package Gtk.Tree_Model_Sort is
    --  Sets Sort_Iter to point to the row in Tree_Model_Sort that corresponds
    --  to the row pointed at by Child_Iter. If Sort_Iter was not set, False is
    --  returned. Note: a boolean is only returned since 2.14.
-   --  valid iterator pointer to a visible row in the child model.
    --  "sort_iter": An uninitialized Gtk.Tree_Model.Gtk_Tree_Iter.
    --  "child_iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to a row on
    --  the child model
@@ -331,7 +314,6 @@ package Gtk.Tree_Model_Sort is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -386,7 +368,6 @@ package Gtk.Tree_Model_Sort is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -418,7 +399,7 @@ package Gtk.Tree_Model_Sort is
    function Drag_Data_Get
       (Self           : not null access Gtk_Tree_Model_Sort_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean;
 
    function Row_Draggable

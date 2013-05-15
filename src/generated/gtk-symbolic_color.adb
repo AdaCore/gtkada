@@ -46,6 +46,23 @@ package body Gtk.Symbolic_Color is
       return S;
    end From_Object;
 
+   -------------------
+   -- Gtk_New_Alpha --
+   -------------------
+
+   procedure Gtk_New_Alpha
+      (Self   : out Gtk_Symbolic_Color;
+       Color  : Gtk_Symbolic_Color;
+       Factor : Gdouble)
+   is
+      function Internal
+         (Color  : System.Address;
+          Factor : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_alpha");
+   begin
+      Self.Set_Object (Internal (Get_Object (Color), Factor));
+   end Gtk_New_Alpha;
+
    ---------------------
    -- Gtk_New_Literal --
    ---------------------
@@ -59,6 +76,25 @@ package body Gtk.Symbolic_Color is
    begin
       Self.Set_Object (Internal (Color));
    end Gtk_New_Literal;
+
+   -----------------
+   -- Gtk_New_Mix --
+   -----------------
+
+   procedure Gtk_New_Mix
+      (Self   : out Gtk_Symbolic_Color;
+       Color1 : Gtk_Symbolic_Color;
+       Color2 : Gtk_Symbolic_Color;
+       Factor : Gdouble)
+   is
+      function Internal
+         (Color1 : System.Address;
+          Color2 : System.Address;
+          Factor : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_mix");
+   begin
+      Self.Set_Object (Internal (Get_Object (Color1), Get_Object (Color2), Factor));
+   end Gtk_New_Mix;
 
    ------------------
    -- Gtk_New_Name --
@@ -79,6 +115,62 @@ package body Gtk.Symbolic_Color is
       Self.Set_Object (Tmp_Return);
    end Gtk_New_Name;
 
+   -------------------
+   -- Gtk_New_Shade --
+   -------------------
+
+   procedure Gtk_New_Shade
+      (Self   : out Gtk_Symbolic_Color;
+       Color  : Gtk_Symbolic_Color;
+       Factor : Gdouble)
+   is
+      function Internal
+         (Color  : System.Address;
+          Factor : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_shade");
+   begin
+      Self.Set_Object (Internal (Get_Object (Color), Factor));
+   end Gtk_New_Shade;
+
+   -------------------
+   -- Gtk_New_Win32 --
+   -------------------
+
+   procedure Gtk_New_Win32
+      (Self        : out Gtk_Symbolic_Color;
+       Theme_Class : UTF8_String;
+       Id          : Gint)
+   is
+      function Internal
+         (Theme_Class : Interfaces.C.Strings.chars_ptr;
+          Id          : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_win32");
+      Tmp_Theme_Class : Interfaces.C.Strings.chars_ptr := New_String (Theme_Class);
+      Tmp_Return      : System.Address;
+   begin
+      Tmp_Return := Internal (Tmp_Theme_Class, Id);
+      Free (Tmp_Theme_Class);
+      Self.Set_Object (Tmp_Return);
+   end Gtk_New_Win32;
+
+   ----------------------------------
+   -- Gtk_Symbolic_Color_New_Alpha --
+   ----------------------------------
+
+   function Gtk_Symbolic_Color_New_Alpha
+      (Color  : Gtk_Symbolic_Color;
+       Factor : Gdouble) return Gtk_Symbolic_Color
+   is
+      function Internal
+         (Color  : System.Address;
+          Factor : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_alpha");
+      Self : Gtk_Symbolic_Color;
+   begin
+      Self.Set_Object (Internal (Get_Object (Color), Factor));
+      return Self;
+   end Gtk_Symbolic_Color_New_Alpha;
+
    ------------------------------------
    -- Gtk_Symbolic_Color_New_Literal --
    ------------------------------------
@@ -93,6 +185,26 @@ package body Gtk.Symbolic_Color is
       Self.Set_Object (Internal (Color));
       return Self;
    end Gtk_Symbolic_Color_New_Literal;
+
+   --------------------------------
+   -- Gtk_Symbolic_Color_New_Mix --
+   --------------------------------
+
+   function Gtk_Symbolic_Color_New_Mix
+      (Color1 : Gtk_Symbolic_Color;
+       Color2 : Gtk_Symbolic_Color;
+       Factor : Gdouble) return Gtk_Symbolic_Color
+   is
+      function Internal
+         (Color1 : System.Address;
+          Color2 : System.Address;
+          Factor : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_mix");
+      Self : Gtk_Symbolic_Color;
+   begin
+      Self.Set_Object (Internal (Get_Object (Color1), Get_Object (Color2), Factor));
+      return Self;
+   end Gtk_Symbolic_Color_New_Mix;
 
    ---------------------------------
    -- Gtk_Symbolic_Color_New_Name --
@@ -114,55 +226,45 @@ package body Gtk.Symbolic_Color is
       return Self;
    end Gtk_Symbolic_Color_New_Name;
 
-   ---------------
-   -- New_Alpha --
-   ---------------
+   ----------------------------------
+   -- Gtk_Symbolic_Color_New_Shade --
+   ----------------------------------
 
-   function New_Alpha
-      (Self   : Gtk_Symbolic_Color;
+   function Gtk_Symbolic_Color_New_Shade
+      (Color  : Gtk_Symbolic_Color;
        Factor : Gdouble) return Gtk_Symbolic_Color
    is
       function Internal
-         (Self   : System.Address;
-          Factor : Gdouble) return System.Address;
-      pragma Import (C, Internal, "gtk_symbolic_color_new_alpha");
-   begin
-      return From_Object (Internal (Get_Object (Self), Factor));
-   end New_Alpha;
-
-   -------------
-   -- New_Mix --
-   -------------
-
-   function New_Mix
-      (Self   : Gtk_Symbolic_Color;
-       Color2 : Gtk_Symbolic_Color;
-       Factor : Gdouble) return Gtk_Symbolic_Color
-   is
-      function Internal
-         (Self   : System.Address;
-          Color2 : System.Address;
-          Factor : Gdouble) return System.Address;
-      pragma Import (C, Internal, "gtk_symbolic_color_new_mix");
-   begin
-      return From_Object (Internal (Get_Object (Self), Get_Object (Color2), Factor));
-   end New_Mix;
-
-   ---------------
-   -- New_Shade --
-   ---------------
-
-   function New_Shade
-      (Self   : Gtk_Symbolic_Color;
-       Factor : Gdouble) return Gtk_Symbolic_Color
-   is
-      function Internal
-         (Self   : System.Address;
+         (Color  : System.Address;
           Factor : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_shade");
+      Self : Gtk_Symbolic_Color;
    begin
-      return From_Object (Internal (Get_Object (Self), Factor));
-   end New_Shade;
+      Self.Set_Object (Internal (Get_Object (Color), Factor));
+      return Self;
+   end Gtk_Symbolic_Color_New_Shade;
+
+   ----------------------------------
+   -- Gtk_Symbolic_Color_New_Win32 --
+   ----------------------------------
+
+   function Gtk_Symbolic_Color_New_Win32
+      (Theme_Class : UTF8_String;
+       Id          : Gint) return Gtk_Symbolic_Color
+   is
+      function Internal
+         (Theme_Class : Interfaces.C.Strings.chars_ptr;
+          Id          : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_symbolic_color_new_win32");
+      Tmp_Theme_Class : Interfaces.C.Strings.chars_ptr := New_String (Theme_Class);
+      Tmp_Return      : System.Address;
+      Self            : Gtk_Symbolic_Color;
+   begin
+      Tmp_Return := Internal (Tmp_Theme_Class, Id);
+      Free (Tmp_Theme_Class);
+      Self.Set_Object (Tmp_Return);
+      return Self;
+   end Gtk_Symbolic_Color_New_Win32;
 
    ---------
    -- Ref --

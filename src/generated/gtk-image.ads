@@ -90,7 +90,7 @@
 --
 --  Sometimes an application will want to avoid depending on external data
 --  files, such as image files. GTK+ comes with a program to avoid this, called
---  <application>gdk-pixbuf-csource</application>. This program allows you to
+--  <application>gdk-pixbuf-csource</application>. This library allows you to
 --  convert an image into a C variable declaration, which can then be loaded
 --  into a Gdk.Pixbuf.Gdk_Pixbuf using gdk_pixbuf_new_from_inline.
 --
@@ -328,6 +328,44 @@ package Gtk.Image is
    --  Should you want that, you should use Gtk.Image.Gtk_New.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
+   procedure Gtk_New_From_Resource
+      (Image         : out Gtk_Image;
+       Resource_Path : UTF8_String);
+   procedure Initialize_From_Resource
+      (Image         : not null access Gtk_Image_Record'Class;
+       Resource_Path : UTF8_String);
+   --  Creates a new Gtk.Image.Gtk_Image displaying the resource file
+   --  Resource_Path. If the file isn't found or can't be loaded, the resulting
+   --  Gtk.Image.Gtk_Image will display a "broken image" icon. This function
+   --  never returns null, it always returns a valid Gtk.Image.Gtk_Image
+   --  widget.
+   --  If the file contains an animation, the image will contain an animation.
+   --  If you need to detect failures to load the file, use
+   --  Gdk.Pixbuf.Gdk_New_From_File to load the file yourself, then create the
+   --  Gtk.Image.Gtk_Image from the pixbuf. (Or for animations, use
+   --  Gdk.Pixbuf.Gdk_New_From_File).
+   --  The storage type (gtk_image_get_storage_type) of the returned image is
+   --  not defined, it will be whatever is appropriate for displaying the file.
+   --  Since: gtk+ 3.4
+   --  "resource_path": a resource path
+
+   function Gtk_Image_New_From_Resource
+      (Resource_Path : UTF8_String) return Gtk_Image;
+   --  Creates a new Gtk.Image.Gtk_Image displaying the resource file
+   --  Resource_Path. If the file isn't found or can't be loaded, the resulting
+   --  Gtk.Image.Gtk_Image will display a "broken image" icon. This function
+   --  never returns null, it always returns a valid Gtk.Image.Gtk_Image
+   --  widget.
+   --  If the file contains an animation, the image will contain an animation.
+   --  If you need to detect failures to load the file, use
+   --  Gdk.Pixbuf.Gdk_New_From_File to load the file yourself, then create the
+   --  Gtk.Image.Gtk_Image from the pixbuf. (Or for animations, use
+   --  Gdk.Pixbuf.Gdk_New_From_File).
+   --  The storage type (gtk_image_get_storage_type) of the returned image is
+   --  not defined, it will be whatever is appropriate for displaying the file.
+   --  Since: gtk+ 3.4
+   --  "resource_path": a resource path
+
    procedure Gtk_New
       (Image    : out Gtk_Image;
        Stock_Id : UTF8_String;
@@ -374,7 +412,6 @@ package Gtk.Image is
    --  Gtk.Image.Image_Empty or Gtk.Image.Image_Animation (see
    --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
    --  reference to the returned animation.
-   --  the image is empty
 
    procedure Get
       (Image  : not null access Gtk_Image_Record;
@@ -407,7 +444,6 @@ package Gtk.Image is
    --  Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
    --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
    --  reference to the returned pixbuf.
-   --  the image is empty
 
    function Get_Pixel_Size
       (Image : not null access Gtk_Image_Record) return Gint;
@@ -482,6 +518,12 @@ package Gtk.Image is
    --  "icon_name": an icon name
    --  "size": an icon size
 
+   procedure Set_From_Resource
+      (Image         : not null access Gtk_Image_Record;
+       Resource_Path : UTF8_String := "");
+   --  See Gtk.Image.Gtk_New_From_Resource for details.
+   --  "resource_path": a resource path or null
+
    ----------------------
    -- GtkAda additions --
    ----------------------
@@ -529,6 +571,9 @@ package Gtk.Image is
    --  overriding the Gtk.Image.Gtk_Image:icon-size property for images of type
    --  Gtk.Image.Image_Icon_Name.
 
+   Resource_Property : constant Glib.Properties.Property_String;
+   --  A path to a resource file to display.
+
    Stock_Property : constant Glib.Properties.Property_String;
 
    Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
@@ -564,6 +609,8 @@ private
      Gtk.Image.Build ("storage-type");
    Stock_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("stock");
+   Resource_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("resource");
    Pixel_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("pixel-size");
    Pixbuf_Animation_Property : constant Glib.Properties.Property_Boxed :=

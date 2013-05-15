@@ -57,7 +57,6 @@ package Gtk.Tree_Sortable is
    --  For example, if Model is a product catalogue, then a compare function
    --  for the "price" column could be one which returns 'price_of(A) -
    --  price_of(B)'.
-   --  A sorts before, with or after B
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -82,7 +81,6 @@ package Gtk.Tree_Sortable is
    --  order. It returns True unless the Sort_Column_Id is
    --  GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID or
    --  GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID.
-   --  column ids.
    --  "sort_column_id": The sort column id to be filled in
    --  "order": The Gtk.Enums.Gtk_Sort_Type to be filled in
 
@@ -143,7 +141,6 @@ package Gtk.Tree_Sortable is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -198,7 +195,6 @@ package Gtk.Tree_Sortable is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model

@@ -29,6 +29,11 @@
 --  Gtk.Dialog.Gtk_Dialog without too much effort, but
 --  Gtk.Message_Dialog.Gtk_Message_Dialog saves typing.
 --
+--  One difference from Gtk.Dialog.Gtk_Dialog is that
+--  Gtk.Message_Dialog.Gtk_Message_Dialog sets the
+--  Gtk.Window.Gtk_Window:skip-taskbar-hint property to True, so that the
+--  dialog is hidden from the taskbar by default.
+--
 --  The easiest way to do a modal message dialog is to use Gtk.Dialog.Run,
 --  though you can also pass in the GTK_DIALOG_MODAL flag, Gtk.Dialog.Run
 --  automatically makes the dialog modal and waits for the user to respond to
@@ -131,14 +136,16 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "");
+       Message  : UTF8_String := "";
+       Arg5     : System.Address);
    procedure Initialize
       (Dialog   : not null access Gtk_Message_Dialog_Record'Class;
        Parent   : access Gtk.Window.Gtk_Window_Record'Class;
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "");
+       Message  : UTF8_String := "";
+       Arg5     : System.Address);
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text the user
    --  may want to see. When the user clicks a button a "response" signal is
@@ -155,7 +162,8 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "") return Gtk_Message_Dialog;
+       Message  : UTF8_String := "";
+       Arg5     : System.Address) return Gtk_Message_Dialog;
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text the user
    --  may want to see. When the user clicks a button a "response" signal is
@@ -173,14 +181,16 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "");
+       Message  : UTF8_String := "";
+       Arg5     : System.Address);
    procedure Initialize_With_Markup
       (Dialog   : not null access Gtk_Message_Dialog_Record'Class;
        Parent   : access Gtk.Window.Gtk_Window_Record'Class;
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "");
+       Message  : UTF8_String := "";
+       Arg5     : System.Address);
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text which is
    --  marked up with the <link linkend="PangoMarkupFormat">Pango text markup
@@ -210,7 +220,8 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "") return Gtk_Message_Dialog;
+       Message  : UTF8_String := "";
+       Arg5     : System.Address) return Gtk_Message_Dialog;
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text which is
    --  marked up with the <link linkend="PangoMarkupFormat">Pango text markup
@@ -244,12 +255,11 @@ package Gtk.Message_Dialog is
 
    procedure Format_Secondary_Markup
       (Dialog  : not null access Gtk_Message_Dialog_Record;
-       Message : UTF8_String := "");
+       Message : UTF8_String := "";
+       Arg2    : System.Address);
    --  Sets the secondary text of the message dialog to be Message_Format
    --  (with printf-style), which is marked up with the <link
    --  linkend="PangoMarkupFormat">Pango text markup language</link>.
-   --  Note that setting a secondary text makes the primary text become bold,
-   --  unless you have provided explicit markup.
    --  Due to an oversight, this function does not escape special XML
    --  characters like Gtk.Message_Dialog.Gtk_New_With_Markup does. Thus, if
    --  the arguments may contain special XML characters, you should use
@@ -259,7 +269,8 @@ package Gtk.Message_Dialog is
    --    gtk_message_dialog_format_secondary_markup (message_dialog, "%s", msg);
    --    g_free (msg);
    --  Since: gtk+ 2.6
-   --  "message": printf-style markup string (see
+   --  "message": printf-style markup string (see <link
+   --  linkend="PangoMarkupFormat">Pango markup format</link>), or null
 
    function Get_Image
       (Dialog : not null access Gtk_Message_Dialog_Record)
@@ -283,7 +294,6 @@ package Gtk.Message_Dialog is
    --  right side of the dialog's image (or on the left for right-to-left
    --  languages). See Gtk.Dialog.Get_Content_Area for the corresponding
    --  function in the parent Gtk.Dialog.Gtk_Dialog.
-   --  "message area" in the Message_Dialog.
    --  Since: gtk+ 2.22
 
    procedure Set_Markup

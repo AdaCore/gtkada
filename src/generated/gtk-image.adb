@@ -161,6 +161,19 @@ package body Gtk.Image is
       return Image;
    end Gtk_Image_New_From_Pixbuf;
 
+   ---------------------------------
+   -- Gtk_Image_New_From_Resource --
+   ---------------------------------
+
+   function Gtk_Image_New_From_Resource
+      (Resource_Path : UTF8_String) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize_From_Resource (Image, Resource_Path);
+      return Image;
+   end Gtk_Image_New_From_Resource;
+
    ------------------------------
    -- Gtk_Image_New_From_Stock --
    ------------------------------
@@ -276,6 +289,19 @@ package body Gtk.Image is
       Image := new Gtk_Image_Record;
       Gtk.Image.Initialize_From_Icon_Name (Image, Icon_Name, Size);
    end Gtk_New_From_Icon_Name;
+
+   ---------------------------
+   -- Gtk_New_From_Resource --
+   ---------------------------
+
+   procedure Gtk_New_From_Resource
+      (Image         : out Gtk_Image;
+       Resource_Path : UTF8_String)
+   is
+   begin
+      Image := new Gtk_Image_Record;
+      Gtk.Image.Initialize_From_Resource (Image, Resource_Path);
+   end Gtk_New_From_Resource;
 
    ----------------
    -- Initialize --
@@ -427,6 +453,28 @@ package body Gtk.Image is
          Set_Object (Image, Tmp_Return);
       end if;
    end Initialize_From_Icon_Name;
+
+   ------------------------------
+   -- Initialize_From_Resource --
+   ------------------------------
+
+   procedure Initialize_From_Resource
+      (Image         : not null access Gtk_Image_Record'Class;
+       Resource_Path : UTF8_String)
+   is
+      function Internal
+         (Resource_Path : Interfaces.C.Strings.chars_ptr)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_image_new_from_resource");
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Return        : System.Address;
+   begin
+      if not Image.Is_Created then
+         Tmp_Return := Internal (Tmp_Resource_Path);
+         Free (Tmp_Resource_Path);
+         Set_Object (Image, Tmp_Return);
+      end if;
+   end Initialize_From_Resource;
 
    -----------
    -- Clear --
@@ -661,6 +709,29 @@ package body Gtk.Image is
       Internal (Get_Object (Image), Tmp_Icon_Name, Size);
       Free (Tmp_Icon_Name);
    end Set_From_Icon_Name;
+
+   -----------------------
+   -- Set_From_Resource --
+   -----------------------
+
+   procedure Set_From_Resource
+      (Image         : not null access Gtk_Image_Record;
+       Resource_Path : UTF8_String := "")
+   is
+      procedure Internal
+         (Image         : System.Address;
+          Resource_Path : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_image_set_from_resource");
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr;
+   begin
+      if Resource_Path = "" then
+         Tmp_Resource_Path := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Resource_Path := New_String (Resource_Path);
+      end if;
+      Internal (Get_Object (Image), Tmp_Resource_Path);
+      Free (Tmp_Resource_Path);
+   end Set_From_Resource;
 
    --------------------
    -- Set_Pixel_Size --

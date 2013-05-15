@@ -102,8 +102,6 @@ package Gtk.Frame is
    --  If the frame's label widget is a Gtk.Label.Gtk_Label, returns the text
    --  in the label widget. (The frame will have a Gtk.Label.Gtk_Label for the
    --  label widget if a non-null argument was passed to Gtk.Frame.Gtk_New.)
-   --  was no label widget or the lable widget was not a Gtk.Label.Gtk_Label.
-   --  This string is owned by GTK+ and must not be modified or freed.
 
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;

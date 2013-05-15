@@ -102,17 +102,23 @@ package Gtk.Style_Properties is
    function Lookup_Color
       (Self : not null access Gtk_Style_Properties_Record;
        Name : UTF8_String) return Gtk.Symbolic_Color.Gtk_Symbolic_Color;
+   pragma Obsolescent (Lookup_Color);
    --  Returns the symbolic color that is mapped to Name.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Gtk.Symbolic_Color.Gtk_Symbolic_Color is
+   --  deprecated.
    --  "name": color name to lookup
 
    procedure Map_Color
       (Self  : not null access Gtk_Style_Properties_Record;
        Name  : UTF8_String;
        Color : Gtk.Symbolic_Color.Gtk_Symbolic_Color);
+   pragma Obsolescent (Map_Color);
    --  Maps Color so it can be referenced by Name. See
    --  Gtk.Style_Properties.Lookup_Color
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Gtk.Symbolic_Color.Gtk_Symbolic_Color is
+   --  deprecated.
    --  "name": color name
    --  "color": Gtk.Symbolic_Color.Gtk_Symbolic_Color to map Name to
 

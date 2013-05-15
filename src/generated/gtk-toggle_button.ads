@@ -28,8 +28,8 @@
 --
 --  A toggle button is created by calling either gtk_toggle_button_new or
 --  Gtk.Toggle_Button.Gtk_New. If using the former, it is advisable to pack a
---  widget, (such as a Gtk.Label.Gtk_Label and/or a Gtk_Pixmap), into the
---  toggle button's container. (See Gtk.Button.Gtk_Button for more
+--  widget, (such as a Gtk.Label.Gtk_Label and/or a Gtk.Image.Gtk_Image), into
+--  the toggle button's container. (See Gtk.Button.Gtk_Button for more
 --  information).
 --
 --  The state of a Gtk.Toggle_Button.Gtk_Toggle_Button can be set specifically
@@ -76,6 +76,7 @@ with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Button;      use Gtk.Button;
@@ -175,7 +176,6 @@ package Gtk.Toggle_Button is
        return Boolean;
    --  Retrieves whether the button is displayed as a separate indicator and
    --  label. See Gtk.Toggle_Button.Set_Mode.
-   --  and label.
 
    procedure Set_Mode
       (Toggle_Button  : not null access Gtk_Toggle_Button_Record;
@@ -202,6 +202,17 @@ package Gtk.Toggle_Button is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Toggle_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Toggle_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Toggle_Button_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Toggle_Button_Record;
@@ -266,9 +277,22 @@ package Gtk.Toggle_Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
+   function "+"
+     (Widget : access Gtk_Toggle_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Toggle_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);

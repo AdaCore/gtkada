@@ -167,7 +167,6 @@ package Gtk.Expander is
    --  and used to return the label text stripped of embedded underlines
    --  indicating mnemonics and Pango markup. This problem can be avoided by
    --  fetching the label text directly from the label widget.
-   --  by the widget and must not be modified or freed.
    --  Since: gtk+ 2.4
 
    procedure Set_Label
@@ -182,7 +181,6 @@ package Gtk.Expander is
       (Expander : not null access Gtk_Expander_Record) return Boolean;
    --  Returns whether the label widget will fill all available horizontal
    --  space allocated to Expander.
-   --  available horizontal space
    --  Since: gtk+ 2.22
 
    procedure Set_Label_Fill
@@ -199,7 +197,6 @@ package Gtk.Expander is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the label widget for the frame. See
    --  Gtk.Expander.Set_Label_Widget.
-   --  or null if there is none
    --  Since: gtk+ 2.4
 
    procedure Set_Label_Widget
@@ -257,7 +254,6 @@ package Gtk.Expander is
       (Expander : not null access Gtk_Expander_Record) return Boolean;
    --  Returns whether an embedded underline in the expander label indicates a
    --  mnemonic. See Gtk.Expander.Set_Use_Underline.
-   --  label indicates the mnemonic accelerator keys
    --  Since: gtk+ 2.4
 
    procedure Set_Use_Underline

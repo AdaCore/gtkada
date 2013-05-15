@@ -25,9 +25,10 @@
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog is a dialog box suitable
 --  for use with "File/Open" or "File/Save as" commands. This widget works by
 --  putting a Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget inside a
---  Gtk.Dialog.Gtk_Dialog. It exposes the Gtk_File_Chooser_Iface interface, so
---  you can use all of the Gtk.File_Chooser.Gtk_File_Chooser functions on the
---  file chooser dialog as well as those for Gtk.Dialog.Gtk_Dialog.
+--  Gtk.Dialog.Gtk_Dialog. It exposes the Gtk.File_Chooser.Gtk_File_Chooser
+--  interface, so you can use all of the Gtk.File_Chooser.Gtk_File_Chooser
+--  functions on the file chooser dialog as well as those for
+--  Gtk.Dialog.Gtk_Dialog.
 --
 --  Note that Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog does not have
 --  any methods of its own. Instead, you should use the functions that work on

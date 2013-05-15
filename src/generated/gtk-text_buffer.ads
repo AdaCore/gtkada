@@ -689,7 +689,6 @@ package Gtk.Text_Buffer is
    --  This function registers GTK+'s internal rich text serialization format
    --  with the passed Buffer. See Gtk.Text_Buffer.Register_Serialize_Tagset
    --  for details.
-   --  newly registered format's mime-type.
    --  Since: gtk+ 2.10
    --  "tagset_name": an optional tagset name, on null
 
@@ -711,7 +710,6 @@ package Gtk.Text_Buffer is
    --  from being pasted. It is probably the common case to pass an identifier
    --  != null here, since the null tagset requires the receiving buffer to
    --  deal with with pasting of arbitrary tags.
-   --  newly registered format's mime-type.
    --  Since: gtk+ 2.10
    --  "tagset_name": an optional tagset name, on null
 
@@ -1198,12 +1196,12 @@ package Gtk.Text_Buffer is
    --  See also: Gtk.Text_Buffer.Set_Modified.
 
    type Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void is not null access procedure
-     (Self  : access Gtk_Text_Buffer_Record'Class;
-      Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
+     (Self   : access Gtk_Text_Buffer_Record'Class;
+      Object : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
 
    type Cb_GObject_Gtk_Clipboard_Void is not null access procedure
-     (Self  : access Glib.Object.GObject_Record'Class;
-      Since : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Object : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
 
    Signal_Paste_Done : constant Glib.Signal_Name := "paste-done";
    procedure On_Paste_Done

@@ -151,8 +151,6 @@ package Gtk.Assistant is
    function Get_Current_Page
       (Assistant : not null access Gtk_Assistant_Record) return Gint;
    --  Returns the page number of the current page.
-   --  page in the Assistant, or -1 if the Assistant has no pages, or no
-   --  current page.
    --  Since: gtk+ 2.10
 
    procedure Set_Current_Page
@@ -175,7 +173,6 @@ package Gtk.Assistant is
       (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Gint) return Gtk.Widget.Gtk_Widget;
    --  Returns the child widget contained in page number Page_Num.
-   --  if Page_Num is out of bounds
    --  Since: gtk+ 2.10
    --  "page_num": the index of a page in the Assistant, or -1 to get the last
    --  page
@@ -205,10 +202,9 @@ package Gtk.Assistant is
        return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Page_Header_Image);
    --  Gets the header image for Page.
-   --  or null if there's no header image for the page
-   --  add your header decoration to the page content instead.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown;
+   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown; add
+   --  your header decoration to the page content instead.
    --  "page": a page of Assistant
 
    procedure Set_Page_Header_Image
@@ -217,9 +213,9 @@ package Gtk.Assistant is
        Pixbuf    : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    pragma Obsolescent (Set_Page_Header_Image);
    --  Sets a header image for Page.
-   --  add your header decoration to the page content instead.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown;
+   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown; add
+   --  your header decoration to the page content instead.
    --  "page": a page of Assistant
    --  "pixbuf": the new header image Page
 
@@ -229,10 +225,9 @@ package Gtk.Assistant is
        return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Page_Side_Image);
    --  Gets the side image for Page.
-   --  or null if there's no side image for the page
-   --  shown anymore.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not
+   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not shown
+   --  anymore.
    --  "page": a page of Assistant
 
    procedure Set_Page_Side_Image
@@ -243,9 +238,9 @@ package Gtk.Assistant is
    --  Sets a side image for Page.
    --  This image used to be displayed in the side area of the assistant when
    --  Page is the current page.
-   --  shown anymore.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not
+   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not shown
+   --  anymore.
    --  "page": a page of Assistant
    --  "pixbuf": the new side image Page
 

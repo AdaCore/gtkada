@@ -60,6 +60,7 @@ package Gtk.Style_Provider is
        Found : out Boolean);
    --  Looks up a widget style property as defined by Provider for the widget
    --  represented by Path.
+   --  Since: gtk+ 3.0
    --  "path": Gtk.Widget.Gtk_Widget_Path to query
    --  "state": state to query the style property for
    --  "pspec": The Glib.Param_Spec to query

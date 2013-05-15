@@ -152,6 +152,26 @@ package body Gtk.Builder is
       return Tmp_Return;
    end Add_From_File;
 
+   -----------------------
+   -- Add_From_Resource --
+   -----------------------
+
+   function Add_From_Resource
+      (Builder       : not null access Gtk_Builder_Record;
+       Resource_Path : UTF8_String) return Guint
+   is
+      function Internal
+         (Builder       : System.Address;
+          Resource_Path : Interfaces.C.Strings.chars_ptr) return Guint;
+      pragma Import (C, Internal, "gtk_builder_add_from_resource");
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Return        : Guint;
+   begin
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path);
+      Free (Tmp_Resource_Path);
+      return Tmp_Return;
+   end Add_From_Resource;
+
    ---------------------
    -- Add_From_String --
    ---------------------
@@ -196,6 +216,30 @@ package body Gtk.Builder is
       Free (Tmp_Filename);
       return Tmp_Return;
    end Add_Objects_From_File;
+
+   -------------------------------
+   -- Add_Objects_From_Resource --
+   -------------------------------
+
+   function Add_Objects_From_Resource
+      (Builder       : not null access Gtk_Builder_Record;
+       Resource_Path : UTF8_String;
+       Object_Ids    : GNAT.Strings.String_List) return Guint
+   is
+      function Internal
+         (Builder       : System.Address;
+          Resource_Path : Interfaces.C.Strings.chars_ptr;
+          Object_Ids    : Interfaces.C.Strings.chars_ptr_array) return Guint;
+      pragma Import (C, Internal, "gtk_builder_add_objects_from_resource");
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Object_Ids    : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
+      Tmp_Return        : Guint;
+   begin
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Tmp_Object_Ids);
+      GtkAda.Types.Free (Tmp_Object_Ids);
+      Free (Tmp_Resource_Path);
+      return Tmp_Return;
+   end Add_Objects_From_Resource;
 
    -----------------------------
    -- Add_Objects_From_String --
@@ -330,6 +374,26 @@ package body Gtk.Builder is
       end Internal_Cb;
 
    end Connect_Signals_Full_User_Data;
+
+   -------------------
+   -- Expose_Object --
+   -------------------
+
+   procedure Expose_Object
+      (Builder : not null access Gtk_Builder_Record;
+       Name    : UTF8_String;
+       Object  : not null access Glib.Object.GObject_Record'Class)
+   is
+      procedure Internal
+         (Builder : System.Address;
+          Name    : Interfaces.C.Strings.chars_ptr;
+          Object  : System.Address);
+      pragma Import (C, Internal, "gtk_builder_expose_object");
+      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+   begin
+      Internal (Get_Object (Builder), Tmp_Name, Get_Object (Object));
+      Free (Tmp_Name);
+   end Expose_Object;
 
    ----------------
    -- Get_Object --

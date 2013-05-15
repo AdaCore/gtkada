@@ -58,7 +58,6 @@ package Pango.Tabs is
    --  Creates an array of Initial_Size tab stops. Tab stops are specified in
    --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
    --  All stops are initially at position 0.
-   --  be freed with Pango.Tabs.Free.
    --  "initial_size": Initial number of tab stops to allocate, can be 0
    --  "positions_in_pixels": whether positions are in pixel units
 
@@ -68,7 +67,6 @@ package Pango.Tabs is
    --  Creates an array of Initial_Size tab stops. Tab stops are specified in
    --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
    --  All stops are initially at position 0.
-   --  be freed with Pango.Tabs.Free.
    --  "initial_size": Initial number of tab stops to allocate, can be 0
    --  "positions_in_pixels": whether positions are in pixel units
 
@@ -81,7 +79,6 @@ package Pango.Tabs is
 
    function Copy (Self : Pango_Tab_Array) return Pango_Tab_Array;
    --  Copies a Pango.Tabs.Pango_Tab_Array
-   --  be freed with Pango.Tabs.Free.
 
    procedure Free (Self : Pango_Tab_Array);
    --  Frees a tab array and associated resources.

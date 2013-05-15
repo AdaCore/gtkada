@@ -71,7 +71,7 @@
 --  By default GtkPrintOperation uses an external application to do print
 --  preview. To implement a custom print preview, an application must connect
 --  to the preview signal. The functions
---  gtk_print_operation_print_preview_render_page,
+--  Gtk.Print_Operation_Preview.Render_Page,
 --  Gtk.Print_Operation_Preview.End_Preview and
 --  Gtk.Print_Operation_Preview.Is_Selected are useful when implementing a
 --  print preview.
@@ -215,7 +215,7 @@ package Gtk.Print_Operation is
    function Get_Embed_Page_Setup
       (Self : not null access Gtk_Print_Operation_Record) return Boolean;
    --  Gets the value of
-   --  Gtk.Print_Operation.Gtk_Print_Operation::embed-page-setup property.
+   --  Gtk.Print_Operation.Gtk_Print_Operation:embed-page-setup property.
    --  Since: gtk+ 2.18
 
    procedure Set_Embed_Page_Setup
@@ -225,20 +225,21 @@ package Gtk.Print_Operation is
    --  page. Selected page setup is stored as default page setup in
    --  Gtk.Print_Operation.Gtk_Print_Operation.
    --  Since: gtk+ 2.18
-   --  "embed": True to embed page setup selection in the Gtk_Print_Dialog
+   --  "embed": True to embed page setup selection in the
+   --  Gtk_Print_Unix_Dialog
 
    procedure Get_Error (Self : not null access Gtk_Print_Operation_Record);
    --  Call this when the result of a print operation is
    --  Gtk.Print_Operation.Result_Error, either as returned by
    --  Gtk.Print_Operation.Run, or in the
    --  Gtk.Print_Operation.Gtk_Print_Operation::done signal handler. The
-   --  returned GError will contain more details on what went wrong.
+   --  returned Gerror.Gerror will contain more details on what went wrong.
    --  Since: gtk+ 2.10
 
    function Get_Has_Selection
       (Self : not null access Gtk_Print_Operation_Record) return Boolean;
-   --  Gets the value of
-   --  Gtk.Print_Operation.Gtk_Print_Operation::has-selection property.
+   --  Gets the value of Gtk.Print_Operation.Gtk_Print_Operation:has-selection
+   --  property.
    --  Since: gtk+ 2.18
 
    procedure Set_Has_Selection
@@ -296,13 +297,12 @@ package Gtk.Print_Operation is
    --  e.g. in a Gtk.Status_Bar.Gtk_Status_Bar.
    --  Use Gtk.Print_Operation.Get_Status to obtain a status value that is
    --  suitable for programmatic use.
-   --  of the print operation
    --  Since: gtk+ 2.10
 
    function Get_Support_Selection
       (Self : not null access Gtk_Print_Operation_Record) return Boolean;
    --  Gets the value of
-   --  Gtk.Print_Operation.Gtk_Print_Operation::support-selection property.
+   --  Gtk.Print_Operation.Gtk_Print_Operation:support-selection property.
    --  Since: gtk+ 2.18
 
    procedure Set_Support_Selection
@@ -342,15 +342,13 @@ package Gtk.Print_Operation is
    --  with the result of the operation when the it is done (i.e. when the
    --  dialog is canceled, or when the print succeeds or fails). |[ if
    --  (settings != NULL) gtk_print_operation_set_print_settings (print,
-   --  settings);
-   --  if (page_setup != NULL) gtk_print_operation_set_default_page_setup
-   --  (print, page_setup);
+   --  settings); if (page_setup != NULL)
+   --  gtk_print_operation_set_default_page_setup (print, page_setup);
    --  g_signal_connect (print, "begin-print", G_CALLBACK (begin_print),
    --  &data); g_signal_connect (print, "draw-page", G_CALLBACK (draw_page),
-   --  &data);
-   --  res = gtk_print_operation_run (print,
-   --  GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, parent, &error);
-   --  if (res == GTK_PRINT_OPERATION_RESULT_ERROR) { error_dialog =
+   --  &data); res = gtk_print_operation_run (print,
+   --  GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, parent, &error); if (res ==
+   --  GTK_PRINT_OPERATION_RESULT_ERROR) { error_dialog =
    --  gtk_message_dialog_new (GTK_WINDOW (parent),
    --  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
    --  "Error printing file:\n%s", error->message); g_signal_connect
@@ -361,13 +359,6 @@ package Gtk.Print_Operation is
    --  (gtk_print_operation_get_print_settings (print)); } ]|
    --  Note that Gtk.Print_Operation.Run can only be called once on a given
    --  Gtk.Print_Operation.Gtk_Print_Operation.
-   --  Gtk.Print_Operation.Result_Apply indicates that the printing was
-   --  completed successfully. In this case, it is a good idea to obtain the
-   --  used print settings with Gtk.Print_Operation.Get_Print_Settings and
-   --  store them for reuse with the next print operation. A value of
-   --  Gtk.Print_Operation.Result_In_Progress means the operation is running
-   --  asynchronously, and will emit the
-   --  Gtk.Print_Operation.Gtk_Print_Operation::done signal when done.
    --  Since: gtk+ 2.10
    --  "action": the action to start
    --  "parent": Transient parent of the dialog
@@ -700,11 +691,9 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Operation.Gtk_Print_Operation::custom-widget-apply signal is
    --  emitted on the operation. Then you can read out any information you need
    --  from the widgets.
-   --
-   --  the print dialog, or null
    -- 
    --  Callback parameters:
-   --    --  Returns A custom widget that gets embedded in
+   --    --  Returns A custom widget that gets embedded in the print dialog, or null
 
    type Cb_Gtk_Print_Operation_Gtk_Widget_Void is not null access procedure
      (Self   : access Gtk_Print_Operation_Record'Class;
@@ -785,32 +774,20 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Context.Get_Cairo_Context. |[ static void draw_page
    --  (GtkPrintOperation *operation, GtkPrintContext *context, gint page_nr,
    --  gpointer user_data) { cairo_t *cr; PangoLayout *layout; gdouble width,
-   --  text_height; gint layout_height; PangoFontDescription *desc;
-   --
-   --  cr = gtk_print_context_get_cairo_context (context); width =
-   --  gtk_print_context_get_width (context);
-   --
-   --  cairo_rectangle (cr, 0, 0, width, HEADER_HEIGHT);
-   --
-   --  cairo_set_source_rgb (cr, 0.8, 0.8, 0.8); cairo_fill (cr);
-   --
-   --  layout = gtk_print_context_create_pango_layout (context);
-   --
-   --  desc = pango_font_description_from_string ("sans 14");
+   --  text_height; gint layout_height; PangoFontDescription *desc; cr =
+   --  gtk_print_context_get_cairo_context (context); width =
+   --  gtk_print_context_get_width (context); cairo_rectangle (cr, 0, 0, width,
+   --  HEADER_HEIGHT); cairo_set_source_rgb (cr, 0.8, 0.8, 0.8); cairo_fill
+   --  (cr); layout = gtk_print_context_create_pango_layout (context); desc =
+   --  pango_font_description_from_string ("sans 14");
    --  pango_layout_set_font_description (layout, desc);
-   --  pango_font_description_free (desc);
-   --
-   --  pango_layout_set_text (layout, "some text", -1); pango_layout_set_width
-   --  (layout, width * PANGO_SCALE); pango_layout_set_alignment (layout,
-   --  PANGO_ALIGN_CENTER);
-   --
+   --  pango_font_description_free (desc); pango_layout_set_text (layout, "some
+   --  text", -1); pango_layout_set_width (layout, width * PANGO_SCALE);
+   --  pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
    --  pango_layout_get_size (layout, NULL, &layout_height); text_height =
-   --  (gdouble)layout_height / PANGO_SCALE;
-   --
-   --  cairo_move_to (cr, width / 2, (HEADER_HEIGHT - text_height) / 2);
-   --  pango_cairo_show_layout (cr, layout);
-   --
-   --  g_object_unref (layout); } ]|
+   --  (gdouble)layout_height / PANGO_SCALE; cairo_move_to (cr, width / 2,
+   --  (HEADER_HEIGHT - text_height) / 2); pango_cairo_show_layout (cr,
+   --  layout); g_object_unref (layout); } ]|
    --
    --  Use Gtk.Print_Operation.Set_Use_Full_Page and
    --  Gtk.Print_Operation.Set_Unit before starting the print operation to set
@@ -915,7 +892,8 @@ package Gtk.Print_Operation is
    --  user clicking a close button).
    -- 
    --  Callback parameters:
-   --    --  "preview": the Gtk_Print_Preview_Operation for the current operation
+   --    --  "preview": the Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview
+   --    --  for the current operation
    --    --  "context": the Gtk.Print_Context.Gtk_Print_Context that will be used
    --    --  "parent": the Gtk.Window.Gtk_Window to use as window parent, or null
    --    --  Returns True if the listener wants to take over control of the preview

@@ -21,6 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  A GtkTreeRowReference tracks model changes so that it always refers to the
+--  same row (a Gtk.Tree_Model.Gtk_Tree_Path refers to a position, not a fixed
+--  row). Create a new GtkTreeRowReference with gtk_tree_row_reference_new.
+--
+--  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -46,8 +52,8 @@ package Gtk.Tree_Row_Reference is
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Creates a row reference based on Path.
    --  This reference will keep pointing to the node pointed to by Path, so
-   --  long as it exists. It listens to all signals emitted by Model, and
-   --  updates its path appropriately. If Path isn't a valid path in Model,
+   --  long as it exists. Any changes that occur on Model are propagated, and
+   --  the path is updated appropriately. If Path isn't a valid path in Model,
    --  then null is returned.
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
    --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
@@ -57,8 +63,8 @@ package Gtk.Tree_Row_Reference is
        Path  : Gtk.Tree_Model.Gtk_Tree_Path) return Gtk_Tree_Row_Reference;
    --  Creates a row reference based on Path.
    --  This reference will keep pointing to the node pointed to by Path, so
-   --  long as it exists. It listens to all signals emitted by Model, and
-   --  updates its path appropriately. If Path isn't a valid path in Model,
+   --  long as it exists. Any changes that occur on Model are propagated, and
+   --  the path is updated appropriately. If Path isn't a valid path in Model,
    --  then null is returned.
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
    --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor

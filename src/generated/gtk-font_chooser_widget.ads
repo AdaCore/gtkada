@@ -21,6 +21,22 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget widget lists the
+--  available fonts, styles and sizes, allowing the user to select a font. It
+--  is used in the Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog widget to
+--  provide a dialog box for selecting fonts.
+--
+--  To set the font which is initially selected, use Gtk.Font_Chooser.Set_Font
+--  or Gtk.Font_Chooser.Set_Font_Desc.
+--
+--  To get the selected font use Gtk.Font_Chooser.Get_Font or
+--  Gtk.Font_Chooser.Get_Font_Desc.
+--
+--  To change the text which is shown in the preview area, use
+--  Gtk.Font_Chooser.Set_Preview_Text.
+--
+--  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

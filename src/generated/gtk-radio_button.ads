@@ -58,7 +58,8 @@
 --    void create_radio_buttons (void) {
 --       GtkWidget *window, *radio1, *radio2, *box, *entry;
 --       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---       box = gtk_box_new (GTK_ORIENTATION_VERTICAL, TRUE, 2);
+--       box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
+--       gtk_box_set_homogeneous (GTK_BOX (box), TRUE);
 --       /* Create a radio button with a GtkEntry widget */
 --       radio1 = gtk_radio_button_new (NULL);
 --       entry = gtk_entry_new (<!-- -->);
@@ -91,6 +92,7 @@ with Glib;             use Glib;
 with Glib.Properties;  use Glib.Properties;
 with Glib.Types;       use Glib.Types;
 with Gtk.Action;       use Gtk.Action;
+with Gtk.Actionable;   use Gtk.Actionable;
 with Gtk.Activatable;  use Gtk.Activatable;
 with Gtk.Buildable;    use Gtk.Buildable;
 with Gtk.Check_Button; use Gtk.Check_Button;
@@ -226,9 +228,6 @@ package Gtk.Radio_Button is
       (Radio_Button : not null access Gtk_Radio_Button_Record)
        return Gtk.Widget.Widget_SList.GSlist;
    --  Retrieves the group assigned to a radio button.
-   --  containing all the radio buttons in the same group as Radio_Button. The
-   --  returned list is owned by the radio button and must not be modified or
-   --  freed.
 
    procedure Set_Group
       (Radio_Button : not null access Gtk_Radio_Button_Record;
@@ -263,6 +262,17 @@ package Gtk.Radio_Button is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Radio_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Radio_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Radio_Button_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Radio_Button_Record;
@@ -330,9 +340,22 @@ package Gtk.Radio_Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Radio_Button_Record, Gtk_Radio_Button);
+   function "+"
+     (Widget : access Gtk_Radio_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Radio_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Radio_Button_Record, Gtk_Radio_Button);

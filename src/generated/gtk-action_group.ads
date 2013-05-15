@@ -75,6 +75,7 @@ with Glib.Glist;           use Glib.Glist;
 with Glib.Object;          use Glib.Object;
 with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
+with Gtk.Accel_Group;      use Gtk.Accel_Group;
 with Gtk.Action;           use Gtk.Action;
 with Gtk.Buildable;        use Gtk.Buildable;
 with Gtk.Widget;           use Gtk.Widget;
@@ -153,6 +154,19 @@ package Gtk.Action_Group is
    --  by Gtk.Accel_Group.Accelerator_Parse, or "" for no accelerator, or null
    --  to use the stock accelerator
 
+   function Get_Accel_Group
+      (Action_Group : not null access Gtk_Action_Group_Record)
+       return Gtk.Accel_Group.Gtk_Accel_Group;
+   --  Gets the accelerator group.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Accel_Group
+      (Action_Group : not null access Gtk_Action_Group_Record;
+       Accel_Group  : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
+   --  Sets the accelerator group to be used by every action in this group.
+   --  Since: gtk+ 3.6
+   --  "accel_group": a Gtk.Accel_Group.Gtk_Accel_Group to set or null
+
    function Get_Action
       (Action_Group : not null access Gtk_Action_Group_Record;
        Action_Name  : UTF8_String) return Gtk.Action.Gtk_Action;
@@ -214,7 +228,7 @@ package Gtk.Action_Group is
        Func         : Gtk_Translate_Func;
        Notify       : Glib.G_Destroy_Notify_Address);
    --  Sets a function to be used for translating the Label and Tooltip of
-   --  Gtk_Action_Group_Entry<!-- -->s added by gtk_action_group_add_actions.
+   --  Gtk_Action_Entry<!-- -->s added by gtk_action_group_add_actions.
    --  If you're using gettext, it is enough to set the translation domain
    --  with Gtk.Action_Group.Set_Translation_Domain.
    --  Since: gtk+ 2.4
@@ -238,8 +252,7 @@ package Gtk.Action_Group is
           Data         : User_Data_Type;
           Notify       : Glib.G_Destroy_Notify_Address);
       --  Sets a function to be used for translating the Label and Tooltip of
-      --  Gtk_Action_Group_Entry<!-- -->s added by
-      --  gtk_action_group_add_actions.
+      --  Gtk_Action_Entry<!-- -->s added by gtk_action_group_add_actions.
       --  If you're using gettext, it is enough to set the translation domain
       --  with Gtk.Action_Group.Set_Translation_Domain.
       --  Since: gtk+ 2.4
@@ -253,20 +266,22 @@ package Gtk.Action_Group is
 
    procedure Set_Translation_Domain
       (Action_Group : not null access Gtk_Action_Group_Record;
-       Domain       : UTF8_String);
+       Domain       : UTF8_String := "");
    --  Sets the translation domain and uses g_dgettext for translating the
    --  Label and Tooltip of Gtk_Action_Entry<!-- -->s added by
    --  gtk_action_group_add_actions.
    --  If you're not using gettext for localization, see
    --  Gtk.Action_Group.Set_Translate_Func.
    --  Since: gtk+ 2.4
-   --  "domain": the translation domain to use for g_dgettext calls
+   --  "domain": the translation domain to use for g_dgettext calls, or null
+   --  to use the domain set with textdomain
 
    function Translate_String
       (Action_Group : not null access Gtk_Action_Group_Record;
        String       : UTF8_String) return UTF8_String;
-   --  Translates a string using the specified translate_func. This is mainly
-   --  intended for language bindings.
+   --  Translates a string using the function set with
+   --  Gtk.Action_Group.Set_Translate_Func. This is mainly intended for
+   --  language bindings.
    --  Since: gtk+ 2.6
    --  "string": a string
 
@@ -412,6 +427,9 @@ package Gtk.Action_Group is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Accel_Group_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Accel_Group.Gtk_Accel_Group
+
    Name_Property : constant Glib.Properties.Property_String;
 
    Sensitive_Property : constant Glib.Properties.Property_Boolean;
@@ -544,4 +562,6 @@ private
      Glib.Properties.Build ("sensitive");
    Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("name");
+   Accel_Group_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("accel-group");
 end Gtk.Action_Group;

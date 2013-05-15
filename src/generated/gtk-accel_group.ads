@@ -131,7 +131,6 @@ package Gtk.Accel_Group is
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in Accel_Group that matches Accel_Key and
    --  Accel_Mods, and activates it.
-   --  this keypress
    --  "accel_quark": the quark for the accelerator name
    --  "acceleratable": the Glib.Object.GObject, usually a
    --  Gtk.Window.Gtk_Window, on which to activate the accelerator
@@ -189,7 +188,6 @@ package Gtk.Accel_Group is
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  removed, False otherwise
    --  "accel_key": key value of the accelerator
    --  "accel_mods": modifier combination of the accelerator
 
@@ -198,7 +196,6 @@ package Gtk.Accel_Group is
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
    --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
-   --  Find_Func. The key is owned by GTK+ and must not be freed.
    --  "find_func": a function to filter the entries of Accel_Group with
 
    generic
@@ -218,7 +215,6 @@ package Gtk.Accel_Group is
           Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key;
       --  Finds the first entry in an accelerator group for which Find_Func
       --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
-      --  Find_Func. The key is owned by GTK+ and must not be freed.
       --  "find_func": a function to filter the entries of Accel_Group with
       --  "data": data to pass to Find_Func
 
@@ -228,7 +224,6 @@ package Gtk.Accel_Group is
       (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean;
    --  Locks are added and removed using Gtk.Accel_Group.Lock and
    --  Gtk.Accel_Group.Unlock.
-   --  False otherwise.
    --  Since: gtk+ 2.14
 
    function Get_Modifier_Mask
@@ -257,7 +252,6 @@ package Gtk.Accel_Group is
       (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
    --  connected; see Gtk.Accel_Group.Connect.
-   --  is connected, or null
    --  "closure": a GClosure
 
    function Accel_Groups_Activate
@@ -267,7 +261,6 @@ package Gtk.Accel_Group is
    --  Finds the first accelerator in any Gtk.Accel_Group.Gtk_Accel_Group
    --  attached to Object that matches Accel_Key and Accel_Mods, and activates
    --  that accelerator.
-   --  this keypress
    --  "object": the Glib.Object.GObject, usually a Gtk.Window.Gtk_Window, on
    --  which to activate the accelerator
    --  "accel_key": accelerator keyval from a key event
@@ -277,7 +270,6 @@ package Gtk.Accel_Group is
       (Object : not null access Glib.Object.GObject_Record'Class)
        return Glib.Object.Object_List.GSlist;
    --  Gets a list of all accel groups which are attached to Object.
-   --  all accel groups which are attached to Object
    --  "object": a Glib.Object.GObject, usually a Gtk.Window.Gtk_Window
 
    function Accelerator_Valid
@@ -413,8 +405,8 @@ package Gtk.Accel_Group is
        Call  : Cb_GObject_Guint_Gdk_Modifier_Type_Address_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The accel-changed signal is emitted when a Gtk_Accel_Group_Entry is
-   --  added to or removed from the accel group.
+   --  The accel-changed signal is emitted when an entry is added to or
+   --  removed from the accel group.
    --
    --  Widgets like Gtk.Accel_Label.Gtk_Accel_Label which display an
    --  associated accelerator should connect to this signal, and rebuild their

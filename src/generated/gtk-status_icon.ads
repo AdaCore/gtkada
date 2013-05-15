@@ -245,7 +245,6 @@ package Gtk.Status_Icon is
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
    --  Gtk.Status_Icon.Get_Storage_Type). The caller of this function does not
    --  own a reference to the returned pixbuf.
-   --  or null if the image is empty.
    --  Since: gtk+ 2.10
 
    procedure Set_From_Pixbuf
@@ -289,7 +288,6 @@ package Gtk.Status_Icon is
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Stock (see
    --  Gtk.Status_Icon.Get_Storage_Type). The returned string is owned by the
    --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
-   --  or null if the image is empty.
    --  Since: gtk+ 2.10
 
    procedure Set_From_Stock
@@ -328,7 +326,6 @@ package Gtk.Status_Icon is
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
    --  Gets the contents of the tooltip for Status_Icon.
-   --  returned string with g_free when done.
    --  Since: gtk+ 2.16
 
    procedure Set_Tooltip_Markup
@@ -348,7 +345,6 @@ package Gtk.Status_Icon is
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
    --  Gets the contents of the tooltip for Status_Icon.
-   --  returned string with g_free when done.
    --  Since: gtk+ 2.16
 
    procedure Set_Tooltip_Text
@@ -387,13 +383,11 @@ package Gtk.Status_Icon is
    --  This function is not intended for other use cases which are more likely
    --  to be met by one of the non-X11 specific methods, such as
    --  Gtk.Status_Icon.Position_Menu.
-   --  underlying X11 Window
    --  Since: gtk+ 2.14
 
    function Is_Embedded
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
    --  Returns whether the status icon is embedded in a notification area.
-   --  a notification area.
    --  Since: gtk+ 2.10
 
    procedure Set_From_File
@@ -572,12 +566,10 @@ package Gtk.Status_Icon is
    --
    --  Whether this event is emitted is platform-dependent. Use the ::activate
    --  and ::popup-menu signals in preference.
-   --
-   --  for the event. False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    procedure On_Button_Release_Event
@@ -594,12 +586,10 @@ package Gtk.Status_Icon is
    --
    --  Whether this event is emitted is platform-dependent. Use the ::activate
    --  and ::popup-menu signals in preference.
-   --
-   --  for the event. False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Status_Icon_Guint_Guint_Void is not null access procedure
      (Self          : access Gtk_Status_Icon_Record'Class;
@@ -711,12 +701,10 @@ package Gtk.Status_Icon is
    --  events for buttons 4 and 5 when the wheel is turned.
    --
    --  Whether this event is emitted is platform-dependent.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Status_Icon_Gint_Boolean is not null access function
      (Self : access Gtk_Status_Icon_Record'Class;
@@ -738,12 +726,10 @@ package Gtk.Status_Icon is
        After : Boolean := False);
    --  Gets emitted when the size available for the image changes, e.g.
    --  because the notification area got resized.
-   --
-   --  size. Otherwise, GTK+ will scale the icon as necessary.
    -- 
    --  Callback parameters:
    --    --  "size": the new size
-   --    --  Returns True if the icon was updated for the new
+   --    --  Returns True if the icon was updated for the new size. Otherwise, GTK+ will scale the icon as necessary.
 
 private
    Visible_Property : constant Glib.Properties.Property_Boolean :=

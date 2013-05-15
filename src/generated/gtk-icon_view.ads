@@ -40,6 +40,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
 with Gdk.Dnd;                 use Gdk.Dnd;
+with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -183,6 +184,32 @@ package Gtk.Icon_View is
    --  image is used for a drag icon.
    --  Since: gtk+ 2.8
    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path in Icon_View
+
+   function Get_Activate_On_Single_Click
+      (Icon_View : not null access Gtk_Icon_View_Record) return Boolean;
+   --  Gets the setting set by Gtk.Icon_View.Set_Activate_On_Single_Click.
+   --  Since: gtk+ 3.8
+
+   procedure Set_Activate_On_Single_Click
+      (Icon_View : not null access Gtk_Icon_View_Record;
+       Single    : Boolean);
+   --  Causes the Gtk.Icon_View.Gtk_Icon_View::item-activated signal to be
+   --  emitted on a single click instead of a double click.
+   --  Since: gtk+ 3.8
+   --  "single": True to emit item-activated on a single click
+
+   function Get_Cell_Rect
+      (Icon_View : not null access Gtk_Icon_View_Record;
+       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Rect      : access Gdk.Rectangle.Gdk_Rectangle) return Boolean;
+   --  Fills the bounding rectangle in widget coordinates for the cell
+   --  specified by Path and Cell. If Cell is null the main cell area is used.
+   --  This function is only valid if Icon_View is realized.
+   --  Since: gtk+ 3.6
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
+   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer or null
+   --  "rect": rectangle to fill with cell rect
 
    function Get_Column_Spacing
       (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
@@ -387,7 +414,6 @@ package Gtk.Icon_View is
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the model the Gtk.Icon_View.Gtk_Icon_View is based on. Returns
    --  null if the model is unset.
-   --  currently being used.
    --  Since: gtk+ 2.6
 
    procedure Set_Model
@@ -408,7 +434,6 @@ package Gtk.Icon_View is
    --  cell at the specified position. See
    --  Gtk.Icon_View.Convert_Widget_To_Bin_Window_Coords for converting widget
    --  coordinates to bin_window coordinates.
-   --  if no icon exists at that position.
    --  Since: gtk+ 2.6
    --  "x": The x position to be identified
    --  "y": The y position to be identified
@@ -472,8 +497,8 @@ package Gtk.Icon_View is
    --  want to convert the returned list into a list of
    --  Gtk.Tree_Row_Reference.Gtk_Tree_Row_Reference<!-- -->s. To do this, you
    --  can use gtk_tree_row_reference_new.
-   --  To free the return value, use: |[ g_list_foreach (list,
-   --  (GFunc)gtk_tree_path_free, NULL); g_list_free (list); ]|
+   --  To free the return value, use: |[ g_list_free_full (list,
+   --  (GDestroyNotify) gtk_tree_path_free); ]|
    --  Since: gtk+ 2.6
 
    function Get_Selection_Mode
@@ -520,7 +545,6 @@ package Gtk.Icon_View is
       (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
    --  Returns the column of Icon_View's model which is being used for
    --  displaying tooltips on Icon_View's rows.
-   --  used, or -1 if this is disabled.
    --  Since: gtk+ 2.12
 
    procedure Set_Tooltip_Column
@@ -530,8 +554,8 @@ package Gtk.Icon_View is
    --  can use this function to have Gtk.Icon_View.Gtk_Icon_View handle these
    --  automatically for you. Column should be set to the column in Icon_View's
    --  model containing the tooltip texts, or -1 to disable this feature.
-   --  When enabled, Gtk.Widget.Gtk_Widget::has-tooltip will be set to True
-   --  and Icon_View will connect a Gtk.Widget.Gtk_Widget::query-tooltip signal
+   --  When enabled, Gtk.Widget.Gtk_Widget:has-tooltip will be set to True and
+   --  Icon_View will connect a Gtk.Widget.Gtk_Widget::query-tooltip signal
    --  handler.
    --  Note that the signal handler sets the text with Gtk.Tooltip.Set_Markup,
    --  so &amp;, <, etc have to be escaped in the text.
@@ -857,6 +881,10 @@ package Gtk.Icon_View is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Activate_On_Single_Click_Property : constant Glib.Properties.Property_Boolean;
+   --  The activate-on-single-click property specifies whether the
+   --  "item-activated" signal will be emitted after a single click.
+
    Cell_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Cell_Area.Gtk_Cell_Area
    --  The Gtk.Cell_Area.Gtk_Cell_Area used to layout cell renderers for this
@@ -982,9 +1010,11 @@ package Gtk.Icon_View is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::item-activated signal is emitted when the method
-   --  Gtk.Icon_View.Item_Activated is called or the user double clicks an
-   --  item. It is also emitted when a non-editable item is selected and one of
-   --  the keys: Space, Return or Enter is pressed.
+   --  Gtk.Icon_View.Item_Activated is called, when the user double clicks an
+   --  item with the "activate-on-single-click" property set to False, or when
+   --  the user single clicks an item when the "activate-on-single-click"
+   --  property set to True. It is also emitted when a non-editable item is
+   --  selected and one of the keys: Space, Return or Enter is pressed.
 
    type Cb_Gtk_Icon_View_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self  : access Gtk_Icon_View_Record'Class;
@@ -1201,4 +1231,6 @@ private
      Glib.Properties.Build ("column-spacing");
    Cell_Area_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("cell-area");
+   Activate_On_Single_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activate-on-single-click");
 end Gtk.Icon_View;

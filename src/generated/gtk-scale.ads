@@ -307,13 +307,26 @@ package Gtk.Scale is
    --  the slider.
    --  "draw_value": True to draw the value
 
+   function Get_Has_Origin
+      (Scale : not null access Gtk_Scale_Record) return Boolean;
+   --  Returns whether the scale has an origin.
+   --  Since: gtk+ 3.4
+
+   procedure Set_Has_Origin
+      (Scale      : not null access Gtk_Scale_Record;
+       Has_Origin : Boolean);
+   --  If Has_Origin is set to True (the default), the scale will highlight
+   --  the part of the scale between the origin (bottom or left side) of the
+   --  scale and the current value.
+   --  Since: gtk+ 3.4
+   --  "has_origin": True if the scale has an origin
+
    function Get_Layout
       (Scale : not null access Gtk_Scale_Record)
        return Pango.Layout.Pango_Layout;
    --  Gets the Pango.Layout.Pango_Layout used to display the scale. The
    --  returned object is owned by the scale so does not need to be freed by
    --  the caller.
-   --  or null if the Gtk.Scale.Gtk_Scale:draw-value property is False.
    --  Since: gtk+ 2.4
 
    procedure Get_Layout_Offsets
@@ -365,6 +378,8 @@ package Gtk.Scale is
    The_Digits_Property : constant Glib.Properties.Property_Int;
 
    Draw_Value_Property : constant Glib.Properties.Property_Boolean;
+
+   Has_Origin_Property : constant Glib.Properties.Property_Boolean;
 
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
 
@@ -437,6 +452,8 @@ package Gtk.Scale is
 private
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("value-pos");
+   Has_Origin_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("has-origin");
    Draw_Value_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("draw-value");
    The_Digits_Property : constant Glib.Properties.Property_Int :=

@@ -249,7 +249,7 @@ package Gtk.Activatable is
    --  Note:
    --  Be careful to call this before setting the local copy of the
    --  Gtk.Action.Gtk_Action property, since this function uses
-   --  Gtk.Activatable.Get_Action to retrieve the previous action
+   --  Gtk.Activatable.Get_Related_Action to retrieve the previous action
    --  Since: gtk+ 2.16
    --  "action": the Gtk.Action.Gtk_Action to set
 
@@ -291,9 +291,9 @@ package Gtk.Activatable is
       (Self   : Gtk_Activatable;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
    --  This is called to update the activatable completely, this is called
-   --  internally when the Gtk.Activatable.Gtk_Activatable::related-action
+   --  internally when the Gtk.Activatable.Gtk_Activatable:related-action
    --  property is set or unset and by the implementing class when
-   --  Gtk.Activatable.Gtk_Activatable::use-action-appearance changes.
+   --  Gtk.Activatable.Gtk_Activatable:use-action-appearance changes.
    --  Since: gtk+ 2.16
    --  "action": the related Gtk.Action.Gtk_Action or null
 

@@ -155,7 +155,8 @@
 --  GTK_STYLE_CLASS_DND, GTK_STYLE_CLASS_PANE_SEPARATOR,
 --  GTK_STYLE_CLASS_SEPARATOR, GTK_STYLE_CLASS_INFO, GTK_STYLE_CLASS_WARNING,
 --  GTK_STYLE_CLASS_QUESTION, GTK_STYLE_CLASS_ERROR,
---  GTK_STYLE_CLASS_HORIZONTAL, GTK_STYLE_CLASS_VERTICAL.
+--  GTK_STYLE_CLASS_HORIZONTAL, GTK_STYLE_CLASS_VERTICAL, GTK_STYLE_CLASS_TOP,
+--  GTK_STYLE_CLASS_BOTTOM, GTK_STYLE_CLASS_LEFT, GTK_STYLE_CLASS_RIGHT,
 --
 --  Widgets can also add regions with flags to their context. The regions used
 --  by GTK+ widgets are:
@@ -167,9 +168,8 @@
 --
 --  Macro
 --
---  Used by
+--  Used by </thead>
 --
---  </thead>
 --  row
 --
 --  even, odd
@@ -188,7 +188,11 @@
 --
 --  column-header
 --
+-- 
+--
 --  GTK_STYLE_REGION_COLUMN_HEADER
+--
+-- 
 --
 --  tab
 --
@@ -230,6 +234,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;              use Cairo;
 with Gdk;                use Gdk;
+with Gdk.Frame_Clock;    use Gdk.Frame_Clock;
 with Gdk.Pixbuf;         use Gdk.Pixbuf;
 with Gdk.RGBA;           use Gdk.RGBA;
 with Gdk.Screen;         use Gdk.Screen;
@@ -237,6 +242,7 @@ with Glib;               use Glib;
 with Glib.Object;        use Glib.Object;
 with Glib.Properties;    use Glib.Properties;
 with Glib.Values;        use Glib.Values;
+with Gtk.Css_Section;    use Gtk.Css_Section;
 with Gtk.Enums;          use Gtk.Enums;
 with Gtk.Style;          use Gtk.Style;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
@@ -301,6 +307,9 @@ package Gtk.Style_Context is
        Provider : Gtk.Style_Provider.Gtk_Style_Provider;
        Priority : Guint);
    --  Adds a style provider to Context, to be used in style construction.
+   --  Note that a style provider added by this function only affects the style
+   --  of the widget to which Context belongs. If you want to affect the style
+   --  of all widgets, use Gtk.Style_Context.Add_Provider_For_Screen.
    --  Note:
    --  If both priorities are the same, A
    --  Gtk.Style_Provider.Gtk_Style_Provider added through this function takes
@@ -337,6 +346,7 @@ package Gtk.Style_Context is
    procedure Cancel_Animations
       (Self      : not null access Gtk_Style_Context_Record;
        Region_Id : System.Address);
+   pragma Obsolescent (Cancel_Animations);
    --  Stops all running animations for Region_Id and all animatable regions
    --  underneath.
    --  A null Region_Id will stop all ongoing animations in Context, when
@@ -345,6 +355,7 @@ package Gtk.Style_Context is
    --  circumstances you would expect all widget to be stopped, so this should
    --  be only used in complex widgets with different animatable regions.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.6, This function does nothing.
    --  "region_id": animatable region to stop, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
 
@@ -388,28 +399,53 @@ package Gtk.Style_Context is
    function Get_Direction
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.Gtk_Text_Direction;
+   pragma Obsolescent (Get_Direction);
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Use Gtk.Style_Context.Get_State and check for
+   --  GTK_STATE_FLAG_DIR_LTR and GTK_STATE_FLAG_DIR_RTL instead.
 
    procedure Set_Direction
       (Self      : not null access Gtk_Style_Context_Record;
        Direction : Gtk.Enums.Gtk_Text_Direction);
+   pragma Obsolescent (Set_Direction);
    --  Sets the reading direction for rendering purposes.
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Use Gtk.Style_Context.Set_State with
+   --  GTK_STATE_FLAG_DIR_LTR and GTK_STATE_FLAG_DIR_RTL instead.
    --  "direction": the new direction.
 
    function Get_Font
       (Self  : not null access Gtk_Style_Context_Record;
        State : Gtk.Enums.Gtk_State_Flags)
        return Pango.Font.Pango_Font_Description;
+   pragma Obsolescent (Get_Font);
    --  Returns the font description for a given state. The returned object is
    --  const and will remain valid until the
    --  Gtk.Style_Context.Gtk_Style_Context::changed signal happens.
-   --  state. This object is owned by GTK+ and should not be freed.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Use gtk_style_context_get for "font" or
+   --  subproperties instead.
    --  "state": state to retrieve the font for
+
+   function Get_Frame_Clock
+      (Self : not null access Gtk_Style_Context_Record)
+       return Gdk.Frame_Clock.Gdk_Frame_Clock;
+   --  Returns the Gdk.Frame_Clock.Gdk_Frame_Clock to which Context is
+   --  attached.
+   --  Since: gtk+ 3.8
+
+   procedure Set_Frame_Clock
+      (Self        : not null access Gtk_Style_Context_Record;
+       Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class);
+   --  Attaches Context to the given frame clock.
+   --  The frame clock is used for the timing of animations.
+   --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
+   --  gtk_widget_get_style_context, you do not need to call this yourself.
+   --  Since: gtk+ 3.8
+   --  "frame_clock": a Gdk.Frame_Clock.Gdk_Frame_Clock
 
    function Get_Junction_Sides
       (Self : not null access Gtk_Style_Context_Record)
@@ -451,6 +487,25 @@ package Gtk.Style_Context is
    --  Since: gtk+ 3.0
    --  "state": state to retrieve the padding for
    --  "padding": return value for the padding settings
+
+   function Get_Parent
+      (Self : not null access Gtk_Style_Context_Record)
+       return Gtk_Style_Context;
+   --  Gets the parent context set via Gtk.Style_Context.Set_Parent. See that
+   --  function for details.
+   --  Since: gtk+ 3.4
+
+   procedure Set_Parent
+      (Self   : not null access Gtk_Style_Context_Record;
+       Parent : access Gtk_Style_Context_Record'Class);
+   --  Sets the parent style context for Context. The parent style context is
+   --  used to implement <ulink
+   --  url="http://www.w3.org/TR/css3-cascade/inheritance">inheritance</ulink>
+   --  of properties.
+   --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
+   --  gtk_widget_get_style_context, the parent will be set for you.
+   --  Since: gtk+ 3.4
+   --  "parent": the new parent or null
 
    function Get_Path
       (Self : not null access Gtk_Style_Context_Record)
@@ -496,6 +551,20 @@ package Gtk.Style_Context is
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
    --  "screen": a Gdk.Screen.Gdk_Screen
+
+   function Get_Section
+      (Self     : not null access Gtk_Style_Context_Record;
+       Property : UTF8_String) return Gtk.Css_Section.Gtk_Css_Section;
+   --  Queries the location in the CSS where Property was defined for the
+   --  current Context. Note that the state to be queried is taken from
+   --  Gtk.Style_Context.Get_State.
+   --  If the location is not available, null will be returned. The location
+   --  might not be available for various reasons, such as the property being
+   --  overridden, Property not naming a supported CSS property or tracking of
+   --  definitions being disabled for performance reasons.
+   --  Shorthand CSS properties cannot be queried for a location and will
+   --  always return null.
+   --  "property": style property name
 
    function Get_State
       (Self : not null access Gtk_Style_Context_Record)
@@ -550,18 +619,12 @@ package Gtk.Style_Context is
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.String_List.Glist;
    --  Returns the list of classes currently defined in Context.
-   --  strings with the currently defined classes. The contents of the list
-   --  are owned by GTK+, but you must free the list itself with g_list_free
-   --  when you are done with it.
    --  Since: gtk+ 3.0
 
    function List_Regions
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.String_List.Glist;
    --  Returns the list of regions currently defined in Context.
-   --  strings with the currently defined regions. The contents of the list
-   --  are owned by GTK+, but you must free the list itself with g_list_free
-   --  when you are done with it.
    --  Since: gtk+ 3.0
 
    procedure Lookup_Color
@@ -579,6 +642,7 @@ package Gtk.Style_Context is
        Region_Id   : System.Address;
        State       : Gtk.Enums.Gtk_State_Type;
        State_Value : Boolean);
+   pragma Obsolescent (Notify_State_Change);
    --  Notifies a state change on Context, so if the current style makes use
    --  of transition animations, one will be started so all rendered elements
    --  under Region_Id are animated for state State being set to value
@@ -609,6 +673,7 @@ package Gtk.Style_Context is
    --  Note that State is used when finding the transition parameters, which
    --  is why the style places the transition under the :hover pseudo-class.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.6, This function does nothing.
    --  "window": a Gdk.Gdk_Window
    --  "region_id": animatable region to notify on, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
@@ -618,13 +683,16 @@ package Gtk.Style_Context is
 
    procedure Pop_Animatable_Region
       (Self : not null access Gtk_Style_Context_Record);
+   pragma Obsolescent (Pop_Animatable_Region);
    --  Pops an animatable region from Context. See
    --  Gtk.Style_Context.Push_Animatable_Region.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.6, This function does nothing.
 
    procedure Push_Animatable_Region
       (Self      : not null access Gtk_Style_Context_Record;
        Region_Id : System.Address);
+   pragma Obsolescent (Push_Animatable_Region);
    --  Pushes an animatable region, so all further gtk_render_* calls between
    --  this call and the following Gtk.Style_Context.Pop_Animatable_Region will
    --  potentially show transition animations for this region if
@@ -633,6 +701,7 @@ package Gtk.Style_Context is
    --  The Region_Id used must be unique in Context so the theming engine can
    --  uniquely identify rendered elements subject to a state transition.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.6, This function does nothing.
    --  "region_id": unique identifier for the animatable region
 
    procedure Remove_Class
@@ -673,10 +742,12 @@ package Gtk.Style_Context is
        Window : Gdk.Gdk_Window;
        Dx     : Gint;
        Dy     : Gint);
+   pragma Obsolescent (Scroll_Animations);
    --  This function is analogous to Gdk.Window.Scroll, and should be called
    --  together with it so the invalidation areas for any ongoing animation are
    --  scrolled together with it.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.6, This function does nothing.
    --  "window": a Gdk.Gdk_Window used previously in
    --  Gtk.Style_Context.Notify_State_Change
    --  "dx": Amount to scroll in the X axis
@@ -695,6 +766,7 @@ package Gtk.Style_Context is
        State      : Gtk.Enums.Gtk_State_Type;
        Progress   : out Gdouble;
        Is_Running : out Boolean);
+   pragma Obsolescent (State_Is_Running);
    --  Returns True if there is a transition animation running for the current
    --  region (see Gtk.Style_Context.Push_Animatable_Region).
    --  If Progress is not null, the animation progress will be returned there,
@@ -702,6 +774,7 @@ package Gtk.Style_Context is
    --  closest to being set. This means transition animation will run from 0 to
    --  1 when State is being set and from 1 to 0 when it's being unset.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.6, This function always returns False
    --  "state": a widget state
    --  "progress": return location for the transition progress
 
@@ -724,8 +797,7 @@ package Gtk.Style_Context is
        Provider : Gtk.Style_Provider.Gtk_Style_Provider;
        Priority : Guint);
    --  Adds a global style provider to Screen, which will be used in style
-   --  construction for all Gtk.Style_Context.Gtk_Style_Context<!-- -->s under
-   --  Screen.
+   --  construction for all Gtk_Style_Contexts under Screen.
    --  GTK+ uses this to make styling information from
    --  Gtk.Settings.Gtk_Settings available.
    --  Note:
@@ -1063,6 +1135,14 @@ package Gtk.Style_Context is
 
    Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction;
 
+   Paint_Clock_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Gdk.Frame_Clock
+
+   Parent_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk_Style_Context
+   --  Sets or gets the style context's parent. See
+   --  Gtk.Style_Context.Set_Parent for details.
+
    Screen_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Screen.Gdk_Screen
 
@@ -1090,6 +1170,10 @@ package Gtk.Style_Context is
 private
    Screen_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("screen");
+   Parent_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("parent");
+   Paint_Clock_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("paint-clock");
    Direction_Property : constant Gtk.Enums.Property_Gtk_Text_Direction :=
      Gtk.Enums.Build ("direction");
 end Gtk.Style_Context;

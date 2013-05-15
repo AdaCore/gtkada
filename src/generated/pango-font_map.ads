@@ -63,8 +63,20 @@ package Pango.Font_Map is
    --  instance, the GTK+ toolkit has, among others,
    --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
-   --  which should be freed with g_object_unref.
    --  Since: gtk+ 1.22
+
+   function Get_Serial
+      (Self : not null access Pango_Font_Map_Record) return Guint;
+   --  Returns the current serial number of Fontmap. The serial number is
+   --  initialized to an small number larger than zero when a new fontmap is
+   --  created and is increased whenever the fontmap is changed. It may wrap,
+   --  but will never have the value 0. Since it can wrap, never compare it
+   --  with "less than", always use "not equals".
+   --  The fontmap can only be changed using backend-specific API, like
+   --  changing fontmap resolution.
+   --  This can be used to automatically detect changes to a
+   --  Pango.Font_Map.Pango_Font_Map, like in Pango.Context.Pango_Context.
+   --  Since: gtk+ 1.32.4
 
    function List_Families
       (Self : not null access Pango_Font_Map_Record)
@@ -77,7 +89,6 @@ package Pango.Font_Map is
        Desc    : Pango.Font.Pango_Font_Description)
        return Pango.Font.Pango_Font;
    --  Load the font in the fontmap that is the closest match for Desc.
-   --  or null if no font matched.
    --  "context": the Pango.Context.Pango_Context the font will be used with
    --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
 
@@ -89,7 +100,6 @@ package Pango.Font_Map is
        return Pango.Fontset.Pango_Fontset;
    --  Load a set of fonts in the fontmap that can be used to render a font
    --  matching Desc.
-   --  loaded, or null if no font matched.
    --  "context": the Pango.Context.Pango_Context the font will be used with
    --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
    --  "language": a Pango.Language.Pango_Language the fonts will be used for

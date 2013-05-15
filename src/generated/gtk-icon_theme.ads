@@ -61,7 +61,7 @@
 --  or stock items, rather than directly, but looking up icons directly is also
 --  simple. The Gtk.Icon_Theme.Gtk_Icon_Theme object acts as a database of all
 --  the icons in the current theme. You can create new
---  Gtk.Icon_Theme.Gtk_Icon_Theme objects, but its much more efficient to use
+--  Gtk.Icon_Theme.Gtk_Icon_Theme objects, but it's much more efficient to use
 --  the standard icon theme for the Gdk.Screen.Gdk_Screen so that the icon
 --  information is shared with other people looking up icons. In the case where
 --  the default screen is being used, looking up an icon can be as simple as:
@@ -119,12 +119,8 @@ package Gtk.Icon_Theme is
    Icon_Lookup_Generic_Fallback : constant Gtk_Icon_Lookup_Flags := 8;
    Icon_Lookup_Force_Size : constant Gtk_Icon_Lookup_Flags := 16;
 
-   type Gtk_Icon_Info is new Glib.C_Boxed with null record;
-   Null_Gtk_Icon_Info : constant Gtk_Icon_Info;
-
-   function From_Object (Object : System.Address) return Gtk_Icon_Info;
-   function From_Object_Free (B : access Gtk_Icon_Info'Class) return Gtk_Icon_Info;
-   pragma Inline (From_Object_Free, From_Object);
+   type Gtk_Icon_Info_Record is new GObject_Record with null record;
+   type Gtk_Icon_Info is access all Gtk_Icon_Info_Record'Class;
 
    ----------------------------
    -- Enumeration Properties --
@@ -159,6 +155,10 @@ package Gtk.Icon_Theme is
 
    procedure Gtk_New_For_Pixbuf
       (Icon_Info  : out Gtk_Icon_Info;
+       Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
+       Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   procedure Initialize_For_Pixbuf
+      (Icon_Info  : not null access Gtk_Icon_Info_Record'Class;
        Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Creates a Gtk.Icon_Theme.Gtk_Icon_Info for a Gdk.Pixbuf.Gdk_Pixbuf.
@@ -201,8 +201,6 @@ package Gtk.Icon_Theme is
    --  combines these two steps if all you need is the pixbuf.)
    --  If Icon_Names contains more than one name, this function tries them all
    --  in the given order before falling back to inherited icon themes.
-   --  about the icon, or null if the icon wasn't found. Free with
-   --  Gtk.Icon_Theme.Free
    --  Since: gtk+ 2.12
    --  "icon_names": null-terminated array of icon names to lookup
    --  "size": desired icon size
@@ -213,7 +211,6 @@ package Gtk.Icon_Theme is
        return UTF8_String;
    --  Gets the name of an icon that is representative of the current theme
    --  (for instance, to use when presenting a list of themes to the user.)
-   --  Free with g_free.
    --  Since: gtk+ 2.4
 
    function Get_Icon_Sizes
@@ -222,8 +219,6 @@ package Gtk.Icon_Theme is
    --  Returns an array of integers describing the sizes at which the icon is
    --  available without scaling. A size of -1 means that the icon is available
    --  in a scalable format. The array is zero-terminated.
-   --  describing the sizes at which the icon is available. The array should
-   --  be freed with g_free when it is no longer needed.
    --  Since: gtk+ 2.6
    --  "icon_name": the name of an icon
 
@@ -254,7 +249,6 @@ package Gtk.Icon_Theme is
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String) return Boolean;
    --  Checks whether an icon theme includes an icon for a particular name.
-   --  icon for Icon_Name.
    --  Since: gtk+ 2.4
    --  "icon_name": the name of an icon
 
@@ -263,9 +257,6 @@ package Gtk.Icon_Theme is
        return Gtk.Enums.String_List.Glist;
    --  Gets the list of contexts available within the current hierarchy of
    --  icon themes
-   --  holding the names of all the contexts in the theme. You must first free
-   --  each element in the list with g_free, then free the list itself with
-   --  g_list_free.
    --  Since: gtk+ 2.12
 
    function List_Icons
@@ -275,9 +266,6 @@ package Gtk.Icon_Theme is
    --  can be listed by providing a context string. The set of values for the
    --  context string is system dependent, but will typically include such
    --  values as "Applications" and "MimeTypes".
-   --  holding the names of all the icons in the theme. You must first free
-   --  each element in the list with g_free, then free the list itself with
-   --  g_list_free.
    --  Since: gtk+ 2.4
    --  "context": a string identifying a particular type of icon, or null to
    --  list all icons.
@@ -298,9 +286,6 @@ package Gtk.Icon_Theme is
    --  private copy of the pixbuf returned by this function. Otherwise GTK+ may
    --  need to keep the old icon theme loaded, which would be a waste of
    --  memory.
-   --  newly created icon or a new reference to an internal icon, so you must
-   --  not modify the icon. Use g_object_unref to release your reference to the
-   --  icon. null if the icon isn't found.
    --  Since: gtk+ 2.4
    --  "icon_name": the name of the icon to lookup
    --  "size": the desired icon size. The resulting icon may not be exactly
@@ -308,7 +293,8 @@ package Gtk.Icon_Theme is
    --  "flags": flags modifying the behavior of the icon lookup
 
    function Load_Icon
-      (Icon_Info : Gtk_Icon_Info) return Gdk.Pixbuf.Gdk_Pixbuf;
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Renders an icon previously looked up in an icon theme using
    --  Gtk.Icon_Theme.Lookup_Icon; the size will be based on the size passed to
    --  Gtk.Icon_Theme.Lookup_Icon. Note that the resulting pixbuf may not be
@@ -320,9 +306,6 @@ package Gtk.Icon_Theme is
    --  Gtk.Icon_Theme.Icon_Lookup_Force_Size flag when obtaining the
    --  Gtk.Icon_Theme.Gtk_Icon_Info. If this flag has been specified, the
    --  pixbuf returned by this function will be scaled to the exact size.
-   --  created icon or a new reference to an internal icon, so you must not
-   --  modify the icon. Use g_object_unref to release your reference to the
-   --  icon.
    --  Since: gtk+ 2.4
 
    function Lookup_By_Gicon
@@ -333,8 +316,6 @@ package Gtk.Icon_Theme is
    --  Looks up an icon and returns a structure containing information such as
    --  the filename of the icon. The icon can then be rendered into a pixbuf
    --  using Gtk.Icon_Theme.Load_Icon.
-   --  information about the icon, or null if the icon wasn't found. Free with
-   --  Gtk.Icon_Theme.Free
    --  Since: gtk+ 2.14
    --  "icon": the Glib.G_Icon.G_Icon to look up
    --  "size": desired icon size
@@ -349,8 +330,6 @@ package Gtk.Icon_Theme is
    --  such as the filename of the icon. The icon can then be rendered into a
    --  pixbuf using Gtk.Icon_Theme.Load_Icon. (gtk_icon_theme_load_icon
    --  combines these two steps if all you need is the pixbuf.)
-   --  about the icon, or null if the icon wasn't found. Free with
-   --  Gtk.Icon_Theme.Free
    --  Since: gtk+ 2.4
    --  "icon_name": the name of the icon to lookup
    --  "size": desired icon size
@@ -369,7 +348,6 @@ package Gtk.Icon_Theme is
    --  Checks to see if the icon theme has changed; if it has, any currently
    --  cached information is discarded and will be reloaded next time
    --  Icon_Theme is accessed.
-   --  to be reloaded.
    --  Since: gtk+ 2.4
 
    procedure Set_Custom_Theme
@@ -392,50 +370,54 @@ package Gtk.Icon_Theme is
    --  Since: gtk+ 2.4
    --  "screen": a Gdk.Screen.Gdk_Screen
 
-   function Copy (Icon_Info : Gtk_Icon_Info) return Gtk_Icon_Info;
+   function Copy
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gtk_Icon_Info;
+   pragma Obsolescent (Copy);
    --  Make a copy of a Gtk.Icon_Theme.Gtk_Icon_Info.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.8, Use g_object_ref
 
-   procedure Free (Icon_Info : Gtk_Icon_Info);
+   procedure Free (Icon_Info : not null access Gtk_Icon_Info_Record);
+   pragma Obsolescent (Free);
    --  Free a Gtk.Icon_Theme.Gtk_Icon_Info and associated information
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.8, Use g_object_unref
 
    function Get_Attach_Points
-      (Icon_Info : Gtk_Icon_Info) return Gdk.Types.Gdk_Points_Array;
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gdk.Types.Gdk_Points_Array;
    --  Fetches the set of attach points for an icon. An attach point is a
    --  location in the icon that can be used as anchor points for attaching
    --  emblems or overlays to the icon.
    --  Since: gtk+ 2.4
 
-   function Get_Base_Size (Icon_Info : Gtk_Icon_Info) return Gint;
+   function Get_Base_Size
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint;
    --  Gets the base size for the icon. The base size is a size for the icon
    --  that was specified by the icon theme creator. This may be different than
    --  the actual size of image; an example of this is small emblem icons that
    --  can be attached to a larger icon. These icons will be given the same
    --  base size as the larger icons to which they are attached.
-   --  size is known for the icon.
    --  Since: gtk+ 2.4
 
    function Get_Builtin_Pixbuf
-      (Icon_Info : Gtk_Icon_Info) return Gdk.Pixbuf.Gdk_Pixbuf;
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Gets the built-in image for this icon, if any. To allow GTK+ to use
    --  built in icon images, you must pass the
    --  Gtk.Icon_Theme.Icon_Lookup_Use_Builtin to Gtk.Icon_Theme.Lookup_Icon.
-   --  extra reference is added to the returned pixbuf, so if you want to keep
-   --  it around, you must use g_object_ref. The returned image must not be
-   --  modified.
    --  Since: gtk+ 2.4
 
-   function Get_Display_Name (Icon_Info : Gtk_Icon_Info) return UTF8_String;
+   function Get_Display_Name
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String;
    --  Gets the display name for an icon. A display name is a string to be
    --  used in place of the icon name in a user visible context like a list of
    --  icons.
-   --  the icon doesn't have a specified display name. This value is owned
-   --  Icon_Info and must not be modified or free.
    --  Since: gtk+ 2.4
 
    procedure Get_Embedded_Rect
-      (Icon_Info              : Gtk_Icon_Info;
+      (Icon_Info              : not null access Gtk_Icon_Info_Record;
        Rectangle              : out Gdk.Rectangle.Gdk_Rectangle;
        Has_Embedded_Rectangle : out Boolean);
    --  Gets the coordinates of a rectangle within the icon that can be used
@@ -447,18 +429,17 @@ package Gtk.Icon_Theme is
    --  rectangle coordinates; coordinates are only stored when this function
    --  returns True.
 
-   function Get_Filename (Icon_Info : Gtk_Icon_Info) return UTF8_String;
+   function Get_Filename
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String;
    --  Gets the filename for the icon. If the
    --  Gtk.Icon_Theme.Icon_Lookup_Use_Builtin flag was passed to
    --  Gtk.Icon_Theme.Lookup_Icon, there may be no filename if a builtin icon
    --  is returned; in this case, you should use
    --  Gtk.Icon_Theme.Get_Builtin_Pixbuf.
-   --  if Gtk.Icon_Theme.Get_Builtin_Pixbuf should be used instead. The return
-   --  value is owned by GTK+ and should not be modified or freed.
    --  Since: gtk+ 2.4
 
    function Load_Symbolic
-      (Icon_Info     : Gtk_Icon_Info;
+      (Icon_Info     : not null access Gtk_Icon_Info_Record;
        Fg            : Gdk.RGBA.Gdk_RGBA;
        Success_Color : Gdk.RGBA.Gdk_RGBA;
        Warning_Color : Gdk.RGBA.Gdk_RGBA;
@@ -490,7 +471,7 @@ package Gtk.Icon_Theme is
    --  symbolic one and whether the Fg color was applied to it.
 
    function Load_Symbolic_For_Context
-      (Icon_Info    : Gtk_Icon_Info;
+      (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Context      : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
        Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Loads an icon, modifying it to match the system colors for the
@@ -507,7 +488,7 @@ package Gtk.Icon_Theme is
    --  symbolic one and whether the Fg color was applied to it.
 
    function Load_Symbolic_For_Style
-      (Icon_Info    : Gtk_Icon_Info;
+      (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Style        : not null access Gtk.Style.Gtk_Style_Record'Class;
        State        : Gtk.Enums.Gtk_State_Type;
        Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf;
@@ -527,7 +508,7 @@ package Gtk.Icon_Theme is
    --  symbolic one and whether the Fg color was applied to it.
 
    procedure Set_Raw_Coordinates
-      (Icon_Info       : Gtk_Icon_Info;
+      (Icon_Info       : not null access Gtk_Icon_Info_Record;
        Raw_Coordinates : Boolean);
    --  Sets whether the coordinates returned by
    --  Gtk.Icon_Theme.Get_Embedded_Rect and Gtk.Icon_Theme.Get_Attach_Points
@@ -574,8 +555,6 @@ package Gtk.Icon_Theme is
    function Get_Default return Gtk_Icon_Theme;
    --  Gets the icon theme for the default screen. See
    --  Gtk.Icon_Theme.Get_For_Screen.
-   --  the default screen. This icon theme is associated with the screen and
-   --  can be used as long as the screen is open. Do not ref or unref it.
    --  Since: gtk+ 2.4
 
    function Get_For_Screen
@@ -588,8 +567,6 @@ package Gtk.Icon_Theme is
    --  choice than calling than Gtk.Icon_Theme.Gtk_New and setting the screen
    --  yourself; by using this function a single icon theme object will be
    --  shared between users.
-   --  the given screen. This icon theme is associated with the screen and can
-   --  be used as long as the screen is open. Do not ref or unref it.
    --  Since: gtk+ 2.4
    --  "screen": a Gdk.Screen.Gdk_Screen
 
@@ -614,9 +591,5 @@ package Gtk.Icon_Theme is
        After : Boolean := False);
    --  Emitted when the current icon theme is switched or GTK+ detects that a
    --  change has occurred in the contents of the current icon theme.
-
-private
-
-   Null_Gtk_Icon_Info : constant Gtk_Icon_Info := (Glib.C_Boxed with null record);
 
 end Gtk.Icon_Theme;

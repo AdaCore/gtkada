@@ -121,6 +121,7 @@ package Gtk.Cell_Renderer_Text is
 
    Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
+   --  Background color as a Gdk.Color.Gdk_Color
 
    Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
@@ -156,6 +157,7 @@ package Gtk.Cell_Renderer_Text is
 
    Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
+   --  Foreground color as a Gdk.Color.Gdk_Color
 
    Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
@@ -179,6 +181,14 @@ package Gtk.Cell_Renderer_Text is
    --  greater allocation unless it is set to expand in its
    --  Gtk.Cell_Layout.Gtk_Cell_Layout and all of the cell's siblings have
    --  received their natural width.
+
+   Placeholder_Text_Property : constant Glib.Properties.Property_String;
+   --  The text that will be displayed in the
+   --  Gtk.Cell_Renderer.Gtk_Cell_Renderer if
+   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text:editable is True and the
+   --  cell is empty.
+   --
+   --  Since 3.6
 
    Rise_Property : constant Glib.Properties.Property_Int;
 
@@ -327,6 +337,8 @@ private
      Glib.Properties.Build ("rise-set");
    Rise_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("rise");
+   Placeholder_Text_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("placeholder-text");
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("max-width-chars");
    Markup_Property : constant Glib.Properties.Property_String :=

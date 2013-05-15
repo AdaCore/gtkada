@@ -75,7 +75,6 @@ package Pango.Matrix is
    function Copy (Self : Pango_Matrix) return Pango_Matrix;
    pragma Import (C, Copy, "pango_matrix_copy");
    --  Copies a Pango.Matrix.Pango_Matrix.
-   --  be freed with Pango.Matrix.Free, or null if Matrix was null.
    --  Since: gtk+ 1.6
 
    procedure Free (Self : Pango_Matrix);
@@ -88,7 +87,6 @@ package Pango.Matrix is
    --  Returns the scale factor of a matrix on the height of the font. That
    --  is, the scale factor in the direction perpendicular to the vector that
    --  the X coordinate is mapped to.
-   --  or 1.0 if Matrix is null.
    --  Since: gtk+ 1.12
 
    procedure Rotate (Self : in out Pango_Matrix; Degrees : Gdouble);

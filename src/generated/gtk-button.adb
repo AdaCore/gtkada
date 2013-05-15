@@ -221,6 +221,19 @@ package body Gtk.Button is
       Internal (Get_Object (Button), Xalign, Yalign);
    end Get_Alignment;
 
+   ---------------------------
+   -- Get_Always_Show_Image --
+   ---------------------------
+
+   function Get_Always_Show_Image
+      (Button : not null access Gtk_Button_Record) return Boolean
+   is
+      function Internal (Button : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_button_get_always_show_image");
+   begin
+      return Internal (Get_Object (Button)) /= 0;
+   end Get_Always_Show_Image;
+
    ----------------------
    -- Get_Event_Window --
    ----------------------
@@ -383,6 +396,20 @@ package body Gtk.Button is
       Internal (Get_Object (Button), Xalign, Yalign);
    end Set_Alignment;
 
+   ---------------------------
+   -- Set_Always_Show_Image --
+   ---------------------------
+
+   procedure Set_Always_Show_Image
+      (Button      : not null access Gtk_Button_Record;
+       Always_Show : Boolean)
+   is
+      procedure Internal (Button : System.Address; Always_Show : Integer);
+      pragma Import (C, Internal, "gtk_button_set_always_show_image");
+   begin
+      Internal (Get_Object (Button), Boolean'Pos (Always_Show));
+   end Set_Always_Show_Image;
+
    ------------------------
    -- Set_Focus_On_Click --
    ------------------------
@@ -503,6 +530,20 @@ package body Gtk.Button is
       Internal (Get_Object (Self), Get_Object (Action));
    end Do_Set_Related_Action;
 
+   ---------------------
+   -- Get_Action_Name --
+   ---------------------
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Button_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_actionable_get_action_name");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Action_Name;
+
    ------------------------
    -- Get_Related_Action --
    ------------------------
@@ -530,6 +571,42 @@ package body Gtk.Button is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
+
+   ---------------------
+   -- Set_Action_Name --
+   ---------------------
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Button_Record;
+       Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Action_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_action_name");
+      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Action_Name);
+      Free (Tmp_Action_Name);
+   end Set_Action_Name;
+
+   ------------------------------
+   -- Set_Detailed_Action_Name --
+   ------------------------------
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Button_Record;
+       Detailed_Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
+      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
+      Free (Tmp_Detailed_Action_Name);
+   end Set_Detailed_Action_Name;
 
    ------------------------
    -- Set_Related_Action --

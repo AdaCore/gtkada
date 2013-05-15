@@ -156,6 +156,56 @@ package body Gdk.Window is
       return Self;
    end Gdk_Window_New;
 
+   --------------------------------
+   -- Begin_Move_Drag_For_Device --
+   --------------------------------
+
+   procedure Begin_Move_Drag_For_Device
+      (Self      : Gdk.Gdk_Window;
+       Device    : not null access Gdk.Device.Gdk_Device_Record'Class;
+       Button    : Gint;
+       Root_X    : Gint;
+       Root_Y    : Gint;
+       Timestamp : Guint32)
+   is
+      procedure Internal
+         (Self      : Gdk.Gdk_Window;
+          Device    : System.Address;
+          Button    : Gint;
+          Root_X    : Gint;
+          Root_Y    : Gint;
+          Timestamp : Guint32);
+      pragma Import (C, Internal, "gdk_window_begin_move_drag_for_device");
+   begin
+      Internal (Self, Get_Object (Device), Button, Root_X, Root_Y, Timestamp);
+   end Begin_Move_Drag_For_Device;
+
+   ----------------------------------
+   -- Begin_Resize_Drag_For_Device --
+   ----------------------------------
+
+   procedure Begin_Resize_Drag_For_Device
+      (Self      : Gdk.Gdk_Window;
+       Edge      : Gdk_Window_Edge;
+       Device    : not null access Gdk.Device.Gdk_Device_Record'Class;
+       Button    : Gint;
+       Root_X    : Gint;
+       Root_Y    : Gint;
+       Timestamp : Guint32)
+   is
+      procedure Internal
+         (Self      : Gdk.Gdk_Window;
+          Edge      : Gdk_Window_Edge;
+          Device    : System.Address;
+          Button    : Gint;
+          Root_X    : Gint;
+          Root_Y    : Gint;
+          Timestamp : Guint32);
+      pragma Import (C, Internal, "gdk_window_begin_resize_drag_for_device");
+   begin
+      Internal (Self, Edge, Get_Object (Device), Button, Root_X, Root_Y, Timestamp);
+   end Begin_Resize_Drag_For_Device;
+
    -------------------
    -- Ensure_Native --
    -------------------
@@ -315,6 +365,20 @@ package body Gdk.Window is
    begin
       return Internal (Self) /= 0;
    end Get_Focus_On_Map;
+
+   ---------------------
+   -- Get_Frame_Clock --
+   ---------------------
+
+   function Get_Frame_Clock
+      (Self : Gdk.Gdk_Window) return Gdk.Frame_Clock.Gdk_Frame_Clock
+   is
+      function Internal (Self : Gdk.Gdk_Window) return System.Address;
+      pragma Import (C, Internal, "gdk_window_get_frame_clock");
+      Stub_Gdk_Frame_Clock : Gdk.Frame_Clock.Gdk_Frame_Clock_Record;
+   begin
+      return Gdk.Frame_Clock.Gdk_Frame_Clock (Get_User_Data (Internal (Self), Stub_Gdk_Frame_Clock));
+   end Get_Frame_Clock;
 
    --------------------
    -- Get_Modal_Hint --

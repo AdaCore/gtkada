@@ -199,7 +199,6 @@ package Gtk.List_Store is
    --  For example, if Model is a product catalogue, then a compare function
    --  for the "price" column could be one which returns 'price_of(A) -
    --  price_of(B)'.
-   --  A sorts before, with or after B
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -243,12 +242,12 @@ package Gtk.List_Store is
        Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
        Position   : Gint);
    --  Creates a new row at Position. Iter will be changed to point to this
-   --  new row. If Position is larger than the number of rows on the list, then
-   --  the new row will be appended to the list. The row will be empty after
-   --  this function is called. To fill in values, you need to call
+   --  new row. If Position is -1 or is larger than the number of rows on the
+   --  list, then the new row will be appended to the list. The row will be
+   --  empty after this function is called. To fill in values, you need to call
    --  gtk_list_store_set or Gtk.List_Store.Set_Value.
    --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
-   --  "position": position to insert the new row
+   --  "position": position to insert the new row, or -1 for last
 
    procedure Insert_After
       (List_Store : not null access Gtk_List_Store_Record;
@@ -330,7 +329,8 @@ package Gtk.List_Store is
    --  Since: gtk+ 2.2
    --  "new_order": an array of integers mapping the new position of each
    --  child to its old position before the re-ordering, i.e.
-   --  New_Order'[newpos] = oldpos'.
+   --  New_Order'[newpos] = oldpos'. It must have exactly as many items as the
+   --  list store's length.
 
    procedure Set_Column_Types
       (List_Store : not null access Gtk_List_Store_Record;
@@ -434,7 +434,6 @@ package Gtk.List_Store is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -489,7 +488,6 @@ package Gtk.List_Store is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -561,7 +559,7 @@ package Gtk.List_Store is
    function Drag_Data_Get
       (Self           : not null access Gtk_List_Store_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean;
 
    function Row_Draggable

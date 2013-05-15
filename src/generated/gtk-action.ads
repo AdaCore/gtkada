@@ -30,6 +30,8 @@
 --  As well as the callback that is called when the action gets activated, the
 --  following also gets associated with the action:
 --
+-- 
+--
 --     * a name (not translated, for path lookup)
 --
 --     * a label (translated, for display)
@@ -43,6 +45,8 @@
 --     * a toolbar label (optional, shorter than label)
 --
 --  The action will also have some state information:
+--
+-- 
 --
 --     * visible (shown/hidden)
 --
@@ -174,7 +178,6 @@ package Gtk.Action is
    --  If Action provides a Gtk.Menu.Gtk_Menu widget as a submenu for the menu
    --  item or the toolbar item it creates, this function returns an instance
    --  of that menu.
-   --  action, or null.
    --  Since: gtk+ 2.12
 
    function Create_Menu_Item
@@ -197,8 +200,6 @@ package Gtk.Action is
    function Get_Accel_Path
       (Action : not null access Gtk_Action_Record) return UTF8_String;
    --  Returns the accel path for this action.
-   --  if none is set. The returned string is owned by GTK+ and must not be
-   --  freed or modified.
    --  Since: gtk+ 2.6
 
    procedure Set_Accel_Path
@@ -283,7 +284,6 @@ package Gtk.Action is
    function Get_Name
       (Action : not null access Gtk_Action_Record) return UTF8_String;
    --  Returns the name of the action.
-   --  be freed.
    --  Since: gtk+ 2.4
 
    function Get_Proxies
@@ -291,7 +291,6 @@ package Gtk.Action is
        return Gtk.Widget.Widget_SList.GSlist;
    --  Returns the proxy widgets for an action. See also
    --  Gtk.Activatable.Get_Related_Action.
-   --  and must not be modified.
    --  Since: gtk+ 2.4
 
    function Get_Sensitive
@@ -389,13 +388,11 @@ package Gtk.Action is
    function Is_Sensitive
       (Action : not null access Gtk_Action_Record) return Boolean;
    --  Returns whether the action is effectively sensitive.
-   --  are both sensitive.
    --  Since: gtk+ 2.4
 
    function Is_Visible
       (Action : not null access Gtk_Action_Record) return Boolean;
    --  Returns whether the action is effectively visible.
-   --  are both visible.
    --  Since: gtk+ 2.4
 
    procedure Set_Accel_Group

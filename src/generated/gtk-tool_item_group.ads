@@ -143,8 +143,6 @@ package Gtk.Tool_Item_Group is
    function Get_Label
       (Self : not null access Gtk_Tool_Item_Group_Record) return UTF8_String;
    --  Gets the label of Group.
-   --  and must not be modified. Note that null is returned if a custom label
-   --  has been set with Gtk.Tool_Item_Group.Set_Label_Widget
    --  Since: gtk+ 2.20
 
    procedure Set_Label

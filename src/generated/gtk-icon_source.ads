@@ -171,7 +171,6 @@ package Gtk.Icon_Source is
    --  Retrieves the source filename, or null if none is set. The filename is
    --  not a copy, and should not be modified or expected to persist beyond the
    --  lifetime of the icon source.
-   --  be modified or freed.
 
    procedure Set_Filename (Self : Gtk_Icon_Source; Filename : UTF8_String);
    --  Sets the name of an image file to use as a base image when creating

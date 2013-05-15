@@ -82,7 +82,6 @@ package Glib.G_Icon is
    --  'sftp://path/to/my%20icon.png').
    --     * If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name, the
    --  encoding is simply the name (such as 'network-server').
-   --  be serialized. Use g_free to free.
    --  Since: gtk+ 2.20
 
    ---------------
@@ -92,7 +91,6 @@ package Glib.G_Icon is
    function Hash (Icon : G_Icon) return Guint;
    pragma Import (C, Hash, "g_icon_hash");
    --  Gets a hash for an icon.
-   --  use in a GHash_Table or similar data structure.
    --  "icon": gconstpointer to an icon object.
 
    function New_For_String (Str : UTF8_String) return G_Icon;
@@ -101,7 +99,6 @@ package Glib.G_Icon is
    --  If your application or library provides one or more Glib.G_Icon.G_Icon
    --  implementations you need to ensure that each GType is registered with
    --  the type system prior to calling Glib.G_Icon.New_For_String.
-   --  interface or null if Error is set.
    --  Since: gtk+ 2.20
    --  "str": A string obtained via Glib.G_Icon.To_String.
 

@@ -37,6 +37,9 @@
 --  its contents can be retrieved using Gtk.Combo_Box_Text.Get_Active_Text. The
 --  entry itself can be accessed by calling Gtk.Bin.Get_Child on the combo box.
 --
+--  You should not call Gtk.Combo_Box.Set_Model or attempt to pack more cells
+--  into this combo box via its GtkCellLayout interface.
+--
 --  == GtkComboBoxText as GtkBuildable ==
 --
 --  The GtkComboBoxText implementation of the GtkBuildable interface supports
@@ -98,14 +101,12 @@ package Gtk.Combo_Box_Text is
    procedure Initialize
       (Self : not null access Gtk_Combo_Box_Text_Record'Class);
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
-   --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings. See
-   --  gtk_combo_box_entry_new_with_text.
+   --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings.
    --  Since: gtk+ 2.24
 
    function Gtk_Combo_Box_Text_New return Gtk_Combo_Box_Text;
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
-   --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings. See
-   --  gtk_combo_box_entry_new_with_text.
+   --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings.
    --  Since: gtk+ 2.24
 
    procedure Gtk_New_With_Entry (Self : out Gtk_Combo_Box_Text);
@@ -155,7 +156,6 @@ package Gtk.Combo_Box_Text is
    --  Returns the currently active string in Combo_Box, or null if none is
    --  selected. If Combo_Box contains an entry, this function will return its
    --  contents (which will not necessarily be an item from the list).
-   --  active text. Must be freed with g_free.
    --  Since: gtk+ 2.24
 
    procedure Insert
@@ -165,7 +165,7 @@ package Gtk.Combo_Box_Text is
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box. If
    --  Id is non-null then it is used as the ID of the row. See
-   --  Gtk.Combo_Box.Gtk_Combo_Box::id-column.
+   --  Gtk.Combo_Box.Gtk_Combo_Box:id-column.
    --  If Position is negative then Text is appended.
    --  Since: gtk+ 3.0
    --  "position": An index to insert Text

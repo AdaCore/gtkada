@@ -140,11 +140,12 @@
 --    list_store = gtk_list_store_new (N_COLUMNS, G_TYPE_STRING, G_TYPE_INT);
 --    /* Fill the list store with data */
 --    populate_model (list_store);
---    /* Get the first iter in the list */
---    valid = gtk_tree_model_get_iter_first (list_store, &amp;iter);
---    while (valid)
+--    /* Get the first iter in the list, check it is valid and walk
+--    * through the list, reading each row. */
+--    for (valid = gtk_tree_model_get_iter_first (list_store, &amp;iter);
+--       valid;
+--       valid = gtk_tree_model_iter_next (list_store, &amp;iter))
 --    {
---       /* Walk through the list, reading each row */
 --       gchar *str_data;
 --       gint   int_data;
 --       /* Make sure you terminate calls to gtk_tree_model_get
@@ -158,7 +159,6 @@
 --       g_print ("Row %d: (%s,%d)\n", row_count, str_data, int_data);
 --       g_free (str_data);
 --       row_count++;
---       valid = gtk_tree_model_iter_next (list_store, &amp;iter);
 --    }
 --
 --  The Gtk.Tree_Model.Gtk_Tree_Model interface contains two methods for
@@ -262,6 +262,29 @@ package Gtk.Tree_Model is
    ------------------
    -- Constructors --
    ------------------
+
+   procedure Gtk_Filter_New
+      (Tree_Model : out Gtk_Tree_Model;
+       Root       : Gtk_Tree_Path);
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child_model and Root as the virtual root.
+   --  Since: gtk+ 2.4
+   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
+
+   function Gtk_Tree_Model_Filter_New
+      (Root : Gtk_Tree_Path) return Gtk_Tree_Model;
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child_model and Root as the virtual root.
+   --  Since: gtk+ 2.4
+   --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
+
+   procedure Gtk_Sort_New_With_Model (Tree_Model : out Gtk_Tree_Model);
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child model.
+
+   function Gtk_Tree_Model_Sort_New_With_Model return Gtk_Tree_Model;
+   --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
+   --  child model.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_model_get_type");
@@ -400,7 +423,6 @@ package Gtk.Tree_Model is
    --  Generates a string representation of the iter.
    --  This string is a ':' separated list of numbers. For example, "4:10:0:3"
    --  would be an acceptable return value for this string.
-   --  Must be freed with g_free.
    --  Since: gtk+ 2.2
    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter
 
@@ -598,7 +620,7 @@ package Gtk.Tree_Model is
    --  Moves Path to point to the first child of the current path.
 
    procedure Path_Free (Path : Gtk_Tree_Path);
-   --  Frees Path.
+   --  Frees Path. If Path is null, it simply returns.
 
    function Get_Depth (Path : Gtk_Tree_Path) return Gint;
    --  Returns the current depth of Path.
@@ -629,13 +651,11 @@ package Gtk.Tree_Model is
    function Prev (Path : Gtk_Tree_Path) return Boolean;
    --  Moves the Path to point to the previous node at the current depth, if
    --  it exists.
-   --  the move was made
 
    function To_String (Path : Gtk_Tree_Path) return UTF8_String;
    --  Generates a string representation of the path.
    --  This string is a ':' separated list of numbers. For example, "4:10:0:3"
    --  would be an acceptable return value for this string.
-   --  Must be freed with g_free.
 
    function Up (Path : Gtk_Tree_Path) return Boolean;
    --  Moves the Path to point to its parent node, if it has a parent.

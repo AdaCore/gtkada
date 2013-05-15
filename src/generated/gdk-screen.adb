@@ -275,6 +275,24 @@ package body Gdk.Screen is
       return Internal (Get_Object (Screen), Monitor_Num);
    end Get_Monitor_Width_Mm;
 
+   --------------------------
+   -- Get_Monitor_Workarea --
+   --------------------------
+
+   procedure Get_Monitor_Workarea
+      (Screen      : not null access Gdk_Screen_Record;
+       Monitor_Num : Gint;
+       Dest        : out Gdk.Rectangle.Gdk_Rectangle)
+   is
+      procedure Internal
+         (Screen      : System.Address;
+          Monitor_Num : Gint;
+          Dest        : out Gdk.Rectangle.Gdk_Rectangle);
+      pragma Import (C, Internal, "gdk_screen_get_monitor_workarea");
+   begin
+      Internal (Get_Object (Screen), Monitor_Num, Dest);
+   end Get_Monitor_Workarea;
+
    --------------------
    -- Get_N_Monitors --
    --------------------

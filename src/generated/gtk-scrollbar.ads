@@ -29,15 +29,15 @@
 --  The position of the thumb in a scrollbar is controlled by the scroll
 --  adjustments. See Gtk.Adjustment.Gtk_Adjustment for the fields in an
 --  adjustment - for Gtk.Scrollbar.Gtk_Scrollbar, the
---  Gtk.Adjustment.Gtk_Adjustment.value field represents the position of the
---  scrollbar, which must be between the Gtk.Adjustment.Gtk_Adjustment.lower
---  field and Gtk.Adjustment.Gtk_Adjustment.upper -
---  Gtk.Adjustment.Gtk_Adjustment.page_size. The
---  Gtk.Adjustment.Gtk_Adjustment.page_size field represents the size of the
---  visible scrollable area. The Gtk.Adjustment.Gtk_Adjustment.step_increment
---  and Gtk.Adjustment.Gtk_Adjustment.page_increment fields are used when the
---  user asks to step down (using the small stepper arrows) or page down (using
---  for example the 'PageDown' key).
+--  Gtk.Adjustment.Gtk_Adjustment:value field represents the position of the
+--  scrollbar, which must be between the Gtk.Adjustment.Gtk_Adjustment:lower
+--  field and Gtk.Adjustment.Gtk_Adjustment:upper -
+--  Gtk.Adjustment.Gtk_Adjustment:page-size. The
+--  Gtk.Adjustment.Gtk_Adjustment:page-size field represents the size of the
+--  visible scrollable area. The Gtk.Adjustment.Gtk_Adjustment:step-increment
+--  and Gtk.Adjustment.Gtk_Adjustment:page-increment fields are properties when
+--  the user asks to step down (using the small stepper arrows) or page down
+--  (using for example the 'PageDown' key).
 --
 --  </description>
 

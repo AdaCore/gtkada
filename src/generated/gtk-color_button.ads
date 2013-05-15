@@ -31,15 +31,18 @@
 --  <group>Buttons and Toggles</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Color;       use Gdk.Color;
-with Gdk.RGBA;        use Gdk.RGBA;
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Action;      use Gtk.Action;
-with Gtk.Activatable; use Gtk.Activatable;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Button;      use Gtk.Button;
+with Gdk.Color;         use Gdk.Color;
+with Gdk.RGBA;          use Gdk.RGBA;
+with Glib;              use Glib;
+with Glib.Properties;   use Glib.Properties;
+with Glib.Types;        use Glib.Types;
+with Gtk.Action;        use Gtk.Action;
+with Gtk.Actionable;    use Gtk.Actionable;
+with Gtk.Activatable;   use Gtk.Activatable;
+with Gtk.Buildable;     use Gtk.Buildable;
+with Gtk.Button;        use Gtk.Button;
+with Gtk.Color_Chooser; use Gtk.Color_Chooser;
+with Gtk.Enums;         use Gtk.Enums;
 
 package Gtk.Color_Button is
 
@@ -111,45 +114,38 @@ package Gtk.Color_Button is
 
    function Get_Alpha
       (Button : not null access Gtk_Color_Button_Record) return Guint16;
+   pragma Obsolescent (Get_Alpha);
    --  Returns the current alpha value.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.4, Use Gtk.Color_Chooser.Get_Rgba instead.
 
    procedure Set_Alpha
       (Button : not null access Gtk_Color_Button_Record;
        Alpha  : Guint16);
+   pragma Obsolescent (Set_Alpha);
    --  Sets the current opacity to be Alpha.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.4, Use Gtk.Color_Chooser.Set_Rgba instead.
    --  "alpha": an integer between 0 and 65535
 
    procedure Get_Color
       (Button : not null access Gtk_Color_Button_Record;
        Color  : out Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Get_Color);
    --  Sets Color to be the current color in the
    --  Gtk.Color_Button.Gtk_Color_Button widget.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.4, Use Gtk.Color_Chooser.Get_Rgba instead.
    --  "color": a Gdk.Color.Gdk_Color to fill in with the current color
 
    procedure Set_Color
       (Button : not null access Gtk_Color_Button_Record;
        Color  : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Set_Color);
    --  Sets the current color to be Color.
    --  Since: gtk+ 2.4
+   --  Deprecated since None, Use Gtk.Color_Chooser.Set_Rgba instead.
    --  "color": A Gdk.Color.Gdk_Color to set the current color with
-
-   procedure Get_Rgba
-      (Button : not null access Gtk_Color_Button_Record;
-       Rgba   : out Gdk.RGBA.Gdk_RGBA);
-   --  Sets Rgba to be the current color in the
-   --  Gtk.Color_Button.Gtk_Color_Button widget.
-   --  Since: gtk+ 3.0
-   --  "rgba": a Gdk.RGBA.Gdk_RGBA to fill in with the current color
-
-   procedure Set_Rgba
-      (Button : not null access Gtk_Color_Button_Record;
-       Rgba   : Gdk.RGBA.Gdk_RGBA);
-   --  Sets the current color to be Rgba.
-   --  Since: gtk+ 3.0
-   --  "rgba": a Gdk.RGBA.Gdk_RGBA to set the current color with
 
    function Get_Title
       (Button : not null access Gtk_Color_Button_Record) return UTF8_String;
@@ -163,25 +159,23 @@ package Gtk.Color_Button is
    --  Since: gtk+ 2.4
    --  "title": String containing new window title
 
-   function Get_Use_Alpha
-      (Button : not null access Gtk_Color_Button_Record) return Boolean;
-   --  Does the color selection dialog use the alpha channel ?
-   --  Since: gtk+ 2.4
-
-   procedure Set_Use_Alpha
-      (Button    : not null access Gtk_Color_Button_Record;
-       Use_Alpha : Boolean);
-   --  Sets whether or not the color button should use the alpha channel.
-   --  Since: gtk+ 2.4
-   --  "use_alpha": True if color button should use alpha channel, False if
-   --  not
-
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Color_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Color_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Color_Button_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Color_Button_Record;
@@ -205,6 +199,28 @@ package Gtk.Color_Button is
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Color_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   procedure Add_Palette
+      (Self            : not null access Gtk_Color_Button_Record;
+       Orientation     : Gtk.Enums.Gtk_Orientation;
+       Colors_Per_Line : Gint;
+       N_Colors        : Gint;
+       Colors          : array_of_Gdk_RGBA);
+
+   procedure Get_Rgba
+      (Self  : not null access Gtk_Color_Button_Record;
+       Color : out Gdk.RGBA.Gdk_RGBA);
+
+   procedure Set_Rgba
+      (Self  : not null access Gtk_Color_Button_Record;
+       Color : Gdk.RGBA.Gdk_RGBA);
+
+   function Get_Use_Alpha
+      (Self : not null access Gtk_Color_Button_Record) return Boolean;
+
+   procedure Set_Use_Alpha
+      (Self      : not null access Gtk_Color_Button_Record;
+       Use_Alpha : Boolean);
 
    ----------------
    -- Properties --
@@ -252,9 +268,8 @@ package Gtk.Color_Button is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::color-set signal is emitted when the user selects a color. When
-   --  handling this signal, use Gtk.Color_Button.Get_Color and
-   --  Gtk.Color_Button.Get_Alpha (or Gtk.Color_Button.Get_Rgba) to find out
-   --  which color was just selected.
+   --  handling this signal, use gtk_color_button_get_rgba to find out which
+   --  color was just selected.
    --
    --  Note that this signal is only emitted when the *user* changes the
    --  color. If you need to react to programmatic color changes as well, use
@@ -265,9 +280,24 @@ package Gtk.Color_Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+   --
+   --  - "ColorChooser"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Color_Button_Record, Gtk_Color_Button);
+   function "+"
+     (Widget : access Gtk_Color_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Color_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Color_Button_Record, Gtk_Color_Button);
@@ -290,6 +320,17 @@ package Gtk.Color_Button is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Color_Button
    renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Color_Chooser is new Glib.Types.Implements
+     (Gtk.Color_Chooser.Gtk_Color_Chooser, Gtk_Color_Button_Record, Gtk_Color_Button);
+   function "+"
+     (Widget : access Gtk_Color_Button_Record'Class)
+   return Gtk.Color_Chooser.Gtk_Color_Chooser
+   renames Implements_Gtk_Color_Chooser.To_Interface;
+   function "-"
+     (Interf : Gtk.Color_Chooser.Gtk_Color_Chooser)
+   return Gtk_Color_Button
+   renames Implements_Gtk_Color_Chooser.To_Object;
 
 private
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean :=

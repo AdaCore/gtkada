@@ -286,7 +286,6 @@ package Gtk.Recent_Filter is
       (Filter : not null access Gtk_Recent_Filter_Record) return UTF8_String;
    --  Gets the human-readable name for the filter. See
    --  Gtk.Recent_Filter.Set_Name.
-   --  is owned by the filter object and should not be freed.
    --  Since: gtk+ 2.10
 
    procedure Set_Name
@@ -306,7 +305,6 @@ package Gtk.Recent_Filter is
    --  This function will not typically be used by applications; it is
    --  intended principally for use in the implementation of
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
-   --  calling Gtk.Recent_Filter.Filter
    --  Since: gtk+ 2.10
 
    ----------------

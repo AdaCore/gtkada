@@ -49,22 +49,16 @@ package body Gtk.Tree_Drag_Source is
    function Drag_Data_Get
       (Self           : Gtk_Tree_Drag_Source;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean
    is
       function Internal
-         (Self               : Gtk_Tree_Drag_Source;
-          Path               : System.Address;
-          Acc_Selection_Data : access System.Address) return Integer;
+         (Self           : Gtk_Tree_Drag_Source;
+          Path           : System.Address;
+          Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
-      Acc_Selection_Data     : aliased Gtk.Selection_Data.Gtk_Selection_Data;
-      Tmp_Acc_Selection_Data : aliased System.Address;
-      Tmp_Return             : Integer;
    begin
-      Tmp_Return := Internal (Self, Get_Object (Path), Tmp_Acc_Selection_Data'Access);
-      Acc_Selection_Data := From_Object (Tmp_Acc_Selection_Data);
-      Selection_Data.all := Acc_Selection_Data;
-      return Tmp_Return /= 0;
+      return Internal (Self, Get_Object (Path), Get_Object (Selection_Data)) /= 0;
    end Drag_Data_Get;
 
    -------------------

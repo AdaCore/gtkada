@@ -92,7 +92,6 @@ package Gtk.Offscreen_Window is
    --  Retrieves a snapshot of the contained widget in the form of a
    --  cairo_surface_t. If you need to keep this around over window resizes
    --  then you should add a reference to it.
-   --  surface, or null.
    --  Since: gtk+ 2.20
 
    ----------------

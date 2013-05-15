@@ -391,6 +391,19 @@ package body Gtk.Scale is
       return Internal (Get_Object (Scale)) /= 0;
    end Get_Draw_Value;
 
+   --------------------
+   -- Get_Has_Origin --
+   --------------------
+
+   function Get_Has_Origin
+      (Scale : not null access Gtk_Scale_Record) return Boolean
+   is
+      function Internal (Scale : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_scale_get_has_origin");
+   begin
+      return Internal (Get_Object (Scale)) /= 0;
+   end Get_Has_Origin;
+
    ----------------
    -- Get_Layout --
    ----------------
@@ -466,6 +479,20 @@ package body Gtk.Scale is
    begin
       Internal (Get_Object (Scale), Boolean'Pos (Draw_Value));
    end Set_Draw_Value;
+
+   --------------------
+   -- Set_Has_Origin --
+   --------------------
+
+   procedure Set_Has_Origin
+      (Scale      : not null access Gtk_Scale_Record;
+       Has_Origin : Boolean)
+   is
+      procedure Internal (Scale : System.Address; Has_Origin : Integer);
+      pragma Import (C, Internal, "gtk_scale_set_has_origin");
+   begin
+      Internal (Get_Object (Scale), Boolean'Pos (Has_Origin));
+   end Set_Has_Origin;
 
    -------------------
    -- Set_Value_Pos --

@@ -89,7 +89,6 @@ package Gdk.Screen is
       (Screen : not null access Gdk_Screen_Record)
        return Cairo.Cairo_Font_Options;
    --  Gets any options previously set with Gdk.Screen.Set_Font_Options.
-   --  font options have been set.
    --  Since: gtk+ 2.10
 
    procedure Set_Font_Options
@@ -119,7 +118,6 @@ package Gdk.Screen is
        X      : Gint;
        Y      : Gint) return Gint;
    --  Returns the monitor number in which the point (X,Y) is located.
-   --  a monitor close to (X,Y) if the point is not in any monitor.
    --  Since: gtk+ 2.2
    --  "x": the x coordinate in the virtual screen.
    --  "y": the y coordinate in the virtual screen.
@@ -129,8 +127,6 @@ package Gdk.Screen is
        Window : Gdk.Gdk_Window) return Gint;
    --  Returns the number of the monitor in which the largest area of the
    --  bounding rectangle of Window resides.
-   --  or if Window does not intersect any monitors, a monitor, close to
-   --  Window.
    --  Since: gtk+ 2.2
    --  "window": a Gdk.Gdk_Window
 
@@ -140,11 +136,12 @@ package Gdk.Screen is
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
    --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
    --  position of the individual monitor within the entire screen area.
+   --  Monitor numbers start at 0. To obtain the number of monitors of Screen,
+   --  use Gdk.Screen.Get_N_Monitors.
    --  Note that the size of the entire screen area can be retrieved via
    --  Gdk.Screen.Get_Width and Gdk.Screen.Get_Height.
    --  Since: gtk+ 2.2
-   --  "monitor_num": the monitor number, between 0 and
-   --  gdk_screen_get_n_monitors (screen)
+   --  "monitor_num": the monitor number
    --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  geometry
 
@@ -161,7 +158,6 @@ package Gdk.Screen is
        Monitor_Num : Gint) return UTF8_String;
    --  Returns the output name of the specified monitor. Usually something
    --  like VGA, DVI, or TV, not the actual product name of the display device.
-   --  or null if the name cannot be determined
    --  Since: gtk+ 2.14
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
@@ -173,6 +169,22 @@ package Gdk.Screen is
    --  Since: gtk+ 2.14
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
+
+   procedure Get_Monitor_Workarea
+      (Screen      : not null access Gdk_Screen_Record;
+       Monitor_Num : Gint;
+       Dest        : out Gdk.Rectangle.Gdk_Rectangle);
+   --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
+   --  position of the "work area" on a monitor within the entire screen area.
+   --  The work area should be considered when positioning menus and similar
+   --  popups, to avoid placing them below panels, docks or other desktop
+   --  components.
+   --  Monitor numbers start at 0. To obtain the number of monitors of Screen,
+   --  use Gdk.Screen.Get_N_Monitors.
+   --  Since: gtk+ 3.4
+   --  "monitor_num": the monitor number
+   --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
+   --  workarea
 
    function Get_N_Monitors
       (Screen : not null access Gdk_Screen_Record) return Gint;
@@ -200,19 +212,18 @@ package Gdk.Screen is
       (Screen : not null access Gdk_Screen_Record) return Gdouble;
    --  Gets the resolution for font handling on the screen; see
    --  Gdk.Screen.Set_Resolution for full details.
-   --  has been set.
    --  Since: gtk+ 2.10
 
    procedure Set_Resolution
       (Screen : not null access Gdk_Screen_Record;
        Dpi    : Gdouble);
+   --  Sets the resolution for font handling on the screen. This is a scale
+   --  factor between points specified in a Pango.Font.Pango_Font_Description
+   --  and cairo units. The default value is 96, meaning that a 10 point font
+   --  will be 13 units high. (10 * 96. / 72. = 13.3).
    --  Since: gtk+ 2.10
    --  "dpi": the resolution in "dots per inch". (Physical inches aren't
-   --  actually involved; the terminology is conventional.) Sets the resolution
-   --  for font handling on the screen. This is a scale factor between points
-   --  specified in a Pango.Font.Pango_Font_Description and cairo units. The
-   --  default value is 96, meaning that a 10 point font will be 13 units high.
-   --  (10 * 96. / 72. = 13.3).
+   --  actually involved; the terminology is conventional.)
 
    function Get_Rgba_Visual
       (Screen : not null access Gdk_Screen_Record)
@@ -227,7 +238,6 @@ package Gdk.Screen is
    --  This functionality is not implemented in the Windows backend.
    --  For setting an overall opacity for a top-level window, see
    --  Gdk.Window.Set_Opacity.
-   --  alpha channel or null if the capability is not available.
    --  Since: gtk+ 2.8
 
    function Get_Root_Window
@@ -259,7 +269,6 @@ package Gdk.Screen is
    --  to have their alpha channel drawn correctly on the screen.
    --  On X11 this function returns whether a compositing manager is
    --  compositing Screen.
-   --  expected to have their alpha channels drawn correctly on the screen.
    --  Since: gtk+ 2.10
 
    function Make_Display_Name
@@ -330,7 +339,6 @@ package Gdk.Screen is
    function Height_Mm return Gint;
    --  Returns the height of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
-   --  though it is not always correct.
 
    function Width return Gint;
    --  Returns the width of the default screen in pixels.
@@ -338,7 +346,6 @@ package Gdk.Screen is
    function Width_Mm return Gint;
    --  Returns the width of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
-   --  though it is not always correct.
 
    ----------------
    -- Properties --

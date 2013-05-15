@@ -147,6 +147,20 @@ package body Gdk.Event is
       return Result;
    end From_Object_Free;
 
+   function From_Object_Free (B : access Gdk_Event_Touch) return Gdk_Event_Touch is
+      Result : constant Gdk_Event_Touch := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence is
+      Result : constant Gdk_Event_Sequence := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object_Free (B : access Gdk_Event_Grab_Broken) return Gdk_Event_Grab_Broken is
       Result : constant Gdk_Event_Grab_Broken := B.all;
    begin
@@ -402,6 +416,17 @@ package body Gdk.Event is
       end Internal_Cb;
 
    end Handler_Set_User_Data;
+
+   ---------------------------
+   -- Triggers_Context_Menu --
+   ---------------------------
+
+   function Triggers_Context_Menu (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Integer;
+      pragma Import (C, Internal, "gdk_event_triggers_context_menu");
+   begin
+      return Internal (Event) /= 0;
+   end Triggers_Context_Menu;
 
    --------------------
    -- Events_Pending --

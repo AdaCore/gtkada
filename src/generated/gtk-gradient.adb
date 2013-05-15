@@ -191,6 +191,23 @@ package body Gtk.Gradient is
       return Tmp_Return /= 0;
    end Resolve;
 
+   -------------------------
+   -- Resolve_For_Context --
+   -------------------------
+
+   function Resolve_For_Context
+      (Self    : Gtk_Gradient;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class)
+       return Cairo.Cairo_Pattern
+   is
+      function Internal
+         (Self    : System.Address;
+          Context : System.Address) return Cairo.Cairo_Pattern;
+      pragma Import (C, Internal, "gtk_gradient_resolve_for_context");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Context));
+   end Resolve_For_Context;
+
    ---------------
    -- To_String --
    ---------------

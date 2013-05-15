@@ -205,54 +205,6 @@ package body Gtk.Tree_Model_Filter is
      (Get_Type'Access, Gtk_Tree_Model_Filter_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Tree_Model_Filter);
 
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New
-      (Self        : out Gtk_Tree_Model_Filter;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
-   is
-   begin
-      Self := new Gtk_Tree_Model_Filter_Record;
-      Gtk.Tree_Model_Filter.Initialize (Self, Child_Model, Root);
-   end Gtk_New;
-
-   --------------------------------------
-   -- Gtk_Tree_Model_Filter_Filter_New --
-   --------------------------------------
-
-   function Gtk_Tree_Model_Filter_Filter_New
-      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
-       return Gtk_Tree_Model_Filter
-   is
-      Self : constant Gtk_Tree_Model_Filter := new Gtk_Tree_Model_Filter_Record;
-   begin
-      Gtk.Tree_Model_Filter.Initialize (Self, Child_Model, Root);
-      return Self;
-   end Gtk_Tree_Model_Filter_Filter_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-      (Self        : not null access Gtk_Tree_Model_Filter_Record'Class;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-       Root        : Gtk.Tree_Model.Gtk_Tree_Path := Null_Gtk_Tree_Path)
-   is
-      function Internal
-         (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model;
-          Root        : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_tree_model_filter_new");
-   begin
-      if not Self.Is_Created then
-         Set_Object (Self, Internal (Child_Model, Get_Object (Root)));
-      end if;
-   end Initialize;
-
    -----------------
    -- Clear_Cache --
    -----------------
@@ -657,22 +609,16 @@ package body Gtk.Tree_Model_Filter is
    function Drag_Data_Get
       (Self           : not null access Gtk_Tree_Model_Filter_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean
    is
       function Internal
-         (Self               : System.Address;
-          Path               : System.Address;
-          Acc_Selection_Data : access System.Address) return Integer;
+         (Self           : System.Address;
+          Path           : System.Address;
+          Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
-      Acc_Selection_Data     : aliased Gtk.Selection_Data.Gtk_Selection_Data;
-      Tmp_Acc_Selection_Data : aliased System.Address;
-      Tmp_Return             : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Get_Object (Path), Tmp_Acc_Selection_Data'Access);
-      Acc_Selection_Data := From_Object (Tmp_Acc_Selection_Data);
-      Selection_Data.all := Acc_Selection_Data;
-      return Tmp_Return /= 0;
+      return Internal (Get_Object (Self), Get_Object (Path), Get_Object (Selection_Data)) /= 0;
    end Drag_Data_Get;
 
    ---------------------

@@ -72,7 +72,6 @@ package Gtk.Font_Selection_Dialog is
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Cancel_Button);
    --  Gets the 'Cancel' button.
-   --  for the 'Cancel' button.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
@@ -88,7 +87,6 @@ package Gtk.Font_Selection_Dialog is
    --  structure. For example, "Helvetica Italic Bold 12" could be normalized
    --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
    --  compare two font descriptions.
-   --  font is selected. You must free this string with g_free.
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 
@@ -97,7 +95,6 @@ package Gtk.Font_Selection_Dialog is
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
-   --  Fontname specified, False otherwise.
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
@@ -117,7 +114,6 @@ package Gtk.Font_Selection_Dialog is
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Ok_Button);
    --  Gets the 'OK' button.
-   --  for the 'OK' button.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
@@ -127,7 +123,6 @@ package Gtk.Font_Selection_Dialog is
        return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
    --  Gets the text displayed in the preview area.
-   --  This string is owned by the widget and should not be modified or freed
    --  Deprecated since 3.2, Use
    --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
 

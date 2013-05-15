@@ -129,7 +129,6 @@ package Gtk.Entry_Buffer is
       (Self : not null access Gtk_Entry_Buffer_Record) return Gint;
    --  Retrieves the maximum allowed length of the text in Buffer. See
    --  Gtk.Entry_Buffer.Set_Max_Length.
-   --  in Gtk.Entry_Buffer.Gtk_Entry_Buffer, or 0 if there is no maximum.
    --  Since: gtk+ 2.18
 
    procedure Set_Max_Length
@@ -148,8 +147,6 @@ package Gtk.Entry_Buffer is
    --  Retrieves the contents of the buffer.
    --  The memory pointer returned by this call will not change unless this
    --  object emits a signal, or is finalized.
-   --  string. This string points to internally allocated storage in the
-   --  buffer and must not be freed, modified or stored.
    --  Since: gtk+ 2.18
 
    procedure Set_Text

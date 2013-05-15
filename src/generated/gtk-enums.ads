@@ -175,6 +175,58 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Movement_Step);
 
 
+   type Gtk_Input_Hints is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Input_Hints);
+   --  Describes hints that might be taken into account by input methods or
+   --  applications. Note that input methods may already tailor their behaviour
+   --  according to the Gtk.Enums.Gtk_Input_Purpose of the entry.
+   --
+   --  Some common sense is expected when using these flags - mixing
+   --  Gtk_Input_Hint_Lowercase with any of the uppercase hints makes no sense.
+   --
+   --  This enumeration may be extended in the future; input methods should
+   --  ignore unknown values.
+
+   Input_Hint_None : constant Gtk_Input_Hints := 0;
+   Input_Hint_Spellcheck : constant Gtk_Input_Hints := 1;
+   Input_Hint_No_Spellcheck : constant Gtk_Input_Hints := 2;
+   Input_Hint_Word_Completion : constant Gtk_Input_Hints := 4;
+   Input_Hint_Lowercase : constant Gtk_Input_Hints := 8;
+   Input_Hint_Uppercase_Chars : constant Gtk_Input_Hints := 16;
+   Input_Hint_Uppercase_Words : constant Gtk_Input_Hints := 32;
+   Input_Hint_Uppercase_Sentences : constant Gtk_Input_Hints := 64;
+   Input_Hint_Inhibit_Osk : constant Gtk_Input_Hints := 128;
+
+   type Gtk_Input_Purpose is (
+      Input_Purpose_Free_Form,
+      Input_Purpose_Alpha,
+      Input_Purpose_Digits,
+      Input_Purpose_Number,
+      Input_Purpose_Phone,
+      Input_Purpose_Url,
+      Input_Purpose_Email,
+      Input_Purpose_Name,
+      Input_Purpose_Password,
+      Input_Purpose_Pin);
+   pragma Convention (C, Gtk_Input_Purpose);
+   --  Describes primary purpose of the input widget. This information is
+   --  useful for on-screen keyboards and similar input methods to decide which
+   --  keys should be presented to the user.
+   --
+   --  Note that the purpose is not meant to impose a totally strict rule
+   --  about allowed characters, and does not replace input validation. It is
+   --  fine for an on-screen keyboard to let the user override the character
+   --  set restriction that is expressed by the purpose. The application is
+   --  expected to validate the entry contents, even if it specified a purpose.
+   --
+   --  The difference between Gtk_Input_Purpose_Digits and
+   --  Gtk_Input_Purpose_Number is that the former accepts only digits while
+   --  the latter also some punctuation (like commas or points, plus, minus)
+   --  and 'e' or 'E' as in 3.14E+000.
+   --
+   --  This enumeration may be extended in the future; input methods should
+   --  interpret unknown values as 'free form'.
+
    type Gtk_Number_Up_Layout is (
       Left_To_Right_Top_To_Bottom,
       Left_To_Right_Bottom_To_Top,
@@ -202,7 +254,7 @@ package Gtk.Enums is
       Pack_Direction_Ttb,
       Pack_Direction_Btt);
    pragma Convention (C, Gtk_Pack_Direction);
-   --  Determines how widgets should be packed insided menubars and menuitems
+   --  Determines how widgets should be packed inside menubars and menuitems
    --  contained in menubars.
 
    type Gtk_Pack_Type is (
@@ -300,6 +352,7 @@ package Gtk.Enums is
    Region_Odd : constant Gtk_Region_Flags := 2;
    Region_First : constant Gtk_Region_Flags := 4;
    Region_Last : constant Gtk_Region_Flags := 8;
+   Region_Only : constant Gtk_Region_Flags := 16;
    Region_Sorted : constant Gtk_Region_Flags := 32;
 
    type Gtk_Relief_Style is (
@@ -395,7 +448,9 @@ package Gtk.Enums is
 
    type Gtk_State_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_State_Flags);
-   --  Describes a widget state.
+   --  Describes a widget state. Widget states are used to match the widget
+   --  against CSS pseudo-classes. Note that GTK extends the regular CSS
+   --  classes and sometimes uses different names.
 
    Gtk_State_Flag_Normal : constant Gtk_State_Flags := 0;
    Gtk_State_Flag_Active : constant Gtk_State_Flags := 1;
@@ -404,6 +459,9 @@ package Gtk.Enums is
    Gtk_State_Flag_Insensitive : constant Gtk_State_Flags := 8;
    Gtk_State_Flag_Inconsistent : constant Gtk_State_Flags := 16;
    Gtk_State_Flag_Focused : constant Gtk_State_Flags := 32;
+   Gtk_State_Flag_Backdrop : constant Gtk_State_Flags := 64;
+   Gtk_State_Flag_Dir_Ltr : constant Gtk_State_Flags := 128;
+   Gtk_State_Flag_Dir_Rtl : constant Gtk_State_Flags := 256;
 
    type Gtk_State_Type is (
       State_Normal,
@@ -474,7 +532,7 @@ package Gtk.Enums is
    --  GTK_TOOLBAR_ICONS is used, the label will be visible, and vice versa.
 
    type Gtk_Unit is (
-      Pixel,
+      None,
       Points,
       Inch,
       Mm);
@@ -574,6 +632,14 @@ package Gtk.Enums is
    package Gtk_Movement_Step_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Movement_Step);
    type Property_Gtk_Movement_Step is new Gtk_Movement_Step_Properties.Property;
+
+   package Gtk_Input_Hints_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Input_Hints);
+   type Property_Gtk_Input_Hints is new Gtk_Input_Hints_Properties.Property;
+
+   package Gtk_Input_Purpose_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Input_Purpose);
+   type Property_Gtk_Input_Purpose is new Gtk_Input_Purpose_Properties.Property;
 
    package Gtk_Number_Up_Layout_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Number_Up_Layout);

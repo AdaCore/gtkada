@@ -21,6 +21,17 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog widget is a dialog for
+--  selecting a font. It implements the Gtk.Font_Chooser.Gtk_Font_Chooser
+--  interface.
+--
+--  == GtkFontChooserDialog as GtkBuildable ==
+--
+--  The GtkFontChooserDialog implementation of the GtkBuildable interface
+--  exposes the buttons with the names "select_button" and "cancel_button.
+--
+--  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -58,17 +69,25 @@ package Gtk.Font_Chooser_Dialog is
 
    procedure Gtk_New
       (Self   : out Gtk_Font_Chooser_Dialog;
-       Title  : UTF8_String;
-       Window : not null access Gtk.Window.Gtk_Window_Record'Class);
+       Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class);
    procedure Initialize
       (Self   : not null access Gtk_Font_Chooser_Dialog_Record'Class;
-       Title  : UTF8_String;
-       Window : not null access Gtk.Window.Gtk_Window_Record'Class);
+       Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class);
+   --  Creates a new Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog.
+   --  Since: gtk+ 3.2
+   --  "title": Title of the dialog, or null
+   --  "parent": Transient parent of the dialog, or null
 
    function Gtk_Font_Chooser_Dialog_New
-      (Title  : UTF8_String;
-       Window : not null access Gtk.Window.Gtk_Window_Record'Class)
+      (Title  : UTF8_String := "";
+       Parent : access Gtk.Window.Gtk_Window_Record'Class)
        return Gtk_Font_Chooser_Dialog;
+   --  Creates a new Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog.
+   --  Since: gtk+ 3.2
+   --  "title": Title of the dialog, or null
+   --  "parent": Transient parent of the dialog, or null
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_chooser_dialog_get_type");

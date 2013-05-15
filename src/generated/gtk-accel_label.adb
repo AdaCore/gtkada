@@ -122,6 +122,24 @@ package body Gtk.Accel_Label is
       return Internal (Get_Object (Accel_Label)) /= 0;
    end Refetch;
 
+   ---------------
+   -- Set_Accel --
+   ---------------
+
+   procedure Set_Accel
+      (Accel_Label      : not null access Gtk_Accel_Label_Record;
+       Accelerator_Key  : Guint;
+       Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type)
+   is
+      procedure Internal
+         (Accel_Label      : System.Address;
+          Accelerator_Key  : Guint;
+          Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type);
+      pragma Import (C, Internal, "gtk_accel_label_set_accel");
+   begin
+      Internal (Get_Object (Accel_Label), Accelerator_Key, Accelerator_Mods);
+   end Set_Accel;
+
    -----------------------
    -- Set_Accel_Closure --
    -----------------------

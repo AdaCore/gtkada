@@ -33,6 +33,11 @@
 --  gtk_text_buffer_create_tag is the best way to create tags. See
 --  <application>gtk3-demo</application> for numerous examples.
 --
+--  For each property of Gtk.Text_Tag.Gtk_Text_Tag, there is a "set" property,
+--  e.g. "font-set" corresponds to "font". These "set" properties reflect
+--  whether a property has been set or not. They are maintained by GTK+ and you
+--  should not set them independently.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -128,6 +133,7 @@ package Gtk.Text_Tag is
 
    Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
+   --  Background color as a Gdk.Color.Gdk_Color.
 
    Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
@@ -159,6 +165,7 @@ package Gtk.Text_Tag is
 
    Foreground_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
+   --  Foreground color as a Gdk.Color.Gdk_Color.
 
    Foreground_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
@@ -274,8 +281,7 @@ package Gtk.Text_Tag is
 
    Variant_Set_Property : constant Glib.Properties.Property_Boolean;
 
-   Weight_Property : constant Pango.Enums.Property_Weight;
-   --  Type: Pango.Enums.Weight
+   Weight_Property : constant Glib.Properties.Property_Int;
 
    Weight_Set_Property : constant Glib.Properties.Property_Boolean;
 
@@ -290,8 +296,6 @@ package Gtk.Text_Tag is
    Signal_Event : constant Glib.Signal_Name := "event";
    --  The ::event signal is emitted when an event occurs on a region of the
    --  buffer marked with this tag.
-   --
-   --  event. False to propagate the event further.
    --    function Handler
    --       (Self   : access Gtk_Text_Tag_Record'Class;
    --        Object : not null access Glib.Object.GObject_Record'Class;
@@ -304,7 +308,7 @@ package Gtk.Text_Tag is
    --    --  "event": the event which triggered the signal
    --    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
    --    --  event occured
-   --    --  Returns True to stop other handlers from being invoked for the
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
 private
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean :=
@@ -313,8 +317,8 @@ private
      Gtk.Enums.Build ("wrap-mode");
    Weight_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("weight-set");
-   Weight_Property : constant Pango.Enums.Property_Weight :=
-     Pango.Enums.Build ("weight");
+   Weight_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("weight");
    Variant_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("variant-set");
    Variant_Property : constant Pango.Enums.Property_Variant :=

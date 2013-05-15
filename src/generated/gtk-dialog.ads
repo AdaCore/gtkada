@@ -290,7 +290,6 @@ package Gtk.Dialog is
        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Response_Type;
    --  Gets the response id of a widget in the action area of a dialog.
-   --  if Widget doesn't have a response id set.
    --  Since: gtk+ 2.8
    --  "widget": a widget in the action area of Dialog
 
@@ -299,7 +298,6 @@ package Gtk.Dialog is
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
-   --  Response_Id, or null.
    --  Since: gtk+ 2.20
    --  "response_id": the response ID used by the Dialog widget
 

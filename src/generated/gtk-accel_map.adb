@@ -68,7 +68,7 @@ package body Gtk.Accel_Map is
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;
        Accel_Path : Interfaces.C.Strings.chars_ptr;
-       Accel_Key  : Gdk.Types.Gdk_Key_Type;
+       Accel_Key  : Guint;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Integer);
    pragma Convention (C, Internal_Gtk_Accel_Map_Foreach);
@@ -88,7 +88,7 @@ package body Gtk.Accel_Map is
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;
        Accel_Path : Interfaces.C.Strings.chars_ptr;
-       Accel_Key  : Gdk.Types.Gdk_Key_Type;
+       Accel_Key  : Guint;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Integer)
    is
@@ -141,7 +141,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Gdk.Types.Gdk_Key_Type;
+          Accel_Key  : Guint;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer);
       pragma Convention (C, Internal_Cb);
@@ -177,7 +177,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Gdk.Types.Gdk_Key_Type;
+          Accel_Key  : Guint;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer)
       is
@@ -202,7 +202,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Gdk.Types.Gdk_Key_Type;
+          Accel_Key  : Guint;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer);
       pragma Convention (C, Internal_Cb);
@@ -238,7 +238,7 @@ package body Gtk.Accel_Map is
       procedure Internal_Cb
          (Data       : System.Address;
           Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Accel_Key  : Gdk.Types.Gdk_Key_Type;
+          Accel_Key  : Guint;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Integer)
       is
@@ -420,45 +420,45 @@ package body Gtk.Accel_Map is
    use type System.Address;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void, System.Address);
+     (Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void);
+     (System.Address, Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void, System.Address);
+     (Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void);
+     (System.Address, Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void);
 
    procedure Connect
       (Object  : access Gtk_Accel_Map_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Handler : Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        After   : Boolean);
 
    procedure Connect_Slot
       (Object  : access Gtk_Accel_Map_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Handler : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
-   procedure Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void
+   procedure Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void);
 
-   procedure Marsh_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void
+   procedure Marsh_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void);
+   pragma Convention (C, Marsh_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void);
 
    -------------
    -- Connect --
@@ -467,14 +467,14 @@ package body Gtk.Accel_Map is
    procedure Connect
       (Object  : access Gtk_Accel_Map_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Handler : Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void'Access,
+         Marshaller  => Marsh_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -486,7 +486,7 @@ package body Gtk.Accel_Map is
    procedure Connect_Slot
       (Object  : access Gtk_Accel_Map_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Handler : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -494,17 +494,17 @@ package body Gtk.Accel_Map is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void'Access,
+         Marshaller  => Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
-   ------------------------------------------------------------
-   -- Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void --
-   ------------------------------------------------------------
+   -------------------------------------------------------------------
+   -- Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void --
+   -------------------------------------------------------------------
 
-   procedure Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void
+   procedure Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -513,18 +513,18 @@ package body Gtk.Accel_Map is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
-      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3));
+      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gdk_Key_Type (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3));
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+   end Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
 
-   ------------------------------------------------------------------
-   -- Marsh_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void --
-   ------------------------------------------------------------------
+   -------------------------------------------------------------------------
+   -- Marsh_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void --
+   -------------------------------------------------------------------------
 
-   procedure Marsh_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void
+   procedure Marsh_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -533,12 +533,12 @@ package body Gtk.Accel_Map is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Accel_Map := Gtk_Accel_Map (Unchecked_To_Object (Params, 0));
    begin
-      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3));
+      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gdk_Key_Type (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3));
       exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+   end Marsh_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
 
    ----------------
    -- On_Changed --
@@ -546,7 +546,7 @@ package body Gtk.Accel_Map is
 
    procedure On_Changed
       (Self  : not null access Gtk_Accel_Map_Record;
-       Call  : Cb_Gtk_Accel_Map_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Call  : Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        After : Boolean := False)
    is
    begin
@@ -559,7 +559,7 @@ package body Gtk.Accel_Map is
 
    procedure On_Changed
       (Self  : not null access Gtk_Accel_Map_Record;
-       Call  : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Void;
+       Call  : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

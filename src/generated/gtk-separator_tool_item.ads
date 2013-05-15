@@ -22,10 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Separator_Item is a Gtk.Tool_Item.Gtk_Tool_Item that separates
---  groups of other Gtk_Tool_Items. Depending on the theme, a
---  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will often look like a
---  vertical line on horizontally docked toolbars.
+--  A Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item is a
+--  Gtk.Tool_Item.Gtk_Tool_Item that separates groups of other Gtk_Tool_Items.
+--  Depending on the theme, a Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
+--  will often look like a vertical line on horizontally docked toolbars.
 --
 --  If the Gtk.Toolbar.Gtk_Toolbar child property "expand" is True and the
 --  property Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item:draw is False, a

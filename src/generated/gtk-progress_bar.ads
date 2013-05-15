@@ -87,7 +87,7 @@ package Gtk.Progress_Bar is
    function Get_Ellipsize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
-   --  Returns the ellipsizing position of the progressbar. See
+   --  Returns the ellipsizing position of the progress bar. See
    --  Gtk.Progress_Bar.Set_Ellipsize.
    --  Since: gtk+ 2.6
 
@@ -114,7 +114,7 @@ package Gtk.Progress_Bar is
    function Get_Inverted
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean;
-   --  Gets the value set by Gtk.Progress_Bar.Set_Inverted
+   --  Gets the value set by Gtk.Progress_Bar.Set_Inverted.
 
    procedure Set_Inverted
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -126,7 +126,7 @@ package Gtk.Progress_Bar is
    function Get_Pulse_Step
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Gdouble;
-   --  Retrieves the pulse step set with Gtk.Progress_Bar.Set_Pulse_Step
+   --  Retrieves the pulse step set with Gtk.Progress_Bar.Set_Pulse_Step.
 
    procedure Set_Pulse_Step
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -138,17 +138,17 @@ package Gtk.Progress_Bar is
    function Get_Show_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean;
-   --  Gets the value of the Gtk.Progress_Bar.Gtk_Progress_Bar::show-text
+   --  Gets the value of the Gtk.Progress_Bar.Gtk_Progress_Bar:show-text
    --  property. See Gtk.Progress_Bar.Set_Show_Text.
    --  Since: gtk+ 3.0
 
    procedure Set_Show_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Show_Text    : Boolean);
-   --  Sets whether the progressbar will show text superimposed over the bar.
+   --  Sets whether the progress bar will show text superimposed over the bar.
    --  The shown text is either the value of the
-   --  Gtk.Progress_Bar.Gtk_Progress_Bar::text property or, if that is null,
-   --  the Gtk.Progress_Bar.Gtk_Progress_Bar::fraction value, as a percentage.
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:text property or, if that is null, the
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:fraction value, as a percentage.
    --  To make a progress bar that is styled and sized suitably for containing
    --  text (even if the actual text is blank), set
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text to True and
@@ -163,7 +163,6 @@ package Gtk.Progress_Bar is
    --  otherwise null. The return value is a reference to the text, not a copy
    --  of it, so will become invalid if you change the text in the progress
    --  bar.
-   --  and should not be modified or freed.
 
    procedure Set_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -180,11 +179,11 @@ package Gtk.Progress_Bar is
    --  "text": a UTF-8 string, or null
 
    procedure Pulse (Progress_Bar : not null access Gtk_Progress_Bar_Record);
-   --  Indicates that some progress is made, but you don't know how much.
-   --  Causes the progress bar to enter "activity mode," where a block bounces
-   --  back and forth. Each call to Gtk.Progress_Bar.Pulse causes the block to
-   --  move by a little bit (the amount of movement per pulse is determined by
-   --  Gtk.Progress_Bar.Set_Pulse_Step).
+   --  Indicates that some progress has been made, but you don't know how
+   --  much. Causes the progress bar to enter "activity mode," where a block
+   --  bounces back and forth. Each call to Gtk.Progress_Bar.Pulse causes the
+   --  block to move by a little bit (the amount of movement per pulse is
+   --  determined by Gtk.Progress_Bar.Set_Pulse_Step).
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -209,14 +208,14 @@ package Gtk.Progress_Bar is
 
    Ellipsize_Property : constant Pango.Layout.Property_Pango_Ellipsize_Mode;
    --  Type: Pango.Layout.Pango_Ellipsize_Mode
-   --  The preferred place to ellipsize the string, if the progressbar does
+   --  The preferred place to ellipsize the string, if the progress bar does
    --  not have enough room to display the entire string, specified as a
-   --  Pango_Ellisize_Mode.
+   --  Pango.Layout.Pango_Ellipsize_Mode.
    --
    --  Note that setting this property to a value other than
-   --  Pango.Layout.Ellipsize_None has the side-effect that the progressbar
-   --  requests only enough space to display the ellipsis "...". Another means
-   --  to set a progressbar's width is Gtk.Widget.Set_Size_Request.
+   --  Pango.Layout.Ellipsize_None has the side-effect that the progress bar
+   --  requests only enough space to display the ellipsis ("..."). Another
+   --  means to set a progress bar's width is Gtk.Widget.Set_Size_Request.
 
    Fraction_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
@@ -227,6 +226,15 @@ package Gtk.Progress_Bar is
    --  Type: Gdouble
 
    Show_Text_Property : constant Glib.Properties.Property_Boolean;
+   --  Sets whether the progress bar will show text superimposed over the bar.
+   --  The shown text is either the value of the
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:text property or, if that is null, the
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:fraction value, as a percentage.
+   --
+   --  To make a progress bar that is styled and sized suitably for containing
+   --  text (even if the actual text is blank), set
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text to True and
+   --  Gtk.Progress_Bar.Gtk_Progress_Bar:text to the empty string (not null).
 
    Text_Property : constant Glib.Properties.Property_String;
 

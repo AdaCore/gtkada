@@ -42,8 +42,6 @@ package Pango.Coverage is
    --  Copy an existing Pango.Coverage.Pango_Coverage. (This function may now
    --  be unnecessary since we refcount the structure. File a bug if you use
    --  it.)
-   --  with a reference count of one, which should be freed with
-   --  Pango.Coverage.Unref.
 
    function Get
       (Self  : Pango_Coverage;
@@ -79,8 +77,6 @@ package Pango.Coverage is
 
    function Pango_New return Pango_Coverage;
    --  Create a new Pango.Coverage.Pango_Coverage
-   --  initialized to Pango.Enums.Pango_Coverage_None with a reference count
-   --  of one, which should be freed with Pango.Coverage.Unref.
 
 private
 

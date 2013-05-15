@@ -61,7 +61,6 @@ package Gtk.Paper_Size is
    --  5101.1-2002</ulink> paper name.
    --  If Name is null, the default paper size is returned, see
    --  Gtk.Paper_Size.Get_Default.
-   --  to free it
    --  Since: gtk+ 2.10
    --  "name": a paper size name, or null
 
@@ -72,7 +71,6 @@ package Gtk.Paper_Size is
    --  5101.1-2002</ulink> paper name.
    --  If Name is null, the default paper size is returned, see
    --  Gtk.Paper_Size.Get_Default.
-   --  to free it
    --  Since: gtk+ 2.10
    --  "name": a paper size name, or null
 
@@ -85,13 +83,12 @@ package Gtk.Paper_Size is
        Unit         : Gtk.Enums.Gtk_Unit);
    --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object with the given
    --  parameters.
-   --  to free it
    --  Since: gtk+ 2.10
    --  "name": the paper name
    --  "display_name": the human-readable name
    --  "width": the paper width, in units of Unit
    --  "height": the paper height, in units of Unit
-   --  "unit": the unit for Width and Height
+   --  "unit": the unit for Width and Height. not Gtk.Enums.None.
 
    function Gtk_Paper_Size_New_Custom
       (Name         : UTF8_String;
@@ -101,22 +98,20 @@ package Gtk.Paper_Size is
        Unit         : Gtk.Enums.Gtk_Unit) return Gtk_Paper_Size;
    --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object with the given
    --  parameters.
-   --  to free it
    --  Since: gtk+ 2.10
    --  "name": the paper name
    --  "display_name": the human-readable name
    --  "width": the paper width, in units of Unit
    --  "height": the paper height, in units of Unit
-   --  "unit": the unit for Width and Height
+   --  "unit": the unit for Width and Height. not Gtk.Enums.None.
 
    procedure Gtk_New_From_Key_File
       (Widget     : out Gtk_Paper_Size;
        Key_File   : Glib.Key_File.G_Key_File;
        Group_Name : UTF8_String);
    --  Reads a paper size from the group Group_Name in the key file Key_File.
-   --  paper size, or null if an error occurred
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to retrieve the papersize from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the papersize from
    --  "group_name": the name ofthe group in the key file to read, or null to
    --  read the first group
 
@@ -124,9 +119,8 @@ package Gtk.Paper_Size is
       (Key_File   : Glib.Key_File.G_Key_File;
        Group_Name : UTF8_String) return Gtk_Paper_Size;
    --  Reads a paper size from the group Group_Name in the key file Key_File.
-   --  paper size, or null if an error occurred
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to retrieve the papersize from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the papersize from
    --  "group_name": the name ofthe group in the key file to read, or null to
    --  read the first group
 
@@ -141,7 +135,6 @@ package Gtk.Paper_Size is
    --  If Ppd_Name is not a recognized PPD paper name, Ppd_Display_Name, Width
    --  and Height are used to construct a custom Gtk.Paper_Size.Gtk_Paper_Size
    --  object.
-   --  to free it
    --  Since: gtk+ 2.10
    --  "ppd_name": a PPD paper name
    --  "ppd_display_name": the corresponding human-readable name
@@ -158,7 +151,6 @@ package Gtk.Paper_Size is
    --  If Ppd_Name is not a recognized PPD paper name, Ppd_Display_Name, Width
    --  and Height are used to construct a custom Gtk.Paper_Size.Gtk_Paper_Size
    --  object.
-   --  to free it
    --  Since: gtk+ 2.10
    --  "ppd_name": a PPD paper name
    --  "ppd_display_name": the corresponding human-readable name
@@ -185,28 +177,28 @@ package Gtk.Paper_Size is
        Unit   : Gtk.Enums.Gtk_Unit) return Gdouble;
    --  Gets the default bottom margin for the Gtk.Paper_Size.Gtk_Paper_Size.
    --  Since: gtk+ 2.10
-   --  "unit": the unit for the return value
+   --  "unit": the unit for the return value, not Gtk.Enums.None
 
    function Get_Default_Left_Margin
       (Widget : Gtk_Paper_Size;
        Unit   : Gtk.Enums.Gtk_Unit) return Gdouble;
    --  Gets the default left margin for the Gtk.Paper_Size.Gtk_Paper_Size.
    --  Since: gtk+ 2.10
-   --  "unit": the unit for the return value
+   --  "unit": the unit for the return value, not Gtk.Enums.None
 
    function Get_Default_Right_Margin
       (Widget : Gtk_Paper_Size;
        Unit   : Gtk.Enums.Gtk_Unit) return Gdouble;
    --  Gets the default right margin for the Gtk.Paper_Size.Gtk_Paper_Size.
    --  Since: gtk+ 2.10
-   --  "unit": the unit for the return value
+   --  "unit": the unit for the return value, not Gtk.Enums.None
 
    function Get_Default_Top_Margin
       (Widget : Gtk_Paper_Size;
        Unit   : Gtk.Enums.Gtk_Unit) return Gdouble;
    --  Gets the default top margin for the Gtk.Paper_Size.Gtk_Paper_Size.
    --  Since: gtk+ 2.10
-   --  "unit": the unit for the return value
+   --  "unit": the unit for the return value, not Gtk.Enums.None
 
    function Get_Display_Name (Widget : Gtk_Paper_Size) return UTF8_String;
    --  Gets the human-readable name of the Gtk.Paper_Size.Gtk_Paper_Size.
@@ -218,7 +210,7 @@ package Gtk.Paper_Size is
    --  Gets the paper height of the Gtk.Paper_Size.Gtk_Paper_Size, in units of
    --  Unit.
    --  Since: gtk+ 2.10
-   --  "unit": the unit for the return value
+   --  "unit": the unit for the return value, not Gtk.Enums.None
 
    function Get_Name (Widget : Gtk_Paper_Size) return UTF8_String;
    --  Gets the name of the Gtk.Paper_Size.Gtk_Paper_Size.
@@ -235,7 +227,7 @@ package Gtk.Paper_Size is
    --  Gets the paper width of the Gtk.Paper_Size.Gtk_Paper_Size, in units of
    --  Unit.
    --  Since: gtk+ 2.10
-   --  "unit": the unit for the return value
+   --  "unit": the unit for the return value, not Gtk.Enums.None
 
    function Is_Custom (Widget : Gtk_Paper_Size) return Boolean;
    --  Returns True if Size is not a standard paper size.
@@ -244,7 +236,6 @@ package Gtk.Paper_Size is
       (Widget : Gtk_Paper_Size;
        Size2  : Gtk_Paper_Size) return Boolean;
    --  Compares two Gtk.Paper_Size.Gtk_Paper_Size objects.
-   --  represent the same paper size
    --  Since: gtk+ 2.10
    --  "size2": another Gtk.Paper_Size.Gtk_Paper_Size object
 
@@ -265,7 +256,7 @@ package Gtk.Paper_Size is
        Group_Name : UTF8_String);
    --  This function adds the paper size from Size to Key_File.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to save the paper size to
+   --  "key_file": the Gkey.File.Gkey_File to save the paper size to
    --  "group_name": the group to add the settings to in Key_File
 
    ----------------------
@@ -293,13 +284,11 @@ package Gtk.Paper_Size is
    function Get_Default return UTF8_String;
    --  Returns the name of the default paper size, which depends on the
    --  current locale.
-   --  is owned by GTK+ and should not be modified.
    --  Since: gtk+ 2.10
 
    function Get_Paper_Sizes
       (Include_Custom : Boolean) return Gtk_Paper_Size_Glist.Glist;
    --  Creates a list of known paper sizes.
-   --  allocated Gtk.Paper_Size.Gtk_Paper_Size objects
    --  Since: gtk+ 2.12
    --  "include_custom": whether to include custom paper sizes as defined in
    --  the page setup dialog

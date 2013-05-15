@@ -83,7 +83,6 @@ package Gtk.Tool_Item is
    --  Returns the ellipsize mode used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be ellipsized.
-   --  should be ellipsized.
    --  Since: gtk+ 2.20
 
    function Get_Expand
@@ -106,7 +105,6 @@ package Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    --  Returns whether Tool_Item is the same size as other homogeneous items.
    --  See Gtk.Tool_Item.Set_Homogeneous.
-   --  items.
    --  Since: gtk+ 2.4
 
    procedure Set_Homogeneous
@@ -125,7 +123,6 @@ package Gtk.Tool_Item is
    --  Returns the icon size used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out what
    --  size icons they should use.
-   --  used for Tool_Item
    --  Since: gtk+ 2.4
 
    function Get_Is_Important
@@ -152,7 +149,6 @@ package Gtk.Tool_Item is
    --  Returns the orientation used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out what
    --  size icons they should use.
-   --  used for Tool_Item
    --  Since: gtk+ 2.4
 
    function Get_Proxy_Menu_Item
@@ -166,7 +162,6 @@ package Gtk.Tool_Item is
    --  changes. That the Menu_Item_Id<!-- -->s must match ensures that a
    --  Gtk.Tool_Item.Gtk_Tool_Item will not inadvertently change a menu item
    --  that they did not create.
-   --  Gtk.Tool_Item.Set_Proxy_Menu_Item, if the Menu_Item_Id<!-- -->s match.
    --  Since: gtk+ 2.4
    --  "menu_item_id": a string used to identify the menu item
 
@@ -185,12 +180,11 @@ package Gtk.Tool_Item is
    function Get_Relief_Style
       (Tool_Item : not null access Gtk_Tool_Item_Record)
        return Gtk.Enums.Gtk_Relief_Style;
-   --  Returns the relief style of Tool_Item. See gtk_button_set_relief_style.
+   --  Returns the relief style of Tool_Item. See Gtk.Button.Set_Relief.
    --  Custom subclasses of Gtk.Tool_Item.Gtk_Tool_Item should call this
    --  function in the handler of the
    --  Gtk.Tool_Item.Gtk_Tool_Item::toolbar_reconfigured signal to find out the
    --  relief style of buttons.
-   --  for Tool_Item.
    --  Since: gtk+ 2.4
 
    function Get_Text_Alignment
@@ -198,7 +192,6 @@ package Gtk.Tool_Item is
    --  Returns the text alignment used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be aligned.
-   --  used for Tool_Item
    --  Since: gtk+ 2.20
 
    function Get_Text_Orientation
@@ -207,7 +200,6 @@ package Gtk.Tool_Item is
    --  Returns the text orientation used for Tool_Item. Custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be orientated.
-   --  used for Tool_Item
    --  Since: gtk+ 2.20
 
    function Get_Text_Size_Group
@@ -231,11 +223,7 @@ package Gtk.Tool_Item is
    --     * GTK_TOOLBAR_ICONS, meaning the toolbar shows only icons
    --     * GTK_TOOLBAR_TEXT, meaning the tool item should only show text
    --     * GTK_TOOLBAR_BOTH_HORIZ, meaning the tool item should show both an
-   --  icon and a label, arranged horizontally (however, note the
-   --  Gtk.Tool_Button.Gtk_Tool_Button::has_text_horizontally that makes tool
-   --  buttons not show labels when the toolbar style is
-   --  GTK_TOOLBAR_BOTH_HORIZ.
-   --  for Tool_Item.
+   --  icon and a label, arranged horizontally
    --  Since: gtk+ 2.4
 
    function Get_Use_Drag_Window
@@ -258,7 +246,6 @@ package Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    --  Returns whether the Tool_Item is visible on toolbars that are docked
    --  horizontally.
-   --  docked horizontally.
    --  Since: gtk+ 2.4
 
    procedure Set_Visible_Horizontal
@@ -302,7 +289,6 @@ package Gtk.Tool_Item is
    --  Returns the Gtk.Menu_Item.Gtk_Menu_Item that was last set by
    --  Gtk.Tool_Item.Set_Proxy_Menu_Item, ie. the Gtk.Menu_Item.Gtk_Menu_Item
    --  that is going to appear in the overflow menu.
-   --  overflow menu for Tool_Item.
    --  Since: gtk+ 2.4
 
    procedure Set_Tooltip_Markup

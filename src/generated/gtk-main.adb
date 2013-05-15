@@ -58,9 +58,11 @@ package body Gtk.Main is
       (Snooper   : System.Address;
        Func_Data : System.Address) return Guint;
    pragma Import (C, C_Gtk_Key_Snooper_Install, "gtk_key_snooper_install");
+   pragma Obsolescent (C_Gtk_Key_Snooper_Install);
    --  Installs a key snooper function, which will get called on all key
    --  events before delivering them normally.
-   --  Gtk.Main.Key_Snooper_Remove.
+   --  Deprecated since 3.4, Key snooping should not be done. Events should be
+   --  handled by widgets.
    --  "snooper": a Gtk_Key_Snoop_Func
    --  "func_data": data to pass to Snooper
 

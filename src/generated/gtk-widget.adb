@@ -117,6 +117,68 @@ package body Gtk.Widget is
       return To_Requisition (Glib.Values.Get_Address (Value));
    end Get_Requisition;
 
+   function C_Gtk_Widget_Add_Tick_Callback
+      (Widget    : System.Address;
+       Callback  : System.Address;
+       User_Data : System.Address;
+       Notify    : Glib.G_Destroy_Notify_Address) return Guint;
+   pragma Import (C, C_Gtk_Widget_Add_Tick_Callback, "gtk_widget_add_tick_callback");
+   --  Queues a animation frame update and adds a callback to be called before
+   --  each frame. Until the tick callback is removed, it will be called
+   --  frequently (usually at the frame rate of the output device or as quickly
+   --  as the application an be repainted, whichever is slower). For this
+   --  reason, is most suitable for handling graphics that change every frame
+   --  or every few frames. The tick callback does not automatically imply a
+   --  relayout or repaint. If you want a repaint or relayout, and aren't
+   --  changing widget properties that would trigger that (for example,
+   --  changing the text of a Gtk.Label.Gtk_Label), then you will have to call
+   --  Gtk.Widget.Queue_Resize or Gtk.Widget.Queue_Draw_Area yourself.
+   --  Gdk.Frame_Clock.Get_Frame_Time should generally be used for timing
+   --  continuous animations and
+   --  Gdk.Frame_Timings.Get_Predicted_Presentation_Time if you are trying to
+   --  display isolated frames at particular times.
+   --  This is a more convenient alternative to connecting directly to the
+   --  Gdk.Frame_Clock.Gdk_Frame_Clock::update signal of
+   --  Gdk.Frame_Clock.Gdk_Frame_Clock, since you don't have to worry about
+   --  when a Gdk.Frame_Clock.Gdk_Frame_Clock is assigned to a widget.
+   --  Since: gtk+ 3.8
+   --  "callback": function to call for updating animations
+   --  "user_data": data to pass to Callback
+   --  "notify": function to call to free User_Data when the callback is
+   --  removed.
+
+   function To_Gtk_Tick_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Tick_Callback);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Tick_Callback, System.Address);
+
+   function Internal_Gtk_Tick_Callback
+      (Widget      : System.Address;
+       Frame_Clock : System.Address;
+       User_Data   : System.Address) return Integer;
+   pragma Convention (C, Internal_Gtk_Tick_Callback);
+   --  "widget": the widget
+   --  "frame_clock": the frame clock for the widget (same as calling
+   --  Gtk.Widget.Get_Frame_Clock)
+   --  "user_data": user data passed to Gtk.Widget.Add_Tick_Callback.
+
+   --------------------------------
+   -- Internal_Gtk_Tick_Callback --
+   --------------------------------
+
+   function Internal_Gtk_Tick_Callback
+      (Widget      : System.Address;
+       Frame_Clock : System.Address;
+       User_Data   : System.Address) return Integer
+   is
+      Func                 : constant Gtk_Tick_Callback := To_Gtk_Tick_Callback (User_Data);
+      Stub_Gtk_Widget      : Gtk_Widget_Record;
+      Stub_Gdk_Frame_Clock : Gdk.Frame_Clock.Gdk_Frame_Clock_Record;
+   begin
+      return Boolean'Pos (Func (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)), Gdk.Frame_Clock.Gdk_Frame_Clock (Get_User_Data (Frame_Clock, Stub_Gdk_Frame_Clock))));
+   end Internal_Gtk_Tick_Callback;
+
    package Type_Conversion_Gtk_Widget is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Widget_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Widget);
@@ -207,6 +269,83 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Get_Object (Label));
    end Add_Mnemonic_Label;
+
+   -----------------------
+   -- Add_Tick_Callback --
+   -----------------------
+
+   function Add_Tick_Callback
+      (Widget   : not null access Gtk_Widget_Record;
+       Callback : Gtk_Tick_Callback;
+       Notify   : Glib.G_Destroy_Notify_Address) return Guint
+   is
+   begin
+      if Callback = null then
+         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Notify);
+      else
+         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Gtk_Tick_Callback'Address, To_Address (Callback), Notify);
+      end if;
+   end Add_Tick_Callback;
+
+   package body Add_Tick_Callback_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gtk_Tick_Callback is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Tick_Callback);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Tick_Callback, System.Address);
+
+      function Internal_Cb
+         (Widget      : System.Address;
+          Frame_Clock : System.Address;
+          User_Data   : System.Address) return Integer;
+      pragma Convention (C, Internal_Cb);
+      --  Callback type for adding a function to update animations. See
+      --  Gtk.Widget.Add_Tick_Callback.
+      --  Since: gtk+ 3.8
+      --  "widget": the widget
+      --  "frame_clock": the frame clock for the widget (same as calling
+      --  Gtk.Widget.Get_Frame_Clock)
+      --  "user_data": user data passed to Gtk.Widget.Add_Tick_Callback.
+
+      -----------------------
+      -- Add_Tick_Callback --
+      -----------------------
+
+      function Add_Tick_Callback
+         (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Callback  : Gtk_Tick_Callback;
+          User_Data : User_Data_Type;
+          Notify    : Glib.G_Destroy_Notify_Address) return Guint
+      is
+      begin
+         if Callback = null then
+            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Notify);
+         else
+            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, Users.Build (To_Address (Callback), User_Data), Notify);
+         end if;
+      end Add_Tick_Callback;
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      function Internal_Cb
+         (Widget      : System.Address;
+          Frame_Clock : System.Address;
+          User_Data   : System.Address) return Integer
+      is
+         D                    : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Widget      : Gtk.Widget.Gtk_Widget_Record;
+         Stub_Gdk_Frame_Clock : Gdk.Frame_Clock.Gdk_Frame_Clock_Record;
+      begin
+         return Boolean'Pos (To_Gtk_Tick_Callback (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Widget, Stub_Gtk_Widget)), Gdk.Frame_Clock.Gdk_Frame_Clock (Get_User_Data (Frame_Clock, Stub_Gdk_Frame_Clock)), D.Data.all));
+      end Internal_Cb;
+
+   end Add_Tick_Callback_User_Data;
 
    ------------------------
    -- Can_Activate_Accel --
@@ -549,19 +688,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Drag_Source_Add_Image_Targets;
 
-   ----------------------------------
-   -- Drag_Source_Add_Text_Targets --
-   ----------------------------------
-
-   procedure Drag_Source_Add_Text_Targets
-      (Widget : not null access Gtk_Widget_Record)
-   is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_drag_source_add_text_targets");
-   begin
-      Internal (Get_Object (Widget));
-   end Drag_Source_Add_Text_Targets;
-
    ---------------------------------
    -- Drag_Source_Add_Uri_Targets --
    ---------------------------------
@@ -574,24 +700,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Drag_Source_Add_Uri_Targets;
-
-   -------------------------------
-   -- Drag_Source_Set_Icon_Name --
-   -------------------------------
-
-   procedure Drag_Source_Set_Icon_Name
-      (Widget    : not null access Gtk_Widget_Record;
-       Icon_Name : UTF8_String)
-   is
-      procedure Internal
-         (Widget    : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr);
-      pragma Import (C, Internal, "gtk_drag_source_set_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
-   begin
-      Internal (Get_Object (Widget), Tmp_Icon_Name);
-      Free (Tmp_Icon_Name);
-   end Drag_Source_Set_Icon_Name;
 
    ---------------------------------
    -- Drag_Source_Set_Icon_Pixbuf --
@@ -606,24 +714,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Get_Object (Pixbuf));
    end Drag_Source_Set_Icon_Pixbuf;
-
-   --------------------------------
-   -- Drag_Source_Set_Icon_Stock --
-   --------------------------------
-
-   procedure Drag_Source_Set_Icon_Stock
-      (Widget   : not null access Gtk_Widget_Record;
-       Stock_Id : UTF8_String)
-   is
-      procedure Internal
-         (Widget   : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr);
-      pragma Import (C, Internal, "gtk_drag_source_set_icon_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
-   begin
-      Internal (Get_Object (Widget), Tmp_Stock_Id);
-      Free (Tmp_Stock_Id);
-   end Drag_Source_Set_Icon_Stock;
 
    -----------------------
    -- Drag_Source_Unset --
@@ -968,6 +1058,21 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Events;
 
+   ---------------------
+   -- Get_Frame_Clock --
+   ---------------------
+
+   function Get_Frame_Clock
+      (Widget : not null access Gtk_Widget_Record)
+       return Gdk.Frame_Clock.Gdk_Frame_Clock
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_frame_clock");
+      Stub_Gdk_Frame_Clock : Gdk.Frame_Clock.Gdk_Frame_Clock_Record;
+   begin
+      return Gdk.Frame_Clock.Gdk_Frame_Clock (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gdk_Frame_Clock));
+   end Get_Frame_Clock;
+
    ----------------
    -- Get_Halign --
    ----------------
@@ -1098,6 +1203,22 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Margin_Top;
 
+   -----------------------
+   -- Get_Modifier_Mask --
+   -----------------------
+
+   function Get_Modifier_Mask
+      (Widget : not null access Gtk_Widget_Record;
+       Intent : Gdk_Modifier_Intent) return Gdk.Types.Gdk_Modifier_Type
+   is
+      function Internal
+         (Widget : System.Address;
+          Intent : Gdk_Modifier_Intent) return Gdk.Types.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "gtk_widget_get_modifier_mask");
+   begin
+      return Internal (Get_Object (Widget), Intent);
+   end Get_Modifier_Mask;
+
    --------------
    -- Get_Name --
    --------------
@@ -1124,6 +1245,19 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget)) /= 0;
    end Get_No_Show_All;
+
+   -----------------
+   -- Get_Opacity --
+   -----------------
+
+   function Get_Opacity
+      (Widget : not null access Gtk_Widget_Record) return Gdouble
+   is
+      function Internal (Widget : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_widget_get_opacity");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Opacity;
 
    -----------------------
    -- Get_Pango_Context --
@@ -1888,6 +2022,19 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget)) /= 0;
    end Is_Toplevel;
 
+   ----------------
+   -- Is_Visible --
+   ----------------
+
+   function Is_Visible
+      (Widget : not null access Gtk_Widget_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_widget_is_visible");
+   begin
+      return Internal (Get_Object (Widget)) /= 0;
+   end Is_Visible;
+
    -------------------
    -- Keynav_Failed --
    -------------------
@@ -2256,6 +2403,20 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget), Region);
    end Region_Intersect;
 
+   ---------------------
+   -- Register_Window --
+   ---------------------
+
+   procedure Register_Window
+      (Widget : not null access Gtk_Widget_Record;
+       Window : Gdk.Gdk_Window)
+   is
+      procedure Internal (Widget : System.Address; Window : Gdk.Gdk_Window);
+      pragma Import (C, Internal, "gtk_widget_register_window");
+   begin
+      Internal (Get_Object (Widget), Window);
+   end Register_Window;
+
    ------------------------
    -- Remove_Accelerator --
    ------------------------
@@ -2289,6 +2450,20 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Get_Object (Label));
    end Remove_Mnemonic_Label;
+
+   --------------------------
+   -- Remove_Tick_Callback --
+   --------------------------
+
+   procedure Remove_Tick_Callback
+      (Widget : not null access Gtk_Widget_Record;
+       Id     : Guint)
+   is
+      procedure Internal (Widget : System.Address; Id : Guint);
+      pragma Import (C, Internal, "gtk_widget_remove_tick_callback");
+   begin
+      Internal (Get_Object (Widget), Id);
+   end Remove_Tick_Callback;
 
    -----------------
    -- Render_Icon --
@@ -2786,6 +2961,20 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Boolean'Pos (No_Show_All));
    end Set_No_Show_All;
 
+   -----------------
+   -- Set_Opacity --
+   -----------------
+
+   procedure Set_Opacity
+      (Widget  : not null access Gtk_Widget_Record;
+       Opacity : Gdouble)
+   is
+      procedure Internal (Widget : System.Address; Opacity : Gdouble);
+      pragma Import (C, Internal, "gtk_widget_set_opacity");
+   begin
+      Internal (Get_Object (Widget), Opacity);
+   end Set_Opacity;
+
    ----------------
    -- Set_Parent --
    ----------------
@@ -2987,14 +3176,19 @@ package body Gtk.Widget is
 
    procedure Set_Tooltip_Text
       (Widget : not null access Gtk_Widget_Record;
-       Text   : UTF8_String)
+       Text   : UTF8_String := "")
    is
       procedure Internal
          (Widget : System.Address;
           Text   : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_widget_set_tooltip_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Interfaces.C.Strings.chars_ptr;
    begin
+      if Text = "" then
+         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Text := New_String (Text);
+      end if;
       Internal (Get_Object (Widget), Tmp_Text);
       Free (Tmp_Text);
    end Set_Tooltip_Text;
@@ -3302,6 +3496,20 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Unrealize;
+
+   -----------------------
+   -- Unregister_Window --
+   -----------------------
+
+   procedure Unregister_Window
+      (Widget : not null access Gtk_Widget_Record;
+       Window : Gdk.Gdk_Window)
+   is
+      procedure Internal (Widget : System.Address; Window : Gdk.Gdk_Window);
+      pragma Import (C, Internal, "gtk_widget_unregister_window");
+   begin
+      Internal (Get_Object (Widget), Window);
+   end Unregister_Window;
 
    -----------------------
    -- Unset_State_Flags --
@@ -10364,6 +10572,33 @@ package body Gtk.Widget is
    begin
       Connect_Slot (Self, "style-updated" & ASCII.NUL, Call, After, Slot);
    end On_Style_Updated;
+
+   --------------------
+   -- On_Touch_Event --
+   --------------------
+
+   procedure On_Touch_Event
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "touch-event" & ASCII.NUL, Call, After);
+   end On_Touch_Event;
+
+   --------------------
+   -- On_Touch_Event --
+   --------------------
+
+   procedure On_Touch_Event
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "touch-event" & ASCII.NUL, Call, After, Slot);
+   end On_Touch_Event;
 
    --------------
    -- On_Unmap --

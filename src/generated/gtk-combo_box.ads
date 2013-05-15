@@ -201,7 +201,6 @@ package Gtk.Combo_Box is
    --  is not an immediate child of the root of the tree, this function returns
    --  'gtk_tree_path_get_indices (path)[0]', where 'path' is the
    --  Gtk.Tree_Model.Gtk_Tree_Path of the active item.
-   --  or -1 if there's no active item.
    --  Since: gtk+ 2.4
 
    procedure Set_Active
@@ -235,8 +234,6 @@ package Gtk.Combo_Box is
    --  If the Gtk.Combo_Box.Gtk_Combo_Box:id-column property of Combo_Box is
    --  unset or if no row has the given ID then the function does nothing and
    --  returns False.
-   --  Active_Id was given to unset the active row, the function always
-   --  returns True.
    --  Since: gtk+ 3.0
    --  "active_id": the ID of the row to select, or null
 
@@ -256,9 +253,6 @@ package Gtk.Combo_Box is
        return Gtk.Enums.Gtk_Sensitivity_Type;
    --  Returns whether the combo box sets the dropdown button sensitive or not
    --  when there are no items in the model.
-   --  is sensitive when the model is empty, Gtk.Enums.Sensitivity_Off if the
-   --  button is always insensitive or Gtk.Enums.Sensitivity_Auto if it is only
-   --  sensitive as long as the model has one item to be selected.
    --  Since: gtk+ 2.14
 
    procedure Set_Button_Sensitivity
@@ -307,7 +301,6 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
    --  Returns whether the combo box grabs focus when it is clicked with the
    --  mouse. See Gtk.Combo_Box.Set_Focus_On_Click.
-   --  clicked with the mouse.
    --  Since: gtk+ 2.6
 
    procedure Set_Focus_On_Click
@@ -346,7 +339,6 @@ package Gtk.Combo_Box is
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the Gtk.Tree_Model.Gtk_Tree_Model which is acting as data
    --  source for Combo_Box.
-   --  during construction.
    --  Since: gtk+ 2.4
 
    procedure Set_Model
@@ -407,7 +399,6 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String;
    --  Gets the current title of the menu in tearoff mode. See
    --  Gtk.Combo_Box.Set_Add_Tearoffs.
-   --  string which must not be freed.
    --  Since: gtk+ 2.10
 
    procedure Set_Title
@@ -707,6 +698,51 @@ package Gtk.Combo_Box is
    --  be due to the user selecting a different item from the list, or due to a
    --  call to Gtk.Combo_Box.Set_Active_Iter. It will also be emitted while
    --  typing into the entry of a combo box with an entry.
+
+   type Cb_Gtk_Combo_Box_UTF8_String_UTF8_String is not null access function
+     (Self : access Gtk_Combo_Box_Record'Class;
+      Path : UTF8_String) return UTF8_String;
+
+   type Cb_GObject_UTF8_String_UTF8_String is not null access function
+     (Self : access Glib.Object.GObject_Record'Class;
+      Path : UTF8_String) return UTF8_String;
+
+   Signal_Format_Entry_Text : constant Glib.Signal_Name := "format-entry-text";
+   procedure On_Format_Entry_Text
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_Gtk_Combo_Box_UTF8_String_UTF8_String;
+       After : Boolean := False);
+   procedure On_Format_Entry_Text
+      (Self  : not null access Gtk_Combo_Box_Record;
+       Call  : Cb_GObject_UTF8_String_UTF8_String;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  For combo boxes that are created with an entry (See
+   --  GtkComboBox:has-entry).
+   --
+   --  A signal which allows you to change how the text displayed in a combo
+   --  box's entry is displayed.
+   --
+   --  Connect a signal handler which returns an allocated string representing
+   --  Path. That string will then be used to set the text in the combo box's
+   --  entry. The default signal handler uses the text from the
+   --  GtkComboBox::entry-text-column model column.
+   --
+   --  Here's an example signal handler which fetches data from the model and
+   --  displays it in the entry. |[ static gchar* format_entry_text_callback
+   --  (GtkComboBox *combo, const gchar *path, gpointer user_data) {
+   --  GtkTreeIter iter; GtkTreeModel model; gdouble value; model =
+   --  gtk_combo_box_get_model (combo);
+   --
+   --  gtk_tree_model_get_iter_from_string (model, &iter, path);
+   --  gtk_tree_model_get (model, &iter, THE_DOUBLE_VALUE_COLUMN, &value, -1);
+   --
+   --  return g_strdup_printf ("%g", value); } ]|
+   -- 
+   --  Callback parameters:
+   --    --  "path": the GtkTreePath string from the combo box's current model to
+   --    --  format text for
+   --    --  Returns a newly allocated string representing Path for the current GtkComboBox model.
 
    type Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void is not null access procedure
      (Self        : access Gtk_Combo_Box_Record'Class;

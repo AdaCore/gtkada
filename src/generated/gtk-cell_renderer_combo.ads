@@ -27,15 +27,14 @@
 --  derived. But while Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text offers a
 --  simple entry to edit the text,
 --  Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo offers a
---  Gtk.Combo_Box.Gtk_Combo_Box or Gtk_Combo_Box_Entry widget to edit the text.
---  The values to display in the combo box are taken from the tree model
---  specified in the Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo:model
---  property.
+--  Gtk.Combo_Box.Gtk_Combo_Box widget to edit the text. The values to display
+--  in the combo box are taken from the tree model specified in the
+--  Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo:model property.
 --
 --  The combo cell renderer takes care of adding a text cell renderer to the
 --  combo box and sets it to display the column specified by its
 --  Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo:text-column property.
---  Further properties of the comnbo box can be set in a handler for the
+--  Further properties of the combo box can be set in a handler for the
 --  Gtk.Cell_Renderer.Gtk_Cell_Renderer::editing-started signal.
 --
 --  The Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo cell renderer was

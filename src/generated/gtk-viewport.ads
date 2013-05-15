@@ -25,15 +25,18 @@
 --  The Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class,
 --  implementing scrollability for child widgets that lack their own scrolling
 --  capabilities. Use Gtk.Viewport.Gtk_Viewport to scroll child widgets such as
---  Gtk.Table.Gtk_Table, Gtk.Box.Gtk_Box, and so on.
+--  Gtk.Grid.Gtk_Grid, Gtk.Box.Gtk_Box, and so on.
 --
 --  If a widget has native scrolling abilities, such as
---  Gtk.Text_View.Gtk_Text_View, Gtk.Tree_View.Gtk_Tree_View or Gtk_Iconview,
---  it can be added to a Gtk.Scrolled_Window.Gtk_Scrolled_Window with
---  Gtk.Container.Add. If a widget does not, you must first add the widget to a
---  Gtk.Viewport.Gtk_Viewport, then add the viewport to the scrolled window.
---  The convenience function Gtk.Scrolled_Window.Add_With_Viewport does exactly
---  this, so you can ignore the presence of the viewport.
+--  Gtk.Text_View.Gtk_Text_View, Gtk.Tree_View.Gtk_Tree_View or
+--  Gtk.Icon_View.Gtk_Icon_View, it can be added to a
+--  Gtk.Scrolled_Window.Gtk_Scrolled_Window with Gtk.Container.Add. If a widget
+--  does not, you must first add the widget to a Gtk.Viewport.Gtk_Viewport,
+--  then add the viewport to the scrolled window. Gtk.Container.Add does this
+--  automatically if a child that does not implement
+--  Gtk.Scrollable.Gtk_Scrollable is added to a
+--  Gtk.Scrolled_Window.Gtk_Scrolled_Window, so you can ignore the presence of
+--  the viewport.
 --
 --  The Gtk.Viewport.Gtk_Viewport will start scrolling content only if
 --  allocated less than the child widget's minimum size in a given orientation.
@@ -68,7 +71,8 @@ package Gtk.Viewport is
       (Viewport    : not null access Gtk_Viewport_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
-   --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments.
+   --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments, or
+   --  with default adjustments if none are given.
    --  "hadjustment": horizontal adjustment
    --  "vadjustment": vertical adjustment
 
@@ -76,7 +80,8 @@ package Gtk.Viewport is
       (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
        return Gtk_Viewport;
-   --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments.
+   --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments, or
+   --  with default adjustments if none are given.
    --  "hadjustment": horizontal adjustment
    --  "vadjustment": vertical adjustment
 

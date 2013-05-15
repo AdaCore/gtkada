@@ -51,37 +51,17 @@
 --  == GtkBuilder UI Definitions ==
 --
 --  GtkBuilder parses textual descriptions of user interfaces which are
---  specified in an XML format which can be roughly described by the DTD below.
---  We refer to these descriptions as 'GtkBuilder UI definitions' or just 'UI
---  definitions' if the context is clear. Do not confuse GtkBuilder UI
---  Definitions with <link linkend="XML-UI">GtkUIManager UI Definitions</link>,
---  which are more limited in scope.
+--  specified in an XML format which can be roughly described by the RELAX NG
+--  schema below. We refer to these descriptions as 'GtkBuilder UI definitions'
+--  or just 'UI definitions' if the context is clear. Do not confuse GtkBuilder
+--  UI Definitions with <link linkend="XML-UI">GtkUIManager UI
+--  Definitions</link>, which are more limited in scope. It is common to use
+--  '.ui' as the filename extension for files containing GtkBuilder UI
+--  definitions.
 --
---    <!ELEMENT interface (requires|object)* >
---    <!ELEMENT object    (property|signal|child|ANY)* >
---    <!ELEMENT property  PCDATA >
---    <!ELEMENT signal    EMPTY >
---    <!ELEMENT requires  EMPTY >
---    <!ELEMENT child     (object|ANY*) >
---    <!ATTLIST interface  domain         	    IMPLIED >
---    <!ATTLIST object     id             	    REQUIRED
---    class          	    REQUIRED
---    type-func      	    IMPLIED
---    constructor    	    IMPLIED >
---    <!ATTLIST requires   lib             	    REQUIRED
---    version          	    REQUIRED >
---    <!ATTLIST property   name           	    REQUIRED
---    translatable   	    IMPLIED
---    comments               IMPLIED
---    context                IMPLIED >
---    <!ATTLIST signal     name           	    REQUIRED
---    handler        	    REQUIRED
---    after          	    IMPLIED
---    swapped        	    IMPLIED
---    object         	    IMPLIED
---    last_modification_time IMPLIED >
---    <!ATTLIST child      type           	    IMPLIED
---    internal-child 	    IMPLIED >
+--    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../gtk/gtkbuilder.rnc">
+--    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+--    </xi:include>
 --  The toplevel element is <interface>. It optionally takes a "domain"
 --  attribute, which will make the builder look for translated strings using
 --  dgettext in the domain specified. This can also be done by calling
@@ -137,12 +117,16 @@
 --  (can be specified by their name, nick or integer value), flags (can be
 --  specified by their name, nick, integer value, optionally combined with "|",
 --  e.g. "GTK_VISIBLE|GTK_REALIZED") and colors (in a format understood by
---  gdk_color_parse). Objects can be referred to by their name. Pixbufs can be
---  specified as a filename of an image file to load. In general, GtkBuilder
---  allows forward references to objects &mdash; an object doesn't have to be
---  constructed before it can be referred to. The exception to this rule is
---  that an object has to be constructed before it can be used as the value of
---  a construct-only property.
+--  gdk_color_parse). Pixbufs can be specified as a filename of an image file
+--  to load. Objects can be referred to by their name and by default refer to
+--  objects declared in the local xml fragment and objects exposed via
+--  Gtk.Builder.Expose_Object.
+--
+--  In general, GtkBuilder allows forward references to objects &mdash
+--  declared in the local xml; an object doesn't have to be constructed before
+--  it can be referred to. The exception to this rule is that an object has to
+--  be constructed before it can be used as the value of a construct-only
+--  property.
 --
 --  Signal handlers are set up with the <signal> element. The "name" attribute
 --  specifies the name of the signal, and the "handler" attribute specifies the
@@ -224,6 +208,14 @@
 --  linkend="GtkFileFilter-BUILDER-UI">GtkFileFilter</link>, <link
 --  linkend="GtkTextTagTable-BUILDER-UI">GtkTextTagTable</link>.
 --
+--  == Embedding other XML ==
+--
+--  Apart from the language for UI descriptions that has been explained in the
+--  previous section, GtkBuilder can also parse XML fragments of <link
+--  linkend="gio-GMenu-Markup">GMenu markup</link>. The resulting Gmenu.Gmenu
+--  object and its named submenus are available via Gtk.Builder.Get_Object like
+--  other constructed objects.
+--
 --
 --  </description>
 
@@ -292,18 +284,31 @@ package Gtk.Builder is
        Error    : access Glib.Error.GError) return Guint;
    --  Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> and merges it with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a GError from
-   --  the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR
+   --  domain.
    --  Since: gtk+ 2.12
    --  "filename": the name of the file to parse
+
+   function Add_From_Resource
+      (Builder       : not null access Gtk_Builder_Record;
+       Resource_Path : UTF8_String) return Guint;
+   --  Parses a resource file containing a <link
+   --  linkend="BUILDER-UI">GtkBuilder UI definition</link> and merges it with
+   --  the current contents of Builder.
+   --  Upon errors 0 will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
+   --  G_RESOURCE_ERROR domain.
+   --  Since: gtk+ 3.4
+   --  "resource_path": the path of the resource file to parse
 
    function Add_From_String
       (Builder : not null access Gtk_Builder_Record;
        Buffer  : UTF8_String) return Guint;
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> and merges it with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a GError from
-   --  the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
    --  Since: gtk+ 2.12
    --  "buffer": the string to parse
 
@@ -314,8 +319,9 @@ package Gtk.Builder is
    --  Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them
    --  with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a GError from
-   --  the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR
+   --  domain.
    --  Note:
    --  If you are adding an object that depends on an object that is not its
    --  child (for instance a Gtk.Tree_View.Gtk_Tree_View that depends on its
@@ -323,6 +329,25 @@ package Gtk.Builder is
    --  in Object_Ids.
    --  Since: gtk+ 2.14
    --  "filename": the name of the file to parse
+   --  "object_ids": nul-terminated array of objects to build
+
+   function Add_Objects_From_Resource
+      (Builder       : not null access Gtk_Builder_Record;
+       Resource_Path : UTF8_String;
+       Object_Ids    : GNAT.Strings.String_List) return Guint;
+   --  Parses a resource file containing a <link
+   --  linkend="BUILDER-UI">GtkBuilder UI definition</link> building only the
+   --  requested objects and merges them with the current contents of Builder.
+   --  Upon errors 0 will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
+   --  G_RESOURCE_ERROR domain.
+   --  Note:
+   --  If you are adding an object that depends on an object that is not its
+   --  child (for instance a Gtk.Tree_View.Gtk_Tree_View that depends on its
+   --  Gtk.Tree_Model.Gtk_Tree_Model), you have to explicitely list all of them
+   --  in Object_Ids.
+   --  Since: gtk+ 3.4
+   --  "resource_path": the path of the resource file to parse
    --  "object_ids": nul-terminated array of objects to build
 
    function Add_Objects_From_String
@@ -333,8 +358,8 @@ package Gtk.Builder is
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them
    --  with the current contents of Builder.
-   --  Upon errors 0 will be returned and Error will be assigned a GError from
-   --  the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
+   --  Upon errors 0 will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
    --  Note:
    --  If you are adding an object that depends on an object that is not its
    --  child (for instance a Gtk.Tree_View.Gtk_Tree_View that depends on its
@@ -417,12 +442,21 @@ package Gtk.Builder is
 
    end Connect_Signals_Full_User_Data;
 
+   procedure Expose_Object
+      (Builder : not null access Gtk_Builder_Record;
+       Name    : UTF8_String;
+       Object  : not null access Glib.Object.GObject_Record'Class);
+   --  Add Object to the Builder object pool so it can be referenced just like
+   --  any other object built by builder.
+   --  Since: gtk+ 3.8
+   --  "name": the name of the object exposed to the builder
+   --  "object": the object to expose
+
    function Get_Object
       (Builder : not null access Gtk_Builder_Record;
        Name    : UTF8_String) return Glib.Object.GObject;
    --  Gets the object named Name. Note that this function does not increment
    --  the reference count of the returned object.
-   --  it could not be found in the object tree.
    --  Since: gtk+ 2.12
    --  "name": name of object to get
 
@@ -432,14 +466,11 @@ package Gtk.Builder is
    --  Gets all objects that have been constructed by Builder. Note that this
    --  function does not increment the reference counts of the returned
    --  objects.
-   --  constructed by the Gtk.Builder.Gtk_Builder instance. It should be freed
-   --  by g_slist_free
    --  Since: gtk+ 2.12
 
    function Get_Translation_Domain
       (Builder : not null access Gtk_Builder_Record) return UTF8_String;
    --  Gets the translation domain of Builder.
-   --  by the builder object and must not be modified or freed.
    --  Since: gtk+ 2.12
 
    procedure Set_Translation_Domain
@@ -456,7 +487,6 @@ package Gtk.Builder is
    --  Looks up a type by name, using the virtual function that
    --  Gtk.Builder.Gtk_Builder has for that purpose. This is mainly used when
    --  implementing the Gtk.Buildable.Gtk_Buildable interface on a type.
-   --  if no type was found
    --  Since: gtk+ 2.12
    --  "type_name": type name to lookup
 
@@ -473,8 +503,8 @@ package Gtk.Builder is
    --  enum, flags, float, double, string, Gdk.Color.Gdk_Color,
    --  Gdk.RGBA.Gdk_RGBA and Gtk.Adjustment.Gtk_Adjustment type values. Support
    --  for Gtk.Widget.Gtk_Widget type values is still to come.
-   --  Upon errors False will be returned and Error will be assigned a GError
-   --  from the GTK_BUILDER_ERROR domain.
+   --  Upon errors False will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR domain.
    --  Since: gtk+ 2.12
    --  "pspec": the Glib.Param_Spec for the property
    --  "string": the string representation of the value
@@ -489,8 +519,8 @@ package Gtk.Builder is
    --  from a string, but takes a GType instead of Glib.Param_Spec. This
    --  function calls g_value_init on the Value argument, so it need not be
    --  initialised beforehand.
-   --  Upon errors False will be returned and Error will be assigned a GError
-   --  from the GTK_BUILDER_ERROR domain.
+   --  Upon errors False will be returned and Error will be assigned a
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR domain.
    --  Since: gtk+ 2.12
    --  "type": the GType of the value
    --  "string": the string representation of the value

@@ -362,6 +362,36 @@ package body Gtk.Text_View is
       return Internal (Get_Object (View));
    end Get_Indent;
 
+   ---------------------
+   -- Get_Input_Hints --
+   ---------------------
+
+   function Get_Input_Hints
+      (View : not null access Gtk_Text_View_Record)
+       return Gtk.Enums.Gtk_Input_Hints
+   is
+      function Internal
+         (View : System.Address) return Gtk.Enums.Gtk_Input_Hints;
+      pragma Import (C, Internal, "gtk_text_view_get_input_hints");
+   begin
+      return Internal (Get_Object (View));
+   end Get_Input_Hints;
+
+   -----------------------
+   -- Get_Input_Purpose --
+   -----------------------
+
+   function Get_Input_Purpose
+      (View : not null access Gtk_Text_View_Record)
+       return Gtk.Enums.Gtk_Input_Purpose
+   is
+      function Internal
+         (View : System.Address) return Gtk.Enums.Gtk_Input_Purpose;
+      pragma Import (C, Internal, "gtk_text_view_get_input_purpose");
+   begin
+      return Internal (Get_Object (View));
+   end Get_Input_Purpose;
+
    --------------------------
    -- Get_Iter_At_Location --
    --------------------------
@@ -883,6 +913,38 @@ package body Gtk.Text_View is
       Internal (Get_Object (View), Indent);
    end Set_Indent;
 
+   ---------------------
+   -- Set_Input_Hints --
+   ---------------------
+
+   procedure Set_Input_Hints
+      (View  : not null access Gtk_Text_View_Record;
+       Hints : Gtk.Enums.Gtk_Input_Hints)
+   is
+      procedure Internal
+         (View  : System.Address;
+          Hints : Gtk.Enums.Gtk_Input_Hints);
+      pragma Import (C, Internal, "gtk_text_view_set_input_hints");
+   begin
+      Internal (Get_Object (View), Hints);
+   end Set_Input_Hints;
+
+   -----------------------
+   -- Set_Input_Purpose --
+   -----------------------
+
+   procedure Set_Input_Purpose
+      (View    : not null access Gtk_Text_View_Record;
+       Purpose : Gtk.Enums.Gtk_Input_Purpose)
+   is
+      procedure Internal
+         (View    : System.Address;
+          Purpose : Gtk.Enums.Gtk_Input_Purpose);
+      pragma Import (C, Internal, "gtk_text_view_set_input_purpose");
+   begin
+      Internal (Get_Object (View), Purpose);
+   end Set_Input_Purpose;
+
    -----------------------
    -- Set_Justification --
    -----------------------
@@ -1230,14 +1292,14 @@ package body Gtk.Text_View is
      (System.Address, Cb_GObject_Gtk_Scroll_Step_Gint_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Text_View_Gtk_Menu_Void, System.Address);
+     (Cb_Gtk_Text_View_Gtk_Widget_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Text_View_Gtk_Menu_Void);
+     (System.Address, Cb_Gtk_Text_View_Gtk_Widget_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gtk_Menu_Void, System.Address);
+     (Cb_GObject_Gtk_Widget_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gtk_Menu_Void);
+     (System.Address, Cb_GObject_Gtk_Widget_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Text_View_Boolean_Void, System.Address);
@@ -1282,7 +1344,7 @@ package body Gtk.Text_View is
    procedure Connect
       (Object  : access Gtk_Text_View_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Text_View_Gtk_Menu_Void;
+       Handler : Cb_Gtk_Text_View_Gtk_Widget_Void;
        After   : Boolean);
 
    procedure Connect
@@ -1329,7 +1391,7 @@ package body Gtk.Text_View is
    procedure Connect_Slot
       (Object  : access Gtk_Text_View_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Menu_Void;
+       Handler : Cb_GObject_Gtk_Widget_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
@@ -1358,15 +1420,6 @@ package body Gtk.Text_View is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Delete_Type_Gint_Void);
 
-   procedure Marsh_GObject_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gtk_Menu_Void);
-
    procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1384,6 +1437,15 @@ package body Gtk.Text_View is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Scroll_Step_Gint_Void);
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Widget_Void);
 
    procedure Marsh_GObject_UTF8_String_Void
       (Closure         : GClosure;
@@ -1421,15 +1483,6 @@ package body Gtk.Text_View is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Text_View_Gtk_Delete_Type_Gint_Void);
 
-   procedure Marsh_Gtk_Text_View_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Text_View_Gtk_Menu_Void);
-
    procedure Marsh_Gtk_Text_View_Gtk_Movement_Step_Gint_Boolean_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1447,6 +1500,15 @@ package body Gtk.Text_View is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Text_View_Gtk_Scroll_Step_Gint_Void);
+
+   procedure Marsh_Gtk_Text_View_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_View_Gtk_Widget_Void);
 
    procedure Marsh_Gtk_Text_View_UTF8_String_Void
       (Closure         : GClosure;
@@ -1568,14 +1630,14 @@ package body Gtk.Text_View is
    procedure Connect
       (Object  : access Gtk_Text_View_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Text_View_Gtk_Menu_Void;
+       Handler : Cb_Gtk_Text_View_Gtk_Widget_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Text_View_Gtk_Menu_Void'Access,
+         Marshaller  => Marsh_Gtk_Text_View_Gtk_Widget_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1711,7 +1773,7 @@ package body Gtk.Text_View is
    procedure Connect_Slot
       (Object  : access Gtk_Text_View_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Menu_Void;
+       Handler : Cb_GObject_Gtk_Widget_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -1719,7 +1781,7 @@ package body Gtk.Text_View is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gtk_Menu_Void'Access,
+         Marshaller  => Marsh_GObject_Gtk_Widget_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -1786,26 +1848,6 @@ package body Gtk.Text_View is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Delete_Type_Gint_Void;
 
-   ---------------------------------
-   -- Marsh_GObject_Gtk_Menu_Void --
-   ---------------------------------
-
-   procedure Marsh_GObject_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-   begin
-      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Gtk_Menu_Void;
-
    -------------------------------------------------------
    -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void --
    -------------------------------------------------------
@@ -1845,6 +1887,26 @@ package body Gtk.Text_View is
       H (Obj, Unchecked_To_Gtk_Scroll_Step (Params, 1), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Step_Gint_Void;
+
+   -----------------------------------
+   -- Marsh_GObject_Gtk_Widget_Void --
+   -----------------------------------
+
+   procedure Marsh_GObject_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Widget_Void;
 
    ------------------------------------
    -- Marsh_GObject_UTF8_String_Void --
@@ -1926,26 +1988,6 @@ package body Gtk.Text_View is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Delete_Type_Gint_Void;
 
-   ---------------------------------------
-   -- Marsh_Gtk_Text_View_Gtk_Menu_Void --
-   ---------------------------------------
-
-   procedure Marsh_Gtk_Text_View_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Text_View_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
-   begin
-      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Text_View_Gtk_Menu_Void;
-
    -------------------------------------------------------------
    -- Marsh_Gtk_Text_View_Gtk_Movement_Step_Gint_Boolean_Void --
    -------------------------------------------------------------
@@ -1985,6 +2027,26 @@ package body Gtk.Text_View is
       H (Obj, Unchecked_To_Gtk_Scroll_Step (Params, 1), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Scroll_Step_Gint_Void;
+
+   -----------------------------------------
+   -- Marsh_Gtk_Text_View_Gtk_Widget_Void --
+   -----------------------------------------
+
+   procedure Marsh_Gtk_Text_View_Gtk_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_View_Gtk_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_View_Gtk_Widget_Void;
 
    ------------------------------------------
    -- Marsh_Gtk_Text_View_UTF8_String_Void --
@@ -2248,7 +2310,7 @@ package body Gtk.Text_View is
 
    procedure On_Populate_Popup
       (Self  : not null access Gtk_Text_View_Record;
-       Call  : Cb_Gtk_Text_View_Gtk_Menu_Void;
+       Call  : Cb_Gtk_Text_View_Gtk_Widget_Void;
        After : Boolean := False)
    is
    begin
@@ -2261,7 +2323,7 @@ package body Gtk.Text_View is
 
    procedure On_Populate_Popup
       (Self  : not null access Gtk_Text_View_Record;
-       Call  : Cb_GObject_Gtk_Menu_Void;
+       Call  : Cb_GObject_Gtk_Widget_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

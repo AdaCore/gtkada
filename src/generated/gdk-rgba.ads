@@ -90,8 +90,8 @@ package Gdk.RGBA is
    --  fields of the Rgba struct.
    --  The string can be either one of:
    --     * A standard name (Taken from the X11 rgb.txt file).
-   --     * A hex value in the form 'rgb' 'rrggbb' 'rrrgggbbb' or
-   --  'rrrrggggbbbb'
+   --     * A hex value in the form '&num;rgb' '&num;rrggbb' '&num;rrrgggbbb'
+   --  or '&num;rrrrggggbbbb'
    --     * A RGB color in the form 'rgb(r,g,b)' (In this case the color will
    --  have full opacity)
    --     * A RGBA color in the form 'rgba(r,g,b,a)'
@@ -119,8 +119,9 @@ package Gdk.RGBA is
    -- GtkAda additions --
    ----------------------
 
-   Null_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
+   type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
 
+   Null_RGBA  : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
    White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);
 

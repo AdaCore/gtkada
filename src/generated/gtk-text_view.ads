@@ -40,7 +40,6 @@ with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Container;         use Gtk.Container;
 with Gtk.Enums;             use Gtk.Enums;
-with Gtk.Menu;              use Gtk.Menu;
 with Gtk.Scrollable;        use Gtk.Scrollable;
 with Gtk.Text_Attributes;   use Gtk.Text_Attributes;
 with Gtk.Text_Buffer;       use Gtk.Text_Buffer;
@@ -208,7 +207,6 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Returns whether pressing the Tab key inserts a tab characters.
    --  Gtk.Text_View.Set_Accepts_Tab.
-   --  False if pressing the Tab key moves the keyboard focus.
    --  Since: gtk+ 2.4
 
    procedure Set_Accepts_Tab
@@ -331,6 +329,36 @@ package Gtk.Text_View is
    --  Sets the default indentation for paragraphs in Text_View. Tags in the
    --  buffer may override the default.
    --  "indent": indentation in pixels
+
+   function Get_Input_Hints
+      (View : not null access Gtk_Text_View_Record)
+       return Gtk.Enums.Gtk_Input_Hints;
+   --  Gets the value of the Gtk.Text_View.Gtk_Text_View:input-hints property.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Input_Hints
+      (View  : not null access Gtk_Text_View_Record;
+       Hints : Gtk.Enums.Gtk_Input_Hints);
+   --  Sets the Gtk.Text_View.Gtk_Text_View:input-hints property, which allows
+   --  input methods to fine-tune their behaviour.
+   --  Since: gtk+ 3.6
+   --  "hints": the hints
+
+   function Get_Input_Purpose
+      (View : not null access Gtk_Text_View_Record)
+       return Gtk.Enums.Gtk_Input_Purpose;
+   --  Gets the value of the Gtk.Text_View.Gtk_Text_View:input-purpose
+   --  property.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Input_Purpose
+      (View    : not null access Gtk_Text_View_Record;
+       Purpose : Gtk.Enums.Gtk_Input_Purpose);
+   --  Sets the Gtk.Text_View.Gtk_Text_View:input-purpose property which can
+   --  be used by on-screen keyboards and other input methods to adjust their
+   --  behaviour.
+   --  Since: gtk+ 3.6
+   --  "purpose": the purpose
 
    procedure Get_Iter_At_Location
       (View : not null access Gtk_Text_View_Record;
@@ -496,7 +524,6 @@ package Gtk.Text_View is
    --  Gets the default tabs for Text_View. Tags in the buffer may override
    --  the defaults. The returned array will be null if "standard" (8-space)
    --  tabs are used. Free the return value with Pango.Tabs.Free.
-   --  tabs are used; must be freed with Pango.Tabs.Free.
 
    procedure Set_Tabs
       (View : not null access Gtk_Text_View_Record;
@@ -743,7 +770,7 @@ package Gtk.Text_View is
    Editable_Property : constant Glib.Properties.Property_Boolean;
 
    Im_Module_Property : constant Glib.Properties.Property_String;
-   --  Which IM (input method) module should be used for this entry. See
+   --  Which IM (input method) module should be used for this text_view. See
    --  Gtk.Imcontext.Gtk_Imcontext.
    --
    --  Setting this to a non-null value overrides the system-wide IM module
@@ -751,6 +778,16 @@ package Gtk.Text_View is
    --  property.
 
    Indent_Property : constant Glib.Properties.Property_Int;
+
+   Input_Hints_Property : constant Gtk.Enums.Property_Gtk_Input_Hints;
+   --  Additional hints (beyond Gtk.Text_View.Gtk_Text_View:input-purpose)
+   --  that allow input methods to fine-tune their behaviour.
+
+   Input_Purpose_Property : constant Gtk.Enums.Property_Gtk_Input_Purpose;
+   --  The purpose of this text field.
+   --
+   --  This property can be used by on-screen keyboards and other input
+   --  methods to adjust their behaviour.
 
    Justification_Property : constant Gtk.Enums.Property_Gtk_Justification;
 
@@ -763,6 +800,8 @@ package Gtk.Text_View is
    Pixels_Below_Lines_Property : constant Glib.Properties.Property_Int;
 
    Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int;
+
+   Populate_All_Property : constant Glib.Properties.Property_Boolean;
 
    Right_Margin_Property : constant Glib.Properties.Property_Int;
 
@@ -985,29 +1024,38 @@ package Gtk.Text_View is
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
 
-   type Cb_Gtk_Text_View_Gtk_Menu_Void is not null access procedure
-     (Self : access Gtk_Text_View_Record'Class;
-      Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   type Cb_Gtk_Text_View_Gtk_Widget_Void is not null access procedure
+     (Self  : access Gtk_Text_View_Record'Class;
+      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   type Cb_GObject_Gtk_Menu_Void is not null access procedure
-     (Self : access Glib.Object.GObject_Record'Class;
-      Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    procedure On_Populate_Popup
       (Self  : not null access Gtk_Text_View_Record;
-       Call  : Cb_Gtk_Text_View_Gtk_Menu_Void;
+       Call  : Cb_Gtk_Text_View_Gtk_Widget_Void;
        After : Boolean := False);
    procedure On_Populate_Popup
       (Self  : not null access Gtk_Text_View_Record;
-       Call  : Cb_GObject_Gtk_Menu_Void;
+       Call  : Cb_GObject_Gtk_Widget_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the text view.
    --
    --  If you need to add items to the context menu, connect to this signal
-   --  and append your menuitems to the Menu.
+   --  and append your items to the Popup, which will be a Gtk.Menu.Gtk_Menu in
+   --  this case.
+   --
+   --  If Gtk.GEntry.Gtk_Entry::populate-toolbar is True, this signal will
+   --  also be emitted to populate touch popups. In this case, Popup will be a
+   --  different container, e.g. a Gtk.Toolbar.Gtk_Toolbar.
+   --
+   --  The signal handler should not make assumptions about the type of
+   --  Widget, but check whether Popup is a Gtk.Menu.Gtk_Menu or
+   --  Gtk.Toolbar.Gtk_Toolbar or another kind of container.
 
    Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
    procedure On_Preedit_Changed
@@ -1138,6 +1186,8 @@ private
      Glib.Properties.Build ("tabs");
    Right_Margin_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("right-margin");
+   Populate_All_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("populate-all");
    Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("pixels-inside-wrap");
    Pixels_Below_Lines_Property : constant Glib.Properties.Property_Int :=
@@ -1150,6 +1200,10 @@ private
      Glib.Properties.Build ("left-margin");
    Justification_Property : constant Gtk.Enums.Property_Gtk_Justification :=
      Gtk.Enums.Build ("justification");
+   Input_Purpose_Property : constant Gtk.Enums.Property_Gtk_Input_Purpose :=
+     Gtk.Enums.Build ("input-purpose");
+   Input_Hints_Property : constant Gtk.Enums.Property_Gtk_Input_Hints :=
+     Gtk.Enums.Build ("input-hints");
    Indent_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("indent");
    Im_Module_Property : constant Glib.Properties.Property_String :=

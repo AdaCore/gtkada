@@ -76,15 +76,15 @@ package Pango.Fontset is
    package Foreach_User_Data is
 
       type Pango_Fontset_Foreach_Func is access function
-        (Fontset : not null access Pango.Fontset.Pango_Fontset_Record'Class;
-         Font    : not null access Pango.Font.Pango_Font_Record'Class;
-         Data    : User_Data_Type) return Boolean;
+        (Fontset   : not null access Pango.Fontset.Pango_Fontset_Record'Class;
+         Font      : not null access Pango.Font.Pango_Font_Record'Class;
+         User_Data : User_Data_Type) return Boolean;
       --  A callback function used by Pango.Fontset.Foreach when enumerating the
       --  fonts in a fontset.
       --  Since: gtk+ 1.4
       --  "fontset": a Pango.Fontset.Pango_Fontset
       --  "font": a font from Fontset
-      --  "data": callback data
+      --  "user_data": callback data
 
       procedure Foreach
          (Self : not null access Pango.Fontset.Pango_Fontset_Record'Class;
@@ -103,13 +103,11 @@ package Pango.Fontset is
        Wc   : Guint) return Pango.Font.Pango_Font;
    --  Returns the font in the fontset that contains the best glyph for the
    --  Unicode character Wc.
-   --  g_object_unref when finished with the font.
    --  "wc": a Unicode character
 
    function Get_Metrics
       (Self : not null access Pango_Fontset_Record)
        return Pango.Font_Metrics.Pango_Font_Metrics;
    --  Get overall metric information for the fonts in the fontset.
-   --  when finished using the object.
 
 end Pango.Fontset;

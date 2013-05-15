@@ -159,7 +159,7 @@ package Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record'Class;
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
-   --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes its
+   --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes it
    --  show Pixbuf.
    --  Since: gtk+ 2.6
    --  "pixbuf": the image to display in the cell view
@@ -168,7 +168,7 @@ package Gtk.Cell_View is
       (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
        return Gtk_Cell_View;
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
-   --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes its
+   --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes it
    --  show Pixbuf.
    --  Since: gtk+ 2.6
    --  "pixbuf": the image to display in the cell view
@@ -180,7 +180,7 @@ package Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record'Class;
        Text      : UTF8_String);
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
-   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes its show
+   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
    --  Text.
    --  Since: gtk+ 2.6
    --  "text": the text to display in the cell view
@@ -188,7 +188,7 @@ package Gtk.Cell_View is
    function Gtk_Cell_View_New_With_Text
       (Text : UTF8_String) return Gtk_Cell_View;
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
-   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes its show
+   --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
    --  Text.
    --  Since: gtk+ 2.6
    --  "text": the text to display in the cell view
@@ -222,7 +222,6 @@ package Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean;
    --  Gets whether Cell_View is configured to draw all of its cells in a
    --  sensitive state.
-   --  cells in a sensitive state
    --  Since: gtk+ 3.0
 
    procedure Set_Draw_Sensitive
@@ -239,7 +238,6 @@ package Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean;
    --  Gets whether Cell_View is configured to request space to fit the entire
    --  Gtk.Tree_Model.Gtk_Tree_Model.
-   --  the entire Gtk.Tree_Model.Gtk_Tree_Model.
    --  Since: gtk+ 3.0
 
    procedure Set_Fit_Model
@@ -276,20 +274,22 @@ package Gtk.Cell_View is
    pragma Obsolescent (Get_Size_Of_Row);
    --  Sets Requisition to the size needed by Cell_View to display the model
    --  row pointed to by Path.
+   --  Since: gtk+ 2.6
+   --  Deprecated since 3.0, Combo box formerly used this to calculate the
    --  sizes for cellviews, now you can achieve this by either using the
    --  Gtk.Cell_View.Gtk_Cell_View:fit-model property or by setting the
    --  currently displayed row of the Gtk.Cell_View.Gtk_Cell_View and using
    --  Gtk.Widget.Get_Preferred_Size.
-   --  Since: gtk+ 2.6
-   --  Deprecated since 3.0, Combo box formerly used this to calculate the
    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
    --  "requisition": return location for the size
 
    procedure Set_Background_Color
       (Cell_View : not null access Gtk_Cell_View_Record;
        Color     : Gdk.Color.Gdk_Color);
+   pragma Obsolescent (Set_Background_Color);
    --  Sets the background color of View.
    --  Since: gtk+ 2.6
+   --  Deprecated since 3.4, Use Gtk.Cell_View.Set_Background_Rgba instead.
    --  "color": the new background color
 
    procedure Set_Background_Rgba
@@ -406,6 +406,7 @@ package Gtk.Cell_View is
 
    Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
+   --  The background color as a Gdk.Color.Gdk_Color
 
    Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA

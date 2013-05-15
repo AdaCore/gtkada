@@ -36,6 +36,7 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Menu_Item;   use Gtk.Menu_Item;
@@ -173,7 +174,6 @@ package Gtk.Image_Menu_Item is
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean;
    --  Checks whether the label set in the menuitem is used as a stock id to
    --  select the stock item for the item.
-   --  stock id to select the stock item for the item
    --  Since: gtk+ 2.16
 
    procedure Set_Use_Stock
@@ -202,6 +202,17 @@ package Gtk.Image_Menu_Item is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Image_Menu_Item_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Image_Menu_Item_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Image_Menu_Item_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Image_Menu_Item_Record;
@@ -257,9 +268,22 @@ package Gtk.Image_Menu_Item is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Image_Menu_Item_Record, Gtk_Image_Menu_Item);
+   function "+"
+     (Widget : access Gtk_Image_Menu_Item_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Image_Menu_Item
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Image_Menu_Item_Record, Gtk_Image_Menu_Item);

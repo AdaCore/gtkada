@@ -109,8 +109,8 @@ package Gtk.Status_Bar is
    procedure Pop
       (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id);
-   --  Removes the first message in the Gtk_Status_Bar's stack with the given
-   --  context id.
+   --  Removes the first message in the Gtk.Status_Bar.Gtk_Status_Bar's stack
+   --  with the given context id.
    --  Note that this may not change the displayed message, if the message at
    --  the top of the stack has a different context id.
    --  "context": a context identifier
@@ -120,7 +120,6 @@ package Gtk.Status_Bar is
        Context   : Context_Id;
        Text      : UTF8_String) return Message_Id;
    --  Pushes a new message onto a statusbar's stack.
-   --  Gtk.Status_Bar.Remove.
    --  "context": the message's context id, as returned by
    --  Gtk.Status_Bar.Get_Context_Id
    --  "text": the message to add to the statusbar

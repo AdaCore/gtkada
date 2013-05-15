@@ -43,8 +43,8 @@
 --  The second type of container can have more than one child; its purpose is
 --  to manage *layout*. This means that these containers assign sizes and
 --  positions to their children. For example, a Gtk.Box.Gtk_Hbox arranges its
---  children in a horizontal row, and a Gtk.Table.Gtk_Table arranges the
---  widgets it contains in a two-dimensional grid.
+--  children in a horizontal row, and a Gtk.Grid.Gtk_Grid arranges the widgets
+--  it contains in a two-dimensional grid.
 --
 --  == Height for width geometry management ==
 --
@@ -238,9 +238,9 @@ package Gtk.Container is
    --  Adds Widget to Container. Typically used for simple containers such as
    --  Gtk.Window.Gtk_Window, Gtk.Frame.Gtk_Frame, or Gtk.Button.Gtk_Button;
    --  for more complicated layout containers such as Gtk.Box.Gtk_Box or
-   --  Gtk.Table.Gtk_Table, this function will pick default packing parameters
+   --  Gtk.Grid.Gtk_Grid, this function will pick default packing parameters
    --  that may not be correct. So consider functions such as
-   --  Gtk.Box.Pack_Start and Gtk.Table.Attach as an alternative to
+   --  Gtk.Box.Pack_Start and Gtk.Grid.Attach as an alternative to
    --  Gtk.Container.Add in those cases. A widget may be added to only one
    --  container at a time; you can't place the same widget inside two
    --  different containers.
@@ -395,8 +395,6 @@ package Gtk.Container is
    --  Returns the current focus child widget inside Container. This is not
    --  the currently focused widget. That can be obtained by calling
    --  Gtk.Window.Get_Focus.
-   --  focus inside Container when the Conatiner is focussed, or null if none
-   --  is set.
    --  Since: gtk+ 2.14
 
    procedure Set_Focus_Child
@@ -416,7 +414,6 @@ package Gtk.Container is
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Retrieves the horizontal focus adjustment for the container. See
    --  gtk_container_set_focus_hadjustment ().
-   --  none has been set.
 
    procedure Set_Focus_Hadjustment
       (Container  : not null access Gtk_Container_Record;
@@ -437,7 +434,6 @@ package Gtk.Container is
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Retrieves the vertical focus adjustment for the container. See
    --  Gtk.Container.Set_Focus_Vadjustment.
-   --  none has been set.
 
    procedure Set_Focus_Vadjustment
       (Container  : not null access Gtk_Container_Record;

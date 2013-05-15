@@ -33,14 +33,14 @@
 --  certain graphical elements on a cairo_t. Typically, one cell renderer is
 --  used to draw many cells on the screen. To this extent, it isn't expected
 --  that a CellRenderer keep any permanent state around. Instead, any state is
---  set just prior to use using Glib.Object.GObject<!-- -->s property system.
---  Then, the cell is measured using Gtk.Cell_Renderer.Get_Size. Finally, the
---  cell is rendered in the correct location using Gtk.Cell_Renderer.Render.
+--  set just prior to use using GObjects property system. Then, the cell is
+--  measured using Gtk.Cell_Renderer.Get_Size. Finally, the cell is rendered in
+--  the correct location using Gtk.Cell_Renderer.Render.
 --
 --  There are a number of rules that must be followed when writing a new
---  Gtk.Cell_Renderer.Gtk_Cell_Renderer. First and formost, its important that
---  a certain set of properties will always yield a cell renderer of the same
---  size, barring a Gtk.Style.Gtk_Style change. The
+--  Gtk.Cell_Renderer.Gtk_Cell_Renderer. First and foremost, it's important
+--  that a certain set of properties will always yield a cell renderer of the
+--  same size, barring a Gtk.Style.Gtk_Style change. The
 --  Gtk.Cell_Renderer.Gtk_Cell_Renderer also has a number of generic properties
 --  that are expected to be honored by all children.
 --
@@ -51,8 +51,14 @@
 --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text, which allows the user to
 --  edit the text using a Gtk.GEntry.Gtk_Entry. To make a cell renderer
 --  activatable or editable, you have to implement the
---  Gtk_Cell_Renderer_Class.activate or Gtk_Cell_Renderer_Class.start_editing
---  virtual functions, respectively.
+--  Gtk.Cell_Renderer_Class.Gtk_Cell_Renderer_Class.activate or
+--  Gtk.Cell_Renderer_Class.Gtk_Cell_Renderer_Class.start_editing virtual
+--  functions, respectively.
+--
+--  Many properties of Gtk.Cell_Renderer.Gtk_Cell_Renderer and its subclasses
+--  have a corresponding "set" property, e.g. "cell-background-set" corresponds
+--  to "cell-background". These "set" properties reflect whether a property has
+--  been set or not. You should not set them independently.
 --
 --  </description>
 
@@ -78,13 +84,15 @@ package Gtk.Cell_Renderer is
 
    type Gtk_Cell_Renderer_State is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Cell_Renderer_State);
-   --  Tells how a cell is to be rendererd.
+   --  Tells how a cell is to be rendered.
 
    Cell_Renderer_Selected : constant Gtk_Cell_Renderer_State := 1;
    Cell_Renderer_Prelit : constant Gtk_Cell_Renderer_State := 2;
    Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State := 4;
    Cell_Renderer_Sorted : constant Gtk_Cell_Renderer_State := 8;
    Cell_Renderer_Focused : constant Gtk_Cell_Renderer_State := 16;
+   Cell_Renderer_Expandable : constant Gtk_Cell_Renderer_State := 32;
+   Cell_Renderer_Expanded : constant Gtk_Cell_Renderer_State := 64;
 
    type Gtk_Cell_Renderer_Mode is (
       Cell_Renderer_Mode_Inert,
@@ -412,6 +420,7 @@ package Gtk.Cell_Renderer is
 
    Cell_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
+   --  Cell background as a Gdk.Color.Gdk_Color
 
    Cell_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
@@ -501,10 +510,7 @@ package Gtk.Cell_Renderer is
    --  as in the following example: |[ static void text_editing_started
    --  (GtkCellRenderer *cell, GtkCellEditable *editable, const gchar *path,
    --  gpointer data) { if (GTK_IS_ENTRY (editable)) { GtkEntry *entry =
-   --  GTK_ENTRY (editable);
-   --
-   --  /* ... create a GtkEntryCompletion */
-   --
+   --  GTK_ENTRY (editable); /* ... create a GtkEntryCompletion */
    --  gtk_entry_set_completion (entry, completion); } } ]|
    -- 
    --  Callback parameters:

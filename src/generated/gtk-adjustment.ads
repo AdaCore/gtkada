@@ -128,7 +128,7 @@ package Gtk.Adjustment is
    --  Emits a Gtk.Adjustment.Gtk_Adjustment::changed signal from the
    --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
    --  the Gtk.Adjustment.Gtk_Adjustment after it has changed any of the
-   --  Gtk.Adjustment.Gtk_Adjustment fields other than the value.
+   --  Gtk.Adjustment.Gtk_Adjustment properties other than the value.
 
    procedure Clamp_Page
       (Adjustment : not null access Gtk_Adjustment_Record;
@@ -151,9 +151,10 @@ package Gtk.Adjustment is
        Page_Increment : Gdouble;
        Page_Size      : Gdouble);
    --  Sets all properties of the adjustment at once.
-   --  Use this function to avoid multiple emissions of the "changed" signal.
-   --  See Gtk.Adjustment.Set_Lower for an alternative way of compressing
-   --  multiple emissions of "changed" into one.
+   --  Use this function to avoid multiple emissions of the
+   --  Gtk.Adjustment.Gtk_Adjustment::changed signal. See
+   --  Gtk.Adjustment.Set_Lower for an alternative way of compressing multiple
+   --  emissions of Gtk.Adjustment.Gtk_Adjustment::changed into one.
    --  Since: gtk+ 2.14
    --  "value": the new value
    --  "lower": the new minimum value
@@ -172,15 +173,16 @@ package Gtk.Adjustment is
        Lower      : Gdouble);
    --  Sets the minimum value of the adjustment.
    --  When setting multiple adjustment properties via their individual
-   --  setters, multiple "changed" signals will be emitted. However, since the
-   --  emission of the "changed" signal is tied to the emission of the
-   --  "GObject::notify" signals of the changed properties, it's possible to
-   --  compress the "changed" signals into one by calling
-   --  g_object_freeze_notify and g_object_thaw_notify around the calls to the
-   --  individual setters.
+   --  setters, multiple Gtk.Adjustment.Gtk_Adjustment::changed signals will be
+   --  emitted. However, since the emission of the
+   --  Gtk.Adjustment.Gtk_Adjustment::changed signal is tied to the emission of
+   --  the Glib.Object.GObject::notify signals of the changed properties, it's
+   --  possible to compress the Gtk.Adjustment.Gtk_Adjustment::changed signals
+   --  into one by calling g_object_freeze_notify and g_object_thaw_notify
+   --  around the calls to the individual setters.
    --  Alternatively, using a single g_object_set for all the properties to
    --  change, or using Gtk.Adjustment.Configure has the same effect of
-   --  compressing "changed" emissions.
+   --  compressing Gtk.Adjustment.Gtk_Adjustment::changed emissions.
    --  Since: gtk+ 2.14
    --  "lower": the new minimum value
 
@@ -199,7 +201,8 @@ package Gtk.Adjustment is
        Page_Increment : Gdouble);
    --  Sets the page increment of the adjustment.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
-   --  of the "changed" signal when setting multiple adjustment properties.
+   --  of the Gtk.Adjustment.Gtk_Adjustment::changed signal when setting
+   --  multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "page_increment": the new page increment
 
@@ -213,7 +216,8 @@ package Gtk.Adjustment is
        Page_Size  : Gdouble);
    --  Sets the page size of the adjustment.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
-   --  of the "changed" signal when setting multiple adjustment properties.
+   --  of the GtkAdjustment::changed signal when setting multiple adjustment
+   --  properties.
    --  Since: gtk+ 2.14
    --  "page_size": the new page size
 
@@ -227,7 +231,8 @@ package Gtk.Adjustment is
        Step_Increment : Gdouble);
    --  Sets the step increment of the adjustment.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
-   --  of the "changed" signal when setting multiple adjustment properties.
+   --  of the Gtk.Adjustment.Gtk_Adjustment::changed signal when setting
+   --  multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "step_increment": the new step increment
 
@@ -243,7 +248,8 @@ package Gtk.Adjustment is
    --  Note that values will be restricted by 'upper - page-size' if the
    --  page-size property is nonzero.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
-   --  of the "changed" signal when setting multiple adjustment properties.
+   --  of the Gtk.Adjustment.Gtk_Adjustment::changed signal when setting
+   --  multiple adjustment properties.
    --  Since: gtk+ 2.14
    --  "upper": the new maximum value
 
@@ -256,13 +262,13 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record;
        Value      : Gdouble);
    --  Sets the Gtk.Adjustment.Gtk_Adjustment value. The value is clamped to
-   --  lie between Gtk.Adjustment.Gtk_Adjustment.lower and
-   --  Gtk.Adjustment.Gtk_Adjustment.upper.
+   --  lie between Gtk.Adjustment.Gtk_Adjustment:lower and
+   --  Gtk.Adjustment.Gtk_Adjustment:upper.
    --  Note that for adjustments which are used in a
    --  Gtk.Scrollbar.Gtk_Scrollbar, the effective range of allowed values goes
-   --  from Gtk.Adjustment.Gtk_Adjustment.lower to
-   --  Gtk.Adjustment.Gtk_Adjustment.upper -
-   --  Gtk.Adjustment.Gtk_Adjustment.page_size.
+   --  from Gtk.Adjustment.Gtk_Adjustment:lower to
+   --  Gtk.Adjustment.Gtk_Adjustment:upper -
+   --  Gtk.Adjustment.Gtk_Adjustment:page_size.
    --  "value": the new value.
 
    procedure Value_Changed
@@ -270,7 +276,7 @@ package Gtk.Adjustment is
    --  Emits a Gtk.Adjustment.Gtk_Adjustment::value_changed signal from the
    --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
    --  the Gtk.Adjustment.Gtk_Adjustment after it has changed the
-   --  Gtk.Adjustment.Gtk_Adjustment value field.
+   --  Gtk.Adjustment.Gtk_Adjustment:value property.
 
    ----------------
    -- Properties --
@@ -324,8 +330,9 @@ package Gtk.Adjustment is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  Emitted when one or more of the Gtk.Adjustment.Gtk_Adjustment fields
-   --  have been changed, other than the value field.
+   --  Emitted when one or more of the Gtk.Adjustment.Gtk_Adjustment
+   --  properties have been changed, other than the
+   --  Gtk.Adjustment.Gtk_Adjustment:value property.
 
    Signal_Value_Changed : constant Glib.Signal_Name := "value-changed";
    procedure On_Value_Changed
@@ -337,7 +344,7 @@ package Gtk.Adjustment is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  Emitted when the Gtk.Adjustment.Gtk_Adjustment value field has been
+   --  Emitted when the Gtk.Adjustment.Gtk_Adjustment:value property has been
    --  changed.
 
 private

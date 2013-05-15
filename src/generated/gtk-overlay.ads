@@ -24,14 +24,13 @@
 --  <description>
 --  GtkOverlay is a container which contains a single main child, on top of
 --  which it can place 'overlay' widgets. The position of each overlay widget
---  is determined by its Gtk.Widget.Gtk_Widget::halign and
---  Gtk.Widget.Gtk_Widget::valign properties. E.g. a widget with both
---  alignments set to Gtk.Widget.Align_Start will be placed at the top left
---  corner of the main widget, whereas an overlay with halign set to
---  Gtk.Widget.Align_Center and valign set to Gtk.Widget.Align_End will be
---  placed a the bottom edge of the main widget, horizontally centered. The
---  position can be adjusted by setting the margin properties of the child to
---  non-zero values.
+--  is determined by its Gtk.Widget.Gtk_Widget:halign and
+--  Gtk.Widget.Gtk_Widget:valign properties. E.g. a widget with both alignments
+--  set to Gtk.Widget.Align_Start will be placed at the top left corner of the
+--  main widget, whereas an overlay with halign set to Gtk.Widget.Align_Center
+--  and valign set to Gtk.Widget.Align_End will be placed a the bottom edge of
+--  the main widget, horizontally centered. The position can be adjusted by
+--  setting the margin properties of the child to non-zero values.
 --
 --  More complicated placement of overlays is possible by connecting to the
 --  Gtk.Overlay.Gtk_Overlay::get-child-position signal.
@@ -85,7 +84,7 @@ package Gtk.Overlay is
    --  The widget will be stacked on top of the main widget added with
    --  Gtk.Container.Add.
    --  The position at which Widget is placed is determined from its
-   --  Gtk.Widget.Gtk_Widget::halign and Gtk.Widget.Gtk_Widget::valign
+   --  Gtk.Widget.Gtk_Widget:halign and Gtk.Widget.Gtk_Widget:valign
    --  properties.
    --  Since: gtk+ 3.2
    --  "widget": a Gtk.Widget.Gtk_Widget to be added to the container
@@ -125,11 +124,12 @@ package Gtk.Overlay is
    --  overlay to be full-width/height). If the main child is a
    --  Gtk.Scrolled_Window.Gtk_Scrolled_Window, the overlays are placed
    --  relative to its contents.
+   --
+   --  Return: True if the Allocation has been filled
    -- 
    --  Callback parameters:
    --    --  "widget": the child widget to position
    --    --  "allocation": return location for the allocation
-   --    --  Returns True if the Allocation has been filled
 
    ----------------
    -- Interfaces --

@@ -96,7 +96,7 @@ package body Gtk.Grid is
    procedure Attach_Next_To
       (Self    : not null access Gtk_Grid_Record;
        Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Sibling : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Sibling : access Gtk.Widget.Gtk_Widget_Record'Class;
        Side    : Gtk.Enums.Gtk_Position_Type;
        Width   : Gint;
        Height  : Gint)
@@ -110,7 +110,7 @@ package body Gtk.Grid is
           Height  : Gint);
       pragma Import (C, Internal, "gtk_grid_attach_next_to");
    begin
-      Internal (Get_Object (Self), Get_Object (Child), Get_Object (Sibling), Side, Width, Height);
+      Internal (Get_Object (Self), Get_Object (Child), Get_Object_Or_Null (GObject (Sibling)), Side, Width, Height);
    end Attach_Next_To;
 
    ------------------

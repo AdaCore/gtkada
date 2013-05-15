@@ -33,6 +33,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Menu_Item;   use Gtk.Menu_Item;
@@ -64,6 +65,18 @@ package Gtk.Separator_Menu_Item is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   function Get_Action_Name
+      (Self : not null access Gtk_Separator_Menu_Item_Record)
+       return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Separator_Menu_Item_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Separator_Menu_Item_Record;
+       Detailed_Action_Name : UTF8_String);
+
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Separator_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
@@ -92,9 +105,22 @@ package Gtk.Separator_Menu_Item is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Separator_Menu_Item_Record, Gtk_Separator_Menu_Item);
+   function "+"
+     (Widget : access Gtk_Separator_Menu_Item_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Separator_Menu_Item
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Separator_Menu_Item_Record, Gtk_Separator_Menu_Item);

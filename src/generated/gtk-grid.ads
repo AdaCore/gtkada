@@ -31,7 +31,8 @@
 --
 --  Children are added using Gtk.Grid.Attach. They can span multiple rows or
 --  columns. It is also possible to add a child next to an existing child,
---  using Gtk.Grid.Attach_Next_To.
+--  using Gtk.Grid.Attach_Next_To. The behaviour of GtkGrid when several
+--  children occupy the same grid cell is undefined.
 --
 --  GtkGrid can be used like a Gtk.Box.Gtk_Box by just using
 --  Gtk.Container.Add, which will place children next to each other in the
@@ -92,7 +93,7 @@ package Gtk.Grid is
    procedure Attach_Next_To
       (Self    : not null access Gtk_Grid_Record;
        Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Sibling : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Sibling : access Gtk.Widget.Gtk_Widget_Record'Class;
        Side    : Gtk.Enums.Gtk_Position_Type;
        Width   : Gint;
        Height  : Gint);
@@ -101,7 +102,11 @@ package Gtk.Grid is
    --  When Sibling is null, the widget is placed in row (for left or right
    --  placement) or column 0 (for top or bottom placement), at the end
    --  indicated by Side.
+   --  Attaching widgets labeled [1], [2], [3] with Sibling == null and Side
+   --  == Gtk.Enums.Pos_Left yields a layout of [3][2][1].
    --  "child": the widget to add
+   --  "sibling": the child of Grid that Child will be placed next to, or null
+   --  to place Child at the beginning or end
    --  "side": the side of Sibling that Child is positioned next to
    --  "width": the number of columns that Child will span
    --  "height": the number of rows that Child will span

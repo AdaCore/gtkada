@@ -228,14 +228,14 @@ package Gtk.Tree_View_Column is
    procedure Set_Clickable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Clickable   : Boolean);
-   --  Sets the header to be active if Active is True. When the header is
+   --  Sets the header to be active if Clickable is True. When the header is
    --  active, then it can take keyboard focus, and can be clicked.
    --  "clickable": True if the header is active.
 
    function Get_Expand
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
-   --  Return True if the column expands to take any available space.
+   --  Returns True if the column expands to fill available space.
    --  Since: gtk+ 2.4
 
    procedure Set_Expand
@@ -245,25 +245,33 @@ package Gtk.Tree_View_Column is
    --  equally amongst all columns that have the expand set to True. If no
    --  column has this option set, then the last column gets all extra space.
    --  By default, every column is created with this False.
+   --  Along with "fixed-width", the "expand" property changes when the column
+   --  is resized by the user.
    --  Since: gtk+ 2.4
-   --  "expand": True if the column should take available extra space, False
-   --  if not
+   --  "expand": True if the column should expand to fill available space.
 
    function Get_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Gint;
-   --  Gets the fixed width of the column. This value is only meaning may not
-   --  be the actual width of the column on the screen, just what is requested.
+   --  Gets the fixed width of the column. This may not be the actual
+   --  displayed width of the column; for that, use
+   --  Gtk.Tree_View_Column.Get_Width.
 
    procedure Set_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Fixed_Width : Gint);
-   --  Sets the size of the column in pixels. This is meaningful only if the
-   --  sizing type is GTK_TREE_VIEW_COLUMN_FIXED. The size of the column is
-   --  clamped to the min/max width for the column. Please note that the
-   --  min/max width of the column doesn't actually affect the "fixed_width"
-   --  property of the widget, just the actual size when displayed.
-   --  "fixed_width": The size to set Tree_Column to. Must be greater than 0.
+   --  If Fixed_Width is not -1, sets the fixed width of Tree_Column;
+   --  otherwise unsets it. The effective value of Fixed_Width is clamped
+   --  between the minumum and maximum width of the column; however, the value
+   --  stored in the "fixed-width" property is not clamped. If the column
+   --  sizing is GTK_TREE_VIEW_COLUMN_GROW_ONLY or
+   --  GTK_TREE_VIEW_COLUMN_AUTOSIZE, setting a fixed width overrides the
+   --  automatically calculated width. Note that Fixed_Width is only a hint to
+   --  GTK+; the width actually allocated to the column may be greater or less
+   --  than requested.
+   --  Along with "expand", the "fixed-width" property changes when the column
+   --  is resized by the user.
+   --  "fixed_width": The new fixed width, in pixels, or -1.
 
    function Get_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -336,7 +344,6 @@ package Gtk.Tree_View_Column is
    --  Gets the logical Sort_Column_Id that the model sorts on when this
    --  column is selected for sorting. See
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id.
-   --  this column can't be used for sorting.
 
    procedure Set_Sort_Column_Id
       (Tree_Column    : not null access Gtk_Tree_View_Column_Record;
@@ -372,8 +379,8 @@ package Gtk.Tree_View_Column is
    --  This *does not* actually sort the model. Use
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id if you want automatic sorting
    --  support. This function is primarily for custom sorting behavior, and
-   --  should be used in conjunction with gtk_tree_sortable_set_sort_column to
-   --  do that. For custom models, the mechanism will vary.
+   --  should be used in conjunction with Gtk.Tree_Sortable.Set_Sort_Column_Id
+   --  to do that. For custom models, the mechanism will vary.
    --  The sort indicator changes direction to indicate normal sort or reverse
    --  sort. Note that you must have the sort indicator enabled to see anything
    --  when calling this function; see Gtk.Tree_View_Column.Set_Sort_Indicator.
@@ -395,7 +402,6 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return UTF8_String;
    --  Returns the title of the widget.
-   --  modified or freed.
 
    procedure Set_Title
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -410,14 +416,12 @@ package Gtk.Tree_View_Column is
    --  Returns the Gtk.Tree_View.Gtk_Tree_View wherein Tree_Column has been
    --  inserted. If Column is currently not inserted in any tree view, null is
    --  returned.
-   --  been inserted if any, null otherwise.
    --  Since: gtk+ 2.12
 
    function Get_Visible
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
    --  Returns True if Tree_Column is visible.
-   --  the tree will show the column.
 
    procedure Set_Visible
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -430,7 +434,6 @@ package Gtk.Tree_View_Column is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the Gtk.Widget.Gtk_Widget in the button on the column header.
    --  If a custom widget has not been set then null is returned.
-   --  header, or null
 
    procedure Set_Widget
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -582,7 +585,7 @@ package Gtk.Tree_View_Column is
 
    Sort_Column_Id_Property : constant Glib.Properties.Property_Int;
    --  Logical sort column ID this column sorts on when selected for sorting.
-   --  Setting the sort column ID makes the column header clickable. Set to %-1
+   --  Setting the sort column ID makes the column header clickable. Set to -1
    --  to make the column unsortable.
 
    Sort_Indicator_Property : constant Glib.Properties.Property_Boolean;

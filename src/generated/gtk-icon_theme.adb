@@ -36,28 +36,16 @@ pragma Warnings(On);
 
 package body Gtk.Icon_Theme is
 
-   function From_Object_Free
-     (B : access Gtk_Icon_Info'Class) return Gtk_Icon_Info
-   is
-      Result : constant Gtk_Icon_Info := Gtk_Icon_Info (B.all);
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
-   function From_Object (Object : System.Address) return Gtk_Icon_Info is
-      S : Gtk_Icon_Info;
-   begin
-      S.Set_Object (Object);
-      return S;
-   end From_Object;
-
    package Points_Arrays is new Gtkada.C.Unbounded_Arrays
      (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
 
    package Type_Conversion_Gtk_Icon_Theme is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Icon_Theme_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Icon_Theme);
+
+   package Type_Conversion_Gtk_Icon_Info is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Icon_Info_Get_Type'Access, Gtk_Icon_Info_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Icon_Info);
 
    ----------------------------------
    -- Gtk_Icon_Info_New_For_Pixbuf --
@@ -68,13 +56,9 @@ package body Gtk.Icon_Theme is
        Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
        return Gtk_Icon_Info
    is
-      function Internal
-         (Icon_Theme : System.Address;
-          Pixbuf     : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_icon_info_new_for_pixbuf");
-      Icon_Info : Gtk_Icon_Info;
+      Icon_Info : constant Gtk_Icon_Info := new Gtk_Icon_Info_Record;
    begin
-      Icon_Info.Set_Object (Internal (Get_Object (Icon_Theme), Get_Object (Pixbuf)));
+      Gtk.Icon_Theme.Initialize_For_Pixbuf (Icon_Info, Icon_Theme, Pixbuf);
       return Icon_Info;
    end Gtk_Icon_Info_New_For_Pixbuf;
 
@@ -108,12 +92,9 @@ package body Gtk.Icon_Theme is
        Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
-      function Internal
-         (Icon_Theme : System.Address;
-          Pixbuf     : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_icon_info_new_for_pixbuf");
    begin
-      Icon_Info.Set_Object (Internal (Get_Object (Icon_Theme), Get_Object (Pixbuf)));
+      Icon_Info := new Gtk_Icon_Info_Record;
+      Gtk.Icon_Theme.Initialize_For_Pixbuf (Icon_Info, Icon_Theme, Pixbuf);
    end Gtk_New_For_Pixbuf;
 
    ----------------
@@ -130,6 +111,25 @@ package body Gtk.Icon_Theme is
          Set_Object (Icon_Theme, Internal);
       end if;
    end Initialize;
+
+   ---------------------------
+   -- Initialize_For_Pixbuf --
+   ---------------------------
+
+   procedure Initialize_For_Pixbuf
+      (Icon_Info  : not null access Gtk_Icon_Info_Record'Class;
+       Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
+       Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Pixbuf     : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_info_new_for_pixbuf");
+   begin
+      if not Icon_Info.Is_Created then
+         Set_Object (Icon_Info, Internal (Get_Object (Icon_Theme), Get_Object (Pixbuf)));
+      end if;
+   end Initialize_For_Pixbuf;
 
    ------------------------
    -- Append_Search_Path --
@@ -165,30 +165,35 @@ package body Gtk.Icon_Theme is
           Size       : Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_choose_icon");
-      Tmp_Icon_Names : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
-      Tmp_Return     : System.Address;
+      Tmp_Icon_Names     : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
+      Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Names, Size, Flags);
       GtkAda.Types.Free (Tmp_Icon_Names);
-      return From_Object (Tmp_Return);
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
    end Choose_Icon;
 
    ----------
    -- Copy --
    ----------
 
-   function Copy (Icon_Info : Gtk_Icon_Info) return Gtk_Icon_Info is
+   function Copy
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gtk_Icon_Info
+   is
       function Internal (Icon_Info : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_copy");
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
    begin
-      return From_Object (Internal (Get_Object (Icon_Info)));
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Internal (Get_Object (Icon_Info)), Stub_Gtk_Icon_Info));
    end Copy;
 
    ----------
    -- Free --
    ----------
 
-   procedure Free (Icon_Info : Gtk_Icon_Info) is
+   procedure Free (Icon_Info : not null access Gtk_Icon_Info_Record) is
       procedure Internal (Icon_Info : System.Address);
       pragma Import (C, Internal, "gtk_icon_info_free");
    begin
@@ -200,7 +205,8 @@ package body Gtk.Icon_Theme is
    -----------------------
 
    function Get_Attach_Points
-      (Icon_Info : Gtk_Icon_Info) return Gdk.Types.Gdk_Points_Array
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gdk.Types.Gdk_Points_Array
    is
       use Points_Arrays;
       function Internal
@@ -230,7 +236,9 @@ package body Gtk.Icon_Theme is
    -- Get_Base_Size --
    -------------------
 
-   function Get_Base_Size (Icon_Info : Gtk_Icon_Info) return Gint is
+   function Get_Base_Size
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint
+   is
       function Internal (Icon_Info : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_icon_info_get_base_size");
    begin
@@ -242,7 +250,8 @@ package body Gtk.Icon_Theme is
    ------------------------
 
    function Get_Builtin_Pixbuf
-      (Icon_Info : Gtk_Icon_Info) return Gdk.Pixbuf.Gdk_Pixbuf
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal (Icon_Info : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_get_builtin_pixbuf");
@@ -255,7 +264,9 @@ package body Gtk.Icon_Theme is
    -- Get_Display_Name --
    ----------------------
 
-   function Get_Display_Name (Icon_Info : Gtk_Icon_Info) return UTF8_String is
+   function Get_Display_Name
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String
+   is
       function Internal
          (Icon_Info : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_icon_info_get_display_name");
@@ -268,7 +279,7 @@ package body Gtk.Icon_Theme is
    -----------------------
 
    procedure Get_Embedded_Rect
-      (Icon_Info              : Gtk_Icon_Info;
+      (Icon_Info              : not null access Gtk_Icon_Info_Record;
        Rectangle              : out Gdk.Rectangle.Gdk_Rectangle;
        Has_Embedded_Rectangle : out Boolean)
    is
@@ -303,7 +314,9 @@ package body Gtk.Icon_Theme is
    -- Get_Filename --
    ------------------
 
-   function Get_Filename (Icon_Info : Gtk_Icon_Info) return UTF8_String is
+   function Get_Filename
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String
+   is
       function Internal
          (Icon_Info : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_icon_info_get_filename");
@@ -451,7 +464,8 @@ package body Gtk.Icon_Theme is
    ---------------
 
    function Load_Icon
-      (Icon_Info : Gtk_Icon_Info) return Gdk.Pixbuf.Gdk_Pixbuf
+      (Icon_Info : not null access Gtk_Icon_Info_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal (Icon_Info : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_icon");
@@ -465,7 +479,7 @@ package body Gtk.Icon_Theme is
    -------------------
 
    function Load_Symbolic
-      (Icon_Info     : Gtk_Icon_Info;
+      (Icon_Info     : not null access Gtk_Icon_Info_Record;
        Fg            : Gdk.RGBA.Gdk_RGBA;
        Success_Color : Gdk.RGBA.Gdk_RGBA;
        Warning_Color : Gdk.RGBA.Gdk_RGBA;
@@ -498,7 +512,7 @@ package body Gtk.Icon_Theme is
    -------------------------------
 
    function Load_Symbolic_For_Context
-      (Icon_Info    : Gtk_Icon_Info;
+      (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Context      : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
        Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf
    is
@@ -525,7 +539,7 @@ package body Gtk.Icon_Theme is
    -----------------------------
 
    function Load_Symbolic_For_Style
-      (Icon_Info    : Gtk_Icon_Info;
+      (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Style        : not null access Gtk.Style.Gtk_Style_Record'Class;
        State        : Gtk.Enums.Gtk_State_Type;
        Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf
@@ -565,8 +579,9 @@ package body Gtk.Icon_Theme is
           Size       : Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_by_gicon");
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
    begin
-      return From_Object (Internal (Get_Object (Icon_Theme), Icon, Size, Flags));
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Internal (Get_Object (Icon_Theme), Icon, Size, Flags), Stub_Gtk_Icon_Info));
    end Lookup_By_Gicon;
 
    -----------------
@@ -585,12 +600,13 @@ package body Gtk.Icon_Theme is
           Size       : Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_icon");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
-      Tmp_Return    : System.Address;
+      Tmp_Icon_Name      : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
+      Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Flags);
       Free (Tmp_Icon_Name);
-      return From_Object (Tmp_Return);
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
    end Lookup_Icon;
 
    -------------------------
@@ -652,7 +668,7 @@ package body Gtk.Icon_Theme is
    -------------------------
 
    procedure Set_Raw_Coordinates
-      (Icon_Info       : Gtk_Icon_Info;
+      (Icon_Info       : not null access Gtk_Icon_Info_Record;
        Raw_Coordinates : Boolean)
    is
       procedure Internal

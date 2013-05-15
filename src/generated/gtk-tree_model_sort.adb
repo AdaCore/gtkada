@@ -147,50 +147,6 @@ package body Gtk.Tree_Model_Sort is
      (Get_Type'Access, Gtk_Tree_Model_Sort_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Tree_Model_Sort);
 
-   ------------------------
-   -- Gtk_New_With_Model --
-   ------------------------
-
-   procedure Gtk_New_With_Model
-      (Self        : out Gtk_Tree_Model_Sort;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
-   is
-   begin
-      Self := new Gtk_Tree_Model_Sort_Record;
-      Gtk.Tree_Model_Sort.Initialize_With_Model (Self, Child_Model);
-   end Gtk_New_With_Model;
-
-   ---------------------------------------------
-   -- Gtk_Tree_Model_Sort_Sort_New_With_Model --
-   ---------------------------------------------
-
-   function Gtk_Tree_Model_Sort_Sort_New_With_Model
-      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
-       return Gtk_Tree_Model_Sort
-   is
-      Self : constant Gtk_Tree_Model_Sort := new Gtk_Tree_Model_Sort_Record;
-   begin
-      Gtk.Tree_Model_Sort.Initialize_With_Model (Self, Child_Model);
-      return Self;
-   end Gtk_Tree_Model_Sort_Sort_New_With_Model;
-
-   ---------------------------
-   -- Initialize_With_Model --
-   ---------------------------
-
-   procedure Initialize_With_Model
-      (Self        : not null access Gtk_Tree_Model_Sort_Record'Class;
-       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
-   is
-      function Internal
-         (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
-      pragma Import (C, Internal, "gtk_tree_model_sort_new_with_model");
-   begin
-      if not Self.Is_Created then
-         Set_Object (Self, Internal (Child_Model));
-      end if;
-   end Initialize_With_Model;
-
    -----------------
    -- Clear_Cache --
    -----------------
@@ -441,7 +397,6 @@ package body Gtk.Tree_Model_Sort is
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
       --  'price_of(A) - price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -526,7 +481,6 @@ package body Gtk.Tree_Model_Sort is
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
       --  'price_of(A) - price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -614,22 +568,16 @@ package body Gtk.Tree_Model_Sort is
    function Drag_Data_Get
       (Self           : not null access Gtk_Tree_Model_Sort_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean
    is
       function Internal
-         (Self               : System.Address;
-          Path               : System.Address;
-          Acc_Selection_Data : access System.Address) return Integer;
+         (Self           : System.Address;
+          Path           : System.Address;
+          Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
-      Acc_Selection_Data     : aliased Gtk.Selection_Data.Gtk_Selection_Data;
-      Tmp_Acc_Selection_Data : aliased System.Address;
-      Tmp_Return             : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Get_Object (Path), Tmp_Acc_Selection_Data'Access);
-      Acc_Selection_Data := From_Object (Tmp_Acc_Selection_Data);
-      Selection_Data.all := Acc_Selection_Data;
-      return Tmp_Return /= 0;
+      return Internal (Get_Object (Self), Get_Object (Path), Get_Object (Selection_Data)) /= 0;
    end Drag_Data_Get;
 
    ---------------------

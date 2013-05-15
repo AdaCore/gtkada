@@ -66,8 +66,6 @@ package Gtk.Recent_Info is
        App_Name : UTF8_String := "") return Glib.GApp_Info;
    --  Creates a Glib.GApp_Info for the specified
    --  Gtk.Recent_Info.Gtk_Recent_Info
-   --  In case of error, Error will be set either with a
-   --  GTK_RECENT_MANAGER_ERROR or a G_IO_ERROR
    --  "app_name": the name of the application that should be mapped to a
    --  Glib.GApp_Info; if null is used then the default application for the
    --  MIME type is used
@@ -80,48 +78,40 @@ package Gtk.Recent_Info is
    function Get_Added (Self : Gtk_Recent_Info) return time_t;
    --  Gets the timestamp (seconds from system's Epoch) when the resource was
    --  added to the recently used resources list.
-   --  the resource was added to the list, or -1 on failure.
    --  Since: gtk+ 2.10
 
    function Get_Age (Self : Gtk_Recent_Info) return Gint;
    --  Gets the number of days elapsed since the last update of the resource
    --  pointed by Info.
-   --  since the time this resource was last modified.
    --  Since: gtk+ 2.10
 
    function Get_Description (Self : Gtk_Recent_Info) return UTF8_String;
    --  Gets the (short) description of the resource.
-   --  is owned by the recent manager, and should not be freed.
    --  Since: gtk+ 2.10
 
    function Get_Display_Name (Self : Gtk_Recent_Info) return UTF8_String;
    --  Gets the name of the resource. If none has been defined, the basename
    --  of the resource is obtained.
-   --  is owned by the recent manager, and should not be freed.
    --  Since: gtk+ 2.10
 
    function Get_Gicon (Self : Gtk_Recent_Info) return Glib.G_Icon.G_Icon;
    --  Retrieves the icon associated to the resource MIME type.
-   --  g_object_unref when finished using the icon
    --  Since: gtk+ 2.22
 
    function Get_Icon
       (Self : Gtk_Recent_Info;
        Size : Gint) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Retrieves the icon of size Size associated to the resource MIME type.
-   --  or null. Use g_object_unref when finished using the icon.
    --  Since: gtk+ 2.10
    --  "size": the size of the icon in pixels
 
    function Get_Mime_Type (Self : Gtk_Recent_Info) return UTF8_String;
    --  Gets the MIME type of the resource.
-   --  is owned by the recent manager, and should not be freed.
    --  Since: gtk+ 2.10
 
    function Get_Modified (Self : Gtk_Recent_Info) return time_t;
    --  Gets the timestamp (seconds from system's Epoch) when the resource was
    --  last modified.
-   --  the resource was last modified, or -1 on failure.
    --  Since: gtk+ 2.10
 
    function Get_Private_Hint (Self : Gtk_Recent_Info) return Boolean;
@@ -134,32 +124,27 @@ package Gtk.Recent_Info is
    --  Computes a valid UTF-8 string that can be used as the name of the item
    --  in a menu or list. For example, calling this function on an item that
    --  refers to "file:///foo/bar.txt" will yield "bar.txt".
-   --  g_free.
    --  Since: gtk+ 2.10
 
    function Get_Uri (Self : Gtk_Recent_Info) return UTF8_String;
    --  Gets the URI of the resource.
-   --  owned by the recent manager, and should not be freed.
    --  Since: gtk+ 2.10
 
    function Get_Uri_Display (Self : Gtk_Recent_Info) return UTF8_String;
    --  Gets a displayable version of the resource's URI. If the resource is
    --  local, it returns a local path; if the resource is not local, it returns
    --  the UTF-8 encoded content of Gtk.Recent_Info.Get_Uri.
-   --  resource's URI or null. Use g_free when done using it.
    --  Since: gtk+ 2.10
 
    function Get_Visited (Self : Gtk_Recent_Info) return time_t;
    --  Gets the timestamp (seconds from system's Epoch) when the resource was
    --  last visited.
-   --  the resource was last visited, or -1 on failure.
    --  Since: gtk+ 2.10
 
    function Has_Application
       (Self     : Gtk_Recent_Info;
        App_Name : UTF8_String) return Boolean;
    --  Checks whether an application registered this resource using App_Name.
-   --  False otherwise.
    --  Since: gtk+ 2.10
    --  "app_name": a string containing an application name
 
@@ -186,13 +171,11 @@ package Gtk.Recent_Info is
        Info_B : Gtk_Recent_Info) return Boolean;
    --  Checks whether two Gtk.Recent_Info.Gtk_Recent_Info structures point to
    --  the same resource.
-   --  resource, False otherwise.
    --  Since: gtk+ 2.10
    --  "info_b": a Gtk.Recent_Info.Gtk_Recent_Info
 
    procedure Ref (Self : Gtk_Recent_Info);
    --  Increases the reference count of Recent_Info by one.
-   --  by one.
    --  Since: gtk+ 2.10
 
    procedure Unref (Self : Gtk_Recent_Info);

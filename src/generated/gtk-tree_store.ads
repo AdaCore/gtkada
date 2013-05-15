@@ -93,7 +93,6 @@ package Gtk.Tree_Store is
    --  For example, if Model is a product catalogue, then a compare function
    --  for the "price" column could be one which returns 'price_of(A) -
    --  price_of(B)'.
-   --  A sorts before, with or after B
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -143,14 +142,14 @@ package Gtk.Tree_Store is
        Position   : Gint);
    --  Creates a new row at Position. If parent is non-null, then the row will
    --  be made a child of Parent. Otherwise, the row will be created at the
-   --  toplevel. If Position is larger than the number of rows at that level,
-   --  then the new row will be inserted to the end of the list. Iter will be
-   --  changed to point to this new row. The row will be empty after this
-   --  function is called. To fill in values, you need to call
+   --  toplevel. If Position is -1 or is larger than the number of rows at that
+   --  level, then the new row will be inserted to the end of the list. Iter
+   --  will be changed to point to this new row. The row will be empty after
+   --  this function is called. To fill in values, you need to call
    --  gtk_tree_store_set or Gtk.Tree_Store.Set_Value.
    --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
    --  "parent": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
-   --  "position": position to insert the new row
+   --  "position": position to insert the new row, or -1 for last
 
    procedure Insert_After
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -372,7 +371,6 @@ package Gtk.Tree_Store is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -427,7 +425,6 @@ package Gtk.Tree_Store is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns 'price_of(A) -
       --  price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -551,7 +548,7 @@ package Gtk.Tree_Store is
    function Drag_Data_Get
       (Self           : not null access Gtk_Tree_Store_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean;
 
    function Row_Draggable

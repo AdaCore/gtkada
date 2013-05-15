@@ -104,7 +104,6 @@ package Gtk.Font_Selection is
    --  structure. For example, "Helvetica Italic Bold 12" could be normalized
    --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
    --  compare two font descriptions.
-   --  no font is selected. You must free this string with g_free.
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Set_Font_Name
@@ -115,8 +114,6 @@ package Gtk.Font_Selection is
    --  Note that the Fontsel needs to know the screen in which it will appear
    --  for this to work; this can be guaranteed by simply making sure that the
    --  Fontsel is inserted in a toplevel window before you call this function.
-   --  such font exists or if the Fontsel doesn't belong to a particular
-   --  screen yet.
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
@@ -134,7 +131,6 @@ package Gtk.Font_Selection is
        return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
    --  Gets the text displayed in the preview area.
-   --  This string is owned by the widget and should not be modified or freed
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    procedure Set_Preview_Text
@@ -150,7 +146,6 @@ package Gtk.Font_Selection is
       (Fontsel : not null access Gtk_Font_Selection_Record) return Gint;
    pragma Obsolescent (Get_Size);
    --  The selected font size.
-   --  or -1 if no font size is selected.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
@@ -168,7 +163,7 @@ package Gtk.Font_Selection is
       (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Size_List);
-   --  This returns the Gtk_Treee_View used to list font sizes.
+   --  This returns the Gtk.Tree_View.Gtk_Tree_View used to list font sizes.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 

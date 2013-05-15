@@ -295,6 +295,21 @@ package body Gtk.Window is
       return Internal (Get_Object (Window)) /= 0;
    end Get_Accept_Focus;
 
+   ---------------------
+   -- Get_Attached_To --
+   ---------------------
+
+   function Get_Attached_To
+      (Window : not null access Gtk_Window_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_attached_to");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub_Gtk_Widget));
+   end Get_Attached_To;
+
    -----------------------------
    -- Get_Current_Device_Grab --
    -----------------------------
@@ -484,6 +499,19 @@ package body Gtk.Window is
       return Internal (Get_Object (Window)) /= 0;
    end Get_Has_Resize_Grip;
 
+   --------------------------------------
+   -- Get_Hide_Titlebar_When_Maximized --
+   --------------------------------------
+
+   function Get_Hide_Titlebar_When_Maximized
+      (Window : not null access Gtk_Window_Record) return Boolean
+   is
+      function Internal (Window : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_window_get_hide_titlebar_when_maximized");
+   begin
+      return Internal (Get_Object (Window)) /= 0;
+   end Get_Hide_Titlebar_When_Maximized;
+
    --------------
    -- Get_Icon --
    --------------
@@ -569,19 +597,6 @@ package body Gtk.Window is
    begin
       return Internal (Get_Object (Window)) /= 0;
    end Get_Modal;
-
-   -----------------
-   -- Get_Opacity --
-   -----------------
-
-   function Get_Opacity
-      (Window : not null access Gtk_Window_Record) return Gdouble
-   is
-      function Internal (Window : System.Address) return Gdouble;
-      pragma Import (C, Internal, "gtk_window_get_opacity");
-   begin
-      return Internal (Get_Object (Window));
-   end Get_Opacity;
 
    ------------------
    -- Get_Position --
@@ -1077,6 +1092,22 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Boolean'Pos (Setting));
    end Set_Accept_Focus;
 
+   ---------------------
+   -- Set_Attached_To --
+   ---------------------
+
+   procedure Set_Attached_To
+      (Window        : not null access Gtk_Window_Record;
+       Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+         (Window        : System.Address;
+          Attach_Widget : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_attached_to");
+   begin
+      Internal (Get_Object (Window), Get_Object_Or_Null (GObject (Attach_Widget)));
+   end Set_Attached_To;
+
    -------------------
    -- Set_Decorated --
    -------------------
@@ -1277,6 +1308,20 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Boolean'Pos (Setting));
    end Set_Has_User_Ref_Count;
 
+   --------------------------------------
+   -- Set_Hide_Titlebar_When_Maximized --
+   --------------------------------------
+
+   procedure Set_Hide_Titlebar_When_Maximized
+      (Window  : not null access Gtk_Window_Record;
+       Setting : Boolean)
+   is
+      procedure Internal (Window : System.Address; Setting : Integer);
+      pragma Import (C, Internal, "gtk_window_set_hide_titlebar_when_maximized");
+   begin
+      Internal (Get_Object (Window), Boolean'Pos (Setting));
+   end Set_Hide_Titlebar_When_Maximized;
+
    --------------
    -- Set_Icon --
    --------------
@@ -1419,20 +1464,6 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Boolean'Pos (Modal));
    end Set_Modal;
-
-   -----------------
-   -- Set_Opacity --
-   -----------------
-
-   procedure Set_Opacity
-      (Window  : not null access Gtk_Window_Record;
-       Opacity : Gdouble)
-   is
-      procedure Internal (Window : System.Address; Opacity : Gdouble);
-      pragma Import (C, Internal, "gtk_window_set_opacity");
-   begin
-      Internal (Get_Object (Window), Opacity);
-   end Set_Opacity;
 
    ------------------
    -- Set_Position --

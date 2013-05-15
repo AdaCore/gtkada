@@ -263,7 +263,7 @@ package body Gtk.Action_Group is
        Notify       : Glib.G_Destroy_Notify_Address);
    pragma Import (C, C_Gtk_Action_Group_Set_Translate_Func, "gtk_action_group_set_translate_func");
    --  Sets a function to be used for translating the Label and Tooltip of
-   --  Gtk_Action_Group_Entry<!-- -->s added by gtk_action_group_add_actions.
+   --  Gtk_Action_Entry<!-- -->s added by gtk_action_group_add_actions.
    --  If you're using gettext, it is enough to set the translation domain
    --  with Gtk.Action_Group.Set_Translation_Domain.
    --  Since: gtk+ 2.4
@@ -389,6 +389,22 @@ package body Gtk.Action_Group is
       Free (Tmp_Accelerator);
    end Add_Action_With_Accel;
 
+   ---------------------
+   -- Get_Accel_Group --
+   ---------------------
+
+   function Get_Accel_Group
+      (Action_Group : not null access Gtk_Action_Group_Record)
+       return Gtk.Accel_Group.Gtk_Accel_Group
+   is
+      function Internal
+         (Action_Group : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_action_group_get_accel_group");
+      Stub_Gtk_Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group_Record;
+   begin
+      return Gtk.Accel_Group.Gtk_Accel_Group (Get_User_Data (Internal (Get_Object (Action_Group)), Stub_Gtk_Accel_Group));
+   end Get_Accel_Group;
+
    ----------------
    -- Get_Action --
    ----------------
@@ -488,6 +504,22 @@ package body Gtk.Action_Group is
       Internal (Get_Object (Action_Group), Get_Object (Action));
    end Remove_Action;
 
+   ---------------------
+   -- Set_Accel_Group --
+   ---------------------
+
+   procedure Set_Accel_Group
+      (Action_Group : not null access Gtk_Action_Group_Record;
+       Accel_Group  : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
+   is
+      procedure Internal
+         (Action_Group : System.Address;
+          Accel_Group  : System.Address);
+      pragma Import (C, Internal, "gtk_action_group_set_accel_group");
+   begin
+      Internal (Get_Object (Action_Group), Get_Object_Or_Null (GObject (Accel_Group)));
+   end Set_Accel_Group;
+
    -------------------
    -- Set_Sensitive --
    -------------------
@@ -576,14 +608,19 @@ package body Gtk.Action_Group is
 
    procedure Set_Translation_Domain
       (Action_Group : not null access Gtk_Action_Group_Record;
-       Domain       : UTF8_String)
+       Domain       : UTF8_String := "")
    is
       procedure Internal
          (Action_Group : System.Address;
           Domain       : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_action_group_set_translation_domain");
-      Tmp_Domain : Interfaces.C.Strings.chars_ptr := New_String (Domain);
+      Tmp_Domain : Interfaces.C.Strings.chars_ptr;
    begin
+      if Domain = "" then
+         Tmp_Domain := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Domain := New_String (Domain);
+      end if;
       Internal (Get_Object (Action_Group), Tmp_Domain);
       Free (Tmp_Domain);
    end Set_Translation_Domain;

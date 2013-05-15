@@ -66,7 +66,6 @@ package Gtk.Event_Box is
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
    --  Returns whether the event box window is above or below the windows of
    --  its child. See Gtk.Event_Box.Set_Above_Child for details.
-   --  window of its child
    --  Since: gtk+ 2.4
 
    procedure Set_Above_Child

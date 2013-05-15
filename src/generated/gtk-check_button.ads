@@ -40,6 +40,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
 with Glib.Types;        use Glib.Types;
 with Gtk.Action;        use Gtk.Action;
+with Gtk.Actionable;    use Gtk.Actionable;
 with Gtk.Activatable;   use Gtk.Activatable;
 with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
@@ -101,6 +102,17 @@ package Gtk.Check_Button is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   function Get_Action_Name
+      (Self : not null access Gtk_Check_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Check_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Check_Button_Record;
+       Detailed_Action_Name : UTF8_String);
+
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Check_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
@@ -129,9 +141,22 @@ package Gtk.Check_Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Check_Button_Record, Gtk_Check_Button);
+   function "+"
+     (Widget : access Gtk_Check_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Check_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Check_Button_Record, Gtk_Check_Button);

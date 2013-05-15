@@ -102,7 +102,6 @@ package Gtk.Entry_Completion is
    --  g_utf8_casefold). If this is not appropriate, match functions have
    --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
    --  (gtk_entry_completion_get_entry (<!-- -->)))'.
-   --  for Key
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
@@ -168,6 +167,16 @@ package Gtk.Entry_Completion is
    --  current list with completions, using the current key. The completion
    --  list view will be updated accordingly.
    --  Since: gtk+ 2.4
+
+   function Compute_Prefix
+      (Completion : not null access Gtk_Entry_Completion_Record;
+       Key        : UTF8_String) return UTF8_String;
+   --  Computes the common prefix that is shared by all rows in Completion
+   --  that start with Key. If no row matches Key, null will be returned. Note
+   --  that a text column must have been set for this function to work, see
+   --  Gtk.Entry_Completion.Set_Text_Column for details.
+   --  Since: gtk+ 3.4
+   --  "key": The text to complete for
 
    procedure Delete_Action
       (Completion : not null access Gtk_Entry_Completion_Record;
@@ -238,7 +247,6 @@ package Gtk.Entry_Completion is
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the model the Gtk.Entry_Completion.Gtk_Entry_Completion is
    --  using as data source. Returns null if the model is unset.
-   --  is currently being used
    --  Since: gtk+ 2.4
 
    procedure Set_Model
@@ -268,7 +276,6 @@ package Gtk.Entry_Completion is
        return Boolean;
    --  Returns whether the completion popup window will be resized to the
    --  width of the entry.
-   --  the entry
    --  Since: gtk+ 2.8
 
    procedure Set_Popup_Set_Width
@@ -285,7 +292,6 @@ package Gtk.Entry_Completion is
        return Boolean;
    --  Returns whether the completion popup window will appear even if there
    --  is only a single match.
-   --  number of matches
    --  Since: gtk+ 2.8
 
    procedure Set_Popup_Single_Match
@@ -370,7 +376,6 @@ package Gtk.Entry_Completion is
       --  g_utf8_casefold). If this is not appropriate, match functions have
       --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
       --  (gtk_entry_completion_get_entry (<!-- -->)))'.
-      --  for Key
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
       --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match

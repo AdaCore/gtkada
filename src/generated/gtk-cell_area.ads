@@ -70,7 +70,11 @@
 --  In order to request the width of all the rows at the root level of a
 --  Gtk.Tree_Model.Gtk_Tree_Model one would do the following:
 --
+-- 
+--
 --  == Requesting the width of a handful of GtkTreeModel rows ==
+--
+-- 
 --
 --    GtkTreeIter iter;
 --    gint        minimum_width;
@@ -103,7 +107,11 @@
 --  A simple example where rows are rendered from top to bottom and take up
 --  the full width of the layouting widget would look like:
 --
+-- 
+--
 --  == A typical get_preferred_width implementation ==
+--
+-- 
 --
 --    static void
 --    foo_get_preferred_width (GtkWidget       *widget,
@@ -133,7 +141,11 @@
 --  In order to request the height for width of all the rows at the root level
 --  of a Gtk.Tree_Model.Gtk_Tree_Model one would do the following:
 --
+-- 
+--
 --  == Requesting the height for width of a handful of GtkTreeModel rows ==
+--
+-- 
 --
 --    GtkTreeIter iter;
 --    gint        minimum_height;
@@ -168,7 +180,7 @@
 --  a single call to Gtk.Widget.GObject_Class.get_preferred_height_for_width.
 --  Returning a perfect height for width that is larger than the screen area is
 --  inconsequential since after the layouting receives an allocation from a
---  scrolled window it simply continues to drive the the scrollbar values while
+--  scrolled window it simply continues to drive the scrollbar values while
 --  more and more height is required for the row heights that are calculated in
 --  the background.
 --
@@ -181,7 +193,11 @@
 --  A crude example of how to render all the rows at the root level runs as
 --  follows:
 --
+-- 
+--
 --  == Requesting the width of a handful of GtkTreeModel rows ==
+--
+-- 
 --
 --    GtkAllocation allocation;
 --    GdkRectangle  cell_area = { 0, };
@@ -239,7 +255,11 @@
 --  A basic example of how the Gtk.Widget.GObject_Class.focus virtual method
 --  should be implemented:
 --
+-- 
+--
 --  == Implementing keyboard focus navigation ==
+--
+-- 
 --
 --    static gboolean
 --    foo_focus (GtkWidget       *widget,
@@ -691,8 +711,6 @@ package Gtk.Cell_Area is
    --  applied Gtk.Tree_Model.Gtk_Tree_Iter, this is implicitly updated when
    --  Gtk.Cell_Area.Apply_Attributes is called and can be used to interact
    --  with renderers from Gtk.Cell_Area.Gtk_Cell_Area subclasses.
-   --  attributes applied to Area. This string belongs to the area and should
-   --  not be freed.
    --  Since: gtk+ 3.0
 
    function Get_Edit_Widget
@@ -736,7 +754,6 @@ package Gtk.Cell_Area is
    --  events, after determining the renderer at the event location it can then
    --  chose to activate the focus cell for which the event cell may have been
    --  a sibling.
-   --  is a sibling, or null.
    --  Since: gtk+ 3.0
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer
 
@@ -745,7 +762,6 @@ package Gtk.Cell_Area is
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class)
        return Glib.Object.Object_Simple_List.Glist;
    --  Gets the focus sibling cell renderers for Renderer.
-   --  The returned list is internal and should not be freed.
    --  Since: gtk+ 3.0
    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to have
    --  focus
@@ -757,8 +773,8 @@ package Gtk.Cell_Area is
        Minimum_Height : out Gint;
        Natural_Height : out Gint);
    --  Retrieves a cell area's initial minimum and natural height.
-   --  Area will store some geometrical information in Context along the way,
-   --  when requesting sizes over an arbitrary number of rows, its not
+   --  Area will store some geometrical information in Context along the way;
+   --  when requesting sizes over an arbitrary number of rows, it's not
    --  important to check the Minimum_Height and Natural_Height of this call
    --  but rather to consult Gtk.Cell_Area_Context.Get_Preferred_Height after a
    --  series of requests.
@@ -803,8 +819,8 @@ package Gtk.Cell_Area is
        Minimum_Width : out Gint;
        Natural_Width : out Gint);
    --  Retrieves a cell area's initial minimum and natural width.
-   --  Area will store some geometrical information in Context along the way,
-   --  when requesting sizes over an arbitrary number of rows, its not
+   --  Area will store some geometrical information in Context along the way;
+   --  when requesting sizes over an arbitrary number of rows, it's not
    --  important to check the Minimum_Width and Natural_Width of this call but
    --  rather to consult Gtk.Cell_Area_Context.Get_Preferred_Width after a
    --  series of requests.

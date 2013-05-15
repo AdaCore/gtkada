@@ -75,6 +75,28 @@ package body Gtk.About_Dialog is
       end if;
    end Initialize;
 
+   ------------------------
+   -- Add_Credit_Section --
+   ------------------------
+
+   procedure Add_Credit_Section
+      (About        : not null access Gtk_About_Dialog_Record;
+       Section_Name : UTF8_String;
+       People       : GNAT.Strings.String_List)
+   is
+      procedure Internal
+         (About        : System.Address;
+          Section_Name : Interfaces.C.Strings.chars_ptr;
+          People       : Interfaces.C.Strings.chars_ptr_array);
+      pragma Import (C, Internal, "gtk_about_dialog_add_credit_section");
+      Tmp_Section_Name : Interfaces.C.Strings.chars_ptr := New_String (Section_Name);
+      Tmp_People       : Interfaces.C.Strings.chars_ptr_array := From_String_List (People);
+   begin
+      Internal (Get_Object (About), Tmp_Section_Name, Tmp_People);
+      GtkAda.Types.Free (Tmp_People);
+      Free (Tmp_Section_Name);
+   end Add_Credit_Section;
+
    -----------------
    -- Get_Artists --
    -----------------
@@ -352,14 +374,19 @@ package body Gtk.About_Dialog is
 
    procedure Set_Copyright
       (About     : not null access Gtk_About_Dialog_Record;
-       Copyright : UTF8_String)
+       Copyright : UTF8_String := "")
    is
       procedure Internal
          (About     : System.Address;
           Copyright : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_copyright");
-      Tmp_Copyright : Interfaces.C.Strings.chars_ptr := New_String (Copyright);
+      Tmp_Copyright : Interfaces.C.Strings.chars_ptr;
    begin
+      if Copyright = "" then
+         Tmp_Copyright := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Copyright := New_String (Copyright);
+      end if;
       Internal (Get_Object (About), Tmp_Copyright);
       Free (Tmp_Copyright);
    end Set_Copyright;

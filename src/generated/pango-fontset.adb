@@ -46,24 +46,24 @@ package body Pango.Fontset is
      (Pango_Fontset_Foreach_Func, System.Address);
 
    function Internal_Pango_Fontset_Foreach_Func
-      (Fontset : System.Address;
-       Font    : System.Address;
-       Data    : System.Address) return Integer;
+      (Fontset   : System.Address;
+       Font      : System.Address;
+       User_Data : System.Address) return Integer;
    pragma Convention (C, Internal_Pango_Fontset_Foreach_Func);
    --  "fontset": a Pango.Fontset.Pango_Fontset
    --  "font": a font from Fontset
-   --  "data": callback data
+   --  "user_data": callback data
 
    -----------------------------------------
    -- Internal_Pango_Fontset_Foreach_Func --
    -----------------------------------------
 
    function Internal_Pango_Fontset_Foreach_Func
-      (Fontset : System.Address;
-       Font    : System.Address;
-       Data    : System.Address) return Integer
+      (Fontset   : System.Address;
+       Font      : System.Address;
+       User_Data : System.Address) return Integer
    is
-      Func               : constant Pango_Fontset_Foreach_Func := To_Pango_Fontset_Foreach_Func (Data);
+      Func               : constant Pango_Fontset_Foreach_Func := To_Pango_Fontset_Foreach_Func (User_Data);
       Stub_Pango_Fontset : Pango_Fontset_Record;
       Stub_Pango_Font    : Pango.Font.Pango_Font_Record;
    begin
@@ -102,16 +102,16 @@ package body Pango.Fontset is
         (Pango_Fontset_Foreach_Func, System.Address);
 
       function Internal_Cb
-         (Fontset : System.Address;
-          Font    : System.Address;
-          Data    : System.Address) return Integer;
+         (Fontset   : System.Address;
+          Font      : System.Address;
+          User_Data : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  A callback function used by Pango.Fontset.Foreach when enumerating
       --  the fonts in a fontset.
       --  Since: gtk+ 1.4
       --  "fontset": a Pango.Fontset.Pango_Fontset
       --  "font": a font from Fontset
-      --  "data": callback data
+      --  "user_data": callback data
 
       -------------
       -- Foreach --
@@ -135,11 +135,11 @@ package body Pango.Fontset is
       -----------------
 
       function Internal_Cb
-         (Fontset : System.Address;
-          Font    : System.Address;
-          Data    : System.Address) return Integer
+         (Fontset   : System.Address;
+          Font      : System.Address;
+          User_Data : System.Address) return Integer
       is
-         D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
+         D                  : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Pango_Fontset : Pango.Fontset.Pango_Fontset_Record;
          Stub_Pango_Font    : Pango.Font.Pango_Font_Record;
       begin

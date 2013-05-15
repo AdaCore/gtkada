@@ -37,6 +37,8 @@
 --  Height-for-width geometry management is implemented in GTK+ by way of five
 --  virtual methods:
 --
+-- 
+--
 --     * Gtk.Widget.GObject_Class.get_request_mode
 --
 --     * Gtk.Widget.GObject_Class.get_preferred_width
@@ -144,7 +146,11 @@
 --  know its natural size. In these cases, the widget should be careful to call
 --  its virtual methods directly, like this:
 --
+-- 
+--
 --  == Widget calling its own size request method. ==
+--
+-- 
 --
 --    GTK_WIDGET_GET_CLASS(widget)->get_preferred_width (widget),
 --    &min, &natural);
@@ -206,7 +212,7 @@
 --    </accessibility>
 --    <child internal-child="accessible">
 --    <object class="AtkObject" id="a11y-button1">
---    <property name="AtkObject::name">Clickable Button</property>
+--    <property name="accessible-name">Clickable Button</property>
 --    </object>
 --    </child>
 --    </object>
@@ -232,6 +238,7 @@ with Gdk.Device;              use Gdk.Device;
 with Gdk.Display;             use Gdk.Display;
 with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;
 with Gdk.Event;               use Gdk.Event;
+with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
@@ -346,6 +353,21 @@ package Gtk.Widget is
 
    subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
+   type Gtk_Tick_Callback is access function
+     (Widget      : not null access Gtk_Widget_Record'Class;
+      Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class)
+   return Boolean;
+   --  Callback type for adding a function to update animations. See
+   --  Gtk.Widget.Add_Tick_Callback.
+   --  Since: gtk+ 3.8
+   --  "widget": the widget
+   --  "frame_clock": the frame clock for the widget (same as calling
+   --  gtk_widget_get_frame_clock)
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -386,11 +408,11 @@ package Gtk.Widget is
    --  Installs an accelerator for this Widget in Accel_Group that causes
    --  Accel_Signal to be emitted if the accelerator is activated. The
    --  Accel_Group needs to be added to the widget's toplevel via
-   --  Gtk.Window.Add_Accel_Group, and the signal must be of type G_RUN_ACTION.
-   --  Accelerators added through this function are not user changeable during
-   --  runtime. If you want to support accelerators that can be changed by the
-   --  user, use Gtk.Accel_Map.Add_Entry and Gtk.Widget.Set_Accel_Path or
-   --  Gtk.Menu_Item.Set_Accel_Path instead.
+   --  Gtk.Window.Add_Accel_Group, and the signal must be of type
+   --  G_SIGNAL_ACTION. Accelerators added through this function are not user
+   --  changeable during runtime. If you want to support accelerators that can
+   --  be changed by the user, use Gtk.Accel_Map.Add_Entry and
+   --  Gtk.Widget.Set_Accel_Path or Gtk.Menu_Item.Set_Accel_Path instead.
    --  "accel_signal": widget signal to emit on accelerator activation
    --  "accel_group": accel group for this widget, added to its toplevel
    --  "accel_key": GDK keyval of the accelerator
@@ -426,6 +448,82 @@ package Gtk.Widget is
    --  Since: gtk+ 2.4
    --  "label": a Gtk.Widget.Gtk_Widget that acts as a mnemonic label for
    --  Widget
+
+   function Add_Tick_Callback
+      (Widget   : not null access Gtk_Widget_Record;
+       Callback : Gtk_Tick_Callback;
+       Notify   : Glib.G_Destroy_Notify_Address) return Guint;
+   --  Queues a animation frame update and adds a callback to be called before
+   --  each frame. Until the tick callback is removed, it will be called
+   --  frequently (usually at the frame rate of the output device or as quickly
+   --  as the application an be repainted, whichever is slower). For this
+   --  reason, is most suitable for handling graphics that change every frame
+   --  or every few frames. The tick callback does not automatically imply a
+   --  relayout or repaint. If you want a repaint or relayout, and aren't
+   --  changing widget properties that would trigger that (for example,
+   --  changing the text of a Gtk.Label.Gtk_Label), then you will have to call
+   --  Gtk.Widget.Queue_Resize or Gtk.Widget.Queue_Draw_Area yourself.
+   --  Gdk.Frame_Clock.Get_Frame_Time should generally be used for timing
+   --  continuous animations and
+   --  Gdk.Frame_Timings.Get_Predicted_Presentation_Time if you are trying to
+   --  display isolated frames at particular times.
+   --  This is a more convenient alternative to connecting directly to the
+   --  Gdk.Frame_Clock.Gdk_Frame_Clock::update signal of
+   --  Gdk.Frame_Clock.Gdk_Frame_Clock, since you don't have to worry about
+   --  when a Gdk.Frame_Clock.Gdk_Frame_Clock is assigned to a widget.
+   --  Since: gtk+ 3.8
+   --  "callback": function to call for updating animations
+   --  "notify": function to call to free User_Data when the callback is
+   --  removed.
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Add_Tick_Callback_User_Data is
+
+      type Gtk_Tick_Callback is access function
+        (Widget      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+         Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class;
+         User_Data   : User_Data_Type) return Boolean;
+      --  Callback type for adding a function to update animations. See
+      --  Gtk.Widget.Add_Tick_Callback.
+      --  Since: gtk+ 3.8
+      --  "widget": the widget
+      --  "frame_clock": the frame clock for the widget (same as calling
+      --  gtk_widget_get_frame_clock)
+      --  "user_data": user data passed to Gtk.Widget.Add_Tick_Callback.
+
+      function Add_Tick_Callback
+         (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Callback  : Gtk_Tick_Callback;
+          User_Data : User_Data_Type;
+          Notify    : Glib.G_Destroy_Notify_Address) return Guint;
+      --  Queues a animation frame update and adds a callback to be called
+      --  before each frame. Until the tick callback is removed, it will be
+      --  called frequently (usually at the frame rate of the output device or
+      --  as quickly as the application an be repainted, whichever is slower).
+      --  For this reason, is most suitable for handling graphics that change
+      --  every frame or every few frames. The tick callback does not
+      --  automatically imply a relayout or repaint. If you want a repaint or
+      --  relayout, and aren't changing widget properties that would trigger
+      --  that (for example, changing the text of a Gtk.Label.Gtk_Label), then
+      --  you will have to call Gtk.Widget.Queue_Resize or
+      --  Gtk.Widget.Queue_Draw_Area yourself.
+      --  Gdk.Frame_Clock.Get_Frame_Time should generally be used for timing
+      --  continuous animations and
+      --  Gdk.Frame_Timings.Get_Predicted_Presentation_Time if you are trying
+      --  to display isolated frames at particular times.
+      --  This is a more convenient alternative to connecting directly to the
+      --  Gdk.Frame_Clock.Gdk_Frame_Clock::update signal of
+      --  Gdk.Frame_Clock.Gdk_Frame_Clock, since you don't have to worry about
+      --  when a Gdk.Frame_Clock.Gdk_Frame_Clock is assigned to a widget.
+      --  Since: gtk+ 3.8
+      --  "callback": function to call for updating animations
+      --  "user_data": data to pass to Callback
+      --  "notify": function to call to free User_Data when the callback is
+      --  removed.
+
+   end Add_Tick_Callback_User_Data;
 
    function Can_Activate_Accel
       (Widget    : not null access Gtk_Widget_Record;
@@ -497,11 +595,10 @@ package Gtk.Widget is
        Text   : UTF8_String := "") return Pango.Layout.Pango_Layout;
    --  Creates a new Pango.Layout.Pango_Layout with the appropriate font map,
    --  font description, and base direction for drawing text for this widget.
-   --  If you keep a Pango.Layout.Pango_Layout created in this way around, in
-   --  order to notify the layout of changes to the base direction or font of
-   --  this widget, you must call Pango.Layout.Context_Changed in response to
-   --  the Gtk.Widget.Gtk_Widget::style-updated and
-   --  Gtk.Widget.Gtk_Widget::direction-changed signals for the widget.
+   --  If you keep a Pango.Layout.Pango_Layout created in this way around, you
+   --  need to re-create it when the widget Pango.Context.Pango_Context is
+   --  replaced. This can be tracked by using the
+   --  Gtk.Widget.Gtk_Widget::screen-changed signal on the widget.
    --  "text": text to set on the layout (can be null)
 
    procedure Destroy (Widget : not null access Gtk_Widget_Record);
@@ -537,7 +634,6 @@ package Gtk.Widget is
    --  another widget, so it would stop sending events to Widget. This may be
    --  used in the Gtk.Widget.Gtk_Widget::grab-notify signal to check for
    --  specific devices. See Gtk.Main.Device_Grab_Add.
-   --  by another Gtk.Widget.Gtk_Widget than Widget.
    --  Since: gtk+ 3.0
    --  "device": a Gdk.Device.Gdk_Device
 
@@ -547,9 +643,6 @@ package Gtk.Widget is
        Start_Y   : Gint;
        Current_X : Gint;
        Current_Y : Gint) return Boolean;
-   --  Checks to see if a mouse drag starting at (Start_X, Start_Y) and ending
-   --  at (Current_X, Current_Y) has passed the GTK+ drag threshold, and thus
-   --  should trigger the beginning of a drag-and-drop operation.
    --  "start_x": X coordinate of start of drag
    --  "start_y": Y coordinate of start of drag
    --  "current_x": current X coordinate
@@ -557,44 +650,19 @@ package Gtk.Widget is
 
    procedure Drag_Dest_Add_Image_Targets
       (Widget : not null access Gtk_Widget_Record);
-   --  Add the image targets supported by Gtk_Selection to the target list of
-   --  the drag destination. The targets are added with Info = 0. If you need
-   --  another value, use Gtk.Target_List.Add_Image_Targets and
-   --  gtk_drag_dest_set_target_list.
-   --  Since: gtk+ 2.6
 
    procedure Drag_Dest_Add_Text_Targets
       (Widget : not null access Gtk_Widget_Record);
-   --  Add the text targets supported by Gtk_Selection to the target list of
-   --  the drag destination. The targets are added with Info = 0. If you need
-   --  another value, use Gtk.Target_List.Add_Text_Targets and
-   --  gtk_drag_dest_set_target_list.
-   --  Since: gtk+ 2.6
 
    procedure Drag_Dest_Add_Uri_Targets
       (Widget : not null access Gtk_Widget_Record);
-   --  Add the URI targets supported by Gtk_Selection to the target list of
-   --  the drag destination. The targets are added with Info = 0. If you need
-   --  another value, use Gtk.Target_List.Add_Uri_Targets and
-   --  gtk_drag_dest_set_target_list.
-   --  Since: gtk+ 2.6
 
    function Drag_Dest_Get_Track_Motion
       (Widget : not null access Gtk_Widget_Record) return Boolean;
-   --  Returns whether the widget has been configured to always emit
-   --  Gtk.Widget.Gtk_Widget::drag-motion signals.
-   --  Gtk.Widget.Gtk_Widget::drag-motion events
-   --  Since: gtk+ 2.10
 
    procedure Drag_Dest_Set_Track_Motion
       (Widget       : not null access Gtk_Widget_Record;
        Track_Motion : Boolean);
-   --  Tells the widget to emit Gtk.Widget.Gtk_Widget::drag-motion and
-   --  Gtk.Widget.Gtk_Widget::drag-leave events regardless of the targets and
-   --  the Gtk.Tool_Palette.Dest_Default_Motion flag.
-   --  This may be used when a widget wants to do generic actions regardless
-   --  of the targets that the source offers.
-   --  Since: gtk+ 2.10
    --  "track_motion": whether to accept all targets
 
    procedure Drag_Dest_Set_Proxy
@@ -602,7 +670,6 @@ package Gtk.Widget is
        Proxy_Window    : Gdk.Gdk_Window;
        Protocol        : Gdk.Drag_Contexts.Gdk_Drag_Protocol;
        Use_Coordinates : Boolean);
-   --  Sets this widget as a proxy for drops to another window.
    --  "proxy_window": the window to which to forward drag events
    --  "protocol": the drag protocol which the Proxy_Window accepts (You can
    --  use gdk_drag_get_protocol to determine this)
@@ -610,21 +677,12 @@ package Gtk.Widget is
    --  destination, because it is an embedded subwindow.
 
    procedure Drag_Dest_Unset (Widget : not null access Gtk_Widget_Record);
-   --  Clears information about a drop destination set with gtk_drag_dest_set.
-   --  The widget will no longer receive notification of drags.
 
    procedure Drag_Get_Data
       (Widget  : not null access Gtk_Widget_Record;
        Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
        Target  : Gdk.Types.Gdk_Atom;
        Time    : Guint32);
-   --  Gets the data associated with a drag. When the data is received or the
-   --  retrieval fails, GTK+ will emit a
-   --  Gtk.Widget.Gtk_Widget::drag-data-received signal. Failure of the
-   --  retrieval is indicated by the length field of the Selection_Data signal
-   --  parameter being negative. However, when Gtk.Widget.Drag_Get_Data is
-   --  called implicitely because the Gtk.Tool_Palette.Dest_Default_Drop was
-   --  set, then the widget will not receive notification of failed drops.
    --  "context": the drag context
    --  "target": the target (form of the data) to retrieve.
    --  "time_": a timestamp for retrieving the data. This will generally be
@@ -632,63 +690,21 @@ package Gtk.Widget is
    --  Gtk.Widget.Gtk_Widget::drag-drop" signal.
 
    procedure Drag_Highlight (Widget : not null access Gtk_Widget_Record);
-   --  Draws a highlight around a widget. This will attach handlers to
-   --  Gtk.Widget.Gtk_Widget::draw, so the highlight will continue to be
-   --  displayed until Gtk.Widget.Drag_Unhighlight is called.
 
    procedure Drag_Source_Add_Image_Targets
       (Widget : not null access Gtk_Widget_Record);
-   --  Add the writable image targets supported by Gtk_Selection to the target
-   --  list of the drag source. The targets are added with Info = 0. If you
-   --  need another value, use Gtk.Target_List.Add_Image_Targets and
-   --  gtk_drag_source_set_target_list.
-   --  Since: gtk+ 2.6
-
-   procedure Drag_Source_Add_Text_Targets
-      (Widget : not null access Gtk_Widget_Record);
-   --  Add the text targets supported by Gtk_Selection to the target list of
-   --  the drag source. The targets are added with Info = 0. If you need
-   --  another value, use Gtk.Target_List.Add_Text_Targets and
-   --  gtk_drag_source_set_target_list.
-   --  Since: gtk+ 2.6
 
    procedure Drag_Source_Add_Uri_Targets
       (Widget : not null access Gtk_Widget_Record);
-   --  Add the URI targets supported by Gtk_Selection to the target list of
-   --  the drag source. The targets are added with Info = 0. If you need
-   --  another value, use Gtk.Target_List.Add_Uri_Targets and
-   --  gtk_drag_source_set_target_list.
-   --  Since: gtk+ 2.6
-
-   procedure Drag_Source_Set_Icon_Name
-      (Widget    : not null access Gtk_Widget_Record;
-       Icon_Name : UTF8_String);
-   --  Sets the icon that will be used for drags from a particular source to a
-   --  themed icon. See the docs for Gtk.Icon_Theme.Gtk_Icon_Theme for more
-   --  details.
-   --  Since: gtk+ 2.8
-   --  "icon_name": name of icon to use
 
    procedure Drag_Source_Set_Icon_Pixbuf
       (Widget : not null access Gtk_Widget_Record;
        Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
-   --  Sets the icon that will be used for drags from a particular widget from
-   --  a Gdk.Pixbuf.Gdk_Pixbuf. GTK+ retains a reference for Pixbuf and will
-   --  release it when it is no longer needed.
    --  "pixbuf": the Gdk.Pixbuf.Gdk_Pixbuf for the drag icon
 
-   procedure Drag_Source_Set_Icon_Stock
-      (Widget   : not null access Gtk_Widget_Record;
-       Stock_Id : UTF8_String);
-   --  Sets the icon that will be used for drags from a particular source to a
-   --  stock icon.
-   --  "stock_id": the ID of the stock icon to use
-
    procedure Drag_Source_Unset (Widget : not null access Gtk_Widget_Record);
-   --  Undoes the effects of gtk_drag_source_set.
 
    procedure Drag_Unhighlight (Widget : not null access Gtk_Widget_Record);
-   --  Removes a highlight set by Gtk.Widget.Drag_Highlight from a widget.
 
    procedure Draw
       (Widget : not null access Gtk_Widget_Record;
@@ -711,11 +727,12 @@ package Gtk.Widget is
    --  "cr": a cairo context to draw to
 
    procedure Ensure_Style (Widget : not null access Gtk_Widget_Record);
+   pragma Obsolescent (Ensure_Style);
    --  Ensures that Widget has a style (Widget->style).
    --  Not a very useful function; most of the time, if you want the style,
    --  the widget is realized, and realized widgets are guaranteed to have a
    --  style already.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
 
    procedure Error_Bell (Widget : not null access Gtk_Widget_Record);
    --  Notifies the user about an input-related error on this widget. If the
@@ -736,7 +753,6 @@ package Gtk.Widget is
    --  behave as if it were in the event queue. Don't synthesize expose events;
    --  instead, use Gdk.Window.Invalidate_Rect to invalidate a region of the
    --  window.
-   --  the event was handled)
    --  "event": a Gdk.Event.Gdk_Event
 
    procedure Freeze_Child_Notify
@@ -905,8 +921,6 @@ package Gtk.Widget is
    function Get_Composite_Name
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
    --  Obtains the composite name of a widget.
-   --  a composite child. The string should be freed when it is no longer
-   --  needed.
 
    procedure Set_Composite_Name
       (Widget : not null access Gtk_Widget_Record;
@@ -1011,8 +1025,8 @@ package Gtk.Widget is
    --  turn off the buffering. "Double buffered" simply means that
    --  Gdk.Window.Begin_Paint_Region and Gdk.Window.End_Paint are called
    --  automatically around expose events sent to the widget.
-   --  gdk_window_begin_paint diverts all drawing to a widget's window to an
-   --  offscreen buffer, and Gdk.Window.End_Paint draws the buffer to the
+   --  Gdk.Window.Begin_Paint_Region diverts all drawing to a widget's window
+   --  to an offscreen buffer, and Gdk.Window.End_Paint draws the buffer to the
    --  screen. The result is that users see the window update in one smooth
    --  step, and don't see individual graphics primitives being rendered.
    --  In very simple terms, double buffered widgets don't flicker, so you
@@ -1020,7 +1034,8 @@ package Gtk.Widget is
    --  special needs and really knew what you were doing.
    --  Note: if you turn off double-buffering, you have to handle expose
    --  events, since even the clearing to the background color or pixmap will
-   --  not happen automatically (as it is done in gdk_window_begin_paint).
+   --  not happen automatically (as it is done in
+   --  Gdk.Window.Begin_Paint_Region).
    --  "double_buffered": True to double-buffer a widget
 
    function Get_Events
@@ -1044,6 +1059,29 @@ package Gtk.Widget is
    --  them inside a Gtk.Event_Box.Gtk_Event_Box and receive events on the
    --  event box.
    --  "events": event mask
+
+   function Get_Frame_Clock
+      (Widget : not null access Gtk_Widget_Record)
+       return Gdk.Frame_Clock.Gdk_Frame_Clock;
+   --  Obtains the frame clock for a widget. The frame clock is a global
+   --  "ticker" that can be used to drive animations and repaints. The most
+   --  common reason to get the frame clock is to call
+   --  Gdk.Frame_Clock.Get_Frame_Time, in order to get a time to use for
+   --  animating. For example you might record the start of the animation with
+   --  an initial value from Gdk.Frame_Clock.Get_Frame_Time, and then update
+   --  the animation by calling Gdk.Frame_Clock.Get_Frame_Time again during
+   --  each repaint.
+   --  Gdk.Frame_Clock.Request_Phase will result in a new frame on the clock,
+   --  but won't necessarily repaint any widgets. To repaint a widget, you have
+   --  to use Gtk.Widget.Queue_Draw which invalidates the widget (thus
+   --  scheduling it to receive a draw on the next frame).
+   --  Gtk.Widget.Queue_Draw will also end up requesting a frame on the
+   --  appropriate frame clock.
+   --  A widget's frame clock will not change while the widget is mapped.
+   --  Reparenting a widget (which implies a temporary unmap) can change the
+   --  widget's frame clock.
+   --  Unrealized widgets do not have a frame clock.
+   --  Since: gtk+ 3.8
 
    function Get_Halign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
@@ -1220,11 +1258,19 @@ package Gtk.Widget is
    --  Since: gtk+ 3.0
    --  "margin": the top margin
 
+   function Get_Modifier_Mask
+      (Widget : not null access Gtk_Widget_Record;
+       Intent : Gdk_Modifier_Intent) return Gdk.Types.Gdk_Modifier_Type;
+   --  Returns the modifier mask the Widget's windowing system backend uses
+   --  for a particular purpose.
+   --  See gdk_keymap_get_modifier_mask.
+   --  Since: gtk+ 3.4
+   --  "intent": the use case for the modifier mask
+
    function Get_Name
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
    --  Retrieves the name of a widget. See Gtk.Widget.Set_Name for the
    --  significance of widget names.
-   --  should not be modified or freed
 
    procedure Set_Name
       (Widget : not null access Gtk_Widget_Record;
@@ -1256,6 +1302,29 @@ package Gtk.Widget is
    --  Since: gtk+ 2.4
    --  "no_show_all": the new value for the "no-show-all" property
 
+   function Get_Opacity
+      (Widget : not null access Gtk_Widget_Record) return Gdouble;
+   --  Fetches the requested opacity for this widget. See
+   --  Gtk.Widget.Set_Opacity.
+   --  Since: gtk+ 3.8
+
+   procedure Set_Opacity
+      (Widget  : not null access Gtk_Widget_Record;
+       Opacity : Gdouble);
+   --  Request the Widget to be rendered partially transparent, with opacity 0
+   --  being fully transparent and 1 fully opaque. (Opacity values are clamped
+   --  to the [0,1] range.). This works on both toplevel widget, and child
+   --  widgets, although there are some limitations:
+   --  For toplevel widgets this depends on the capabilities of the windowing
+   --  system. On X11 this has any effect only on X screens with a compositing
+   --  manager running. See Gtk.Widget.Is_Composited. On Windows it should work
+   --  always, although setting a window's opacity after the window has been
+   --  shown causes it to flicker once on Windows.
+   --  For child widgets it doesn't work if any affected widget has a native
+   --  window, or disables double buffering.
+   --  Since: gtk+ 3.8
+   --  "opacity": desired opacity, between 0 and 1
+
    function Get_Pango_Context
       (Widget : not null access Gtk_Widget_Record)
        return Pango.Context.Pango_Context;
@@ -1264,12 +1333,8 @@ package Gtk.Widget is
    --  returned by Gtk.Widget.Create_Pango_Context, this context is owned by
    --  the widget (it can be used until the screen for the widget changes or
    --  the widget is removed from its toplevel), and will be updated to match
-   --  any changes to the widget's attributes.
-   --  If you create and keep a Pango.Layout.Pango_Layout using this context,
-   --  you must deal with changes to the context by calling
-   --  Pango.Layout.Context_Changed on the layout in response to the
-   --  Gtk.Widget.Gtk_Widget::style-updated and
-   --  Gtk.Widget.Gtk_Widget::direction-changed signals for the widget.
+   --  any changes to the widget's attributes. This can be tracked by using the
+   --  Gtk.Widget.Gtk_Widget::screen-changed signal on the widget.
 
    function Get_Parent
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
@@ -1310,11 +1375,13 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        X      : out Gint;
        Y      : out Gint);
+   pragma Obsolescent (Get_Pointer);
    --  Obtains the location of the mouse pointer in widget coordinates. Widget
    --  coordinates are a bit odd; for historical reasons, they are defined as
    --  Widget->window coordinates for widgets that are not GTK_NO_WINDOW
    --  widgets, and are relative to Widget->allocation.x, Widget->allocation.y
    --  for widgets that are GTK_NO_WINDOW widgets.
+   --  Deprecated since 3.4, Use Gdk.Window.Get_Device_Position instead.
    --  "x": return location for the X coordinate, or null
    --  "y": return location for the Y coordinate, or null
 
@@ -1419,11 +1486,10 @@ package Gtk.Widget is
 
    function Get_Receives_Default
       (Widget : not null access Gtk_Widget_Record) return Boolean;
-   --  Determines whether Widget is alyways treated as default widget withing
-   --  its toplevel when it has the focus, even if another widget is the
+   --  Determines whether Widget is always treated as the default widget
+   --  within its toplevel when it has the focus, even if another widget is the
    --  default.
    --  See Gtk.Widget.Set_Receives_Default.
-   --  False otherwise
    --  Since: gtk+ 2.18
 
    procedure Set_Receives_Default
@@ -1457,11 +1523,10 @@ package Gtk.Widget is
    --  internal state change (so that they can call Gtk.Widget.Queue_Resize
    --  instead of Gtk.Widget.Queue_Draw).
    --  Normally, Gtk.Widget.Size_Request should be used.
-   --  removed, If you need to cache sizes across requests and allocations,
-   --  add an explicit cache to the widget in question instead.
    --  Since: gtk+ 2.20
    --  Deprecated since 3.0, The Gtk.Widget.Gtk_Requisition cache on the
-   --  widget was
+   --  widget was removed, If you need to cache sizes across requests and
+   --  allocations, add an explicit cache to the widget in question instead.
    --  "requisition": a pointer to a Gtk.Widget.Gtk_Requisition to copy to
 
    function Get_Root_Window
@@ -1521,8 +1586,8 @@ package Gtk.Widget is
        Width  : Gint := -1;
        Height : Gint := -1);
    --  Sets the minimum size of a widget; that is, the widget's size request
-   --  will be Width by Height. You can use this function to force a widget to
-   --  be either larger or smaller than it normally would be.
+   --  will be at least Width by Height. You can use this function to force a
+   --  widget to be larger than it normally would be.
    --  In most cases, Gtk.Window.Set_Default_Size is a better choice for
    --  toplevel windows than this function; setting the default size will still
    --  allow users to shrink the window. Setting the size request will force
@@ -1540,8 +1605,6 @@ package Gtk.Widget is
    --  requested.
    --  If the size request in a given direction is -1 (unset), then the
    --  "natural" size request of the widget will be used instead.
-   --  Widgets can't actually be allocated a size less than 1 by 1, but you
-   --  can pass 0,0 to this function to mean "as small as possible."
    --  The size request set here does not include any margin from the
    --  Gtk.Widget.Gtk_Widget properties margin-left, margin-right, margin-top,
    --  and margin-bottom, but it does include pretty much all other padding or
@@ -1614,15 +1677,17 @@ package Gtk.Widget is
    function Get_Style
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Style.Gtk_Style;
+   pragma Obsolescent (Get_Style);
    --  Simply an accessor function that returns Widget->style.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
 
    procedure Set_Style
       (Widget : not null access Gtk_Widget_Record;
        Style  : access Gtk.Style.Gtk_Style_Record'Class);
+   pragma Obsolescent (Set_Style);
    --  Used to set the Gtk.Style.Gtk_Style for a widget (Widget->style). Since
    --  GTK 3, this function does nothing, the passed in style is ignored.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
    --  "style": a Gtk.Style.Gtk_Style, or null to remove the effect of a
    --  previous call to Gtk.Widget.Set_Style and go back to the default style
 
@@ -1645,7 +1710,6 @@ package Gtk.Widget is
    function Get_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
    --  Gets the contents of the tooltip for Widget.
-   --  returned string with g_free when done.
    --  Since: gtk+ 2.12
 
    procedure Set_Tooltip_Markup
@@ -1664,12 +1728,11 @@ package Gtk.Widget is
    function Get_Tooltip_Text
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
    --  Gets the contents of the tooltip for Widget.
-   --  returned string with g_free when done.
    --  Since: gtk+ 2.12
 
    procedure Set_Tooltip_Text
       (Widget : not null access Gtk_Widget_Record;
-       Text   : UTF8_String);
+       Text   : UTF8_String := "");
    --  Sets Text as the contents of the tooltip. This function will take care
    --  of setting Gtk.Widget.Gtk_Widget:has-tooltip to True and of the default
    --  handler for the Gtk.Widget.Gtk_Widget::query-tooltip signal.
@@ -1707,16 +1770,15 @@ package Gtk.Widget is
    --  Note the difference in behavior vs. Gtk.Widget.Get_Ancestor;
    --  'gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW)' would return null if
    --  Widget wasn't inside a toplevel window, and if the window was inside a
-   --  Gtk.Window.Gtk_Window-derived widget which was in turn inside the
-   --  toplevel Gtk.Window.Gtk_Window. While the second case may seem unlikely,
-   --  it actually happens when a Gtk.Plug.Gtk_Plug is embedded inside a
-   --  Gtk.Socket.Gtk_Socket within the same application.
+   --  Gtk.Window.Gtk_Window<!-- -->-derived widget which was in turn inside
+   --  the toplevel Gtk.Window.Gtk_Window. While the second case may seem
+   --  unlikely, it actually happens when a Gtk_Plug is embedded inside a
+   --  Gtk_Socket within the same application.
    --  To reliably find the toplevel Gtk.Window.Gtk_Window, use
    --  Gtk.Widget.Get_Toplevel and check if the TOPLEVEL flags is set on the
    --  result. |[ GtkWidget *toplevel = gtk_widget_get_toplevel (widget); if
    --  (gtk_widget_is_toplevel (toplevel)) { /* Perform action on toplevel. */
    --  } ]|
-   --  if there's no ancestor.
 
    function Get_Valign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
@@ -1757,9 +1819,10 @@ package Gtk.Widget is
 
    function Get_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean;
-   --  Determines whether the widget is visible. Note that this doesn't take
-   --  into account whether the widget's parent is also visible or the widget
-   --  is obscured in any way.
+   --  Determines whether the widget is visible. If you want to take into
+   --  account whether the widget's parent is also marked as visible, use
+   --  Gtk.Widget.Is_Visible instead.
+   --  This function does not check if the widget is obscured in any way.
    --  See Gtk.Widget.Set_Visible.
    --  Since: gtk+ 2.18
 
@@ -1785,7 +1848,7 @@ package Gtk.Widget is
        Visual : Gdk.Visual.Gdk_Visual);
    --  Sets the visual that should be used for by widget and its children for
    --  creating Gdk_Windows. The visual must be on the same
-   --  Gdk.Screen.Gdk_Screen as returned by gdk_widget_get_screen, so handling
+   --  Gdk.Screen.Gdk_Screen as returned by Gtk.Widget.Get_Screen, so handling
    --  the Gtk.Widget.Gtk_Widget::screen-changed signal is necessary.
    --  Setting a new Visual will not cause Widget to recreate its windows, so
    --  you should call this function before Widget is realized.
@@ -1820,15 +1883,14 @@ package Gtk.Widget is
    --  and this function does nothing.
 
    procedure Grab_Default (Widget : not null access Gtk_Widget_Record);
-   --  Causes Widget to become the default widget. Widget must have the
-   --  GTK_CAN_DEFAULT flag set; typically you have to set this flag yourself
-   --  by calling 'gtk_widget_set_can_default (Widget, True)'. The default
-   --  widget is activated when the user presses Enter in a window. Default
-   --  widgets must be activatable, that is, Gtk.Widget.Activate should affect
-   --  them. Note that Gtk.GEntry.Gtk_Entry widgets require the
-   --  "activates-default" property set to True before they activate the
-   --  default widget when Enter is pressed and the Gtk.GEntry.Gtk_Entry is
-   --  focused.
+   --  Causes Widget to become the default widget. Widget must be able to be a
+   --  default widget; typically you would ensure this yourself by calling
+   --  Gtk.Widget.Set_Can_Default with a True value. The default widget is
+   --  activated when the user presses Enter in a window. Default widgets must
+   --  be activatable, that is, Gtk.Widget.Activate should affect them. Note
+   --  that Gtk.GEntry.Gtk_Entry widgets require the "activates-default"
+   --  property set to True before they activate the default widget when Enter
+   --  is pressed and the Gtk.GEntry.Gtk_Entry is focused.
 
    procedure Grab_Focus (Widget : not null access Gtk_Widget_Record);
    --  Causes Widget to have the keyboard focus for the Gtk.Window.Gtk_Window
@@ -1850,7 +1912,6 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return Boolean;
    --  Determines whether Widget is the current default widget within its
    --  toplevel. See Gtk.Widget.Set_Can_Default.
-   --  its toplevel, False otherwise
    --  Since: gtk+ 2.18
 
    function Has_Focus
@@ -1869,18 +1930,17 @@ package Gtk.Widget is
 
    function Has_Rc_Style
       (Widget : not null access Gtk_Widget_Record) return Boolean;
+   pragma Obsolescent (Has_Rc_Style);
    --  Determines if the widget style has been looked up through the rc
    --  mechanism.
-   --  mechanism, False otherwise.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
 
    function Has_Screen
       (Widget : not null access Gtk_Widget_Record) return Boolean;
    --  Checks whether there is a Gdk.Screen.Gdk_Screen is associated with this
    --  widget. All toplevel widgets have an associated screen, and all widgets
    --  added into a hierarchy with a toplevel window at the top.
-   --  with the widget.
    --  Since: gtk+ 2.2
 
    function Has_Visible_Focus
@@ -1939,7 +1999,6 @@ package Gtk.Widget is
        Ancestor : not null access Gtk_Widget_Record'Class) return Boolean;
    --  Determines whether Widget is somewhere inside Ancestor, possibly with
    --  intermediate containers.
-   --  grandchild, great grandchild, etc.
    --  "ancestor": another Gtk.Widget.Gtk_Widget
 
    function Is_Composited
@@ -1950,7 +2009,6 @@ package Gtk.Widget is
    --  Please note that the semantics of this call will change in the future
    --  if used on a widget that has a composited window in its hierarchy (as
    --  set by Gdk.Window.Set_Composited).
-   --  channel being drawn correctly.
    --  Since: gtk+ 2.10
 
    function Is_Drawable
@@ -1979,6 +2037,14 @@ package Gtk.Widget is
    --  (and out-of-process Gtk_Plugs) are toplevel widgets. Toplevel widgets
    --  have no parent widget.
    --  Since: gtk+ 2.18
+
+   function Is_Visible
+      (Widget : not null access Gtk_Widget_Record) return Boolean;
+   --  Determines whether the widget and all its parents are marked as
+   --  visible.
+   --  This function does not check if the widget is obscured in any way.
+   --  See also Gtk.Widget.Get_Visible and Gtk.Widget.Set_Visible
+   --  Since: gtk+ 3.8
 
    function Keynav_Failed
       (Widget    : not null access Gtk_Widget_Record;
@@ -2009,8 +2075,6 @@ package Gtk.Widget is
    --  Gtk.GEntry.Gtk_Entry widgets where the user should be able to navigate
    --  the entire row with the cursor keys, as e.g. known from user interfaces
    --  that require entering license keys.
-   --  if the emitting widget should try to handle the keyboard navigation
-   --  attempt in its parent container(s).
    --  Since: gtk+ 2.12
    --  "direction": direction of focus movement
 
@@ -2018,12 +2082,12 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return Widget_List.Glist;
    --  Returns a newly allocated list of the widgets, normally labels, for
    --  which this widget is the target of a mnemonic (see for example,
-   --  Gtk.Label.Set_Mnemonic_Widget). The widgets in the list are not
-   --  individually referenced. If you want to iterate through the list and
-   --  perform actions involving callbacks that might destroy the widgets, you
-   --  *must* call 'g_list_foreach (result, (GFunc)g_object_ref, NULL)' first,
-   --  and then unref all the widgets afterwards. mnemonic labels; free this
-   --  list with g_list_free when you are done with it.
+   --  Gtk.Label.Set_Mnemonic_Widget).
+   --  The widgets in the list are not individually referenced. If you want to
+   --  iterate through the list and perform actions involving callbacks that
+   --  might destroy the widgets, you *must* call 'g_list_foreach (result,
+   --  (GFunc)g_object_ref, NULL)' first, and then unref all the widgets
+   --  afterwards.
    --  Since: gtk+ 2.4
 
    procedure Map (Widget : not null access Gtk_Widget_Record);
@@ -2057,8 +2121,7 @@ package Gtk.Widget is
    --  color on their parent; if you want to set the background of a
    --  rectangular area around a label, try placing the label in a
    --  Gtk.Event_Box.Gtk_Event_Box widget and setting the base color on that.
-   --  Deprecated:3.0: Use Gtk.Widget.Override_Background_Color instead
-   --  Deprecated
+   --  Deprecated since 3.0, Use Gtk.Widget.Override_Background_Color instead
    --  "state": the state for which to set the base color
    --  "color": the color to assign (does not need to be allocated), or null
    --  to undo the effect of previous calls to of Gtk.Widget.Modify_Base.
@@ -2080,8 +2143,7 @@ package Gtk.Widget is
    --  rectangular area around a label, try placing the label in a
    --  Gtk.Event_Box.Gtk_Event_Box widget and setting the background color on
    --  that.
-   --  Deprecated:3.0: Use Gtk.Widget.Override_Background_Color instead
-   --  Deprecated
+   --  Deprecated since 3.0, Use Gtk.Widget.Override_Background_Color instead
    --  "state": the state for which to set the background color
    --  "color": the color to assign (does not need to be allocated), or null
    --  to undo the effect of previous calls to of Gtk.Widget.Modify_Bg.
@@ -2113,8 +2175,7 @@ package Gtk.Widget is
    --  Sets the foreground color for a widget in a particular state.
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
-   --  Deprecated:3.0: Use Gtk.Widget.Override_Color instead
-   --  Deprecated
+   --  Deprecated since 3.0, Use Gtk.Widget.Override_Color instead
    --  "state": the state for which to set the foreground color
    --  "color": the color to assign (does not need to be allocated), or null
    --  to undo the effect of previous calls to of Gtk.Widget.Modify_Fg.
@@ -2126,8 +2187,7 @@ package Gtk.Widget is
    --  Sets the font to use for a widget.
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
-   --  Deprecated:3.0: Use Gtk.Widget.Override_Font instead
-   --  Deprecated
+   --  Deprecated since 3.0, Use Gtk.Widget.Override_Font instead
    --  "font_desc": the font description to use, or null to undo the effect of
    --  previous calls to Gtk.Widget.Modify_Font
 
@@ -2141,8 +2201,7 @@ package Gtk.Widget is
    --  foreground color used along with the base color (see
    --  Gtk.Widget.Modify_Base) for widgets such as Gtk.GEntry.Gtk_Entry and
    --  Gtk.Text_View.Gtk_Text_View. See also gtk_widget_modify_style.
-   --  Deprecated:3.0: Use Gtk.Widget.Override_Color instead
-   --  Deprecated
+   --  Deprecated since 3.0, Use Gtk.Widget.Override_Color instead
    --  "state": the state for which to set the text color
    --  "color": the color to assign (does not need to be allocated), or null
    --  to undo the effect of previous calls to of Gtk.Widget.Modify_Text.
@@ -2311,13 +2370,23 @@ package Gtk.Widget is
    --  Computes the intersection of a Widget's area and Region, returning the
    --  intersection. The result may be empty, use cairo_region_is_empty to
    --  check.
-   --  and Region. The coordinates of the return value are relative to
-   --  Widget->window for NO_WINDOW widgets, and relative to the parent window
-   --  of Widget->window for widgets with their own window.
    --  "region": a cairo_region_t, in the same coordinate system as
    --  Widget->allocation. That is, relative to Widget->window for NO_WINDOW
    --  widgets; relative to the parent window of Widget->window for widgets
    --  with their own window.
+
+   procedure Register_Window
+      (Widget : not null access Gtk_Widget_Record;
+       Window : Gdk.Gdk_Window);
+   --  Registers a Gdk.Gdk_Window with the widget and sets it up so that the
+   --  widget recieves events for it. Call Gtk.Widget.Unregister_Window when
+   --  destroying the window.
+   --  Before 3.8 you needed to call Gdk.Window.Set_User_Data directly to set
+   --  this up. This is now deprecated and you should use
+   --  Gtk.Widget.Register_Window instead. Old code will keep working as is,
+   --  although some new features like transparency might not work perfectly.
+   --  Since: gtk+ 3.8
+   --  "window": a Gdk.Gdk_Window
 
    function Remove_Accelerator
       (Widget      : not null access Gtk_Widget_Record;
@@ -2340,6 +2409,14 @@ package Gtk.Widget is
    --  "label": a Gtk.Widget.Gtk_Widget that was previously set as a mnemnic
    --  label for Widget with Gtk.Widget.Add_Mnemonic_Label.
 
+   procedure Remove_Tick_Callback
+      (Widget : not null access Gtk_Widget_Record;
+       Id     : Guint);
+   --  Removes a tick callback previously registered with
+   --  Gtk.Widget.Add_Tick_Callback.
+   --  Since: gtk+ 3.8
+   --  "id": an id returned by Gtk.Widget.Add_Tick_Callback
+
    function Render_Icon
       (Widget   : not null access Gtk_Widget_Record;
        Stock_Id : UTF8_String;
@@ -2355,7 +2432,6 @@ package Gtk.Widget is
    --  The pixels in the returned Gdk.Pixbuf.Gdk_Pixbuf are shared with the
    --  rest of the application and should not be modified. The pixbuf should be
    --  freed after use with g_object_unref.
-   --  stock ID wasn't known
    --  Deprecated since 3.0, Use Gtk.Widget.Render_Icon_Pixbuf instead.
    --  "stock_id": a stock ID
    --  "size": a stock size. A size of (GtkIconSize)-1 means render at the
@@ -2374,7 +2450,6 @@ package Gtk.Widget is
    --  The pixels in the returned Gdk.Pixbuf.Gdk_Pixbuf are shared with the
    --  rest of the application and should not be modified. The pixbuf should be
    --  freed after use with g_object_unref.
-   --  stock ID wasn't known
    --  Since: gtk+ 3.0
    --  "stock_id": a stock ID
    --  "size": a stock size. A size of (GtkIconSize)-1 means render at the
@@ -2389,12 +2464,13 @@ package Gtk.Widget is
    --  "new_parent": a Gtk.Container.Gtk_Container to move the widget into
 
    procedure Reset_Rc_Styles (Widget : not null access Gtk_Widget_Record);
+   pragma Obsolescent (Reset_Rc_Styles);
    --  Reset the styles of Widget and all descendents, so when they are looked
    --  up again, they get the correct values for the currently loaded RC file
    --  settings.
    --  This function is not useful for applications.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead, and
-   --  Gtk.Widget.Reset_Style
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead,
+   --  and Gtk.Widget.Reset_Style
 
    procedure Reset_Style (Widget : not null access Gtk_Widget_Record);
    --  Updates the style context of Widget and all descendents by updating its
@@ -2414,7 +2490,6 @@ package Gtk.Widget is
    --  Gdk.Window.Invalidate_Rect or Gdk.Window.Invalidate_Region. To cause the
    --  redraw to be done immediately, follow that call with a call to
    --  Gdk.Window.Process_Updates.
-   --  the event was handled)
    --  "event": a expose Gdk.Event.Gdk_Event
 
    function Send_Focus_Change
@@ -2435,7 +2510,6 @@ package Gtk.Widget is
    --  (fevent->focus_change.window);
    --  gtk_widget_send_focus_change (widget, fevent);
    --  gdk_event_free (event); ]|
-   --  if the event was handled, and False otherwise
    --  Since: gtk+ 2.20
    --  "event": a Gdk.Event.Gdk_Event of type GDK_FOCUS_CHANGE
 
@@ -2471,12 +2545,13 @@ package Gtk.Widget is
    --  allocation changes. By default, this setting is True and the entire
    --  widget is redrawn on every size change. If your widget leaves the upper
    --  left unchanged when made bigger, turning this setting off will improve
-   --  performance. Note that for NO_WINDOW widgets setting this flag to False
-   --  turns off all allocation on resizing: the widget will not even redraw if
-   --  its position changes; this is to allow containers that don't draw
-   --  anything to avoid excess invalidations. If you set this flag on a
-   --  NO_WINDOW widget that *does* draw on Widget->window, you are responsible
-   --  for invalidating both the old and new allocation of the widget when the
+   --  performance.
+   --  Note that for NO_WINDOW widgets setting this flag to False turns off
+   --  all allocation on resizing: the widget will not even redraw if its
+   --  position changes; this is to allow containers that don't draw anything
+   --  to avoid excess invalidations. If you set this flag on a NO_WINDOW
+   --  widget that *does* draw on Widget->window, you are responsible for
+   --  invalidating both the old and new allocation of the widget when the
    --  widget is moved and responsible for invalidating regions newly when the
    --  widget increases size.
    --  "redraw_on_allocate": if True, the entire widget will be redrawn when
@@ -2563,8 +2638,6 @@ package Gtk.Widget is
    --  coordinates relative to Dest_Widget's allocations. In order to perform
    --  this operation, both widgets must be realized, and must share a common
    --  toplevel.
-   --  was no common ancestor. In this case, nothing is stored in *Dest_X and
-   --  *Dest_Y. Otherwise True.
    --  "dest_widget": a Gtk.Widget.Gtk_Widget
    --  "src_x": X position relative to Src_Widget
    --  "src_y": Y position relative to Src_Widget
@@ -2591,6 +2664,15 @@ package Gtk.Widget is
    --  to be unrealized (frees all GDK resources associated with the widget,
    --  such as Widget->window).
 
+   procedure Unregister_Window
+      (Widget : not null access Gtk_Widget_Record;
+       Window : Gdk.Gdk_Window);
+   --  Unregisters a Gdk.Gdk_Window from the widget that was previously set up
+   --  with Gtk.Widget.Register_Window. You need to call this when the window
+   --  is no longer used by the widget, such as when you destroy it.
+   --  Since: gtk+ 3.8
+   --  "window": a Gdk.Gdk_Window
+
    procedure Unset_State_Flags
       (Widget : not null access Gtk_Widget_Record;
        Flags  : Gtk.Enums.Gtk_State_Flags);
@@ -2604,7 +2686,6 @@ package Gtk.Widget is
       (Self          : GObject_Class;
        Property_Name : UTF8_String) return Glib.Param_Spec;
    --  Finds a style property of a widget class by name.
-   --  null if Class has no style property with that name.
    --  Since: gtk+ 2.2
    --  "property_name": the name of the style property to find
 
@@ -2734,10 +2815,10 @@ package Gtk.Widget is
    --  Gtk.Enums.Text_Dir_None.
 
    function Get_Default_Style return Gtk.Style.Gtk_Style;
+   pragma Obsolescent (Get_Default_Style);
    --  Returns the default style used by all widgets initially.
-   --  object is owned by GTK+ and should not be modified or freed.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead, and
-   --  Gtk.Css_Provider.Get_Default to obtain a
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead,
+   --  and Gtk.Css_Provider.Get_Default to obtain a
    --  Gtk.Style_Provider.Gtk_Style_Provider with the default widget style
    --  information.
 
@@ -2884,6 +2965,13 @@ package Gtk.Widget is
 
    No_Show_All_Property : constant Glib.Properties.Property_Boolean;
 
+   Opacity_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+   --  The requested opacity of the widget. See Gtk.Widget.Set_Opacity for
+   --  more details about window opacity.
+   --
+   --  Before 3.8 this was only availible in GtkWindow
+
    Parent_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Container.Gtk_Container
 
@@ -2981,12 +3069,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_BUTTON_PRESS_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    procedure On_Button_Release_Event
@@ -3005,12 +3091,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_BUTTON_RELEASE_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Guint_Boolean is not null access function
      (Self      : access Gtk_Widget_Record'Class;
@@ -3041,12 +3125,12 @@ package Gtk.Widget is
    --    --  Returns True if the signal can be activated.
 
    type Cb_Gtk_Widget_Param_Spec_Void is not null access procedure
-     (Self  : access Gtk_Widget_Record'Class;
-      Pspec : Glib.Param_Spec);
+     (Self           : access Gtk_Widget_Record'Class;
+      Child_Property : Glib.Param_Spec);
 
    type Cb_GObject_Param_Spec_Void is not null access procedure
-     (Self  : access Glib.Object.GObject_Record'Class;
-      Pspec : Glib.Param_Spec);
+     (Self           : access Glib.Object.GObject_Record'Class;
+      Child_Property : Glib.Param_Spec);
 
    Signal_Child_Notify : constant Glib.Signal_Name := "child-notify";
    procedure On_Child_Notify
@@ -3099,12 +3183,10 @@ package Gtk.Widget is
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
    --  automatically for all new windows.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Configure which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Expose_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -3127,12 +3209,10 @@ package Gtk.Widget is
    --  Emitted when a redirected window belonging to Widget gets drawn into.
    --  The region/area members of the event shows what area of the redirected
    --  drawable was drawn into.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Expose event
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -3157,12 +3237,10 @@ package Gtk.Widget is
    --  window. Connecting Gtk.Widget.Hide_On_Delete to this signal will cause
    --  the window to be hidden instead, so that it can later be shown again
    --  without reconstructing it.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the event which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Destroy : constant Glib.Signal_Name := "destroy";
    procedure On_Destroy
@@ -3196,12 +3274,10 @@ package Gtk.Widget is
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
    --  automatically for all new windows.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the event which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gtk_Text_Direction_Void is not null access procedure
      (Self               : access Gtk_Widget_Record'Class;
@@ -3225,12 +3301,12 @@ package Gtk.Widget is
    --  widget changes.
 
    type Cb_Gtk_Widget_Drag_Context_Void is not null access procedure
-     (Self         : access Gtk_Widget_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+     (Self    : access Gtk_Widget_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
 
    type Cb_GObject_Drag_Context_Void is not null access procedure
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class);
 
    Signal_Drag_Begin : constant Glib.Signal_Name := "drag-begin";
    procedure On_Drag_Begin
@@ -3244,7 +3320,7 @@ package Gtk.Widget is
        After : Boolean := False);
    --  The ::drag-begin signal is emitted on the drag source when a drag is
    --  started. A typical reason to connect to this signal is to set up a
-   --  custom drag icon with gtk_drag_source_set_icon.
+   --  custom drag icon with e.g. Gtk.Widget.Drag_Source_Set_Icon_Pixbuf.
    --
    --  Note that some widgets set up a drag icon in the default handler of
    --  this signal, so you may have to use g_signal_connect_after to override
@@ -3267,18 +3343,18 @@ package Gtk.Widget is
    --  operation.
 
    type Cb_Gtk_Widget_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
-     (Self         : access Gtk_Widget_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-      Info         : Guint;
-      Time         : Guint);
+     (Self    : access Gtk_Widget_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Data    : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info    : Guint;
+      Time    : Guint);
 
    type Cb_GObject_Drag_Context_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-      Info         : Guint;
-      Time         : Guint);
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Data    : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info    : Guint;
+      Time    : Guint);
 
    Signal_Drag_Data_Get : constant Glib.Signal_Name := "drag-data-get";
    procedure On_Drag_Data_Get
@@ -3297,7 +3373,7 @@ package Gtk.Widget is
    --  Gtk.Selection_Data.Set_Text.
    -- 
    --  Callback parameters:
-   --    --  "drag_context": the drag context
+   --    --  "context": the drag context
    --    --  "data": the Gtk.Selection_Data.Gtk_Selection_Data to be filled with the
    --    --  dragged data
    --    --  "info": the info that has been registered with the target in the
@@ -3305,22 +3381,22 @@ package Gtk.Widget is
    --    --  "time": the timestamp at which the data was requested
 
    type Cb_Gtk_Widget_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
-     (Self         : access Gtk_Widget_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X            : Gint;
-      Y            : Gint;
-      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-      Info         : Guint;
-      Time         : Guint);
+     (Self    : access Gtk_Widget_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X       : Gint;
+      Y       : Gint;
+      Data    : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info    : Guint;
+      Time    : Guint);
 
    type Cb_GObject_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X            : Gint;
-      Y            : Gint;
-      Data         : Gtk.Selection_Data.Gtk_Selection_Data;
-      Info         : Guint;
-      Time         : Guint);
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X       : Gint;
+      Y       : Gint;
+      Data    : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info    : Guint;
+      Time    : Guint);
 
    Signal_Drag_Data_Received : constant Glib.Signal_Name := "drag-data-received";
    procedure On_Drag_Data_Received
@@ -3342,28 +3418,32 @@ package Gtk.Widget is
    --  Success parameter depending on whether the data was processed
    --  successfully.
    --
-   --  The handler may inspect and modify Drag_Context->action before calling
-   --  gtk_drag_finish, e.g. to implement Gdk.Drag_Contexts.Action_Ask as shown
-   --  in the following example: |[ void drag_data_received (GtkWidget *widget,
-   --  GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data,
-   --  guint info, guint time) { if ((data->length >= 0) && (data->format ==
-   --  8)) { if (drag_context->action == GDK_ACTION_ASK) { GtkWidget *dialog;
-   --  gint response;
+   --  The handler may inspect the selected action with
+   --  Gdk.Drag_Contexts.Get_Selected_Action before calling gtk_drag_finish,
+   --  e.g. to implement Gdk.Drag_Contexts.Action_Ask as shown in the following
+   --  example: |[ void drag_data_received (GtkWidget *widget, GdkDragContext
+   --  *context, gint x, gint y, GtkSelectionData *data, guint info, guint
+   --  time) { if ((data->length >= 0) && (data->format == 8)) { GdkDragAction
+   --  action;
+   --
+   --  /* handle data here */
+   --
+   --  action = gdk_drag_context_get_selected_action (context); if (action ==
+   --  GDK_ACTION_ASK) { GtkWidget *dialog; gint response;
    --
    --  dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL |
    --  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_YES_NO,
    --  "Move the data ?\n"); response = gtk_dialog_run (GTK_DIALOG (dialog));
    --  gtk_widget_destroy (dialog);
    --
-   --  if (response == GTK_RESPONSE_YES) drag_context->action =
-   --  GDK_ACTION_MOVE; else drag_context->action = GDK_ACTION_COPY; }
+   --  if (response == GTK_RESPONSE_YES) action = GDK_ACTION_MOVE; else action
+   --  = GDK_ACTION_COPY; }
    --
-   --  gtk_drag_finish (drag_context, TRUE, FALSE, time); return; }
-   --
-   --  gtk_drag_finish (drag_context, FALSE, FALSE, time); } ]|
+   --  gtk_drag_finish (context, TRUE, action == GDK_ACTION_MOVE, time); }
+   --  else gtk_drag_finish (context, FALSE, FALSE, time); } ]|
    -- 
    --  Callback parameters:
-   --    --  "drag_context": the drag context
+   --    --  "context": the drag context
    --    --  "x": where the drop happened
    --    --  "y": where the drop happened
    --    --  "data": the received data
@@ -3372,18 +3452,18 @@ package Gtk.Widget is
    --    --  "time": the timestamp at which the data was received
 
    type Cb_Gtk_Widget_Drag_Context_Gint_Gint_Guint_Boolean is not null access function
-     (Self         : access Gtk_Widget_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X            : Gint;
-      Y            : Gint;
-      Time         : Guint) return Boolean;
+     (Self    : access Gtk_Widget_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X       : Gint;
+      Y       : Gint;
+      Time    : Guint) return Boolean;
 
    type Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean is not null access function
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X            : Gint;
-      Y            : Gint;
-      Time         : Guint) return Boolean;
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      X       : Gint;
+      Y       : Gint;
+      Time    : Guint) return Boolean;
 
    Signal_Drag_Drop : constant Glib.Signal_Name := "drag-drop";
    procedure On_Drag_Drop
@@ -3407,7 +3487,7 @@ package Gtk.Widget is
    --  of the supported targets.
    -- 
    --  Callback parameters:
-   --    --  "drag_context": the drag context
+   --    --  "context": the drag context
    --    --  "x": the x coordinate of the current cursor position
    --    --  "y": the y coordinate of the current cursor position
    --    --  "time": the timestamp of the motion event
@@ -3428,14 +3508,14 @@ package Gtk.Widget is
    --  done in Gtk.Widget.Gtk_Widget::drag-begin.
 
    type Cb_Gtk_Widget_Drag_Context_Gtk_Drag_Result_Boolean is not null access function
-     (Self         : access Gtk_Widget_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean;
+     (Self    : access Gtk_Widget_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Result  : Gtk.Enums.Gtk_Drag_Result) return Boolean;
 
    type Cb_GObject_Drag_Context_Gtk_Drag_Result_Boolean is not null access function
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      Result       : Gtk.Enums.Gtk_Drag_Result) return Boolean;
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Result  : Gtk.Enums.Gtk_Drag_Result) return Boolean;
 
    Signal_Drag_Failed : constant Glib.Signal_Name := "drag-failed";
    procedure On_Drag_Failed
@@ -3454,19 +3534,19 @@ package Gtk.Widget is
    --  animation), otherwise it returns False.
    -- 
    --  Callback parameters:
-   --    --  "drag_context": the drag context
+   --    --  "context": the drag context
    --    --  "result": the result of the drag operation
    --    --  Returns True if the failed drag operation has been already handled.
 
    type Cb_Gtk_Widget_Drag_Context_Guint_Void is not null access procedure
-     (Self         : access Gtk_Widget_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      Time         : Guint);
+     (Self    : access Gtk_Widget_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Time    : Guint);
 
    type Cb_GObject_Drag_Context_Guint_Void is not null access procedure
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Drag_Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      Time         : Guint);
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
+      Time    : Guint);
 
    Signal_Drag_Leave : constant Glib.Signal_Name := "drag-leave";
    procedure On_Drag_Leave
@@ -3484,7 +3564,7 @@ package Gtk.Widget is
    --  highlighting with Gtk.Widget.Drag_Unhighlight
    -- 
    --  Callback parameters:
-   --    --  "drag_context": the drag context
+   --    --  "context": the drag context
    --    --  "time": the timestamp of the motion event
 
    Signal_Drag_Motion : constant Glib.Signal_Name := "drag-motion";
@@ -3497,8 +3577,8 @@ package Gtk.Widget is
        Call  : Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The drag-motion signal is emitted on the drop site when the user moves
-   --  the cursor over the widget during a drag. The signal handler must
+   --  The ::drag-motion signal is emitted on the drop site when the user
+   --  moves the cursor over the widget during a drag. The signal handler must
    --  determine whether the cursor position is in a drop zone or not. If it is
    --  not in a drop zone, it returns False and no further processing is
    --  necessary. Otherwise, the handler returns True. In this case, the
@@ -3529,8 +3609,8 @@ package Gtk.Widget is
    --
    --  target = gtk_drag_dest_find_target (widget, context, NULL); if (target
    --  == GDK_NONE) gdk_drag_status (context, 0, time); else {
-   --  private_data->pending_status = context->suggested_action;
-   --  gtk_drag_get_data (widget, context, target, time); }
+   --  private_data->pending_status = gdk_drag_context_get_suggested_action
+   --  (context); gtk_drag_get_data (widget, context, target, time); }
    --
    --  return TRUE; }
    --
@@ -3543,14 +3623,14 @@ package Gtk.Widget is
    --
    --  /* We are getting this data due to a request in drag_motion, * rather
    --  than due to a request in drag_drop, so we are just * supposed to call
-   --  gdk_drag_status (), not actually paste in * the data. */ str =
+   --  gdk_drag_status, not actually paste in * the data. */ str =
    --  gtk_selection_data_get_text (selection_data); if (!data_is_acceptable
    --  (str)) gdk_drag_status (context, 0, time); else gdk_drag_status
    --  (context, private_data->suggested_action, time); } else { /* accept the
    --  drop */ } } ]|
    -- 
    --  Callback parameters:
-   --    --  "drag_context": the drag context
+   --    --  "context": the drag context
    --    --  "x": the x coordinate of the current cursor position
    --    --  "y": the y coordinate of the current cursor position
    --    --  "time": the timestamp of the motion event
@@ -3583,6 +3663,17 @@ package Gtk.Widget is
    --  passed as Cr in any way they like and don't need to restore it. The
    --  signal emission takes care of calling cairo_save before and
    --  cairo_restore after invoking the handler.
+   --
+   --  The signal handler will get a Cr with a clip region already set to the
+   --  widget's dirty region, i.e. to the area that needs repainting.
+   --  Complicated widgets that want to avoid redrawing themselves completely
+   --  can get the full extents of the clip region with
+   --  gdk_cairo_get_clip_rectangle, or they can get a finer-grained
+   --  representation of the dirty region with cairo_copy_clip_rectangle_list.
+   -- 
+   --  Callback parameters:
+   --    --  "cr": the cairo context to draw to
+   --    --  Returns True to stop other handlers from being invoked for the event. % False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Crossing_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -3609,12 +3700,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_ENTER_NOTIFY_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Crossing which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Event : constant Glib.Signal_Name := "event";
    procedure On_Event
@@ -3631,15 +3720,10 @@ package Gtk.Widget is
    --  that matches the type of event delivered (e.g.
    --  Gtk.Widget.Gtk_Widget::key-press-event) and finally a generic
    --  Gtk.Widget.Gtk_Widget::event-after signal.
-   --
-   --  and to cancel the emission of the second specific ::event signal. False
-   --  to propagate the event further and to allow the emission of the second
-   --  signal. The ::event-after signal is emitted regardless of the return
-   --  value.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event
+   --    --  Returns True to stop other handlers from being invoked for the event and to cancel the emission of the second specific ::event signal. False to propagate the event further and to allow the emission of the second signal. The ::event-after signal is emitted regardless of the return value.
 
    type Cb_Gtk_Widget_Gdk_Event_Void is not null access procedure
      (Self  : access Gtk_Widget_Record'Class;
@@ -3664,12 +3748,12 @@ package Gtk.Widget is
    --  emitted regardless of the previous two signals handlers return values.
 
    type Cb_Gtk_Widget_Gtk_Direction_Type_Boolean is not null access function
-     (Self    : access Gtk_Widget_Record'Class;
-      Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+     (Self      : access Gtk_Widget_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
 
    type Cb_GObject_Gtk_Direction_Type_Boolean is not null access function
-     (Self    : access Glib.Object.GObject_Record'Class;
-      Returns : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
 
    Signal_Focus : constant Glib.Signal_Name := "focus";
    procedure On_Focus
@@ -3683,8 +3767,6 @@ package Gtk.Widget is
        After : Boolean := False);
    -- 
    --  Callback parameters:
-   --    --  "returns": True to stop other handlers from being invoked for the
-   --    --  event. False to propagate the event further.
    --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Focus_Boolean is not null access function
@@ -3710,12 +3792,10 @@ package Gtk.Widget is
    --
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_FOCUS_CHANGE_MASK mask.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Focus which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Focus_Out_Event : constant Glib.Signal_Name := "focus-out-event";
    procedure On_Focus_Out_Event
@@ -3732,12 +3812,10 @@ package Gtk.Widget is
    --
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_FOCUS_CHANGE_MASK mask.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Focus which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Grab_Broken_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -3763,12 +3841,10 @@ package Gtk.Widget is
    --  On X11, this happens when the grab window becomes unviewable (i.e. it
    --  or one of its ancestors is unmapped), or if the same application grabs
    --  the pointer or keyboard again.
-   --
-   --  the event. False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Grab_Broken event
-   --    --  Returns True to stop other handlers from being invoked for
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Grab_Focus : constant Glib.Signal_Name := "grab-focus";
    procedure On_Grab_Focus
@@ -3866,12 +3942,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_KEY_PRESS_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Key which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Key_Release_Event : constant Glib.Signal_Name := "key-release-event";
    procedure On_Key_Release_Event
@@ -3889,12 +3963,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_KEY_RELEASE_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Key which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Keynav_Failed : constant Glib.Signal_Name := "keynav-failed";
    procedure On_Keynav_Failed
@@ -3908,13 +3980,10 @@ package Gtk.Widget is
        After : Boolean := False);
    --  Gets emitted if keyboard navigation fails. See Gtk.Widget.Keynav_Failed
    --  for details.
-   --
-   --  if the emitting widget should try to handle the keyboard navigation
-   --  attempt in its parent container(s).
    -- 
    --  Callback parameters:
    --    --  "direction": the direction of movement
-   --    --  Returns True if stopping keyboard navigation is fine, False
+   --    --  Returns True if stopping keyboard navigation is fine, False if the emitting widget should try to handle the keyboard navigation attempt in its parent container(s).
 
    Signal_Leave_Notify_Event : constant Glib.Signal_Name := "leave-notify-event";
    procedure On_Leave_Notify_Event
@@ -3933,12 +4002,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_LEAVE_NOTIFY_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Crossing which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Map : constant Glib.Signal_Name := "map";
    procedure On_Map
@@ -3975,20 +4042,18 @@ package Gtk.Widget is
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
    --  automatically for all new windows.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Any which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Boolean_Boolean is not null access function
-     (Self   : access Gtk_Widget_Record'Class;
-      Object : Boolean) return Boolean;
+     (Self : access Gtk_Widget_Record'Class;
+      Arg1 : Boolean) return Boolean;
 
    type Cb_GObject_Boolean_Boolean is not null access function
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Boolean) return Boolean;
+     (Self : access Glib.Object.GObject_Record'Class;
+      Arg1 : Boolean) return Boolean;
 
    Signal_Mnemonic_Activate : constant Glib.Signal_Name := "mnemonic-activate";
    procedure On_Mnemonic_Activate
@@ -4000,6 +4065,9 @@ package Gtk.Widget is
        Call  : Cb_GObject_Boolean_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   -- 
+   --  Callback parameters:
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Motion_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -4026,20 +4094,18 @@ package Gtk.Widget is
    --  needs to enable the GDK_POINTER_MOTION_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Motion which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gtk_Direction_Type_Void is not null access procedure
-     (Self   : access Gtk_Widget_Record'Class;
-      Object : Gtk.Enums.Gtk_Direction_Type);
+     (Self      : access Gtk_Widget_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type);
 
    type Cb_GObject_Gtk_Direction_Type_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gtk.Enums.Gtk_Direction_Type);
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Direction : Gtk.Enums.Gtk_Direction_Type);
 
    Signal_Move_Focus : constant Glib.Signal_Name := "move-focus";
    procedure On_Move_Focus
@@ -4116,12 +4182,10 @@ package Gtk.Widget is
    --
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_PROPERTY_CHANGE_MASK mask.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Property which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Proximity_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -4145,12 +4209,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_PROXIMITY_IN_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Proximity which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Proximity_Out_Event : constant Glib.Signal_Name := "proximity-out-event";
    procedure On_Proximity_Out_Event
@@ -4166,12 +4228,10 @@ package Gtk.Widget is
    --  needs to enable the GDK_PROXIMITY_OUT_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Proximity which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean is not null access function
      (Self          : access Gtk_Widget_Record'Class;
@@ -4276,15 +4336,13 @@ package Gtk.Widget is
    --  events for buttons 4 and 5 when the wheel is turned.
    --
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
-   --  needs to enable the GDK_BUTTON_PRESS_MASK mask.
+   --  needs to enable the GDK_SCROLL_MASK mask.
    --
    --  This signal will be sent to the grab widget if there is one.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Selection_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -4306,24 +4364,22 @@ package Gtk.Widget is
        After : Boolean := False);
    --  The ::selection-clear-event signal will be emitted when the the
    --  Widget's window has lost ownership of a selection.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Selection which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
-     (Self   : access Gtk_Widget_Record'Class;
-      Object : Gtk.Selection_Data.Gtk_Selection_Data;
-      P0     : Guint;
-      P1     : Guint);
+     (Self : access Gtk_Widget_Record'Class;
+      Data : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info : Guint;
+      Time : Guint);
 
    type Cb_GObject_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gtk.Selection_Data.Gtk_Selection_Data;
-      P0     : Guint;
-      P1     : Guint);
+     (Self : access Glib.Object.GObject_Record'Class;
+      Data : Gtk.Selection_Data.Gtk_Selection_Data;
+      Info : Guint;
+      Time : Guint);
 
    Signal_Selection_Get : constant Glib.Signal_Name := "selection-get";
    procedure On_Selection_Get
@@ -4353,14 +4409,14 @@ package Gtk.Widget is
    --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gtk_Selection_Data_Guint_Void is not null access procedure
-     (Self   : access Gtk_Widget_Record'Class;
-      Object : Gtk.Selection_Data.Gtk_Selection_Data;
-      P0     : Guint);
+     (Self : access Gtk_Widget_Record'Class;
+      Data : Gtk.Selection_Data.Gtk_Selection_Data;
+      Time : Guint);
 
    type Cb_GObject_Gtk_Selection_Data_Guint_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gtk.Selection_Data.Gtk_Selection_Data;
-      P0     : Guint);
+     (Self : access Glib.Object.GObject_Record'Class;
+      Data : Gtk.Selection_Data.Gtk_Selection_Data;
+      Time : Guint);
 
    Signal_Selection_Received : constant Glib.Signal_Name := "selection-received";
    procedure On_Selection_Received
@@ -4387,12 +4443,10 @@ package Gtk.Widget is
        After : Boolean := False);
    --  The ::selection-request-event signal will be emitted when another
    --  client requests ownership of the selection owned by the Widget's window.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Selection which triggered this signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Show : constant Glib.Signal_Name := "show";
    procedure On_Show
@@ -4406,12 +4460,12 @@ package Gtk.Widget is
        After : Boolean := False);
 
    type Cb_Gtk_Widget_Gtk_Widget_Help_Type_Boolean is not null access function
-     (Self   : access Gtk_Widget_Record'Class;
-      Object : Gtk_Widget_Help_Type) return Boolean;
+     (Self      : access Gtk_Widget_Record'Class;
+      Help_Type : Gtk_Widget_Help_Type) return Boolean;
 
    type Cb_GObject_Gtk_Widget_Help_Type_Boolean is not null access function
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gtk_Widget_Help_Type) return Boolean;
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Help_Type : Gtk_Widget_Help_Type) return Boolean;
 
    Signal_Show_Help : constant Glib.Signal_Name := "show-help";
    procedure On_Show_Help
@@ -4423,14 +4477,17 @@ package Gtk.Widget is
        Call  : Cb_GObject_Gtk_Widget_Help_Type_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   -- 
+   --  Callback parameters:
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Cairo_Rectangle_Void is not null access procedure
-     (Self   : access Gtk_Widget_Record'Class;
-      Object : Cairo.Cairo_Rectangle);
+     (Self       : access Gtk_Widget_Record'Class;
+      Allocation : Cairo.Cairo_Rectangle);
 
    type Cb_GObject_Cairo_Rectangle_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Cairo.Cairo_Rectangle);
+     (Self       : access Glib.Object.GObject_Record'Class;
+      Allocation : Cairo.Cairo_Rectangle);
 
    Signal_Size_Allocate : constant Glib.Signal_Name := "size-allocate";
    procedure On_Size_Allocate
@@ -4511,8 +4568,6 @@ package Gtk.Widget is
    --  Gtk.Style.Gtk_Style. To track changes to the
    --  Gtk.Style_Context.Gtk_Style_Context associated with a widget, use the
    --  Gtk.Widget.Gtk_Widget::style-updated signal.
-   --
-   --  Deprecated:3.0: Use the Gtk.Widget.Gtk_Widget::style-updated signal
 
    Signal_Style_Updated : constant Glib.Signal_Name := "style-updated";
    procedure On_Style_Updated
@@ -4528,6 +4583,17 @@ package Gtk.Widget is
    --  Gtk.Style_Context.Gtk_Style_Context of a widget is changed. Note that
    --  style-modifying functions like Gtk.Widget.Override_Color also cause this
    --  signal to be emitted.
+
+   Signal_Touch_Event : constant Glib.Signal_Name := "touch-event";
+   procedure On_Touch_Event
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_Gtk_Widget_Gdk_Event_Boolean;
+       After : Boolean := False);
+   procedure On_Touch_Event
+      (Self  : not null access Gtk_Widget_Record;
+       Call  : Cb_GObject_Gdk_Event_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
 
    Signal_Unmap : constant Glib.Signal_Name := "unmap";
    procedure On_Unmap
@@ -4556,12 +4622,10 @@ package Gtk.Widget is
    --  To receive this signal, the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
    --  automatically for all new windows.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Any which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    Signal_Unrealize : constant Glib.Signal_Name := "unrealize";
    procedure On_Unrealize
@@ -4597,13 +4661,11 @@ package Gtk.Widget is
    --
    --  To receive this signal the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_VISIBILITY_NOTIFY_MASK mask.
-   --
-   --  False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Visibility which triggered this
    --    --  signal.
-   --    --  Returns True to stop other handlers from being invoked for the event.
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
    type Cb_Gtk_Widget_Gdk_Event_Window_State_Boolean is not null access function
      (Self  : access Gtk_Widget_Record'Class;
@@ -4629,13 +4691,11 @@ package Gtk.Widget is
    --  To receive this signal the Gdk.Gdk_Window associated to the widget
    --  needs to enable the GDK_STRUCTURE_MASK mask. GDK will enable this mask
    --  automatically for all new windows.
-   --
-   --  event. False to propagate the event further.
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Window_State which triggered this
    --    --  signal.
-   --    --  Returns True to stop other handlers from being invoked for the
+   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
 private
    Window_Property : constant Glib.Properties.Property_Boxed :=
@@ -4662,6 +4722,8 @@ private
      Glib.Properties.Build ("receives-default");
    Parent_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("parent");
+   Opacity_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("opacity");
    No_Show_All_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("no-show-all");
    Name_Property : constant Glib.Properties.Property_String :=

@@ -30,10 +30,11 @@
 --  manager that is usually part of the desktop environment, along with
 --  utilities that let the user change these settings. In the absence of an
 --  Xsettings manager, GTK+ reads default values for settings from
---  'settings.ini' files in '/etc/gtk-3.0' and '$XDG_CONFIG_HOME/gtk-3.0'.
---  These files must be valid key files (see GKey_File), and have a section
---  called Settings. Themes can also provide default values for settings by
---  installing a 'settings.ini' file next to their 'gtk.css' file.
+--  'settings.ini' files in '/etc/gtk-3.0', '$XDG_CONFIG_DIRS/gtk-3.0' and
+--  '$XDG_CONFIG_HOME/gtk-3.0'. These files must be valid key files (see
+--  Gkey.File.Gkey_File), and have a section called Settings. Themes can also
+--  provide default values for settings by installing a 'settings.ini' file
+--  next to their 'gtk.css' file.
 --
 --  Applications can override system-wide settings with
 --  Gtk.Settings.Set_String_Property, Gtk.Settings.Set_Long_Property, etc. This
@@ -129,7 +130,6 @@ package Gtk.Settings is
    function Get_Default return Gtk_Settings;
    --  Gets the Gtk.Settings.Gtk_Settings object for the default GDK screen,
    --  creating it if necessary. See Gtk.Settings.Get_For_Screen.
-   --  screen, then returns null.
 
    function Get_For_Screen
       (Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class)
@@ -262,6 +262,10 @@ package Gtk.Settings is
    --  Whether labels and menu items should have visible mnemonics which can
    --  be activated.
 
+   Gtk_Enable_Primary_Paste_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether a middle click on a mouse should paste the 'PRIMARY' clipboard
+   --  content at the cursor location.
+
    Gtk_Enable_Tooltips_Property : constant Glib.Properties.Property_Boolean;
    --  Whether tooltips should be shown on widgets.
 
@@ -303,7 +307,9 @@ package Gtk.Settings is
    Gtk_Im_Module_Property : constant Glib.Properties.Property_String;
    --  Which IM (input method) module should be used by default. This is the
    --  input method that will be used if the user has not explicitly chosen
-   --  another input method from the IM context menu.
+   --  another input method from the IM context menu. This also can be a
+   --  colon-separated list of input methods, which GTK+ will try in turn until
+   --  it finds one available on the system.
    --
    --  See Gtk.Imcontext.Gtk_Imcontext and see the
    --  Gtk.Settings.Gtk_Settings:gtk-show-input-method-menu property.
@@ -339,6 +345,10 @@ package Gtk.Settings is
 
    Gtk_Modules_Property : constant Glib.Properties.Property_String;
 
+   Gtk_Primary_Button_Warps_Slider_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether a click in a Gtk.GRange.Gtk_Range trough should scroll to the
+   --  click position or scroll by a single page in the respective direction.
+
    Gtk_Print_Backends_Property : constant Glib.Properties.Property_String;
    --  A comma-separated list of print backends to use in the print dialog.
    --  Available print backends depend on the GTK+ installation, and may
@@ -353,6 +363,10 @@ package Gtk.Settings is
    --
    --  The preview application is responsible for removing the pdf file and
    --  the print settings file when it is done.
+
+   Gtk_Recent_Files_Enabled_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether GTK+ should keep track of items inside the recently used
+   --  resources list. If set to False, the list will always be empty.
 
    Gtk_Recent_Files_Limit_Property : constant Glib.Properties.Property_Int;
    --  The number of recently used files that should be displayed by default
@@ -369,6 +383,10 @@ package Gtk.Settings is
    Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type;
    --  Where the contents of scrolled windows are located with respect to the
    --  scrollbars, if not overridden by the scrolled window's own placement.
+
+   Gtk_Shell_Shows_App_Menu_Property : constant Glib.Properties.Property_Boolean;
+
+   Gtk_Shell_Shows_Menubar_Property : constant Glib.Properties.Property_Boolean;
 
    Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean;
 
@@ -501,16 +519,24 @@ private
      Glib.Properties.Build ("gtk-show-unicode-menu");
    Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-show-input-method-menu");
+   Gtk_Shell_Shows_Menubar_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-shell-shows-menubar");
+   Gtk_Shell_Shows_App_Menu_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-shell-shows-app-menu");
    Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type :=
      Gtk.Enums.Build ("gtk-scrolled-window-placement");
    Gtk_Recent_Files_Max_Age_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("gtk-recent-files-max-age");
    Gtk_Recent_Files_Limit_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("gtk-recent-files-limit");
+   Gtk_Recent_Files_Enabled_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-recent-files-enabled");
    Gtk_Print_Preview_Command_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-print-preview-command");
    Gtk_Print_Backends_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-print-backends");
+   Gtk_Primary_Button_Warps_Slider_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-primary-button-warps-slider");
    Gtk_Modules_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-modules");
    Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int :=
@@ -557,6 +583,8 @@ private
      Glib.Properties.Build ("gtk-entry-password-hint-timeout");
    Gtk_Enable_Tooltips_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-enable-tooltips");
+   Gtk_Enable_Primary_Paste_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-enable-primary-paste");
    Gtk_Enable_Mnemonics_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-enable-mnemonics");
    Gtk_Enable_Input_Feedback_Sounds_Property : constant Glib.Properties.Property_Boolean :=

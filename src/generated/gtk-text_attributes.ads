@@ -47,6 +47,7 @@ package Gtk.Text_Attributes is
       Draw_Bg : Guint;
       Inside_Selection : Guint;
       Is_Text : Guint;
+      Rgba : array_of_Gdk_RGBA (1 .. 2);
    end record;
    pragma Convention (C, Gtk_Text_Appearance);
 
@@ -75,6 +76,7 @@ package Gtk.Text_Attributes is
       Bg_Full_Height : Guint;
       Editable : Guint;
       Pg_Bg_Rgba : Gdk.RGBA.Gdk_RGBA;
+      Padding : System.Address;
    end record;
    pragma Convention (C, Gtk_Text_Attributes);
 
@@ -92,12 +94,10 @@ package Gtk.Text_Attributes is
    procedure Gtk_New (Text_Attr : out Gtk_Text_Attributes);
    --  Creates a Gtk.Text_Attributes.Gtk_Text_Attributes, which describes a
    --  set of properties on some text.
-   --  free with Gtk.Text_Attributes.Unref.
 
    function Gtk_Text_Attributes_New return Gtk_Text_Attributes;
    --  Creates a Gtk.Text_Attributes.Gtk_Text_Attributes, which describes a
    --  set of properties on some text.
-   --  free with Gtk.Text_Attributes.Unref.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_attributes_get_type");
@@ -110,7 +110,6 @@ package Gtk.Text_Attributes is
       (Text_Attr : Gtk_Text_Attributes) return Gtk_Text_Attributes;
    pragma Import (C, Copy, "gtk_text_attributes_copy");
    --  Copies Src and returns a new Gtk.Text_Attributes.Gtk_Text_Attributes.
-   --  free with Gtk.Text_Attributes.Unref
 
    procedure Copy_Values
       (Text_Attr : Gtk_Text_Attributes;

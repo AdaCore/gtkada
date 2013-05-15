@@ -78,7 +78,6 @@ package Pango.Layout is
    --  Create a new Pango.Layout.Pango_Layout object with attributes
    --  initialized to default values for a particular
    --  Pango.Context.Pango_Context.
-   --  count of one, which should be freed with g_object_unref.
    --  "context": a Pango.Context.Pango_Context
 
    procedure Initialize
@@ -87,7 +86,6 @@ package Pango.Layout is
    --  Create a new Pango.Layout.Pango_Layout object with attributes
    --  initialized to default values for a particular
    --  Pango.Context.Pango_Context.
-   --  count of one, which should be freed with g_object_unref.
    --  "context": a Pango.Context.Pango_Context
 
    function Pango_Layout_New
@@ -96,7 +94,6 @@ package Pango.Layout is
    --  Create a new Pango.Layout.Pango_Layout object with attributes
    --  initialized to default values for a particular
    --  Pango.Context.Pango_Context.
-   --  count of one, which should be freed with g_object_unref.
    --  "context": a Pango.Context.Pango_Context
 
    function Get_Type return Glib.GType;
@@ -121,12 +118,9 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return Pango_Layout;
    --  Does a deep copy-by-value of the Src layout. The attribute list, tab
    --  array, and text from the original layout are all copied by value.
-   --  with a reference count of one, which should be freed with
-   --  g_object_unref.
 
    function Copy (Self : Pango_Layout_Iter) return Pango_Layout_Iter;
-   --  Copies a Pang_Layout_Iter.
-   --  be freed with Pango.Layout.Free, or null if Iter was null.
+   --  Copies a Pango.Layout.Pango_Layout_Iter.
    --  Since: gtk+ 1.20
 
    function Get_Alignment
@@ -159,7 +153,6 @@ package Pango.Layout is
    --  Gets whether to calculate the bidirectional base direction for the
    --  layout according to the contents of the layout. See
    --  Pango.Layout.Set_Auto_Dir.
-   --  is computed from the layout's contents, False otherwise.
    --  Since: gtk+ 1.4
 
    procedure Set_Auto_Dir
@@ -167,10 +160,11 @@ package Pango.Layout is
        Auto_Dir : Boolean);
    --  Sets whether to calculate the bidirectional base direction for the
    --  layout according to the contents of the layout; when this flag is on
-   --  (the default), then paragraphs in (Arabic and Hebrew principally), will
-   --  have right-to-left layout, paragraphs with letters from other scripts
-   --  will have left-to-right layout. Paragraphs with only neutral characters
-   --  get their direction from the surrounding paragraphs.
+   --  (the default), then paragraphs in Layout that begin with strong
+   --  right-to-left characters (Arabic and Hebrew principally), will have
+   --  right-to-left layout, paragraphs with letters from other scripts will
+   --  have left-to-right layout. Paragraphs with only neutral characters get
+   --  their direction from the surrounding paragraphs.
    --  When False, the choice between left-to-right and right-to-left layout
    --  is done according to the base direction of the layout's
    --  Pango.Context.Pango_Context. (See Pango.Context.Set_Base_Dir).
@@ -194,15 +188,12 @@ package Pango.Layout is
    function Get_Character_Count
       (Layout : not null access Pango_Layout_Record) return Gint;
    --  Returns the number of Unicode characters in the the text of Layout.
-   --  in the text of Layout
    --  Since: gtk+ 1.30
 
    function Get_Context
       (Layout : not null access Pango_Layout_Record)
        return Pango.Context.Pango_Context;
    --  Retrieves the Pango.Context.Pango_Context used for this layout.
-   --  This does not have an additional refcount added, so if you want to keep
-   --  a copy of this around, you must reference it yourself.
 
    procedure Get_Cursor_Pos
       (Layout     : not null access Pango_Layout_Record;
@@ -226,8 +217,6 @@ package Pango.Layout is
        return Pango_Ellipsize_Mode;
    --  Gets the type of ellipsization being performed for Layout. See
    --  Pango.Layout.Set_Ellipsize
-   --  Use Pango.Layout.Is_Ellipsized to query whether any paragraphs were
-   --  actually ellipsized.
    --  Since: gtk+ 1.6
 
    procedure Set_Ellipsize
@@ -266,8 +255,6 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record)
        return Pango.Font.Pango_Font_Description;
    --  Gets the font description for the layout, if any.
-   --  or null if the font description from the layout's context is inherited.
-   --  This value is owned by the layout and must not be modified or freed.
    --  Since: gtk+ 1.8
 
    procedure Set_Font_Description
@@ -283,7 +270,6 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return Gint;
    --  Gets the height of layout used for ellipsization. See
    --  Pango.Layout.Set_Height for details.
-   --  number of lines if negative.
    --  Since: gtk+ 1.20
 
    procedure Set_Height
@@ -334,7 +320,6 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record'Class)
        return Pango_Layout_Iter;
    --  Returns an iterator to iterate over the visual extents of the layout.
-   --  Pango.Layout.Free.
 
    function Get_Justify
       (Layout : not null access Pango_Layout_Record) return Boolean;
@@ -358,9 +343,6 @@ package Pango.Layout is
    --  Retrieves a particular line from a Pango.Layout.Pango_Layout.
    --  Use the faster Pango.Layout.Get_Line_Readonly if you do not plan to
    --  modify the contents of the line (glyphs, glyph widths, etc.).
-   --  index is out of range. This layout line can be ref'ed and retained, but
-   --  will become invalid if changes are made to the
-   --  Pango.Layout.Pango_Layout.
    --  "line": the index of a line, which must be between 0 and
    --  'pango_layout_get_line_count(layout) - 1', inclusive.
 
@@ -380,9 +362,6 @@ package Pango.Layout is
    --  This is a faster alternative to Pango.Layout.Get_Line, but the user is
    --  not expected to modify the contents of the line (glyphs, glyph widths,
    --  etc.).
-   --  index is out of range. This layout line can be ref'ed and retained, but
-   --  will become invalid if changes are made to the
-   --  Pango.Layout.Pango_Layout. No changes should be made to the line.
    --  Since: gtk+ 1.16
    --  "line": the index of a line, which must be between 0 and
    --  'pango_layout_get_line_count(layout) - 1', inclusive.
@@ -420,10 +399,23 @@ package Pango.Layout is
    --  "width": location to store the logical width, or null
    --  "height": location to store the logical height, or null
 
+   function Get_Serial
+      (Layout : not null access Pango_Layout_Record) return Guint;
+   --  Returns the current serial number of Layout. The serial number is
+   --  initialized to an small number larger than zero when a new layout is
+   --  created and is increased whenever the layout is changed using any of the
+   --  setter functions, or the Pango.Context.Pango_Context it uses has
+   --  changed. The serial may wrap, but will never have the value 0. Since it
+   --  can wrap, never compare it with "less than", always use "not equals".
+   --  This can be used to automatically detect changes to a
+   --  Pango.Layout.Pango_Layout, and is useful for example to decide whether a
+   --  layout needs redrawing. To force the serial to be increased, use
+   --  Pango.Layout.Context_Changed.
+   --  Since: gtk+ 1.32.4
+
    function Get_Single_Paragraph_Mode
       (Layout : not null access Pango_Layout_Record) return Boolean;
    --  Obtains the value set by Pango.Layout.Set_Single_Paragraph_Mode.
-   --  paragraph separator characters, False otherwise.
 
    procedure Set_Single_Paragraph_Mode
       (Layout  : not null access Pango_Layout_Record;
@@ -562,7 +554,6 @@ package Pango.Layout is
    --  This returns True if the ellipsization mode for Layout is not
    --  Pango.Layout.Ellipsize_None, a positive width is set on Layout, and
    --  there are paragraphs exceeding that width that have to be ellipsized.
-   --  otherwise.
    --  Since: gtk+ 1.16
 
    function Is_Wrapped
@@ -571,7 +562,6 @@ package Pango.Layout is
    --  This returns True if a positive width is set on Layout, ellipsization
    --  mode of Layout is set to Pango.Layout.Ellipsize_None, and there are
    --  paragraphs exceeding the layout width that have to be wrapped.
-   --  otherwise.
    --  Since: gtk+ 1.16
 
    procedure Move_Cursor_Visually
@@ -581,7 +571,7 @@ package Pango.Layout is
        Old_Trailing : Gint;
        Direction    : Gint;
        New_Index    : out Gint;
-       New_Trailing : in out Gint);
+       New_Trailing : out Gint);
    --  Computes a new cursor position from an old position and a count of
    --  positions to move visually. If Direction is positive, then the new
    --  strong cursor position will be one position to the right of the old
@@ -674,7 +664,7 @@ package Pango.Layout is
 
    procedure Get_Char_Extents
       (Self         : Pango_Layout_Iter;
-       Logical_Rect : in out Pango_Rectangle);
+       Logical_Rect : out Pango_Rectangle);
    --  Gets the extents of the current character, in layout coordinates
    --  (origin is the top left of the entire layout). Only logical extents can
    --  sensibly be obtained for characters; ink extents make sense only down to

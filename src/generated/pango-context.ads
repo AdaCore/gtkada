@@ -54,7 +54,6 @@ package Pango.Context is
    --  instance, the GTK+ toolkit has, among others,
    --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
-   --  be freed with g_object_unref.
 
    procedure Initialize (Self : not null access Pango_Context_Record'Class);
    --  Creates a new Pango.Context.Pango_Context initialized to default
@@ -68,7 +67,6 @@ package Pango.Context is
    --  instance, the GTK+ toolkit has, among others,
    --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
-   --  be freed with g_object_unref.
 
    function Pango_Context_New return Pango_Context;
    --  Creates a new Pango.Context.Pango_Context initialized to default
@@ -82,7 +80,6 @@ package Pango.Context is
    --  instance, the GTK+ toolkit has, among others,
    --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
-   --  be freed with g_object_unref.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_context_get_type");
@@ -90,6 +87,14 @@ package Pango.Context is
    -------------
    -- Methods --
    -------------
+
+   procedure Changed (Self : not null access Pango_Context_Record);
+   --  Forces a change in the context, which will cause any
+   --  Pango.Layout.Pango_Layout using this context to re-layout.
+   --  This function is only useful when implementing a new backend for Pango,
+   --  something applications won't do. Backends should call this function if
+   --  they have attached extra data to the context and such data is changed.
+   --  Since: gtk+ 1.32.4
 
    function Get_Base_Dir
       (Self : not null access Pango_Context_Record)
@@ -129,7 +134,6 @@ package Pango.Context is
       (Self : not null access Pango_Context_Record)
        return Pango.Font.Pango_Font_Description;
    --  Retrieve the default font description for the context.
-   --  This value must not be modified or freed.
 
    procedure Set_Font_Description
       (Self : not null access Pango_Context_Record;
@@ -182,8 +186,6 @@ package Pango.Context is
        return Pango.Matrix.Pango_Matrix;
    --  Gets the transformation matrix that will be applied when rendering with
    --  this context. See Pango.Context.Set_Matrix.
-   --  (which is the same as the identity matrix). The returned matrix is
-   --  owned by Pango and must not be modified or freed.
    --  Since: gtk+ 1.6
 
    procedure Set_Matrix
@@ -213,13 +215,27 @@ package Pango.Context is
    --  figures. If characters from multiple of these families would be used to
    --  render the string, then the returned fonts would be a composite of the
    --  metrics for the fonts loaded for the individual families.
-   --  when finished using the object.
    --  "desc": a Pango.Font.Pango_Font_Description structure. null means that
    --  the font description from the context will be used.
    --  "language": language tag used to determine which script to get the
    --  metrics for. null means that the language tag from the context will be
    --  used. If no language tag is set on the context, metrics for the default
    --  language (as determined by Pango.Language.Get_Default) will be returned.
+
+   function Get_Serial
+      (Self : not null access Pango_Context_Record) return Guint;
+   --  Returns the current serial number of Context. The serial number is
+   --  initialized to an small number larger than zero when a new context is
+   --  created and is increased whenever the context is changed using any of
+   --  the setter functions, or the Pango.Font_Map.Pango_Font_Map it uses to
+   --  find fonts has changed. The serial may wrap, but will never have the
+   --  value 0. Since it can wrap, never compare it with "less than", always
+   --  use "not equals".
+   --  This can be used to automatically detect changes to a
+   --  Pango.Context.Pango_Context, and is only useful when implementing
+   --  objects that need update when their Pango.Context.Pango_Context changes,
+   --  like Pango.Layout.Pango_Layout.
+   --  Since: gtk+ 1.32.4
 
    function List_Families
       (Self : not null access Pango_Context_Record)
@@ -232,7 +248,6 @@ package Pango.Context is
        return Pango.Font.Pango_Font;
    --  Loads the font in one of the fontmaps in the context that is the
    --  closest match for Desc.
-   --  was loaded, or null if no font matched.
    --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
 
    function Load_Fontset
@@ -242,7 +257,6 @@ package Pango.Context is
        return Pango.Fontset.Pango_Fontset;
    --  Load a set of fonts in the context that can be used to render a font
    --  matching Desc.
-   --  or null if no font matched.
    --  "desc": a Pango.Font.Pango_Font_Description describing the fonts to
    --  load
    --  "language": a Pango.Language.Pango_Language the fonts will be used for

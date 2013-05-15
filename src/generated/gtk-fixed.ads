@@ -31,6 +31,8 @@
 --  broken applications. With Gtk.Fixed.Gtk_Fixed, the following things will
 --  result in truncated text, overlapping widgets, and other display bugs:
 --
+-- 
+--
 --     * Themes, which may change widget sizes.
 --
 --     * Fonts other than the one you used to write the app will of course

@@ -101,13 +101,23 @@ package Gdk.Event is
       Setting,
       Owner_Change,
       Grab_Broken,
-      Damage);
+      Damage,
+      Touch_Begin,
+      Touch_Update,
+      Touch_End,
+      Touch_Cancel);
    pragma Convention (C, Gdk_Event_Type);
    --  Specifies the type of the event.
    --
    --  Do not confuse these events with the signals that GTK+ widgets emit.
    --  Although many of these events result in corresponding signals being
    --  emitted, the events are often transformed or filtered along the way.
+   --
+   --  In some language bindings, the values Gdk.Event.Gdk_2button_Press and
+   --  Gdk.Event.Gdk_3button_Press would translate into something syntactically
+   --  invalid (eg 'Gdk.EventType.2ButtonPress', where a symbol is not allowed
+   --  to start with a number). In that case, the aliases
+   --  GDK_DOUBLE_BUTTON_PRESS and GDK_TRIPLE_BUTTON_PRESS can be used instead.
 
    for Gdk_Event_Type use (
       Nothing => -1,
@@ -146,7 +156,11 @@ package Gdk.Event is
       Setting => 33,
       Owner_Change => 34,
       Grab_Broken => 35,
-      Damage => 36);
+      Damage => 36,
+      Touch_Begin => 37,
+      Touch_Update => 38,
+      Touch_End => 39,
+      Touch_Cancel => 40);
 
    type Gdk_Event_Mask is mod 2 ** Integer'Size;
    pragma Convention (C, Gdk_Event_Mask);
@@ -164,6 +178,13 @@ package Gdk.Event is
    --  a hint (the is_hint member is True). To receive more motion events after
    --  a motion hint event, the application needs to asks for more, by calling
    --  Gdk.Event.Request_Motions.
+   --
+   --  If Gdk.Event.Touch_Mask is enabled, the window will receive touch
+   --  events from touch-enabled devices. Those will come as sequences of
+   --  Gdk.Event.Gdk_Event_Touch with type Gdk.Event.Touch_Update, enclosed by
+   --  two events with type Gdk.Event.Touch_Begin and Gdk.Event.Touch_End (or
+   --  Gdk.Event.Touch_Cancel). Gdk.Event.Get_Event_Sequence returns the event
+   --  sequence for these events, so different sequences may be distinguished.
 
    Exposure_Mask : constant Gdk_Event_Mask := 2;
    Pointer_Motion_Mask : constant Gdk_Event_Mask := 4;
@@ -186,7 +207,9 @@ package Gdk.Event is
    Proximity_Out_Mask : constant Gdk_Event_Mask := 524288;
    Substructure_Mask : constant Gdk_Event_Mask := 1048576;
    Scroll_Mask : constant Gdk_Event_Mask := 2097152;
-   All_Events_Mask : constant Gdk_Event_Mask := 4194302;
+   Touch_Mask : constant Gdk_Event_Mask := 4194304;
+   Smooth_Scroll_Mask : constant Gdk_Event_Mask := 8388608;
+   All_Events_Mask : constant Gdk_Event_Mask := 16777214;
 
    type Gdk_Visibility_State is (
       Visibility_Unobscured,
@@ -200,7 +223,8 @@ package Gdk.Event is
       Scroll_Up,
       Scroll_Down,
       Scroll_Left,
-      Scroll_Right);
+      Scroll_Right,
+      Scroll_Smooth);
    pragma Convention (C, Gdk_Scroll_Direction);
    --  Specifies the direction for Gdk.Event.Gdk_Event_Scroll.
 
@@ -223,7 +247,10 @@ package Gdk.Event is
       Crossing_Ungrab,
       Crossing_Gtk_Grab,
       Crossing_Gtk_Ungrab,
-      Crossing_State_Changed);
+      Crossing_State_Changed,
+      Crossing_Touch_Begin,
+      Crossing_Touch_End,
+      Crossing_Device_Switch);
    pragma Convention (C, Gdk_Crossing_Mode);
    --  Specifies the crossing mode for Gdk.Event.Gdk_Event_Crossing.
 
@@ -295,7 +322,7 @@ package Gdk.Event is
    pragma Inline (From_Object_Free);
    --  Used for button press and button release events. The Type field will be
    --  one of Gdk.Event.Button_Press, Gdk.Event.Gdk_2button_Press,
-   --  Gdk.Event.Gdk_3button_Press, and Gdk.Event.Button_Release.
+   --  Gdk.Event.Gdk_3button_Press or Gdk.Event.Button_Release,
    --
    --  Double and triple-clicks result in a sequence of events being received.
    --  For double-clicks the order of events will be:
@@ -398,6 +425,8 @@ package Gdk.Event is
       Device : System.Address;
       X_Root : Gdouble;
       Y_Root : Gdouble;
+      Delta_X : Gdouble;
+      Delta_Y : Gdouble;
    end record;
    pragma Convention (C, Gdk_Event_Scroll);
 
@@ -406,6 +435,11 @@ package Gdk.Event is
    --  Generated from button presses for the buttons 4 to 7. Wheel mice are
    --  usually configured to generate button press events for buttons 4 and 5
    --  when the wheel is turned.
+   --
+   --  Some GDK backends can also generate 'smooth' scroll events, which can
+   --  be recognized by the Gdk.Event.Scroll_Smooth scroll direction. For
+   --  these, the scroll deltas can be obtained with
+   --  Gdk.Event.Get_Scroll_Deltas.
 
    type Gdk_Event_Key is record
       The_Type : Gdk_Event_Type;
@@ -480,7 +514,7 @@ package Gdk.Event is
       Send_Event : Gint8;
       Atom : Gdk.Types.Gdk_Atom;
       Time : Guint32;
-      State : Guint;
+      State : Gdk_Property_State;
    end record;
    pragma Convention (C, Gdk_Event_Property);
 
@@ -585,6 +619,40 @@ package Gdk.Event is
    pragma Inline (From_Object_Free);
    --  Generated when a setting is modified.
 
+   type Gdk_Event_Touch is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Time : Guint32;
+      X : Gdouble;
+      Y : Gdouble;
+      Axes : access Gdouble;
+      State : Gdk.Types.Gdk_Modifier_Type;
+      Sequence : System.Address;
+      Emulating_Pointer : Boolean;
+      Device : System.Address;
+      X_Root : Gdouble;
+      Y_Root : Gdouble;
+   end record;
+   pragma Convention (C, Gdk_Event_Touch);
+
+   function From_Object_Free (B : access Gdk_Event_Touch) return Gdk_Event_Touch;
+   pragma Inline (From_Object_Free);
+   --  Used for touch events. Type field will be one of Gdk.Event.Touch_Begin,
+   --  Gdk.Event.Touch_Update, Gdk.Event.Touch_End or Gdk.Event.Touch_Cancel.
+   --
+   --  Touch events are grouped into sequences by means of the Sequence field,
+   --  which can also be obtained with Gdk.Event.Get_Event_Sequence. Each
+   --  sequence begins with a Gdk.Event.Touch_Begin event, followed by any
+   --  number of Gdk.Event.Touch_Update events, and ends with a
+   --  Gdk.Event.Touch_End (or Gdk.Event.Touch_Cancel) event. With multitouch
+   --  devices, there may be several active sequences at the same time.
+
+   type Gdk_Event_Sequence is new Glib.C_Proxy;
+   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence;
+   pragma Inline (From_Object_Free);
+
+
    type Gdk_Event_Grab_Broken is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
@@ -629,6 +697,12 @@ package Gdk.Event is
          | Gdk.Event.Gdk_3button_Press
          | Gdk.Event.Button_Release =>
          Button : Gdk_Event_Button;
+
+         when Gdk.Event.Touch_Begin
+         | Gdk.Event.Touch_Update
+         | Gdk.Event.Touch_End
+         | Gdk.Event.Touch_Cancel =>
+         Touch : Gdk_Event_Touch;
 
          when Gdk.Event.Scroll =>
          Scroll : Gdk_Event_Scroll;
@@ -775,13 +849,11 @@ package Gdk.Event is
 
    procedure Gdk_New (Event : out Gdk_Event; The_Type : Gdk_Event_Type);
    --  Creates a new event of the given type. All fields are set to 0.
-   --  should be freed with Gdk.Event.Free.
    --  Since: gtk+ 2.2
    --  "type": a Gdk.Event.Gdk_Event_Type
 
    function Gdk_Event_New (The_Type : Gdk_Event_Type) return Gdk_Event;
    --  Creates a new event of the given type. All fields are set to 0.
-   --  should be freed with Gdk.Event.Free.
    --  Since: gtk+ 2.2
    --  "type": a Gdk.Event.Gdk_Event_Type
 
@@ -832,7 +904,6 @@ package Gdk.Event is
    --  Copies a Gdk.Event.Gdk_Event, copying or incrementing the reference
    --  count of the resources associated with it (e.g. Gdk.Gdk_Window's and
    --  strings).
-   --  Gdk.Event.Free.
 
    procedure Free (Event : Gdk_Event);
    pragma Import (C, Free, "gdk_event_free");
@@ -860,6 +931,14 @@ package Gdk.Event is
    --  "x_win": location to put event window x coordinate
    --  "y_win": location to put event window y coordinate
 
+   function Get_Event_Sequence (Event : Gdk_Event) return System.Address;
+   pragma Import (C, Get_Event_Sequence, "gdk_event_get_event_sequence");
+   --  If Event if of type Gdk.Event.Touch_Begin, Gdk.Event.Touch_Update,
+   --  Gdk.Event.Touch_End or Gdk.Event.Touch_Cancel, returns the
+   --  Gdk.Event.Gdk_Event_Sequence to which the event belongs. Otherwise,
+   --  return null.
+   --  Since: gtk+ 3.4
+
    procedure Get_Root_Coords
       (Event  : Gdk_Event;
        X_Root : out Gdouble;
@@ -868,6 +947,16 @@ package Gdk.Event is
    --  Extract the root window relative x/y coordinates from an event.
    --  "x_root": location to put root window x coordinate
    --  "y_root": location to put root window y coordinate
+
+   procedure Get_Scroll_Deltas
+      (Event   : Gdk_Event;
+       Delta_X : out Gdouble;
+       Delta_Y : out Gdouble);
+   pragma Import (C, Get_Scroll_Deltas, "gdk_event_get_scroll_deltas");
+   --  Retrieves the scroll deltas from a Gdk.Event.Gdk_Event
+   --  Since: gtk+ 3.4
+   --  "delta_x": return location for X delta
+   --  "delta_y": return location for Y delta
 
    procedure Get_Scroll_Direction
       (Event     : Gdk_Event;
@@ -887,6 +976,17 @@ package Gdk.Event is
    --  Appends a copy of the given event onto the front of the event queue for
    --  event->any.window's display, or the default event queue if
    --  event->any.window is null. See gdk_display_put_event.
+
+   function Triggers_Context_Menu (Event : Gdk_Event) return Boolean;
+   --  This function returns whether a Gdk.Event.Gdk_Event_Button should
+   --  trigger a context menu, according to platform conventions. The right
+   --  mouse button always triggers context menus. Additionally, if
+   --  gdk_keymap_get_modifier_mask returns a non-0 mask for
+   --  GDK_MODIFIER_INTENT_CONTEXT_MENU, then the left mouse button will also
+   --  trigger a context menu if this modifier is pressed.
+   --  This function should always be used instead of simply checking for
+   --  event->button == GDK_BUTTON_SECONDARY.
+   --  Since: gtk+ 3.4
 
    function Get_Button (Event : Gdk_Event) return Guint;
    pragma Import (C, Get_Button, "ada_gdk_event_get_button");
@@ -956,6 +1056,9 @@ package Gdk.Event is
    -- GtkAda additions --
    ----------------------
 
+   Double_Button_Press : constant Gdk_Event_Type := Gdk_2button_Press;
+   Triple_Button_Press : constant Gdk_Event_Type := Gdk_3button_Press;
+
    function From_Address (C : System.Address) return Gdk_Event;
    --  Convert a C handler to the matching Event structure.
 
@@ -1000,15 +1103,11 @@ package Gdk.Event is
    --  Checks all open displays for a Gdk.Event.Gdk_Event to process,to be
    --  processed on, fetching events from the windowing system if necessary.
    --  See gdk_display_get_event.
-   --  are pending. The returned Gdk.Event.Gdk_Event should be freed with
-   --  Gdk.Event.Free.
 
    function Peek return Gdk_Event;
    pragma Import (C, Peek, "gdk_event_peek");
    --  If there is an event waiting in the event queue of some open display,
    --  returns a copy of it. See gdk_display_peek_event.
-   --  events are in any queues. The returned Gdk.Event.Gdk_Event should be
-   --  freed with Gdk.Event.Free.
 
    procedure Request_Motions (Event : Gdk_Event_Motion);
    pragma Import (C, Request_Motions, "gdk_event_request_motions");

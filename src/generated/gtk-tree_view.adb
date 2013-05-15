@@ -54,8 +54,8 @@ package body Gtk.Tree_View is
    pragma Import (C, C_Gtk_Tree_View_Insert_Column_With_Data_Func, "gtk_tree_view_insert_column_with_data_func");
    --  Convenience function that inserts a new column into the
    --  Gtk.Tree_View.Gtk_Tree_View with the given cell renderer and a
-   --  Gtk_Cell_Data_Func to set cell renderer attributes (normally using data
-   --  from the model). See also gtk_tree_view_column_set_cell_data_func,
+   --  Gtk_Tree_Cell_Data_Func to set cell renderer attributes (normally using
+   --  data from the model). See also gtk_tree_view_column_set_cell_data_func,
    --  gtk_tree_view_column_pack_start. If Tree_View has "fixed_height" mode
    --  enabled, then the new column will have its "sizing" property set to be
    --  GTK_TREE_VIEW_COLUMN_FIXED.
@@ -102,9 +102,11 @@ package body Gtk.Tree_View is
        Data      : System.Address;
        Destroy   : System.Address);
    pragma Import (C, C_Gtk_Tree_View_Set_Destroy_Count_Func, "gtk_tree_view_set_destroy_count_func");
+   pragma Obsolescent (C_Gtk_Tree_View_Set_Destroy_Count_Func);
    --  This function should almost never be used. It is meant for private use
    --  by ATK for determining the number of visible children that are removed
    --  when the user collapses a row, or a row is deleted.
+   --  Deprecated since 3.4, Accessibility does not need the function anymore.
    --  "func": Function to be called when a view row is destroyed, or null
    --  "data": User data to be passed to Func, or null
    --  "destroy": Destroy notifier for Data, or null
@@ -198,7 +200,7 @@ package body Gtk.Tree_View is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Cell_Data_Func);
-   --  "tree_column": A Gtk_Tree_Column
+   --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
    --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
    --  by Tree_Column
    --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
@@ -749,6 +751,19 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Tree_View), Get_Object (Path));
    end Expand_To_Path;
 
+   ----------------------------------
+   -- Get_Activate_On_Single_Click --
+   ----------------------------------
+
+   function Get_Activate_On_Single_Click
+      (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
+   is
+      function Internal (Tree_View : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_tree_view_get_activate_on_single_click");
+   begin
+      return Internal (Get_Object (Tree_View)) /= 0;
+   end Get_Activate_On_Single_Click;
+
    -------------------------
    -- Get_Background_Area --
    -------------------------
@@ -1062,6 +1077,19 @@ package body Gtk.Tree_View is
    begin
       return Internal (Get_Object (Tree_View));
    end Get_Model;
+
+   -------------------
+   -- Get_N_Columns --
+   -------------------
+
+   function Get_N_Columns
+      (Tree_View : not null access Gtk_Tree_View_Record) return Guint
+   is
+      function Internal (Tree_View : System.Address) return Guint;
+      pragma Import (C, Internal, "gtk_tree_view_get_n_columns");
+   begin
+      return Internal (Get_Object (Tree_View));
+   end Get_N_Columns;
 
    ---------------------
    -- Get_Path_At_Pos --
@@ -1408,7 +1436,7 @@ package body Gtk.Tree_View is
       --  integer from the Tree_Model, and render it to the "text" attribute of
       --  "cell" by converting it to its written equivilent. This is set by
       --  calling gtk_tree_view_column_set_cell_data_func
-      --  "tree_column": A Gtk_Tree_Column
+      --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
       --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
       --  rendered by Tree_Column
       --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
@@ -1705,6 +1733,20 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Tree_View), Tree_X, Tree_Y);
    end Scroll_To_Point;
+
+   ----------------------------------
+   -- Set_Activate_On_Single_Click --
+   ----------------------------------
+
+   procedure Set_Activate_On_Single_Click
+      (Tree_View : not null access Gtk_Tree_View_Record;
+       Single    : Boolean)
+   is
+      procedure Internal (Tree_View : System.Address; Single : Integer);
+      pragma Import (C, Internal, "gtk_tree_view_set_activate_on_single_click");
+   begin
+      Internal (Get_Object (Tree_View), Boolean'Pos (Single));
+   end Set_Activate_On_Single_Click;
 
    ------------------------------
    -- Set_Column_Drag_Function --

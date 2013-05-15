@@ -87,10 +87,10 @@ with Gtk.Entry_Buffer;        use Gtk.Entry_Buffer;
 with Gtk.Entry_Completion;    use Gtk.Entry_Completion;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Image;               use Gtk.Image;
-with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Style;               use Gtk.Style;
 with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Widget;              use Gtk.Widget;
+with Pango.Attributes;        use Pango.Attributes;
 with Pango.Layout;            use Pango.Layout;
 
 package Gtk.GEntry is
@@ -160,7 +160,7 @@ package Gtk.GEntry is
    --  default widget is usually one of the dialog buttons.
    --  (For experts: if Setting is True, the entry calls
    --  Gtk.Window.Activate_Default on the window containing the entry, in the
-   --  default handler for the Gtk.Widget.Gtk_Widget::activate signal.)
+   --  default handler for the Gtk.GEntry.Gtk_Entry::activate signal.)
    --  "setting": True to activate window's default widget on Enter keypress
 
    function Get_Alignment
@@ -177,6 +177,21 @@ package Gtk.GEntry is
    --  Since: gtk+ 2.4
    --  "xalign": The horizontal alignment, from 0 (left) to 1 (right).
    --  Reversed for RTL layouts
+
+   function Get_Attributes
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Pango.Attributes.Pango_Attr_List;
+   --  Gets the attribute list that was set on the entry using
+   --  Gtk.GEntry.Set_Attributes, if any.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Attributes
+      (The_Entry : not null access Gtk_Entry_Record;
+       Attrs     : Pango.Attributes.Pango_Attr_List);
+   --  Sets a Pango.Attributes.Pango_Attr_List; the attributes in the list are
+   --  applied to the entry text.
+   --  Since: gtk+ 3.6
+   --  "attrs": a Pango.Attributes.Pango_Attr_List
 
    function Get_Buffer
       (The_Entry : not null access Gtk_Entry_Record)
@@ -197,7 +212,6 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Entry_Completion.Gtk_Entry_Completion;
    --  Returns the auxiliary completion object currently in use by Entry.
-   --  in use by Entry.
    --  Since: gtk+ 2.4
 
    procedure Set_Completion
@@ -216,7 +230,6 @@ package Gtk.GEntry is
    --  operation, or -1.
    --  This function is meant to be used in a
    --  Gtk.Widget.Gtk_Widget::drag-data-get callback.
-   --  DND operation, or -1.
    --  Since: gtk+ 2.16
 
    function Get_Cursor_Hadjustment
@@ -224,7 +237,6 @@ package Gtk.GEntry is
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Retrieves the horizontal cursor adjustment for the entry. See
    --  Gtk.GEntry.Set_Cursor_Hadjustment.
-   --  if none has been set.
    --  Since: gtk+ 2.12
 
    procedure Set_Cursor_Hadjustment
@@ -298,7 +310,6 @@ package Gtk.GEntry is
    --  Retrieves the Glib.G_Icon.G_Icon used for the icon, or null if there is
    --  no icon or if the icon was set by some other method (e.g., by stock,
    --  pixbuf, or icon name).
-   --  or if the icon is not a Glib.G_Icon.G_Icon
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
 
@@ -308,7 +319,6 @@ package Gtk.GEntry is
    --  Retrieves the icon name used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, stock or
    --  gicon).
-   --  wasn't set from an icon name
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
 
@@ -320,7 +330,6 @@ package Gtk.GEntry is
    --  will work regardless of whether the icon was set using a
    --  Gdk.Pixbuf.Gdk_Pixbuf, a Glib.G_Icon.G_Icon, a stock item, or an icon
    --  name.
-   --  set for this position.
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
 
@@ -347,7 +356,6 @@ package Gtk.GEntry is
    --  Retrieves the stock id used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, icon name
    --  or gicon).
-   --  wasn't set from a stock id
    --  Since: gtk+ 2.16
    --  "icon_pos": Icon position
 
@@ -365,7 +373,6 @@ package Gtk.GEntry is
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
    --  Gets the contents of the tooltip on the icon at the specified position
    --  in Entry.
-   --  with g_free when done.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
 
@@ -378,7 +385,7 @@ package Gtk.GEntry is
    --  linkend="PangoMarkupFormat">Pango text markup language</link>.
    --  Use null for Tooltip to remove an existing tooltip.
    --  See also Gtk.Widget.Set_Tooltip_Markup and
-   --  gtk_enty_set_icon_tooltip_text.
+   --  Gtk.GEntry.Set_Icon_Tooltip_Text.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
    --  "tooltip": the contents of the tooltip for the icon, or null
@@ -388,7 +395,6 @@ package Gtk.GEntry is
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
    --  Gets the contents of the tooltip on the icon at the specified position
    --  in Entry.
-   --  with g_free when done.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
 
@@ -408,13 +414,19 @@ package Gtk.GEntry is
    function Get_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record)
        return Gtk.Style.Gtk_Border;
+   pragma Obsolescent (Get_Inner_Border);
    --  This function returns the entry's Gtk.GEntry.Gtk_Entry:inner-border
    --  property. See Gtk.GEntry.Set_Inner_Border for more information.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.4, Use the standard border and padding CSS
+   --  properties (through objects like Gtk.Style_Context.Gtk_Style_Context and
+   --  Gtk.Css_Provider.Gtk_Css_Provider); the value returned by this function
+   --  is ignored by Gtk.GEntry.Gtk_Entry.
 
    procedure Set_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record;
        Border    : Gtk.Style.Gtk_Border);
+   pragma Obsolescent (Set_Inner_Border);
    --  Sets %entry's inner-border property to %border, or clears it if null is
    --  passed. The inner-border is the area around the entry's text, but inside
    --  its frame.
@@ -423,13 +435,45 @@ package Gtk.GEntry is
    --  in-place editing of some text in a canvas or list widget, where
    --  pixel-exact positioning of the entry is important.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.4, Use the standard border and padding CSS
+   --  properties (through objects like Gtk.Style_Context.Gtk_Style_Context and
+   --  Gtk.Css_Provider.Gtk_Css_Provider); the value set with this function is
+   --  ignored by Gtk.GEntry.Gtk_Entry.
    --  "border": a Gtk.Style.Gtk_Border, or null
+
+   function Get_Input_Hints
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Gtk.Enums.Gtk_Input_Hints;
+   --  Gets the value of the Gtk.GEntry.Gtk_Entry:input-hints property.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Input_Hints
+      (The_Entry : not null access Gtk_Entry_Record;
+       Hints     : Gtk.Enums.Gtk_Input_Hints);
+   --  Sets the Gtk.GEntry.Gtk_Entry:input-hints property, which allows input
+   --  methods to fine-tune their behaviour.
+   --  Since: gtk+ 3.6
+   --  "hints": the hints
+
+   function Get_Input_Purpose
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Gtk.Enums.Gtk_Input_Purpose;
+   --  Gets the value of the Gtk.GEntry.Gtk_Entry:input-purpose property.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Input_Purpose
+      (The_Entry : not null access Gtk_Entry_Record;
+       Purpose   : Gtk.Enums.Gtk_Input_Purpose);
+   --  Sets the Gtk.GEntry.Gtk_Entry:input-purpose property which can be used
+   --  by on-screen keyboards and other input methods to adjust their
+   --  behaviour.
+   --  Since: gtk+ 3.6
+   --  "purpose": the purpose
 
    function Get_Invisible_Char
       (The_Entry : not null access Gtk_Entry_Record) return Gunichar;
    --  Retrieves the character displayed in place of the real characters for
    --  entries with visibility set to false. See Gtk.GEntry.Set_Invisible_Char.
-   --  show invisible text at all.
 
    procedure Set_Invisible_Char
       (The_Entry : not null access Gtk_Entry_Record;
@@ -484,7 +528,6 @@ package Gtk.GEntry is
    --  Gtk.GEntry.Set_Max_Length.
    --  This is equivalent to:
    --    gtk_entry_buffer_get_max_length (gtk_entry_get_buffer (entry));
-   --  in Gtk.GEntry.Gtk_Entry, or 0 if there is no maximum.
 
    procedure Set_Max_Length
       (The_Entry : not null access Gtk_Entry_Record;
@@ -515,7 +558,6 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record) return UTF8_String;
    --  Retrieves the text that will be displayed when Entry is empty and
    --  unfocused
-   --  storage in the widget and must not be freed, modified or stored.
    --  Since: gtk+ 3.2
 
    procedure Set_Placeholder_Text
@@ -565,8 +607,6 @@ package Gtk.GEntry is
    --  Gtk.Editable.Get_Chars.
    --  This is equivalent to:
    --    gtk_entry_buffer_get_text (gtk_entry_get_buffer (entry));
-   --  string. This string points to internally allocated storage in the
-   --  widget and must not be freed, modified or stored.
 
    procedure Set_Text
       (The_Entry : not null access Gtk_Entry_Record;
@@ -591,7 +631,6 @@ package Gtk.GEntry is
    --  Retrieves the current length of the text in Entry.
    --  This is equivalent to:
    --    gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
-   --  in Gtk.GEntry.Gtk_Entry, or 0 if there are none.
    --  Since: gtk+ 2.14
 
    function Get_Visibility
@@ -608,6 +647,10 @@ package Gtk.GEntry is
    --  copied elsewhere.
    --  By default, GTK+ picks the best invisible character available in the
    --  current font, but it can be changed with Gtk.GEntry.Set_Invisible_Char.
+   --  Note that you probably want to set Gtk.GEntry.Gtk_Entry:input-purpose
+   --  to Gtk.Enums.Input_Purpose_Password or Gtk.Enums.Input_Purpose_Pin to
+   --  inform input methods about the purpose of this entry, in addition to
+   --  setting visibility to False.
    --  "visible": True if the contents of the entry are displayed as plaintext
 
    function Get_Width_Chars
@@ -830,6 +873,12 @@ package Gtk.GEntry is
 
    Activates_Default_Property : constant Glib.Properties.Property_Boolean;
 
+   Attributes_Property : constant Glib.Properties.Property_Object;
+   --  Type: Pango.Attributes.Pango_Attr_List
+   --  A list of Pango attributes to apply to the text of the entry.
+   --
+   --  This is mainly useful to change the size or weight of the text.
+
    Buffer_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Entry_Buffer.Gtk_Entry_Buffer
 
@@ -862,10 +911,24 @@ package Gtk.GEntry is
    --  Type: Gtk.Style.Gtk_Border
    --  Sets the text area's border between the text and the frame.
 
+   Input_Hints_Property : constant Gtk.Enums.Property_Gtk_Input_Hints;
+   --  Additional hints (beyond Gtk.GEntry.Gtk_Entry:input-purpose) that allow
+   --  input methods to fine-tune their behaviour.
+
+   Input_Purpose_Property : constant Gtk.Enums.Property_Gtk_Input_Purpose;
+   --  The purpose of this text field.
+   --
+   --  This property can be used by on-screen keyboards and other input
+   --  methods to adjust their behaviour.
+   --
+   --  Note that setting the purpose to Gtk.Enums.Input_Purpose_Password or
+   --  Gtk.Enums.Input_Purpose_Pin is independent from setting
+   --  Gtk.GEntry.Gtk_Entry:visibility.
+
    Invisible_Char_Property : constant Glib.Properties.Property_Uint;
    --  The invisible character is used when masking entry contents (in
    --  \"password mode\")"). When it is not explicitly set with the
-   --  Gtk.GEntry.Gtk_Entry::invisible-char property, GTK+ determines the
+   --  Gtk.GEntry.Gtk_Entry:invisible-char property, GTK+ determines the
    --  character to use from a list of possible candidates, depending on
    --  availability in the current font.
    --
@@ -883,6 +946,8 @@ package Gtk.GEntry is
    Placeholder_Text_Property : constant Glib.Properties.Property_String;
    --  The text that will be displayed in the Gtk.GEntry.Gtk_Entry when it is
    --  empty and unfocused.
+
+   Populate_All_Property : constant Glib.Properties.Property_Boolean;
 
    Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the primary icon is activatable.
@@ -1036,12 +1101,11 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user activates the entry.
+   --  The ::activate signal is emitted when the user hits the Enter key.
    --
-   --  Applications should not connect to it, but may emit it with
-   --  g_signal_emit_by_name if they need to control activation
-   --  programmatically.
+   --  While this signal is used as a <link
+   --  linkend="keybinding-signals">keybinding signal</link>, it is also
+   --  commonly used by applications to intercept activation of entries.
    --
    --  The default bindings for this signal are all forms of the Enter key.
 
@@ -1257,29 +1321,35 @@ package Gtk.GEntry is
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
 
-   type Cb_Gtk_Entry_Gtk_Menu_Void is not null access procedure
-     (Self : access Gtk_Entry_Record'Class;
-      Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   type Cb_Gtk_Entry_Gtk_Widget_Void is not null access procedure
+     (Self  : access Gtk_Entry_Record'Class;
+      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   type Cb_GObject_Gtk_Menu_Void is not null access procedure
-     (Self : access Glib.Object.GObject_Record'Class;
-      Menu : not null access Gtk.Menu.Gtk_Menu_Record'Class);
+   type Cb_GObject_Gtk_Widget_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    procedure On_Populate_Popup
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_Gtk_Entry_Gtk_Menu_Void;
+       Call  : Cb_Gtk_Entry_Gtk_Widget_Void;
        After : Boolean := False);
    procedure On_Populate_Popup
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_GObject_Gtk_Menu_Void;
+       Call  : Cb_GObject_Gtk_Widget_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::populate-popup signal gets emitted before showing the context
    --  menu of the entry.
    --
    --  If you need to add items to the context menu, connect to this signal
-   --  and append your menuitems to the Menu.
+   --  and append your items to the Widget, which will be a Gtk.Menu.Gtk_Menu
+   --  in this case.
+   --
+   --  If Gtk.GEntry.Gtk_Entry::populate-all is True, this signal will also be
+   --  emitted to populate touch popups. In this case, Widget will be a
+   --  different container, e.g. a Gtk.Toolbar.Gtk_Toolbar. The signal handler
+   --  should not make assumptions about the type of Widget.
 
    Signal_Preedit_Changed : constant Glib.Signal_Name := "preedit-changed";
    procedure On_Preedit_Changed
@@ -1414,6 +1484,8 @@ private
      Glib.Properties.Build ("primary-icon-gicon");
    Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("primary-icon-activatable");
+   Populate_All_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("populate-all");
    Placeholder_Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("placeholder-text");
    Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean :=
@@ -1424,6 +1496,10 @@ private
      Glib.Properties.Build ("invisible-char-set");
    Invisible_Char_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("invisible-char");
+   Input_Purpose_Property : constant Gtk.Enums.Property_Gtk_Input_Purpose :=
+     Gtk.Enums.Build ("input-purpose");
+   Input_Hints_Property : constant Gtk.Enums.Property_Gtk_Input_Hints :=
+     Gtk.Enums.Build ("input-hints");
    Inner_Border_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("inner-border");
    Im_Module_Property : constant Glib.Properties.Property_String :=
@@ -1440,6 +1516,8 @@ private
      Glib.Properties.Build ("caps-lock-warning");
    Buffer_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("buffer");
+   Attributes_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("attributes");
    Activates_Default_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("activates-default");
 end Gtk.GEntry;

@@ -31,9 +31,9 @@
 --  Gtk.Menu_Item.Gtk_Menu_Item in a Gtk.Menu_Bar.Gtk_Menu_Bar or popped up by
 --  activating a Gtk.Menu_Item.Gtk_Menu_Item in another Gtk.Menu.Gtk_Menu.
 --
---  A Gtk.Menu.Gtk_Menu can also be popped up by activating a Gtk_Option_Menu.
---  Other composite widgets such as the Gtk.Notebook.Gtk_Notebook can pop up a
---  Gtk.Menu.Gtk_Menu as well.
+--  A Gtk.Menu.Gtk_Menu can also be popped up by activating a
+--  Gtk.Combo_Box.Gtk_Combo_Box. Other composite widgets such as the
+--  Gtk.Notebook.Gtk_Notebook can pop up a Gtk.Menu.Gtk_Menu as well.
 --
 --  Applications can display a Gtk.Menu.Gtk_Menu as a popup menu by calling
 --  the Gtk.Menu.Popup function. The example below shows how an application can
@@ -62,7 +62,7 @@
 --       if (event->type == GDK_BUTTON_PRESS)
 --       {
 --          event_button = (GdkEventButton *) event;
---          if (event_button->button == 3)
+--          if (event_button->button == GDK_BUTTON_SECONDARY)
 --          {
 --             gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
 --                event_button->button, event_button->time);
@@ -236,15 +236,13 @@ package Gtk.Menu is
       (Menu : not null access Gtk_Menu_Record)
        return Gtk.Menu_Item.Gtk_Menu_Item;
    --  Returns the selected menu item from the menu. This is used by the
-   --  Gtk_Option_Menu.
-   --  in the menu. If a selection has not yet been made, the first menu item
-   --  is selected.
+   --  Gtk.Combo_Box.Gtk_Combo_Box.
 
    procedure Set_Active
       (Menu  : not null access Gtk_Menu_Record;
        Index : Guint);
    --  Selects the specified menu item within the menu. This is used by the
-   --  Gtk_Option_Menu and should not be used by anyone else.
+   --  Gtk.Combo_Box.Gtk_Combo_Box and should not be used by anyone else.
    --  "index": the index of the menu item to select. Iindex values are from 0
    --  to n-1
 
@@ -254,7 +252,6 @@ package Gtk.Menu is
 
    function Get_Monitor (Menu : not null access Gtk_Menu_Record) return Gint;
    --  Retrieves the number of the monitor on which to show the menu.
-   --  be popped up or -1, if no monitor has been set
    --  Since: gtk+ 2.14
 
    procedure Set_Monitor
@@ -301,8 +298,6 @@ package Gtk.Menu is
    function Get_Title
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
    --  Returns the title of the menu. See Gtk.Menu.Set_Title.
-   --  has no title set on it. This string is owned by GTK+ and should not be
-   --  modified or freed.
 
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;
@@ -549,7 +544,6 @@ package Gtk.Menu is
        return Gtk.Widget.Widget_List.Glist;
    --  Returns a list of the menus which are attached to this widget. This
    --  list is owned by GTK+ and must not be modified.
-   --  of menus attached to his widget.
    --  Since: gtk+ 2.6
    --  "widget": a Gtk.Widget.Gtk_Widget
 

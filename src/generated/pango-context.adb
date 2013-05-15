@@ -65,6 +65,17 @@ package body Pango.Context is
       return Self;
    end Pango_Context_New;
 
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed (Self : not null access Pango_Context_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "pango_context_changed");
+   begin
+      Internal (Get_Object (Self));
+   end Changed;
+
    ------------------
    -- Get_Base_Dir --
    ------------------
@@ -184,6 +195,19 @@ package body Pango.Context is
    begin
       return From_Object (Internal (Get_Object (Self), Desc, Get_Object (Language)));
    end Get_Metrics;
+
+   ----------------
+   -- Get_Serial --
+   ----------------
+
+   function Get_Serial
+      (Self : not null access Pango_Context_Record) return Guint
+   is
+      function Internal (Self : System.Address) return Guint;
+      pragma Import (C, Internal, "pango_context_get_serial");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Serial;
 
    -------------------
    -- List_Families --

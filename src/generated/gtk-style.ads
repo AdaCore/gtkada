@@ -108,30 +108,32 @@ package Gtk.Style is
        Y          : Gint;
        Width      : Gint;
        Height     : Gint);
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+   pragma Obsolescent (Apply_Default_Background);
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
 
    function Attach
       (Style  : not null access Gtk_Style_Record;
        Window : Gdk.Gdk_Window) return Gtk_Style;
+   pragma Obsolescent (Attach);
    --  Attaches a style to a window; this process allocates the colors and
    --  creates the GC's for the style - it specializes it to a particular
    --  visual. The process may involve the creation of a new style if the style
    --  has already been attached to a window with a different style and visual.
    --  Since this function may return a new object, you have to use it in the
    --  following way: 'style = gtk_style_attach (style, window)'
-   --  If the style is newly created, the style parameter will be unref'ed,
-   --  and the new style will have a reference count belonging to the caller.
-   --  Deprecated:3.0: Use Gtk.Widget.Style_Attach instead
+   --  Deprecated since 3.0, Use Gtk.Widget.Style_Attach instead
    --  "window": a Gdk.Gdk_Window.
 
    function Copy (Style : not null access Gtk_Style_Record) return Gtk_Style;
+   pragma Obsolescent (Copy);
    --  Creates a copy of the passed in Gtk.Style.Gtk_Style object.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
 
    procedure Detach (Style : not null access Gtk_Style_Record);
+   pragma Obsolescent (Detach);
    --  Detaches a style from a window. If the style is not attached to any
    --  windows anymore, it is unrealized. See Gtk.Style.Attach.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
 
    procedure Get_Style_Property
       (Style         : not null access Gtk_Style_Record;
@@ -157,12 +159,13 @@ package Gtk.Style is
        Color_Name : UTF8_String;
        Color      : out Gdk.Color.Gdk_Color;
        Found      : out Boolean);
+   pragma Obsolescent (Lookup_Color);
    --  Looks up Color_Name in the style's logical color mappings, filling in
    --  Color and returning True if found, otherwise returning False. Do not
    --  cache the found mapping, because it depends on the Gtk.Style.Gtk_Style
    --  and might change when a theme switch occurs.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Lookup_Color instead
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Lookup_Color instead
    --  "color_name": the name of the logical color to look up
    --  "color": the Gdk.Color.Gdk_Color to fill in
 
@@ -170,9 +173,10 @@ package Gtk.Style is
       (Style      : not null access Gtk_Style_Record;
        Window     : Gdk.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type);
+   pragma Obsolescent (Set_Background);
    --  Sets the background of Window to the background color or pixmap
    --  specified by Style for the given state.
-   --  Deprecated:3.0: Use Gtk.Style_Context.Set_Background instead
+   --  Deprecated since 3.0, Use Gtk.Style_Context.Set_Background instead
    --  "window": a Gdk.Gdk_Window
    --  "state_type": a state
 

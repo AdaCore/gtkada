@@ -579,7 +579,6 @@ Iter := Gtk.Tree_Model.Null_Iter;
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
       --  'price_of(A) - price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -664,7 +663,6 @@ Iter := Gtk.Tree_Model.Null_Iter;
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
       --  'price_of(A) - price_of(B)'.
-      --  A sorts before, with or after B
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -790,22 +788,16 @@ Iter := Gtk.Tree_Model.Null_Iter;
    function Drag_Data_Get
       (Self           : not null access Gtk_List_Store_Record;
        Path           : Gtk.Tree_Model.Gtk_Tree_Path;
-       Selection_Data : access Gtk.Selection_Data.Gtk_Selection_Data)
+       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data)
        return Boolean
    is
       function Internal
-         (Self               : System.Address;
-          Path               : System.Address;
-          Acc_Selection_Data : access System.Address) return Integer;
+         (Self           : System.Address;
+          Path           : System.Address;
+          Selection_Data : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
-      Acc_Selection_Data     : aliased Gtk.Selection_Data.Gtk_Selection_Data;
-      Tmp_Acc_Selection_Data : aliased System.Address;
-      Tmp_Return             : Integer;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Get_Object (Path), Tmp_Acc_Selection_Data'Access);
-      Acc_Selection_Data := From_Object (Tmp_Acc_Selection_Data);
-      Selection_Data.all := Acc_Selection_Data;
-      return Tmp_Return /= 0;
+      return Internal (Get_Object (Self), Get_Object (Path), Get_Object (Selection_Data)) /= 0;
    end Drag_Data_Get;
 
    ------------------------

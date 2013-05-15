@@ -52,6 +52,7 @@ with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Menu;        use Gtk.Menu;
@@ -122,7 +123,6 @@ package Gtk.Menu_Tool_Button is
        return Gtk.Menu.Gtk_Menu;
    --  Gets the Gtk.Menu.Gtk_Menu associated with
    --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button.
-   --  with Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button
    --  Since: gtk+ 2.6
 
    procedure Set_Menu
@@ -159,6 +159,18 @@ package Gtk.Menu_Tool_Button is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Menu_Tool_Button_Record)
+       return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Menu_Tool_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Menu_Tool_Button_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Menu_Tool_Button_Record;
@@ -215,19 +227,33 @@ package Gtk.Menu_Tool_Button is
    --  The ::show-menu signal is emitted before the menu is shown.
    --
    --  It can be used to populate the menu on demand, using
-   --  Gtk.Menu_Tool_Button.Get_Menu. Note that even if you populate the menu
-   --  dynamically in this way, you must set an empty menu on the
-   --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button beforehand, since the arrow is
-   --  made insensitive if the menu is not set.
+   --  Gtk.Menu_Tool_Button.Set_Menu.
+   --
+   --  Note that even if you populate the menu dynamically in this way, you
+   --  must set an empty menu on the Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button
+   --  beforehand, since the arrow is made insensitive if the menu is not set.
 
    ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Menu_Tool_Button_Record, Gtk_Menu_Tool_Button);
+   function "+"
+     (Widget : access Gtk_Menu_Tool_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Menu_Tool_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Menu_Tool_Button_Record, Gtk_Menu_Tool_Button);

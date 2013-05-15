@@ -139,7 +139,6 @@ package Gtk.File_Chooser_Button is
        return Boolean;
    --  Returns whether the button grabs focus when it is clicked with the
    --  mouse. See Gtk.File_Chooser_Button.Set_Focus_On_Click.
-   --  the mouse.
    --  Since: gtk+ 2.10
 
    procedure Set_Focus_On_Click

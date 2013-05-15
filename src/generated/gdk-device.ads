@@ -109,7 +109,6 @@ package Gdk.Device is
       (Self : not null access Gdk_Device_Record)
        return Gdk.Display.Gdk_Display;
    --  Returns the Gdk.Display.Gdk_Display to which Device pertains.
-   --  by GTK+, and must not be freed or unreffed.
    --  Since: gtk+ 3.0
 
    function Get_Has_Cursor

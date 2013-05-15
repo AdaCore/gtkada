@@ -136,9 +136,6 @@ package Gtk.Box is
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Hbox.
-   --  wich is a very quick and easy change. But the recommendation is to
-   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
-   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -147,9 +144,6 @@ package Gtk.Box is
       (Homogeneous : Boolean := False;
        Spacing     : Gint := 0) return Gtk_Hbox;
    --  Creates a new Gtk.Box.Gtk_Hbox.
-   --  wich is a very quick and easy change. But the recommendation is to
-   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
-   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -166,9 +160,6 @@ package Gtk.Box is
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Vbox.
-   --  wich is a very quick and easy change. But the recommendation is to
-   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
-   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -177,9 +168,6 @@ package Gtk.Box is
       (Homogeneous : Boolean := False;
        Spacing     : Gint := 0) return Gtk_Vbox;
    --  Creates a new Gtk.Box.Gtk_Vbox.
-   --  wich is a very quick and easy change. But the recommendation is to
-   --  switch to Gtk.Grid.Gtk_Grid, since Gtk.Box.Gtk_Box is going to go away
-   --  eventually. See <xref linkend="gtk-migrating-GtkGrid"/>.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.

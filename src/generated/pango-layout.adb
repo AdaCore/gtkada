@@ -241,11 +241,11 @@ package body Pango.Layout is
 
    procedure Get_Char_Extents
       (Self         : Pango_Layout_Iter;
-       Logical_Rect : in out Pango_Rectangle)
+       Logical_Rect : out Pango_Rectangle)
    is
       procedure Internal
          (Self         : System.Address;
-          Logical_Rect : in out Pango_Rectangle);
+          Logical_Rect : out Pango_Rectangle);
       pragma Import (C, Internal, "pango_layout_iter_get_char_extents");
    begin
       Internal (Get_Object (Self), Logical_Rect);
@@ -472,7 +472,7 @@ package body Pango.Layout is
           Line   : Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line");
    begin
-      return From_Object_Free (Internal (Get_Object (Layout), Line));
+      return Internal (Get_Object (Layout), Line).all;
    end Get_Line;
 
    --------------
@@ -531,7 +531,7 @@ package body Pango.Layout is
           Line   : Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line_readonly");
    begin
-      return From_Object_Free (Internal (Get_Object (Layout), Line));
+      return Internal (Get_Object (Layout), Line).all;
    end Get_Line_Readonly;
 
    -----------------------
@@ -545,7 +545,7 @@ package body Pango.Layout is
          (Self : System.Address) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_iter_get_line_readonly");
    begin
-      return From_Object_Free (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)).all;
    end Get_Line_Readonly;
 
    ---------------------
@@ -619,6 +619,19 @@ package body Pango.Layout is
    begin
       Internal (Get_Object (Self), Ink_Rect, Logical_Rect);
    end Get_Run_Extents;
+
+   ----------------
+   -- Get_Serial --
+   ----------------
+
+   function Get_Serial
+      (Layout : not null access Pango_Layout_Record) return Guint
+   is
+      function Internal (Layout : System.Address) return Guint;
+      pragma Import (C, Internal, "pango_layout_get_serial");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Serial;
 
    -------------------------------
    -- Get_Single_Paragraph_Mode --
@@ -810,7 +823,7 @@ package body Pango.Layout is
        Old_Trailing : Gint;
        Direction    : Gint;
        New_Index    : out Gint;
-       New_Trailing : in out Gint)
+       New_Trailing : out Gint)
    is
       procedure Internal
          (Layout       : System.Address;
@@ -819,7 +832,7 @@ package body Pango.Layout is
           Old_Trailing : Gint;
           Direction    : Gint;
           New_Index    : out Gint;
-          New_Trailing : in out Gint);
+          New_Trailing : out Gint);
       pragma Import (C, Internal, "pango_layout_move_cursor_visually");
    begin
       Internal (Get_Object (Layout), Boolean'Pos (Strong), Old_Index, Old_Trailing, Direction, New_Index, New_Trailing);

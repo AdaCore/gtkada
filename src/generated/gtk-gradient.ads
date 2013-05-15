@@ -33,11 +33,17 @@
 --  they are mostly used behind the scenes by
 --  Gtk.Style_Context.Gtk_Style_Context and Gtk.Css_Provider.Gtk_Css_Provider.
 --
+--  Gtk.Gradient.Gtk_Gradient is deprecated. It was used internally by GTK's
+--  CSS engine to represent gradients. As its handling is not conforming to
+--  modern web standards, it is not used anymore. If you want to use gradients
+--  in your own code, please use Cairo directly.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                use Cairo;
 with Glib;                 use Glib;
+with Gtk.Style_Context;    use Gtk.Style_Context;
 with Gtk.Style_Properties; use Gtk.Style_Properties;
 with Gtk.Symbolic_Color;   use Gtk.Symbolic_Color;
 
@@ -131,36 +137,51 @@ package Gtk.Gradient is
       (Self   : Gtk_Gradient;
        Offset : Gdouble;
        Color  : Gtk.Symbolic_Color.Gtk_Symbolic_Color);
+   pragma Obsolescent (Add_Color_Stop);
    --  Adds a stop color to Gradient.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
    --  "offset": offset for the color stop
    --  "color": color to use
 
    function Ref (Self : Gtk_Gradient) return Gtk_Gradient;
+   pragma Obsolescent (Ref);
    --  Increases the reference count of Gradient.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
 
    function Resolve
       (Self              : Gtk_Gradient;
        Props             : not null access Gtk.Style_Properties.Gtk_Style_Properties_Record'Class;
        Resolved_Gradient : access Cairo.Cairo_Pattern) return Boolean;
+   pragma Obsolescent (Resolve);
    --  If Gradient is resolvable, Resolved_Gradient will be filled in with the
    --  resolved gradient as a cairo_pattern_t, and True will be returned.
    --  Generally, if Gradient can't be resolved, it is due to it being defined
    --  on top of a named color that doesn't exist in Props.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
    --  "props": Gtk.Style_Properties.Gtk_Style_Properties to use when
    --  resolving named colors
    --  "resolved_gradient": return location for the resolved pattern
 
+   function Resolve_For_Context
+      (Self    : Gtk_Gradient;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class)
+       return Cairo.Cairo_Pattern;
+
    function To_String (Self : Gtk_Gradient) return UTF8_String;
+   pragma Obsolescent (To_String);
    --  Creates a string representation for Gradient that is suitable for using
    --  in GTK CSS files.
+   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
 
    procedure Unref (Self : Gtk_Gradient);
+   pragma Obsolescent (Unref);
    --  Decreases the reference count of Gradient, freeing its memory if the
    --  reference count reaches 0.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
 
 private
 

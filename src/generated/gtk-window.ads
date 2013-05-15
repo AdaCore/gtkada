@@ -248,6 +248,31 @@ package Gtk.Window is
    --  Since: gtk+ 2.4
    --  "setting": True to let this window receive input focus
 
+   function Get_Attached_To
+      (Window : not null access Gtk_Window_Record)
+       return Gtk.Widget.Gtk_Widget;
+   --  Fetches the attach widget for this window. See
+   --  Gtk.Window.Set_Attached_To.
+   --  Since: gtk+ 3.4
+
+   procedure Set_Attached_To
+      (Window        : not null access Gtk_Window_Record;
+       Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Marks Window as attached to Attach_Widget. This creates a logical
+   --  binding between the window and the widget it belongs to, which is used
+   --  by GTK+ to propagate information such as styling or accessibility to
+   --  Window as if it was a children of Attach_Widget.
+   --  Examples of places where specifying this relation is useful are for
+   --  instance a Gtk.Menu.Gtk_Menu created by a Gtk.Combo_Box.Gtk_Combo_Box, a
+   --  completion popup window created by Gtk.GEntry.Gtk_Entry or a typeahead
+   --  search entry created by Gtk.Tree_View.Gtk_Tree_View.
+   --  Note that this function should not be confused with
+   --  Gtk.Window.Set_Transient_For, which specifies a window manager relation
+   --  between two toplevels instead.
+   --  Passing null for Attach_Widget detaches the window.
+   --  Since: gtk+ 3.4
+   --  "attach_widget": a Gtk.Widget.Gtk_Widget, or null
+
    function Get_Decorated
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Returns whether the window has been set to have decorations such as a
@@ -330,7 +355,7 @@ package Gtk.Window is
    --  GTK+ will do its best to convince the window manager not to show a close
    --  button. Depending on the system, this function may not have any effect
    --  when called on a window that is already visible, so you should call it
-   --  before calling gtk_window_show.
+   --  before calling Gtk.Widget.Show.
    --  On Windows, this function always works, since there's no window manager
    --  policy involved.
    --  Since: gtk+ 2.10
@@ -372,7 +397,6 @@ package Gtk.Window is
    function Get_Focus_On_Map
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Gets the value set by Gtk.Window.Set_Focus_On_Map.
-   --  mapped.
    --  Since: gtk+ 2.6
 
    procedure Set_Focus_On_Map
@@ -386,7 +410,6 @@ package Gtk.Window is
    function Get_Focus_Visible
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Gets the value of the Gtk.Window.Gtk_Window:focus-visible property.
-   --  in this window.
    --  Since: gtk+ 3.2
 
    procedure Set_Focus_Visible
@@ -431,6 +454,24 @@ package Gtk.Window is
    --  find out if the resize grip is currently shown.
    --  Since: gtk+ 3.0
    --  "value": True to allow a resize grip
+
+   function Get_Hide_Titlebar_When_Maximized
+      (Window : not null access Gtk_Window_Record) return Boolean;
+   --  Returns whether the window has requested to have its titlebar hidden
+   --  when maximized. See gtk_window_set_hide_titlebar_when_maximized ().
+   --  Since: gtk+ 3.4
+
+   procedure Set_Hide_Titlebar_When_Maximized
+      (Window  : not null access Gtk_Window_Record;
+       Setting : Boolean);
+   --  If Setting is True, then Window will request that it's titlebar should
+   --  be hidden when maximized. This is useful for windows that don't convey
+   --  any information other than the application name in the titlebar, to put
+   --  the available screen space to better use. If the underlying window
+   --  system does not support the request, the setting will not have any
+   --  effect.
+   --  Since: gtk+ 3.4
+   --  "setting": whether to hide the titlebar when Window is maximized
 
    function Get_Icon
       (Window : not null access Gtk_Window_Record)
@@ -491,7 +532,6 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record) return UTF8_String;
    --  Returns the name of the themed icon for the window, see
    --  Gtk.Window.Set_Icon_Name.
-   --  no themed icon
    --  Since: gtk+ 2.6
 
    procedure Set_Icon_Name
@@ -509,7 +549,6 @@ package Gtk.Window is
        return Gdk.Types.Gdk_Modifier_Type;
    --  Returns the mnemonic modifier for this window. See
    --  Gtk.Window.Set_Mnemonic_Modifier.
-   --  mnemonics on this window.
 
    procedure Set_Mnemonic_Modifier
       (Window   : not null access Gtk_Window_Record;
@@ -521,7 +560,6 @@ package Gtk.Window is
    function Get_Mnemonics_Visible
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Gets the value of the Gtk.Window.Gtk_Window:mnemonics-visible property.
-   --  in this window.
    --  Since: gtk+ 2.20
 
    procedure Set_Mnemonics_Visible
@@ -534,7 +572,6 @@ package Gtk.Window is
    function Get_Modal
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Returns whether the window is modal. See Gtk.Window.Set_Modal.
-   --  establishes a grab when shown
 
    procedure Set_Modal
       (Window : not null access Gtk_Window_Record;
@@ -546,25 +583,6 @@ package Gtk.Window is
    --  linkend="gtk-X11-arch">window managers</link> will then disallow
    --  lowering the dialog below the parent.
    --  "modal": whether the window is modal
-
-   function Get_Opacity
-      (Window : not null access Gtk_Window_Record) return Gdouble;
-   --  Fetches the requested opacity for this window. See
-   --  Gtk.Window.Set_Opacity.
-   --  Since: gtk+ 2.12
-
-   procedure Set_Opacity
-      (Window  : not null access Gtk_Window_Record;
-       Opacity : Gdouble);
-   --  Request the windowing system to make Window partially transparent, with
-   --  opacity 0 being fully transparent and 1 fully opaque. (Values of the
-   --  opacity parameter are clamped to the [0,1] range.) On X11 this has any
-   --  effect only on X screens with a compositing manager running. See
-   --  Gtk.Widget.Is_Composited. On Windows it should work always.
-   --  Note that setting a window's opacity after the window has been shown
-   --  causes it to flicker once on Windows.
-   --  Since: gtk+ 2.12
-   --  "opacity": desired opacity, between 0 and 1
 
    procedure Get_Position
       (Window : not null access Gtk_Window_Record;
@@ -599,7 +617,7 @@ package Gtk.Window is
    --  the session management protocol (see the "GnomeClient" object in the
    --  GNOME libraries for example) and allow the window manager to save your
    --  window sizes and positions.
-   --  "root_x": eturn location for X coordinate of gravity-determined
+   --  "root_x": return location for X coordinate of gravity-determined
    --  reference point, or null
    --  "root_y": return location for Y coordinate of gravity-determined
    --  reference point, or null
@@ -637,7 +655,6 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record) return UTF8_String;
    --  Returns the role of the window. See Gtk.Window.Set_Role for further
    --  explanation.
-   --  returned is owned by the widget and must not be modified or freed.
 
    procedure Set_Role
       (Window : not null access Gtk_Window_Record;
@@ -743,8 +760,6 @@ package Gtk.Window is
    function Get_Title
       (Window : not null access Gtk_Window_Record) return UTF8_String;
    --  Retrieves the title of the window. See Gtk.Window.Set_Title.
-   --  been set explicitely. The returned string is owned by the widget and
-   --  must not be modified or freed.
 
    procedure Set_Title
       (Window : not null access Gtk_Window_Record;
@@ -762,7 +777,6 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record) return Gtk_Window;
    --  Fetches the transient parent for this window. See
    --  Gtk.Window.Set_Transient_For.
-   --  if no transient parent has been set.
 
    procedure Set_Transient_For
       (Window : not null access Gtk_Window_Record;
@@ -816,13 +830,12 @@ package Gtk.Window is
    function Has_Group
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Returns whether Window has an explicit window group.
-   --  Since 2.22
 
    function Has_Toplevel_Focus
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Returns whether the input focus is within this GtkWindow. For real
    --  toplevel windows, this is identical to Gtk.Window.Is_Active, but for
-   --  embedded windows, like Gtk.Plug.Gtk_Plug, the results will differ.
+   --  embedded windows, like Gtk_Plug, the results will differ.
    --  Since: gtk+ 2.4
 
    procedure Iconify (Window : not null access Gtk_Window_Record);
@@ -843,9 +856,9 @@ package Gtk.Window is
    --  Returns whether the window is part of the current active toplevel.
    --  (That is, the toplevel window receiving keystrokes.) The return value is
    --  True if the window is active toplevel itself, but also if it is, say, a
-   --  Gtk.Plug.Gtk_Plug embedded in the active toplevel. You might use this
-   --  function if you wanted to draw a widget differently in an active window
-   --  from a widget in an inactive window. See Gtk.Window.Has_Toplevel_Focus
+   --  Gtk_Plug embedded in the active toplevel. You might use this function if
+   --  you wanted to draw a widget differently in an active window from a
+   --  widget in an inactive window. See Gtk.Window.Has_Toplevel_Focus
    --  Since: gtk+ 2.4
 
    procedure Maximize (Window : not null access Gtk_Window_Record);
@@ -922,24 +935,19 @@ package Gtk.Window is
    --  Note that for Gtk.Window.Parse_Geometry to work as expected, it has to
    --  be called when the window has its "final" size, i.e. after calling
    --  Gtk.Widget.Show_All on the contents and Gtk.Window.Set_Geometry_Hints on
-   --  the window. |[ include <gtk/gtk.h>
-   --  static void fill_with_content (GtkWidget *vbox) { /* fill with
-   --  content... */ }
-   --  int main (int argc, char *argv[]) { GtkWidget *window, *vbox;
-   --  GdkGeometry size_hints = { 100, 50, 0, 0, 100, 50, 10, 10, 0.0, 0.0,
-   --  GDK_GRAVITY_NORTH_WEST };
-   --  gtk_init (&argc, &argv);
-   --  window = gtk_window_new (GTK_WINDOW_TOPLEVEL); vbox = gtk_box_new
-   --  (GTK_ORIENTATION_VERTICAL, FALSE, 0);
+   --  the window. |[ include <gtk/gtk.h> static void fill_with_content
+   --  (GtkWidget *vbox) { /* fill with content... */ } int main (int argc,
+   --  char *argv[]) { GtkWidget *window, *vbox; GdkGeometry size_hints = {
+   --  100, 50, 0, 0, 100, 50, 10, 10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST };
+   --  gtk_init (&argc, &argv); window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+   --  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, FALSE, 0);
    --  gtk_container_add (GTK_CONTAINER (window), vbox); fill_with_content
-   --  (vbox); gtk_widget_show_all (vbox);
-   --  gtk_window_set_geometry_hints (GTK_WINDOW (window), window,
-   --  &size_hints, GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE |
-   --  GDK_HINT_RESIZE_INC);
-   --  if (argc > 1) { if (!gtk_window_parse_geometry (GTK_WINDOW (window),
-   --  argv[1])) fprintf (stderr, "Failed to parse '%s'\n", argv[1]); }
-   --  gtk_widget_show_all (window); gtk_main ();
-   --  return 0; } ]|
+   --  (vbox); gtk_widget_show_all (vbox); gtk_window_set_geometry_hints
+   --  (GTK_WINDOW (window), window, &size_hints, GDK_HINT_MIN_SIZE |
+   --  GDK_HINT_BASE_SIZE | GDK_HINT_RESIZE_INC); if (argc > 1) { if
+   --  (!gtk_window_parse_geometry (GTK_WINDOW (window), argv[1])) fprintf
+   --  (stderr, "Failed to parse '%s'\n", argv[1]); } gtk_widget_show_all
+   --  (window); gtk_main (); return 0; } ]|
    --  "geometry": geometry string
 
    procedure Present (Window : not null access Gtk_Window_Record);
@@ -1036,8 +1044,8 @@ package Gtk.Window is
    --  default widget for a Gtk.Window.Gtk_Window about. When setting (rather
    --  than unsetting) the default widget it's generally easier to call
    --  Gtk.Widget.Grab_Focus on the widget. Before making a widget the default
-   --  widget, you must set the GTK_CAN_DEFAULT flag on the widget you'd like
-   --  to make the default using GTK_WIDGET_SET_FLAGS.
+   --  widget, you must call Gtk.Widget.Set_Can_Default on the widget you'd
+   --  like to make the default.
    --  "default_widget": widget to be the default, or null to unset the
    --  default widget for the toplevel.
 
@@ -1071,7 +1079,7 @@ package Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean);
    --  Tells GTK+ whether to drop its extra reference to the window when
-   --  gtk_window_destroy is called.
+   --  Gtk.Widget.Destroy is called.
    --  This function is only exported for the benefit of language bindings
    --  which may need to keep the window alive until their wrapper object is
    --  garbage collected. There is no justification for ever calling this
@@ -1228,7 +1236,6 @@ package Gtk.Window is
       (Window_Group : not null access Gtk_Window_Group_Record)
        return Gtk.Widget.Widget_List.Glist;
    --  Returns a list of the Gtk_Windows that belong to Window_Group.
-   --  newly-allocated list of windows inside the group.
    --  Since: gtk+ 2.14
 
    procedure Remove_Window
@@ -1324,6 +1331,16 @@ package Gtk.Window is
    --  remain until the window is destroyed, but you can explicitly remove it
    --  by setting the ::application property to null.
 
+   Attached_To_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+   --  The widget to which this window is attached. See
+   --  Gtk.Window.Set_Attached_To.
+   --
+   --  Examples of places where specifying this relation is useful are for
+   --  instance a Gtk.Menu.Gtk_Menu created by a Gtk.Combo_Box.Gtk_Combo_Box, a
+   --  completion popup window created by Gtk.GEntry.Gtk_Entry or a typeahead
+   --  search entry created by Gtk.Tree_View.Gtk_Tree_View.
+
    Decorated_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the window should be decorated by the window manager.
 
@@ -1361,6 +1378,9 @@ package Gtk.Window is
 
    Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean;
 
+   Hide_Titlebar_When_Maximized_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the titlebar should be hidden during maximization.
+
    Icon_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
 
@@ -1378,11 +1398,6 @@ package Gtk.Window is
    --  should not be set by applications.
 
    Modal_Property : constant Glib.Properties.Property_Boolean;
-
-   Opacity_Property : constant Glib.Properties.Property_Double;
-   --  Type: Gdouble
-   --  The requested opacity of the window. See Gtk.Window.Set_Opacity for
-   --  more details about window opacity.
 
    Resizable_Property : constant Glib.Properties.Property_Boolean;
 
@@ -1533,8 +1548,6 @@ private
      Glib.Properties.Build ("resize-grip-visible");
    Resizable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("resizable");
-   Opacity_Property : constant Glib.Properties.Property_Double :=
-     Glib.Properties.Build ("opacity");
    Modal_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("modal");
    Mnemonics_Visible_Property : constant Glib.Properties.Property_Boolean :=
@@ -1545,6 +1558,8 @@ private
      Glib.Properties.Build ("icon-name");
    Icon_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("icon");
+   Hide_Titlebar_When_Maximized_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hide-titlebar-when-maximized");
    Has_Toplevel_Focus_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-toplevel-focus");
    Has_Resize_Grip_Property : constant Glib.Properties.Property_Boolean :=
@@ -1565,6 +1580,8 @@ private
      Glib.Properties.Build ("default-height");
    Decorated_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("decorated");
+   Attached_To_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("attached-to");
    Application_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("application");
    Accept_Focus_Property : constant Glib.Properties.Property_Boolean :=

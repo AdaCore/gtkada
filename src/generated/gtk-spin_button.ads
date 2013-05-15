@@ -99,6 +99,7 @@ with Gtk.Cell_Editable;       use Gtk.Cell_Editable;
 with Gtk.Editable;            use Gtk.Editable;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.GEntry;              use Gtk.GEntry;
+with Gtk.Orientable;          use Gtk.Orientable;
 
 package Gtk.Spin_Button is
 
@@ -293,6 +294,8 @@ package Gtk.Spin_Button is
        Min         : Gdouble;
        Max         : Gdouble);
    --  Sets the minimum and maximum allowable values for Spin_Button.
+   --  If the current value is outside this range, it will be adjusted to fit
+   --  within the range, otherwise it will remain unchanged.
    --  "min": minimum allowable value
    --  "max": maximum allowable value
 
@@ -319,7 +322,7 @@ package Gtk.Spin_Button is
    procedure Set_Update_Policy
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Policy      : Gtk_Spin_Button_Update_Policy);
-   --  Sets the update behavior of a spin button. This determines wether the
+   --  Sets the update behavior of a spin button. This determines whether the
    --  spin button is always updated or only when a valid value is set.
    --  "policy": a Gtk.Spin_Button.Gtk_Spin_Button_Update_Policy value
 
@@ -434,6 +437,14 @@ package Gtk.Spin_Button is
        Start_Pos : Gint;
        End_Pos   : Gint := -1);
 
+   function Get_Orientation
+      (Self : not null access Gtk_Spin_Button_Record)
+       return Gtk.Enums.Gtk_Orientation;
+
+   procedure Set_Orientation
+      (Self        : not null access Gtk_Spin_Button_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Properties --
    ----------------
@@ -507,12 +518,10 @@ package Gtk.Spin_Button is
    --  to the new value.
    --
    --  The default conversion uses g_strtod.
-   --
-   --  was not handled, and GTK_INPUT_ERROR if the conversion failed.
    -- 
    --  Callback parameters:
    --    --  "new_value": return location for the new value
-   --    --  Returns True for a successful conversion, False if the input
+   --    --  Returns True for a successful conversion, False if the input was not handled, and GTK_INPUT_ERROR if the conversion failed.
 
    type Cb_Gtk_Spin_Button_Boolean is not null access function
      (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
@@ -586,6 +595,8 @@ package Gtk.Spin_Button is
    --  - "CellEditable"
    --
    --  - "Editable"
+   --
+   --  - "Orientable"
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Spin_Button_Record, Gtk_Spin_Button);
@@ -619,6 +630,17 @@ package Gtk.Spin_Button is
      (Interf : Gtk.Editable.Gtk_Editable)
    return Gtk_Spin_Button
    renames Implements_Gtk_Editable.To_Object;
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Spin_Button_Record, Gtk_Spin_Button);
+   function "+"
+     (Widget : access Gtk_Spin_Button_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Spin_Button
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Wrap_Property : constant Glib.Properties.Property_Boolean :=

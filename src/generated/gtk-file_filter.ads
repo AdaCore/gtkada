@@ -236,7 +236,6 @@ package Gtk.File_Filter is
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
    --  Gets the human-readable name for the filter. See
    --  Gtk.File_Filter.Set_Name.
-   --  or null. This value is owned by GTK+ and must not be modified or freed.
    --  Since: gtk+ 2.4
 
    procedure Set_Name
@@ -257,7 +256,6 @@ package Gtk.File_Filter is
    --  This function will not typically be used by applications; it is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
-   --  calling Gtk.File_Filter.Filter
    --  Since: gtk+ 2.4
 
    ----------------

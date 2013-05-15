@@ -138,7 +138,7 @@ package Gtk.Tree_View is
    --  integer from the Tree_Model, and render it to the "text" attribute of
    --  "cell" by converting it to its written equivilent. This is set by
    --  calling gtk_tree_view_column_set_cell_data_func
-   --  "tree_column": A Gtk_Tree_Column
+   --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
    --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
    --  by Tree_Column
    --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
@@ -403,6 +403,19 @@ package Gtk.Tree_View is
    --  Since: gtk+ 2.2
    --  "path": path to a row.
 
+   function Get_Activate_On_Single_Click
+      (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
+   --  Gets the setting set by Gtk.Tree_View.Set_Activate_On_Single_Click.
+   --  Since: gtk+ 3.8
+
+   procedure Set_Activate_On_Single_Click
+      (Tree_View : not null access Gtk_Tree_View_Record;
+       Single    : Boolean);
+   --  Cause the Gtk.Tree_View.Gtk_Tree_View::row-activated signal to be
+   --  emitted on a single click instead of a double click.
+   --  Since: gtk+ 3.8
+   --  "single": True to emit row-activated on a single click
+
    procedure Get_Background_Area
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
@@ -430,7 +443,6 @@ package Gtk.Tree_View is
    --  Returns the window that Tree_View renders to. This is used primarily to
    --  compare to 'event->window' to confirm that the event on Tree_View is on
    --  the right window.
-   --  hasn't been realized yet
 
    procedure Get_Cell_Area
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -457,7 +469,6 @@ package Gtk.Tree_View is
        N         : Gint) return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    --  Gets the Gtk.Tree_View_Column.Gtk_Tree_View_Column at the given
    --  position in the tree_view.
-   --  position is outside the range of columns.
    --  "n": The position of the column, counting from 0.
 
    function Get_Columns
@@ -509,7 +520,6 @@ package Gtk.Tree_View is
    --  are expected to be in widget coordinates. This function is only
    --  meaningful if Tree_View is realized. Therefore this function will always
    --  return False if Tree_View is not realized or does not have a model.
-   --  is indeed the case.
    --  "drag_x": the position to determine the destination row for
    --  "drag_y": the position to determine the destination row for
    --  "path": Return location for the path of the highlighted row, or null.
@@ -550,7 +560,6 @@ package Gtk.Tree_View is
    function Get_Enable_Tree_Lines
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
    --  Returns whether or not tree lines are drawn in Tree_View.
-   --  otherwise.
    --  Since: gtk+ 2.10
 
    procedure Set_Enable_Tree_Lines
@@ -597,7 +606,6 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record)
        return Gtk.Enums.Gtk_Tree_View_Grid_Lines;
    --  Returns which grid lines are enabled in Tree_View.
-   --  are enabled.
    --  Since: gtk+ 2.10
 
    procedure Set_Grid_Lines
@@ -637,7 +645,7 @@ package Gtk.Tree_View is
    procedure Set_Hover_Expand
       (Tree_View : not null access Gtk_Tree_View_Record;
        Expand    : Boolean);
-   --  Enables of disables the hover expansion mode of Tree_View. Hover
+   --  Enables or disables the hover expansion mode of Tree_View. Hover
    --  expansion makes rows expand or collapse if the pointer moves over them.
    --  Since: gtk+ 2.6
    --  "expand": True to enable hover selection mode
@@ -650,7 +658,7 @@ package Gtk.Tree_View is
    procedure Set_Hover_Selection
       (Tree_View : not null access Gtk_Tree_View_Record;
        Hover     : Boolean);
-   --  Enables of disables the hover selection mode of Tree_View. Hover
+   --  Enables or disables the hover selection mode of Tree_View. Hover
    --  selection makes the selected row follow the pointer. Currently, this
    --  works only for the selection modes Gtk.Enums.Selection_Single and
    --  Gtk.Enums.Selection_Browse.
@@ -661,7 +669,6 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record) return Gint;
    --  Returns the amount, in pixels, of extra indentation for child levels in
    --  Tree_View.
-   --  Tree_View. A return value of 0 means that this feature is disabled.
    --  Since: gtk+ 2.12
 
    procedure Set_Level_Indentation
@@ -689,6 +696,11 @@ package Gtk.Tree_View is
    --  already has a model set, it will remove it before setting the new model.
    --  If Model is null, then it will unset the old model.
    --  "model": The model.
+
+   function Get_N_Columns
+      (Tree_View : not null access Gtk_Tree_View_Record) return Guint;
+   --  Queries the number of columns in the given Tree_View.
+   --  Since: gtk+ 3.4
 
    procedure Get_Path_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -871,7 +883,6 @@ package Gtk.Tree_View is
    function Get_Show_Expanders
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
    --  Returns whether or not expanders are drawn in Tree_View.
-   --  otherwise.
    --  Since: gtk+ 2.12
 
    procedure Set_Show_Expanders
@@ -891,7 +902,6 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record) return Gint;
    --  Returns the column of Tree_View's model which is being used for
    --  displaying tooltips on Tree_View's rows.
-   --  used, or -1 if this is disabled.
    --  Since: gtk+ 2.12
 
    procedure Set_Tooltip_Column
@@ -901,8 +911,8 @@ package Gtk.Tree_View is
    --  can use this function to have Gtk.Tree_View.Gtk_Tree_View handle these
    --  automatically for you. Column should be set to the column in Tree_View's
    --  model containing the tooltip texts, or -1 to disable this feature.
-   --  When enabled, Gtk.Widget.Gtk_Widget::has-tooltip will be set to True
-   --  and Tree_View will connect a Gtk.Widget.Gtk_Widget::query-tooltip signal
+   --  When enabled, Gtk.Widget.Gtk_Widget:has-tooltip will be set to True and
+   --  Tree_View will connect a Gtk.Widget.Gtk_Widget::query-tooltip signal
    --  handler.
    --  Note that the signal handler sets the text with Gtk.Tooltip.Set_Markup,
    --  so &amp;, <, etc have to be escaped in the text.
@@ -980,8 +990,8 @@ package Gtk.Tree_View is
        Dnotify   : Glib.G_Destroy_Notify_Address) return Gint;
    --  Convenience function that inserts a new column into the
    --  Gtk.Tree_View.Gtk_Tree_View with the given cell renderer and a
-   --  Gtk_Cell_Data_Func to set cell renderer attributes (normally using data
-   --  from the model). See also gtk_tree_view_column_set_cell_data_func,
+   --  Gtk_Tree_Cell_Data_Func to set cell renderer attributes (normally using
+   --  data from the model). See also gtk_tree_view_column_set_cell_data_func,
    --  gtk_tree_view_column_pack_start. If Tree_View has "fixed_height" mode
    --  enabled, then the new column will have its "sizing" property set to be
    --  GTK_TREE_VIEW_COLUMN_FIXED.
@@ -1008,7 +1018,7 @@ package Gtk.Tree_View is
       --  integer from the Tree_Model, and render it to the "text" attribute of
       --  "cell" by converting it to its written equivilent. This is set by
       --  calling gtk_tree_view_column_set_cell_data_func
-      --  "tree_column": A Gtk_Tree_Column
+      --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
       --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
       --  by Tree_Column
       --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
@@ -1025,8 +1035,8 @@ package Gtk.Tree_View is
           Dnotify   : Glib.G_Destroy_Notify_Address) return Gint;
       --  Convenience function that inserts a new column into the
       --  Gtk.Tree_View.Gtk_Tree_View with the given cell renderer and a
-      --  Gtk_Cell_Data_Func to set cell renderer attributes (normally using
-      --  data from the model). See also
+      --  Gtk_Tree_Cell_Data_Func to set cell renderer attributes (normally
+      --  using data from the model). See also
       --  gtk_tree_view_column_set_cell_data_func,
       --  gtk_tree_view_column_pack_start. If Tree_View has "fixed_height" mode
       --  enabled, then the new column will have its "sizing" property set to
@@ -1062,7 +1072,6 @@ package Gtk.Tree_View is
    --  The Path, Column, Cell_X and Cell_Y arguments will be filled in
    --  likewise as for Gtk.Tree_View.Get_Path_At_Pos. Please see
    --  Gtk.Tree_View.Get_Path_At_Pos for more information.
-   --  False otherwise.
    --  Since: gtk+ 3.0
    --  "x": The x position to be identified (relative to bin_window)
    --  "y": The y position to be identified (relative to bin_window)
@@ -1079,7 +1088,6 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
    --  Returns whether a rubber banding operation is currently being done in
    --  Tree_View.
-   --  done in Tree_View.
    --  Since: gtk+ 2.12
 
    procedure Map_Expanded_Rows
@@ -1279,9 +1287,11 @@ package Gtk.Tree_View is
    procedure Set_Destroy_Count_Func
       (Tree_View : not null access Gtk_Tree_View_Record;
        Func      : Gtk_Tree_Destroy_Count_Func);
+   pragma Obsolescent (Set_Destroy_Count_Func);
    --  This function should almost never be used. It is meant for private use
    --  by ATK for determining the number of visible children that are removed
    --  when the user collapses a row, or a row is deleted.
+   --  Deprecated since 3.4, Accessibility does not need the function anymore.
    --  "func": Function to be called when a view row is destroyed, or null
 
    generic
@@ -1299,9 +1309,12 @@ package Gtk.Tree_View is
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
           Func      : Gtk_Tree_Destroy_Count_Func;
           Data      : User_Data_Type);
+      pragma Obsolescent (Set_Destroy_Count_Func);
       --  This function should almost never be used. It is meant for private
       --  use by ATK for determining the number of visible children that are
       --  removed when the user collapses a row, or a row is deleted.
+      --  Deprecated since 3.4, Accessibility does not need the function
+      --  anymore.
       --  "func": Function to be called when a view row is destroyed, or null
       --  "data": User data to be passed to Func, or null
 
@@ -1492,6 +1505,10 @@ package Gtk.Tree_View is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Activate_On_Single_Click_Property : constant Glib.Properties.Property_Boolean;
+   --  The activate-on-single-click property specifies whether the
+   --  "row-activated" signal will be emitted after a single click.
+
    Enable_Grid_Lines_Property : constant Gtk.Enums.Property_Gtk_Tree_View_Grid_Lines;
 
    Enable_Search_Property : constant Glib.Properties.Property_Boolean;
@@ -1651,9 +1668,12 @@ package Gtk.Tree_View is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The "row-activated" signal is emitted when the method
-   --  Gtk.Tree_View.Row_Activated is called or the user double clicks a
-   --  treeview row. It is also emitted when a non-editable row is selected and
-   --  one of the keys: Space, Shift+Space, Return or Enter is pressed.
+   --  Gtk.Tree_View.Row_Activated is called, when the user double clicks a
+   --  treeview row with the "activate-on-single-click" property set to False,
+   --  or when the user single clicks a row when the "activate-on-single-click"
+   --  property set to True. It is also emitted when a non-editable row is
+   --  selected and one of the keys: Space, Shift+Space, Return or Enter is
+   --  pressed.
    --
    --  For selection handling refer to the <link linkend="TreeWidget">tree
    --  widget conceptual overview</link> as well as
@@ -1900,4 +1920,6 @@ private
      Glib.Properties.Build ("enable-search");
    Enable_Grid_Lines_Property : constant Gtk.Enums.Property_Gtk_Tree_View_Grid_Lines :=
      Gtk.Enums.Build ("enable-grid-lines");
+   Activate_On_Single_Click_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activate-on-single-click");
 end Gtk.Tree_View;

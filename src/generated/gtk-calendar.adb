@@ -304,7 +304,6 @@ package body Gtk.Calendar is
       --  for the specified day. Examples for such details are holidays or
       --  appointments. The function returns null when no information is
       --  available.
-      --  for the specified day, or null.
       --  Since: gtk+ 2.14
       --  "calendar": a Gtk.Calendar.Gtk_Calendar.
       --  "year": the year for which details are needed.

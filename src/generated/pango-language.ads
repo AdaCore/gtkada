@@ -114,7 +114,17 @@ package Pango.Language is
       Pango_Script_Vai,
       Pango_Script_Carian,
       Pango_Script_Lycian,
-      Pango_Script_Lydian);
+      Pango_Script_Lydian,
+      Pango_Script_Batak,
+      Pango_Script_Brahmi,
+      Pango_Script_Mandaic,
+      Pango_Script_Chakma,
+      Pango_Script_Meroitic_Cursive,
+      Pango_Script_Meroitic_Hieroglyphs,
+      Pango_Script_Miao,
+      Pango_Script_Sharada,
+      Pango_Script_Sora_Sompeng,
+      Pango_Script_Takri);
    pragma Convention (C, Pango_Script);
 
 
@@ -197,7 +207,17 @@ package Pango.Language is
       Pango_Script_Vai => 74,
       Pango_Script_Carian => 75,
       Pango_Script_Lycian => 76,
-      Pango_Script_Lydian => 77);
+      Pango_Script_Lydian => 77,
+      Pango_Script_Batak => 78,
+      Pango_Script_Brahmi => 79,
+      Pango_Script_Mandaic => 80,
+      Pango_Script_Chakma => 81,
+      Pango_Script_Meroitic_Cursive => 82,
+      Pango_Script_Meroitic_Hieroglyphs => 83,
+      Pango_Script_Miao => 84,
+      Pango_Script_Sharada => 85,
+      Pango_Script_Sora_Sompeng => 86,
+      Pango_Script_Takri => 87);
 
    type Pango_Script_Array is array (Natural range <>) of Pango_Script;
 
@@ -234,7 +254,6 @@ package Pango.Language is
    --  returned pointer value to that returned for (non-existent) language code
    --  "xx". That is, compare to:
    --    pango_language_get_sample_string (pango_language_from_string ("xx"))
-   --  and should not be freed.
 
    function Get_Scripts (Self : Pango_Language) return Pango_Script_Array;
    --  Determines the scripts used to to write Language. If nothing is known
@@ -250,10 +269,6 @@ package Pango.Language is
    --  the return value is not null, and it is a small number.
    --  The Pango.Language.Includes_Script function uses this function
    --  internally.
-   --  number of entries in the array stored in Num_Scripts, or null if Pango
-   --  does not have any information about this particular language tag (also
-   --  the case if Language is null). The returned array is owned by Pango and
-   --  should not be modified or freed.
    --  Since: gtk+ 1.22
 
    function Includes_Script
@@ -267,8 +282,6 @@ package Pango.Language is
    --  a supplied language tag is relevant to a particular section of text. It
    --  probably is not useful for applications in most circumstances.
    --  This function uses Pango.Language.Get_Scripts internally.
-   --  to write Language or if nothing is known about Language (including the
-   --  case that Language is null), False otherwise.
    --  Since: gtk+ 1.4
    --  "script": a Pango.Language.Pango_Script
 
@@ -285,7 +298,6 @@ package Pango.Language is
 
    function To_String (Self : Pango_Language) return UTF8_String;
    --  Gets the RFC-3066 format string representing the given language tag.
-   --  Pango and should not be freed.
 
    ---------------
    -- Functions --
@@ -301,8 +313,6 @@ package Pango.Language is
    --  letters and '-'.
    --  Use Pango.Language.Get_Default if you want to get the
    --  Pango.Language.Pango_Language for the current locale of the process.
-   --  if Language was null. The returned pointer will be valid forever after,
-   --  and should not be freed.
    --  "language": a string representing a language tag, or null
 
    function Get_Default return Pango_Language;
@@ -327,7 +337,6 @@ package Pango.Language is
    --  settings to take effect. Gtk+ does this in its initialization functions
    --  automatically (by calling gtk_set_locale). See 'man setlocale' for more
    --  details.
-   --  freed.
    --  Since: gtk+ 1.16
 
 private

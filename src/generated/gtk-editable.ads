@@ -24,14 +24,14 @@
 --  <description>
 --  The Gtk.Editable.Gtk_Editable interface is an interface which should be
 --  implemented by text editing widgets, such as Gtk.GEntry.Gtk_Entry and
---  Gtk_Text. It contains functions for generically manipulating an editable
---  widget, a large number of action signals used for key bindings, and several
---  signals that an application can connect to to modify the behavior of a
---  widget.
+--  Gtk.Spin_Button.Gtk_Spin_Button. It contains functions for generically
+--  manipulating an editable widget, a large number of action signals used for
+--  key bindings, and several signals that an application can connect to to
+--  modify the behavior of a widget.
 --
 --  As an example of the latter usage, by connecting the following handler to
---  "insert_text", an application can convert all entry into a widget into
---  uppercase.
+--  Gtk.Editable.Gtk_Editable::insert-text, an application can convert all
+--  entry into a widget into uppercase.
 --
 --  == Forcing entry to uppercase. ==
 --
@@ -98,8 +98,8 @@ package Gtk.Editable is
    pragma Import (C, Delete_Text, "gtk_editable_delete_text");
    --  Deletes a sequence of characters. The characters that are deleted are
    --  those characters at positions from Start_Pos up to, but not including
-   --  End_Pos. If End_Pos is negative, then the the characters deleted are
-   --  those from Start_Pos to the end of the text.
+   --  End_Pos. If End_Pos is negative, then the characters deleted are those
+   --  from Start_Pos to the end of the text.
    --  Note that the positions are specified in characters, not bytes.
    --  "start_pos": start position
    --  "end_pos": end position
@@ -110,11 +110,9 @@ package Gtk.Editable is
        End_Pos   : Gint := -1) return UTF8_String;
    --  Retrieves a sequence of characters. The characters that are retrieved
    --  are those characters at positions from Start_Pos up to, but not
-   --  including End_Pos. If End_Pos is negative, then the the characters
-   --  retrieved are those characters from Start_Pos to the end of the text.
+   --  including End_Pos. If End_Pos is negative, then the characters retrieved
+   --  are those characters from Start_Pos to the end of the text.
    --  Note that positions are specified in characters, not bytes.
-   --  string. This string is allocated by the Gtk.Editable.Gtk_Editable
-   --  implementation and should be freed by the caller.
    --  "start_pos": start of text
    --  "end_pos": end of text
 
@@ -179,7 +177,7 @@ package Gtk.Editable is
    pragma Import (C, Select_Region, "gtk_editable_select_region");
    --  Selects a region of text. The characters that are selected are those
    --  characters at positions from Start_Pos up to, but not including End_Pos.
-   --  If End_Pos is negative, then the the characters selected are those
+   --  If End_Pos is negative, then the characters selected are those
    --  characters from Start_Pos to the end of the text.
    --  Note that positions are specified in characters, not bytes.
    --  "start_pos": start of region

@@ -330,6 +330,43 @@ package body Gtk.Icon_View is
       return Internal (Get_Object (Icon_View), Get_Object (Path));
    end Create_Drag_Icon;
 
+   ----------------------------------
+   -- Get_Activate_On_Single_Click --
+   ----------------------------------
+
+   function Get_Activate_On_Single_Click
+      (Icon_View : not null access Gtk_Icon_View_Record) return Boolean
+   is
+      function Internal (Icon_View : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_icon_view_get_activate_on_single_click");
+   begin
+      return Internal (Get_Object (Icon_View)) /= 0;
+   end Get_Activate_On_Single_Click;
+
+   -------------------
+   -- Get_Cell_Rect --
+   -------------------
+
+   function Get_Cell_Rect
+      (Icon_View : not null access Gtk_Icon_View_Record;
+       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
+       Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Rect      : access Gdk.Rectangle.Gdk_Rectangle) return Boolean
+   is
+      function Internal
+         (Icon_View : System.Address;
+          Path      : System.Address;
+          Cell      : System.Address;
+          Acc_Rect  : access Gdk.Rectangle.Gdk_Rectangle) return Integer;
+      pragma Import (C, Internal, "gtk_icon_view_get_cell_rect");
+      Acc_Rect   : aliased Gdk.Rectangle.Gdk_Rectangle;
+      Tmp_Return : Integer;
+   begin
+      Tmp_Return := Internal (Get_Object (Icon_View), Get_Object (Path), Get_Object_Or_Null (GObject (Cell)), Acc_Rect'Access);
+      Rect.all := Acc_Rect;
+      return Tmp_Return /= 0;
+   end Get_Cell_Rect;
+
    ------------------------
    -- Get_Column_Spacing --
    ------------------------
@@ -925,6 +962,20 @@ package body Gtk.Icon_View is
       end Selected_Foreach;
 
    end Selected_Foreach_User_Data;
+
+   ----------------------------------
+   -- Set_Activate_On_Single_Click --
+   ----------------------------------
+
+   procedure Set_Activate_On_Single_Click
+      (Icon_View : not null access Gtk_Icon_View_Record;
+       Single    : Boolean)
+   is
+      procedure Internal (Icon_View : System.Address; Single : Integer);
+      pragma Import (C, Internal, "gtk_icon_view_set_activate_on_single_click");
+   begin
+      Internal (Get_Object (Icon_View), Boolean'Pos (Single));
+   end Set_Activate_On_Single_Click;
 
    ------------------------
    -- Set_Cell_Data_Func --

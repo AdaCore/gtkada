@@ -248,9 +248,8 @@
 --
 --  Explanation
 --
---  Examples
+--  Examples </thead>
 --
---  </thead>
 --  rgb(R, G, B)
 --
 --  An opaque color; R, G, B can be either integers between 0 and 255 or
@@ -294,6 +293,14 @@
 --  darker(Color)
 --
 --  A darker variant of Color
+--
+--  alpha(Color, F)
+--
+--  Modifies passed color's alpha by a factor F. F is a floating point number.
+--  F < 1.0 results in a more transparent color while F > 1.0 results in a more
+--  opaque color.
+--
+--  alhpa(blue, 0.5)
 --
 --  == Gradients ==
 --
@@ -487,9 +494,8 @@
 --
 --  Maps to
 --
---  Examples
+--  Examples </thead>
 --
---  </thead>
 --  engine
 --
 --  engine-name
@@ -601,11 +607,11 @@
 --
 --  margin <entry morerows="1"><literallayout>Width Vertical_Width
 --  Horizontal_Width Top_Width Horizontal_Width Bottom_Width Top_Width
---  Right_Width Bottom_Width Left_Width</literallayout>
---
---  <entry morerows="1">Gtk.Style.Gtk_Border <entry
+--  Right_Width Bottom_Width Left_Width</literallayout> <entry
+--  morerows="1">Gtk.Style.Gtk_Border <entry
 --  morerows="1"><literallayout>margin: 5; margin: 5 10; margin: 5 10 3;
 --  margin: 5 10 3 5;</literallayout>
+--
 --  padding-top
 --
 --  integer
@@ -651,6 +657,15 @@
 --  (radial, center center, 0.2, center center, 0.8, color-stop (0.0,
 --  &num;fff), color-stop (1.0, &num;000)); url
 --  ('background.png');</literallayout>
+--  background-repeat
+--
+--  [repeat|no-repeat]
+--
+--  internal
+--
+--  <literallayout>background-repeat: no-repeat;</literallayout> If not
+--  specified, the style doesn't respect the CSS3 specification, since the
+--  background will be stretched to fill the area.
 --  border-top-width
 --
 --  integer
@@ -715,7 +730,7 @@
 --
 --  shadow list (see above)
 --
---  Gtk_Text_Shadow
+--  internal use only
 --
 --  <literallayout>text-shadow: 1 1 0 blue, -4 -4 red;</literallayout>
 --  transition
@@ -811,6 +826,7 @@ package Gtk.Css_Provider is
    --  Using Gtk.Css_Provider.Load_From_Data with the return value from this
    --  function on a new provider created with Gtk.Css_Provider.Gtk_New will
    --  basicallu create a duplicate of this Provider.
+   --  Since: gtk+ 3.2
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -831,13 +847,11 @@ package Gtk.Css_Provider is
    function Get_Default return Gtk_Css_Provider;
    --  Returns the provider containing the style settings used as a fallback
    --  for all widgets.
-   --  This memory is owned by GTK+, and you must not free it.
 
    function Get_Named
       (Name    : UTF8_String;
        Variant : UTF8_String := "") return Gtk_Css_Provider;
    --  Loads a theme from the usual theme paths
-   --  This memory is owned by GTK+, and you must not free it.
    --  "name": A theme name
    --  "variant": variant to load, for example, "dark", or null for the
    --  default

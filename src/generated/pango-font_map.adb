@@ -46,6 +46,19 @@ package body Pango.Font_Map is
       return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Context));
    end Create_Context;
 
+   ----------------
+   -- Get_Serial --
+   ----------------
+
+   function Get_Serial
+      (Self : not null access Pango_Font_Map_Record) return Guint
+   is
+      function Internal (Self : System.Address) return Guint;
+      pragma Import (C, Internal, "pango_font_map_get_serial");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Serial;
+
    -------------------
    -- List_Families --
    -------------------

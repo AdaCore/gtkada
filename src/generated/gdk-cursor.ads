@@ -342,7 +342,6 @@ package Gdk.Cursor is
        Display : not null access Gdk.Display.Gdk_Display_Record'Class;
        Name    : UTF8_String);
    --  Creates a new cursor by looking up Name in the current cursor theme.
-   --  the given name
    --  Since: gtk+ 2.8
    --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
@@ -352,7 +351,6 @@ package Gdk.Cursor is
       (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
        Name    : UTF8_String) return Gdk_Cursor;
    --  Creates a new cursor by looking up Name in the current cursor theme.
-   --  the given name
    --  Since: gtk+ 2.8
    --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
    --  created

@@ -26,7 +26,7 @@
 --  buttons.
 --
 --  Use Gtk.Tool_Button.Gtk_New to create a new
---  Gtk.Tool_Button.Gtk_Tool_Button. Use gtk_tool_button_new_with_stock to
+--  Gtk.Tool_Button.Gtk_Tool_Button. Use Gtk.Tool_Button.Gtk_New_From_Stock to
 --  create a Gtk.Tool_Button.Gtk_Tool_Button containing a stock item.
 --
 --  The label of a Gtk.Tool_Button.Gtk_Tool_Button is determined by the
@@ -54,6 +54,7 @@ with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Tool_Item;   use Gtk.Tool_Item;
@@ -76,21 +77,21 @@ package Gtk.Tool_Button is
       (Button      : not null access Gtk_Tool_Button_Record'Class;
        Icon_Widget : Gtk.Widget.Gtk_Widget := null;
        Label       : UTF8_String := "");
-   --  Creates a new GtkToolButton using Icon_Widget as icon and Label as
+   --  Creates a new GtkToolButton using Icon_Widget as contents and Label as
    --  label.
    --  Since: gtk+ 2.4
-   --  "icon_widget": a Gtk.Misc.Gtk_Misc widget that will be used as icon
-   --  widget, or null
+   --  "icon_widget": a widget that will be used as the button contents, or
+   --  null
    --  "label": a string that will be used as label, or null
 
    function Gtk_Tool_Button_New
       (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
        Label       : UTF8_String := "") return Gtk_Tool_Button;
-   --  Creates a new GtkToolButton using Icon_Widget as icon and Label as
+   --  Creates a new GtkToolButton using Icon_Widget as contents and Label as
    --  label.
    --  Since: gtk+ 2.4
-   --  "icon_widget": a Gtk.Misc.Gtk_Misc widget that will be used as icon
-   --  widget, or null
+   --  "icon_widget": a widget that will be used as the button contents, or
+   --  null
    --  "label": a string that will be used as label, or null
 
    procedure Gtk_New_From_Stock
@@ -126,7 +127,6 @@ package Gtk.Tool_Button is
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
    --  Returns the name of the themed icon for the tool button, see
    --  Gtk.Tool_Button.Set_Icon_Name.
-   --  no themed icon
    --  Since: gtk+ 2.8
 
    procedure Set_Icon_Name
@@ -144,7 +144,6 @@ package Gtk.Tool_Button is
        return Gtk.Widget.Gtk_Widget;
    --  Return the widget used as icon widget on Button. See
    --  Gtk.Tool_Button.Set_Icon_Widget.
-   --  on Button, or null.
    --  Since: gtk+ 2.4
 
    procedure Set_Icon_Widget
@@ -179,7 +178,6 @@ package Gtk.Tool_Button is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the widget used as label on Button. See
    --  Gtk.Tool_Button.Set_Label_Widget.
-   --  on Button, or null.
    --  Since: gtk+ 2.4
 
    procedure Set_Label_Widget
@@ -214,7 +212,6 @@ package Gtk.Tool_Button is
    --  Returns whether underscores in the label property are used as mnemonics
    --  on menu items on the overflow menu. See
    --  Gtk.Tool_Button.Set_Use_Underline.
-   --  mnemonics on menu items on the overflow menu.
    --  Since: gtk+ 2.4
 
    procedure Set_Use_Underline
@@ -236,6 +233,17 @@ package Gtk.Tool_Button is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Tool_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Tool_Button_Record;
+       Action_Name : UTF8_String);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Tool_Button_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Tool_Button_Record;
@@ -311,9 +319,22 @@ package Gtk.Tool_Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Activatable"
    --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Tool_Button_Record, Gtk_Tool_Button);
+   function "+"
+     (Widget : access Gtk_Tool_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Tool_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Tool_Button_Record, Gtk_Tool_Button);

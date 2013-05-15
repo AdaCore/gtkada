@@ -82,9 +82,6 @@ package Gtk.Selection_Data is
    function Get_Pixbuf
       (Selection : Gtk_Selection_Data) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Gets the contents of the selection data as a Gdk.Pixbuf.Gdk_Pixbuf.
-   --  image type and it could be converted to a Gdk.Pixbuf.Gdk_Pixbuf, a
-   --  newly allocated pixbuf is returned, otherwise null. If the result is
-   --  non-null it must be freed with g_object_unref.
    --  Since: gtk+ 2.6
 
    function Set_Pixbuf
@@ -93,7 +90,6 @@ package Gtk.Selection_Data is
        return Boolean;
    --  Sets the contents of the selection from a Gdk.Pixbuf.Gdk_Pixbuf The
    --  pixbuf is converted to the form determined by Selection_Data->target.
-   --  otherwise False.
    --  Since: gtk+ 2.6
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
 
@@ -109,9 +105,6 @@ package Gtk.Selection_Data is
 
    function Get_Text (Selection : Gtk_Selection_Data) return UTF8_String;
    --  Gets the contents of the selection data as a UTF-8 string.
-   --  recognized text type and it could be converted to UTF-8, a newly
-   --  allocated string containing the converted text, otherwise null. If the
-   --  result is non-null it must be freed with g_free.
 
    function Set_Text
       (Selection : Gtk_Selection_Data;
@@ -119,16 +112,12 @@ package Gtk.Selection_Data is
        Len       : Gint) return Boolean;
    --  Sets the contents of the selection from a UTF-8 encoded string. The
    --  string is converted to the form determined by Selection_Data->target.
-   --  otherwise False.
    --  "str": a UTF-8 string
    --  "len": the length of Str, or -1 if Str is nul-terminated.
 
    function Get_Uris
       (Selection : Gtk_Selection_Data) return GNAT.Strings.String_List;
    --  Gets the contents of the selection data as array of URIs.
-   --  the selection data contains a list of URIs, a newly allocated
-   --  null-terminated string array containing the URIs, otherwise null. If the
-   --  result is non-null it must be freed with g_strfreev.
    --  Since: gtk+ 2.6
 
    function Set_Uris
@@ -136,7 +125,6 @@ package Gtk.Selection_Data is
        Uris      : GNAT.Strings.String_List) return Boolean;
    --  Sets the contents of the selection from a list of URIs. The string is
    --  converted to the form determined by Selection_Data->target.
-   --  otherwise False.
    --  Since: gtk+ 2.6
    --  "uris": a null-terminated array of strings holding URIs
 
@@ -146,7 +134,6 @@ package Gtk.Selection_Data is
    --  Given a Gtk.Selection_Data.Gtk_Selection_Data object holding a list of
    --  targets, determines if any of the targets in Targets can be used to
    --  provide a Gdk.Pixbuf.Gdk_Pixbuf.
-   --  and a suitable target for images is included, otherwise False.
    --  Since: gtk+ 2.6
    --  "writable": whether to accept only targets for which GTK+ knows how to
    --  convert a pixbuf into the format
@@ -156,14 +143,12 @@ package Gtk.Selection_Data is
    --  Given a Gtk.Selection_Data.Gtk_Selection_Data object holding a list of
    --  targets, determines if any of the targets in Targets can be used to
    --  provide text.
-   --  and a suitable target for text is included, otherwise False.
 
    function Targets_Include_Uri
       (Selection : Gtk_Selection_Data) return Boolean;
    --  Given a Gtk.Selection_Data.Gtk_Selection_Data object holding a list of
    --  targets, determines if any of the targets in Targets can be used to
    --  provide a list or URIs.
-   --  and a suitable target for URI lists is included, otherwise False.
    --  Since: gtk+ 2.10
 
    ----------------------

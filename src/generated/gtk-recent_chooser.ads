@@ -96,7 +96,6 @@ package Gtk.Recent_Chooser is
    function Get_Current_Item
       (Chooser : Gtk_Recent_Chooser) return Gtk.Recent_Info.Gtk_Recent_Info;
    --  Gets the Gtk.Recent_Info.Gtk_Recent_Info currently selected by Chooser.
-   --  when you have finished using it.
    --  Since: gtk+ 2.10
 
    function Get_Current_Uri
@@ -133,16 +132,12 @@ package Gtk.Recent_Chooser is
    --  Gtk.Recent_Info.Gtk_Recent_Info objects.
    --  The return value of this function is affected by the "sort-type" and
    --  "limit" properties of Chooser.
-   --  list of Gtk.Recent_Info.Gtk_Recent_Info objects. You should use
-   --  Gtk.Recent_Info.Unref on every item of the list, and then free the list
-   --  itself using g_list_free.
    --  Since: gtk+ 2.10
 
    function Get_Limit (Chooser : Gtk_Recent_Chooser) return Gint;
    pragma Import (C, Get_Limit, "gtk_recent_chooser_get_limit");
    --  Gets the number of items returned by Gtk.Recent_Chooser.Get_Items and
    --  gtk_recent_chooser_get_uris.
-   --  returned.
    --  Since: gtk+ 2.10
 
    procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Gint);
@@ -194,7 +189,6 @@ package Gtk.Recent_Chooser is
    function Get_Show_Not_Found (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Retrieves whether Chooser should show the recently used resources that
    --  were not found.
-   --  False otheriwse.
    --  Since: gtk+ 2.10
 
    procedure Set_Show_Not_Found
@@ -208,7 +202,6 @@ package Gtk.Recent_Chooser is
    function Get_Show_Private (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Returns whether Chooser should display recently used resources
    --  registered as private.
-   --  False otherwise.
    --  Since: gtk+ 2.10
 
    procedure Set_Show_Private
@@ -221,7 +214,6 @@ package Gtk.Recent_Chooser is
    function Get_Show_Tips (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Gets whether Chooser should display tooltips containing the full path
    --  of a recently user resource.
-   --  False otherwise.
    --  Since: gtk+ 2.10
 
    procedure Set_Show_Tips
@@ -252,8 +244,6 @@ package Gtk.Recent_Chooser is
       (Chooser : Gtk_Recent_Chooser)
        return Gtk.Recent_Filter.Gtk_Recent_Filter_List.GSlist;
    --  Gets the Gtk.Recent_Filter.Gtk_Recent_Filter objects held by Chooser.
-   --  of Gtk.Recent_Filter.Gtk_Recent_Filter objects. You should just free
-   --  the returned list using g_slist_free.
    --  Since: gtk+ 2.10
 
    procedure Remove_Filter

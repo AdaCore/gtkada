@@ -262,6 +262,21 @@ package body Gtk.Style_Context is
       return Internal (Get_Object (Self), State);
    end Get_Font;
 
+   ---------------------
+   -- Get_Frame_Clock --
+   ---------------------
+
+   function Get_Frame_Clock
+      (Self : not null access Gtk_Style_Context_Record)
+       return Gdk.Frame_Clock.Gdk_Frame_Clock
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_style_context_get_frame_clock");
+      Stub_Gdk_Frame_Clock : Gdk.Frame_Clock.Gdk_Frame_Clock_Record;
+   begin
+      return Gdk.Frame_Clock.Gdk_Frame_Clock (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Frame_Clock));
+   end Get_Frame_Clock;
+
    ------------------------
    -- Get_Junction_Sides --
    ------------------------
@@ -317,6 +332,21 @@ package body Gtk.Style_Context is
       Padding := Tmp_Padding;
    end Get_Padding;
 
+   ----------------
+   -- Get_Parent --
+   ----------------
+
+   function Get_Parent
+      (Self : not null access Gtk_Style_Context_Record)
+       return Gtk_Style_Context
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_style_context_get_parent");
+      Stub_Gtk_Style_Context : Gtk_Style_Context_Record;
+   begin
+      return Gtk.Style_Context.Gtk_Style_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Style_Context));
+   end Get_Parent;
+
    --------------
    -- Get_Path --
    --------------
@@ -368,6 +398,26 @@ package body Gtk.Style_Context is
    begin
       return Gdk.Screen.Gdk_Screen (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Screen));
    end Get_Screen;
+
+   -----------------
+   -- Get_Section --
+   -----------------
+
+   function Get_Section
+      (Self     : not null access Gtk_Style_Context_Record;
+       Property : UTF8_String) return Gtk.Css_Section.Gtk_Css_Section
+   is
+      function Internal
+         (Self     : System.Address;
+          Property : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_style_context_get_section");
+      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Return   : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Property);
+      Free (Tmp_Property);
+      return From_Object (Tmp_Return);
+   end Get_Section;
 
    ---------------
    -- Get_State --
@@ -691,6 +741,22 @@ package body Gtk.Style_Context is
       Internal (Get_Object (Self), Direction);
    end Set_Direction;
 
+   ---------------------
+   -- Set_Frame_Clock --
+   ---------------------
+
+   procedure Set_Frame_Clock
+      (Self        : not null access Gtk_Style_Context_Record;
+       Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Frame_Clock : System.Address);
+      pragma Import (C, Internal, "gtk_style_context_set_frame_clock");
+   begin
+      Internal (Get_Object (Self), Get_Object (Frame_Clock));
+   end Set_Frame_Clock;
+
    ------------------------
    -- Set_Junction_Sides --
    ------------------------
@@ -706,6 +772,20 @@ package body Gtk.Style_Context is
    begin
       Internal (Get_Object (Self), Sides);
    end Set_Junction_Sides;
+
+   ----------------
+   -- Set_Parent --
+   ----------------
+
+   procedure Set_Parent
+      (Self   : not null access Gtk_Style_Context_Record;
+       Parent : access Gtk_Style_Context_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Parent : System.Address);
+      pragma Import (C, Internal, "gtk_style_context_set_parent");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Parent)));
+   end Set_Parent;
 
    --------------
    -- Set_Path --
