@@ -9,12 +9,11 @@ and/or use gtk-doc annotations.  -->
   <include name="GLib" version="2.0"/>
   <include name="GObject" version="2.0"/>
   <include name="cairo" version="1.0"/>
-  <package name="cairo"/>
-  <package name="freetype2"/>
-  <package name="gobject-2.0"/>
+  <package name="pango"/>
+  <c:include name="pango/pango.h"/>
   <namespace name="Pango"
              version="1.0"
-             shared-library="libpango-1.0.so.0"
+             shared-library="/opt/local/lib/libpango-1.0.0.dylib"
              c:identifier-prefixes="Pango"
              c:symbol-prefixes="pango">
     <alias name="Glyph" c:type="PangoGlyph">
@@ -95,7 +94,7 @@ and/or use gtk-doc annotations.  -->
           </return-value>
           <parameters>
             <parameter name="attr" transfer-ownership="none">
-              <type name="Attribute" c:type="PangoAttribute*"/>
+              <type name="Attribute" c:type="const PangoAttribute*"/>
             </parameter>
           </parameters>
         </callback>
@@ -119,10 +118,10 @@ and/or use gtk-doc annotations.  -->
           </return-value>
           <parameters>
             <parameter name="attr1" transfer-ownership="none">
-              <type name="Attribute" c:type="PangoAttribute*"/>
+              <type name="Attribute" c:type="const PangoAttribute*"/>
             </parameter>
             <parameter name="attr2" transfer-ownership="none">
-              <type name="Attribute" c:type="PangoAttribute*"/>
+              <type name="Attribute" c:type="const PangoAttribute*"/>
             </parameter>
           </parameters>
         </callback>
@@ -139,24 +138,31 @@ and/or use gtk-doc annotations.  -->
     <callback name="AttrDataCopyFunc"
               c:type="PangoAttrDataCopyFunc"
               introspectable="0">
+      <doc xml:whitespace="preserve">Type of a function that can duplicate user data for an attribute.</doc>
       <return-value>
+        <doc xml:whitespace="preserve">new copy of @user_data.</doc>
         <type name="gpointer" c:type="gpointer"/>
       </return-value>
       <parameters>
-        <parameter name="data" transfer-ownership="none">
+        <parameter name="user_data" transfer-ownership="none" closure="0">
+          <doc xml:whitespace="preserve">user data to copy</doc>
           <type name="gpointer" c:type="gconstpointer"/>
         </parameter>
       </parameters>
     </callback>
     <callback name="AttrFilterFunc" c:type="PangoAttrFilterFunc">
+      <doc xml:whitespace="preserve">Type of a function filtering a list of attributes.</doc>
       <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">%TRUE if the attribute should be kept, %FALSE if it should be filtered out.</doc>
         <type name="gboolean" c:type="gboolean"/>
       </return-value>
       <parameters>
         <parameter name="attribute" transfer-ownership="none">
+          <doc xml:whitespace="preserve">a Pango attribute</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </parameter>
-        <parameter name="data" transfer-ownership="none">
+        <parameter name="user_data" transfer-ownership="none" closure="1">
+          <doc xml:whitespace="preserve">user data passed to the function</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -181,17 +187,15 @@ and/or use gtk-doc annotations.  -->
                 introspectable="0">
         <doc xml:whitespace="preserve">Create a new font description attribute. This attribute
 allows setting family, style, weight, variant, stretch,
-and size simultaneously.
-
-freed with pango_attribute_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+and size simultaneously.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
           <parameter name="desc" transfer-ownership="none">
             <doc xml:whitespace="preserve">the font description</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </function>
@@ -208,11 +212,9 @@ freed with pango_attribute_destroy().</doc>
       <method name="copy"
               c:identifier="pango_attr_iterator_copy"
               introspectable="0">
-        <doc xml:whitespace="preserve">Copy a #PangoAttrIterator
-
-be freed with pango_attr_iterator_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttrIterator, which should</doc>
+        <doc xml:whitespace="preserve">Copy a #PangoAttrIterator</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttrIterator, which should be freed with pango_attr_iterator_destroy().</doc>
           <type name="AttrIterator" c:type="PangoAttrIterator*"/>
         </return-value>
       </method>
@@ -228,12 +230,9 @@ be freed with pango_attr_iterator_destroy().</doc>
         <doc xml:whitespace="preserve">Find the current attribute of a particular type at the iterator
 location. When multiple attributes of the same type overlap,
 the attribute whose range starts closest to the current location
-is used.
-
-if no attribute of that type applies to the current
-location.</doc>
+is used.</doc>
         <return-value>
-          <doc xml:whitespace="preserve">the current attribute of the given type, or %NULL</doc>
+          <doc xml:whitespace="preserve">the current attribute of the given type, or %NULL if no attribute of that type applies to the current location.</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
@@ -247,13 +246,9 @@ location.</doc>
               c:identifier="pango_attr_iterator_get_attrs"
               version="1.2">
         <doc xml:whitespace="preserve">Gets a list of all attributes at the current position of the
-iterator.
-
-all attributes for the current range.
-To free this value, call pango_attribute_destroy() on
-each value and g_slist_free() on the list.</doc>
+iterator.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a list of</doc>
+          <doc xml:whitespace="preserve">a list of all attributes for the current range. To free this value, call pango_attribute_destroy() on each value and g_slist_free() on the list.</doc>
           <type name="GLib.SList" c:type="GSList*">
             <type name="Attribute"/>
           </type>
@@ -300,11 +295,17 @@ a signed integer are clamped to %G_MAXINT.</doc>
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="start" transfer-ownership="none">
+          <parameter name="start"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store the start of the range</doc>
             <type name="gint" c:type="gint*"/>
           </parameter>
-          <parameter name="end" transfer-ownership="none">
+          <parameter name="end"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store the end of the range</doc>
             <type name="gint" c:type="gint*"/>
           </parameter>
@@ -321,11 +322,9 @@ a signed integer are clamped to %G_MAXINT.</doc>
       <function name="new"
                 c:identifier="pango_attr_language_new"
                 introspectable="0">
-        <doc xml:whitespace="preserve">Create a new language tag attribute.
-
-freed with pango_attribute_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+        <doc xml:whitespace="preserve">Create a new language tag attribute.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
@@ -342,11 +341,9 @@ freed with pango_attribute_destroy().</doc>
             glib:get-type="pango_attr_list_get_type"
             c:symbol-prefix="attr_list">
       <constructor name="new" c:identifier="pango_attr_list_new">
-        <doc xml:whitespace="preserve">Create a new empty attribute list with a reference count of one.
-
-be freed with pango_attr_list_unref().</doc>
+        <doc xml:whitespace="preserve">Create a new empty attribute list with a reference count of one.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttrList, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttrList, which should be freed with pango_attr_list_unref().</doc>
           <type name="AttrList" c:type="PangoAttrList*"/>
         </return-value>
       </constructor>
@@ -364,20 +361,16 @@ since it never removes or combines existing attributes.</doc>
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="attr" transfer-ownership="none">
+          <parameter name="attr" transfer-ownership="full">
             <doc xml:whitespace="preserve">the attribute to insert. Ownership of this value is assumed by the list.</doc>
             <type name="Attribute" c:type="PangoAttribute*"/>
           </parameter>
         </parameters>
       </method>
       <method name="copy" c:identifier="pango_attr_list_copy">
-        <doc xml:whitespace="preserve">Copy @list and return an identical new list.
-
-reference count of one, which should
-be freed with pango_attr_list_unref().
-Returns %NULL if @list was %NULL.</doc>
+        <doc xml:whitespace="preserve">Copy @list and return an identical new list.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttrList, with a</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttrList, with a reference count of one, which should be freed with pango_attr_list_unref(). Returns %NULL if @list was %NULL.</doc>
           <type name="AttrList" c:type="PangoAttrList*"/>
         </return-value>
       </method>
@@ -386,11 +379,9 @@ Returns %NULL if @list was %NULL.</doc>
               version="1.2">
         <doc xml:whitespace="preserve">Given a #PangoAttrList and callback function, removes any elements
 of @list for which @func returns %TRUE and inserts them into
-a new list.
-
-no attributes of the given types were found.</doc>
+a new list.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the new #PangoAttrList or %NULL if</doc>
+          <doc xml:whitespace="preserve">the new #PangoAttrList or %NULL if no attributes of the given types were found.</doc>
           <type name="AttrList" c:type="PangoAttrList*"/>
         </return-value>
         <parameters>
@@ -411,11 +402,9 @@ no attributes of the given types were found.</doc>
               c:identifier="pango_attr_list_get_iterator"
               introspectable="0">
         <doc xml:whitespace="preserve">Create a iterator initialized to the beginning of the list.
-@list must not be modified until this iterator is freed.
-
-be freed with pango_attr_iterator_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttrIterator, which should</doc>
+@list must not be modified until this iterator is freed.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttrIterator, which should be freed with pango_attr_iterator_destroy().</doc>
           <type name="AttrIterator" c:type="PangoAttrIterator*"/>
         </return-value>
       </method>
@@ -427,7 +416,7 @@ be inserted after all other attributes with a matching
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="attr" transfer-ownership="none">
+          <parameter name="attr" transfer-ownership="full">
             <doc xml:whitespace="preserve">the attribute to insert. Ownership of this value is assumed by the list.</doc>
             <type name="Attribute" c:type="PangoAttribute*"/>
           </parameter>
@@ -442,7 +431,7 @@ be inserted before all other attributes with a matching
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="attr" transfer-ownership="none">
+          <parameter name="attr" transfer-ownership="full">
             <doc xml:whitespace="preserve">the attribute to insert. Ownership of this value is assumed by the list.</doc>
             <type name="Attribute" c:type="PangoAttribute*"/>
           </parameter>
@@ -518,21 +507,19 @@ it contains.</doc>
         <doc xml:whitespace="preserve">Create a new shape attribute. A shape is used to impose a
 particular ink and logical rectangle on the result of shaping a
 particular glyph. This might be used, for instance, for
-embedding a picture or a widget inside a #PangoLayout.
-
-freed with pango_attribute_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+embedding a picture or a widget inside a #PangoLayout.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
           <parameter name="ink_rect" transfer-ownership="none">
             <doc xml:whitespace="preserve">ink rectangle to assign to each character</doc>
-            <type name="Rectangle" c:type="PangoRectangle*"/>
+            <type name="Rectangle" c:type="const PangoRectangle*"/>
           </parameter>
           <parameter name="logical_rect" transfer-ownership="none">
             <doc xml:whitespace="preserve">logical rectangle to assign to each character</doc>
-            <type name="Rectangle" c:type="PangoRectangle*"/>
+            <type name="Rectangle" c:type="const PangoRectangle*"/>
           </parameter>
         </parameters>
       </function>
@@ -542,21 +529,19 @@ freed with pango_attribute_destroy().</doc>
                 introspectable="0">
         <doc xml:whitespace="preserve">Like pango_attr_shape_new(), but a user data pointer is also
 provided; this pointer can be accessed when later
-rendering the glyph.
-
-freed with pango_attribute_destroy().</doc>
+rendering the glyph.</doc>
         <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
           <parameter name="ink_rect" transfer-ownership="none">
             <doc xml:whitespace="preserve">ink rectangle to assign to each character</doc>
-            <type name="Rectangle" c:type="PangoRectangle*"/>
+            <type name="Rectangle" c:type="const PangoRectangle*"/>
           </parameter>
           <parameter name="logical_rect" transfer-ownership="none">
             <doc xml:whitespace="preserve">logical rectangle to assign to each character</doc>
-            <type name="Rectangle" c:type="PangoRectangle*"/>
+            <type name="Rectangle" c:type="const PangoRectangle*"/>
           </parameter>
           <parameter name="data" transfer-ownership="none">
             <doc xml:whitespace="preserve">user data pointer</doc>
@@ -593,11 +578,9 @@ freed with pango_attribute_destroy().</doc>
       <function name="new"
                 c:identifier="pango_attr_size_new"
                 introspectable="0">
-        <doc xml:whitespace="preserve">Create a new font-size attribute in fractional points.
-
-freed with pango_attribute_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+        <doc xml:whitespace="preserve">Create a new font-size attribute in fractional points.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
@@ -611,11 +594,9 @@ freed with pango_attribute_destroy().</doc>
                 c:identifier="pango_attr_size_new_absolute"
                 version="1.8"
                 introspectable="0">
-        <doc xml:whitespace="preserve">Create a new font-size attribute in device units.
-
-freed with pango_attribute_destroy().</doc>
+        <doc xml:whitespace="preserve">Create a new font-size attribute in device units.</doc>
         <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
         <parameters>
@@ -737,12 +718,10 @@ freed with pango_attribute_destroy().</doc>
 pango_attr_type_register().
 
 The returned value is an interned string (see g_intern_string() for what
-that means) that should not be modified or freed.
-
-a built-in Pango attribute type or invalid.</doc>
+that means) that should not be modified or freed.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the type ID name (which may be %NULL), or %NULL if @type is</doc>
-          <type name="utf8" c:type="char*"/>
+          <doc xml:whitespace="preserve">the type ID name (which may be %NULL), or %NULL if @type is a built-in Pango attribute type or invalid.</doc>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
         <parameters>
           <parameter name="type" transfer-ownership="none">
@@ -761,14 +740,14 @@ later by using pango_attr_type_get_name().</doc>
         <parameters>
           <parameter name="name" transfer-ownership="none">
             <doc xml:whitespace="preserve">an identifier for the type</doc>
-            <type name="utf8" c:type="gchar*"/>
+            <type name="utf8" c:type="const gchar*"/>
           </parameter>
         </parameters>
       </function>
     </enumeration>
     <record name="Attribute" c:type="PangoAttribute">
       <field name="klass" writable="1">
-        <type name="AttrClass" c:type="PangoAttrClass*"/>
+        <type name="AttrClass" c:type="const PangoAttrClass*"/>
       </field>
       <field name="start_index" writable="1">
         <type name="guint" c:type="guint"/>
@@ -779,11 +758,9 @@ later by using pango_attr_type_get_name().</doc>
       <method name="copy"
               c:identifier="pango_attribute_copy"
               introspectable="0">
-        <doc xml:whitespace="preserve">Make a copy of an attribute.
-
-freed with pango_attribute_destroy().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+        <doc xml:whitespace="preserve">Make a copy of an attribute.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
           <type name="Attribute" c:type="PangoAttribute*"/>
         </return-value>
       </method>
@@ -804,7 +781,7 @@ attributes apply to.</doc>
         <parameters>
           <parameter name="attr2" transfer-ownership="none">
             <doc xml:whitespace="preserve">another #PangoAttribute</doc>
-            <type name="Attribute" c:type="PangoAttribute*"/>
+            <type name="Attribute" c:type="const PangoAttribute*"/>
           </parameter>
         </parameters>
       </method>
@@ -820,7 +797,7 @@ to the entire text by default.</doc>
         <parameters>
           <parameter name="klass" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoAttributeClass</doc>
-            <type name="AttrClass" c:type="PangoAttrClass*"/>
+            <type name="AttrClass" c:type="const PangoAttrClass*"/>
           </parameter>
         </parameters>
       </method>
@@ -916,11 +893,9 @@ type of a Unicode character as specified by the
 character, as specified in the Unicode Character Database.
 
 A simplified version of this function is available as
-pango_unichar_get_direction().
-
-Unicode bidirectional algorithm.</doc>
+pango_unichar_get_direction().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the bidirectional character type, as used in the</doc>
+          <doc xml:whitespace="preserve">the bidirectional character type, as used in the Unicode bidirectional algorithm.</doc>
           <type name="BidiType" c:type="PangoBidiType"/>
         </return-value>
         <parameters>
@@ -949,12 +924,9 @@ Unicode bidirectional algorithm.</doc>
         <doc xml:whitespace="preserve">Creates a copy of @src, which should be freed with
 pango_color_free(). Primarily used by language bindings,
 not that useful otherwise (since colors can just be copied
-by assignment in C).
-
-be freed with pango_color_free(), or %NULL
-if @src was %NULL.</doc>
+by assignment in C).</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoColor, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoColor, which should be freed with pango_color_free(), or %NULL if @src was %NULL.</doc>
           <type name="Color" c:type="PangoColor*"/>
         </return-value>
       </method>
@@ -971,17 +943,15 @@ from the X11 &lt;filename&gt;rgb.txt&lt;/filename&gt; file), or it can be a hex 
 form '&amp;num;rgb' '&amp;num;rrggbb' '&amp;num;rrrgggbbb' or '&amp;num;rrrrggggbbbb' where
 'r', 'g' and 'b' are hex digits of the red, green, and blue
 components of the color, respectively. (White in the four
-forms is '&amp;num;fff' '&amp;num;ffffff' '&amp;num;fffffffff' and '&amp;num;ffffffffffff')
-
-otherwise false.</doc>
+forms is '&amp;num;fff' '&amp;num;ffffff' '&amp;num;fffffffff' and '&amp;num;ffffffffffff')</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if parsing of the specifier succeeded,</doc>
+          <doc xml:whitespace="preserve">%TRUE if parsing of the specifier succeeded, otherwise false.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
         <parameters>
           <parameter name="spec" transfer-ownership="none">
             <doc xml:whitespace="preserve">a string specifying the new color</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </method>
@@ -1017,14 +987,26 @@ If you are using Pango as part of a higher-level system,
 that system may have it's own way of create a #PangoContext.
 For instance, the GTK+ toolkit has, among others,
 gdk_pango_context_get_for_screen(), and
-gtk_widget_get_pango_context().  Use those instead.
-
-be freed with g_object_unref().</doc>
+gtk_widget_get_pango_context().  Use those instead.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoContext, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoContext, which should be freed with g_object_unref().</doc>
           <type name="Context" c:type="PangoContext*"/>
         </return-value>
       </constructor>
+      <method name="changed"
+              c:identifier="pango_context_changed"
+              version="1.32.4">
+        <doc xml:whitespace="preserve">Forces a change in the context, which will cause any #PangoLayout
+using this context to re-layout.
+
+This function is only useful when implementing a new backend
+for Pango, something applications won't do. Backends should
+call this function if they have attached extra data to the context
+and such data is changed.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+      </method>
       <method name="get_base_dir" c:identifier="pango_context_get_base_dir">
         <doc xml:whitespace="preserve">Retrieves the base direction for the context. See
 pango_context_set_base_dir().</doc>
@@ -1045,22 +1027,18 @@ pango_context_set_base_gravity().</doc>
       </method>
       <method name="get_font_description"
               c:identifier="pango_context_get_font_description">
-        <doc xml:whitespace="preserve">Retrieve the default font description for the context.
-
-This value must not be modified or freed.</doc>
-        <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a pointer to the context's default font description.</doc>
+        <doc xml:whitespace="preserve">Retrieve the default font description for the context.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">a pointer to the context's default font description. This value must not be modified or freed.</doc>
           <type name="FontDescription" c:type="PangoFontDescription*"/>
         </return-value>
       </method>
       <method name="get_font_map"
               c:identifier="pango_context_get_font_map"
               version="1.6">
-        <doc xml:whitespace="preserve">Gets the #PangoFontmap used to look up fonts for this context.
-
-This value is owned by Pango and should not be unreferenced.</doc>
+        <doc xml:whitespace="preserve">Gets the #PangoFontmap used to look up fonts for this context.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the font map for the #PangoContext.</doc>
+          <doc xml:whitespace="preserve">the font map for the #PangoContext. This value is owned by Pango and should not be unreferenced.</doc>
           <type name="FontMap" c:type="PangoFontMap*"/>
         </return-value>
       </method>
@@ -1097,14 +1075,10 @@ pango_context_set_gravity_hint() for details.</doc>
               c:identifier="pango_context_get_matrix"
               version="1.6">
         <doc xml:whitespace="preserve">Gets the transformation matrix that will be applied when
-rendering with this context. See pango_context_set_matrix().
-
-(which is the same as the identity matrix). The returned
-matrix is owned by Pango and must not be modified or
-freed.</doc>
+rendering with this context. See pango_context_set_matrix().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the matrix, or %NULL if no matrix has been set</doc>
-          <type name="Matrix" c:type="PangoMatrix*"/>
+          <doc xml:whitespace="preserve">the matrix, or %NULL if no matrix has been set (which is the same as the identity matrix). The returned matrix is owned by Pango and must not be modified or freed.</doc>
+          <type name="Matrix" c:type="const PangoMatrix*"/>
         </return-value>
       </method>
       <method name="get_metrics" c:identifier="pango_context_get_metrics">
@@ -1119,23 +1093,39 @@ by pango_itemize(), and the family name may be a comma separated
 list of figures. If characters from multiple of these families
 would be used to render the string, then the returned fonts would
 be a composite of the metrics for the fonts loaded for the
-individual families.
-
-when finished using the object.</doc>
+individual families.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a #PangoFontMetrics object. The caller must call pango_font_metrics_unref()</doc>
+          <doc xml:whitespace="preserve">a #PangoFontMetrics object. The caller must call pango_font_metrics_unref() when finished using the object.</doc>
           <type name="FontMetrics" c:type="PangoFontMetrics*"/>
         </return-value>
         <parameters>
           <parameter name="desc" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">a #PangoFontDescription structure.  %NULL means that the font description from the context will be used.</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
           <parameter name="language" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">language tag used to determine which script to get the metrics for. %NULL means that the language tag from the context will be used. If no language tag is set on the context, metrics for the default language (as determined by pango_language_get_default()) will be returned.</doc>
             <type name="Language" c:type="PangoLanguage*"/>
           </parameter>
         </parameters>
+      </method>
+      <method name="get_serial"
+              c:identifier="pango_context_get_serial"
+              version="1.32.4">
+        <doc xml:whitespace="preserve">Returns the current serial number of @context.  The serial number is
+initialized to an small number larger than zero when a new context
+is created and is increased whenever the context is changed using any
+of the setter functions, or the #PangoFontMap it uses to find fonts has
+changed. The serial may wrap, but will never have the value 0. Since it
+can wrap, never compare it with "less than", always use "not equals".
+
+This can be used to automatically detect changes to a #PangoContext, and
+is only useful when implementing objects that need update when their
+#PangoContext changes, like #PangoLayout.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current serial number of @context.</doc>
+          <type name="guint" c:type="guint"/>
+        </return-value>
       </method>
       <method name="list_families" c:identifier="pango_context_list_families">
         <doc xml:whitespace="preserve">List all families for a context.</doc>
@@ -1146,7 +1136,7 @@ when finished using the object.</doc>
           <parameter name="families"
                      direction="out"
                      caller-allocates="0"
-                     transfer-ownership="full">
+                     transfer-ownership="container">
             <doc xml:whitespace="preserve">location to store a pointer to an array of #PangoFontFamily *. This array should be freed with g_free().</doc>
             <array length="1" zero-terminated="0" c:type="PangoFontFamily***">
               <type name="FontFamily" c:type="PangoFontFamily**"/>
@@ -1163,33 +1153,29 @@ when finished using the object.</doc>
       </method>
       <method name="load_font" c:identifier="pango_context_load_font">
         <doc xml:whitespace="preserve">Loads the font in one of the fontmaps in the context
-that is the closest match for @desc.
-
-was loaded, or %NULL if no font matched.</doc>
+that is the closest match for @desc.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFont that</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFont that was loaded, or %NULL if no font matched.</doc>
           <type name="Font" c:type="PangoFont*"/>
         </return-value>
         <parameters>
           <parameter name="desc" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoFontDescription describing the font to load</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </method>
       <method name="load_fontset" c:identifier="pango_context_load_fontset">
         <doc xml:whitespace="preserve">Load a set of fonts in the context that can be used to render
-a font matching @desc.
-
-or %NULL if no font matched.</doc>
+a font matching @desc.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFontset loaded,</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFontset loaded, or %NULL if no font matched.</doc>
           <type name="Fontset" c:type="PangoFontset*"/>
         </return-value>
         <parameters>
           <parameter name="desc" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoFontDescription describing the fonts to load</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
           <parameter name="language" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoLanguage the fonts will be used for</doc>
@@ -1241,7 +1227,7 @@ The base gravity is used in laying vertical text out.</doc>
         <parameters>
           <parameter name="desc" transfer-ownership="none">
             <doc xml:whitespace="preserve">the new pango font description</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </method>
@@ -1306,7 +1292,7 @@ matrices, depending on how the text is fit to the pixel grid.</doc>
         <parameters>
           <parameter name="matrix" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">a #PangoMatrix, or %NULL to unset any existing matrix. (No matrix set is the same as setting the identity matrix.)</doc>
-            <type name="Matrix" c:type="PangoMatrix*"/>
+            <type name="Matrix" c:type="const PangoMatrix*"/>
           </parameter>
         </parameters>
       </method>
@@ -1321,12 +1307,9 @@ matrices, depending on how the text is fit to the pixel grid.</doc>
               c:identifier="pango_coverage_copy"
               introspectable="0">
         <doc xml:whitespace="preserve">Copy an existing #PangoCoverage. (This function may now be unnecessary
-since we refcount the structure. File a bug if you use it.)
-
-with a reference count of one, which
-should be freed with pango_coverage_unref().</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoCoverage,</doc>
+since we refcount the structure. File a bug if you use it.)</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly allocated #PangoCoverage, with a reference count of one, which should be freed with pango_coverage_unref().</doc>
           <type name="Coverage" c:type="PangoCoverage*"/>
         </return-value>
       </method>
@@ -1386,11 +1369,19 @@ the corresponding index in @other.</doc>
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="bytes" transfer-ownership="none">
+          <parameter name="bytes"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store result (must be freed with g_free())</doc>
-            <type name="guint8" c:type="guchar**"/>
+            <array length="1" zero-terminated="0" c:type="guchar**">
+              <type name="guint8"/>
+            </array>
           </parameter>
-          <parameter name="n_bytes" transfer-ownership="none">
+          <parameter name="n_bytes"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store size of result</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
@@ -1407,17 +1398,17 @@ If the result is zero, free the coverage and all associated memory.</doc>
                 c:identifier="pango_coverage_from_bytes"
                 introspectable="0">
         <doc xml:whitespace="preserve">Convert data generated from pango_converage_to_bytes() back
-to a #PangoCoverage
-
-the data was invalid.</doc>
-        <return-value>
-          <doc xml:whitespace="preserve">a newly allocated #PangoCoverage, or %NULL if</doc>
+to a #PangoCoverage</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">a newly allocated #PangoCoverage, or %NULL if the data was invalid.</doc>
           <type name="Coverage" c:type="PangoCoverage*"/>
         </return-value>
         <parameters>
           <parameter name="bytes" transfer-ownership="none">
             <doc xml:whitespace="preserve">binary data representing a #PangoCoverage</doc>
-            <type name="guint8" c:type="guchar*"/>
+            <array length="1" zero-terminated="0" c:type="guchar*">
+              <type name="guint8"/>
+            </array>
           </parameter>
           <parameter name="n_bytes" transfer-ownership="none">
             <doc xml:whitespace="preserve">the size of @bytes in bytes</doc>
@@ -1428,13 +1419,9 @@ the data was invalid.</doc>
       <function name="new"
                 c:identifier="pango_coverage_new"
                 introspectable="0">
-        <doc xml:whitespace="preserve">Create a new #PangoCoverage
-
-initialized to %PANGO_COVERAGE_NONE
-with a reference count of one, which
-should be freed with pango_coverage_unref().</doc>
+        <doc xml:whitespace="preserve">Create a new #PangoCoverage</doc>
         <return-value>
-          <doc xml:whitespace="preserve">the newly allocated #PangoCoverage,</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoCoverage, initialized to %PANGO_COVERAGE_NONE with a reference count of one, which should be freed with pango_coverage_unref().</doc>
           <type name="Coverage" c:type="PangoCoverage*"/>
         </return-value>
       </function>
@@ -1620,7 +1607,7 @@ language tag and character point.</doc>
               c:identifier="pango_font_get_coverage"
               introspectable="0">
         <doc xml:whitespace="preserve">Computes the coverage map for a given font and language tag.</doc>
-        <return-value>
+        <return-value transfer-ownership="full">
           <doc xml:whitespace="preserve">a newly-allocated #PangoCoverage object.</doc>
           <type name="Coverage" c:type="PangoCoverage*"/>
         </return-value>
@@ -1642,11 +1629,9 @@ map will be finalized even if there are fonts created with the font
 map that are still alive.  In that case this function will return %NULL.
 It is the responsibility of the user to ensure that the font map is kept
 alive.  In most uses this is not an issue as a #PangoContext holds
-a reference to the font map.
-
-if @font is %NULL.</doc>
+a reference to the font map.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the #PangoFontMap for the font, or %NULL</doc>
+          <doc xml:whitespace="preserve">the #PangoFontMap for the font, or %NULL if @font is %NULL.</doc>
           <type name="FontMap" c:type="PangoFontMap*"/>
         </return-value>
       </method>
@@ -1695,11 +1680,9 @@ be provided to indicate that the metrics should be retrieved that
 correspond to the script(s) used by that language.
 
 If @font is %NULL, this function gracefully sets some sane values in the
-output variables and returns.
-
-when finished using the object.</doc>
+output variables and returns.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a #PangoFontMetrics object. The caller must call pango_font_metrics_unref()</doc>
+          <doc xml:whitespace="preserve">a #PangoFontMetrics object. The caller must call pango_font_metrics_unref() when finished using the object.</doc>
           <type name="FontMetrics" c:type="PangoFontMetrics*"/>
         </return-value>
         <parameters>
@@ -1716,11 +1699,9 @@ when finished using the object.</doc>
             glib:get-type="pango_font_description_get_type"
             c:symbol-prefix="font_description">
       <constructor name="new" c:identifier="pango_font_description_new">
-        <doc xml:whitespace="preserve">Creates a new font description structure with all fields unset.
-
-should be freed using pango_font_description_free().</doc>
+        <doc xml:whitespace="preserve">Creates a new font description structure with all fields unset.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFontDescription, which</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFontDescription, which should be freed using pango_font_description_free().</doc>
           <type name="FontDescription" c:type="PangoFontDescription*"/>
         </return-value>
       </constructor>
@@ -1744,21 +1725,18 @@ Note that @old_match must match @desc.</doc>
         <parameters>
           <parameter name="old_match" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">a #PangoFontDescription, or %NULL</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
           <parameter name="new_match" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoFontDescription</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </method>
       <method name="copy" c:identifier="pango_font_description_copy">
-        <doc xml:whitespace="preserve">Make a copy of a #PangoFontDescription.
-
-be freed with pango_font_description_free(), or %NULL
-if @desc was %NULL.</doc>
+        <doc xml:whitespace="preserve">Make a copy of a #PangoFontDescription.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFontDescription, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFontDescription, which should be freed with pango_font_description_free(), or %NULL if @desc was %NULL.</doc>
           <type name="FontDescription" c:type="PangoFontDescription*"/>
         </return-value>
       </method>
@@ -1767,12 +1745,9 @@ if @desc was %NULL.</doc>
         <doc xml:whitespace="preserve">Like pango_font_description_copy(), but only a shallow copy is made
 of the family name and other allocated fields. The result can only
 be used until @desc is modified or freed. This is meant to be used
-when the copy is only needed temporarily.
-
-be freed with pango_font_description_free(), or %NULL
-if @desc was %NULL.</doc>
+when the copy is only needed temporarily.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFontDescription, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFontDescription, which should be freed with pango_font_description_free(), or %NULL if @desc was %NULL.</doc>
           <type name="FontDescription" c:type="PangoFontDescription*"/>
         </return-value>
       </method>
@@ -1781,17 +1756,15 @@ if @desc was %NULL.</doc>
 are considered equal if the fonts they describe are provably identical.
 This means that their masks do not have to match, as long as other fields
 are all the same. (Two font descriptions may result in identical fonts
-being loaded, but still compare %FALSE.)
-
-%FALSE otherwise.</doc>
+being loaded, but still compare %FALSE.)</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if the two font descriptions are identical,</doc>
+          <doc xml:whitespace="preserve">%TRUE if the two font descriptions are identical, %FALSE otherwise.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
         <parameters>
           <parameter name="desc2" transfer-ownership="none">
             <doc xml:whitespace="preserve">another #PangoFontDescription</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </method>
@@ -1804,49 +1777,35 @@ being loaded, but still compare %FALSE.)
       <method name="get_family"
               c:identifier="pango_font_description_get_family">
         <doc xml:whitespace="preserve">Gets the family name field of a font description. See
-pango_font_description_set_family().
-
-%NULL if not previously set.  This has the same life-time
-as the font description itself and should not be freed.</doc>
+pango_font_description_set_family().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the family name field for the font description, or</doc>
-          <type name="utf8" c:type="char*"/>
+          <doc xml:whitespace="preserve">the family name field for the font description, or %NULL if not previously set.  This has the same life-time as the font description itself and should not be freed.</doc>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
       </method>
       <method name="get_gravity"
               c:identifier="pango_font_description_get_gravity"
               version="1.16">
         <doc xml:whitespace="preserve">Gets the gravity field of a font description. See
-pango_font_description_set_gravity().
-
-pango_font_description_get_set_fields() to find out if
-the field was explicitly set or not.</doc>
+pango_font_description_set_gravity().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the gravity field for the font description. Use</doc>
+          <doc xml:whitespace="preserve">the gravity field for the font description. Use pango_font_description_get_set_fields() to find out if the field was explicitly set or not.</doc>
           <type name="Gravity" c:type="PangoGravity"/>
         </return-value>
       </method>
       <method name="get_set_fields"
               c:identifier="pango_font_description_get_set_fields">
-        <doc xml:whitespace="preserve">Determines which fields in a font description have been set.
-
-fields in @desc that have been set.</doc>
+        <doc xml:whitespace="preserve">Determines which fields in a font description have been set.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">a bitmask with bits set corresponding to the</doc>
+          <doc xml:whitespace="preserve">a bitmask with bits set corresponding to the fields in @desc that have been set.</doc>
           <type name="FontMask" c:type="PangoFontMask"/>
         </return-value>
       </method>
       <method name="get_size" c:identifier="pango_font_description_get_size">
         <doc xml:whitespace="preserve">Gets the size field of a font description.
-See pango_font_description_set_size().
-
-You must call pango_font_description_get_size_is_absolute()
-to find out which is the case. Returns 0 if the size field has not
-previously been set or it has been set to 0 explicitly.
-Use pango_font_description_get_set_fields() to
-find out if the field was explicitly set or not.</doc>
+See pango_font_description_set_size().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the size field for the font description in points or device units.</doc>
+          <doc xml:whitespace="preserve">the size field for the font description in points or device units. You must call pango_font_description_get_size_is_absolute() to find out which is the case. Returns 0 if the size field has not previously been set or it has been set to 0 explicitly. Use pango_font_description_get_set_fields() to find out if the field was explicitly set or not.</doc>
           <type name="gint" c:type="gint"/>
         </return-value>
       </method>
@@ -1854,59 +1813,44 @@ find out if the field was explicitly set or not.</doc>
               c:identifier="pango_font_description_get_size_is_absolute"
               version="1.8">
         <doc xml:whitespace="preserve">Determines whether the size of the font is in points (not absolute) or device units (absolute).
-See pango_font_description_set_size() and pango_font_description_set_absolute_size().
-
-points or device units.  Use pango_font_description_get_set_fields() to
-find out if the size field of the font description was explicitly set or not.</doc>
+See pango_font_description_set_size() and pango_font_description_set_absolute_size().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">whether the size for the font description is in</doc>
+          <doc xml:whitespace="preserve">whether the size for the font description is in points or device units.  Use pango_font_description_get_set_fields() to find out if the size field of the font description was explicitly set or not.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
       <method name="get_stretch"
               c:identifier="pango_font_description_get_stretch">
         <doc xml:whitespace="preserve">Gets the stretch field of a font description.
-See pango_font_description_set_stretch().
-
-pango_font_description_get_set_fields() to find out if
-the field was explicitly set or not.</doc>
+See pango_font_description_set_stretch().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the stretch field for the font description. Use</doc>
+          <doc xml:whitespace="preserve">the stretch field for the font description. Use pango_font_description_get_set_fields() to find out if the field was explicitly set or not.</doc>
           <type name="Stretch" c:type="PangoStretch"/>
         </return-value>
       </method>
       <method name="get_style" c:identifier="pango_font_description_get_style">
         <doc xml:whitespace="preserve">Gets the style field of a #PangoFontDescription. See
-pango_font_description_set_style().
-
-Use pango_font_description_get_set_fields() to find out if
-the field was explicitly set or not.</doc>
+pango_font_description_set_style().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the style field for the font description.</doc>
+          <doc xml:whitespace="preserve">the style field for the font description. Use pango_font_description_get_set_fields() to find out if the field was explicitly set or not.</doc>
           <type name="Style" c:type="PangoStyle"/>
         </return-value>
       </method>
       <method name="get_variant"
               c:identifier="pango_font_description_get_variant">
         <doc xml:whitespace="preserve">Gets the variant field of a #PangoFontDescription. See
-pango_font_description_set_variant().
-
-pango_font_description_get_set_fields() to find out if
-the field was explicitly set or not.</doc>
+pango_font_description_set_variant().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the variant field for the font description. Use</doc>
+          <doc xml:whitespace="preserve">the variant field for the font description. Use pango_font_description_get_set_fields() to find out if the field was explicitly set or not.</doc>
           <type name="Variant" c:type="PangoVariant"/>
         </return-value>
       </method>
       <method name="get_weight"
               c:identifier="pango_font_description_get_weight">
         <doc xml:whitespace="preserve">Gets the weight field of a font description. See
-pango_font_description_set_weight().
-
-pango_font_description_get_set_fields() to find out if
-the field was explicitly set or not.</doc>
+pango_font_description_set_weight().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the weight field for the font description. Use</doc>
+          <doc xml:whitespace="preserve">the weight field for the font description. Use pango_font_description_get_set_fields() to find out if the field was explicitly set or not.</doc>
           <type name="Weight" c:type="PangoWeight"/>
         </return-value>
       </method>
@@ -1934,7 +1878,7 @@ If @desc_to_merge is %NULL, this function performs nothing.</doc>
                      transfer-ownership="none"
                      allow-none="1">
             <doc xml:whitespace="preserve">the #PangoFontDescription to merge from, or %NULL</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
           <parameter name="replace_existing" transfer-ownership="none">
             <doc xml:whitespace="preserve">if %TRUE, replace fields in @desc with the corresponding values from @desc_to_merge, even if they are already exist.</doc>
@@ -1954,7 +1898,7 @@ to be used when the merged font description is only needed temporarily.</doc>
         <parameters>
           <parameter name="desc_to_merge" transfer-ownership="none">
             <doc xml:whitespace="preserve">the #PangoFontDescription to merge from</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
           <parameter name="replace_existing" transfer-ownership="none">
             <doc xml:whitespace="preserve">if %TRUE, replace fields in @desc with the corresponding values from @desc_to_merge, even if they are already exist.</doc>
@@ -1991,7 +1935,7 @@ separated list of family names for this field.</doc>
         <parameters>
           <parameter name="family" transfer-ownership="none">
             <doc xml:whitespace="preserve">a string representing the family name.</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </method>
@@ -2009,7 +1953,7 @@ if @desc is only needed temporarily.</doc>
         <parameters>
           <parameter name="family" transfer-ownership="none">
             <doc xml:whitespace="preserve">a string representing the family name.</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </method>
@@ -2166,7 +2110,7 @@ description will be set to 0.</doc>
         <parameters>
           <parameter name="str" transfer-ownership="none">
             <doc xml:whitespace="preserve">string representation of a font description.</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </function>
@@ -2181,12 +2125,9 @@ description will be set to 0.</doc>
       <method name="describe" c:identifier="pango_font_face_describe">
         <doc xml:whitespace="preserve">Returns the family, style, variant, weight and stretch of
 a #PangoFontFace. The size field of the resulting font description
-will be unset.
-
-holding the description of the face. Use pango_font_description_free()
-to free the result.</doc>
+will be unset.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a newly-created #PangoFontDescription structure</doc>
+          <doc xml:whitespace="preserve">a newly-created #PangoFontDescription structure holding the description of the face. Use pango_font_description_free() to free the result.</doc>
           <type name="FontDescription" c:type="PangoFontDescription*"/>
         </return-value>
       </method>
@@ -2195,12 +2136,10 @@ to free the result.</doc>
         <doc xml:whitespace="preserve">Gets a name representing the style of this face among the
 different faces in the #PangoFontFamily for the face. This
 name is unique among all faces in the family and is suitable
-for displaying to users.
-
-owned by the face object and must not be modified or freed.</doc>
+for displaying to users.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the face name for the face. This string is</doc>
-          <type name="utf8" c:type="char*"/>
+          <doc xml:whitespace="preserve">the face name for the face. This string is owned by the face object and must not be modified or freed.</doc>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
       </method>
       <method name="is_synthesized"
@@ -2225,11 +2164,19 @@ are in Pango units and are sorted in ascending order.</doc>
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="sizes" transfer-ownership="none">
+          <parameter name="sizes"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store a pointer to an array of int. This array should be freed with g_free().</doc>
-            <type name="gint" c:type="int**"/>
+            <array length="1" zero-terminated="0" c:type="int**">
+              <type name="gint" c:type="int*"/>
+            </array>
           </parameter>
-          <parameter name="n_sizes" transfer-ownership="none">
+          <parameter name="n_sizes"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store the number of elements in @sizes</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
@@ -2246,12 +2193,10 @@ are in Pango units and are sorted in ascending order.</doc>
       <method name="get_name" c:identifier="pango_font_family_get_name">
         <doc xml:whitespace="preserve">Gets the name of the family. The name is unique among all
 fonts for the font backend and can be used in a #PangoFontDescription
-to specify that a face from this family is desired.
-
-by the family object and must not be modified or freed.</doc>
+to specify that a face from this family is desired.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the name of the family. This string is owned</doc>
-          <type name="utf8" c:type="char*"/>
+          <doc xml:whitespace="preserve">the name of the family. This string is owned by the family object and must not be modified or freed.</doc>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
       </method>
       <method name="is_monospace"
@@ -2285,7 +2230,7 @@ width and other aspects.</doc>
           <parameter name="faces"
                      direction="out"
                      caller-allocates="0"
-                     transfer-ownership="full"
+                     transfer-ownership="container"
                      allow-none="1">
             <doc xml:whitespace="preserve">location to store an array of pointers to #PangoFontFace objects, or %NULL. This array should be freed with g_free() when it is no longer needed.</doc>
             <array length="1" zero-terminated="0" c:type="PangoFontFace***">
@@ -2319,12 +2264,29 @@ If you are using Pango as part of a higher-level system,
 that system may have it's own way of create a #PangoContext.
 For instance, the GTK+ toolkit has, among others,
 gdk_pango_context_get_for_screen(), and
-gtk_widget_get_pango_context().  Use those instead.
-
-which should be freed with g_object_unref().</doc>
+gtk_widget_get_pango_context().  Use those instead.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoContext,</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoContext, which should be freed with g_object_unref().</doc>
           <type name="Context" c:type="PangoContext*"/>
+        </return-value>
+      </method>
+      <method name="get_serial"
+              c:identifier="pango_font_map_get_serial"
+              version="1.32.4">
+        <doc xml:whitespace="preserve">Returns the current serial number of @fontmap.  The serial number is
+initialized to an small number larger than zero when a new fontmap
+is created and is increased whenever the fontmap is changed. It may
+wrap, but will never have the value 0. Since it can wrap, never compare
+it with "less than", always use "not equals".
+
+The fontmap can only be changed using backend-specific API, like changing
+fontmap resolution.
+
+This can be used to automatically detect changes to a #PangoFontMap, like
+in #PangoContext.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current serial number of @fontmap.</doc>
+          <type name="guint" c:type="guint"/>
         </return-value>
       </method>
       <method name="list_families" c:identifier="pango_font_map_list_families">
@@ -2336,7 +2298,7 @@ which should be freed with g_object_unref().</doc>
           <parameter name="families"
                      direction="out"
                      caller-allocates="0"
-                     transfer-ownership="full">
+                     transfer-ownership="container">
             <doc xml:whitespace="preserve">location to store a pointer to an array of #PangoFontFamily *. This array should be freed with g_free().</doc>
             <array length="1" zero-terminated="0" c:type="PangoFontFamily***">
               <type name="FontFamily" c:type="PangoFontFamily**"/>
@@ -2352,11 +2314,9 @@ which should be freed with g_object_unref().</doc>
         </parameters>
       </method>
       <method name="load_font" c:identifier="pango_font_map_load_font">
-        <doc xml:whitespace="preserve">Load the font in the fontmap that is the closest match for @desc.
-
-or %NULL if no font matched.</doc>
+        <doc xml:whitespace="preserve">Load the font in the fontmap that is the closest match for @desc.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFont loaded,</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFont loaded, or %NULL if no font matched.</doc>
           <type name="Font" c:type="PangoFont*"/>
         </return-value>
         <parameters>
@@ -2366,17 +2326,15 @@ or %NULL if no font matched.</doc>
           </parameter>
           <parameter name="desc" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoFontDescription describing the font to load</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </method>
       <method name="load_fontset" c:identifier="pango_font_map_load_fontset">
         <doc xml:whitespace="preserve">Load a set of fonts in the fontmap that can be used to render
-a font matching @desc.
-
-loaded, or %NULL if no font matched.</doc>
+a font matching @desc.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoFontset</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoFontset loaded, or %NULL if no font matched.</doc>
           <type name="Fontset" c:type="PangoFontset*"/>
         </return-value>
         <parameters>
@@ -2386,7 +2344,7 @@ loaded, or %NULL if no font matched.</doc>
           </parameter>
           <parameter name="desc" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoFontDescription describing the font to load</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
           <parameter name="language" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoLanguage the fonts will be used for</doc>
@@ -2568,11 +2526,9 @@ each one. If @func returns %TRUE, that stops the iteration.</doc>
       </method>
       <method name="get_font" c:identifier="pango_fontset_get_font">
         <doc xml:whitespace="preserve">Returns the font in the fontset that contains the best glyph for the
-Unicode character @wc.
-
-g_object_unref when finished with the font.</doc>
+Unicode character @wc.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a #PangoFont. The caller must call</doc>
+          <doc xml:whitespace="preserve">a #PangoFont. The caller must call g_object_unref when finished with the font.</doc>
           <type name="Font" c:type="PangoFont*"/>
         </return-value>
         <parameters>
@@ -2583,11 +2539,9 @@ g_object_unref when finished with the font.</doc>
         </parameters>
       </method>
       <method name="get_metrics" c:identifier="pango_fontset_get_metrics">
-        <doc xml:whitespace="preserve">Get overall metric information for the fonts in the fontset.
-
-when finished using the object.</doc>
+        <doc xml:whitespace="preserve">Get overall metric information for the fonts in the fontset.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a #PangoFontMetrics object. The caller must call pango_font_metrics_unref()</doc>
+          <doc xml:whitespace="preserve">a #PangoFontMetrics object. The caller must call pango_font_metrics_unref() when finished using the object.</doc>
           <type name="FontMetrics" c:type="PangoFontMetrics*"/>
         </return-value>
       </method>
@@ -2610,7 +2564,7 @@ the fonts in a fontset.</doc>
           <doc xml:whitespace="preserve">a font from @fontset</doc>
           <type name="Font" c:type="PangoFont*"/>
         </parameter>
-        <parameter name="data" transfer-ownership="none">
+        <parameter name="user_data" transfer-ownership="none" closure="2">
           <doc xml:whitespace="preserve">callback data</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
@@ -2651,8 +2605,7 @@ the fonts in a fontset.</doc>
       </field>
       <method name="apply_attrs"
               c:identifier="pango_glyph_item_apply_attrs"
-              version="1.2"
-              introspectable="0">
+              version="1.2">
         <doc xml:whitespace="preserve">Splits a shaped item (PangoGlyphItem) into multiple items based
 on an attribute list. The idea is that if you have attributes
 that don't affect shaping, such as color or underline, to avoid
@@ -2668,20 +2621,17 @@ cases, it may happen that item-&gt;extra_attrs for some of the
 result items can have multiple attributes of the same type.
 
 This function takes ownership of @glyph_item; it will be reused
-as one of the elements in the list.
-
-from splitting @glyph_item. Free the elements using
-pango_glyph_item_free(), the list using g_slist_free().</doc>
+as one of the elements in the list.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a list of glyph items resulting</doc>
+          <doc xml:whitespace="preserve">a list of glyph items resulting from splitting @glyph_item. Free the elements using pango_glyph_item_free(), the list using g_slist_free().</doc>
           <type name="GLib.SList" c:type="GSList*">
-            <type name="gpointer" c:type="gpointer"/>
+            <type name="GlyphItem"/>
           </type>
         </return-value>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">text that @list applies to</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="list" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoAttrList</doc>
@@ -2690,12 +2640,9 @@ pango_glyph_item_free(), the list using g_slist_free().</doc>
         </parameters>
       </method>
       <method name="copy" c:identifier="pango_glyph_item_copy" version="1.20">
-        <doc xml:whitespace="preserve">Make a deep copy of an existing #PangoGlyphItem structure.
-
-be freed with pango_glyph_item_free(), or %NULL
-if @orig was %NULL.</doc>
+        <doc xml:whitespace="preserve">Make a deep copy of an existing #PangoGlyphItem structure.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphItem, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphItem, which should be freed with pango_glyph_item_free(), or %NULL if @orig was %NULL.</doc>
           <type name="GlyphItem" c:type="PangoGlyphItem*"/>
         </return-value>
       </method>
@@ -2720,11 +2667,13 @@ See also pango_glyph_string_get_logical_widths().</doc>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">text that @glyph_item corresponds to (glyph_item-&gt;item-&gt;offset is an offset from the start of @text)</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="logical_widths" transfer-ownership="none">
             <doc xml:whitespace="preserve">an array whose length is the number of characters in glyph_item (equal to glyph_item-&gt;item-&gt;num_chars) to be filled in with the resulting character widths.</doc>
-            <type name="gint" c:type="int*"/>
+            <array zero-terminated="0" c:type="int*">
+              <type name="gint" c:type="int"/>
+            </array>
           </parameter>
         </parameters>
       </method>
@@ -2739,11 +2688,13 @@ give the effect of typographic letter spacing.</doc>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">text that @glyph_item corresponds to (glyph_item-&gt;item-&gt;offset is an offset from the start of @text)</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="log_attrs" transfer-ownership="none">
             <doc xml:whitespace="preserve">logical attributes for the item (the first logical attribute refers to the position before the first character in the item)</doc>
-            <type name="LogAttr" c:type="PangoLogAttr*"/>
+            <array zero-terminated="0" c:type="PangoLogAttr*">
+              <type name="LogAttr" c:type="PangoLogAttr"/>
+            </array>
           </parameter>
           <parameter name="letter_spacing" transfer-ownership="none">
             <doc xml:whitespace="preserve">amount of letter spacing to add in Pango units. May be negative, though too large negative values will give ugly results.</doc>
@@ -2761,18 +2712,15 @@ be at least one byte assigned to each item, you can't create a
 zero-length item).
 
 This function is similar in function to pango_item_split() (and uses
-it internally.)
-
-@split_index, which should be freed
-with pango_glyph_item_free().</doc>
+it internally.)</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated item representing text before</doc>
+          <doc xml:whitespace="preserve">the newly allocated item representing text before @split_index, which should be freed with pango_glyph_item_free().</doc>
           <type name="GlyphItem" c:type="PangoGlyphItem*"/>
         </return-value>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">text to which positions in @orig apply</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="split_index" transfer-ownership="none">
             <doc xml:whitespace="preserve">byte index of position to split item, relative to the start of the item</doc>
@@ -2790,7 +2738,7 @@ with pango_glyph_item_free().</doc>
         <type name="GlyphItem" c:type="PangoGlyphItem*"/>
       </field>
       <field name="text" writable="1">
-        <type name="utf8" c:type="gchar*"/>
+        <type name="utf8" c:type="const gchar*"/>
       </field>
       <field name="start_glyph" writable="1">
         <type name="gint" c:type="int"/>
@@ -2813,12 +2761,9 @@ with pango_glyph_item_free().</doc>
       <method name="copy"
               c:identifier="pango_glyph_item_iter_copy"
               version="1.22">
-        <doc xml:whitespace="preserve">Make a shallow copy of an existing #PangoGlyphItemIter structure.
-
-be freed with pango_glyph_item_iter_free(), or %NULL
-if @orig was %NULL.</doc>
+        <doc xml:whitespace="preserve">Make a shallow copy of an existing #PangoGlyphItemIter structure.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphItemIter, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphItemIter, which should be freed with pango_glyph_item_iter_free(), or %NULL if @orig was %NULL.</doc>
           <type name="GlyphItemIter" c:type="PangoGlyphItemIter*"/>
         </return-value>
       </method>
@@ -2847,7 +2792,7 @@ See #PangoGlyphItemIter for details of cluster orders.</doc>
           </parameter>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">text corresponding to the glyph item</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </method>
@@ -2868,7 +2813,7 @@ See #PangoGlyphItemIter for details of cluster orders.</doc>
           </parameter>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">text corresponding to the glyph item</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </method>
@@ -2876,11 +2821,9 @@ See #PangoGlyphItemIter for details of cluster orders.</doc>
               c:identifier="pango_glyph_item_iter_next_cluster"
               version="1.22">
         <doc xml:whitespace="preserve">Advances the iterator to the next cluster in the glyph item.
-See #PangoGlyphItemIter for details of cluster orders.
-
-last cluster.</doc>
+See #PangoGlyphItemIter for details of cluster orders.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if the iterator was advanced, %FALSE if we were already on the</doc>
+          <doc xml:whitespace="preserve">%TRUE if the iterator was advanced, %FALSE if we were already on the last cluster.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
@@ -2888,11 +2831,9 @@ last cluster.</doc>
               c:identifier="pango_glyph_item_iter_prev_cluster"
               version="1.22">
         <doc xml:whitespace="preserve">Moves the iterator to the preceding cluster in the glyph item.
-See #PangoGlyphItemIter for details of cluster orders.
-
-first cluster.</doc>
+See #PangoGlyphItemIter for details of cluster orders.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if the iterator was moved, %FALSE if we were already on the</doc>
+          <doc xml:whitespace="preserve">%TRUE if the iterator was moved, %FALSE if we were already on the first cluster.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
@@ -2915,21 +2856,16 @@ first cluster.</doc>
         <type name="gint" c:type="gint"/>
       </field>
       <constructor name="new" c:identifier="pango_glyph_string_new">
-        <doc xml:whitespace="preserve">Create a new #PangoGlyphString.
-
-should be freed with pango_glyph_string_free().</doc>
+        <doc xml:whitespace="preserve">Create a new #PangoGlyphString.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphString, which</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphString, which should be freed with pango_glyph_string_free().</doc>
           <type name="GlyphString" c:type="PangoGlyphString*"/>
         </return-value>
       </constructor>
       <method name="copy" c:identifier="pango_glyph_string_copy">
-        <doc xml:whitespace="preserve">Copy a glyph string and associated storage.
-
-should be freed with pango_glyph_string_free(),
-or %NULL if @string was %NULL.</doc>
+        <doc xml:whitespace="preserve">Copy a glyph string and associated storage.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphString, which</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoGlyphString, which should be freed with pango_glyph_string_free(), or %NULL if @string was %NULL.</doc>
           <type name="GlyphString" c:type="PangoGlyphString*"/>
         </return-value>
       </method>
@@ -2978,18 +2914,24 @@ glyph string).</doc>
             <type name="gint" c:type="int"/>
           </parameter>
           <parameter name="end" transfer-ownership="none">
-            <doc xml:whitespace="preserve">end index (the range is the set of bytes with</doc>
+            <doc xml:whitespace="preserve">end index (the range is the set of bytes with indices such that start &lt;= index &lt; end)</doc>
             <type name="gint" c:type="int"/>
           </parameter>
           <parameter name="font" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoFont</doc>
             <type name="Font" c:type="PangoFont*"/>
           </parameter>
-          <parameter name="ink_rect" transfer-ownership="none">
+          <parameter name="ink_rect"
+                     direction="out"
+                     caller-allocates="1"
+                     transfer-ownership="none">
             <doc xml:whitespace="preserve">rectangle used to store the extents of the glyph string range as drawn or %NULL to indicate that the result is not needed.</doc>
             <type name="Rectangle" c:type="PangoRectangle*"/>
           </parameter>
-          <parameter name="logical_rect" transfer-ownership="none">
+          <parameter name="logical_rect"
+                     direction="out"
+                     caller-allocates="1"
+                     transfer-ownership="none">
             <doc xml:whitespace="preserve">rectangle used to store the logical extents of the glyph string range or %NULL to indicate that the result is not needed.</doc>
             <type name="Rectangle" c:type="PangoRectangle*"/>
           </parameter>
@@ -3015,7 +2957,7 @@ See also pango_glyph_item_get_logical_widths().</doc>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">the text corresponding to the glyphs</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="length" transfer-ownership="none">
             <doc xml:whitespace="preserve">the length of @text, in bytes</doc>
@@ -3027,7 +2969,9 @@ See also pango_glyph_item_get_logical_widths().</doc>
           </parameter>
           <parameter name="logical_widths" transfer-ownership="none">
             <doc xml:whitespace="preserve">an array whose length is the number of characters in text (equal to g_utf8_strlen (text, length) unless text has NUL bytes) to be filled in with the resulting character widths.</doc>
-            <type name="gint" c:type="int*"/>
+            <array zero-terminated="0" c:type="int*">
+              <type name="gint" c:type="int"/>
+            </array>
           </parameter>
         </parameters>
       </method>
@@ -3071,7 +3015,10 @@ are computed by dividing up each cluster into equal portions.</doc>
             <doc xml:whitespace="preserve">whether we should compute the result for the beginning (%FALSE) or end (%TRUE) of the character.</doc>
             <type name="gboolean" c:type="gboolean"/>
           </parameter>
-          <parameter name="x_pos" transfer-ownership="none">
+          <parameter name="x_pos"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store result</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
@@ -3116,11 +3063,17 @@ attributes for the text to compute the valid cursor position.</doc>
             <doc xml:whitespace="preserve">the x offset (in Pango units)</doc>
             <type name="gint" c:type="int"/>
           </parameter>
-          <parameter name="index_" transfer-ownership="none">
+          <parameter name="index_"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store calculated byte index within @text</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
-          <parameter name="trailing" transfer-ownership="none">
+          <parameter name="trailing"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store a boolean indicating whether the user clicked on the leading or trailing edge of the character.</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
@@ -3171,17 +3124,15 @@ See also: #PangoGravityHint</doc>
                 c:identifier="pango_gravity_get_for_matrix"
                 version="1.16">
         <doc xml:whitespace="preserve">Finds the gravity that best matches the rotation component
-in a #PangoMatrix.
-
-%PANGO_GRAVITY_AUTO, or %PANGO_GRAVITY_SOUTH if @matrix is %NULL</doc>
+in a #PangoMatrix.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the gravity of @matrix, which will never be</doc>
+          <doc xml:whitespace="preserve">the gravity of @matrix, which will never be %PANGO_GRAVITY_AUTO, or %PANGO_GRAVITY_SOUTH if @matrix is %NULL</doc>
           <type name="Gravity" c:type="PangoGravity"/>
         </return-value>
         <parameters>
           <parameter name="matrix" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoMatrix</doc>
-            <type name="Matrix" c:type="PangoMatrix*"/>
+            <type name="Matrix" c:type="const PangoMatrix*"/>
           </parameter>
         </parameters>
       </function>
@@ -3193,11 +3144,9 @@ to use in laying out a single #PangoItem.
 
 If @base_gravity is %PANGO_GRAVITY_AUTO, it is first replaced with the
 preferred gravity of @script.  To get the preferred gravity of a script,
-pass %PANGO_GRAVITY_AUTO and %PANGO_GRAVITY_HINT_STRONG in.
-
-with @script.</doc>
+pass %PANGO_GRAVITY_AUTO and %PANGO_GRAVITY_HINT_STRONG in.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text</doc>
+          <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text with @script.</doc>
           <type name="Gravity" c:type="PangoGravity"/>
         </return-value>
         <parameters>
@@ -3230,11 +3179,9 @@ whereas narrow/full-width characters are always rotated in vertical
 context.
 
 If @base_gravity is %PANGO_GRAVITY_AUTO, it is first replaced with the
-preferred gravity of @script.
-
-with @script and @wide.</doc>
+preferred gravity of @script.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text</doc>
+          <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text with @script and @wide.</doc>
           <type name="Gravity" c:type="PangoGravity"/>
         </return-value>
         <parameters>
@@ -3318,21 +3265,16 @@ See #PangoGravity.</doc>
         <type name="Analysis" c:type="PangoAnalysis"/>
       </field>
       <constructor name="new" c:identifier="pango_item_new">
-        <doc xml:whitespace="preserve">Creates a new #PangoItem structure initialized to default values.
-
-be freed with pango_item_free().</doc>
+        <doc xml:whitespace="preserve">Creates a new #PangoItem structure initialized to default values.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoItem, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoItem, which should be freed with pango_item_free().</doc>
           <type name="Item" c:type="PangoItem*"/>
         </return-value>
       </constructor>
       <method name="copy" c:identifier="pango_item_copy">
-        <doc xml:whitespace="preserve">Copy an existing #PangoItem structure.
-
-be freed with pango_item_free(), or %NULL if
-@item was NULL.</doc>
+        <doc xml:whitespace="preserve">Copy an existing #PangoItem structure.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoItem, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoItem, which should be freed with pango_item_free(), or %NULL if @item was NULL.</doc>
           <type name="Item" c:type="PangoItem*"/>
         </return-value>
       </method>
@@ -3352,11 +3294,9 @@ be at least one byte assigned to each item, you can't create a
 zero-length item). @split_offset is the length of the first item in
 chars, and must be provided because the text used to generate the
 item isn't available, so pango_item_split() can't count the char
-length of the split items itself.
-
-should be freed with pango_item_free().</doc>
+length of the split items itself.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">new item representing text before @split_index, which</doc>
+          <doc xml:whitespace="preserve">new item representing text before @split_index, which should be freed with pango_item_free().</doc>
           <type name="Item" c:type="PangoItem*"/>
         </return-value>
         <parameters>
@@ -3395,12 +3335,10 @@ comparing the returned pointer value to that returned for (non-existent)
 language code "xx".  That is, compare to:
 &lt;informalexample&gt;&lt;programlisting&gt;
 pango_language_get_sample_string (pango_language_from_string ("xx"))
-&lt;/programlisting&gt;&lt;/informalexample&gt;
-
-and should not be freed.</doc>
+&lt;/programlisting&gt;&lt;/informalexample&gt;</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the sample string. This value is owned by Pango</doc>
-          <type name="utf8" c:type="char*"/>
+          <doc xml:whitespace="preserve">the sample string. This value is owned by Pango and should not be freed.</doc>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
       </method>
       <method name="get_scripts"
@@ -3423,22 +3361,18 @@ though, except that it is positive if the return value is not
 %NULL, and it is a small number.
 
 The pango_language_includes_script() function uses this function
-internally.
-
-number of entries in the array stored in @num_scripts, or
-%NULL if Pango does not have any information about this
-particular language tag (also the case if @language is %NULL).
-The returned array is owned by Pango and should not be modified
-or freed.</doc>
+internally.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">An array of #PangoScript values, with the</doc>
-          <type name="Script" c:type="PangoScript*"/>
+          <doc xml:whitespace="preserve">An array of #PangoScript values, with the number of entries in the array stored in @num_scripts, or %NULL if Pango does not have any information about this particular language tag (also the case if @language is %NULL). The returned array is owned by Pango and should not be modified or freed.</doc>
+          <array length="0" zero-terminated="0" c:type="PangoScript*">
+            <type name="Script" c:type="PangoScript"/>
+          </array>
         </return-value>
         <parameters>
           <parameter name="num_scripts"
                      direction="out"
                      caller-allocates="1"
-                     transfer-ownership="none"
+                     transfer-ownership="full"
                      allow-none="1">
             <doc xml:whitespace="preserve">location to return number of scripts, or %NULL</doc>
             <type name="gint" c:type="int*"/>
@@ -3459,13 +3393,9 @@ determining if a supplied language tag is relevant to
 a particular section of text. It probably is not useful for
 applications in most circumstances.
 
-This function uses pango_language_get_scripts() internally.
-
-to write @language or if nothing is known about @language
-(including the case that @language is %NULL),
-%FALSE otherwise.</doc>
+This function uses pango_language_get_scripts() internally.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if @script is one of the scripts used</doc>
+          <doc xml:whitespace="preserve">%TRUE if @script is one of the scripts used to write @language or if nothing is known about @language (including the case that @language is %NULL), %FALSE otherwise.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
         <parameters>
@@ -3488,17 +3418,15 @@ in the tag is '-'.</doc>
         <parameters>
           <parameter name="range_list" transfer-ownership="none">
             <doc xml:whitespace="preserve">a list of language ranges, separated by ';', ':', ',', or space characters. Each element must either be '*', or a RFC 3066 language range canonicalized as by pango_language_from_string()</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </method>
       <method name="to_string" c:identifier="pango_language_to_string">
-        <doc xml:whitespace="preserve">Gets the RFC-3066 format string representing the given language tag. 
-
-Pango and should not be freed.</doc>
+        <doc xml:whitespace="preserve">Gets the RFC-3066 format string representing the given language tag.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">a string representing the language tag.  This is owned by</doc>
-          <type name="utf8" c:type="char*"/>
+          <doc xml:whitespace="preserve">a string representing the language tag.  This is owned by Pango and should not be freed.</doc>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
       </method>
       <function name="from_string" c:identifier="pango_language_from_string">
@@ -3512,18 +3440,15 @@ lowercase, mapping '_' to '-', and stripping all characters other
 than letters and '-'.
 
 Use pango_language_get_default() if you want to get the #PangoLanguage for
-the current locale of the process.
-
-if @language was %NULL.  The returned pointer will be valid
-forever after, and should not be freed.</doc>
-        <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">an opaque pointer to a #PangoLanguage structure, or %NULL</doc>
+the current locale of the process.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">an opaque pointer to a #PangoLanguage structure, or %NULL if @language was %NULL.  The returned pointer will be valid forever after, and should not be freed.</doc>
           <type name="Language" c:type="PangoLanguage*"/>
         </return-value>
         <parameters>
           <parameter name="language" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">a string representing a language tag, or %NULL</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
         </parameters>
       </function>
@@ -3555,11 +3480,9 @@ either said environment variables or the thread's current locale.
 Your application should call &lt;literal&gt;setlocale(LC_ALL, "");&lt;/literal&gt;
 for the user settings to take effect.  Gtk+ does this in its initialization
 functions automatically (by calling gtk_set_locale()).
-See &lt;literal&gt;man setlocale&lt;/literal&gt; for more details.
-
-freed.</doc>
-        <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the default language as a #PangoLanguage, must not be</doc>
+See &lt;literal&gt;man setlocale&lt;/literal&gt; for more details.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">the default language as a #PangoLanguage, must not be freed.</doc>
           <type name="Language" c:type="PangoLanguage*"/>
         </return-value>
       </function>
@@ -3573,12 +3496,9 @@ freed.</doc>
            glib:type-struct="LayoutClass">
       <constructor name="new" c:identifier="pango_layout_new">
         <doc xml:whitespace="preserve">Create a new #PangoLayout object with attributes initialized to
-default values for a particular #PangoContext.
-
-count of one, which should be freed with
-g_object_unref().</doc>
+default values for a particular #PangoContext.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoLayout, with a reference</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoLayout, with a reference count of one, which should be freed with g_object_unref().</doc>
           <type name="Layout" c:type="PangoLayout*"/>
         </return-value>
         <parameters>
@@ -3601,12 +3521,9 @@ to creating the layout.</doc>
       <method name="copy" c:identifier="pango_layout_copy">
         <doc xml:whitespace="preserve">Does a deep copy-by-value of the @src layout. The attribute list,
 tab array, and text from the original layout are all copied by
-value.
-
-with a reference count of one, which should be freed
-with g_object_unref().</doc>
+value.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoLayout,</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoLayout, with a reference count of one, which should be freed with g_object_unref().</doc>
           <type name="Layout" c:type="PangoLayout*"/>
         </return-value>
       </method>
@@ -3620,7 +3537,7 @@ positioned within the horizontal space available.</doc>
       </method>
       <method name="get_attributes" c:identifier="pango_layout_get_attributes">
         <doc xml:whitespace="preserve">Gets the attribute list for the layout, if any.</doc>
-        <return-value transfer-ownership="full">
+        <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">a #PangoAttrList.</doc>
           <type name="AttrList" c:type="PangoAttrList*"/>
         </return-value>
@@ -3630,11 +3547,9 @@ positioned within the horizontal space available.</doc>
               version="1.4">
         <doc xml:whitespace="preserve">Gets whether to calculate the bidirectional base direction
 for the layout according to the contents of the layout.
-See pango_layout_set_auto_dir().
-
-is computed from the layout's contents, %FALSE otherwise.</doc>
+See pango_layout_set_auto_dir().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if the bidirectional base direction</doc>
+          <doc xml:whitespace="preserve">%TRUE if the bidirectional base direction is computed from the layout's contents, %FALSE otherwise.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
@@ -3651,21 +3566,16 @@ is computed from the layout's contents, %FALSE otherwise.</doc>
               c:identifier="pango_layout_get_character_count"
               version="1.30">
         <doc xml:whitespace="preserve">Returns the number of Unicode characters in the
-the text of @layout.
-
-in the text of @layout</doc>
+the text of @layout.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the number of Unicode characters</doc>
+          <doc xml:whitespace="preserve">the number of Unicode characters in the text of @layout</doc>
           <type name="gint" c:type="gint"/>
         </return-value>
       </method>
       <method name="get_context" c:identifier="pango_layout_get_context">
-        <doc xml:whitespace="preserve">Retrieves the #PangoContext used for this layout.
-
-This does not have an additional refcount added, so if you want to
-keep a copy of this around, you must reference it yourself.</doc>
+        <doc xml:whitespace="preserve">Retrieves the #PangoContext used for this layout.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the #PangoContext for the layout.</doc>
+          <doc xml:whitespace="preserve">the #PangoContext for the layout. This does not have an additional refcount added, so if you want to keep a copy of this around, you must reference it yourself.</doc>
           <type name="Context" c:type="PangoContext*"/>
         </return-value>
       </method>
@@ -3708,13 +3618,9 @@ direction of the layout are inserted.</doc>
               c:identifier="pango_layout_get_ellipsize"
               version="1.6">
         <doc xml:whitespace="preserve">Gets the type of ellipsization being performed for @layout.
-See pango_layout_set_ellipsize()
-
-
-Use pango_layout_is_ellipsized() to query whether any paragraphs
-were actually ellipsized.</doc>
+See pango_layout_set_ellipsize()</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the current ellipsization mode for @layout.</doc>
+          <doc xml:whitespace="preserve">the current ellipsization mode for @layout.  Use pango_layout_is_ellipsized() to query whether any paragraphs were actually ellipsized.</doc>
           <type name="EllipsizeMode" c:type="PangoEllipsizeMode"/>
         </return-value>
       </method>
@@ -3753,25 +3659,19 @@ coordinates begin at the top left corner of the layout.</doc>
       <method name="get_font_description"
               c:identifier="pango_layout_get_font_description"
               version="1.8">
-        <doc xml:whitespace="preserve">Gets the font description for the layout, if any.
-
-or %NULL if the font description from the layout's
-context is inherited. This value is owned by the layout
-and must not be modified or freed.</doc>
+        <doc xml:whitespace="preserve">Gets the font description for the layout, if any.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">a pointer to the layout's font description,</doc>
-          <type name="FontDescription" c:type="PangoFontDescription*"/>
+          <doc xml:whitespace="preserve">a pointer to the layout's font description, or %NULL if the font description from the layout's context is inherited. This value is owned by the layout and must not be modified or freed.</doc>
+          <type name="FontDescription" c:type="const PangoFontDescription*"/>
         </return-value>
       </method>
       <method name="get_height"
               c:identifier="pango_layout_get_height"
               version="1.20">
         <doc xml:whitespace="preserve">Gets the height of layout used for ellipsization.  See
-pango_layout_set_height() for details.
-
-number of lines if negative.</doc>
+pango_layout_set_height() for details.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the height, in Pango units if positive, or</doc>
+          <doc xml:whitespace="preserve">the height, in Pango units if positive, or number of lines if negative.</doc>
           <type name="gint" c:type="int"/>
         </return-value>
       </method>
@@ -3784,11 +3684,9 @@ indicates a hanging indentation.</doc>
         </return-value>
       </method>
       <method name="get_iter" c:identifier="pango_layout_get_iter">
-        <doc xml:whitespace="preserve">Returns an iterator to iterate over the visual extents of the layout.
-
-pango_layout_iter_free().</doc>
+        <doc xml:whitespace="preserve">Returns an iterator to iterate over the visual extents of the layout.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the new #PangoLayoutIter that should be freed using</doc>
+          <doc xml:whitespace="preserve">the new #PangoLayoutIter that should be freed using pango_layout_iter_free().</doc>
           <type name="LayoutIter" c:type="PangoLayoutIter*"/>
         </return-value>
       </method>
@@ -3804,13 +3702,9 @@ width of the layout.</doc>
         <doc xml:whitespace="preserve">Retrieves a particular line from a #PangoLayout.
 
 Use the faster pango_layout_get_line_readonly() if you do not plan
-to modify the contents of the line (glyphs, glyph widths, etc.).
-
-index is out of range. This layout line can
-be ref'ed and retained, but will become invalid
-if changes are made to the #PangoLayout.</doc>
-        <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the requested #PangoLayoutLine, or %NULL if the</doc>
+to modify the contents of the line (glyphs, glyph widths, etc.).</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">the requested #PangoLayoutLine, or %NULL if the index is out of range. This layout line can be ref'ed and retained, but will become invalid if changes are made to the #PangoLayout.</doc>
           <type name="LayoutLine" c:type="PangoLayoutLine*"/>
         </return-value>
         <parameters>
@@ -3834,14 +3728,9 @@ if changes are made to the #PangoLayout.</doc>
 
 This is a faster alternative to pango_layout_get_line(),
 but the user is not expected
-to modify the contents of the line (glyphs, glyph widths, etc.).
-
-index is out of range. This layout line can
-be ref'ed and retained, but will become invalid
-if changes are made to the #PangoLayout.
-No changes should be made to the line.</doc>
-        <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the requested #PangoLayoutLine, or %NULL if the</doc>
+to modify the contents of the line (glyphs, glyph widths, etc.).</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">the requested #PangoLayoutLine, or %NULL if the index is out of range. This layout line can be ref'ed and retained, but will become invalid if changes are made to the #PangoLayout. No changes should be made to the line.</doc>
           <type name="LayoutLine" c:type="PangoLayoutLine*"/>
         </return-value>
         <parameters>
@@ -3855,13 +3744,9 @@ No changes should be made to the line.</doc>
         <doc xml:whitespace="preserve">Returns the lines of the @layout as a list.
 
 Use the faster pango_layout_get_lines_readonly() if you do not plan
-to modify the contents of the lines (glyphs, glyph widths, etc.).
-
-the lines in the layout. This points to internal data of the #PangoLayout
-and must be used with care. It will become invalid on any change to the layout's
-text or properties.</doc>
+to modify the contents of the lines (glyphs, glyph widths, etc.).</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">a #GSList containing</doc>
+          <doc xml:whitespace="preserve">a #GSList containing the lines in the layout. This points to internal data of the #PangoLayout and must be used with care. It will become invalid on any change to the layout's text or properties.</doc>
           <type name="GLib.SList" c:type="GSList*">
             <type name="LayoutLine"/>
           </type>
@@ -3874,13 +3759,9 @@ text or properties.</doc>
 
 This is a faster alternative to pango_layout_get_lines(),
 but the user is not expected
-to modify the contents of the lines (glyphs, glyph widths, etc.).
-
-the lines in the layout. This points to internal data of the #PangoLayout and
-must be used with care. It will become invalid on any change to the layout's
-text or properties.  No changes should be made to the lines.</doc>
+to modify the contents of the lines (glyphs, glyph widths, etc.).</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">a #GSList containing</doc>
+          <doc xml:whitespace="preserve">a #GSList containing the lines in the layout. This points to internal data of the #PangoLayout and must be used with care. It will become invalid on any change to the layout's text or properties.  No changes should be made to the lines.</doc>
           <type name="GLib.SList" c:type="GSList*">
             <type name="LayoutLine"/>
           </type>
@@ -3897,7 +3778,7 @@ the @layout.</doc>
                      direction="out"
                      caller-allocates="0"
                      transfer-ownership="container">
-            <doc xml:whitespace="preserve"> location to store a pointer to an array of logical attributes This value must be freed with g_free().</doc>
+            <doc xml:whitespace="preserve">location to store a pointer to an array of logical attributes This value must be freed with g_free().</doc>
             <array length="1" zero-terminated="0" c:type="PangoLogAttr**">
               <type name="LogAttr" c:type="PangoLogAttr*"/>
             </array>
@@ -3927,10 +3808,15 @@ need to be attributes corresponding to both the position before
 the first character and the position after the last character.</doc>
         <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">an array of logical attributes</doc>
-          <type name="LogAttr" c:type="PangoLogAttr*"/>
+          <array length="0" zero-terminated="0" c:type="PangoLogAttr*">
+            <type name="LogAttr" c:type="PangoLogAttr"/>
+          </array>
         </return-value>
         <parameters>
-          <parameter name="n_attrs" transfer-ownership="none">
+          <parameter name="n_attrs"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">location to store the number of the attributes in the array</doc>
             <type name="gint" c:type="gint*"/>
           </parameter>
@@ -3993,13 +3879,29 @@ pango_layout_get_pixel_extents().</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="get_serial"
+              c:identifier="pango_layout_get_serial"
+              version="1.32.4">
+        <doc xml:whitespace="preserve">Returns the current serial number of @layout.  The serial number is
+initialized to an small number  larger than zero when a new layout
+is created and is increased whenever the layout is changed using any
+of the setter functions, or the #PangoContext it uses has changed.
+The serial may wrap, but will never have the value 0. Since it
+can wrap, never compare it with "less than", always use "not equals".
+
+This can be used to automatically detect changes to a #PangoLayout, and
+is useful for example to decide whether a layout needs redrawing.
+To force the serial to be increased, use pango_layout_context_changed().</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current serial number of @layout.</doc>
+          <type name="guint" c:type="guint"/>
+        </return-value>
+      </method>
       <method name="get_single_paragraph_mode"
               c:identifier="pango_layout_get_single_paragraph_mode">
-        <doc xml:whitespace="preserve">Obtains the value set by pango_layout_set_single_paragraph_mode().
-
-paragraph separator characters, %FALSE otherwise.</doc>
+        <doc xml:whitespace="preserve">Obtains the value set by pango_layout_set_single_paragraph_mode().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if the layout does not break paragraphs at</doc>
+          <doc xml:whitespace="preserve">%TRUE if the layout does not break paragraphs at paragraph separator characters, %FALSE otherwise.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
@@ -4051,7 +3953,7 @@ The return value should be freed with pango_tab_array_free().</doc>
 be freed or modified.</doc>
         <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">the text in the @layout.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </return-value>
       </method>
       <method name="get_unknown_glyphs_count"
@@ -4153,11 +4055,9 @@ then &lt;literal&gt;pos-&gt;width&lt;/literal&gt; will be negative.</doc>
 This returns %TRUE if the ellipsization mode for @layout
 is not %PANGO_ELLIPSIZE_NONE, a positive width is set on @layout,
 and there are paragraphs exceeding that width that have to be
-ellipsized.
-
-otherwise.</doc>
+ellipsized.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if any paragraphs had to be ellipsized, %FALSE</doc>
+          <doc xml:whitespace="preserve">%TRUE if any paragraphs had to be ellipsized, %FALSE otherwise.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
@@ -4169,11 +4069,9 @@ otherwise.</doc>
 This returns %TRUE if a positive width is set on @layout,
 ellipsization mode of @layout is set to %PANGO_ELLIPSIZE_NONE,
 and there are paragraphs exceeding the layout width that have
-to be wrapped.
-
-otherwise.</doc>
+to be wrapped.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">%TRUE if any paragraphs had to be wrapped, %FALSE</doc>
+          <doc xml:whitespace="preserve">%TRUE if any paragraphs had to be wrapped, %FALSE otherwise.</doc>
           <type name="gboolean" c:type="gboolean"/>
         </return-value>
       </method>
@@ -4222,7 +4120,10 @@ to form a single grapheme.</doc>
             <doc xml:whitespace="preserve">location to store the new cursor byte index. A value of -1 indicates that the cursor has been moved off the beginning of the layout. A value of %G_MAXINT indicates that the cursor has been moved off the end of the layout.</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
-          <parameter name="new_trailing" transfer-ownership="none">
+          <parameter name="new_trailing"
+                     direction="out"
+                     caller-allocates="0"
+                     transfer-ownership="full">
             <doc xml:whitespace="preserve">number of characters to move forward from the location returned for @new_index to get the position where the cursor should be displayed. This allows distinguishing the position at the beginning of one line from the position at the end of the preceding line. @new_index is always on the line where the cursor should be displayed.</doc>
             <type name="gint" c:type="int*"/>
           </parameter>
@@ -4260,6 +4161,7 @@ References @attrs, so the caller can unref its reference.</doc>
         <doc xml:whitespace="preserve">Sets whether to calculate the bidirectional base direction
 for the layout according to the contents of the layout;
 when this flag is on (the default), then paragraphs in
+   @layout that begin with strong right-to-left characters
 (Arabic and Hebrew principally), will have right-to-left
 layout, paragraphs with letters from other scripts will
 have left-to-right layout. Paragraphs with only neutral
@@ -4317,7 +4219,7 @@ the layout's context is used.</doc>
         <parameters>
           <parameter name="desc" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">the new #PangoFontDescription, or %NULL to unset the current font description</doc>
-            <type name="FontDescription" c:type="PangoFontDescription*"/>
+            <type name="FontDescription" c:type="const PangoFontDescription*"/>
           </parameter>
         </parameters>
       </method>
@@ -4404,7 +4306,7 @@ the markup text isn't scanned for accelerators.</doc>
         <parameters>
           <parameter name="markup" transfer-ownership="none">
             <doc xml:whitespace="preserve">marked-up text</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="length" transfer-ownership="none">
             <doc xml:whitespace="preserve">length of marked-up text in bytes, or -1 if @markup is null-terminated</doc>
@@ -4431,7 +4333,7 @@ literal @accel_marker character.</doc>
         <parameters>
           <parameter name="markup" transfer-ownership="none">
             <doc xml:whitespace="preserve">marked-up text (see &lt;link linkend="PangoMarkupFormat"&gt;markup format&lt;/link&gt;)</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="length" transfer-ownership="none">
             <doc xml:whitespace="preserve">length of marked-up text in bytes, or -1 if @markup is null-terminated</doc>
@@ -4509,7 +4411,7 @@ clear attributes.</doc>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">a valid UTF-8 string</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="length" transfer-ownership="none">
             <doc xml:whitespace="preserve">maximum length of @text, in bytes. -1 indicates that the string is nul-terminated and the length should be calculated.  The text will also be truncated on encountering a nul-termination even when @length is positive.</doc>
@@ -4602,12 +4504,9 @@ function returns %FALSE; on an exact hit, it returns %TRUE.</doc>
         </return-value>
       </method>
       <method name="copy" c:identifier="pango_layout_iter_copy" version="1.20">
-        <doc xml:whitespace="preserve">Copies a #PangLayoutIter.
-
-be freed with pango_layout_iter_free(), or %NULL if
-@iter was %NULL.</doc>
+        <doc xml:whitespace="preserve">Copies a #PangoLayoutIter.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoLayoutIter, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoLayoutIter, which should be freed with pango_layout_iter_free(), or %NULL if @iter was %NULL.</doc>
           <type name="LayoutIter" c:type="PangoLayoutIter*"/>
         </return-value>
       </method>
@@ -4636,7 +4535,10 @@ down to the level of clusters.</doc>
           <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="logical_rect" transfer-ownership="none">
+          <parameter name="logical_rect"
+                     direction="out"
+                     caller-allocates="1"
+                     transfer-ownership="none">
             <doc xml:whitespace="preserve">rectangle to fill with logical extents</doc>
             <type name="Rectangle" c:type="PangoRectangle*"/>
           </parameter>
@@ -4762,7 +4664,7 @@ returned from pango_layout_line_get_extents().</doc>
 This is a faster alternative to pango_layout_iter_get_line(),
 but the user is not expected
 to modify the contents of the line (glyphs, glyph widths, etc.).</doc>
-        <return-value transfer-ownership="full">
+        <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">the current line, that should not be modified.</doc>
           <type name="LayoutLine" c:type="PangoLayoutLine*"/>
         </return-value>
@@ -4990,7 +4892,7 @@ layout, not with respect to the line.</doc>
                      direction="out"
                      caller-allocates="0"
                      transfer-ownership="full">
-            <doc xml:whitespace="preserve"> location to store a pointer to an array of ranges. The array will be of length &lt;literal&gt;2*n_ranges&lt;/literal&gt;, with each range starting at &lt;literal&gt;(*ranges)[2*n]&lt;/literal&gt; and of width &lt;literal&gt;(*ranges)[2*n + 1] - (*ranges)[2*n]&lt;/literal&gt;. This array must be freed with g_free(). The coordinates are relative to the layout and are in Pango units.</doc>
+            <doc xml:whitespace="preserve">location to store a pointer to an array of ranges. The array will be of length &lt;literal&gt;2*n_ranges&lt;/literal&gt;, with each range starting at &lt;literal&gt;(*ranges)[2*n]&lt;/literal&gt; and of width &lt;literal&gt;(*ranges)[2*n + 1] - (*ranges)[2*n]&lt;/literal&gt;. This array must be freed with g_free(). The coordinates are relative to the layout and are in Pango units.</doc>
             <array length="3" zero-terminated="0" c:type="int**">
               <type name="gint" c:type="int*"/>
             </array>
@@ -5162,17 +5064,14 @@ given by @new_matrix then applying the original transformation.</doc>
         <parameters>
           <parameter name="new_matrix" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoMatrix</doc>
-            <type name="Matrix" c:type="PangoMatrix*"/>
+            <type name="Matrix" c:type="const PangoMatrix*"/>
           </parameter>
         </parameters>
       </method>
       <method name="copy" c:identifier="pango_matrix_copy" version="1.6">
-        <doc xml:whitespace="preserve">Copies a #PangoMatrix.
-
-be freed with pango_matrix_free(), or %NULL if
-@matrix was %NULL.</doc>
+        <doc xml:whitespace="preserve">Copies a #PangoMatrix.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoMatrix, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoMatrix, which should be freed with pango_matrix_free(), or %NULL if @matrix was %NULL.</doc>
           <type name="Matrix" c:type="PangoMatrix*"/>
         </return-value>
       </method>
@@ -5187,11 +5086,9 @@ be freed with pango_matrix_free(), or %NULL if
               version="1.12">
         <doc xml:whitespace="preserve">Returns the scale factor of a matrix on the height of the font.
 That is, the scale factor in the direction perpendicular to the
-vector that the X coordinate is mapped to.
-
-or 1.0 if @matrix is %NULL.</doc>
+vector that the X coordinate is mapped to.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the scale factor of @matrix on the height of the font,</doc>
+          <doc xml:whitespace="preserve">the scale factor of @matrix on the height of the font, or 1.0 if @matrix is %NULL.</doc>
           <type name="gdouble" c:type="double"/>
         </return-value>
       </method>
@@ -5510,7 +5407,7 @@ pango_renderer_draw_glyphs().</doc>
         <parameters>
           <parameter name="text" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">the UTF-8 text that @glyph_item refers to, or %NULL</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="glyph_item" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoGlyphItem</doc>
@@ -5780,7 +5677,7 @@ pango_renderer_draw_glyphs().</doc>
         <parameters>
           <parameter name="text" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">the UTF-8 text that @glyph_item refers to, or %NULL</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="glyph_item" transfer-ownership="none">
             <doc xml:whitespace="preserve">a #PangoGlyphItem</doc>
@@ -5942,12 +5839,9 @@ using the given #PangoRenderer; coordinates are in device space.</doc>
       <method name="get_color"
               c:identifier="pango_renderer_get_color"
               version="1.8">
-        <doc xml:whitespace="preserve">Gets the current rendering color for the specified part.
-
-if it hasn't been set and should be inherited from the
-environment.</doc>
+        <doc xml:whitespace="preserve">Gets the current rendering color for the specified part.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the color for the specified part, or %NULL</doc>
+          <doc xml:whitespace="preserve">the color for the specified part, or %NULL if it hasn't been set and should be inherited from the environment.</doc>
           <type name="Color" c:type="PangoColor*"/>
         </return-value>
         <parameters>
@@ -5965,11 +5859,9 @@ Calling this function only makes sense from inside a subclass's
 methods, like in its draw_shape&lt;!----&gt;() for example.
 
 The returned layout should not be modified while still being
-rendered.
-
-rendered using @renderer at this time.</doc>
+rendered.</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the layout, or %NULL if no layout is being</doc>
+          <doc xml:whitespace="preserve">the layout, or %NULL if no layout is being rendered using @renderer at this time.</doc>
           <type name="Layout" c:type="PangoLayout*"/>
         </return-value>
       </method>
@@ -5981,11 +5873,9 @@ Calling this function only makes sense from inside a subclass's
 methods, like in its draw_shape&lt;!----&gt;() for example.
 
 The returned layout line should not be modified while still being
-rendered.
-
-rendered using @renderer at this time.</doc>
-        <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the layout line, or %NULL if no layout line is being</doc>
+rendered.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">the layout line, or %NULL if no layout line is being rendered using @renderer at this time.</doc>
           <type name="LayoutLine" c:type="PangoLayoutLine*"/>
         </return-value>
       </method>
@@ -5993,14 +5883,10 @@ rendered using @renderer at this time.</doc>
               c:identifier="pango_renderer_get_matrix"
               version="1.8">
         <doc xml:whitespace="preserve">Gets the transformation matrix that will be applied when
-rendering. See pango_renderer_set_matrix().
-
-(which is the same as the identity matrix). The returned
-matrix is owned by Pango and must not be modified or
-freed.</doc>
+rendering. See pango_renderer_set_matrix().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:whitespace="preserve">the matrix, or %NULL if no matrix has been set</doc>
-          <type name="Matrix" c:type="PangoMatrix*"/>
+          <doc xml:whitespace="preserve">the matrix, or %NULL if no matrix has been set (which is the same as the identity matrix). The returned matrix is owned by Pango and must not be modified or freed.</doc>
+          <type name="Matrix" c:type="const PangoMatrix*"/>
         </return-value>
       </method>
       <method name="part_changed"
@@ -6043,7 +5929,7 @@ changes to colors. (See pango_renderer_set_color())</doc>
           </parameter>
           <parameter name="color" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">the new color or %NULL to unset the current color</doc>
-            <type name="Color" c:type="PangoColor*"/>
+            <type name="Color" c:type="const PangoColor*"/>
           </parameter>
         </parameters>
       </method>
@@ -6057,7 +5943,7 @@ changes to colors. (See pango_renderer_set_color())</doc>
         <parameters>
           <parameter name="matrix" transfer-ownership="none" allow-none="1">
             <doc xml:whitespace="preserve">a #PangoMatrix, or %NULL to unset any existing matrix. (No matrix set is the same as setting the identity matrix.)</doc>
-            <type name="Matrix" c:type="PangoMatrix*"/>
+            <type name="Matrix" c:type="const PangoMatrix*"/>
           </parameter>
         </parameters>
       </method>
@@ -6331,7 +6217,7 @@ changes to colors. (See pango_renderer_set_color())</doc>
             </parameter>
             <parameter name="text" transfer-ownership="none" allow-none="1">
               <doc xml:whitespace="preserve">the UTF-8 text that @glyph_item refers to, or %NULL</doc>
-              <type name="utf8" c:type="char*"/>
+              <type name="utf8" c:type="const char*"/>
             </parameter>
             <parameter name="glyph_item" transfer-ownership="none">
               <doc xml:whitespace="preserve">a #PangoGlyphItem</doc>
@@ -6695,6 +6581,46 @@ changes to colors. (See pango_renderer_set_color())</doc>
               value="77"
               c:identifier="PANGO_SCRIPT_LYDIAN"
               glib:nick="lydian"/>
+      <member name="batak"
+              value="78"
+              c:identifier="PANGO_SCRIPT_BATAK"
+              glib:nick="batak"/>
+      <member name="brahmi"
+              value="79"
+              c:identifier="PANGO_SCRIPT_BRAHMI"
+              glib:nick="brahmi"/>
+      <member name="mandaic"
+              value="80"
+              c:identifier="PANGO_SCRIPT_MANDAIC"
+              glib:nick="mandaic"/>
+      <member name="chakma"
+              value="81"
+              c:identifier="PANGO_SCRIPT_CHAKMA"
+              glib:nick="chakma"/>
+      <member name="meroitic_cursive"
+              value="82"
+              c:identifier="PANGO_SCRIPT_MEROITIC_CURSIVE"
+              glib:nick="meroitic-cursive"/>
+      <member name="meroitic_hieroglyphs"
+              value="83"
+              c:identifier="PANGO_SCRIPT_MEROITIC_HIEROGLYPHS"
+              glib:nick="meroitic-hieroglyphs"/>
+      <member name="miao"
+              value="84"
+              c:identifier="PANGO_SCRIPT_MIAO"
+              glib:nick="miao"/>
+      <member name="sharada"
+              value="85"
+              c:identifier="PANGO_SCRIPT_SHARADA"
+              glib:nick="sharada"/>
+      <member name="sora_sompeng"
+              value="86"
+              c:identifier="PANGO_SCRIPT_SORA_SOMPENG"
+              glib:nick="sora-sompeng"/>
+      <member name="takri"
+              value="87"
+              c:identifier="PANGO_SCRIPT_TAKRI"
+              glib:nick="takri"/>
       <function name="for_unichar"
                 c:identifier="pango_script_for_unichar"
                 version="1.4">
@@ -6748,11 +6674,9 @@ set to "en:fa" makes Pango choose fonts suitable for Persian (fa)
 instead of Arabic (ar) when a segment of Arabic text is found
 in an otherwise non-Arabic text.  The same trick can be used to
 choose a default language for %PANGO_SCRIPT_HAN when setting
-context language is not feasible.
-
-of the script, or %NULL if no such language exists.</doc>
+context language is not feasible.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">a #PangoLanguage that is representative</doc>
+          <doc xml:whitespace="preserve">a #PangoLanguage that is representative of the script, or %NULL if no such language exists.</doc>
           <type name="Language" c:type="PangoLanguage*"/>
         </return-value>
         <parameters>
@@ -6788,7 +6712,7 @@ The range is the set of locations p where *start &lt;= p &lt; *end.
                      transfer-ownership="full"
                      allow-none="1">
             <doc xml:whitespace="preserve">location to store start position of the range, or %NULL</doc>
-            <type name="utf8" c:type="char**"/>
+            <type name="utf8" c:type="const char**"/>
           </parameter>
           <parameter name="end"
                      direction="out"
@@ -6796,7 +6720,7 @@ The range is the set of locations p where *start &lt;= p &lt; *end.
                      transfer-ownership="full"
                      allow-none="1">
             <doc xml:whitespace="preserve">location to store end position of the range, or %NULL</doc>
-            <type name="utf8" c:type="char**"/>
+            <type name="utf8" c:type="const char**"/>
           </parameter>
           <parameter name="script"
                      direction="out"
@@ -6824,19 +6748,15 @@ is returned.</doc>
         <doc xml:whitespace="preserve">Create a new #PangoScriptIter, used to break a string of
 Unicode into runs by text. No copy is made of @text, so
 the caller needs to make sure it remains valid until
-the iterator is freed with pango_script_iter_free().
-
-to point at the first range in the text, which should be
-freed with pango_script_iter_free(). If the string is
-empty, it will point at an empty range.</doc>
+the iterator is freed with pango_script_iter_free().</doc>
         <return-value>
-          <doc xml:whitespace="preserve">the new script iterator, initialized</doc>
+          <doc xml:whitespace="preserve">the new script iterator, initialized to point at the first range in the text, which should be freed with pango_script_iter_free(). If the string is empty, it will point at an empty range.</doc>
           <type name="ScriptIter" c:type="PangoScriptIter*"/>
         </return-value>
         <parameters>
           <parameter name="text" transfer-ownership="none">
             <doc xml:whitespace="preserve">a UTF-8 string</doc>
-            <type name="utf8" c:type="char*"/>
+            <type name="utf8" c:type="const char*"/>
           </parameter>
           <parameter name="length" transfer-ownership="none">
             <doc xml:whitespace="preserve">length of @text, or -1 if @text is nul-terminated.</doc>
@@ -6921,11 +6841,9 @@ empty, it will point at an empty range.</doc>
       <constructor name="new" c:identifier="pango_tab_array_new">
         <doc xml:whitespace="preserve">Creates an array of @initial_size tab stops. Tab stops are specified in
 pixel units if @positions_in_pixels is %TRUE, otherwise in Pango
-units. All stops are initially at position 0.
-
-be freed with pango_tab_array_free().</doc>
+units. All stops are initially at position 0.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoTabArray, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoTabArray, which should be freed with pango_tab_array_free().</doc>
           <type name="TabArray" c:type="PangoTabArray*"/>
         </return-value>
         <parameters>
@@ -6945,11 +6863,9 @@ be freed with pango_tab_array_free().</doc>
         <doc xml:whitespace="preserve">This is a convenience function that creates a #PangoTabArray
 and allows you to specify the alignment and position of each
 tab stop. You &lt;emphasis&gt;must&lt;/emphasis&gt; provide an alignment
-and position for @size tab stops.
-
-be freed with pango_tab_array_free().</doc>
+and position for @size tab stops.</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoTabArray, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoTabArray, which should be freed with pango_tab_array_free().</doc>
           <type name="TabArray" c:type="PangoTabArray*"/>
         </return-value>
         <parameters>
@@ -6976,11 +6892,9 @@ be freed with pango_tab_array_free().</doc>
         </parameters>
       </constructor>
       <method name="copy" c:identifier="pango_tab_array_copy">
-        <doc xml:whitespace="preserve">Copies a #PangoTabArray
-
-be freed with pango_tab_array_free().</doc>
+        <doc xml:whitespace="preserve">Copies a #PangoTabArray</doc>
         <return-value transfer-ownership="full">
-          <doc xml:whitespace="preserve">the newly allocated #PangoTabArray, which should</doc>
+          <doc xml:whitespace="preserve">the newly allocated #PangoTabArray, which should be freed with pango_tab_array_free().</doc>
           <type name="TabArray" c:type="PangoTabArray*"/>
         </return-value>
       </method>
@@ -7056,7 +6970,9 @@ returned array.</doc>
                      transfer-ownership="full"
                      allow-none="1">
             <doc xml:whitespace="preserve">location to store an array of tab positions, or %NULL</doc>
-            <type name="gint" c:type="gint**"/>
+            <array zero-terminated="0" c:type="gint**">
+              <type name="gint" c:type="gint*"/>
+            </array>
           </parameter>
         </parameters>
       </method>
@@ -7212,8 +7128,8 @@ implementation.</doc>
     </enumeration>
     <record name="_ScriptForLang" c:type="_PangoScriptForLang">
       <field name="lang" writable="1">
-        <array zero-terminated="0" c:type="gchar" fixed-size="7">
-          <type name="gchar" c:type="char"/>
+        <array zero-terminated="0" c:type="const char" fixed-size="7">
+          <type name="gchar" c:type="const char"/>
         </array>
       </field>
       <field name="scripts" writable="1">
@@ -7225,11 +7141,9 @@ implementation.</doc>
     <function name="attr_background_new"
               c:identifier="pango_attr_background_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new background color attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new background color attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7256,11 +7170,9 @@ freed with pango_attribute_destroy().</doc>
 If fallback is disabled, characters will only be used from the
 closest matching font on the system. No fallback will be done to
 other fonts on the system that might contain the characters in the
-text.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+text.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7273,28 +7185,24 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_family_new"
               c:identifier="pango_attr_family_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new font family attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new font family attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
         <parameter name="family" transfer-ownership="none">
           <doc xml:whitespace="preserve">the family or comma separated list of families</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
       </parameters>
     </function>
     <function name="attr_foreground_new"
               c:identifier="pango_attr_foreground_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new foreground color attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new foreground color attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7316,11 +7224,9 @@ freed with pango_attribute_destroy().</doc>
               c:identifier="pango_attr_gravity_hint_new"
               version="1.16"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new gravity hint attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new gravity hint attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7334,11 +7240,9 @@ freed with pango_attribute_destroy().</doc>
               c:identifier="pango_attr_gravity_new"
               version="1.16"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new gravity attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new gravity attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7352,11 +7256,9 @@ freed with pango_attribute_destroy().</doc>
               c:identifier="pango_attr_letter_spacing_new"
               version="1.6"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new letter-spacing attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new letter-spacing attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7369,11 +7271,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_rise_new"
               c:identifier="pango_attr_rise_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new baseline displacement attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new baseline displacement attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7387,11 +7287,9 @@ freed with pango_attribute_destroy().</doc>
               c:identifier="pango_attr_scale_new"
               introspectable="0">
       <doc xml:whitespace="preserve">Create a new font size scale attribute. The base font for the
-affected text will have its size multiplied by @scale_factor.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+affected text will have its size multiplied by @scale_factor.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7404,11 +7302,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_stretch_new"
               c:identifier="pango_attr_stretch_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new font stretch attribute
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new font stretch attribute</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7424,11 +7320,9 @@ freed with pango_attribute_destroy().</doc>
               introspectable="0">
       <doc xml:whitespace="preserve">Create a new strikethrough color attribute. This attribute
 modifies the color of strikethrough lines. If not set, strikethrough
-lines will use the foreground color.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+lines will use the foreground color.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7449,11 +7343,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_strikethrough_new"
               c:identifier="pango_attr_strikethrough_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new strike-through attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new strike-through attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7466,11 +7358,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_style_new"
               c:identifier="pango_attr_style_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new font slant style attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new font slant style attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7488,12 +7378,10 @@ freed with pango_attribute_destroy().</doc>
 pango_attr_type_register().
 
 The returned value is an interned string (see g_intern_string() for what
-that means) that should not be modified or freed.
-
-a built-in Pango attribute type or invalid.</doc>
+that means) that should not be modified or freed.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">the type ID name (which may be %NULL), or %NULL if @type is</doc>
-        <type name="utf8" c:type="char*"/>
+        <doc xml:whitespace="preserve">the type ID name (which may be %NULL), or %NULL if @type is a built-in Pango attribute type or invalid.</doc>
+        <type name="utf8" c:type="const char*"/>
       </return-value>
       <parameters>
         <parameter name="type" transfer-ownership="none">
@@ -7514,7 +7402,7 @@ later by using pango_attr_type_get_name().</doc>
       <parameters>
         <parameter name="name" transfer-ownership="none">
           <doc xml:whitespace="preserve">an identifier for the type</doc>
-          <type name="utf8" c:type="gchar*"/>
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
       </parameters>
     </function>
@@ -7524,11 +7412,9 @@ later by using pango_attr_type_get_name().</doc>
               introspectable="0">
       <doc xml:whitespace="preserve">Create a new underline color attribute. This attribute
 modifies the color of underlines. If not set, underlines
-will use the foreground color.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+will use the foreground color.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7549,11 +7435,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_underline_new"
               c:identifier="pango_attr_underline_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new underline-style attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new underline-style attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7566,11 +7450,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_variant_new"
               c:identifier="pango_attr_variant_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new font variant attribute (normal or small caps)
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new font variant attribute (normal or small caps)</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7583,11 +7465,9 @@ freed with pango_attribute_destroy().</doc>
     <function name="attr_weight_new"
               c:identifier="pango_attr_weight_new"
               introspectable="0">
-      <doc xml:whitespace="preserve">Create a new font weight attribute.
-
-freed with pango_attribute_destroy().</doc>
-      <return-value>
-        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be</doc>
+      <doc xml:whitespace="preserve">Create a new font weight attribute.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:whitespace="preserve">the newly allocated #PangoAttribute, which should be freed with pango_attribute_destroy().</doc>
         <type name="Attribute" c:type="PangoAttribute*"/>
       </return-value>
       <parameters>
@@ -7605,11 +7485,9 @@ freed with pango_attribute_destroy().</doc>
 character, as specified in the Unicode Character Database.
 
 A simplified version of this function is available as
-pango_unichar_get_direction().
-
-Unicode bidirectional algorithm.</doc>
+pango_unichar_get_direction().</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">the bidirectional character type, as used in the</doc>
+        <doc xml:whitespace="preserve">the bidirectional character type, as used in the Unicode bidirectional algorithm.</doc>
         <type name="BidiType" c:type="PangoBidiType"/>
       </return-value>
       <parameters>
@@ -7629,7 +7507,7 @@ purposes you may want to use pango_get_log_attrs().</doc>
       <parameters>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">the text to process</doc>
-          <type name="utf8" c:type="gchar*"/>
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">length of @text in bytes (may be -1 if @text is nul-terminated)</doc>
@@ -7641,7 +7519,9 @@ purposes you may want to use pango_get_log_attrs().</doc>
         </parameter>
         <parameter name="attrs" transfer-ownership="none">
           <doc xml:whitespace="preserve">an array to store character information in</doc>
-          <type name="LogAttr" c:type="PangoLogAttr*"/>
+          <array length="4" zero-terminated="0" c:type="PangoLogAttr*">
+            <type name="LogAttr" c:type="PangoLogAttr"/>
+          </array>
         </parameter>
         <parameter name="attrs_len" transfer-ownership="none">
           <doc xml:whitespace="preserve">size of the array passed as @attrs</doc>
@@ -7685,17 +7565,15 @@ as @nearest.</doc>
               c:identifier="pango_find_base_dir"
               version="1.4">
       <doc xml:whitespace="preserve">Searches a string the first character that has a strong
-direction, according to the Unicode bidirectional algorithm.
-
-If no such character is found, then %PANGO_DIRECTION_NEUTRAL is returned.</doc>
+direction, according to the Unicode bidirectional algorithm.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">The direction corresponding to the first strong character.</doc>
+        <doc xml:whitespace="preserve">The direction corresponding to the first strong character. If no such character is found, then %PANGO_DIRECTION_NEUTRAL is returned.</doc>
         <type name="Direction" c:type="PangoDirection"/>
       </return-value>
       <parameters>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">the text to process</doc>
-          <type name="utf8" c:type="gchar*"/>
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">length of @text in bytes (may be -1 if @text is nul-terminated)</doc>
@@ -7721,17 +7599,23 @@ off the end).</doc>
       <parameters>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">UTF-8 text</doc>
-          <type name="utf8" c:type="gchar*"/>
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">length of @text in bytes, or -1 if nul-terminated</doc>
           <type name="gint" c:type="gint"/>
         </parameter>
-        <parameter name="paragraph_delimiter_index" transfer-ownership="none">
+        <parameter name="paragraph_delimiter_index"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full">
           <doc xml:whitespace="preserve">return location for index of delimiter</doc>
           <type name="gint" c:type="gint*"/>
         </parameter>
-        <parameter name="next_paragraph_start" transfer-ownership="none">
+        <parameter name="next_paragraph_start"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full">
           <doc xml:whitespace="preserve">return location for start of next paragraph</doc>
           <type name="gint" c:type="gint*"/>
         </parameter>
@@ -7759,7 +7643,7 @@ description will be set to 0.</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">string representation of a font description.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
       </parameters>
     </function>
@@ -7777,7 +7661,7 @@ the word is a word).</doc>
       <parameters>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">text to process</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">length in bytes of @text</doc>
@@ -7793,7 +7677,9 @@ the word is a word).</doc>
         </parameter>
         <parameter name="log_attrs" transfer-ownership="none">
           <doc xml:whitespace="preserve">array with one #PangoLogAttr per character in @text, plus one extra, to be filled in</doc>
-          <type name="LogAttr" c:type="PangoLogAttr*"/>
+          <array length="5" zero-terminated="0" c:type="PangoLogAttr*">
+            <type name="LogAttr" c:type="PangoLogAttr"/>
+          </array>
         </parameter>
         <parameter name="attrs_len" transfer-ownership="none">
           <doc xml:whitespace="preserve">length of @log_attrs array</doc>
@@ -7807,11 +7693,9 @@ character that typically has a glyph that is the mirror image of @ch's
 glyph, puts that character in the address pointed to by @mirrored_ch.
 
 Use g_unichar_get_mirror_char() instead; the docs for that function
-provide full details.
-
-filled in, %FALSE otherwise</doc>
+provide full details.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">%TRUE if @ch has a mirrored character and @mirrored_ch is</doc>
+        <doc xml:whitespace="preserve">%TRUE if @ch has a mirrored character and @mirrored_ch is filled in, %FALSE otherwise</doc>
         <type name="gboolean" c:type="gboolean"/>
       </return-value>
       <parameters>
@@ -7830,17 +7714,15 @@ filled in, %FALSE otherwise</doc>
               moved-to="Gravity.get_for_matrix"
               version="1.16">
       <doc xml:whitespace="preserve">Finds the gravity that best matches the rotation component
-in a #PangoMatrix.
-
-%PANGO_GRAVITY_AUTO, or %PANGO_GRAVITY_SOUTH if @matrix is %NULL</doc>
+in a #PangoMatrix.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">the gravity of @matrix, which will never be</doc>
+        <doc xml:whitespace="preserve">the gravity of @matrix, which will never be %PANGO_GRAVITY_AUTO, or %PANGO_GRAVITY_SOUTH if @matrix is %NULL</doc>
         <type name="Gravity" c:type="PangoGravity"/>
       </return-value>
       <parameters>
         <parameter name="matrix" transfer-ownership="none">
           <doc xml:whitespace="preserve">a #PangoMatrix</doc>
-          <type name="Matrix" c:type="PangoMatrix*"/>
+          <type name="Matrix" c:type="const PangoMatrix*"/>
         </parameter>
       </parameters>
     </function>
@@ -7853,11 +7735,9 @@ to use in laying out a single #PangoItem.
 
 If @base_gravity is %PANGO_GRAVITY_AUTO, it is first replaced with the
 preferred gravity of @script.  To get the preferred gravity of a script,
-pass %PANGO_GRAVITY_AUTO and %PANGO_GRAVITY_HINT_STRONG in.
-
-with @script.</doc>
+pass %PANGO_GRAVITY_AUTO and %PANGO_GRAVITY_HINT_STRONG in.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text</doc>
+        <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text with @script.</doc>
         <type name="Gravity" c:type="PangoGravity"/>
       </return-value>
       <parameters>
@@ -7891,11 +7771,9 @@ whereas narrow/full-width characters are always rotated in vertical
 context.
 
 If @base_gravity is %PANGO_GRAVITY_AUTO, it is first replaced with the
-preferred gravity of @script.
-
-with @script and @wide.</doc>
+preferred gravity of @script.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text</doc>
+        <doc xml:whitespace="preserve">resolved gravity suitable to use for a run of text with @script and @wide.</doc>
         <type name="Gravity" c:type="PangoGravity"/>
       </return-value>
       <parameters>
@@ -7967,25 +7845,21 @@ offsets of the items are ascending).
 @cached_iter should be an iterator over @attrs currently positioned at a
 range before or containing @start_index; @cached_iter will be advanced to
 the range covering the position just after @start_index + @length.
-(i.e. if itemizing in a loop, just keep passing in the same @cached_iter).
-
-structures. The items should be freed using pango_item_free()
-probably in combination with g_list_foreach(), and the list itself
-using g_list_free().</doc>
+(i.e. if itemizing in a loop, just keep passing in the same @cached_iter).</doc>
       <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">a #GList of #PangoItem</doc>
+        <doc xml:whitespace="preserve">a #GList of #PangoItem structures. The items should be freed using pango_item_free() probably in combination with g_list_foreach(), and the list itself using g_list_free().</doc>
         <type name="GLib.List" c:type="GList*">
           <type name="Item"/>
         </type>
       </return-value>
       <parameters>
         <parameter name="context" transfer-ownership="none">
-          <doc xml:whitespace="preserve">a structure holding information that affects</doc>
+          <doc xml:whitespace="preserve">a structure holding information that affects the itemization process.</doc>
           <type name="Context" c:type="PangoContext*"/>
         </parameter>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">the text to itemize.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
         <parameter name="start_index" transfer-ownership="none">
           <doc xml:whitespace="preserve">first byte in @text to process</doc>
@@ -8010,13 +7884,9 @@ using g_list_free().</doc>
               version="1.4">
       <doc xml:whitespace="preserve">Like pango_itemize(), but the base direction to use when
 computing bidirectional levels (see pango_context_set_base_dir ()),
-is specified explicitly rather than gotten from the #PangoContext.
-
-#PangoItem structures.  The items should be freed using
-pango_item_free() probably in combination with
-g_list_foreach(), and the list itself using g_list_free().</doc>
+is specified explicitly rather than gotten from the #PangoContext.</doc>
       <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">a #GList of</doc>
+        <doc xml:whitespace="preserve">a #GList of #PangoItem structures.  The items should be freed using pango_item_free() probably in combination with g_list_foreach(), and the list itself using g_list_free().</doc>
         <type name="GLib.List" c:type="GList*">
           <type name="Item"/>
         </type>
@@ -8032,7 +7902,7 @@ g_list_foreach(), and the list itself using g_list_free().</doc>
         </parameter>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">the text to itemize.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
         <parameter name="start_index" transfer-ownership="none">
           <doc xml:whitespace="preserve">first byte in @text to process</doc>
@@ -8065,18 +7935,15 @@ lowercase, mapping '_' to '-', and stripping all characters other
 than letters and '-'.
 
 Use pango_language_get_default() if you want to get the #PangoLanguage for
-the current locale of the process.
-
-if @language was %NULL.  The returned pointer will be valid
-forever after, and should not be freed.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">an opaque pointer to a #PangoLanguage structure, or %NULL</doc>
+the current locale of the process.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">an opaque pointer to a #PangoLanguage structure, or %NULL if @language was %NULL.  The returned pointer will be valid forever after, and should not be freed.</doc>
         <type name="Language" c:type="PangoLanguage*"/>
       </return-value>
       <parameters>
         <parameter name="language" transfer-ownership="none" allow-none="1">
           <doc xml:whitespace="preserve">a string representing a language tag, or %NULL</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
       </parameters>
     </function>
@@ -8109,11 +7976,9 @@ either said environment variables or the thread's current locale.
 Your application should call &lt;literal&gt;setlocale(LC_ALL, "");&lt;/literal&gt;
 for the user settings to take effect.  Gtk+ does this in its initialization
 functions automatically (by calling gtk_set_locale()).
-See &lt;literal&gt;man setlocale&lt;/literal&gt; for more details.
-
-freed.</doc>
-      <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">the default language as a #PangoLanguage, must not be</doc>
+See &lt;literal&gt;man setlocale&lt;/literal&gt; for more details.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">the default language as a #PangoLanguage, must not be freed.</doc>
         <type name="Language" c:type="PangoLanguage*"/>
       </return-value>
     </function>
@@ -8123,20 +7988,18 @@ freed.</doc>
       <doc xml:whitespace="preserve">This will return the bidirectional embedding levels of the input paragraph
 as defined by the Unicode Bidirectional Algorithm available at:
 
-http://www.unicode.org/reports/tr9/
+  http://www.unicode.org/reports/tr9/
 
 If the input base direction is a weak direction, the direction of the
-characters in the text will determine the final resolved direction.
-
-character (not byte), that should be freed using g_free.</doc>
+characters in the text will determine the final resolved direction.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">a newly allocated array of embedding levels, one item per</doc>
+        <doc xml:whitespace="preserve">a newly allocated array of embedding levels, one item per character (not byte), that should be freed using g_free.</doc>
         <type name="guint8" c:type="guint8*"/>
       </return-value>
       <parameters>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">the text to itemize.</doc>
-          <type name="utf8" c:type="gchar*"/>
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">the number of bytes (not characters) to process, or -1 if @text is nul-terminated and the length should be calculated.</doc>
@@ -8145,6 +8008,83 @@ character (not byte), that should be freed using g_free.</doc>
         <parameter name="pbase_dir" transfer-ownership="none">
           <doc xml:whitespace="preserve">input base direction, and output resolved direction.</doc>
           <type name="Direction" c:type="PangoDirection*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="markup_parser_finish"
+              c:identifier="pango_markup_parser_finish"
+              version="1.31.0"
+              throws="1">
+      <doc xml:whitespace="preserve">After feeding a pango markup parser some data with g_markup_parse_context_parse(),
+use this function to get the list of pango attributes and text out of the
+markup. This function will not free @context, use g_markup_parse_context_free()
+to do so.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">%FALSE if @error is set, otherwise %TRUE</doc>
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="context" transfer-ownership="none">
+          <doc xml:whitespace="preserve">A valid parse context that was returned from pango_markup_parser_new()</doc>
+          <type name="GLib.MarkupParseContext" c:type="GMarkupParseContext*"/>
+        </parameter>
+        <parameter name="attr_list"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   allow-none="1">
+          <doc xml:whitespace="preserve">address of return location for a #PangoAttrList, or %NULL</doc>
+          <type name="AttrList" c:type="PangoAttrList**"/>
+        </parameter>
+        <parameter name="text"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   allow-none="1">
+          <doc xml:whitespace="preserve">address of return location for text with tags stripped, or %NULL</doc>
+          <type name="utf8" c:type="char**"/>
+        </parameter>
+        <parameter name="accel_char"
+                   direction="out"
+                   caller-allocates="0"
+                   transfer-ownership="full"
+                   allow-none="1">
+          <doc xml:whitespace="preserve">address of return location for accelerator char, or %NULL</doc>
+          <type name="gunichar" c:type="gunichar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="markup_parser_new"
+              c:identifier="pango_markup_parser_new"
+              version="1.31.0">
+      <doc xml:whitespace="preserve">Parses marked-up text (see
+&lt;link linkend="PangoMarkupFormat"&gt;markup format&lt;/link&gt;) to create
+a plain-text string and an attribute list.
+
+If @accel_marker is nonzero, the given character will mark the
+character following it as an accelerator. For example, @accel_marker
+might be an ampersand or underscore. All characters marked
+as an accelerator will receive a %PANGO_UNDERLINE_LOW attribute,
+and the first character so marked will be returned in @accel_char,
+when calling finish(). Two @accel_marker characters following each
+other produce a single literal @accel_marker character.
+
+To feed markup to the parser, use g_markup_parse_context_parse()
+on the returned #GMarkupParseContext. When done with feeding markup
+to the parser, use pango_markup_parser_finish() to get the data out
+of it, and then use g_markup_parse_context_free() to free it.
+
+This function is designed for applications that read pango markup
+from streams. To simply parse a string containing pango markup,
+the simpler pango_parse_markup() API is recommended instead.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">a #GMarkupParseContext that should be destroyed with g_markup_parse_context_free().</doc>
+        <type name="GLib.MarkupParseContext" c:type="GMarkupParseContext*"/>
+      </return-value>
+      <parameters>
+        <parameter name="accel_marker" transfer-ownership="none">
+          <doc xml:whitespace="preserve">character that precedes an accelerator, or 0 for none</doc>
+          <type name="gunichar" c:type="gunichar"/>
         </parameter>
       </parameters>
     </function>
@@ -8169,7 +8109,7 @@ returned string should be freed using g_free().</doc>
         </parameter>
         <parameter name="str" transfer-ownership="none" allow-none="1">
           <doc xml:whitespace="preserve">string to parse.  May be %NULL.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
         <parameter name="value"
                    direction="out"
@@ -8206,6 +8146,8 @@ and the first character so marked will be returned in @accel_char.
 Two @accel_marker characters following each other produce a single
 literal @accel_marker character.
 
+To parse a stream of pango markup incrementally, use pango_markup_parser_new().
+
 If any error happens, none of the output arguments are touched except
 for @error.</doc>
       <return-value transfer-ownership="none">
@@ -8215,7 +8157,7 @@ for @error.</doc>
       <parameters>
         <parameter name="markup_text" transfer-ownership="none">
           <doc xml:whitespace="preserve">markup to parse (see &lt;link linkend="PangoMarkupFormat"&gt;markup format&lt;/link&gt;)</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">length of @markup_text, or -1 if nul-terminated</doc>
@@ -8264,9 +8206,12 @@ ignored and the '_' characters may be omitted.</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">a string to parse.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
-        <parameter name="stretch" transfer-ownership="none">
+        <parameter name="stretch"
+                   direction="out"
+                   caller-allocates="1"
+                   transfer-ownership="none">
           <doc xml:whitespace="preserve">a #PangoStretch to store the result in.</doc>
           <type name="Stretch" c:type="PangoStretch*"/>
         </parameter>
@@ -8287,9 +8232,12 @@ ignored.</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">a string to parse.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
-        <parameter name="style" transfer-ownership="none">
+        <parameter name="style"
+                   direction="out"
+                   caller-allocates="1"
+                   transfer-ownership="none">
           <doc xml:whitespace="preserve">a #PangoStyle to store the result in.</doc>
           <type name="Style" c:type="PangoStyle*"/>
         </parameter>
@@ -8310,9 +8258,12 @@ ignored.</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">a string to parse.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
-        <parameter name="variant" transfer-ownership="none">
+        <parameter name="variant"
+                   direction="out"
+                   caller-allocates="1"
+                   transfer-ownership="none">
           <doc xml:whitespace="preserve">a #PangoVariant to store the result in.</doc>
           <type name="Variant" c:type="PangoVariant*"/>
         </parameter>
@@ -8333,9 +8284,12 @@ and integers. Case variations are ignored.</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">a string to parse.</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
-        <parameter name="weight" transfer-ownership="none">
+        <parameter name="weight"
+                   direction="out"
+                   caller-allocates="1"
+                   transfer-ownership="none">
           <doc xml:whitespace="preserve">a #PangoWeight to store the result in.</doc>
           <type name="Weight" c:type="PangoWeight*"/>
         </parameter>
@@ -8383,12 +8337,9 @@ is not written into the buffer. Text after a '#' character is treated as
 a comment and skipped. '\' can be used to escape a # character.
 '\' proceeding a line delimiter combines adjacent lines. A '\' proceeding
 any other character is ignored and written into the output buffer
-unmodified.
-
-the number of lines read (this is useful for maintaining
-a line number counter which doesn't combine lines with '\')</doc>
+unmodified.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">0 if the stream was already at an %EOF character, otherwise</doc>
+        <doc xml:whitespace="preserve">0 if the stream was already at an %EOF character, otherwise the number of lines read (this is useful for maintaining a line number counter which doesn't combine lines with '\')</doc>
         <type name="gint" c:type="gint"/>
       </return-value>
       <parameters>
@@ -8405,20 +8356,12 @@ a line number counter which doesn't combine lines with '\')</doc>
         </parameter>
       </parameters>
     </function>
-    <function name="reorder_items"
-              c:identifier="pango_reorder_items"
-              introspectable="0">
+    <function name="reorder_items" c:identifier="pango_reorder_items">
       <doc xml:whitespace="preserve">From a list of items in logical order and the associated
 directional levels, produce a list in visual order.
-The original list is unmodified.
-
-of #PangoItem structures in visual order.
-
-(Please open a bug if you use this function.
-It is not a particularly convenient interface, and the code
-is duplicated elsewhere in Pango for that reason.)</doc>
+The original list is unmodified.</doc>
       <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">a #GList</doc>
+        <doc xml:whitespace="preserve">a #GList of #PangoItem structures in visual order.  (Please open a bug if you use this function. It is not a particularly convenient interface, and the code is duplicated elsewhere in Pango for that reason.)</doc>
         <type name="GLib.List" c:type="GList*">
           <type name="Item"/>
         </type>
@@ -8427,7 +8370,7 @@ is duplicated elsewhere in Pango for that reason.)</doc>
         <parameter name="logical_items" transfer-ownership="none">
           <doc xml:whitespace="preserve">a #GList of #PangoItem in logical order.</doc>
           <type name="GLib.List" c:type="GList*">
-            <type name="gpointer" c:type="gpointer"/>
+            <type name="Item"/>
           </type>
         </parameter>
       </parameters>
@@ -8445,7 +8388,7 @@ Leading white space is skipped.</doc>
                    caller-allocates="0"
                    transfer-ownership="full">
           <doc xml:whitespace="preserve">in/out string position</doc>
-          <type name="utf8" c:type="char**"/>
+          <type name="utf8" c:type="const char**"/>
         </parameter>
         <parameter name="out"
                    direction="out"
@@ -8471,7 +8414,7 @@ a literal quote. Leading white space outside of quotes is skipped.</doc>
                    caller-allocates="0"
                    transfer-ownership="full">
           <doc xml:whitespace="preserve">in/out string position</doc>
-          <type name="utf8" c:type="char**"/>
+          <type name="utf8" c:type="const char**"/>
         </parameter>
         <parameter name="out"
                    direction="out"
@@ -8496,7 +8439,7 @@ Leading white space is skipped.</doc>
                    caller-allocates="0"
                    transfer-ownership="full">
           <doc xml:whitespace="preserve">in/out string position</doc>
-          <type name="utf8" c:type="char**"/>
+          <type name="utf8" c:type="const char**"/>
         </parameter>
         <parameter name="out"
                    direction="out"
@@ -8562,11 +8505,9 @@ set to "en:fa" makes Pango choose fonts suitable for Persian (fa)
 instead of Arabic (ar) when a segment of Arabic text is found
 in an otherwise non-Arabic text.  The same trick can be used to
 choose a default language for %PANGO_SCRIPT_HAN when setting
-context language is not feasible.
-
-of the script, or %NULL if no such language exists.</doc>
+context language is not feasible.</doc>
       <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">a #PangoLanguage that is representative</doc>
+        <doc xml:whitespace="preserve">a #PangoLanguage that is representative of the script, or %NULL if no such language exists.</doc>
         <type name="Language" c:type="PangoLanguage*"/>
       </return-value>
       <parameters>
@@ -8580,14 +8521,18 @@ of the script, or %NULL if no such language exists.</doc>
       <doc xml:whitespace="preserve">Given a segment of text and the corresponding
 #PangoAnalysis structure returned from pango_itemize(),
 convert the characters into glyphs. You may also pass
-in only a substring of the item from pango_itemize().</doc>
+in only a substring of the item from pango_itemize().
+
+It is recommended that you use pango_shape_full() instead, since
+that API allows for shaping interaction happening across text item
+boundaries.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
       <parameters>
         <parameter name="text" transfer-ownership="none">
           <doc xml:whitespace="preserve">the text to process</doc>
-          <type name="utf8" c:type="gchar*"/>
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
         <parameter name="length" transfer-ownership="none">
           <doc xml:whitespace="preserve">the length (in bytes) of @text</doc>
@@ -8595,7 +8540,7 @@ in only a substring of the item from pango_itemize().</doc>
         </parameter>
         <parameter name="analysis" transfer-ownership="none">
           <doc xml:whitespace="preserve">#PangoAnalysis structure from pango_itemize()</doc>
-          <type name="Analysis" c:type="PangoAnalysis*"/>
+          <type name="Analysis" c:type="const PangoAnalysis*"/>
         </parameter>
         <parameter name="glyphs" transfer-ownership="none">
           <doc xml:whitespace="preserve">glyph string in which to store results</doc>
@@ -8603,12 +8548,53 @@ in only a substring of the item from pango_itemize().</doc>
         </parameter>
       </parameters>
     </function>
-    <function name="skip_space" c:identifier="pango_skip_space">
-      <doc xml:whitespace="preserve">Skips 0 or more characters of white space.
+    <function name="shape_full" c:identifier="pango_shape_full" version="1.32">
+      <doc xml:whitespace="preserve">Given a segment of text and the corresponding
+#PangoAnalysis structure returned from pango_itemize(),
+convert the characters into glyphs. You may also pass
+in only a substring of the item from pango_itemize().
 
-the position at a '\0' character.</doc>
+This is similar to pango_shape(), except it also can optionally take
+the full paragraph text as input, which will then be used to perform
+certain cross-item shaping interactions.  If you have access to the broader
+text of which @item_text is part of, provide the broader text as
+@paragraph_text.  If @paragraph_text is %NULL, item text is used instead.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">%FALSE if skipping the white space leaves</doc>
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="item_text" transfer-ownership="none">
+          <doc xml:whitespace="preserve">valid UTF-8 text to shape.</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="item_length" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the length (in bytes) of @item_text. -1 means nul-terminated text.</doc>
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="paragraph_text"
+                   transfer-ownership="none"
+                   allow-none="1">
+          <doc xml:whitespace="preserve">text of the paragraph (see details).  May be %NULL.</doc>
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="paragraph_length" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the length (in bytes) of @paragraph_text. -1 means nul-terminated text.</doc>
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="analysis" transfer-ownership="none">
+          <doc xml:whitespace="preserve">#PangoAnalysis structure from pango_itemize().</doc>
+          <type name="Analysis" c:type="const PangoAnalysis*"/>
+        </parameter>
+        <parameter name="glyphs" transfer-ownership="none">
+          <doc xml:whitespace="preserve">glyph string in which to store results.</doc>
+          <type name="GlyphString" c:type="PangoGlyphString*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="skip_space" c:identifier="pango_skip_space">
+      <doc xml:whitespace="preserve">Skips 0 or more characters of white space.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">%FALSE if skipping the white space leaves the position at a '\0' character.</doc>
         <type name="gboolean" c:type="gboolean"/>
       </return-value>
       <parameters>
@@ -8617,17 +8603,15 @@ the position at a '\0' character.</doc>
                    caller-allocates="0"
                    transfer-ownership="full">
           <doc xml:whitespace="preserve">in/out string position</doc>
-          <type name="utf8" c:type="char**"/>
+          <type name="utf8" c:type="const char**"/>
         </parameter>
       </parameters>
     </function>
     <function name="split_file_list" c:identifier="pango_split_file_list">
       <doc xml:whitespace="preserve">Splits a %G_SEARCHPATH_SEPARATOR-separated list of files, stripping
-white space and substituting ~/ with $HOME/.
-
-strings to be freed with g_strfreev()</doc>
+white space and substituting ~/ with $HOME/.</doc>
       <return-value transfer-ownership="full">
-        <doc xml:whitespace="preserve">a list of</doc>
+        <doc xml:whitespace="preserve">a list of strings to be freed with g_strfreev()</doc>
         <array c:type="char**">
           <type name="utf8"/>
         </array>
@@ -8635,7 +8619,7 @@ strings to be freed with g_strfreev()</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">a %G_SEARCHPATH_SEPARATOR separated list of filenames</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
       </parameters>
     </function>
@@ -8648,7 +8632,7 @@ strings to be freed with g_strfreev()</doc>
       <parameters>
         <parameter name="str" transfer-ownership="none">
           <doc xml:whitespace="preserve">a string</doc>
-          <type name="utf8" c:type="char*"/>
+          <type name="utf8" c:type="const char*"/>
         </parameter>
       </parameters>
     </function>
@@ -8710,11 +8694,9 @@ it returns the encoded version of Pango available at run-time,
 as opposed to the version available at compile-time.
 
 A version number can be encoded into an integer using
-PANGO_VERSION_ENCODE().
-
-available at run time.</doc>
+PANGO_VERSION_ENCODE().</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">The encoded version of Pango library</doc>
+        <doc xml:whitespace="preserve">The encoded version of Pango library available at run time.</doc>
         <type name="gint" c:type="int"/>
       </return-value>
     </function>
@@ -8735,14 +8717,10 @@ the running library must be binary compatible with the
 version @required_major.required_minor.@required_micro
 (same major version.)
 
-For compile-time version checking use PANGO_VERSION_CHECK().
-
-given version, or a string describing the version mismatch.
-The returned string is owned by Pango and should not be modified
-or freed.</doc>
+For compile-time version checking use PANGO_VERSION_CHECK().</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">%NULL if the Pango library is compatible with the</doc>
-        <type name="utf8" c:type="char*"/>
+        <doc xml:whitespace="preserve">%NULL if the Pango library is compatible with the given version, or a string describing the version mismatch. The returned string is owned by Pango and should not be modified or freed.</doc>
+        <type name="utf8" c:type="const char*"/>
       </return-value>
       <parameters>
         <parameter name="required_major" transfer-ownership="none">
@@ -8764,14 +8742,10 @@ or freed.</doc>
               version="1.16">
       <doc xml:whitespace="preserve">This is similar to the macro %PANGO_VERSION_STRING except that
 it returns the version of Pango available at run-time, as opposed to
-the version available at compile-time.
-
-available at run time.
-The returned string is owned by Pango and should not be modified
-or freed.</doc>
+the version available at compile-time.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:whitespace="preserve">A string containing the version of Pango library</doc>
-        <type name="utf8" c:type="char*"/>
+        <doc xml:whitespace="preserve">A string containing the version of Pango library available at run time. The returned string is owned by Pango and should not be modified or freed.</doc>
+        <type name="utf8" c:type="const char*"/>
       </return-value>
     </function>
   </namespace>
