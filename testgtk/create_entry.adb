@@ -28,7 +28,9 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Combo_Box_Text; use Gtk.Combo_Box_Text;
 with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Level_Bar;    use Gtk.Level_Bar;
 with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Search_Entry; use Gtk.Search_Entry;
 with Gtk.Separator;    use Gtk.Separator;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
@@ -157,6 +159,8 @@ package body Create_Entry is
       Combo      : Gtk_Combo_Box_Text;
       Check      : Gtk_Check_Button;
       Hsep       : Gtk_Hseparator;
+      Search     : Gtk_Search_Entry;
+      Level      : Gtk_Level_Bar;
 
    begin
       Set_Label (Frame, "Entry");
@@ -226,6 +230,17 @@ package body Create_Entry is
       Combo.Append_Text ("item6 item6 item6 item6 item6");
       Set_Text (Gtk_Entry (Combo.Get_Child), "hello world");
       Pack_Start (Box2, Combo, True, True, 0);
+
+      Gtk_New (Search);
+      Search.Set_Tooltip_Text ("A Gtk_Search_Entry");
+      Box2.Pack_Start (Search, False, False, 0);
+
+      Gtk_New (Level);
+      Level.Set_Min_Value (0.0);
+      Level.Set_Max_Value (10.0);
+      Level.Set_Value (5.0);
+      Box2.Pack_Start (Level, False, False, 0);
+      Level.Set_Tooltip_Text ("A Gtk_Level_Bar");
 
       Show_All (Frame);
    end Run;

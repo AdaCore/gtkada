@@ -71,6 +71,7 @@ with Create_Canvas;
 with Create_Cell_View;
 with Create_Check_Buttons;
 with Create_Clipboard;
+with Create_Color_Chooser;
 with Create_Color_Selection;
 with Create_Combo_Box;
 with Create_Cursors;
@@ -245,6 +246,8 @@ package body Main_Windows is
                                          Create_Clipboard.Help'Access),
       (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access,
                                          Create_Color_Selection.Help'Access),
+      (NS ("color chooser"),    Gimp,    Create_Color_Chooser.Run'Access,
+                                         Create_Color_Chooser.Help'Access),
       (NS ("combo boxes"),      Complex, Create_Combo_Box.Run'Access,
                                          Create_Combo_Box.Help'Access),
       (NS ("cursors"),          Misc,    Create_Cursors.Run'Access,

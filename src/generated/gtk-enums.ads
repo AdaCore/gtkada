@@ -279,6 +279,14 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Page_Set);
 
 
+   type Gtk_Level_Bar_Mode is (
+      Level_Bar_Mode_Continuous,
+      Level_Bar_Mode_Discrete);
+   pragma Convention (C, Gtk_Level_Bar_Mode);
+   --  Describes how Gtk.Level_Bar.Gtk_Level_Bar contents should be rendered.
+   --  Note that this enumeration could be extended with additional modes in
+   --  the future.
+
    type Gtk_Path_Priority_Type is (
       Path_Prio_Lowest,
       Path_Prio_Gtk,
@@ -664,6 +672,10 @@ package Gtk.Enums is
    package Gtk_Page_Set_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Page_Set);
    type Property_Gtk_Page_Set is new Gtk_Page_Set_Properties.Property;
+
+   package Gtk_Level_Bar_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Level_Bar_Mode);
+   type Property_Gtk_Level_Bar_Mode is new Gtk_Level_Bar_Mode_Properties.Property;
 
    package Gtk_Path_Priority_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Path_Priority_Type);

@@ -2730,6 +2730,7 @@ __PRE__
      <enum ctype="GtkPackType"/>
      <enum ctype="GtkPageOrientation"/>
      <enum ctype="GtkPageSet"/>
+     <enum ctype="GtkLevelBarMode"/>
      <enum ctype="GtkPathPriorityType"/>
      <enum ctype="GtkPathType"/>
      <enum ctype="GtkPolicyType"/>
@@ -7158,6 +7159,11 @@ package body Generic_Set is
 
    <package id="GdkFrameClock">
      <enum ctype="GdkFrameClockPhase"/>
+   </package>
+
+   <package id="GtkMenuButton">
+     <method id="gtk_menu_button_get_menu_model" bind="False"/> <!--  Needs GMenu -->
+     <method id="gtk_menu_button_set_menu_model" bind="False"/> <!--  Needs GMenu -->
    </package>
 
    <package id="GtkActionable">

@@ -32,6 +32,7 @@ with Gtk.Combo_Box_Text;    use Gtk.Combo_Box_Text;
 with Gtk.Menu;              use Gtk.Menu;
 with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Menu_Bar;          use Gtk.Menu_Bar;
+with Gtk.Menu_Button;       use Gtk.Menu_Button;
 with Gtk.Menu_Item;         use Gtk.Menu_Item;
 with Gtk.Spin_Button;       use Gtk.Spin_Button;
 with Gtk.Radio_Menu_Item;   use Gtk.Radio_Menu_Item;
@@ -191,7 +192,10 @@ package body Create_Menu is
         & " or other widget next to the menu text. A @bGtk_Menu_Item can have"
         & " a submenu, which is simply a @bGtk_Menu@B to pop up when the menu"
         & " item is selected. Typically, all menu items in a menu bar have"
-        & " submenus.";
+        & " submenus."
+        & ASCII.LF
+        & "This page also includes a @bGtk_Menu_Button@B (with an arrow)"
+        & " which pops up a menu when clicked on.";
    end Help;
 
    -----------------
@@ -252,6 +256,7 @@ package body Create_Menu is
       Box2 : Gtk_Box;
       Menu_Bar  : Gtk_Menu_Bar;
       Menu : Gtk_Menu;
+      Menu_Button    : Gtk_Menu_Button;
       Menu_Item : Gtk_Menu_Item;
       Combo : Gtk_Combo_Box_Text;
 
@@ -297,7 +302,7 @@ package body Create_Menu is
       Button_Handler.Connect (Button, "clicked", Popup'Access);
 
       Gtk_New_Hbox (Box2, False, 10);
-               Pack_Start (Box1, Box2, False, False, 0);
+      Pack_Start (Box1, Box2, False, False, 0);
 
       Gtk_New (Spin, 0.0, 800.0, 100.0);
       Set_Value (Spin, 200.0);
@@ -310,6 +315,17 @@ package body Create_Menu is
         (Button, "clicked",
          Popup_At_Position'Access,
          Spin);
+
+      ---------------------
+      -- Gtk_Menu_Button --
+      ---------------------
+
+      Gtk_New (Menu_Button);
+      Box1.Pack_Start (Menu_Button, False, False, 10);
+      Menu_Button.Set_Tooltip_Text ("A Gtk_Menu_Button");
+
+      Menu := Create_Menu (2, True);
+      Menu_Button.Set_Popup (Menu);
 
       Show_All (Frame);
    end Run;
