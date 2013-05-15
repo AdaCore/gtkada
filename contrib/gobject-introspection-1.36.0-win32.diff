@@ -36,7 +36,16 @@
  
  # Returns arguments for invoking libtool, if applicable, otherwise None
 --- ../gobject-introspection-1.36.0-orig/giscanner/dumper.py	2013-02-23 11:40:08.000000000 +0100
-+++ giscanner/dumper.py	2013-05-15 18:14:59.157657519 +0200
++++ giscanner/dumper.py	2013-05-15 19:14:08.425700049 +0200
+@@ -158,7 +158,7 @@
+             o_path = self._generate_tempfile(tmpdir, '.o')
+ 
+         if os.name == 'nt':
+-            ext = 'exe'
++            ext = '.exe'
+         else:
+             ext = ''
+ 
 @@ -258,7 +258,7 @@
              args.extend(['-o', output])
          if libtool:
@@ -64,6 +73,16 @@
  
          for library_path in self._options.library_paths:
              # Not used/needed on Visual C++, and -Wl,-rpath options
+@@ -355,7 +357,8 @@
+                 if library.endswith(".la"): # explicitly specified libtool library
+                     args.append(library)
+                 else:
+-                    args.append('-l' + library)
++                    if not library.startswith('lib'):
++                        args.append('-l' + library)
+ 
+ def compile_introspection_binary(options, get_type_functions,
+                                  error_quark_functions):
 --- giscanner/scannermain.py.orig	2012-05-29 13:58:49.301800000 +0200
 +++ giscanner/scannermain.py	2012-05-29 13:59:07.616200000 +0200
 @@ -162,7 +162,7 @@
@@ -100,13 +119,27 @@
  
  [a-zA-Z_][a-zA-Z_0-9]*			{ if (scanner->macro_scan) return IDENTIFIER; else REJECT; }
 --- ../gobject-introspection-1.36.0-orig/configure	2013-03-26 02:45:30.000000000 +0100
-+++ configure	2013-05-15 18:35:44.972205140 +0200
-@@ -14628,7 +14628,7 @@
++++ configure	2013-05-15 19:05:16.778292860 +0200
+@@ -14599,7 +14599,10 @@
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for headers required to compile python extensions" >&5
+ $as_echo_n "checking for headers required to compile python extensions... " >&6; }
+-PYTHON_INCLUDES=`$PYTHON-config --includes`
++
++g_python_executable=` which python `
++g_dirname=` dirname $g_python_executable `
++PYTHON_INCLUDES=" -I$g_dirname/include "
+ 
+ save_CPPFLAGS="$CPPFLAGS"
+ CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
+@@ -14624,7 +14627,9 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libraries required to link against libpython" >&5
+ $as_echo_n "checking for libraries required to link against libpython... " >&6; }
+ if test "x$PYTHON_LIBS" == x; then
+-	PYTHON_LIBS=`$PYTHON-config --ldflags --libs`
++   g_python_executable=` which python `
++   g_dirname=` dirname $g_python_executable `
++   PYTHON_LIBS=" -L$g_dirname/libs -lpython27 "
  fi
  
  save_LIBS="$LIBS"
--LIBS="$LIBS $PYTHON_LIBS"
-+LIBS="$LIBS $PYTHON_LIBS -lpython27"
- cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
- 
