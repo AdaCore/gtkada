@@ -74,7 +74,7 @@ package body Create_Frame is
       Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Out);
       Table.Attach (Frame2, 1, 0);
       Gtk_New (Label, "Shadow_Out");
-      Frame2.Add (Frame2);
+      Frame2.Add (Label);
 
       --  Third Frame
       Gtk_New (Frame2, "");
