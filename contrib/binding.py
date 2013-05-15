@@ -563,16 +563,23 @@ class SubprogramProfile(object):
             default = gtkparam.get_default()
             allow_access=not default
             allow_none = gtkparam.allow_none(girnode=p) or default == 'null'
+            nodeOrType = gtkparam.get_type(pkg=pkg) or p
 
             type = _get_type(
-                nodeOrType=gtkparam.get_type(pkg=pkg) or p,
+                nodeOrType=nodeOrType,
                 allow_none=allow_none,
                 userecord=default != 'null',
                 allow_access=allow_access,
                 pkg=pkg)
 
             if type is None:
-                return None
+                if nodeOrType.find(nvarargs) is not None:
+                    type = gtkmethod.get_param("varargs").get_type(pkg=pkg)
+                else:
+                    type = gtkmethod.get_param(name).get_type(pkg=pkg)
+                if type is None:
+                    return None
+                type = _get_type(type)
 
             if not default and allow_none and isinstance(type, UTF8):
                 default = '""'
@@ -1221,6 +1228,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
         section = self.pkg.section("Constructors")
         name = c.get("name").title()
+
+        assert profile.params is not None, "No profile defined for %s" % cname
 
         format_params = ", ".join(p.name for p in profile.params)
         if format_params:
@@ -2141,21 +2150,24 @@ end "+";""" % self._subst,
                 name = field.get("name")
 
                 ftype = None
-                type = field.findall(ntype)
+                type = _get_type(field)
                 cb   = field.findall(ncallback)
 
                 if type:
                     ftype = override_fields.get(name, None)
                     if ftype is None:
-                        ctype = type[0].get(ctype_qname)
-                        if not ctype:
-                           # <type name="..."> has no c:type attribute, so we try
-                           # to map the name to a Girname
-                           ctype = naming.girname_to_ctype[type[0].get("name")]
 
                         if not first_field_ctype:
+                            t = field.findall(ntype)
+                            ctype = t[0].get(ctype_qname)
+                            if not ctype:
+                                # <type name="..."> has no c:type attribute, so we try
+                                # to map the name to a Girname
+                                ctype = naming.girname_to_ctype[t[0].get("name")]
+
                             first_field_ctype = ctype
-                        ftype = naming.type(name="", cname=ctype)
+
+                        ftype = type
 
                 elif cb:
                     # ??? JL: Should properly bind the callback here.
@@ -2165,8 +2177,9 @@ end "+";""" % self._subst,
                     if ftype is None:
                         ftype = AdaType(
                             "System.Address", pkg=self.pkg)
+
                 else:
-                    print "WARNING: Field has no type: %s.%s" % (ctype, name)
+                    print "WARNING: Field '%s' of '%s' has no type" % (name, base)
                     print " generation of the record is most certainly incorrect"
 
                 if ftype != None:
