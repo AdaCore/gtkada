@@ -150,12 +150,9 @@ package body Create_Size_Groups is
       Gtk_New (Table, 2, 2, False);
       Add (F, Table);
       Set_Border_Width (Table, 5);
-      Set_Row_Spacings (Table, 5);
-      Set_Col_Spacings (Table, 10);
 
       Add_Row (Table, 0, Group, "foofoofoofoofoofoofoofoofoo");
       Add_Row (Table, 1, Group, "foofoofoo");
-
 
       Gtk_New (F, "Options2");
       Pack_Start (Vbox, F, Expand => False, Fill => False);
@@ -163,12 +160,9 @@ package body Create_Size_Groups is
       Gtk_New (Table, 2, 2, False);
       Add (F, Table);
       Set_Border_Width (Table, 5);
-      Set_Row_Spacings (Table, 5);
-      Set_Col_Spacings (Table, 10);
 
       Add_Row (Table, 0, Group, "foo");
       Add_Row (Table, 1, Group, "foofoofoofoofoofoo");
-
 
       Gtk_New (Toggle, "Enable grouping");
       Pack_Start (Vbox, Toggle, Expand => False, Fill => False);

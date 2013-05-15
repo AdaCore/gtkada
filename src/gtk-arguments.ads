@@ -45,6 +45,7 @@ with Glib.Values;
 with Glib.Object;
 with Glib.Types;
 with Gdk.Event;
+with Gdk.RGBA;
 with Gdk.Types;
 with Gtk.Dialog;
 with Gtk.Enums;
@@ -118,6 +119,10 @@ package Gtk.Arguments is
       return Gtk.Status_Bar.Context_Id;
    function Unchecked_To_UTF8_String
      (Args : Glib.Values.C_GValues; Num : Guint) return UTF8_String;
+   function Unchecked_To_Gdk_RGBA
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA;
+   function Unchecked_To_Gdk_Key_Type
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type;
    function Unchecked_To_Gdk_Event_Button
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Button);
    function Unchecked_To_Gdk_Event_Owner_Change

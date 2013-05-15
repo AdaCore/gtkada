@@ -4535,7 +4535,7 @@ can also cause #GdkEventGrabBroken events.</doc>
         <type name="ModifierType"/>
       </field>
       <field name="keyval" writable="1">
-        <type name="guint" c:type="guint"/>
+        <type name="GdkKeyType" c:type="GdkKeyType"/>
       </field>
       <field name="length" writable="1">
         <type name="gint" c:type="gint"/>

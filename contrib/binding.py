@@ -285,12 +285,16 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
             if a:
                 type = t.get(ctype_qname)
                 name = t.get("name") or type  # Sometimes name is not set
+
+                size = a.get("fixed-size", None)
+
                 if type:
-                    type = "array_of_%s" % type
+                    type = "array_of_%s" % (type, )
 
                 return naming.type(name="array_of_%s" % name,
                                    cname=type,
                                    pkg=pkg, isArray=True,
+                                   array_fixed_size=size,
                                    transfer_ownership=transfer_ownership,
                                    allow_none=allow_none,
                                    userecord=userecord,

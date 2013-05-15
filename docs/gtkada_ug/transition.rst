@@ -1074,6 +1074,13 @@ Gtkada.MDI
  changing perspectives. Instead, a different color is used to highlight
  the target area (and this highlighting is now done using transparency).
 
+Gtkada.Properties
+-----------------
+
+This package has been removed. It used to provide a dialog allowing you to
+view and edit the properties of widgets in your application, live. This is
+now provided directly by third parties through the GtkParasite tool.
+See http://code.google.com/p/gtkparasite/
 
 Gnome
 =====

@@ -1931,6 +1931,11 @@ __PRE__
   <package id="GtkColorButton">
      <doc group="Buttons and Toggles"/>
      <parameter name="self" ada="Button"/>
+
+     <method id="gtk_color_button_get_rgba" bind="False"/><!--from interface now-->
+     <method id="gtk_color_button_set_rgba" bind="False"/><!--from interface now-->
+     <method id="gtk_color_button_get_use_alpha" bind="False"/><!--from interface now-->
+     <method id="gtk_color_button_set_use_alpha" bind="False"/><!--from interface now-->
   </package>
 
   <package id="GtkLinkButton">
@@ -2875,10 +2880,12 @@ __PRE__
        <parameter name="activate_time" default="0"/>
      </method>
      <method id="gtk_menu_get_for_attach_widget" return="WidgetList*"/>
+     <method id="gtk_menu_new_from_model" bind="False"/><!-- requires GMenu -->
    </package>
 
    <package id="GtkMenuBar">
      <parameter name="self" ada="Menu_Bar"/>
+     <method id="gtk_menu_bar_new_from_model" bind="False"/> <!-- needs GMenu -->
    </package>
 
    <package id="GtkMenuShell">
@@ -2922,8 +2929,9 @@ __PRE__
        <with_spec pkg="Glib.Values" />
        <with_spec pkg="Glib.Object" />
        <spec>
-   Null_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
+   type array_of_Gdk_RGBA is array (Natural range &lt;&gt;) of Gdk_RGBA;
 
+   Null_RGBA  : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
    Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
    White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);
 
@@ -3012,6 +3020,8 @@ __PRE__
      <method id="gtk_window_new">
        <parameter name="type" default="Gtk.Enums.Window_Toplevel"/>
      </method>
+     <method id="gtk_window_set_opacity" bind="False"/> <!-- would hide Gtk.Widget.Set_Opacity-->
+     <method id="gtk_window_get_opacity" bind="False"/> <!-- would hide Gtk.Widget.Get_Opacity-->
      <method id="gtk_window_list_toplevels" return="WidgetList"/>
      <method id="gtk_window_get_icon_list" return="ObjectList"/>
      <method id="gtk_window_set_icon_list">
@@ -5189,6 +5199,9 @@ creating a tag.
      <method id="gtk_ui_manager_add_ui_from_file" ada="Add_UI_From_File">
        <parameter name="error" direction="out"/>
      </method>
+     <method id="gtk_ui_manager_add_ui_from_resource" ada="Add_UI_From_Resource">
+       <parameter name="error" direction="out"/>
+     </method>
      <method id="gtk_ui_manager_add_ui_from_string" ada="Add_UI_From_String">
        <parameter name="error" direction="out"/>
        <parameter name="length" ada="" default="-1"/>
@@ -5393,6 +5406,12 @@ direction, widget state, or icon size.
    <package id="GtkIconInfo" into="GtkIconTheme">
      <parameter name="self" ada="Icon_Info" />
      <method id="gtk_icon_info_get_type" ada="Icon_Info_Get_Type"/>
+     <method id="gtk_icon_info_load_icon_async" bind="False"/> <!-- requires GAsync -->
+     <method id="gtk_icon_info_load_symbolic_async" bind="False"/> <!-- requires GAsync -->
+     <method id="gtk_icon_info_load_icon_finish" bind="False"/> <!-- requires GAsync -->
+     <method id="gtk_icon_info_load_symbolic_finish" bind="False"/> <!-- requires GAsync -->
+     <method id="gtk_icon_info_load_symbolic_for_context_async" bind="False"/> <!-- requires GAsync -->
+     <method id="gtk_icon_info_load_symbolic_for_context_finish" bind="False"/> <!-- requires GAsync -->
      <method id="gtk_icon_info_get_embedded_rect" return_as_param="Has_Embedded_Rectangle"/>
      <method id="gtk_icon_info_get_attach_points" return="Gdk.Types.Gdk_Points_Array">
        <parameter name="n_points" ada=""/>

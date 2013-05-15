@@ -23,6 +23,7 @@
 
 with Gdk;                         use Gdk;
 with Gdk.Color;                   use Gdk.Color;
+with Gdk.RGBA;                    use Gdk.RGBA;
 with Gtk;                         use Gtk;
 with Glib;                        use Glib;
 with Glib.Properties;
@@ -119,16 +120,14 @@ package body Create_Color_Selection is
    procedure Color_Ok
      (Dialog : access Gtk_Color_Selection_Dialog_Record'Class)
    is
-      Color : Gdk_Color;
+      Color : Gdk_RGBA;
    begin
-      Get_Current_Color (Get_Color_Selection (Dialog), Color);
-
+      Get_Current_Rgba (Get_Color_Selection (Dialog), Color);
       Put_Line ("Selected color is: ");
-      Put ("Red=" & Guint16'Image (Red (Color)));
-      Put (" Green=" & Guint16'Image (Green (Color)));
-      Put (" Blue=" & Guint16'Image (Blue (Color)));
-      Put_Line (" Alpha="
-           & Guint16'Image (Get_Current_Alpha (Get_Color_Selection (Dialog))));
+      Put ("Red=" & Color.Red'Img);
+      Put (" Green=" & Color.Green'Img);
+      Put (" Blue=" & Color.Blue'Img);
+      Put_Line (" Alpha=" & Color.Alpha'Img);
    end Color_Ok;
 
    ---------

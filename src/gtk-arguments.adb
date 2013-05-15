@@ -339,4 +339,27 @@ package body Gtk.Arguments is
       return Convert (Get_Proxy (Val)).all;
    end Unchecked_To_Cairo_Rectangle;
 
+   ---------------------------
+   -- Unchecked_To_Gdk_RGBA --
+   ---------------------------
+
+   function Unchecked_To_Gdk_RGBA
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gdk.RGBA.Get_Value (Val);
+   end Unchecked_To_Gdk_RGBA;
+
+   -------------------------------
+   -- Unchecked_To_Gdk_Key_Type --
+   -------------------------------
+
+   function Unchecked_To_Gdk_Key_Type
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type
+   is
+   begin
+      return Gdk.Types.Gdk_Key_Type (Unchecked_To_Guint (Args, Num));
+   end Unchecked_To_Gdk_Key_Type;
 end Gtk.Arguments;

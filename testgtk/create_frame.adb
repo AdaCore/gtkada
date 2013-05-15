@@ -59,8 +59,6 @@ package body Create_Frame is
       Gtk.Frame.Set_Label (Frame, "Frames");
 
       Gtk_New (Table, Rows => 3, Columns => 2, Homogeneous => True);
-      Set_Row_Spacings (Table, Spacing => 5);
-      Set_Col_Spacings (Table, Spacing => 5);
       Set_Border_Width (Table, Border_Width => 10);
       Add (Frame, Table);
 

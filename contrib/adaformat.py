@@ -616,7 +616,12 @@ class Proxy(CType):
 
     def record_field_type(self, pkg=None):
         if self.is_ptr:
-            return "access %s" % self.as_c_param(pkg=pkg)
+            if self.isArray and self.array_fixed_size is not None:
+                return "%s (1 .. %s)" % (
+                    self.as_c_param(pkg=pkg),
+                    self.array_fixed_size)
+            else:
+                return "access %s" % self.as_c_param(pkg=pkg)
         else:
             return self.as_c_param(pkg=pkg)
 
@@ -826,19 +831,24 @@ class AdaNaming(object):
 
     def type(self, name="", cname=None, pkg=None, isArray=False,
              allow_access=True, allow_none=False, userecord=True, useclass=True,
+             array_fixed_size=None,
              transfer_ownership=False):
         """Build an instance of CType for the corresponding cname.
            A type a described in a .gir file
-           'pkg' is an instance of Package, to which extra
-           with clauses will be added if needed.
-           'isArray' should be true for an array of the simple type 'name'.
-           'allow_access' should be True if the parameter can be represented
-           as 'access Type', rather than an explicit type, in the case of
-           GObject descendants.
-           If `allow_none' is True, then an empty string maps to a
-           NULL pointer in C, rather than an empty C string. For a GObject,
-           the parameter is passed as "access" rather than "not null access".
-           'use_record' is only used for GObject types.
+
+           :param pkg: an instance of Package, to which extra
+              with clauses will be added if needed.
+           :param allow_none: if True, then an empty string maps to a
+              NULL pointer in C, rather than an empty C string. For a GObject,
+              the parameter is passed as "access" rather than "not null access".
+           :param use_record: is only used for GObject types.
+           :param isArray: should be true for an array of the simple type 'name'.
+           :param allow_access: should be True if the parameter can be represented
+              as 'access Type', rather than an explicit type, in the case of
+              GObject descendants.
+           :param array_fixed_size: if specified, this is the size of the array.
+              The binding is different in this case, since we can't use a fat
+              pointer.
         """
 
         if cname is None:
@@ -846,7 +856,7 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8" or name == "array_of_filename":
             t = UTF8_List()
-        elif cname in ("gint**", "int**") or name == "array_of_gint":
+        elif cname in ("gint**", "int**") or name in ("array_of_gint", "array_of_guint"):
             t = AdaTypeArray("gint")
             isArray = True
         elif cname == "void":
@@ -883,6 +893,7 @@ class AdaNaming(object):
 
         t = t.copy()
         t.isArray = isArray
+        t.array_fixed_size = array_fixed_size
         t.classwide = useclass
         t.allow_none = allow_none
         t.userecord = userecord
@@ -1378,9 +1389,10 @@ def package_name(qname):
        Name      => ""
     """
     if "." in qname:
-        return qname[:qname.rfind(".")]
-    else:
-        return ""
+        index = qname.rfind(".")
+        if qname[index - 1] != '.':   # ignore ".." in ranges
+            return qname[:index]
+    return ""
 
 
 max_profile_length = 79 - len(" is")

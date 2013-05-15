@@ -70,9 +70,7 @@ package body Create_Scrolled is
                Rows        => 20,
                Columns     => 20,
                Homogeneous => False);
-      Set_Row_Spacings (Table, Spacing => 10);
-      Set_Col_Spacings (Table, Spacing => 10);
-      Add_With_Viewport (Scrolled, Table);
+      Scrolled.Add (Table);
       Set_Focus_Hadjustment (Table, Get_Hadjustment (Scrolled));
       Set_Focus_Vadjustment (Table, Get_Vadjustment (Scrolled));
 

@@ -163,6 +163,21 @@ package Gdk.Types is
 
    Default_Modifier_Mask : constant Gdk_Modifier_Type;
 
+   type Gdk_Modifier_Intent is
+      (Primary_Accelerator,
+       Context_Menu,
+       Extend_Selection,
+       Modify_Selection,
+       No_Text_Input,
+       Shift_Group);
+   --  This enum is used with gdk_keymap_get_modifier_mask() and
+   --  gdk_get_modifier_mask() in order to determine what modifiers the
+   --  currently used windowing system backend uses for particular
+   --  purposes. For example, on X11/Windows, the Control key is used for
+   --  invoking menu shortcuts (accelerators), whereas on Apple computers
+   --  it's the Command key (which correspond to %GDK_CONTROL_MASK and
+   --  GDK_MOD2_MASK, respectively).
+
    subtype Gdk_WChar is Standard.Wide_Character;
    subtype Gdk_WString is Standard.Wide_String;
    --  Gdk does not define a Gdk_WString type, but uses pointers

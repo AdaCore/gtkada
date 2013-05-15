@@ -760,7 +760,7 @@ package body Main_Windows is
       Add_Attribute (Col, Render, "text", 0);
 
       Set_Mode (Get_Selection (Tree), Gtk.Enums.Selection_Single);
-      Add_With_Viewport (Scrolled, Tree);
+      Scrolled.Add (Tree);
 
       Fill_Gtk_Tree (Model, Gtkada_Demo, Pixbuf_Demo);
 

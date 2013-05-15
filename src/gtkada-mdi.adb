@@ -89,6 +89,7 @@ with Gtk.GEntry;              use Gtk.GEntry;
 with Gtk.Image;               use Gtk.Image;
 with Gtk.Image_Menu_Item;     use Gtk.Image_Menu_Item;
 with Gtk.Label;               use Gtk.Label;
+with Gtk.Main;                use Gtk.Main;
 with Gtk.Menu;                use Gtk.Menu;
 with Gtk.Menu_Item;           use Gtk.Menu_Item;
 with Gtk.Notebook;            use Gtk.Notebook;
@@ -7346,6 +7347,7 @@ package body Gtkada.MDI is
    is
       Border_Width, Border_Height : Gint;
       Win                         : Gdk.Gdk_Window;
+      Mask                        : Gdk_Modifier_Type;
       Current                     : Gtk_Widget;
       X, Y                        : Gint;
       Alloc                       : Gtk_Allocation;
@@ -7456,7 +7458,13 @@ package body Gtkada.MDI is
                           Height => Alloc.Height);
             Parent_Rectangle := Rectangle;
 
-            Get_Pointer (Parent, X, Y);
+            Gdk.Window.Get_Device_Position
+               (Self   => Get_Window (Parent),
+                Device => Gtk.Main.Get_Current_Event_Device,
+                X      => X,
+                Y      => Y,
+                Mask   => Mask,
+                Window => Win);
 
             Border_Height := Gint'Min
               (Max_Drag_Border_Width, Rectangle.Height / 3);

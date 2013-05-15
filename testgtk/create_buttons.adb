@@ -83,8 +83,6 @@ package body Create_Buttons is
       Add (Frame, Box1);
 
       Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
-      Set_Row_Spacings (Table, Spacing => 5);
-      Set_Col_Spacings (Table, Spacing => 5);
       Set_Border_Width (Table, Border_Width => 10);
       Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
 

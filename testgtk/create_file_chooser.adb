@@ -24,21 +24,13 @@
 with Ada.Text_IO;               use Ada.Text_IO;
 with GNAT.Directory_Operations; use GNAT.Directory_Operations;
 with Gtk.Box;                   use Gtk.Box;
-with Gtk.Button;                use Gtk.Button;
 with Gtk.File_Chooser;          use Gtk.File_Chooser;
 with Gtk.File_Chooser_Button;   use Gtk.File_Chooser_Button;
 with Gtk.File_Filter;           use Gtk.File_Filter;
 with Gtk.Frame;                 use Gtk.Frame;
-with Gtk.Stock;                 use Gtk.Stock;
-with Gtkada.Handlers;           use Gtkada.Handlers;
-with Gtkada.Properties;         use Gtkada.Properties;
 with Gtk.Widget;                use Gtk.Widget;
 
 package body Create_File_Chooser is
-
-   procedure Show_Properties
-      (Widget : access Gtk_Widget_Record'Class);
-   --  Opens a properties editor for Widget
 
    -----------------
    -- Help_Button --
@@ -51,16 +43,6 @@ package body Create_File_Chooser is
         & "It can exist in several modes, which influence its behavior.";
    end Help_Button;
 
-   ---------------------
-   -- Show_Properties --
-   ---------------------
-
-   procedure Show_Properties
-      (Widget : access Gtk_Widget_Record'Class) is
-   begin
-      Popup_Properties_Editor (Widget);
-   end Show_Properties;
-
    ----------------
    -- Run_Button --
    ----------------
@@ -68,7 +50,6 @@ package body Create_File_Chooser is
    procedure Run_Button (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box    : Gtk_Box;
       Hbox   : Gtk_Box;
-      Button : Gtk_Button;
       File   : Gtk_File_Chooser_Button;
       Filter1, Filter2 : Gtk_File_Filter;
    begin
@@ -96,11 +77,6 @@ package body Create_File_Chooser is
 
       File.Add_Filter (Filter1);
       File.Add_Filter (Filter2);
-
-      Gtk_New_From_Stock (Button, Stock_Properties);
-      Pack_Start (Hbox, Button, Expand => False);
-      Widget_Callback.Object_Connect
-        (Button, "clicked", Show_Properties'Access, File);
 
       --  Add a shortcut to the current directory
 

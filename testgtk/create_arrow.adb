@@ -43,7 +43,6 @@ package body Create_Arrow is
         & " a table element.";
    end Help;
 
-
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
@@ -58,8 +57,6 @@ package body Create_Arrow is
       Add (Frame, Box1);
 
       Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
-      Set_Row_Spacings (Table, Spacing => 5);
-      Set_Col_Spacings (Table, Spacing => 5);
       Set_Border_Width (Table, Border_Width => 10);
       Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
 
@@ -107,4 +104,3 @@ package body Create_Arrow is
    end Run;
 
 end Create_Arrow;
-
