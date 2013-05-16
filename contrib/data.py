@@ -143,11 +143,11 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GInputStream", # Not tested yet, from Gio
            "--GMemoryInputStream", # Not tested yet, from Gio
            "--GMemoryOutputStream", # Not tested yet, from Gio
-#           "GMenuModel", # Not tested yet, from Gio
-#           "GMenu", # Not tested yet, from Gio
-#           "GMenuAttributeIter", # Not tested yet, from Gio
-#           "GMenuItem", # Not tested yet, from Gio
-#           "GMenuLinkIter", # Not tested yet, from Gio
+           "GMenuModel", # Not tested yet, from Gio
+           "GMenu", # Not tested yet, from Gio
+           "GMenuAttributeIter", # Not tested yet, from Gio
+           "GMenuItem", # Not tested yet, from Gio
+           "GMenuLinkIter", # Not tested yet, from Gio
            "--GMountOperation", # Not tested yet, from Gio
            "--GNativeVolumeMonitor", # Not tested yet, from Gio
            "--GNetworkAddress", # Not tested yet, from Gio

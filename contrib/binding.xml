@@ -7230,7 +7230,6 @@ package body Generic_Set is
      <method id="g_variant_type_string_scan" bind="False"/> <!-- c arrays -->
    </package>
 
-   <package id="GMenu" ada="Glib.Menu" />
    <package id="GBytes" ada="Glib.Bytes" />
 
    <package id="GString" ada="Glib.String">
@@ -7240,10 +7239,27 @@ package body Generic_Set is
      <method id="g_string_free_to_bytes" bind="False"/> <!-- requires GByte -->
    </package>
 
-   <package id="GMenuItem" into="GMenu" ada="Glib.Menu"/>
-   <package id="GMenuModel" into="GMenu" ada="Glib.Menu"/>
-   <package id="GMenuAttributeIter" into="GMenu" ada="Glib.Menu"/>
-   <package id="GMenuLinkIter" into="GMenu" ada="Glib.Menu"/>
+   <package id="GMenu" ada="Glib.Menu">
+      <method id="g_menu_get_type" ada="Get_Type_Menu" />
+   </package>
+
+   <package id="GMenuItem" into="GMenu" ada="Glib.Menu">
+      <method id="g_menu_item_get_type" ada="Get_Type_Menu_Item" />
+   </package>
+
+   <package id="GMenuModel" ada="Glib.Menu_Model">
+      <method id="g_menu_model_get_type" ada="Get_Type_Menu_Model" />
+   </package>
+
+   <package id="GMenuAttributeIter" into="GMenuModel" ada="Glib.Menu_Model">
+      <method id="g_menu_attribute_iter_get_type" ada="Get_Type_Menu_Attribute_Iter" />
+      <method id="g_menu_attribute_iter_get_next" bind="False"/> <!-- parameter out String -->
+   </package>
+
+   <package id="GMenuLinkIter" into="GMenuModel" ada="Glib.Menu_Model">
+      <method id="g_menu_link_iter_get_type" ada="Get_Type_Menu_Link_Iter" />
+      <method id="g_menu_link_iter_get_next" bind="False"/> <!-- parameter out String -->
+   </package>
 
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
