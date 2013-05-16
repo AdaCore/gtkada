@@ -37,9 +37,9 @@ interfaces = (
     "TreeSortable",
     "TreeModel",
 
-    "--Action", # Not tested yet, from Gio
-    "--ActionGroup", # Not tested yet, from Gio
-    "--ActionMap", # Not tested yet, from Gio
+    "Action",
+    "ActionGroup",
+    "ActionMap",
     "--AppInfo", # Not tested yet, from Gio
     "--AsyncInitable", # Not tested yet, from Gio
     "--AsyncResult", # Not tested yet, from Gio
@@ -84,12 +84,12 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkScreen",
            "GdkWindow",
 
-           "--GApplication", # Not tested yet, from Gio
+           "GApplication",
            "--GApplicationCommandLine", # Not tested yet, from Gio
            "--GBytes",   # Function returning arrays
            "--GBufferedInputStream", # Not tested yet, from Gio
            "--GBufferedOutputStream", # Not tested yet, from Gio
-           "--GCancellable", # Not tested yet, from Gio
+           "GCancellable",
            "--GCharsetConverter", # Not tested yet, from Gio
            "--GConverterInputStream", # Not tested yet, from Gio
            "--GConverterOutputStream", # Not tested yet, from Gio
@@ -161,8 +161,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GSettings", # Not tested yet, from Gio
            "--GSettingsSchema", # Not tested yet, from Gio
            "--GSettingsSchemaSource", # Not tested yet, from Gio
-           "--GSimpleAction", # Not tested yet, from Gio
-           "--GSimpleActionGroup", # Not tested yet, from Gio
+           "GSimpleAction",
+           "GSimpleActionGroup",
            "--GSimpleAsyncResult", # Not tested yet, from Gio
            "--GSimplePermission", # Not tested yet, from Gio
            "--GSocket", # Not tested yet, from Gio
@@ -173,6 +173,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GSocketControlMessage", # Not tested yet, from Gio
            "--GSocketListener", # Not tested yet, from Gio
            "--GSocketService", # Not tested yet, from Gio
+           "--GSource",   # Manually bound in Glib.Main
            "--GSrvTarget", # Not tested yet, from Gio
            "--GStaticResource", # Not tested yet, from Gio
            "GString",
@@ -240,7 +241,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            #"GtkAppChooserButton",  # Needs GFile
            #"GtkAppChooserDialog",  # Needs GFile
            #"GtkAppChooserWidget",  # Needs GFile
-           #"GtkApplication",       # Needs GIO
+           "GtkApplication",       # Needs GIO
            #"GtkApplicationWindow", # Needs GIO
            "GtkArrow",
            "GtkAspectFrame",
@@ -478,7 +479,12 @@ naming.girname_to_ctype = {
     "Pango.EllipsizeMode": "PangoEllipsizeMode",
     "Pango.FontDescription": "PangoFontDescription*",
     "Pango.AttrList":      "PangoAttrList",
+    "Gio.Action":          "Action",
+    "Gio.ActionGroup":     "ActionGroup",
+    "Gio.ActionMap":       "ActionMap",
+    "Gio.Application":     "GApplication",
     "Gio.Icon":            "GIcon*",
+    "GLib.Variant":        "GVariant",
     "Gdk.Event":           "GdkEvent*",
     "Gdk.EventButton":     "GdkEventButton*",
     "Gdk.EventMotion":     "GdkEventMotion*",
@@ -566,6 +572,7 @@ naming.type_exceptions = {
     "guint64":  Proxy("Guint64", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "glong":    Proxy("Glong",   "Glib.Properties.Property_Long"),
+    "gulong":   Proxy("Gulong"),
     "gsize":    Proxy("Gsize"),
     "gssize":   Proxy("Gssize"),
     "gunichar": Proxy("Gunichar"),
@@ -629,6 +636,7 @@ naming.type_exceptions = {
     "GParamSpec":    Proxy("Glib.Param_Spec"),
     "GClosure":      Proxy("GClosure"),
     "GConnectFlags": Proxy("Glib.G_Connect_Flags"),
+    "GSource":       Proxy("Glib.Main.G_Source"),
 
     "WidgetPath*":     Proxy("Gtk.Widget.Widget_Path"),
 

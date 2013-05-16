@@ -64,6 +64,7 @@ with GNAT.Strings;            use GNAT.Strings;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;

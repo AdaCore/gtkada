@@ -7261,6 +7261,122 @@ package body Generic_Set is
       <method id="g_menu_link_iter_get_next" bind="False"/> <!-- parameter out String -->
    </package>
 
+   <package id="GApplication" ada="Glib.Application">
+     <enum ctype="GApplicationFlags"/>
+     <method id="g_application_get_dbus_connection" bind="False"/> <!-- requires DBus -->
+     <method id="g_application_open" bind="False" /> <!-- requires GFile -->
+
+     <method id="::open" bind="False"/>  <!--  requires GFile -->
+     <method id="::command-line" bind="False"/>  <!--  requires GApplicationCommandLine -->
+   </package>
+
+   <package id="GAction" ada="Glib.Action">
+   </package>
+
+   <package id="GSimpleAction" ada="Glib.Simple_Action">
+   </package>
+
+   <package id="GActionGroup" ada="Glib.Action_Group">
+   </package>
+
+   <package id="GSimpleActionGroup" ada="Glib.Simple_Action_Group">
+     <method id="g_simple_action_group_add_entries">
+       <parameter name="entries" type="Glib.Action_Map.GAction_Entry_Array"/>
+       <parameter name="n_entries" ada="" default="Entries'Length"/>
+       <parameter name="user_data" default="System.Null_Address"/>
+     </method>
+   </package>
+
+   <package id="GActionMap" ada="Glib.Action_Map">
+     <record ctype="GActionEntry" private="true" />
+     <method id="g_action_map_add_action_entries">
+       <parameter name="n_entries" ada="" default="Entries'Length"/>
+       <parameter name="user_data" default="System.Null_Address"/>
+     </method>
+     <extra>
+       <type ctype="array_of_ActionEntry" ada="GAction_Entry_Array">
+         type GAction_Entry_Array is array (Natural range &lt;&gt;) of GAction_Entry;
+       </type>
+       <with_spec pkg="Glib.Variant"/>
+       <with_spec pkg="Glib.Simple_Action"/>
+       <spec>
+         type Activate_Callback is access procedure
+            (Action    : access Glib.Simple_Action.Gsimple_Action;
+             Parameter : Glib.Variant.Gvariant;
+             Data      : System.Address);
+         pragma Convention (C, Activate_Callback);
+
+         type Change_State_Callback is access procedure
+            (Action    : access Glib.Simple_Action.Gsimple_Action;
+             Parameter : Glib.Variant.Gvariant;
+             Data      : System.Address);
+         pragma Convention (C, Change_State_Callback);
+
+         function Build
+            (Name           : String;
+             Activate       : Activate_Callback := null;
+             Parameter_Type : String := "";
+             State          : String := "";
+             Change_State   : Change_State_Callback := null)
+            return GAction_Entry;
+         --  Return a newly allocation action entry.
+         --  This will be freed by the the action_map when needed.
+         --
+         --  Name is the name of the action.
+         --  Activate is the callback to connect to the "activate" signal of
+         --  the action.
+         --  Parameter_Type is the type of the parameter that must be passed
+         --  to the activate function for this action, given as a single
+         --  Gvariant (or the empty string for no parameter).
+         --  State is the initial state of this action, given in Gvariant
+         --  text format. The state is parsed with no extra type information
+         --  so type tags must be added to the string if they are necessary.
+         --  Change_State is the callback for the "change-state" signal.
+       </spec>
+       <with_body pkg="Ada.Unchecked_Conversion" use="false" />
+       <body>
+         function Convert is new Ada.Unchecked_Conversion
+            (Activate_Callback, System.Address);
+         function Convert is new Ada.Unchecked_Conversion
+            (Change_State_Callback, System.Address);
+
+         function Build
+            (Name           : String;
+             Activate       : Activate_Callback := null;
+             Parameter_Type : String := "";
+             State          : String := "";
+             Change_State   : Change_State_Callback := null)
+            return GAction_Entry
+         is
+            P, S : chars_ptr := null_ptr;
+         begin
+            if Parameter_Type /= "" then
+               P := New_String (Parameter_Type);
+            end if;
+            if State /= "" then
+               S := New_String (State);
+            end if;
+            return GAction_Entry'
+               (Name           => New_String (Name),
+                Activate       => Convert (Activate),
+                Parameter_Type => P,
+                State          => S,
+                Change_State   => Convert (Change_State),
+                Padding        => &lt;&gt;);
+         end Build;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GtkApplication">
+     <enum ctype="GtkApplicationInhibitFlags"/>
+     <method id="gtk_application_get_windows" return="WidgetList"/>
+   </package>
+
+   <package id="GCancellable" ada="Glib.Cancellable">
+     <method id="g_cancellable_make_pollfd" bind="False"/> <!-- requires GPoll_FD -->
+   </package>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

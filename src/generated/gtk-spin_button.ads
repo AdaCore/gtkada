@@ -91,6 +91,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;               use Gdk.Event;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Adjustment;          use Gtk.Adjustment;

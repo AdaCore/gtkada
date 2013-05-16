@@ -36,6 +36,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;        use Gdk.RGBA;
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Enums;       use Gtk.Enums;

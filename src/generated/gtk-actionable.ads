@@ -104,8 +104,8 @@ package Gtk.Actionable is
 
    Action_Name_Property : constant Glib.Properties.Property_String;
 
-   Action_Target_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: GLib.Variant
+   Action_Target_Property : constant Glib.Properties.Property_Object;
+   --  Type: Glib.Variant.Gvariant
 
    ----------------
    -- Interfaces --
@@ -118,7 +118,7 @@ package Gtk.Actionable is
    pragma Inline ("+");
 
 private
-   Action_Target_Property : constant Glib.Properties.Property_Boxed :=
+   Action_Target_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("action-target");
    Action_Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("action-name");

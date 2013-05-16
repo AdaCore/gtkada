@@ -56,7 +56,7 @@
 --  Gtk.IM_Context_Simple.Gtk_IM_Context_Simple and exports these four
 --  functions:
 --
---    void im_module_init(GType_Module *module);
+--    void im_module_init(Gtype.Module.Gtype_Module *module);
 --
 --  This function should register the GType of the
 --  Gtk.IM_Context.Gtk_IM_Context subclass which implements the input method by
@@ -79,7 +79,7 @@
 --  a pointer to statically defined array of Gtk_IMContext_Info items for each
 --  provided input method.
 --
---    Gtk.IM_Context.Gtk_IM_Context * im_module_create(const gchar *context_id);
+--    Gtk.IM_Context.Gtk_IM_Context * im_module_create(const Gchar *context_id);
 --
 --  This function should return a pointer to a newly created instance of the
 --  Gtk.IM_Context.Gtk_IM_Context subclass identified by Context_Id. The

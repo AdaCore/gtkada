@@ -588,8 +588,8 @@ package Glib.Menu is
    --  Normal menu items (ie: not submenu, section or other custom item types)
    --  are expected to have the "action" attribute set to identify the action
    --  that they are associated with. The state type of the action help to
-   --  determine the disposition of the menu item. See Gaction.Gaction and
-   --  Gaction.Group.Gaction_Group for an overview of actions.
+   --  determine the disposition of the menu item. See Glib.Action.Gaction and
+   --  Glib.Action_Group.Gaction_Group for an overview of actions.
    --  In general, clicking on the menu item will result in activation of the
    --  named action with the "target" attribute given as the parameter to the
    --  action invocation. If the "target" attribute is not set then the action

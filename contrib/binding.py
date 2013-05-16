@@ -1078,7 +1078,12 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     in_spec=False)
 
                 ada_func = copy.deepcopy(subp)
-                ada_func.name = "Func"
+
+                if ada_func.plist:
+                    ada_func.name = "Func"
+                else:
+                    ada_func.name = "Func.all"
+
                 ada_func_call = ada_func.call(in_pkg=self.pkg, lang="c->ada")
                 body_cb = cb_profile.subprogram(
                     name="Internal_%s" % funcname,
@@ -1926,6 +1931,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                            name)
                     section.add(connect, add_newline=False)
 
+                    self.pkg.add_with("Glib.Object")
                     obj_connect = Subprogram(
                         name="On_%s" % naming.case(name),
                         plist=[Parameter(name="Self", type=on_selftype),
@@ -1978,7 +1984,12 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
             if "--%s" % name in interfaces:
                 continue
 
-            type = naming.type(self.gir.interfaces[name].ctype)
+            try:
+                intf = self.gir.interfaces[name]
+            except KeyError:
+                intf = self.gir.interfaces[naming.girname_to_ctype[name]]
+
+            type = naming.type(intf.ctype)
             if "." in type.ada:
                 self.pkg.add_with(type.ada[:type.ada.rfind(".")])
                 self.pkg.add_with("Glib.Types")
@@ -1987,7 +1998,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 name=name,
                 adatype=base_name(type.ada),
                 impl=type.ada,
-                interface=self.gir.interfaces[name],
+                interface=intf,
                 body="",
                 pkg="%(typename)s" % self._subst)
             impl["code"] = \
@@ -2739,20 +2750,18 @@ for the_ctype in binding:
         continue
 
     try:
-        gir.classes[the_ctype].generate(gir)
-        gir.bound.add(the_ctype)
-
+        e = gir.classes[the_ctype]
     except KeyError:
         cl = gtkada.get_pkg(the_ctype)
         if not cl:
             raise
-        else:
-            node = Element(nclass,
-                           {ctype_qname: the_ctype})
-            gir.classes[the_ctype] = gir._create_class(
-                rootNode=root, node=node, is_interface=False)
-            gir.classes[the_ctype].generate(gir)
-            gir.bound.add(the_ctype)
+        node = Element(nclass, {ctype_qname: the_ctype})
+        e = gir.classes[the_ctype] = gir._create_class(
+             rootNode=root, node=node, is_interface=False)
+
+    e.generate(gir)
+    gir.bound.add(the_ctype)
+
 
 out = file(options.ada_outfile, "w")
 cout = file(options.c_outfile, "w")

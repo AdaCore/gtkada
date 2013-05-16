@@ -79,6 +79,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device;      use Gdk.Device;
 with Gdk.Screen;      use Gdk.Screen;
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Accel_Group; use Gtk.Accel_Group;

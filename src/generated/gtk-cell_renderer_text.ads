@@ -38,6 +38,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;         use Gdk.Color;
 with Gdk.RGBA;          use Gdk.RGBA;
 with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
 with Glib.Properties;   use Glib.Properties;
 with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
 with Pango.Enums;       use Pango.Enums;

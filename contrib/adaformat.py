@@ -615,13 +615,12 @@ class Proxy(CType):
         self.val_or_null = val_or_null
 
     def record_field_type(self, pkg=None):
-        if self.is_ptr:
-            if self.isArray and self.array_fixed_size is not None:
-                return "%s (1 .. %s)" % (
-                    self.as_c_param(pkg=pkg),
-                    self.array_fixed_size)
-            else:
-                return "access %s" % self.as_c_param(pkg=pkg)
+        if self.isArray and self.array_fixed_size is not None:
+            return "%s (1 .. %s)" % (
+                self.as_c_param(pkg=pkg),
+                self.array_fixed_size)
+        elif self.is_ptr or self.isArray:
+            return "access %s" % self.as_c_param(pkg=pkg)
         else:
             return self.as_c_param(pkg=pkg)
 

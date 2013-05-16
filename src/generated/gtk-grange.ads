@@ -37,6 +37,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;   use Gdk.Rectangle;
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;

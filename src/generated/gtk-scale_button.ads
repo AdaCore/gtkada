@@ -33,6 +33,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;    use GNAT.Strings;
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Action;      use Gtk.Action;

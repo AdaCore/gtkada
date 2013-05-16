@@ -41,6 +41,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;       use Gdk.Color;
 with Gdk.RGBA;        use Gdk.RGBA;
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Box;         use Gtk.Box;

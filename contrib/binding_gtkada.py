@@ -135,7 +135,7 @@ Where the package node is defined as follows:
              ada="..."     <!-- optional Ada name (no package info needed) -->
              private="False"  <!--  whether to make it "private" -->
        >
-          <field name="..." ctype="..."/>   <!--  override ctype -->
+          <field name="..." type="..."/>   <!--  override ctype -->
           <union value="..." field="..."/>  <!--  once for each value of
                                                   discriminant, mapping to
                                                   relevant field --

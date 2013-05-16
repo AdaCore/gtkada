@@ -24,6 +24,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
 with Gtk.Page_Setup;    use Gtk.Page_Setup;
 with Gtk.Print_Context; use Gtk.Print_Context;

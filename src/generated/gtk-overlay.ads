@@ -47,6 +47,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;         use Cairo;
 with Glib;          use Glib;
+with Glib.Object;   use Glib.Object;
 with Glib.Types;    use Glib.Types;
 with Gtk.Bin;       use Gtk.Bin;
 with Gtk.Buildable; use Gtk.Buildable;

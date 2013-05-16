@@ -74,6 +74,8 @@ package Glib is
    type Gssize is
      range -(2 ** (C.size_t'Size - 1)) .. (2 ** (C.size_t'Size - 1) - 1);
 
+   type array_of_gsize is array (Natural range <>) of Gsize;
+
    type Gunichar is new Guint32;
 
    subtype UTF8_String is String;

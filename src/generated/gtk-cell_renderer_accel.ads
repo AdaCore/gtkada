@@ -35,6 +35,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;              use Gdk.Types;
 with Glib;                   use Glib;
+with Glib.Object;            use Glib.Object;
 with Glib.Properties;        use Glib.Properties;
 with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
 

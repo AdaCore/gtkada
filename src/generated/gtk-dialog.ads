@@ -142,6 +142,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;    use Gdk.Screen;
 with Glib;          use Glib;
+with Glib.Object;   use Glib.Object;
 with Glib.Types;    use Glib.Types;
 with Gtk.Box;       use Gtk.Box;
 with Gtk.Buildable; use Gtk.Buildable;

@@ -85,7 +85,7 @@
 --  and their representation in menus, which is exactly what the <link
 --  linkend="gio-GActionGroup-exporter">GActionGroup exporter</link> and the
 --  <link linkend="gio-GMenuModel-exporter">GMenuModel exporter</link> do for
---  Gaction.Group.Gaction_Group and Glib.Menu_Model.Gmenu_Model. The
+--  Glib.Action_Group.Gaction_Group and Glib.Menu_Model.Gmenu_Model. The
 --  client-side counterparts to make use of the exported information are
 --  Gdbus.Action_Group.Gdbus_Action_Group and
 --  Gdbus.Menu_Model.Gdbus_Menu_Model.

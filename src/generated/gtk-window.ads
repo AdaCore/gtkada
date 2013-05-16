@@ -1324,8 +1324,8 @@ package Gtk.Window is
    --  The Gtk.Application.Gtk_Application associated with the window.
    --
    --  The application will be kept alive for at least as long as it has any
-   --  windows associated with it (see g_application_hold for a way to keep it
-   --  alive without windows).
+   --  windows associated with it (see Glib.Application.Hold for a way to keep
+   --  it alive without windows).
    --
    --  Normally, the connection between the application and the window will
    --  remain until the window is destroyed, but you can explicitly remove it
