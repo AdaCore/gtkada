@@ -158,17 +158,21 @@ package body Gtk.Builder is
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String) return Guint
+       Resource_Path : UTF8_String;
+       Error         : access Glib.Error.GError) return Guint
    is
       function Internal
          (Builder       : System.Address;
-          Resource_Path : Interfaces.C.Strings.chars_ptr) return Guint;
+          Resource_Path : Interfaces.C.Strings.chars_ptr;
+          Acc_Error     : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_resource");
+      Acc_Error         : aliased Glib.Error.GError;
       Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
       Tmp_Return        : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path);
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Acc_Error'Access);
       Free (Tmp_Resource_Path);
+      Error.all := Acc_Error;
       return Tmp_Return;
    end Add_From_Resource;
 
@@ -178,18 +182,22 @@ package body Gtk.Builder is
 
    function Add_From_String
       (Builder : not null access Gtk_Builder_Record;
-       Buffer  : UTF8_String) return Guint
+       Buffer  : UTF8_String;
+       Error   : access Glib.Error.GError) return Guint
    is
       function Internal
-         (Builder : System.Address;
-          Buffer  : Interfaces.C.Strings.chars_ptr;
-          Length  : Gsize) return Guint;
+         (Builder   : System.Address;
+          Buffer    : Interfaces.C.Strings.chars_ptr;
+          Length    : Gsize;
+          Acc_Error : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_string");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Buffer : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
       Tmp_Return : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Builder), Tmp_Buffer, -1);
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Buffer, -1, Acc_Error'Access);
       Free (Tmp_Buffer);
+      Error.all := Acc_Error;
       return Tmp_Return;
    end Add_From_String;
 
@@ -200,20 +208,24 @@ package body Gtk.Builder is
    function Add_Objects_From_File
       (Builder    : not null access Gtk_Builder_Record;
        Filename   : UTF8_String;
-       Object_Ids : GNAT.Strings.String_List) return Guint
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : access Glib.Error.GError) return Guint
    is
       function Internal
          (Builder    : System.Address;
           Filename   : Interfaces.C.Strings.chars_ptr;
-          Object_Ids : Interfaces.C.Strings.chars_ptr_array) return Guint;
+          Object_Ids : Interfaces.C.Strings.chars_ptr_array;
+          Acc_Error  : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_file");
+      Acc_Error      : aliased Glib.Error.GError;
       Tmp_Filename   : Interfaces.C.Strings.chars_ptr := New_String (Filename);
       Tmp_Object_Ids : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Builder), Tmp_Filename, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Filename, Tmp_Object_Ids, Acc_Error'Access);
       GtkAda.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Filename);
+      Error.all := Acc_Error;
       return Tmp_Return;
    end Add_Objects_From_File;
 
@@ -224,20 +236,24 @@ package body Gtk.Builder is
    function Add_Objects_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
        Resource_Path : UTF8_String;
-       Object_Ids    : GNAT.Strings.String_List) return Guint
+       Object_Ids    : GNAT.Strings.String_List;
+       Error         : access Glib.Error.GError) return Guint
    is
       function Internal
          (Builder       : System.Address;
           Resource_Path : Interfaces.C.Strings.chars_ptr;
-          Object_Ids    : Interfaces.C.Strings.chars_ptr_array) return Guint;
+          Object_Ids    : Interfaces.C.Strings.chars_ptr_array;
+          Acc_Error     : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_resource");
+      Acc_Error         : aliased Glib.Error.GError;
       Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
       Tmp_Object_Ids    : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return        : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Tmp_Object_Ids, Acc_Error'Access);
       GtkAda.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Resource_Path);
+      Error.all := Acc_Error;
       return Tmp_Return;
    end Add_Objects_From_Resource;
 
@@ -249,21 +265,25 @@ package body Gtk.Builder is
       (Builder    : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
        Length     : Gsize;
-       Object_Ids : GNAT.Strings.String_List) return Guint
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : access Glib.Error.GError) return Guint
    is
       function Internal
          (Builder    : System.Address;
           Buffer     : Interfaces.C.Strings.chars_ptr;
           Length     : Gsize;
-          Object_Ids : Interfaces.C.Strings.chars_ptr_array) return Guint;
+          Object_Ids : Interfaces.C.Strings.chars_ptr_array;
+          Acc_Error  : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_string");
+      Acc_Error      : aliased Glib.Error.GError;
       Tmp_Buffer     : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
       Tmp_Object_Ids : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Builder), Tmp_Buffer, Length, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Buffer, Length, Tmp_Object_Ids, Acc_Error'Access);
       GtkAda.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Buffer);
+      Error.all := Acc_Error;
       return Tmp_Return;
    end Add_Objects_From_String;
 

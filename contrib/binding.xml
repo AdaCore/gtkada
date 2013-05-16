@@ -5176,14 +5176,12 @@ creating a tag.
 
    <package id="GtkBuilder">
      <parameter name="self" ada="Builder"/>
+     <parameter name="error" direction="out" />
      <method id="gtk_builder_add_from_string">
        <parameter name="length" default="-1" ada=""/>
      </method>
      <method id="gtk_builder_get_objects" return="ObjectSList" />
      <method id="gtk_builder_value_from_string" return_as_param="Success" />
-     <method id="gtk_builder_add_from_file">
-       <parameter name="error" direction="out"/>
-     </method>
    </package>
 
    <package id="GtkUIManager">

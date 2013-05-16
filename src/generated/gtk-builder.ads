@@ -292,7 +292,8 @@ package Gtk.Builder is
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String) return Guint;
+       Resource_Path : UTF8_String;
+       Error         : access Glib.Error.GError) return Guint;
    --  Parses a resource file containing a <link
    --  linkend="BUILDER-UI">GtkBuilder UI definition</link> and merges it with
    --  the current contents of Builder.
@@ -304,7 +305,8 @@ package Gtk.Builder is
 
    function Add_From_String
       (Builder : not null access Gtk_Builder_Record;
-       Buffer  : UTF8_String) return Guint;
+       Buffer  : UTF8_String;
+       Error   : access Glib.Error.GError) return Guint;
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> and merges it with the current contents of Builder.
    --  Upon errors 0 will be returned and Error will be assigned a
@@ -315,7 +317,8 @@ package Gtk.Builder is
    function Add_Objects_From_File
       (Builder    : not null access Gtk_Builder_Record;
        Filename   : UTF8_String;
-       Object_Ids : GNAT.Strings.String_List) return Guint;
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : access Glib.Error.GError) return Guint;
    --  Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them
    --  with the current contents of Builder.
@@ -334,7 +337,8 @@ package Gtk.Builder is
    function Add_Objects_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
        Resource_Path : UTF8_String;
-       Object_Ids    : GNAT.Strings.String_List) return Guint;
+       Object_Ids    : GNAT.Strings.String_List;
+       Error         : access Glib.Error.GError) return Guint;
    --  Parses a resource file containing a <link
    --  linkend="BUILDER-UI">GtkBuilder UI definition</link> building only the
    --  requested objects and merges them with the current contents of Builder.
@@ -354,7 +358,8 @@ package Gtk.Builder is
       (Builder    : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
        Length     : Gsize;
-       Object_Ids : GNAT.Strings.String_List) return Guint;
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : access Glib.Error.GError) return Guint;
    --  Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder UI
    --  definition</link> building only the requested objects and merges them
    --  with the current contents of Builder.
