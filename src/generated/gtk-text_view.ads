@@ -575,7 +575,7 @@ package Gtk.Text_View is
    --  Allow the Gtk.Text_View.Gtk_Text_View input method to internally handle
    --  key press and release events. If this function returns True, then no
    --  further processing should be done for this key event. See
-   --  gtk_im_context_filter_keypress.
+   --  Gtk.IM_Context.Filter_Keypress.
    --  Note that you are expected to call this function from your handler when
    --  overriding key event handling. This is needed in the case when you need
    --  to insert your own key handling between the input method and the default
@@ -771,7 +771,7 @@ package Gtk.Text_View is
 
    Im_Module_Property : constant Glib.Properties.Property_String;
    --  Which IM (input method) module should be used for this text_view. See
-   --  Gtk.Imcontext.Gtk_Imcontext.
+   --  Gtk.IM_Context.Gtk_IM_Context.
    --
    --  Setting this to a non-null value overrides the system-wide IM module
    --  setting. See the GtkSettings Gtk.Settings.Gtk_Settings:gtk-im-module

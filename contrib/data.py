@@ -317,6 +317,9 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkIconSource",
            "GtkIconTheme",
            "GtkIconView",
+           "GtkIMContext",
+           "GtkIMContextSimple",
+           "GtkIMMulticontext",
            "GtkImage",
            "GtkImageMenuItem",
            "GtkInfoBar",
@@ -531,6 +534,10 @@ naming.exceptions = {
     "Use": "GUse",
     "Uri": "URI",
     "In": "Gtk_In",
+
+    "Gtk_Imcontext": "Gtk_IM_Context",
+    "Gtk_Imcontext_Simple": "Gtk_IM_Context_Simple",
+    "Gtk_Immulticontext": "Gtk_IM_Multi_Context",
 
     "Gtk_Uimanager": "Gtk_UI_Manager",
     "Gicon": "G_Icon",

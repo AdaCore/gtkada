@@ -311,7 +311,7 @@ package Gtk.Settings is
    --  colon-separated list of input methods, which GTK+ will try in turn until
    --  it finds one available on the system.
    --
-   --  See Gtk.Imcontext.Gtk_Imcontext and see the
+   --  See Gtk.IM_Context.Gtk_IM_Context and see the
    --  Gtk.Settings.Gtk_Settings:gtk-show-input-method-menu property.
 
    Gtk_Im_Preedit_Style_Property : constant Glib.Properties.Property_Boxed;
