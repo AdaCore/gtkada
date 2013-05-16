@@ -1,3 +1,39 @@
+2013-05-16	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
+	of characters validated at each call, this gives a better behavior
+	when loading big files.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332057
+
+2013-05-16	Nicolas Setton  <setton@adacore.com>
+
+	* gtktreeview.c (gtk_tree_view_enter_notify): Do not react to
+	crossing events.
+	(gtk_tree_view_leave_notify): Likewise.
+	Prevents unwanted side-effects of synth-crossing. (I106-018)
+
+	* gtk/gtktreeview.c (gtk_tree_view_enter_notify): Put kludge to
+	work around Gtk+ bug in handling of keyboard keys+focus events in
+	tree view (HC15-032).
+
+2013-05-16	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (gtk_text_view_check_cursor_blink): Do not
+	register a cursor blink if the text view if not realized.
+	This prevents a segmentation fault which can happen if the
+	text_view happens to get the focus before it has been realized.
+
+2013-05-16	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtkentry.c (gtk_entry_set_buffer): Prevent crashing when
+	encountering a null buffer as reported on gtk+ list.
+
+2013-05-16	Nicolas Setton	<setton@adacore.com>
+
+	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
+	functions external, so it is possible to break on them in the
+	stripped version of the library.
+
 2013-05-15	Nicolas Setton  <setton@adacore.com>
 
 	(gtk/gtkdnd.c): Deactivate support for X11 GenericEvent,
@@ -175,3 +211,82 @@
  
    return GDK_FILTER_CONTINUE;
  }
+--- ../gtk+-3.8.2-orig/gdk/x11/gdkmain-x11.c	2013-03-09 21:03:17.000000000 +0100
++++ gdk/x11/gdkmain-x11.c	2013-05-16 11:26:58.100354802 +0200
+@@ -98,9 +98,9 @@
+  * Private function declarations
+  */
+ 
+-static int	    gdk_x_error			 (Display     *display, 
+-						  XErrorEvent *error);
+-static int	    gdk_x_io_error		 (Display     *display);
++int	    gdk_x_error			 (Display     *display, 
++					  XErrorEvent *error);
++int	    gdk_x_io_error		 (Display     *display);
+ 
+ void
+ _gdk_x11_windowing_init (void)
+--- ../gtk+-3.8.2-orig/gtk/gtkentry.c	2013-05-13 12:15:07.000000000 +0200
++++ gtk/gtkentry.c	2013-05-16 11:34:41.228585436 +0200
+@@ -7220,8 +7220,11 @@
+   g_object_notify (obj, "invisible-char-set");
+   g_object_thaw_notify (obj);
+ 
+-  gtk_editable_set_position (GTK_EDITABLE (entry), 0);
+-  gtk_entry_recompute (entry);
++  if (priv->buffer)
++    {
++      gtk_editable_set_position (GTK_EDITABLE (entry), 0);
++      gtk_entry_recompute (entry);
++    }
+ }
+ 
+ /**
+--- ../gtk+-3.8.2-orig/gtk/gtktextview.c	2013-05-13 04:54:45.000000000 +0200
++++ gtk/gtktextview.c	2013-05-16 12:05:44.349701644 +0200
+@@ -5571,7 +5571,7 @@
+       priv->cursor_visible &&
+       gtk_widget_has_focus (GTK_WIDGET (text_view)))
+     {
+-      if (cursor_blinks (text_view))
++      if (cursor_blinks (text_view) && gtk_widget_get_realized (text_view))
+ 	{
+ 	  if (priv->blink_timeout == 0)
+ 	    {
+--- ../gtk+-3.8.2-orig/gtk/gtktreeview.c	2013-05-13 12:15:07.000000000 +0200
++++ gtk/gtktreeview.c	2013-05-16 12:30:25.226260345 +0200
+@@ -5897,11 +5897,15 @@
+     return FALSE;
+ 
+   if (event->mode == GDK_CROSSING_GRAB ||
++      event->mode == GDK_CROSSING_NORMAL ||
+       event->mode == GDK_CROSSING_GTK_GRAB ||
+       event->mode == GDK_CROSSING_GTK_UNGRAB ||
+       event->mode == GDK_CROSSING_STATE_CHANGED)
+     return TRUE;
+ 
++  if (event->y == 0)
++    return FALSE;
++
+   /* find the node internally */
+   new_y = TREE_WINDOW_Y_TO_RBTREE_Y(tree_view, event->y);
+   if (new_y < 0)
+@@ -5925,6 +5929,7 @@
+   GtkTreeView *tree_view;
+ 
+   if (event->mode == GDK_CROSSING_GRAB ||
++      event->mode == GDK_CROSSING_NORMAL ||
+       event->mode == GDK_CROSSING_GTK_GRAB ||
+       event->mode == GDK_CROSSING_GTK_UNGRAB)
+     return TRUE;
+--- ../gtk+-3.8.2-orig/gtk/gtktextview.c	2013-05-16 12:33:39.370669604 +0200
++++ gtk/gtktextview.c	2013-05-16 12:34:24.108600887 +0200
+@@ -3934,7 +3934,7 @@
+ 
+   DV(g_print(G_STRLOC"\n"));
+   
+-  gtk_text_layout_validate (text_view->priv->layout, 2000);
++  gtk_text_layout_validate (text_view->priv->layout, 20000);
+ 
+   gtk_text_view_update_adjustments (text_view);
+   

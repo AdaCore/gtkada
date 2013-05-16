@@ -3,6 +3,8 @@
         * gtk/gtktreeview.c (gtk_tree_view_draw_grid_lines): Take in sense
         current direction when drawing vertical lines of the grid.
 
+	Gtk3: has been ported in official gtk+ 3.8.2.
+
 2011-12-12  Jerome Lambourg <lambourg@adacore.com>
 
         * gtk/gtkbutton.c (gtk_button_setting_changed): Make sure that
@@ -11,19 +13,23 @@
 
         See https://bugzilla.gnome.org/show_bug.cgi?id=665852
 
+	Gtk3: not needed.
+
 2011-07-19  Nicolas Setton  <setton@adacore.com>
 
 	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
 	functions external, so it is possible to break on them in the
 	stripped version of the library.
 
-        Gtk3: to be ported.
+        Gtk3: ported.
 
 2011-05-17  Jerome Lambourg  <lambourg@adacore.com>
 
 	* gtk/gtkrc.c (gtk_rc_style_finalize): Fix a potential issue when
 	freeing a rc style and the corresponding style is NULL, as found
 	sometimes with the win32 backend.
+
+	Gtk3: not needed.
 
 2010-09-28  Nicolas Setton  <setton@adacore.com>
 
@@ -34,6 +40,8 @@
 	the EOL character(s) in the selection.
 
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
+
+	Gtk3: to be rewritten for Gtk3
 
 2010-12-06  Arnaud Charlet  <charlet@adacore.com>
 
@@ -48,6 +56,8 @@
 	* gtk/gtkentry.c (gtk_entry_set_buffer): Prevent crashing when
 	encountering a null buffer as reported on gtk+ list.
 
+	Gtk3: ported.
+
 2010-03-24  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktextview.c (gtk_text_view_check_cursor_blink): Do not
@@ -55,17 +65,23 @@
 	This prevents a segmentation fault which can happen if the
 	text_view happens to get the focus before it has been realized.
 
+	Gtk3: ported.
+
 2010-01-11  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/gdkwindow.c (gdk_window_get_composite_drawable): Protect
 	against NULL access.
 	Observed when creating a new file in GPS under Windows.
 
+	Gtk3: not needed.
+
 2009-09-19  Arnaud Charlet  <charlet@adacore.com>
 
 	* gtk/gtktreemodel.c (gtk_tree_model_row_has_child_toggled): Replace
 	g_return_if_fail by explicit check, since path may legitimately
 	be NULL (I918-021).
+
+	Gtk3: not needed, tree view filtering is done differently.
 
 2009-01-12  Nicolas Setton  <setton@adacore.com>
 
@@ -74,16 +90,22 @@
 	(gtk_tree_view_leave_notify): Likewise.
         Prevents unwanted side-effects of synth-crossing. (I106-018)
 
+	Gtk3: ported.
+
 2009-01-06  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktreeview.c (gtk_tree_view_enter_notify): Put kludge to
 	work around Gtk+ bug in handling of keyboard keys+focus events in
 	tree view (HC15-032).
 
+	Gtk3: ported.
+
 2006-02-23  Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/x11/gdkasync.c: #define ANSICPP on Solaris, to work around
 	bug in X11/Xmd.h on Solaris 8.
+
+	Gtk3: not needed.
 
 2003-11-27  Arnaud Charlet  <charlet@adacore.com>
 
@@ -91,6 +113,8 @@
 	of characters validated at each call, this gives a better behavior
 	when loading big files.
 	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332057
+
+	Gtk3: ported.
 
 --- gtk/gtktextview.c.old	2006-02-17 16:11:04.000000000 +0100
 +++ gtk/gtktextview.c	2006-02-20 17:08:54.691581240 +0100
