@@ -123,6 +123,8 @@ with Create_Tree_View;
 with Create_UI_Manager;
 with Common; use Common;
 with View_Gl; use View_Gl;
+with Create_Css_Accordion;
+with Create_Css_Editor;
 
 with Libart_Demo;  use Libart_Demo;
 
@@ -185,7 +187,8 @@ package body Main_Windows is
       Gtkada_Demo, Pixbuf_Demo : Boolean);
    --  Create the main demo frame
 
-   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc, Pixbuf);
+   type Demo_Type is
+     (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc, CSS, Pixbuf);
    --  The available types for demos.
    --  Each of them is a tree item, whose subitems are the matching demos.
    --  Box:     Containers
@@ -193,6 +196,7 @@ package body Main_Windows is
    --  Complex: More interesting widgets
    --  Gimp:    Widgets developped for gimp, that could be reused
    --  Misc:    Demonstrates some features that are not widgets
+   --  Misc:    Demonstrates features about CSS styling
    --  Gtkada:  Widgets specific to GtkAda
    --  Pixbuf:  Demonstrate the use of images
 
@@ -251,7 +255,11 @@ package body Main_Windows is
       (NS ("combo boxes"),      Complex, Create_Combo_Box.Run'Access,
                                          Create_Combo_Box.Help'Access),
       (NS ("cursors"),          Misc,    Create_Cursors.Run'Access,
-                                         Create_Cursors.Help'Access),
+       Create_Cursors.Help'Access),
+      (NS ("CSS accordion"),    CSS,    Create_Css_Accordion.Run'Access,
+       Create_Css_Accordion.Help'Access),
+      (NS ("CSS editor"),       CSS,    Create_Css_Editor.Run'Access,
+       Create_Css_Editor.Help'Access),
       (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
                                          Create_Dialog.Help'Access),
       (NS ("drag-and-drop"),    Complex, Create_Dnd.Run'Access,
@@ -397,6 +405,8 @@ package body Main_Windows is
                   Set (Tree, Sibling, 0, "Gimp widgets");
                when Misc    =>
                   Set (Tree, Sibling, 0, "Misc. demos");
+               when CSS     =>
+                  Set (Tree, Sibling, 0, "CSS demos");
                when GdkD    =>
                   Set (Tree, Sibling, 0, "Gdk demos");
                when Gtkada  =>
