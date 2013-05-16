@@ -21,20 +21,33 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;             use Glib;
-with Glib.Error;       use Glib.Error;
-with Glib.Menu_Model;  use Glib.Menu_Model;
-with Glib.Application; use Glib.Application;
-with Gtk.Builder;      use Gtk.Builder;
-with Gtk.Main;         use Gtk.Main;
-with Gtk.Menu;         use Gtk.Menu;
-with Gtk.Application;  use Gtk.Application;
+with Glib;                   use Glib;
+with Glib.Action_Map;        use Glib.Action_Map;
+with Glib.Error;             use Glib.Error;
+with Glib.Object;            use Glib.Object;
+with Glib.Menu_Model;        use Glib.Menu_Model;
+with Glib.Application;       use Glib.Application;
+with Glib.Simple_Action;     use Glib.Simple_Action;
+with Glib.Variant;           use Glib.Variant;
+with Gtk.Builder;            use Gtk.Builder;
+with Gtk.Main;               use Gtk.Main;
+with Gtk.Menu;               use Gtk.Menu;
+with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
-with Gtk.Menu_Tool_Button; use Gtk.Menu_Tool_Button;
-with Gtk.Widget;       use Gtk.Widget;
-with Ada.Text_IO;      use Ada.Text_IO;
+with Gtk.Menu_Tool_Button;   use Gtk.Menu_Tool_Button;
+with Gtk.Window;             use Gtk.Window;
+with Gtk.Widget;             use Gtk.Widget;
+with Ada.Text_IO;            use Ada.Text_IO;
+with System;                 use System;
 
 procedure Application is
+
+   procedure Activate_Quit
+      (Action : access Gsimple_Action;
+       Parameter : Gvariant;
+       Data      : System.Address);
+   pragma Convention (C, Activate_Quit);
+   --  Implements the "quit" action
 
    -------------
    -- Startup --
@@ -93,7 +106,7 @@ procedure Application is
 
       Win := Gtk_Application_Window_New (App);
       Win.Set_Title ("GtkApplication test");
-      Win.Set_Icon_Name ("document-open");
+      Win.Set_Icon_Name ("gtk-home");
       Win.Set_Default_Size (200, 200);
 
       Builder := Gtk_Builder_New;
@@ -111,6 +124,32 @@ procedure Application is
       Builder.Unref; --  no longer needed
    end App_Activate;
 
+   -------------------
+   -- Activate_Quit --
+   -------------------
+
+   procedure Activate_Quit
+      (Action : access Gsimple_Action;
+       Parameter : Gvariant;
+       Data      : System.Address)
+   is
+      pragma Unreferenced (Action, Parameter);
+      use Widget_List;
+      Stub : Gtk_Application_Record;
+      App : constant Gtk_Application :=
+         Gtk_Application (Get_User_Data (Data, Stub));
+      List, N : Widget_List.Glist;
+      Win  : Gtk_Window;
+   begin
+      List := App.Get_Windows;
+      while List /= Null_List loop
+         N := Next (List);
+         Win := Gtk_Window (Get_Data (List));
+         Win.Destroy;
+         List := N;
+      end loop;
+   end Activate_Quit;
+
    App : Gtk_Application;
    Result : Gint;
 begin
@@ -119,6 +158,10 @@ begin
    App := Gtk_Application_New
       (Application_Id => "com.adacore.testgtk",
        Flags          => G_Application_Flags_None);
+
+   App.Add_Action_Entries
+      ((1 => Build ("quit", Activate_Quit'Unrestricted_Access)),
+       User_Data => App.Get_Object);
 
    App.On_Startup (Startup'Unrestricted_Access);
    App.On_Activate (App_Activate'Unrestricted_Access);
