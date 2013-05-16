@@ -42,6 +42,19 @@ package body Gtk.Actionable is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
    end Get_Action_Name;
 
+   -----------------------------
+   -- Get_Action_Target_Value --
+   -----------------------------
+
+   function Get_Action_Target_Value
+      (Self : Gtk_Actionable) return Glib.Variant.Gvariant
+   is
+      function Internal (Self : Gtk_Actionable) return System.Address;
+      pragma Import (C, Internal, "gtk_actionable_get_action_target_value");
+   begin
+      return From_Object (Internal (Self));
+   end Get_Action_Target_Value;
+
    ---------------------
    -- Set_Action_Name --
    ---------------------
@@ -59,6 +72,22 @@ package body Gtk.Actionable is
       Internal (Self, Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Set_Action_Name;
+
+   -----------------------------
+   -- Set_Action_Target_Value --
+   -----------------------------
+
+   procedure Set_Action_Target_Value
+      (Self         : Gtk_Actionable;
+       Target_Value : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self         : Gtk_Actionable;
+          Target_Value : System.Address);
+      pragma Import (C, Internal, "gtk_actionable_set_action_target_value");
+   begin
+      Internal (Self, Get_Object (Target_Value));
+   end Set_Action_Target_Value;
 
    ------------------------------
    -- Set_Detailed_Action_Name --

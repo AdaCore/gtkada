@@ -42,6 +42,20 @@ package body Gtk.Menu_Bar is
       return Menu_Bar;
    end Gtk_Menu_Bar_New;
 
+   ---------------------------------
+   -- Gtk_Menu_Bar_New_From_Model --
+   ---------------------------------
+
+   function Gtk_Menu_Bar_New_From_Model
+      (Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+       return Gtk_Menu_Bar
+   is
+      Menu_Bar : constant Gtk_Menu_Bar := new Gtk_Menu_Bar_Record;
+   begin
+      Gtk.Menu_Bar.Initialize_From_Model (Menu_Bar, Model);
+      return Menu_Bar;
+   end Gtk_Menu_Bar_New_From_Model;
+
    -------------
    -- Gtk_New --
    -------------
@@ -51,6 +65,19 @@ package body Gtk.Menu_Bar is
       Menu_Bar := new Gtk_Menu_Bar_Record;
       Gtk.Menu_Bar.Initialize (Menu_Bar);
    end Gtk_New;
+
+   ------------------------
+   -- Gtk_New_From_Model --
+   ------------------------
+
+   procedure Gtk_New_From_Model
+      (Menu_Bar : out Gtk_Menu_Bar;
+       Model    : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+   is
+   begin
+      Menu_Bar := new Gtk_Menu_Bar_Record;
+      Gtk.Menu_Bar.Initialize_From_Model (Menu_Bar, Model);
+   end Gtk_New_From_Model;
 
    ----------------
    -- Initialize --
@@ -66,6 +93,22 @@ package body Gtk.Menu_Bar is
          Set_Object (Menu_Bar, Internal);
       end if;
    end Initialize;
+
+   ---------------------------
+   -- Initialize_From_Model --
+   ---------------------------
+
+   procedure Initialize_From_Model
+      (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class;
+       Model    : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+   is
+      function Internal (Model : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_bar_new_from_model");
+   begin
+      if not Menu_Bar.Is_Created then
+         Set_Object (Menu_Bar, Internal (Get_Object (Model)));
+      end if;
+   end Initialize_From_Model;
 
    ------------------------------
    -- Get_Child_Pack_Direction --

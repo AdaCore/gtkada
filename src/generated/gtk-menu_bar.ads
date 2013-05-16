@@ -29,11 +29,12 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;           use Glib;
-with Glib.Types;     use Glib.Types;
-with Gtk.Buildable;  use Gtk.Buildable;
-with Gtk.Enums;      use Gtk.Enums;
-with Gtk.Menu_Shell; use Gtk.Menu_Shell;
+with Glib;            use Glib;
+with Glib.Menu_Model; use Glib.Menu_Model;
+with Glib.Types;      use Glib.Types;
+with Gtk.Buildable;   use Gtk.Buildable;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Menu_Shell;  use Gtk.Menu_Shell;
 
 package Gtk.Menu_Bar is
 
@@ -51,6 +52,33 @@ package Gtk.Menu_Bar is
 
    function Gtk_Menu_Bar_New return Gtk_Menu_Bar;
    --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
+
+   procedure Gtk_New_From_Model
+      (Menu_Bar : out Gtk_Menu_Bar;
+       Model    : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
+   procedure Initialize_From_Model
+      (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class;
+       Model    : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
+   --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar and populates it with menu
+   --  items and submenus according to Model.
+   --  The created menu items are connected to actions found in the
+   --  Gtk.Application_Window.Gtk_Application_Window to which the menu bar
+   --  belongs - typically by means of being contained within the
+   --  Gtk_Application_Windows widget hierarchy.
+   --  Since: gtk+ 3.4
+   --  "model": a Glib.Menu_Model.Gmenu_Model
+
+   function Gtk_Menu_Bar_New_From_Model
+      (Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+       return Gtk_Menu_Bar;
+   --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar and populates it with menu
+   --  items and submenus according to Model.
+   --  The created menu items are connected to actions found in the
+   --  Gtk.Application_Window.Gtk_Application_Window to which the menu bar
+   --  belongs - typically by means of being contained within the
+   --  Gtk_Application_Windows widget hierarchy.
+   --  Since: gtk+ 3.4
+   --  "model": a Glib.Menu_Model.Gmenu_Model
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_bar_get_type");

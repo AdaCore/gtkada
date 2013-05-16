@@ -35,6 +35,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
+with Glib.Menu_Model; use Glib.Menu_Model;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -74,6 +75,36 @@ package Gtk.Menu_Shell is
    --  Adds a new Gtk.Menu_Item.Gtk_Menu_Item to the end of the menu shell's
    --  item list.
    --  "child": The Gtk.Menu_Item.Gtk_Menu_Item to add
+
+   procedure Bind_Model
+      (Menu_Shell       : not null access Gtk_Menu_Shell_Record;
+       Model            : access Glib.Menu_Model.Gmenu_Model_Record'Class;
+       Action_Namespace : UTF8_String := "";
+       With_Separators  : Boolean);
+   --  Establishes a binding between a Gtk.Menu_Shell.Gtk_Menu_Shell and a
+   --  Glib.Menu_Model.Gmenu_Model.
+   --  The contents of Shell are removed and then refilled with menu items
+   --  according to Model. When Model changes, Shell is updated. Calling this
+   --  function twice on Shell with different Model will cause the first
+   --  binding to be replaced with a binding to the new model. If Model is null
+   --  then any previous binding is undone and all children are removed.
+   --  With_Separators determines if toplevel items (eg: sections) have
+   --  separators inserted between them. This is typically desired for menus
+   --  but doesn't make sense for menubars.
+   --  If Action_Namespace is non-null then the effect is as if all actions
+   --  mentioned in the Model have their names prefixed with the namespace,
+   --  plus a dot. For example, if the action "quit" is mentioned and
+   --  Action_Namespace is "app" then the effective action name is "app.quit".
+   --  For most cases you are probably better off using
+   --  Gtk.Menu.Gtk_New_From_Model or Gtk.Menu_Bar.Gtk_New_From_Model or just
+   --  directly passing the Glib.Menu_Model.Gmenu_Model to
+   --  Gtk.Application.Set_App_Menu or gtk_application_set_menu_bar.
+   --  Since: gtk+ 3.6
+   --  "model": the Glib.Menu_Model.Gmenu_Model to bind to or null to remove
+   --  binding
+   --  "action_namespace": the namespace for actions in Model
+   --  "with_separators": True if toplevel items in Shell should have
+   --  separators between them
 
    procedure Cancel (Menu_Shell : not null access Gtk_Menu_Shell_Record);
    --  Cancels the selection within the menu shell.

@@ -98,8 +98,10 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
+with Glib.Menu_Model;   use Glib.Menu_Model;
 with Glib.Properties;   use Glib.Properties;
 with Glib.Types;        use Glib.Types;
+with Glib.Variant;      use Glib.Variant;
 with Gtk.Action;        use Gtk.Action;
 with Gtk.Actionable;    use Gtk.Actionable;
 with Gtk.Activatable;   use Gtk.Activatable;
@@ -176,6 +178,26 @@ package Gtk.Menu_Button is
    --  Since: gtk+ 3.6
    --  "direction": a Gtk.Enums.Gtk_Arrow_Type
 
+   function Get_Menu_Model
+      (Self : not null access Gtk_Menu_Button_Record)
+       return Glib.Menu_Model.Gmenu_Model;
+   --  Returns the Glib.Menu_Model.Gmenu_Model used to generate the menu.
+   --  Since: gtk+ 3.6
+
+   procedure Set_Menu_Model
+      (Self       : not null access Gtk_Menu_Button_Record;
+       Menu_Model : access Glib.Menu_Model.Gmenu_Model_Record'Class);
+   --  Sets the Glib.Menu_Model.Gmenu_Model from which the
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popup property will be filled in, or
+   --  null to disable the button.
+   --  The Gtk.Menu.Gtk_Menu will be created with Gtk.Menu.Gtk_New_From_Model,
+   --  so actions will be connected as documented there.
+   --  If Gtk.Menu_Button.Gtk_Menu_Button:popup is already set, then its
+   --  content will be lost and replaced by our newly created
+   --  Gtk.Menu.Gtk_Menu.
+   --  Since: gtk+ 3.6
+   --  "menu_model": a Glib.Menu_Model.Gmenu_Model
+
    function Get_Popup
       (Self : not null access Gtk_Menu_Button_Record)
        return Gtk.Menu.Gtk_Menu;
@@ -205,6 +227,14 @@ package Gtk.Menu_Button is
    procedure Set_Action_Name
       (Self        : not null access Gtk_Menu_Button_Record;
        Action_Name : UTF8_String);
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Menu_Button_Record)
+       return Glib.Variant.Gvariant;
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Menu_Button_Record;
+       Target_Value : Glib.Variant.Gvariant);
 
    procedure Set_Detailed_Action_Name
       (Self                 : not null access Gtk_Menu_Button_Record;
@@ -250,7 +280,7 @@ package Gtk.Menu_Button is
    Menu_Model_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gio.Menu_Model
    --  The Glib.Menu_Model.Gmenu_Model from which the menu to pop up will be
-   --  created. See gtk_menu_button_set_menu_model for the interaction with the
+   --  created. See Gtk.Menu_Button.Set_Menu_Model for the interaction with the
    --  Gtk.Menu_Button.Gtk_Menu_Button:popup property.
 
    Popup_Property : constant Glib.Properties.Property_Object;

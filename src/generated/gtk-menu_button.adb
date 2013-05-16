@@ -101,6 +101,21 @@ package body Gtk.Menu_Button is
       return Internal (Get_Object (Self));
    end Get_Direction;
 
+   --------------------
+   -- Get_Menu_Model --
+   --------------------
+
+   function Get_Menu_Model
+      (Self : not null access Gtk_Menu_Button_Record)
+       return Glib.Menu_Model.Gmenu_Model
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_button_get_menu_model");
+      Stub_Gmenu_Model : Glib.Menu_Model.Gmenu_Model_Record;
+   begin
+      return Glib.Menu_Model.Gmenu_Model (Get_User_Data (Internal (Get_Object (Self)), Stub_Gmenu_Model));
+   end Get_Menu_Model;
+
    ---------------
    -- Get_Popup --
    ---------------
@@ -148,6 +163,22 @@ package body Gtk.Menu_Button is
       Internal (Get_Object (Self), Direction);
    end Set_Direction;
 
+   --------------------
+   -- Set_Menu_Model --
+   --------------------
+
+   procedure Set_Menu_Model
+      (Self       : not null access Gtk_Menu_Button_Record;
+       Menu_Model : access Glib.Menu_Model.Gmenu_Model_Record'Class)
+   is
+      procedure Internal
+         (Self       : System.Address;
+          Menu_Model : System.Address);
+      pragma Import (C, Internal, "gtk_menu_button_set_menu_model");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Menu_Model)));
+   end Set_Menu_Model;
+
    ---------------
    -- Set_Popup --
    ---------------
@@ -189,6 +220,20 @@ package body Gtk.Menu_Button is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Action_Name;
+
+   -----------------------------
+   -- Get_Action_Target_Value --
+   -----------------------------
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Menu_Button_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_actionable_get_action_target_value");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Action_Target_Value;
 
    ------------------------
    -- Get_Related_Action --
@@ -235,6 +280,22 @@ package body Gtk.Menu_Button is
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Set_Action_Name;
+
+   -----------------------------
+   -- Set_Action_Target_Value --
+   -----------------------------
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Menu_Button_Record;
+       Target_Value : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Target_Value : System.Address);
+      pragma Import (C, Internal, "gtk_actionable_set_action_target_value");
+   begin
+      Internal (Get_Object (Self), Get_Object (Target_Value));
+   end Set_Action_Target_Value;
 
    ------------------------------
    -- Set_Detailed_Action_Name --

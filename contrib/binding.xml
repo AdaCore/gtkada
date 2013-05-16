@@ -2881,17 +2881,14 @@ __PRE__
        <parameter name="activate_time" default="0"/>
      </method>
      <method id="gtk_menu_get_for_attach_widget" return="WidgetList*"/>
-     <method id="gtk_menu_new_from_model" bind="False"/><!-- requires GMenu -->
    </package>
 
    <package id="GtkMenuBar">
      <parameter name="self" ada="Menu_Bar"/>
-     <method id="gtk_menu_bar_new_from_model" bind="False"/> <!-- needs GMenu -->
    </package>
 
    <package id="GtkMenuShell">
      <parameter name="self" ada="Menu_Shell"/>
-     <method id="gtk_menu_shell_bind_model" bind="False"/> <!--  needs Gmenu -->
    </package>
 
    <package id="GtkMenuToolButton">
@@ -7162,13 +7159,9 @@ package body Generic_Set is
    </package>
 
    <package id="GtkMenuButton">
-     <method id="gtk_menu_button_get_menu_model" bind="False"/> <!--  Needs GMenu -->
-     <method id="gtk_menu_button_set_menu_model" bind="False"/> <!--  Needs GMenu -->
    </package>
 
    <package id="GtkActionable">
-     <method id="gtk_actionable_get_action_target_value" bind="False"/>   <!--  Needs GVariant -->
-     <method id="gtk_actionable_set_action_target_value" bind="False"/>   <!--  Needs GVariant -->
    </package>
 
    <package id="GtkThemingEngine">

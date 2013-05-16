@@ -34,6 +34,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gtk.Action;      use Gtk.Action;
 with Gtk.Actionable;  use Gtk.Actionable;
@@ -209,6 +210,14 @@ package Gtk.Image_Menu_Item is
    procedure Set_Action_Name
       (Self        : not null access Gtk_Image_Menu_Item_Record;
        Action_Name : UTF8_String);
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Image_Menu_Item_Record)
+       return Glib.Variant.Gvariant;
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Image_Menu_Item_Record;
+       Target_Value : Glib.Variant.Gvariant);
 
    procedure Set_Detailed_Action_Name
       (Self                 : not null access Gtk_Image_Menu_Item_Record;

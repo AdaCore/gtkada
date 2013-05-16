@@ -79,6 +79,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device;      use Gdk.Device;
 with Gdk.Screen;      use Gdk.Screen;
 with Glib;            use Glib;
+with Glib.Menu_Model; use Glib.Menu_Model;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -142,6 +143,35 @@ package Gtk.Menu is
 
    function Gtk_Menu_New return Gtk_Menu;
    --  Creates a new Gtk.Menu.Gtk_Menu
+
+   procedure Gtk_New_From_Model
+      (Menu  : out Gtk_Menu;
+       Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
+   procedure Initialize_From_Model
+      (Menu  : not null access Gtk_Menu_Record'Class;
+       Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
+   --  Creates a Gtk.Menu.Gtk_Menu and populates it with menu items and
+   --  submenus according to Model.
+   --  The created menu items are connected to actions found in the
+   --  Gtk.Application_Window.Gtk_Application_Window to which the menu belongs
+   --  - typically by means of being attached to a widget (see
+   --  Gtk.Menu.Attach_To_Widget) that is contained within the
+   --  Gtk_Application_Windows widget hierarchy.
+   --  Since: gtk+ 3.4
+   --  "model": a Glib.Menu_Model.Gmenu_Model
+
+   function Gtk_Menu_New_From_Model
+      (Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+       return Gtk_Menu;
+   --  Creates a Gtk.Menu.Gtk_Menu and populates it with menu items and
+   --  submenus according to Model.
+   --  The created menu items are connected to actions found in the
+   --  Gtk.Application_Window.Gtk_Application_Window to which the menu belongs
+   --  - typically by means of being attached to a widget (see
+   --  Gtk.Menu.Attach_To_Widget) that is contained within the
+   --  Gtk_Application_Windows widget hierarchy.
+   --  Since: gtk+ 3.4
+   --  "model": a Glib.Menu_Model.Gmenu_Model
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_get_type");

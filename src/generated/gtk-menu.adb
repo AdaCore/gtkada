@@ -183,6 +183,20 @@ package body Gtk.Menu is
       return Menu;
    end Gtk_Menu_New;
 
+   -----------------------------
+   -- Gtk_Menu_New_From_Model --
+   -----------------------------
+
+   function Gtk_Menu_New_From_Model
+      (Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+       return Gtk_Menu
+   is
+      Menu : constant Gtk_Menu := new Gtk_Menu_Record;
+   begin
+      Gtk.Menu.Initialize_From_Model (Menu, Model);
+      return Menu;
+   end Gtk_Menu_New_From_Model;
+
    -------------
    -- Gtk_New --
    -------------
@@ -192,6 +206,19 @@ package body Gtk.Menu is
       Menu := new Gtk_Menu_Record;
       Gtk.Menu.Initialize (Menu);
    end Gtk_New;
+
+   ------------------------
+   -- Gtk_New_From_Model --
+   ------------------------
+
+   procedure Gtk_New_From_Model
+      (Menu  : out Gtk_Menu;
+       Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+   is
+   begin
+      Menu := new Gtk_Menu_Record;
+      Gtk.Menu.Initialize_From_Model (Menu, Model);
+   end Gtk_New_From_Model;
 
    ----------------
    -- Initialize --
@@ -205,6 +232,22 @@ package body Gtk.Menu is
          Set_Object (Menu, Internal);
       end if;
    end Initialize;
+
+   ---------------------------
+   -- Initialize_From_Model --
+   ---------------------------
+
+   procedure Initialize_From_Model
+      (Menu  : not null access Gtk_Menu_Record'Class;
+       Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
+   is
+      function Internal (Model : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_new_from_model");
+   begin
+      if not Menu.Is_Created then
+         Set_Object (Menu, Internal (Get_Object (Model)));
+      end if;
+   end Initialize_From_Model;
 
    ------------
    -- Attach --

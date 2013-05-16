@@ -43,6 +43,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 
 package Gtk.Actionable is
 
@@ -82,13 +83,42 @@ package Gtk.Actionable is
    --  Since: gtk+ 3.4
    --  "action_name": an action name, or null
 
+   function Get_Action_Target_Value
+      (Self : Gtk_Actionable) return Glib.Variant.Gvariant;
+   --  Gets the current target value of Actionabe.
+   --  See Gtk.Actionable.Set_Action_Target_Value for more information.
+   --  Since: gtk+ 3.4
+
+   procedure Set_Action_Target_Value
+      (Self         : Gtk_Actionable;
+       Target_Value : Glib.Variant.Gvariant);
+   --  Sets the target value of an actionable widget.
+   --  If Target_Value is null then the target value is unset.
+   --  The target value has two purposes. First, it is used as the parameter
+   --  to activation of the action associated with the
+   --  Gtk.Actionable.Gtk_Actionable widget. Second, it is used to determine if
+   --  the widget should be rendered as "active" - the widget is active if the
+   --  state is equal to the given target.
+   --  Consider the example of associating a set of buttons with a
+   --  Glib.Action.Gaction with string state in a typical "radio button"
+   --  situation. Each button will be associated with the same action, but with
+   --  a different target value for that action. Clicking on a particular
+   --  button will activate the action with the target of that button, which
+   --  will typically cause the action's state to change to that value. Since
+   --  the action's state is now equal to the target value of the button, the
+   --  button will now be rendered as active (and the other buttons, with
+   --  different targets, rendered inactive).
+   --  Since: gtk+ 3.4
+   --  "target_value": a Glib.Variant.Gvariant to set as the target value, or
+   --  null
+
    procedure Set_Detailed_Action_Name
       (Self                 : Gtk_Actionable;
        Detailed_Action_Name : UTF8_String);
    --  Sets the action-name and associated string target value of an
    --  actionable widget.
    --  This allows for the effect of both Gtk.Actionable.Set_Action_Name and
-   --  gtk_actionable_set_action_target_value in the common case that the
+   --  Gtk.Actionable.Set_Action_Target_Value in the common case that the
    --  target is string-valued.
    --  Detailed_Action_Name is a string of the form '"action::target"' where
    --  'action' is the action name and 'target' is the string to use as the

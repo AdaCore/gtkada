@@ -41,6 +41,7 @@ with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 with Gtk.Action;      use Gtk.Action;
 with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
@@ -316,6 +317,14 @@ package Gtk.Button is
    procedure Set_Action_Name
       (Self        : not null access Gtk_Button_Record;
        Action_Name : UTF8_String);
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Button_Record)
+       return Glib.Variant.Gvariant;
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Button_Record;
+       Target_Value : Glib.Variant.Gvariant);
 
    procedure Set_Detailed_Action_Name
       (Self                 : not null access Gtk_Button_Record;

@@ -28,6 +28,9 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Menu_Shell is
 
@@ -68,6 +71,33 @@ package body Gtk.Menu_Shell is
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Child));
    end Append;
+
+   ----------------
+   -- Bind_Model --
+   ----------------
+
+   procedure Bind_Model
+      (Menu_Shell       : not null access Gtk_Menu_Shell_Record;
+       Model            : access Glib.Menu_Model.Gmenu_Model_Record'Class;
+       Action_Namespace : UTF8_String := "";
+       With_Separators  : Boolean)
+   is
+      procedure Internal
+         (Menu_Shell       : System.Address;
+          Model            : System.Address;
+          Action_Namespace : Interfaces.C.Strings.chars_ptr;
+          With_Separators  : Integer);
+      pragma Import (C, Internal, "gtk_menu_shell_bind_model");
+      Tmp_Action_Namespace : Interfaces.C.Strings.chars_ptr;
+   begin
+      if Action_Namespace = "" then
+         Tmp_Action_Namespace := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Action_Namespace := New_String (Action_Namespace);
+      end if;
+      Internal (Get_Object (Menu_Shell), Get_Object_Or_Null (GObject (Model)), Tmp_Action_Namespace, Boolean'Pos (With_Separators));
+      Free (Tmp_Action_Namespace);
+   end Bind_Model;
 
    ------------
    -- Cancel --

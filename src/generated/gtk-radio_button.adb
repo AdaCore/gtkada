@@ -329,6 +329,20 @@ package body Gtk.Radio_Button is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Action_Name;
 
+   -----------------------------
+   -- Get_Action_Target_Value --
+   -----------------------------
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Radio_Button_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_actionable_get_action_target_value");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Action_Target_Value;
+
    ------------------------
    -- Get_Related_Action --
    ------------------------
@@ -374,6 +388,22 @@ package body Gtk.Radio_Button is
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Set_Action_Name;
+
+   -----------------------------
+   -- Set_Action_Target_Value --
+   -----------------------------
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Radio_Button_Record;
+       Target_Value : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Target_Value : System.Address);
+      pragma Import (C, Internal, "gtk_actionable_set_action_target_value");
+   begin
+      Internal (Get_Object (Self), Get_Object (Target_Value));
+   end Set_Action_Target_Value;
 
    ------------------------------
    -- Set_Detailed_Action_Name --
