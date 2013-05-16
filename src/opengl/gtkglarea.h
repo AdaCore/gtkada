@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2001-2013, AdaCore
  * Copyright (C) 1997-1998 Janne Löf <jlof@mail.student.oulu.fi>
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +23,7 @@
 
 #include <gdk/gdk.h>
 #include <gdkgl.h>
-#include <gtk/gtkdrawingarea.h>
+#include <gtk/gtk.h>
 
 
 G_BEGIN_DECLS

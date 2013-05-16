@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2001-2013, AdaCore
  * Copyright (C) 1998 Janne Löf <jlof@mail.student.oulu.fi>
  *           (c) 2008, 2009 Sam Hocevar <sam@hocevar.net>
  *
@@ -64,31 +65,6 @@ static GObjectClass *glcontext_parent_class;
 static void gdk_gl_context_class_init (GdkGLContextClass *class);
 
 /*
- *  The GdkGLPixmap class
- */
-struct _GdkGLPixmap {
-  GObject   parent;
-#if defined GDK_WINDOWING_WIN32
-  gboolean  initialised;
-  HDC       hdc;
-  HBITMAP   hbitmap;
-  GdkPixmap *pixmap;
-#elif defined GDK_WINDOWING_X11
-  Display   *xdisplay;
-  GLXPixmap glxpixmap;
-  GdkPixmap *front_left;
-#endif
-};
-
-struct _GdkGLPixmapClass {
-  GObjectClass parent_class;
-};
-typedef struct _GdkGLPixmapClass GdkGLPixmapClass;
-
-static GObjectClass *glpixmap_parent_class;
-static void gdk_gl_pixmap_class_init (GdkGLPixmapClass *class);
-
-/*
  *  Local helper functions
  */
 #if defined GDK_WINDOWING_WIN32
@@ -107,7 +83,7 @@ gint gdk_gl_query(void)
 #if defined GDK_WINDOWING_WIN32
   return TRUE;
 #elif defined GDK_WINDOWING_X11
-  return (glXQueryExtension(GDK_DISPLAY(),NULL,NULL) == True) ? TRUE : FALSE;
+  return (glXQueryExtension(gdk_x11_get_default_xdisplay(),NULL,NULL) == True) ? TRUE : FALSE;
 #else
   return FALSE;
 #endif
@@ -122,9 +98,9 @@ gchar *gdk_gl_get_info()
   version = glGetString (GL_VERSION);
   extensions = glGetString (GL_EXTENSIONS);
 #elif defined GDK_WINDOWING_X11
-  vendor = glXGetClientString(GDK_DISPLAY(), GLX_VENDOR);
-  version = glXGetClientString(GDK_DISPLAY(), GLX_VERSION);
-  extensions = glXGetClientString(GDK_DISPLAY(), GLX_EXTENSIONS);
+  vendor = glXGetClientString(gdk_x11_get_default_xdisplay(), GLX_VENDOR);
+  version = glXGetClientString(gdk_x11_get_default_xdisplay(), GLX_VERSION);
+  extensions = glXGetClientString(gdk_x11_get_default_xdisplay(), GLX_EXTENSIONS);
 #else
   vendor = version = extensions = "unknown";
 #endif
@@ -146,12 +122,12 @@ GdkVisual *gdk_gl_choose_visual(int *attrlist)
 
   g_return_val_if_fail(attrlist != NULL, NULL);
 
-  dpy = GDK_DISPLAY();
+  dpy = gdk_x11_get_default_xdisplay();
   vi = glXChooseVisual(dpy, DefaultScreen(dpy), attrlist);
   if (!vi)
     return NULL;
 
-  visual = gdkx_visual_get(vi->visualid);
+  visual = gdk_x11_screen_lookup_visual(gdk_screen_get_default(), vi->visualid);
   XFree(vi);
   return visual;
 #else
@@ -170,7 +146,7 @@ int gdk_gl_get_config(GdkVisual *visual, int attrib)
 
   g_return_val_if_fail(visual != NULL, -1);
 
-  dpy = GDK_DISPLAY();
+  dpy = gdk_x11_get_default_xdisplay();
 
   vi = get_xvisualinfo(visual);
 
@@ -317,7 +293,7 @@ gdk_gl_context_share_new(GdkVisual *visual, GdkGLContext *sharelist, gint direct
   context->pfd.cDepthBits = 32;
   context->pfd.iLayerType = PFD_MAIN_PLANE;
 #elif defined GDK_WINDOWING_X11
-  dpy = GDK_DISPLAY();
+  dpy = gdk_x11_get_default_xdisplay();
 
   vi = get_xvisualinfo(visual);
 
@@ -373,10 +349,10 @@ GdkGLContext *gdk_gl_context_attrlist_share_new(int *attrlist, GdkGLContext *sha
 }
 
 
-gint gdk_gl_make_current(GdkDrawable *drawable, GdkGLContext *context)
+gint gdk_gl_make_current(GdkWindow *window, GdkGLContext *context)
 {
-  g_return_val_if_fail (GDK_IS_DRAWABLE(drawable), FALSE);
-  g_return_val_if_fail (GDK_IS_GL_CONTEXT(context), FALSE);
+//  g_return_val_if_fail (GDK_IS_DRAWABLE(drawable), FALSE);
+//  g_return_val_if_fail (GDK_IS_GL_CONTEXT(context), FALSE);
 
 #if defined GDK_WINDOWING_WIN32
   if (!context->initialised)
@@ -414,7 +390,7 @@ gint gdk_gl_make_current(GdkDrawable *drawable, GdkGLContext *context)
 
   return TRUE;
 #elif defined GDK_WINDOWING_X11
-  return (glXMakeCurrent(context->xdisplay, GDK_WINDOW_XWINDOW(drawable),
+  return (glXMakeCurrent(context->xdisplay, gdk_x11_window_get_xid (window),
 			 context->glxcontext) == True) ? TRUE : FALSE;
 
 #if 0
@@ -433,14 +409,14 @@ gint gdk_gl_make_current(GdkDrawable *drawable, GdkGLContext *context)
 #endif
 }
 
-void gdk_gl_swap_buffers(GdkDrawable *drawable)
+void gdk_gl_swap_buffers(GdkWindow *window)
 {
 #if defined GDK_WINDOWING_WIN32
   HDC   hdc;
   HWND  hwnd;
 #endif
 
-  g_return_if_fail (GDK_IS_DRAWABLE(drawable));
+  //g_return_if_fail (GDK_IS_DRAWABLE(drawable));
 
 #if defined GDK_WINDOWING_WIN32
   hwnd = (HWND) gdk_win32_drawable_get_handle (drawable);
@@ -453,7 +429,7 @@ void gdk_gl_swap_buffers(GdkDrawable *drawable)
   SwapBuffers (hdc);
   ReleaseDC (hwnd, hdc);
 #elif defined GDK_WINDOWING_X11
-  glXSwapBuffers(GDK_WINDOW_XDISPLAY(drawable), GDK_WINDOW_XWINDOW(drawable));
+  glXSwapBuffers(GDK_WINDOW_XDISPLAY(window), gdk_x11_window_get_xid(window));
 #else
   g_warning ("gdk_gl_swap_buffers not implemented on " PLATFORM);
 #endif
@@ -476,216 +452,6 @@ void gdk_gl_wait_gl (void)
   glXWaitGL();
 #endif
 }
-
-
-/*
- *  Pixmap support
- */
-
-GType
-gdk_gl_pixmap_get_type (void)
-{
-  static GType object_type = 0;
-
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (GdkGLPixmapClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) gdk_gl_pixmap_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (GdkGLPixmap),
-        0,              /* n_preallocs */
-        (GInstanceInitFunc) NULL,
-      };
-
-      object_type = g_type_register_static (G_TYPE_OBJECT,
-                                            "GdkGLPixmap",
-                                            &object_info, 0);
-    }
-  return object_type;
-}
-
-static void
-gdk_gl_pixmap_finalize(GObject *object)
-{
-  GdkGLPixmap *pixmap;
-
-  pixmap = GDK_GL_PIXMAP(object);
-
-#if defined GDK_WINDOWING_WIN32
-  glFinish ();
-  SelectObject (pixmap->hdc, pixmap->hbitmap);
-  gdk_pixmap_unref (pixmap->pixmap);
-#elif defined GDK_WINDOWING_X11
-  if (pixmap->glxpixmap != None) {
-    glXDestroyGLXPixmap(pixmap->xdisplay, pixmap->glxpixmap);
-    glXWaitGL();
-  }
-  pixmap->glxpixmap = None;
-  if (pixmap->front_left) {
-    gdk_pixmap_unref(pixmap->front_left);
-    glXWaitX();
-  }
-  pixmap->front_left = NULL;
-#endif
-
-  (* glcontext_parent_class->finalize)(object);
-}
-
-static void
-gdk_gl_pixmap_class_init(GdkGLPixmapClass *class)
-{
-  GObjectClass *gobject_class;
-
-  gobject_class = G_OBJECT_CLASS(class);
-  glpixmap_parent_class = g_type_class_peek_parent(class);
-
-  gobject_class->finalize = gdk_gl_pixmap_finalize;
-}
-
-GdkGLPixmap *
-gdk_gl_pixmap_new(GdkVisual *visual, GdkPixmap *pixmap)
-{
-  GdkGLPixmap *glpixmap;
-#ifndef GDK_WINDOWING_WIN32
-  Display *dpy;
-  XVisualInfo *vi;
-  Pixmap xpixmap;
-  GLXPixmap glxpixmap;
-  Window root_return;
-  unsigned int w_ret, h_ret, bw_ret, depth_ret;
-  int x_ret, y_ret;
-#elif defined GDK_WINDOWING_X11
-#else
-  g_warning ("gdk_gl_pixmap_new not implemented on " PLATFORM);
-  return NULL;
-#endif
-
-  g_return_val_if_fail(GDK_IS_VISUAL(visual), NULL);
-  g_return_val_if_fail(GDK_IS_PIXMAP(pixmap), NULL);
-
-  glpixmap = g_object_new(GDK_TYPE_GL_PIXMAP, NULL);
-  if (!glpixmap)
-    return NULL;
-
-#if defined GDK_WINDOWING_WIN32
-  glpixmap->initialised = FALSE;
-  glpixmap->hdc = NULL;
-  glpixmap->hbitmap = NULL;
-  glpixmap->pixmap = gdk_pixmap_ref (pixmap);
-#elif defined GDK_WINDOWING_X11
-  dpy = GDK_DISPLAY();
-  xpixmap = (Pixmap)GDK_DRAWABLE_XID(pixmap);
-
-  g_return_val_if_fail(XGetGeometry(dpy, xpixmap, &root_return,
-				    &x_ret, &y_ret, &w_ret, &h_ret,
-                                    &bw_ret, &depth_ret), NULL);
-
-  g_return_val_if_fail((gdk_gl_get_config(visual, GDK_GL_RED_SIZE) +
-			gdk_gl_get_config(visual, GDK_GL_GREEN_SIZE) +
-			gdk_gl_get_config(visual, GDK_GL_BLUE_SIZE)) == depth_ret, NULL);
-
-  vi = get_xvisualinfo(visual);
-  glxpixmap = glXCreateGLXPixmap(dpy, vi, xpixmap);
-  XFree(vi);
-
-  g_return_val_if_fail(glxpixmap != None, NULL);
-
-  glpixmap->xdisplay   = dpy;
-  glpixmap->glxpixmap  = glxpixmap;
-  glpixmap->front_left = gdk_pixmap_ref(pixmap);
-#endif
-
-  return glpixmap;
-}
-
-
-gint gdk_gl_pixmap_make_current(GdkGLPixmap *glpixmap, GdkGLContext *context)
-{
-#ifndef GDK_WINDOWING_WIN32
-  Display  *dpy;
-  GLXPixmap glxpixmap;
-  GLXContext glxcontext;
-#elif defined GDK_WINDOWING_X11
-#else
-  g_warning ("gdk_gl_pixmap_make_current not implemented on " PLATFORM);
-  return 0;
-#endif
-
-  g_return_val_if_fail (GDK_IS_GL_PIXMAP(glpixmap), FALSE);
-  g_return_val_if_fail (GDK_IS_GL_CONTEXT(context), FALSE);
-
-#if defined GDK_WINDOWING_WIN32
-  if (!context->initialised)
-  {
-    int pf;
-
-    context->hdc = CreateCompatibleDC (NULL);
-    glpixmap->hdc = context->hdc;
-    glpixmap->hbitmap = SelectObject (context->hdc, (HBITMAP) gdk_win32_drawable_get_handle (glpixmap->pixmap));
-
-    pf = ChoosePixelFormat (context->hdc, &context->pfd);
-
-    if (pf != 0)
-      {
-        SetPixelFormat (context->hdc, pf, &context->pfd);
-        context->hglrc = wglCreateContext (context->hdc);
-      }
-
-    if (context->share)
-      {
-        if (context->share->hglrc)
-          {
-            if (wglShareLists (context->share->hglrc, context->hglrc) != TRUE)
-                g_warning ("failed sharing context");
-          }
-        gdk_gl_context_unref ((GdkGLContext*)context->share);
-      }
-
-    context->initialised = TRUE;
-  }
-
-  g_return_val_if_fail (context->hdc    != NULL, FALSE);
-  g_return_val_if_fail (context->hglrc  != NULL, FALSE);
-
-  wglMakeCurrent (context->hdc, context->hglrc);
-
-  return TRUE;
-#elif defined GDK_WINDOWING_X11
-  dpy        = context->xdisplay;
-  glxpixmap  = glpixmap->glxpixmap;
-  glxcontext = context->glxcontext;
-
-  return (glXMakeCurrent(dpy, glxpixmap, glxcontext) == True) ? TRUE : FALSE;
-#endif
-}
-
-/*
- *  Font support
- */
-
-void gdk_gl_use_gdk_font(GdkFont *font, int first, int count, int list_base)
-{
-#if defined GDK_WINDOWING_WIN32
-  HDC dc = CreateCompatibleDC (NULL);
-  HFONT old_font = SelectObject (dc, (void *)gdk_font_id (font));
-
-  wglUseFontBitmaps (dc, first, count, list_base);
-
-  SelectObject (dc, old_font);
-  DeleteDC (dc);
-#elif defined GDK_WINDOWING_X11
-  g_return_if_fail(font != NULL);
-  glXUseXFont(gdk_font_id(font), first, count, list_base);
-#else
-  g_warning ("gdk_gl_use_gdk_font not implemented on " PLATFORM);
-#endif
-}
-
 
 /*
  *  Helper functions
@@ -784,14 +550,14 @@ static XVisualInfo *get_xvisualinfo(GdkVisual *visual)
   XVisualInfo *vi;
   int nitems_return;
 
-  dpy = GDK_DISPLAY();
+  dpy = gdk_x11_get_default_xdisplay();
 
   /* 'GLX uses VisualInfo records because they uniquely identify
    * a (VisualID,screen,depth) tuple.'
    */
   vinfo_template.visual   = GDK_VISUAL_XVISUAL(visual);
   vinfo_template.visualid = XVisualIDFromVisual(vinfo_template.visual);
-  vinfo_template.depth    = visual->depth;
+  vinfo_template.depth    = gdk_visual_get_depth (visual);
   vinfo_template.screen   = DefaultScreen(dpy);
   vi = XGetVisualInfo(dpy, VisualIDMask|VisualDepthMask|VisualScreenMask,
 		      &vinfo_template, &nitems_return);
