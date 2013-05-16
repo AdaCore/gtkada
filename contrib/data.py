@@ -241,8 +241,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            #"GtkAppChooserButton",  # Needs GFile
            #"GtkAppChooserDialog",  # Needs GFile
            #"GtkAppChooserWidget",  # Needs GFile
-           "GtkApplication",       # Needs GIO
-           #"GtkApplicationWindow", # Needs GIO
+           "GtkApplication",
+           "GtkApplicationWindow",
            "GtkArrow",
            "GtkAspectFrame",
            "GtkAssistant",
