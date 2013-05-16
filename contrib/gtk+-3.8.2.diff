@@ -1,3 +1,8 @@
+2013-05-16	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/gdkwindow.c (send_crossing_event): Do not test whether the
+	source device is a touchscreen if there is no source device.
+
 2013-05-16	Arnaud Charlet	<charlet@adacore.com>
 
 	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
@@ -226,6 +231,26 @@
  
  void
  _gdk_x11_windowing_init (void)
+--- ../gtk+-3.8.2-orig/gdk/x11/gdkmain-x11.c	2013-05-16 13:07:19.397371139 +0200
++++ gdk/x11/gdkmain-x11.c	2013-05-16 13:10:06.480514882 +0200
+@@ -231,7 +231,7 @@
+  *--------------------------------------------------------------
+  */
+ 
+-static int
++int
+ gdk_x_io_error (Display *display)
+ {
+   /* This is basically modelled after the code in XLib. We need
+@@ -262,7 +262,7 @@
+ /* X error handler. Keep the name the same because people are used to
+  * breaking on it in the debugger.
+  */
+-static int
++int
+ gdk_x_error (Display	 *xdisplay,
+ 	     XErrorEvent *error)
+ {
 --- ../gtk+-3.8.2-orig/gtk/gtkentry.c	2013-05-13 12:15:07.000000000 +0200
 +++ gtk/gtkentry.c	2013-05-16 11:34:41.228585436 +0200
 @@ -7220,8 +7220,11 @@
@@ -290,3 +315,15 @@
  
    gtk_text_view_update_adjustments (text_view);
    
+--- gdk/gdkwindow.c.orig	2013-05-16 18:19:35.991123397 +0200
++++ gdk/gdkwindow.c	2013-05-16 18:21:29.972051184 +0200
+@@ -8515,7 +8515,8 @@
+ 
+   if (type == GDK_ENTER_NOTIFY &&
+       (pointer_info->need_touch_press_enter ||
+-       gdk_device_get_source (source_device) == GDK_SOURCE_TOUCHSCREEN) &&
++         ((source_device) && 
++          (gdk_device_get_source (source_device) == GDK_SOURCE_TOUCHSCREEN))) &&
+       mode != GDK_CROSSING_TOUCH_BEGIN &&
+       mode != GDK_CROSSING_TOUCH_END)
+     {
