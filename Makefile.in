@@ -43,6 +43,8 @@ docs:
 generate: force
 	${RM} src/generated/*.ad?
 	python contrib/binding.py \
+	   --gir-file=contrib/GLib-2.0.gir \
+	   --gir-file=contrib/GObject-2.0.gir \
 		--gir-file=contrib/Gtk-3.0.gir \
 		--gir-file=contrib/Gdk-3.0.gir \
 		--gir-file=contrib/Pango-1.0.gir \
