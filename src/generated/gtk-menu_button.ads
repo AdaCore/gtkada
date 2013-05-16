@@ -24,7 +24,7 @@
 --  <description>
 --  The Gtk.Menu_Button.Gtk_Menu_Button widget is used to display a menu when
 --  clicked on. This menu can be provided either as a Gtk.Menu.Gtk_Menu, or an
---  abstract Gmenu.Model.Gmenu_Model.
+--  abstract Glib.Menu.Gmenu_Model.
 --
 --  The Gtk.Menu_Button.Gtk_Menu_Button widget can hold any valid child
 --  widget. That is, it can hold almost any other standard
@@ -249,7 +249,7 @@ package Gtk.Menu_Button is
 
    Menu_Model_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gio.Menu_Model
-   --  The Gmenu.Model.Gmenu_Model from which the menu to pop up will be
+   --  The Glib.Menu.Gmenu_Model from which the menu to pop up will be
    --  created. See gtk_menu_button_set_menu_model for the interaction with the
    --  Gtk.Menu_Button.Gtk_Menu_Button:popup property.
 

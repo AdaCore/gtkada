@@ -86,14 +86,14 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
 
            "--GApplication", # Not tested yet, from Gio
            "--GApplicationCommandLine", # Not tested yet, from Gio
-           "--GBytes",
+           "--GBytes",   # Function returning arrays
            "--GBufferedInputStream", # Not tested yet, from Gio
            "--GBufferedOutputStream", # Not tested yet, from Gio
            "--GCancellable", # Not tested yet, from Gio
            "--GCharsetConverter", # Not tested yet, from Gio
            "--GConverterInputStream", # Not tested yet, from Gio
            "--GConverterOutputStream", # Not tested yet, from Gio
-           "--GCredentials", # Not tested yet, from Gio
+           "--GCredentials", # Not tested yet, from Giov
            "--GDBusActionGroup", # Not tested yet, from Gio
            "--GDBusAnnotationInfo", # Not tested yet, from Gio
            "--GDBusArgInfo", # Not tested yet, from Gio
@@ -143,11 +143,11 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GInputStream", # Not tested yet, from Gio
            "--GMemoryInputStream", # Not tested yet, from Gio
            "--GMemoryOutputStream", # Not tested yet, from Gio
-           "--GMenu", # Not tested yet, from Gio
-           "--GMenuAttributeIter", # Not tested yet, from Gio
-           "--GMenuItem", # Not tested yet, from Gio
-           "--GMenuLinkIter", # Not tested yet, from Gio
-           "--GMenuModel", # Not tested yet, from Gio
+#           "GMenuModel", # Not tested yet, from Gio
+#           "GMenu", # Not tested yet, from Gio
+#           "GMenuAttributeIter", # Not tested yet, from Gio
+#           "GMenuItem", # Not tested yet, from Gio
+#           "GMenuLinkIter", # Not tested yet, from Gio
            "--GMountOperation", # Not tested yet, from Gio
            "--GNativeVolumeMonitor", # Not tested yet, from Gio
            "--GNetworkAddress", # Not tested yet, from Gio
@@ -175,7 +175,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GSocketService", # Not tested yet, from Gio
            "--GSrvTarget", # Not tested yet, from Gio
            "--GStaticResource", # Not tested yet, from Gio
-           "--GString",
+           "GString",
            "--GTcpConnection", # Not tested yet, from Gio
            "--GTcpWrapperConnection", # Not tested yet, from Gio
            "--GThemedIcon", # Not tested yet, from Gio
@@ -194,7 +194,9 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GUnixMountPoint", # Not tested yet, from Gio
            "--GUnixOutputStream", # Not tested yet, from Gio
            "--GUnixSocketAddress", # Not tested yet, from Gio
-           "--GVariant",
+           "GVariant",
+           "GVariantIter",
+           "GVariantType",
            "--GVfs", # Not tested yet, from Gio
            "--GVolumeMonitor", # Not tested yet, from Gio
            "--GZlibCompressor", # Not tested yet, from Gio
@@ -548,15 +550,20 @@ naming.type_exceptions = {
     "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
     "gint8":    Proxy("Gint8",   "Glib.Properties.Property_Int"),
     "gint16":   Proxy("Gint16",  "Glib.Properties.Property_Int"),
+    "gint32":   Proxy("Gint32",  "Glib.Properties.Property_Int"),
     "gint64":   Proxy("Gint64",  "Glib.Properties.Property_Int"),
     "guint":    Proxy("Guint",   "Glib.Properties.Property_Uint"),
     "guint8":   Proxy("Guint8",  "Glib.Properties.Property_Uint"),
     "guint16":  Proxy("Guint16", "Glib.Properties.Property_Uint"),
     "guint32":  Proxy("Guint32", "Glib.Properties.Property_Uint"),
+    "guint64":  Proxy("Guint64", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
     "glong":    Proxy("Glong",   "Glib.Properties.Property_Long"),
     "gsize":    Proxy("Gsize"),
+    "gssize":   Proxy("Gssize"),
     "gunichar": Proxy("Gunichar"),
+    "gchar":    Proxy("Gchar"),
+    "guchar":   Proxy("Guchar"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
 
     # These should not be necessary, but if we don't put them the gnerated
@@ -579,6 +586,8 @@ naming.type_exceptions = {
     "GtkWidgetClass": Proxy("Glib.Object.GObject_Class"),
 
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
+    "PangoFontDescription": Proxy("Pango.Font.Pango_Font_Description",
+                                  "Pango.Font.Property_Font_Description"),
     "PangoFontDescription*": Proxy("Pango.Font.Pango_Font_Description",
                                    "Pango.Font.Property_Font_Description"),
     "GtkTreeIter*":    Record("Gtk.Tree_Model.Gtk_Tree_Iter",
@@ -593,6 +602,9 @@ naming.type_exceptions = {
     "GIcon*":            Proxy("Glib.G_Icon.G_Icon"),
     "GValue":            Proxy("Glib.Values.GValue", ""),
     "GdkAtom":           Proxy("Gdk.Types.Gdk_Atom"),
+    "GVariantType":      Proxy("Glib.Variant.Gvariant_Type"),
+    "GVariantType*":     Proxy("Glib.Variant.Gvariant_Type"),
+    "GVariantIter":      Proxy("Glib.Variant.Gvariant_Iter"),
 
     # Specific to this binding generator (referenced from binding.xml)
     "VisualList":  List("Gdk.Visual.Gdk_Visual_List.Glist"),

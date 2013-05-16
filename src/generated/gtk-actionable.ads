@@ -77,7 +77,7 @@ package Gtk.Actionable is
    --  Names are of the form "win.save" or "app.quit" for actions on the
    --  containing Gtk.Application_Window.Gtk_Application_Window or its
    --  associated Gtk.Application.Gtk_Application, respectively. This is the
-   --  same form used for actions in the Gmenu.Gmenu associated with the
+   --  same form used for actions in the Glib.Menu.Gmenu associated with the
    --  window.
    --  Since: gtk+ 3.4
    --  "action_name": an action name, or null

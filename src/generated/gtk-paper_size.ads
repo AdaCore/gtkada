@@ -111,7 +111,7 @@ package Gtk.Paper_Size is
        Group_Name : UTF8_String);
    --  Reads a paper size from the group Group_Name in the key file Key_File.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to retrieve the papersize from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the papersize from
    --  "group_name": the name ofthe group in the key file to read, or null to
    --  read the first group
 
@@ -120,7 +120,7 @@ package Gtk.Paper_Size is
        Group_Name : UTF8_String) return Gtk_Paper_Size;
    --  Reads a paper size from the group Group_Name in the key file Key_File.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to retrieve the papersize from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the papersize from
    --  "group_name": the name ofthe group in the key file to read, or null to
    --  read the first group
 
@@ -256,7 +256,7 @@ package Gtk.Paper_Size is
        Group_Name : UTF8_String);
    --  This function adds the paper size from Size to Key_File.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to save the paper size to
+   --  "key_file": the Gkey.File.Gkey_File to save the paper size to
    --  "group_name": the group to add the settings to in Key_File
 
    ----------------------

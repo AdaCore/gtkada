@@ -26359,7 +26359,6 @@ using functions deprecated in later releases will not).</doc>
             c:type="GVariant"
             version="2.24"
             glib:type-name="GVariant"
-            glib:get-type="intern"
             c:symbol-prefix="variant">
       <doc xml:whitespace="preserve">#GVariant is a variant datatype; it stores a value along with
 information about the type of that value.  The range of possible

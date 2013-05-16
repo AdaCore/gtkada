@@ -7191,6 +7191,60 @@ package body Generic_Set is
    <package id="GtkBindingEntry" into="GtkBindingSet">
    </package>
 
+   <package id="GIO" ada="Glib.IO"/>
+
+   <package id="GVariant" ada="Glib.Variant">
+     <enum ctype="GVariantClass" prefix="G_VARIANT_"/>
+     <method id="g_variant_new_from_bytes" bind="False"/>  <!--  requires GByte -->
+     <method id="g_variant_get_data_as_bytes" bind="False"/>  <!--  requires GByte -->
+     <method id="g_variant_new_parsed_va" bind="False" /> <!-- va_list -->
+     <method id="g_variant_new_va" bind="False" /> <!-- va_list -->
+     <method id="g_variant_get_va" bind="False" /> <!-- va_list -->
+     <method id="g_variant_new_array" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_new_fixed_array" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_new_from_data" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_new_maybe" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_new_tuple" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_get_fixed_array" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_compare" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_equal" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_get_data" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_dup_bytestring" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_get_bytestring" bind="False"/> <!-- c arrays -->
+   </package>
+
+   <package id="GVariantIter" into="GVariant" ada="Glib.Variant">
+     <method id="g_variant_iter_copy" bind="False"/> <!-- results in duplicate import -->
+     <method id="g_variant_iter_free" bind="False"/> <!-- results in duplicate import -->
+     <method id="g_variant_iter_n_children" bind="False"/> <!-- duplicate import -->
+   </package>
+
+   <package id="GVariantType" into="GVariant" ada="Glib.Variant">
+     <method id="g_variant_type_checked_" bind="False"/> <!--  implementation detail -->
+     <method id="g_variant_type_new_from_bytes" bind="False"/>  <!--  requires GByte -->
+     <method id="g_variant_type_new_tuple" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_type_new_maybe" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_type_new_array" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_type_equal" bind="False"/> <!-- c arrays -->
+     <method id="g_variant_type_hash" bind="False"/> <!-- duplicate import -->
+     <method id="g_variant_type_string_scan" bind="False"/> <!-- c arrays -->
+   </package>
+
+   <package id="GMenu" ada="Glib.Menu" />
+   <package id="GBytes" ada="Glib.Bytes" />
+
+   <package id="GString" ada="Glib.String">
+     <record ctype="GString"/>
+     <method id="g_string_append_vprintf" bind="False"/> <!-- valist -->
+     <method id="g_string_vprintf" bind="False"/> <!-- valist -->
+     <method id="g_string_free_to_bytes" bind="False"/> <!-- requires GByte -->
+   </package>
+
+   <package id="GMenuItem" into="GMenu" ada="Glib.Menu"/>
+   <package id="GMenuModel" into="GMenu" ada="Glib.Menu"/>
+   <package id="GMenuAttributeIter" into="GMenu" ada="Glib.Menu"/>
+   <package id="GMenuLinkIter" into="GMenu" ada="Glib.Menu"/>
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.

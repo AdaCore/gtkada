@@ -133,6 +133,7 @@ Where the package node is defined as follows:
        <!-- Support for <record> types -->
        <record ctype="..."
              ada="..."     <!-- optional Ada name (no package info needed) -->
+             private="False"  <!--  whether to make it "private" -->
        >
           <field name="..." ctype="..."/>   <!--  override ctype -->
           <union value="..." field="..."/>  <!--  once for each value of

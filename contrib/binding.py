@@ -693,15 +693,17 @@ class GIRClass(object):
         # if there is no public field that should be user visible in the record.
         # Otherwise, we'll map to a standard Ada record (self.is_record)
 
-        self.is_proxy = (
-            self.ctype == "PangoFontDescription")
-            #naming.type_exceptions.get("%s*" % self.ctype, None) is not None
-            #and isinstance(naming.type_exceptions["%s*" % self.ctype], Proxy))
-
-        self.is_boxed = (not self.is_proxy
-                         and self.node.tag == nrecord
-                         and not self.node.findall(nfield))
+        self.is_proxy = False
+        self.is_boxed = (self.node.tag == nrecord
+                         and (not self.node.findall(nfield)
+                              or self.node.get("introspectable", "1") == "0"))
         self.is_record = self.node.tag == nrecord and not self.is_boxed
+
+        if (self.is_boxed
+            and naming.type_exceptions.get(self.ctype) is not None
+            and isinstance(naming.type_exceptions.get(self.ctype), Proxy)):
+            self.is_proxy = True
+            self.is_boxed = False
 
         # Register naming exceptions for this class
 
@@ -1352,6 +1354,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
+            # Now as a function
             gtk_new = Subprogram(
                 name="%s_%s" % (self._subst["typename"], name),
                 returns=AdaType("%(typename)s" % self._subst,
@@ -1381,6 +1384,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
+            # Now as a function
             gtk_new = Subprogram(
                 name="%s_%s" % (self._subst["typename"], name),
                 returns=AdaType("%(typename)s" % self._subst,
@@ -2167,6 +2171,8 @@ end "+";""" % self._subst,
 
                         if not first_field_ctype:
                             t = field.findall(ntype)
+                            assert t, "No type info for %s.%s" % (ctype, name)
+
                             ctype = t[0].get(ctype_qname)
                             if not ctype:
                                 # <type name="..."> has no c:type attribute, so we try

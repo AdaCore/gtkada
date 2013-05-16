@@ -856,7 +856,9 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8" or name == "array_of_filename":
             t = UTF8_List()
-        elif cname in ("gint**", "int**") or name in ("array_of_gint", "array_of_guint"):
+        elif (cname in ("gint**", "int**")
+              or name in ("array_of_gint", "array_of_guint", "array_of_gint8",
+                          "array_of_guint8")):
             t = AdaTypeArray("gint")
             isArray = True
         elif cname == "void":
@@ -1844,7 +1846,7 @@ class Section(object):
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
 
-                    if base_name(obj.name) in ("Gtk_New", "Gdk_New"):
+                    if base_name(obj.name) in ("Gtk_New", "Gdk_New", "G_New"):
                         # Always create a new group for Gtk_New, since they all
                         # have different parameters. But we still want to group
                         # Gtk_New and Initialize.

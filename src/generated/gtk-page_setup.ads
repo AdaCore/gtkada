@@ -116,7 +116,7 @@ package Gtk.Page_Setup is
    --  Key_File. Returns a new Gtk.Page_Setup.Gtk_Page_Setup object with the
    --  restored page setup, or null if an error occurred.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to retrieve the page_setup from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the page_setup from
    --  "group_name": the name of the group in the key_file to read, or null to
    --  use the default name "Page Setup"
 
@@ -127,7 +127,7 @@ package Gtk.Page_Setup is
    --  Key_File. Returns a new Gtk.Page_Setup.Gtk_Page_Setup object with the
    --  restored page setup, or null if an error occurred.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to retrieve the page_setup from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the page_setup from
    --  "group_name": the name of the group in the key_file to read, or null to
    --  use the default name "Page Setup"
 
@@ -286,7 +286,7 @@ package Gtk.Page_Setup is
    --  Reads the page setup from the group Group_Name in the key file
    --  Key_File.
    --  Since: gtk+ 2.14
-   --  "key_file": the GKey_File to retrieve the page_setup from
+   --  "key_file": the Gkey.File.Gkey_File to retrieve the page_setup from
    --  "group_name": the name of the group in the key_file to read, or null to
    --  use the default name "Page Setup"
 
@@ -311,7 +311,7 @@ package Gtk.Page_Setup is
        Group_Name : UTF8_String);
    --  This function adds the page setup from Setup to Key_File.
    --  Since: gtk+ 2.12
-   --  "key_file": the GKey_File to save the page setup to
+   --  "key_file": the Gkey.File.Gkey_File to save the page setup to
    --  "group_name": the group to add the settings to in Key_File, or null to
    --  use the default name "Page Setup"
 
