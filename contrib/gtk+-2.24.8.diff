@@ -41,7 +41,7 @@
 
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
 
-	Gtk3: to be rewritten for Gtk3
+	Gtk3: ported.
 
 2010-12-06  Arnaud Charlet  <charlet@adacore.com>
 

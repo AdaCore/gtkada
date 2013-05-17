@@ -1,3 +1,13 @@
+2013-05-17  Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (extend_selection): Fix typo in documentation.
+	When extending the selection in SELECT_WORDS granularity past the
+	end of a line, select only the EOL character(s).
+	When extending the selection in SELECT_LINES granularity, include
+	the EOL character(s) in the selection.
+
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
+
 2013-05-16	Nicolas Setton  <setton@adacore.com>
 
 	* gdk/gdkwindow.c (send_crossing_event): Do not test whether the
@@ -327,3 +337,86 @@
        mode != GDK_CROSSING_TOUCH_BEGIN &&
        mode != GDK_CROSSING_TOUCH_END)
      {
+--- ../orig/gtk+-3.8.2/gtk/gtktextview.c	2013-05-17 15:33:16.119348286 +0200
++++ gtk/gtktextview.c	2013-05-17 15:54:02.995192587 +0200
+@@ -6711,7 +6711,7 @@
+ /*
+  * Move @start and @end to the boundaries of the selection unit (indicated by 
+  * @granularity) which contained @start initially.
+- * If the selction unit is SELECT_WORDS and @start is not contained in a word
++ * If the selection unit is SELECT_WORDS and @start is not contained in a word
+  * the selection is extended to all the white spaces between the end of the 
+  * word preceding @start and the start of the one following.
+  */
+@@ -6739,27 +6739,37 @@
+       else
+ 	{
+ 	  GtkTextIter tmp;
+-
+-	  tmp = *start;
+-	  if (gtk_text_iter_backward_visible_word_start (&tmp))
+-	    gtk_text_iter_forward_visible_word_end (&tmp);
+-
+-	  if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (start))
+-	    *start = tmp;
+-	  else
+-	    gtk_text_iter_set_line_offset (start, 0);
+-
+-	  tmp = *end;
+-	  if (!gtk_text_iter_forward_visible_word_end (&tmp))
+-	    gtk_text_iter_forward_to_end (&tmp);
+-
+-	  if (gtk_text_iter_ends_word (&tmp))
+-	    gtk_text_iter_backward_visible_word_start (&tmp);
+-
+-	  if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (end))
+-	    *end = tmp;
+-	  else
+-	    gtk_text_iter_forward_to_line_end (end);
++          if (gtk_text_iter_ends_line (start))
++            {
++              /* start is at an end of line: simply extend the
++               * selection to include the end-of-line character(s).
++               */
++              if (!gtk_text_iter_forward_line (end))
++                gtk_text_iter_forward_to_end (end);
++            }
++           else
++            {
++	      tmp = *start;
++	      if (gtk_text_iter_backward_visible_word_start (&tmp))
++                gtk_text_iter_forward_visible_word_end (&tmp);
++
++	      if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (start))
++	        *start = tmp;
++	      else
++	        gtk_text_iter_set_line_offset (start, 0);
++
++	      tmp = *end;
++	      if (!gtk_text_iter_forward_visible_word_end (&tmp))
++	        gtk_text_iter_forward_to_end (&tmp);
++
++	      if (gtk_text_iter_ends_word (&tmp))
++	        gtk_text_iter_backward_visible_word_start (&tmp);
++
++	      if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (end))
++	        *end = tmp;
++	      else
++	        gtk_text_iter_forward_to_line_end (end);
++            }
+ 	}
+     }
+   else if (granularity == SELECT_LINES) 
+@@ -6782,6 +6792,12 @@
+ 	  if (!gtk_text_view_starts_display_line (text_view, end))
+ 	    gtk_text_view_forward_display_line_end (text_view, end);
+ 	}
++
++       /* At this point end points at the end of a line:
++        * include the end-of-line character(s) in the selection.
++        */
++       if (!gtk_text_iter_forward_line (end))
++         gtk_text_iter_forward_to_end (end);
+     }
+ }
+  
