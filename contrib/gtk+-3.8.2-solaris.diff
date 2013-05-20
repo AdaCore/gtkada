@@ -1,7 +1,5 @@
 2013-05-20	Nicolas Setton  <setton@adacore.com>
 
-	* gtk/gtksearchenginesimple.c: set _XOPEN_SOURCE to 500.
-	Alleviates strict c99 requirement when including ftw.h.
 	* gdk/gdkrgba.c: Define isinf using ieeefp.h, to workaround
 	missing builtin.
 
@@ -30,17 +28,6 @@
           {
             segments[0] = 1;
             segments[1] = 2;
---- ../gtk+-3.8.2-orig/gtk/gtksearchenginesimple.c	2013-03-09 21:03:20.000000000 +0100
-+++ gtk/gtksearchenginesimple.c	2013-05-20 18:49:15.298169356 +0200
-@@ -26,7 +26,7 @@
-  * export ftw() and friends only if _XOPEN_SOURCE and _GNU_SOURCE
-  * are defined. see bug #444097.
-  */
--#define _XOPEN_SOURCE 600
-+#define _XOPEN_SOURCE 500
- #define _GNU_SOURCE
- 
- #ifdef HAVE_FTW_H
 --- ../gtk+-3.8.2-orig/gdk/gdkrgba.c	2013-03-09 21:03:16.000000000 +0100
 +++ gdk/gdkrgba.c	2013-05-20 19:39:23.987617706 +0200
 @@ -30,6 +30,10 @@
