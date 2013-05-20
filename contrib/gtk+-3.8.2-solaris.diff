@@ -2,6 +2,8 @@
 
 	* gtk/gtksearchenginesimple.c: set _XOPEN_SOURCE to 500.
 	Alleviates strict c99 requirement when including ftw.h.
+	* gdk/gdkrgba.c: Define isinf using ieeefp.h, to workaround
+	missing builtin.
 
 2012-04-20	Nicolas Setton  <setton@adacore.com>
 
@@ -39,3 +41,16 @@
  #define _GNU_SOURCE
  
  #ifdef HAVE_FTW_H
+--- ../gtk+-3.8.2-orig/gdk/gdkrgba.c	2013-03-09 21:03:16.000000000 +0100
++++ gdk/gdkrgba.c	2013-05-20 19:39:23.987617706 +0200
+@@ -30,6 +30,10 @@
+ 
+ #include "fallback-c89.c"
+ 
++#include <ieeefp.h>
++
++int isinf(double x) { return !finite(x) && x==x; }
++
+ /**
+  * SECTION:rgba_colors
+  * @Short_description: RGBA colors
