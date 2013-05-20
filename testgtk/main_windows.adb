@@ -59,6 +59,7 @@ with Ada.Strings.Fixed;
 
 with Create_About;
 with Create_Alignment;
+with Create_Application;
 with Create_Arrow;
 with Create_Assistant;
 with Create_Box;
@@ -227,6 +228,8 @@ package body Main_Windows is
                                          Create_Pixbuf.Help'Access),
       (NS ("animated gif"),     Pixbuf,  Create_Pixbuf.Run_Gif'Access,
                                          Create_Pixbuf.Help_Gif'Access),
+      (NS ("application"),      Complex, Create_Application.Run'Access,
+                                         Create_Application.Help'Access),
       (NS ("arrow"),            Base,    Create_Arrow.Run'Access,
                                          Create_Arrow.Help'Access),
       (NS ("assistant"),        Complex, Create_Assistant.Run'Access,

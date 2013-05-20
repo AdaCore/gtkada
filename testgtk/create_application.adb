@@ -30,17 +30,17 @@ with Glib.Application;       use Glib.Application;
 with Glib.Simple_Action;     use Glib.Simple_Action;
 with Glib.Variant;           use Glib.Variant;
 with Gtk.Builder;            use Gtk.Builder;
-with Gtk.Main;               use Gtk.Main;
 with Gtk.Menu;               use Gtk.Menu;
 with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
+with Gtk.Label;              use Gtk.Label;
 with Gtk.Menu_Tool_Button;   use Gtk.Menu_Tool_Button;
 with Gtk.Window;             use Gtk.Window;
 with Gtk.Widget;             use Gtk.Widget;
 with Ada.Text_IO;            use Ada.Text_IO;
 with System;                 use System;
 
-procedure Application is
+package body Create_Application is
 
    procedure Activate_Quit
       (Action : access Gsimple_Action;
@@ -48,6 +48,16 @@ procedure Application is
        Data      : System.Address);
    pragma Convention (C, Activate_Quit);
    --  Implements the "quit" action
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Application_Window@B and @bGtk_Application@B that"
+         & " better integrates with the system";
+   end Help;
 
    -------------
    -- Startup --
@@ -150,24 +160,34 @@ procedure Application is
       end loop;
    end Activate_Quit;
 
-   App : Gtk_Application;
-   Result : Gint;
-begin
-   Gtk.Main.Init;
+   ---------
+   -- Run --
+   ---------
 
-   App := Gtk_Application_New
-      (Application_Id => "com.adacore.testgtk",
-       Flags          => G_Application_Flags_None);
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Label : Gtk_Label;
+      App : Gtk_Application;
+      Result : Gint;
+   begin
+      Gtk_New (Label, "This demo creates a new standalone toplevel window");
+      Frame.Add (Label);
+      Frame.Show_All;
 
-   App.Add_Action_Entries
-      ((1 => Build ("quit", Activate_Quit'Unrestricted_Access)),
-       User_Data => App.Get_Object);
+      App := Gtk_Application_New
+         (Application_Id => "com.adacore.testgtk",
+          Flags          => G_Application_Flags_None);
 
-   App.On_Startup (Startup'Unrestricted_Access);
-   App.On_Activate (App_Activate'Unrestricted_Access);
-   App.On_Shutdown (Shutdown'Unrestricted_Access);
+      App.Add_Action_Entries
+         ((1 => Build ("quit", Activate_Quit'Access)),
+          User_Data => App.Get_Object);
 
-   Result := App.Run (0, (1 .. 0 => null));
+      App.On_Startup (Startup'Access);
+      App.On_Activate (App_Activate'Access);
+      App.On_Shutdown (Shutdown'Access);
 
-   Put_Line ("Result of run is" & Gint'Image (Result));
-end Application;
+      Result := App.Run (0, (1 .. 0 => null));
+
+      Put_Line ("Result of run is" & Gint'Image (Result));
+   end Run;
+
+end Create_Application;
