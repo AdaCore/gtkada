@@ -203,7 +203,8 @@ package Gtk.Arguments is
    function Unchecked_To_Param_Spec
      is new Glib.Values.Unsafe_Proxy_Nth (Glib.Param_Spec);
    function Unchecked_To_Cairo_Context
-     is new Glib.Values.Unsafe_Proxy_Nth (Cairo.Cairo_Context);
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Cairo.Cairo_Context;
    function Unchecked_To_Cairo_Rectangle_Access
      (Args : Glib.Values.C_GValues; Num : Guint)
      return access Cairo.Cairo_Rectangle;

@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------
---               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --                     Copyright (C) 2010-2013, AdaCore                     --
 --                                                                          --
@@ -21,29 +21,16 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;  use Glib;
+package body Create_Cairo is
 
-with Gtkada.Printing;        use Gtkada.Printing;
-with Gtk.Print_Context;      use Gtk.Print_Context;
+   ----------
+   -- Help --
+   ----------
 
-with Gtk.Widget;             use Gtk.Widget;
+   function Help return String is
+   begin
+      return "This function shows examples of using the low-level Cairo"
+        & " library for direct manipulation of pixels";
+   end Help;
 
-with Testcairo_Drawing;      use Testcairo_Drawing;
-
-package Testcairo_Printing is
-
-   type Testcairo_Print_Operation_Record is new Gtkada_Print_Operation_Record
-   with record
-      Test   : Test_Type;
-      Win    : Gtk_Widget;
-   end record;
-   type Testcairo_Print_Operation is access all
-     Testcairo_Print_Operation_Record'Class;
-
-   procedure Draw_Page
-     (Op          : access Testcairo_Print_Operation_Record;
-      Context     : Gtk_Print_Context;
-      Page_Number : Gint);
-   --  Handler responsible for printing pages
-
-end Testcairo_Printing;
+end Create_Cairo;

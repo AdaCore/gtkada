@@ -66,6 +66,7 @@ with Create_Builder;
 with Create_Gtkada_Builder;
 with Create_Button_Box;
 with Create_Buttons;
+with Create_Cairo;
 with Create_Calendar;
 with Create_Canvas;
 with Create_Cell_View;
@@ -188,17 +189,19 @@ package body Main_Windows is
    --  Create the main demo frame
 
    type Demo_Type is
-     (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc, CSS, Pixbuf);
+     (Box, Base, Complex, Colors_And_Fonts, GdkD, Gtkada, Misc, CSS, Pixbuf,
+      Cairo);
    --  The available types for demos.
    --  Each of them is a tree item, whose subitems are the matching demos.
    --  Box:     Containers
    --  Base:    Basic widgets, found in all GUI toolkits
    --  Complex: More interesting widgets
-   --  Gimp:    Widgets developped for gimp, that could be reused
+   --  Colors_And_Fonts:    Widgets developped for gimp, that could be reused
    --  Misc:    Demonstrates some features that are not widgets
    --  Misc:    Demonstrates features about CSS styling
    --  Gtkada:  Widgets specific to GtkAda
    --  Pixbuf:  Demonstrate the use of images
+   --  Cairo:   Low-level manipulation of pixels.
 
    type Tree_Item_Information is record
       Label  : String_Access;
@@ -240,6 +243,32 @@ package body Main_Windows is
                                          Create_Buttons.Help'Access),
       (NS ("calendar"),         Base,    Create_Calendar.Run'Access,
                                          Create_Calendar.Help'Access),
+
+      (NS ("Simple rectangles"), Cairo,
+       Create_Cairo.Run_Rectangles'Access, Create_Cairo.Help'Access),
+      (NS ("Transparency"), Cairo,
+       Create_Cairo.Run_Transparency'Access, Create_Cairo.Help'Access),
+      (NS ("Compositing operators"), Cairo,
+       Create_Cairo.Run_Operators'Access, Create_Cairo.Help'Access),
+      (NS ("Translating, rotation and scaling"), Cairo,
+       Create_Cairo.Run_Matrix'Access, Create_Cairo.Help'Access),
+      (NS ("Direct transformations"), Cairo,
+       Create_Cairo.Run_Transformations'Access, Create_Cairo.Help'Access),
+      (NS ("Paths"), Cairo,
+       Create_Cairo.Run_Paths'Access, Create_Cairo.Help'Access),
+      (NS ("Patterns"), Cairo,
+       Create_Cairo.Run_Patterns'Access, Create_Cairo.Help'Access),
+      (NS ("The 'toy' text API"), Cairo,
+       Create_Cairo.Run_Toy_Text'Access, Create_Cairo.Help'Access),
+      (NS ("Rendering text with pango"), Cairo,
+       Create_Cairo.Run_Pango_Text'Access, Create_Cairo.Help'Access),
+      (NS ("Painting and clipping"), Cairo,
+       Create_Cairo.Run_Clip_And_Paint'Access, Create_Cairo.Help'Access),
+      (NS ("Using surfaces and saving to PNG"), Cairo,
+       Create_Cairo.Run_Surface_And_Png'Access, Create_Cairo.Help'Access),
+      (NS ("Image as background"), Cairo,
+       Create_Cairo.Run_Image'Access, Create_Cairo.Help'Access),
+
       (NS ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
                                          Create_Canvas.Help'Access),
       (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
@@ -248,9 +277,11 @@ package body Main_Windows is
                                          Create_Check_Buttons.Help'Access),
       (NS ("clipboard"),        Misc,    Create_Clipboard.Run'Access,
                                          Create_Clipboard.Help'Access),
-      (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access,
+      (NS ("color selection"),  Colors_And_Fonts,
+                                         Create_Color_Selection.Run'Access,
                                          Create_Color_Selection.Help'Access),
-      (NS ("color chooser"),    Gimp,    Create_Color_Chooser.Run'Access,
+      (NS ("color chooser"),    Colors_And_Fonts,
+                                         Create_Color_Chooser.Run'Access,
                                          Create_Color_Chooser.Help'Access),
       (NS ("combo boxes"),      Complex, Create_Combo_Box.Run'Access,
                                          Create_Combo_Box.Help'Access),
@@ -274,7 +305,8 @@ package body Main_Windows is
                                          Create_File_Selection.Help'Access),
       (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
                                          Create_Fixed.Help'Access),
-      (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access,
+      (NS ("font selection"),   Colors_And_Fonts,
+                                         Create_Font_Selection.Run'Access,
                                          Create_Font_Selection.Help'Access),
       (NS ("frame/aspect frame"), Box,   Create_Frame.Run'Access,
                                          Create_Frame.Help'Access),
@@ -401,14 +433,16 @@ package body Main_Windows is
                   Set (Tree, Sibling, 0, "Base widgets");
                when Complex =>
                   Set (Tree, Sibling, 0, "Composite widgets");
-               when Gimp    =>
-                  Set (Tree, Sibling, 0, "Gimp widgets");
+               when Colors_And_Fonts    =>
+                  Set (Tree, Sibling, 0, "Colors and fonts");
                when Misc    =>
                   Set (Tree, Sibling, 0, "Misc. demos");
                when CSS     =>
                   Set (Tree, Sibling, 0, "CSS demos");
                when GdkD    =>
                   Set (Tree, Sibling, 0, "Gdk demos");
+               when Cairo   =>
+                  Set (Tree, Sibling, 0, "Cairo");
                when Gtkada  =>
                   Set (Tree, Sibling, 0, "GtkAda widgets");
                   Frame_Num := 2;

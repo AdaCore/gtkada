@@ -339,6 +339,20 @@ package body Gtk.Arguments is
       return Convert (Get_Proxy (Val)).all;
    end Unchecked_To_Cairo_Rectangle;
 
+   --------------------------------
+   -- Unchecked_To_Cairo_Context --
+   --------------------------------
+
+   function Unchecked_To_Cairo_Context
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Cairo.Cairo_Context
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Cairo.Get_Context (Val);
+   end Unchecked_To_Cairo_Context;
+
    ---------------------------
    -- Unchecked_To_Gdk_RGBA --
    ---------------------------

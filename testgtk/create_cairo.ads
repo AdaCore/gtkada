@@ -21,26 +21,22 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo; use Cairo;
+with Testcairo_Drawing;  use Testcairo_Drawing;
 
-package body Testcairo_Printing is
+package Create_Cairo is
 
-   ---------------
-   -- Draw_Page --
-   ---------------
+   function Help return String;
 
-   procedure Draw_Page
-     (Op          : access Testcairo_Print_Operation_Record;
-      Context     : Gtk_Print_Context;
-      Page_Number : Gint)
-   is
-      pragma Unreferenced (Page_Number);
-      Cr : Cairo_Context;
-   begin
-      Cr := Get_Cairo_Context (Context);
-      Draw_On_Context (Cr   => Cr,
-                       Win  => Op.Win,
-                       Test => Op.Test);
-   end Draw_Page;
-
-end Testcairo_Printing;
+   procedure Run_Rectangles is new Run (Rectangles);
+   procedure Run_Transparency is new Run (Transparency);
+   procedure Run_Operators is new Run (Operators);
+   procedure Run_Matrix is new Run (Matrix);
+   procedure Run_Transformations is new Run (Transformations);
+   procedure Run_Paths is new Run (Paths);
+   procedure Run_Patterns is new Run (Patterns);
+   procedure Run_Clip_And_Paint is new Run (Clip_And_Paint);
+   procedure Run_Surface_And_Png is new Run (Surface_And_Png);
+   procedure Run_Toy_Text is new Run (Toy_Text);
+   procedure Run_Pango_Text is new Run (Pango_Text);
+   procedure Run_Image is new Run (Image);
+end Create_Cairo;
