@@ -580,7 +580,9 @@ package body Gtkada.Style is
    -------------------
 
    procedure Load_Css_File
-     (Path : String; Error : access procedure (Str : String) := null)
+     (Path : String;
+      Error : access procedure (Str : String) := null;
+      Priority : Gtk.Style_Provider.Priority)
    is
       Css     : Gtk_Css_Provider;
       Display : Gdk_Display;
@@ -596,7 +598,7 @@ package body Gtkada.Style is
          Display := Get_Default;
          Screen  := Get_Default_Screen (Display);
          Gtk.Style_Context.Add_Provider_For_Screen
-           (Screen, +Css, Priority => Priority_Theme + 1);
+           (Screen, +Css, Priority => Priority);
       end if;
 
       Unref (Css);
@@ -607,7 +609,9 @@ package body Gtkada.Style is
    ---------------------
 
    procedure Load_Css_String
-     (Data : String; Error : access procedure (Str : String) := null)
+     (Data : String;
+      Error : access procedure (Str : String) := null;
+      Priority : Gtk.Style_Provider.Priority)
    is
       Css     : Gtk_Css_Provider;
       Display : Gdk_Display;
@@ -623,7 +627,7 @@ package body Gtkada.Style is
          Display := Get_Default;
          Screen  := Get_Default_Screen (Display);
          Gtk.Style_Context.Add_Provider_For_Screen
-           (Screen, +Css, Priority => Priority_Theme + 1);
+           (Screen, +Css, Priority => Priority);
       end if;
 
       Unref (Css);

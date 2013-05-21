@@ -23,6 +23,7 @@
 
 with Ada.Text_IO;        use Ada.Text_IO;
 with Gtkada.Style;       use Gtkada.Style;
+with Gtk.Style_Provider; use Gtk.Style_Provider;
 with Gtk.Main;
 with Main_Windows;
 
@@ -31,7 +32,8 @@ procedure Testgtk is
 begin
    Gtk.Main.Init;
 
-   Load_Css_File ("testgtk.css", Ada.Text_IO.Put_Line'Access);
+   Load_Css_File
+      ("testgtk.css", Ada.Text_IO.Put_Line'Access, Priority_Application);
 
    Main_Windows.Gtk_New (Win);
    Main_Windows.Show_All (Win);

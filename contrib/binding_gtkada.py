@@ -1,4 +1,7 @@
 """
+See annotations documentation at:
+    https://live.gnome.org/GObjectIntrospection/Annotations
+
 Parses the file binding.xml, which is used to override some aspects of
 the automatically generated code.
 The syntax of that file is as follows:

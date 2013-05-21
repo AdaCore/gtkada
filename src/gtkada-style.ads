@@ -35,6 +35,7 @@ with Gdk.Color;
 with Gdk.Pixbuf;
 with Gdk.RGBA;
 with Gtk.Enums;
+with Gtk.Style_Provider;
 with Gtk.Widget;
 
 package Gtkada.Style is
@@ -179,9 +180,13 @@ package Gtkada.Style is
    ---------
 
    procedure Load_Css_File
-     (Path : String; Error : access procedure (Str : String) := null);
+     (Path     : String;
+      Error    : access procedure (Str : String) := null;
+      Priority : Gtk.Style_Provider.Priority);
    procedure Load_Css_String
-     (Data : String; Error : access procedure (Str : String) := null);
+     (Data     : String;
+      Error    : access procedure (Str : String) := null;
+      Priority : Gtk.Style_Provider.Priority);
    --  Load CSS file and register it as a default CSS provider for the whole
    --  application.
    --  In case of error, the procedure Error is called if defined.
