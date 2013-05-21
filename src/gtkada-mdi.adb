@@ -6727,7 +6727,7 @@ package body Gtkada.MDI is
             Focus_Child      => Focus_Child,
             To_Raise         => To_Raise,
             To_Hide          => To_Hide,
-            Do_Size_Allocate => True);
+            Do_Size_Allocate => False);
       end Load_Perspective;
 
    end Desktop;
