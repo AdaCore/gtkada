@@ -6758,7 +6758,7 @@ package body Gtkada.MDI is
             To_Hide          => To_Hide,
             MDI_Width        => MDI.Get_Allocated_Width,
             MDI_Height       => MDI.Get_Allocated_Height,
-            Do_Size_Allocate => True);
+            Do_Size_Allocate => False);
       end Load_Perspective;
 
    end Desktop;
