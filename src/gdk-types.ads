@@ -135,7 +135,10 @@ package Gdk.Types is
      (Source_Mouse,
       Source_Pen,
       Source_Eraser,
-      Source_Cursor);
+      Source_Cursor,
+      Source_Keyboard,
+      Source_Touchscreen,
+      Source_Touchpad);
    pragma Convention (C, Gdk_Input_Source);
 
    type Gdk_Key_Type is new Guint;

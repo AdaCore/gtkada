@@ -283,7 +283,7 @@ main ()
       (gtk_minor_version != $gtk_config_minor_version) ||
       (gtk_micro_version != $gtk_config_micro_version))
     {
-      printf("\n*** 'pkg-config --version' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
+      printf("\n*** 'pkg-config --modversion' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
              $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
              gtk_major_version, gtk_minor_version, gtk_micro_version);
       printf ("*** was found! If pkg-config was correct, then it is best\n");
