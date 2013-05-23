@@ -1,0 +1,15 @@
+2013-05-23	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkclipboard-quartz.c: Replace undefined symbol.
+
+--- ../gtk+-3.8.2-orig/gtk/gtkclipboard-quartz.c	2013-05-13 12:15:07.000000000 +0200
++++ gtk/gtkclipboard-quartz.c	2013-05-23 14:40:04.819631640 +0200
+@@ -108,7 +108,7 @@
+   memset (&selection_data, 0, sizeof (GtkSelectionData));
+ 
+   selection_data.selection = clipboard->selection;
+-  selection_data.target = _gtk_quartz_pasteboard_type_to_atom (type);
++  selection_data.target = gdk_quartz_pasteboard_type_to_atom_libgtk_only (type);
+   selection_data.display = gdk_display_get_default ();
+   selection_data.length = -1;
+ 
