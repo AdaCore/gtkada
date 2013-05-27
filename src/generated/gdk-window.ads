@@ -379,7 +379,7 @@ package Gdk.Window is
    pragma Import (C, Beep, "gdk_window_beep");
    --  Emits a short beep associated to Window in the appropriate display, if
    --  supported. Otherwise, emits a short beep on the display just as
-   --  gdk_display_beep.
+   --  Gdk.Display.Beep.
    --  Since: gtk+ 2.12
 
    procedure Begin_Move_Drag
@@ -763,7 +763,7 @@ package Gdk.Window is
    --  done on the parent window are also no longer clipped by the child.
    --  This call is only supported on some systems (currently, only X11 with
    --  new enough Xcomposite and Xdamage extensions). You must call
-   --  gdk_display_supports_composite to check if setting a window as
+   --  Gdk.Display.Supports_Composite to check if setting a window as
    --  composited is supported before attempting to do so.
    --  Since: gtk+ 2.12
    --  "composited": True to set the window as composited

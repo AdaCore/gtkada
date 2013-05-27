@@ -76,6 +76,8 @@ interfaces = (
 binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkCursor",
            "GdkDevice",
+           "GdkDeviceManager",
+           "GdkDisplay",
            "GdkDragContext",
            "GdkEvent",
            "GdkFrameClock",
@@ -628,6 +630,7 @@ naming.type_exceptions = {
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
     "TreePathList": List("Gtk.Tree_Model.Gtk_Tree_Path_List.Glist"),
     "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSlist"),
+    "DeviceList": List("Gdk.Device.Device_List.Glist"),
 
     "gpointer":       Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),

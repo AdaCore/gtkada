@@ -975,7 +975,7 @@ package Gdk.Event is
    pragma Import (C, Put, "gdk_event_put");
    --  Appends a copy of the given event onto the front of the event queue for
    --  event->any.window's display, or the default event queue if
-   --  event->any.window is null. See gdk_display_put_event.
+   --  event->any.window is null. See Gdk.Display.Put_Event.
 
    function Triggers_Context_Menu (Event : Gdk_Event) return Boolean;
    --  This function returns whether a Gdk.Event.Gdk_Event_Button should
@@ -1102,12 +1102,12 @@ package Gdk.Event is
    pragma Import (C, Get, "gdk_event_get");
    --  Checks all open displays for a Gdk.Event.Gdk_Event to process,to be
    --  processed on, fetching events from the windowing system if necessary.
-   --  See gdk_display_get_event.
+   --  See Gdk.Display.Get_Event.
 
    function Peek return Gdk_Event;
    pragma Import (C, Peek, "gdk_event_peek");
    --  If there is an event waiting in the event queue of some open display,
-   --  returns a copy of it. See gdk_display_peek_event.
+   --  returns a copy of it. See Gdk.Display.Peek_Event.
 
    procedure Request_Motions (Event : Gdk_Event_Motion);
    pragma Import (C, Request_Motions, "gdk_event_request_motions");

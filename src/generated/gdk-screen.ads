@@ -273,7 +273,7 @@ package Gdk.Screen is
 
    function Make_Display_Name
       (Screen : not null access Gdk_Screen_Record) return UTF8_String;
-   --  Determines the name to pass to gdk_display_open to get a
+   --  Determines the name to pass to Gdk.Display.Open to get a
    --  Gdk.Display.Gdk_Display with this screen as the default screen.
    --  Since: gtk+ 2.2
 

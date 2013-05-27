@@ -31,6 +31,16 @@ pragma Warnings(On);
 
 package body Gdk.Device is
 
+   function Convert (R : Gdk.Device.Gdk_Device) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gdk.Device.Gdk_Device is
+      Stub : Gdk.Device.Gdk_Device_Record;begin
+         return Gdk.Device.Gdk_Device (Glib.Object.Get_User_Data (R, Stub));
+      end Convert;
+
    procedure Get_Window_At_Position
      (Self   : not null access Gdk_Device_Record;
       Win_X  : out Gint;

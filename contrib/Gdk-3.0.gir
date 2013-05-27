@@ -759,8 +759,8 @@ sufficently new version of the X Render extension.</doc>
               version="2.8">
         <doc xml:whitespace="preserve">Returns a #GdkPixbuf with the image used to display the cursor.
 
-Note that depending on the capabilities of the windowing system and 
-on the cursor, GDK may not be able to obtain the image data. In this 
+Note that depending on the capabilities of the windowing system and
+on the cursor, GDK may not be able to obtain the image data. In this
 case, %NULL is returned.</doc>
         <return-value transfer-ownership="full">
           <doc xml:whitespace="preserve">a #GdkPixbuf representing @cursor, or %NULL</doc>
@@ -2104,21 +2104,22 @@ be "floating", which means they are not attached to any virtual device.
 &lt;example&gt;&lt;title&gt;Master and slave devices&lt;/title&gt;
 &lt;screen&gt;
 carlos@sacarino:~$ xinput list
-⎡ Virtual core pointer                          id=2    [master pointer  (3)]
-⎜   ↳ Virtual core XTEST pointer                id=4    [slave  pointer  (2)]
-⎜   ↳ Wacom ISDv4 E6 Pen stylus                 id=10   [slave  pointer  (2)]
-⎜   ↳ Wacom ISDv4 E6 Finger touch               id=11   [slave  pointer  (2)]
-⎜   ↳ SynPS/2 Synaptics TouchPad                id=13   [slave  pointer  (2)]
-⎜   ↳ TPPS/2 IBM TrackPoint                     id=14   [slave  pointer  (2)]
-⎜   ↳ Wacom ISDv4 E6 Pen eraser                 id=16   [slave  pointer  (2)]
-⎣ Virtual core keyboard                         id=3    [master keyboard (2)]
-    ↳ Virtual core XTEST keyboard               id=5    [slave  keyboard (3)]
-    ↳ Power Button                              id=6    [slave  keyboard (3)]
-    ↳ Video Bus                                 id=7    [slave  keyboard (3)]
-    ↳ Sleep Button                              id=8    [slave  keyboard (3)]
-    ↳ Integrated Camera                         id=9    [slave  keyboard (3)]
-    ↳ AT Translated Set 2 keyboard              id=12   [slave  keyboard (3)]
-    ↳ ThinkPad Extra Buttons                    id=15   [slave  keyboard (3)]
+ Virtual core pointer                     id=2  [master pointer (3)]
+   - Virtual core XTEST pointer           id=4  [slave pointer (2)]
+   - Wacom ISDv4 E6 Pen stylus            id=10 [slave pointer (2)]
+   - Wacom ISDv4 E6 Finger touch          id=11 [slave pointer (2)]
+   - SynPS/2 Synaptics TouchPad           id=13 [slave pointer (2)]
+   - TPPS/2 IBM TrackPoint                id=14 [slave pointer (2)]
+   - Wacom ISDv4 E6 Pen eraser            id=16 [slave pointer (2)]
+
+ Virtual core keyboard                    id=3  [master keyboard (2)]
+   - Virtual core XTEST keyboard          id=5  [slave keyboard (3)]
+   - Power button                         id=6  [slave keyboard (3)]
+   - Video bus                            id=7  [slave keyboard (3)]
+   - Sleep button                         id=8  [slave keyboard (3)]
+   - Integrated Camera                    id=9  [slave keyboard (3)]
+   - AT Translated Set 2 keyboard         id=12 [slave keyboard (3)]
+   - Thinkpad Extra Buttons               id=15 [slave keyboard (3)]
 &lt;/screen&gt;
 &lt;/example&gt;
 
@@ -2644,7 +2645,7 @@ mask for a given display.</doc>
               deprecated-version="3.0">
         <doc xml:whitespace="preserve">Obtains the window underneath the mouse pointer, returning the location
 of the pointer in that window in @win_x, @win_y for @screen. Returns %NULL
-if the window under the mouse pointer is not known to GDK (for example, 
+if the window under the mouse pointer is not known to GDK (for example,
 belongs to another application).</doc>
         <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">the window under the mouse pointer, or %NULL</doc>
@@ -2868,7 +2869,7 @@ of the selection named by the given atom.</doc>
         <doc xml:whitespace="preserve">Sets the double click distance (two clicks within this distance
 count as a double click and result in a #GDK_2BUTTON_PRESS event).
 See also gdk_display_set_double_click_time().
-Applications should &lt;emphasis&gt;not&lt;/emphasis&gt; set this, it is a global 
+Applications should &lt;emphasis&gt;not&lt;/emphasis&gt; set this, it is a global
 user-configured setting.</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
@@ -2889,7 +2890,7 @@ user-configured setting.</doc>
               version="2.2">
         <doc xml:whitespace="preserve">Sets the double click time (two clicks within this time interval
 count as a double click and result in a #GDK_2BUTTON_PRESS event).
-Applications should &lt;emphasis&gt;not&lt;/emphasis&gt; set this, it is a global 
+Applications should &lt;emphasis&gt;not&lt;/emphasis&gt; set this, it is a global
 user-configured setting.</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
@@ -3962,7 +3963,7 @@ to which the event belongs. Otherwise, return %NULL.</doc>
 typically the screen for &lt;literal&gt;event-&gt;any.window&lt;/literal&gt;, but
 for events such as mouse events, it is the screen
 where the pointer was when the event occurs -
-that is, the screen which has the root window 
+that is, the screen which has the root window
 to which &lt;literal&gt;event-&gt;motion.x_root&lt;/literal&gt; and
 &lt;literal&gt;event-&gt;motion.y_root&lt;/literal&gt; are relative.</doc>
         <return-value transfer-ownership="none">
@@ -16791,7 +16792,7 @@ status of the screen changes</doc>
       </glib:signal>
       <glib:signal name="monitors-changed" when="last" version="2.14">
         <doc xml:whitespace="preserve">The ::monitors-changed signal is emitted when the number, size
-or position of the monitors attached to the screen change. 
+or position of the monitors attached to the screen change.
 
 Only for X11 and OS X for now. A future implementation for Win32
 may be a possibility.</doc>
@@ -16800,7 +16801,7 @@ may be a possibility.</doc>
         </return-value>
       </glib:signal>
       <glib:signal name="size-changed" when="last" version="2.2">
-        <doc xml:whitespace="preserve">The ::size-changed signal is emitted when the pixel width or 
+        <doc xml:whitespace="preserve">The ::size-changed signal is emitted when the pixel width or
 height of a screen changes.</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
@@ -20333,7 +20334,7 @@ previously called gdk_window_set_transient_for()</doc>
               version="2.12">
         <doc xml:whitespace="preserve">Set @window to render as partially transparent,
 with opacity 0 being fully transparent and 1 fully opaque. (Values
-of the opacity parameter are clamped to the [0,1] range.) 
+of the opacity parameter are clamped to the [0,1] range.)
 
 For toplevel windows this depends on support from the windowing system
 that may not always be there. For instance, On X11, this works only on
@@ -22455,7 +22456,7 @@ are emitted when the grab ends unvoluntarily.</doc>
               c:identifier="gdk_keyboard_ungrab"
               deprecated="Use gdk_device_ungrab(), together with gdk_device_grab() instead."
               deprecated-version="3.0">
-      <doc xml:whitespace="preserve">Ungrabs the keyboard on the default display, if it is grabbed by this 
+      <doc xml:whitespace="preserve">Ungrabs the keyboard on the default display, if it is grabbed by this
 application.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
@@ -23011,7 +23012,7 @@ are emitted when the grab ends unvoluntarily.</doc>
               c:identifier="gdk_pointer_is_grabbed"
               deprecated="Use gdk_display_device_is_grabbed() instead."
               deprecated-version="3.0">
-      <doc xml:whitespace="preserve">Returns %TRUE if the pointer on the default display is currently 
+      <doc xml:whitespace="preserve">Returns %TRUE if the pointer on the default display is currently
 grabbed by this application.
 
 Note that this does not take the inmplicit pointer grab on button
@@ -23025,7 +23026,7 @@ presses into account.</doc>
               c:identifier="gdk_pointer_ungrab"
               deprecated="Use gdk_device_ungrab(), together with gdk_device_grab() instead."
               deprecated-version="3.0">
-      <doc xml:whitespace="preserve">Ungrabs the pointer on the default display, if it is grabbed by this 
+      <doc xml:whitespace="preserve">Ungrabs the pointer on the default display, if it is grabbed by this
 application.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
@@ -23242,8 +23243,8 @@ The array returned by this function should not be freed.</doc>
     <function name="rectangle_intersect"
               c:identifier="gdk_rectangle_intersect">
       <doc xml:whitespace="preserve">Calculates the intersection of two rectangles. It is allowed for
-@dest to be the same as either @src1 or @src2. If the rectangles 
-do not intersect, @dest's width and height is set to 0 and its x 
+@dest to be the same as either @src1 or @src2. If the rectangles
+do not intersect, @dest's width and height is set to 0 and its x
 and y values are undefined. If you are only interested in whether
 the rectangles intersect, but not in the intersecting area itself,
 pass %NULL for @dest.</doc>
@@ -23511,9 +23512,9 @@ API instead.</doc>
     <function name="set_double_click_time"
               c:identifier="gdk_set_double_click_time">
       <doc xml:whitespace="preserve">Set the double click time for the default display. See
-gdk_display_set_double_click_time(). 
+gdk_display_set_double_click_time().
 See also gdk_display_set_double_click_distance().
-Applications should &lt;emphasis&gt;not&lt;/emphasis&gt; set this, it is a 
+Applications should &lt;emphasis&gt;not&lt;/emphasis&gt; set this, it is a
 global user-configured setting.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
@@ -23751,7 +23752,7 @@ a list of UTF-8 strings.</doc>
               shadowed-by="threads_add_idle_full"
               version="2.12"
               introspectable="0">
-      <doc xml:whitespace="preserve">A wrapper for the common usage of gdk_threads_add_idle_full() 
+      <doc xml:whitespace="preserve">A wrapper for the common usage of gdk_threads_add_idle_full()
 assigning the default priority, #G_PRIORITY_DEFAULT_IDLE.
 
 See gdk_threads_add_idle_full().</doc>
@@ -23850,7 +23851,7 @@ some_widget_finalize (GObject *object)
               shadowed-by="threads_add_timeout_full"
               version="2.12"
               introspectable="0">
-      <doc xml:whitespace="preserve">A wrapper for the common usage of gdk_threads_add_timeout_full() 
+      <doc xml:whitespace="preserve">A wrapper for the common usage of gdk_threads_add_timeout_full()
 assigning the default priority, #G_PRIORITY_DEFAULT.
 
 See gdk_threads_add_timeout_full().</doc>
@@ -23878,8 +23879,8 @@ See gdk_threads_add_timeout_full().</doc>
               shadows="threads_add_timeout"
               version="2.12">
       <doc xml:whitespace="preserve">Sets a function to be called at regular intervals holding the GDK lock,
-with the given priority.  The function is called repeatedly until it 
-returns %FALSE, at which point the timeout is automatically destroyed 
+with the given priority.  The function is called repeatedly until it
+returns %FALSE, at which point the timeout is automatically destroyed
 and the function will not be called again.  The @notify function is
 called when the timeout is destroyed.  The first call to the
 function will be at the end of the first @interval.
@@ -23890,33 +23891,33 @@ After each call to the timeout function, the time of the next
 timeout is recalculated based on the current time and the given interval
 (it does not try to 'catch up' time lost in delays).
 
-This variant of g_timeout_add_full() can be thought of a MT-safe version 
+This variant of g_timeout_add_full() can be thought of a MT-safe version
 for GTK+ widgets for the following use case:
 
 |[
 static gboolean timeout_callback (gpointer data)
 {
    SomeWidget *self = data;
-   
+
    /&amp;ast; do stuff with self &amp;ast;/
-   
+
    self-&gt;timeout_id = 0;
-   
+
    return G_SOURCE_REMOVE;
 }
- 
+
 static void some_widget_do_stuff_later (SomeWidget *self)
 {
    self-&gt;timeout_id = g_timeout_add (timeout_callback, self)
 }
- 
+
 static void some_widget_finalize (GObject *object)
 {
    SomeWidget *self = SOME_WIDGET (object);
-   
+
    if (self-&gt;timeout_id)
      g_source_remove (self-&gt;timeout_id);
-   
+
    G_OBJECT_CLASS (parent_class)-&gt;finalize (object);
 }
 ]|</doc>
@@ -23959,7 +23960,7 @@ static void some_widget_finalize (GObject *object)
               shadowed-by="threads_add_timeout_seconds_full"
               version="2.14"
               introspectable="0">
-      <doc xml:whitespace="preserve">A wrapper for the common usage of gdk_threads_add_timeout_seconds_full() 
+      <doc xml:whitespace="preserve">A wrapper for the common usage of gdk_threads_add_timeout_seconds_full()
 assigning the default priority, #G_PRIORITY_DEFAULT.
 
 For details, see gdk_threads_add_timeout_full().</doc>

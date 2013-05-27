@@ -39,6 +39,7 @@ with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 
@@ -55,6 +56,10 @@ package Gdk.Device is
    --  Indicates the device type. See <link
    --  linkend="GdkDeviceManager.description">above</link> for more information
    --  about the meaning of these device types.
+
+   function Convert (R : Gdk.Device.Gdk_Device) return System.Address;
+   function Convert (R : System.Address) return Gdk.Device.Gdk_Device;
+   package Device_List is new Generic_List (Gdk.Device.Gdk_Device);
 
    ----------------------------
    -- Enumeration Properties --
