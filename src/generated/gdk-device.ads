@@ -34,6 +34,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                     use Gdk;
 with Gdk.Display;             use Gdk.Display;
+with Gdk.Event;               use Gdk.Event;
 with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
@@ -157,11 +158,54 @@ package Gdk.Device is
    --  Gets the current state of a pointer device relative to Window. As a
    --  slave device coordinates are those of its master pointer, This function
    --  may not be called on devices of type Gdk.Device.Gdk_Device_Type_Slave,
-   --  unless there is an ongoing grab on them, see gdk_device_grab.
+   --  unless there is an ongoing grab on them, see Gdk.Device.Grab.
    --  "window": a Gdk.Gdk_Window.
    --  "axes": an array of doubles to store the values of the axes of Device
    --  in, or null.
    --  "mask": location to store the modifiers, or null.
+
+   function Grab
+      (Self           : not null access Gdk_Device_Record;
+       Window         : Gdk.Gdk_Window;
+       Grab_Ownership : Gdk_Grab_Ownership;
+       Owner_Events   : Boolean;
+       Event_Mask     : Gdk.Event.Gdk_Event_Mask;
+       Cursor         : Gdk.Gdk_Cursor;
+       Time           : Guint32) return Gdk_Grab_Status;
+   --  Grabs the device so that all events coming from this device are passed
+   --  to this application until the device is ungrabbed with
+   --  Gdk.Device.Ungrab, or the window becomes unviewable. This overrides any
+   --  previous grab on the device by this client.
+   --  Device grabs are used for operations which need complete control over
+   --  the given device events (either pointer or keyboard). For example in
+   --  GTK+ this is used for Drag and Drop operations, popup menus and such.
+   --  Note that if the event mask of an X window has selected both button
+   --  press and button release events, then a button press event will cause an
+   --  automatic pointer grab until the button is released. X does this
+   --  automatically since most applications expect to receive button press and
+   --  release events in pairs. It is equivalent to a pointer grab on the
+   --  window with Owner_Events set to True.
+   --  If you set up anything at the time you take the grab that needs to be
+   --  cleaned up when the grab ends, you should handle the
+   --  Gdk.Event.Gdk_Event_Grab_Broken events that are emitted when the grab
+   --  ends unvoluntarily.
+   --  Since: gtk+ 3.0
+   --  "window": the Gdk.Gdk_Window which will own the grab (the grab window)
+   --  "grab_ownership": specifies the grab ownership.
+   --  "owner_events": if False then all device events are reported with
+   --  respect to Window and are only reported if selected by Event_Mask. If
+   --  True then pointer events for this application are reported as normal,
+   --  but pointer events outside this application are reported with respect to
+   --  Window and only if selected by Event_Mask. In either mode, unreported
+   --  events are discarded.
+   --  "event_mask": specifies the event mask, which is used in accordance
+   --  with Owner_Events.
+   --  "cursor": the cursor to display while the grab is active if the device
+   --  is a pointer. If this is null then the normal cursors are used for
+   --  Window and its descendants, and the cursor for Window is used elsewhere.
+   --  "time_": the timestamp of the event which led to this pointer grab.
+   --  This usually comes from the Gdk.Event.Gdk_Event struct, though
+   --  GDK_CURRENT_TIME can be used if the time isn't known.
 
    procedure Set_Key
       (Self      : not null access Gdk_Device_Record;

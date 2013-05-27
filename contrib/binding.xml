@@ -20,7 +20,6 @@
       <method id="gdk_device_get_key" return="" bind="False"/><!-- pending L118-010 -->
       <method id="gdk_device_get_window_at_position" bind="False"/><!-- below -->
       <method id="gdk_device_get_position" bind="False"/><!-- pending resolution of a problem with generating the stub object -->
-      <method id="gdk_device_grab" bind="False"/><!-- no support for Gdk_Grab_Ownership yet -->
       <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
       <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support
       for Gdk_Device_Type_Master lists -->

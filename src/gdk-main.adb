@@ -22,6 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gdk.Types;             use Gdk.Types;
 with System;
 with Interfaces.C.Strings;
 

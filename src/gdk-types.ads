@@ -141,6 +141,26 @@ package Gdk.Types is
       Source_Touchpad);
    pragma Convention (C, Gdk_Input_Source);
 
+   type Gdk_Grab_Status is
+     (Grab_Success,   --  successfully grabbed
+      Grab_Already_Grabbed,   --  resource actively grabbed by another client
+      Grab_Invalid_Time,      --  resource grabbed more recently than the
+                              --  specified time
+      Grab_Not_Viewable,      --  grab window or confine_to_window are not
+                              --  viewable
+      Grab_Frozen);           --  resource is frozen by an active grab of
+                              --  another client
+   --  Indicates the success or reason of failure for a grab attempt
+
+   type Gdk_Grab_Ownership is
+     (Ownership_None,
+      Ownership_Window,
+      Ownership_Application);
+   --  Defines how device grabs interact with other devices:
+   --     None: all other devices' events are allowed
+   --     Window: other devices' events are blocked for the grab window
+   --     Application: other devices' events are blocked for the whole app.
+
    type Gdk_Key_Type is new Guint;
    --  see Gdk.Types.Keysyms for key type constants
 

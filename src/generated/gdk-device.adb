@@ -211,6 +211,32 @@ package body Gdk.Device is
       Internal (Get_Object (Self), Window, Axes, Mask);
    end Get_State;
 
+   ----------
+   -- Grab --
+   ----------
+
+   function Grab
+      (Self           : not null access Gdk_Device_Record;
+       Window         : Gdk.Gdk_Window;
+       Grab_Ownership : Gdk_Grab_Ownership;
+       Owner_Events   : Boolean;
+       Event_Mask     : Gdk.Event.Gdk_Event_Mask;
+       Cursor         : Gdk.Gdk_Cursor;
+       Time           : Guint32) return Gdk_Grab_Status
+   is
+      function Internal
+         (Self           : System.Address;
+          Window         : Gdk.Gdk_Window;
+          Grab_Ownership : Gdk_Grab_Ownership;
+          Owner_Events   : Integer;
+          Event_Mask     : Gdk.Event.Gdk_Event_Mask;
+          Cursor         : Gdk.Gdk_Cursor;
+          Time           : Guint32) return Gdk_Grab_Status;
+      pragma Import (C, Internal, "gdk_device_grab");
+   begin
+      return Internal (Get_Object (Self), Window, Grab_Ownership, Boolean'Pos (Owner_Events), Event_Mask, Cursor, Time);
+   end Grab;
+
    ------------------
    -- Set_Axis_Use --
    ------------------

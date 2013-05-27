@@ -33,6 +33,7 @@ with Gdk.Cairo;            use Gdk.Cairo;
 with Gdk.Event;            use Gdk.Event;
 with Gdk.Main;             use Gdk.Main;
 with Gdk.Rectangle;        use Gdk.Rectangle;
+with Gdk.Types;            use Gdk.Types;
 with Gdk.Window;           use Gdk.Window;
 with Gdk.Window_Attr;      use Gdk.Window_Attr;
 

@@ -31,6 +31,7 @@
 
 with Glib; use Glib;
 with Gdk.Event;
+with Gdk.Types;
 
 package Gdk.Main is
 
@@ -50,20 +51,13 @@ package Gdk.Main is
    function Get_Display return String;
    --  Return the name of the display.
 
-   type Gdk_Grab_Status is
-     (Grab_Success,
-      Grab_Already_Grabbed,
-      Gdk_Grab_Invalid_Time,
-      Gdk_Grab_Not_Viewable,
-      Gdk_Grab_Frozen);
-
    function Pointer_Grab
      (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
       Confine_To   : Gdk.Gdk_Window := null;
       Cursor       : Gdk.Gdk_Cursor := null;
-      Time         : Guint32 := 0) return Gdk_Grab_Status;
+      Time         : Guint32 := 0) return Gdk.Types.Gdk_Grab_Status;
    --  Grab the pointer to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
@@ -73,6 +67,8 @@ package Gdk.Main is
    --    - Cursor changes the cursor for the duration of the grab
    --    - Time specifies the time
    --  Requires a corresponding call to Pointer_Ungrab
+   --
+   --  This is obsolescent in gtk-3, use Gdk.Device.Grab instead
 
    procedure Pointer_Ungrab (Time : Guint32 := 0);
    --  Release any pointer grab.
@@ -83,7 +79,7 @@ package Gdk.Main is
    function Keyboard_Grab
      (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
-      Time         : Guint32 := 0) return Gdk_Grab_Status;
+      Time         : Guint32 := 0) return Gdk.Types.Gdk_Grab_Status;
    --  Grab the keyboard to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
