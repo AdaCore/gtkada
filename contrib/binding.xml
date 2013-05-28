@@ -6105,6 +6105,9 @@ direction, widget state, or icon size.
      <method id="gtk_tree_view_get_path_at_pos" return_as_param="Row_Found"/>
      <method id="gtk_tree_view_get_visible_range" return_as_param="Success"/>
      <method id="gtk_tree_view_get_tooltip_context" return_as_param="Success"/>
+     <method id="gtk_tree_view_set_expander_column">
+        <parameter name="column" allow-none="1"/>
+     </method>
 
      <method id="gtk_tree_view_get_hadjustment" bind="False" /> <!-- from scrollable -->
      <method id="gtk_tree_view_get_vadjustment" bind="False" /> <!-- from scrollable -->

@@ -579,7 +579,7 @@ package Gtk.Tree_View is
 
    procedure Set_Expander_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
+       Column    : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
    --  Sets the column to draw the expander arrow at. It must be in Tree_View.
    --  If Column is null, then the expander arrow is always at the first
    --  visible column.

@@ -2000,14 +2000,14 @@ package body Gtk.Tree_View is
 
    procedure Set_Expander_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
+       Column    : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
    is
       procedure Internal
          (Tree_View : System.Address;
           Column    : System.Address);
       pragma Import (C, Internal, "gtk_tree_view_set_expander_column");
    begin
-      Internal (Get_Object (Tree_View), Get_Object (Column));
+      Internal (Get_Object (Tree_View), Get_Object_Or_Null (GObject (Column)));
    end Set_Expander_Column;
 
    ---------------------------
