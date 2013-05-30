@@ -1345,16 +1345,11 @@ package body Gtkada.MDI is
                      "            from(" & C & ")," & LF &
                      "            to(shade(" & C & ",1.1)));" & LF &
                      "}" & LF &
-                     ".mdichild { background-color: " & Def & "}" & LF &
-                     ".mdifocused { background-color: " & C & "}" & LF &
-                     ".mdifocused tab { background-color: @bg_color}" & LF &
-                     ".mdifocused tab:active {" & LF & --  Focused tab
-                     "  font-weight: bold;" & LF &
-                     "  background-image: -gtk-gradient(" & LF &
-                     "            linear," & LF &
-                     "            left bottom, left top," & LF &
-                     "            from(" & C & ")," & LF &
-                     "            to(shade(" & C & ",0.8)));" & LF &
+                     ".mdi tab GtkLabel {" & LF & --  Focused tab
+                     "  opacity: 0.5;" & LF &
+                     "}" & LF &
+                     ".mdifocused tab GtkLabel {" & LF & --  Focused tab
+                     "  opacity: 1.0;" & LF &
                      "}";
          begin
             Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
@@ -2992,8 +2987,10 @@ package body Gtkada.MDI is
 
       if not Focused then
          Get_Style_Context (Note).Remove_Class ("mdifocused");
+         Get_Style_Context (Note).Add_Class ("mdi");
       else
          Get_Style_Context (Note).Add_Class ("mdifocused");
+         Get_Style_Context (Note).Remove_Class ("mdi");
       end if;
 
       Note.Queue_Draw;
