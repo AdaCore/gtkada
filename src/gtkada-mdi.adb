@@ -881,7 +881,7 @@ package body Gtkada.MDI is
       Gtk_New (MDI.Css_Provider);
       Gtk.Style_Context.Add_Provider_For_Screen
         (Get_Style_Context (MDI).Get_Screen, +MDI.Css_Provider,
-         Priority => Gtk.Style_Provider.Priority_Fallback);
+         Priority => Gtk.Style_Provider.Priority_Settings);
 
       Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
