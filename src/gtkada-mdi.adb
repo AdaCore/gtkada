@@ -1314,8 +1314,6 @@ package body Gtkada.MDI is
                      Gdk.RGBA.To_String (MDI.Focus_Title_Color);
             Bg   : constant String :=
                      Gdk.RGBA.To_String (MDI.Title_Bar_Color);
-            Def  : constant String :=
-                     Gdk.RGBA.To_String (Default_Bg);
             LF   : Character renames ASCII.LF;
 
             --  This will highlight the whole notebook in blue when not
