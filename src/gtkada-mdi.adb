@@ -313,11 +313,6 @@ package body Gtkada.MDI is
    procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class);
    --  Called when the Menu associated with a MDI is destroyed
 
-   function Draw_Child
-     (Widget : System.Address; Cr : Cairo_Context) return Gboolean;
-   pragma Convention (C, Draw_Child);
-   --  Draw the child (and the title bar)
-
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the child is realized
 
@@ -857,6 +852,8 @@ package body Gtkada.MDI is
    is
       Ctx : Gtk_Style_Context;
       Success : Boolean;
+      Title_Color : Gdk.RGBA.Gdk_RGBA;
+      Focus_Color : Gdk.RGBA.Gdk_RGBA;
    begin
       G_New (MDI, Gtkada.MDI.Get_Type);     --  void if already initialized
       Gtkada.Multi_Paned.Initialize (MDI);  --  Initialize parent Ada fields
@@ -878,23 +875,21 @@ package body Gtkada.MDI is
 
       Set_Dnd_Message (MDI, "");
 
-      Parse (MDI.Title_Bar_Color, Default_Title_Bar_Color, Success);
-      Parse (MDI.Focus_Title_Color, Default_Title_Bar_Focus_Color, Success);
+      Parse (Title_Color, Default_Title_Bar_Color, Success);
+      Parse (Focus_Color, Default_Title_Bar_Focus_Color, Success);
 
       Gtk_New (MDI.Css_Provider);
-      Get_Style_Context (MDI).Add_Provider
-        (+MDI.Css_Provider, Priority_Application);
       Gtk.Style_Context.Add_Provider_For_Screen
         (Get_Style_Context (MDI).Get_Screen, +MDI.Css_Provider,
-         Priority => Gtk.Style_Provider.Priority_Application);
+         Priority => Gtk.Style_Provider.Priority_Fallback);
 
       Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
 
       Configure
         (MDI,
-         Title_Bar_Color   => MDI.Title_Bar_Color,
-         Focus_Title_Color => MDI.Focus_Title_Color);
+         Title_Bar_Color   => Title_Color,
+         Focus_Title_Color => Focus_Color);
 
       --  Create a default empty central area. That will be overridden if the
       --  user loads a perspective later on
@@ -1265,8 +1260,7 @@ package body Gtkada.MDI is
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
         Gtk.Enums.Pos_Top;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic;
-      Homogeneous_Tabs          : Boolean := True;
-      Hardcode_Theme            : Boolean := True)
+      Homogeneous_Tabs          : Boolean := True)
    is
       C            : MDI_Child;
       Need_Redraw  : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
@@ -1276,6 +1270,7 @@ package body Gtkada.MDI is
       Note         : Gtk_Notebook;
       Success      : Boolean;
       pragma Unreferenced (Success);
+      Default_Bg   : Gdk.RGBA.Gdk_RGBA;
 
    begin
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
@@ -1303,40 +1298,70 @@ package body Gtkada.MDI is
       MDI.Title_Bar_Height :=
         2 + Get_Size (MDI.Title_Font) / Pango.Enums.Pango_Scale;
 
-      if MDI.Focus_Title_Color /= Focus_Title_Color then
+      if MDI.Focus_Title_Color /= Focus_Title_Color
+        or MDI.Title_Bar_Color /= Title_Bar_Color
+      then
          MDI.Focus_Title_Color := Focus_Title_Color;
+         MDI.Title_Bar_Color := Title_Bar_Color;
 
-         if Hardcode_Theme then
-            declare
-               Err  : aliased GError;
-               C : constant String :=
-                 Gdk.RGBA.To_String (MDI.Focus_Title_Color);
+         Get_Style_Context (MDI).Get_Background_Color
+           (Gtk.Enums.Gtk_State_Flag_Normal,
+            Default_Bg);
 
-               --  This will highlight the whole notebook in blue when not
-               --  using a proper theme. Otherwise, the theme will override
-               --  some of the settings, and only the current focused tab
-               --  will be highlighted with the title color.
-               --  The theme should define
-               --       .mdifocused {background-image: -gtk-gradient{...}}
-               --  or some such, to give a background to the tabs. We can't
-               --  do it here, since the following is loaded with a higher
-               --  priority than the theme, and thus it would override the
-               --  theme.
+         declare
+            Err  : aliased GError;
+            C    : constant String :=
+                     Gdk.RGBA.To_String (MDI.Focus_Title_Color);
+            Bg   : constant String :=
+                     Gdk.RGBA.To_String (MDI.Title_Bar_Color);
+            Def  : constant String :=
+                     Gdk.RGBA.To_String (Default_Bg);
+            LF   : Character renames ASCII.LF;
 
-               Css  : constant String :=
-                 ".mdifocused tab:active {background-image:none;}" &
-                 ".mdifocused {background-color:" & C & "}";
-            begin
-               Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
-            end;
-         end if;
+            --  This will highlight the whole notebook in blue when not
+            --  using a proper theme. Otherwise, the theme will override
+            --  some of the settings, and only the current focused tab
+            --  will be highlighted with the title color.
+            --  The theme should define
+            --       .mdifocused {background-image: -gtk-gradient{...}}
+            --  or some such, to give a background to the tabs. We can't
+            --  do it here, since the following is loaded with a higher
+            --  priority than the theme, and thus it would override the
+            --  theme.
+
+            Css  : constant String :=
+                     ".mdititle {" & LF & --  Normal title
+                     "  border-width: 2px;" & LF &
+                     "  background-image: -gtk-gradient(" & LF &
+                     "            linear," & LF &
+                     "            left top, left bottom," & LF &
+                     "            from(" & Bg & ")," & LF &
+                     "            to(shade(" & Bg & ",1.1)));" & LF &
+                     "}" & LF &
+                     ".mdifocused .mdititle {" & LF & --  Focused title
+                     "  background-image: -gtk-gradient(" & LF &
+                     "            linear," & LF &
+                     "            left top, left bottom," & LF &
+                     "            from(" & C & ")," & LF &
+                     "            to(shade(" & C & ",1.1)));" & LF &
+                     "}" & LF &
+                     ".mdichild { background-color: " & Def & "}" & LF &
+                     ".mdifocused { background-color: " & C & "}" & LF &
+                     ".mdifocused tab { background-color: @bg_color}" & LF &
+                     ".mdifocused tab:active {" & LF & --  Focused tab
+                     "  font-weight: bold;" & LF &
+                     "  background-image: -gtk-gradient(" & LF &
+                     "            linear," & LF &
+                     "            left bottom, left top," & LF &
+                     "            from(" & C & ")," & LF &
+                     "            to(shade(" & C & ",0.8)));" & LF &
+                     "}";
+         begin
+            Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
+         end;
       end if;
 
       --  Ignore changes in colors, unless the MDI is realized
-
-      if Title_Bar_Color /= Null_RGBA then
-         MDI.Title_Bar_Color   := Title_Bar_Color;
-      end if;
 
       Iter := First_Child
         (MDI, Group_By_Notebook => True, Visible_Only => True);
@@ -1727,47 +1752,6 @@ package body Gtkada.MDI is
          Set_Size_Request (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
       end if;
    end Set_Child_Title_Bar;
-
-   ----------------
-   -- Draw_Child --
-   ----------------
-
-   function Draw_Child
-     (Widget : System.Address; Cr : Cairo_Context) return Gboolean
-   is
-      Child : constant MDI_Child := MDI_Child (Glib.Object.Convert (Widget));
-      Color : Gdk_RGBA := Child.MDI.Title_Bar_Color;
-      Pat   : Cairo_Pattern;
-      Alloc : Gtk_Allocation;
-      Ignored : Boolean;
-      pragma Unreferenced (Ignored);
-   begin
-      --  Call this function so that for a dock item is highlighted if the
-      --  current page is linked to the focus child.
-
-      if Child.MDI.Focus_Child = Child then
-         Color := Child.MDI.Focus_Title_Color;
-      end if;
-
-      Cairo.Save (Cr);
-      Child.Title_Box.Get_Allocation (Alloc);
-      Pat := Pattern_Create_Linear (0.0, 0.0, 0.0, Gdouble (Alloc.Height));
-      Pattern_Add_Color_Stop_Rgba
-        (Pat, 0.0, Color.Red, Color.Green, Color.Blue, 1.0);
-      Pattern_Add_Color_Stop_Rgba
-        (Pat, 1.0, Color.Red, Color.Green, Color.Blue, 0.6);
-      Set_Source (Cr, Pat);
-      Cairo.Rectangle
-        (Cr, 0.0, 0.0, Gdouble (Alloc.Width), Gdouble (Alloc.Height));
-      Cairo.Fill (Cr);
-      Pattern_Destroy (Pat);
-      Cairo.Restore (Cr);
-
-      --  gtk_event_box_draw would override the background we just drew, but
-      --  Child is set as App_Paintable.
-      Ignored := Inherited_Draw (Child_Class_Record, Child, Cr);
-      return 0;
-   end Draw_Child;
 
    ---------------------
    -- Set_Dnd_Message --
@@ -2247,15 +2231,12 @@ package body Gtkada.MDI is
                              3 => (1 => GType_None),
                              4 => (1 => GType_None));
    begin
-      if Glib.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtk.Event_Box.Get_Type,
          Signals      => Child_Signals,
-         Class_Record => Child_Class_Record'Access,
+         Class_Record => Child_Class_Record,
          Type_Name    => "GtkAdaMDIChild",
-         Parameters   => Signal_Parameters)
-      then
-         Set_Default_Draw_Handler (Child_Class_Record, Draw_Child'Access);
-      end if;
+         Parameters   => Signal_Parameters);
       return Child_Class_Record.The_Type;
    end Child_Get_Type;
 
@@ -2295,9 +2276,8 @@ package body Gtkada.MDI is
 
       G_New (Child, Child_Get_Type);
 
-      Child.Set_Has_Window (True);
-      Child.Set_App_Paintable (True);  --  prevent standard gtk_event_box_draw
       Child.Set_Border_Width (0);
+      Get_Style_Context (Child).Add_Class ("mdichild");
       Child.Initial      := Gtk_Widget (Widget);
       Child.State        := Normal;
       Child.Flags        := Flags;
@@ -2329,9 +2309,12 @@ package body Gtkada.MDI is
 
       --  Buttons in the title bar
 
-      Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
+      Gtk_New (Event);
+      Get_Style_Context (Event).Add_Class ("mdititle");
       Pack_Start
-        (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
+        (Child.Main_Box, Event, Expand => False, Fill => False);
+      Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
+      Add (Event, Child.Title_Box);
 
       Gtk_New (Event);
       Event.Set_App_Paintable (True);  --  prevent standard gtk_event_box_draw
@@ -2717,6 +2700,7 @@ package body Gtkada.MDI is
       if Child /= null and then Child.State = Invisible then
          Put (MDI, Child);
       end if;
+
       return Child;
    end Insert_Child_If_Needed;
 

@@ -132,8 +132,7 @@ package Gtkada.MDI is
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
       Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Top;
       Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic;
-      Homogeneous_Tabs   : Boolean := True;
-      Hardcode_Theme            : Boolean := True);
+      Homogeneous_Tabs   : Boolean := True);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it (unless its flag
@@ -153,11 +152,15 @@ package Gtkada.MDI is
    --  are resized (and ellipsized as needed) so that more of them show.
    --  Changing this setup requires a restart of the MDI.
    --
-   --  If Hardcode_Theme is true, a custom CSS will be loaded to override some
-   --  colors. Applications might prefer to provide this capability through an
-   --  explicit CSS file that can be modified by users, and in that case should
-   --  set this parameter to False. See the code of this function to see what
-   --  CSS is loaded.
+   --  Calling configure will define a default CSS to properly theme the MDI.
+   --  This CSS relies on mainly two widget classes to behave:
+   --  * mdifocused, corresponding to the notebook having the focus
+   --  * mdititle, corresponding to the title bar
+   --  This default CSS renders the active tab of the active notebook with the
+   --  color defined in Focus_Title_Color. Same for the color of the title
+   --  bar (uses Title_Bar_Color for non-active title bar).
+   --  This behavior can at any point be overriden by users by defining
+   --  their own and load it at run-time.
 
    function Independent_Perspectives
      (MDI : access MDI_Window_Record) return Boolean;
