@@ -1345,10 +1345,10 @@ package body Gtkada.MDI is
                      "            from(" & C & ")," & LF &
                      "            to(shade(" & C & ",1.1)));" & LF &
                      "}" & LF &
-                     ".mdi tab GtkLabel {" & LF & --  Focused tab
-                     "  opacity: 0.5;" & LF &
+                     ".mdi tab * {" & LF & --  Focused tab
+                     "  opacity: 0.8;" & LF &
                      "}" & LF &
-                     ".mdifocused tab GtkLabel {" & LF & --  Focused tab
+                     ".mdifocused tab * {" & LF & --  Focused tab
                      "  opacity: 1.0;" & LF &
                      "}";
          begin
@@ -2987,10 +2987,8 @@ package body Gtkada.MDI is
 
       if not Focused then
          Get_Style_Context (Note).Remove_Class ("mdifocused");
-         Get_Style_Context (Note).Add_Class ("mdi");
       else
          Get_Style_Context (Note).Add_Class ("mdifocused");
-         Get_Style_Context (Note).Remove_Class ("mdi");
       end if;
 
       Note.Queue_Draw;
@@ -3544,6 +3542,7 @@ package body Gtkada.MDI is
       Set_Scrollable (Notebook);
       Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
       Notebook.Set_Group_Name ("MDI");
+      Get_Style_Context (Notebook).Add_Class ("mdi");
 
       Widget_Callback.Connect
         (Notebook, Signal_Remove, Removed_From_Notebook'Access);
