@@ -7385,7 +7385,13 @@ package body Gtkada.MDI is
             Height => Get_Allocated_Height (MDI));
          Parent_Rectangle := Rectangle;
 
-         Get_Pointer (MDI, X, Y);
+         Gdk.Window.Get_Device_Position
+            (Self   => Get_Window (MDI),
+             Device => Gtk.Main.Get_Current_Event_Device,
+             X      => X,
+             Y      => Y,
+             Mask   => Mask,
+             Window => Win);
 
          if Y < Max_Drag_Border_Width / 2 then
             Position := Position_Top;
@@ -7430,39 +7436,41 @@ package body Gtkada.MDI is
             Gtkada.Style.Get_Offset (Parent, MDI, Rectangle.X, Rectangle.Y);
             Parent.Get_Allocation (Alloc);
 
-            Rectangle := (X      => Rectangle.X + Alloc.X,
-                          Y      => Rectangle.Y + Alloc.Y,
-                          Width  => Alloc.Width,
-                          Height => Alloc.Height);
-            Parent_Rectangle := Rectangle;
-
+            --  Compute device position relative to the MDI
             Gdk.Window.Get_Device_Position
-               (Self   => Get_Window (Parent),
+               (Self   => Get_Window (MDI),
                 Device => Gtk.Main.Get_Current_Event_Device,
                 X      => X,
                 Y      => Y,
                 Mask   => Mask,
                 Window => Win);
 
+            --  size of the parent, and position relative to MDI
+            Rectangle := (X      => Rectangle.X + Alloc.X,
+                          Y      => Rectangle.Y + Alloc.Y,
+                          Width  => Alloc.Width,
+                          Height => Alloc.Height);
+            Parent_Rectangle := Rectangle;
+
             Border_Height := Gint'Min
               (Max_Drag_Border_Width, Rectangle.Height / 3);
             Border_Width :=
               Gint'Min (Max_Drag_Border_Width, Rectangle.Width / 3);
 
-            if Y < Border_Height then
+            if Y < Rectangle.Y + Border_Height then
                Position := Position_Top;
                Rectangle.Height := Border_Height;
 
-            elsif Y > Rectangle.Height - Border_Height then
+            elsif Y > Rectangle.Y + Rectangle.Height - Border_Height then
                Position := Position_Bottom;
                Rectangle.Y := Rectangle.Y + Rectangle.Height - Border_Height;
                Rectangle.Height := Border_Height;
 
-            elsif X < Border_Width then
+            elsif X < Rectangle.X + Border_Width then
                Position := Position_Left;
                Rectangle.Width := Border_Width;
 
-            elsif X > Rectangle.Width - Border_Width then
+            elsif X > Rectangle.X + Rectangle.Width - Border_Width then
                Position := Position_Right;
                Rectangle.X := Rectangle.X + Rectangle.Width - Border_Width;
                Rectangle.Width := Border_Width;
