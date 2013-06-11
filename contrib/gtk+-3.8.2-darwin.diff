@@ -1,6 +1,5 @@
 2013-05-14      JC Delay  <delay@adacore.com>
 
-        (gdk/quartz/gdkwindow-quartz.c): Fix scroll issue on darwin.
         (gtk/gtkrange.c): Ditto.
         (gtk/gtkscrolledwindow.c): Ditto.
 
@@ -65,18 +64,4 @@
 + #endif
   
             new_value = CLAMP (gtk_adjustment_get_value (adj) + delta_x * scroll_unit,
-                               gtk_adjustment_get_lower (adj),
-***************
-*** 2320,2326 ****
---- 2324,2334 ----
-  
-            adj = gtk_range_get_adjustment (GTK_RANGE (priv->vscrollbar));
-            page_size = gtk_adjustment_get_page_size (adj);
-+ #ifndef GDK_WINDOWING_QUARTZ
-            scroll_unit = pow (page_size, 2.0 / 3.0);
-+ #else
-+           scroll_unit = 1.0;
-+ #endif
-  
-            new_value = CLAMP (gtk_adjustment_get_value (adj) + delta_y * scroll_unit,
                                gtk_adjustment_get_lower (adj),
