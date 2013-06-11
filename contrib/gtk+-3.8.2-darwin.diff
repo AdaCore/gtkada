@@ -1,8 +1,3 @@
-2013-05-14      JC Delay  <delay@adacore.com>
-
-        (gtk/gtkrange.c): Ditto.
-        (gtk/gtkscrolledwindow.c): Ditto.
-
 2013-05-23	Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtkclipboard-quartz.c: Replace undefined symbol.
@@ -33,35 +28,3 @@
            break;
          }
      }
-*** gtk/gtkrange.c.old	Fri Aug 17 15:43:37 2012
---- gtk/gtkrange.c	Fri Aug 17 15:40:55 2012
-***************
-*** 2801,2807 ****
---- 2801,2811 ----
-    page_increment = gtk_adjustment_get_page_increment (adjustment);
-  
-    if (GTK_IS_SCROLLBAR (range))
-+ #ifndef GDK_WINDOWING_QUARTZ
-      scroll_unit = pow (page_size, 2.0 / 3.0);
-+ #else
-+     scroll_unit = 1.0;
-+ #endif
-    else
-      scroll_unit = page_increment;
-  
-*** gtk/gtkscrolledwindow.c.old	Fri Aug 17 15:43:09 2012
---- gtk/gtkscrolledwindow.c	Fri Aug 17 15:31:59 2012
-***************
-*** 2298,2304 ****
---- 2298,2308 ----
-  
-            adj = gtk_range_get_adjustment (GTK_RANGE (priv->hscrollbar));
-            page_size = gtk_adjustment_get_page_size (adj);
-+ #ifndef GDK_WINDOWING_QUARTZ
-            scroll_unit = pow (page_size, 2.0 / 3.0);
-+ #else
-+           scroll_unit = 1.0;
-+ #endif
-  
-            new_value = CLAMP (gtk_adjustment_get_value (adj) + delta_x * scroll_unit,
-                               gtk_adjustment_get_lower (adj),
