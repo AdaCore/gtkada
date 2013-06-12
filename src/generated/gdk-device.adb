@@ -41,6 +41,16 @@ package body Gdk.Device is
          return Gdk.Device.Gdk_Device (Glib.Object.Get_User_Data (R, Stub));
       end Convert;
 
+   procedure Set_Device
+     (Event  : Gdk.Event.Gdk_Event;
+      Device : not null access Gdk_Device_Record)
+   is
+      procedure Internal (Event : Gdk.Event.Gdk_Event; D : System.Address);
+      pragma Import (C, Internal, "gdk_event_set_device");
+   begin
+      Internal (Event, Get_Object (Device));
+   end Set_Device;
+
    procedure Get_Window_At_Position
      (Self   : not null access Gdk_Device_Record;
       Win_X  : out Gint;

@@ -270,6 +270,13 @@ package Gdk.Device is
    --  "win_y": return location for the Y coordinate of the device location,
    --  relative to the window origin, or null.
 
+   procedure Set_Device
+     (Event   : Gdk.Event.Gdk_Event;
+      Device  : not null access Gdk_Device_Record);
+   --  Sets the device for @event to @device. The event must
+   --  have been allocated by GTK+, for instance, by
+   --  gdk_event_copy().
+
    ----------------
    -- Properties --
    ----------------
