@@ -1897,6 +1897,11 @@ package Gdk.Window is
    --  You almost always need to call this function after creating a new
    --  Gdk_Window yourself, or you won't be able to handle the events.
 
+   procedure Ref (Window : Gdk_Window);
+   procedure Unref (Window : Gdk_Window);
+   pragma Import (C, Ref, "g_object_ref");
+   pragma Import (C, Unref, "g_object_unref");
+
    ---------------
    -- Functions --
    ---------------
