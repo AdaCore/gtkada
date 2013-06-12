@@ -92,7 +92,7 @@ package body Gtk.List_Store is
          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
          Column     : Gint;
          Value      : System.Address);
-      pragma Import (C, Internal, "ada_gtk_list_store_set_int");
+      pragma Import (C, Internal, "ada_gtk_list_store_set_ptr");
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Get_Object (Value));
    end Set;
