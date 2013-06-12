@@ -48,11 +48,27 @@
    procedure Set_Device
       (Event   : Gdk.Event.Gdk_Event;
        Device  : not null access Gdk_Device_Record);
-   --  Sets the device for @event to @device. The event must
-   --  have been allocated by GTK+, for instance, by
-   --  gdk_event_copy().
+   --  Sets the device for Event to Device. The event must
+   --  have been allocated by GTK+, for instance, by gdk_event_copy().
+
+   procedure Set_Source_Device
+      (Event   : Gdk.Event.Gdk_Event;
+       Device  : not null access Gdk_Device_Record);
+   --  Sets the slave device for Event to Device.
+   --  The event must have been allocated by GTK+,
+   --  for instance by gdk_event_copy().
          </spec>
          <body>
+   procedure Set_Source_Device
+      (Event  : Gdk.Event.Gdk_Event;
+       Device : not null access Gdk_Device_Record)
+   is
+      procedure Internal (Event : Gdk.Event.Gdk_Event; D : System.Address);
+      pragma Import (C, Internal, "gdk_event_set_source_device");
+   begin
+      Internal (Event, Get_Object (Device));
+   end Set_Source_Device;
+
    procedure Set_Device
       (Event  : Gdk.Event.Gdk_Event;
        Device : not null access Gdk_Device_Record)

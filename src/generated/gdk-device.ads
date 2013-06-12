@@ -273,9 +273,15 @@ package Gdk.Device is
    procedure Set_Device
      (Event   : Gdk.Event.Gdk_Event;
       Device  : not null access Gdk_Device_Record);
-   --  Sets the device for @event to @device. The event must
-   --  have been allocated by GTK+, for instance, by
-   --  gdk_event_copy().
+   --  Sets the device for Event to Device. The event must
+   --  have been allocated by GTK+, for instance, by gdk_event_copy().
+
+   procedure Set_Source_Device
+     (Event   : Gdk.Event.Gdk_Event;
+      Device  : not null access Gdk_Device_Record);
+   --  Sets the slave device for Event to Device.
+   --  The event must have been allocated by GTK+,
+   --  for instance by gdk_event_copy().
 
    ----------------
    -- Properties --
