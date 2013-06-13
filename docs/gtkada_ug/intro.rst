@@ -61,8 +61,6 @@ This version of GtkAda is known to be compatible with `gtk+` **3.8.x**
 This release may or may not be compatible with older versions of
 gtk+.
 
-This version of GtkAda is compatible with `Glade` **version 3.7.3**.
-
 This document does not describe all the widgets available in GtkAda, nor does
 it try to explain all the subprograms. The GtkAda Reference Manual provides
 this documentation instead, as well as the GtkAda sources spec files
