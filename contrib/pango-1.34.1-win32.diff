@@ -1,3 +1,11 @@
+2011-05-25  Jerome Lambourg <lambourg@adacore.com>
+
+       * pango/pangowin32-fontmap.c (get_family_nameW): Make sure that the
+       handler to the device context is properly initialized before using it to
+       find font names.
+       Fix K519-012
+       Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=651124
+
 2012-05-29	Nicolas Setton  <setton@adacore.com>
 
 	* pango/Makefile.in: Deactivate hard-coded dependency
@@ -17,3 +25,17 @@
  pangowin32-win32-res.o: pangowin32.rc
  	$(AM_V_GEN) $(WINDRES) $< $@
  
+*** pango/pangowin32-fontmap.c.old      2011-05-25 17:48:46.102539100 +0200
+--- pango/pangowin32-fontmap.c  2011-05-25 17:49:20.737304700 +0200
+***************
+*** 953,958 ****
+--- 953,961 ----
+    gint i, l;
+    gsize nbytes;
+
++   /* make sure _pango_win32_hdc is initialized */
++   pango_win32_get_dc ();
++
+    /* If lfFaceName is ASCII, assume it is the common (English) name
+     * for the font. Is this valid? Do some TrueType fonts have
+     * different names in French, German, etc, and does the system
