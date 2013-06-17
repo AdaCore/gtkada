@@ -2463,10 +2463,10 @@ __PRE__
        <parameter name="Height" default="-1" />
      </method>
      <method id="gtk_widget_add_accelerator">
-       <parameter name="Accel_Key" ctype="GtkAccelKey" />
+       <parameter name="Accel_Key" ctype="GdkKeyType" />
      </method>
      <method id="gtk_widget_remove_accelerator">
-       <parameter name="Accel_Key" ctype="GtkAccelKey" />
+       <parameter name="Accel_Key" ctype="GdkKeyType" />
      </method>
      <method id="gtk_widget_add_events">
        <parameter name="Events" ctype="GdkEventMask"/>

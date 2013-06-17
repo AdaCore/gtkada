@@ -204,7 +204,7 @@ package body Gtk.Widget is
       (Widget       : not null access Gtk_Widget_Record;
        Accel_Signal : UTF8_String;
        Accel_Group  : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
-       Accel_Key    : Gtk.Accel_Group.Gtk_Accel_Key;
+       Accel_Key    : Gdk.Types.Gdk_Key_Type;
        Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
        Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags)
    is
@@ -212,7 +212,7 @@ package body Gtk.Widget is
          (Widget       : System.Address;
           Accel_Signal : Interfaces.C.Strings.chars_ptr;
           Accel_Group  : System.Address;
-          Accel_Key    : Gtk.Accel_Group.Gtk_Accel_Key;
+          Accel_Key    : Gdk.Types.Gdk_Key_Type;
           Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
           Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
@@ -2424,13 +2424,13 @@ package body Gtk.Widget is
    function Remove_Accelerator
       (Widget      : not null access Gtk_Widget_Record;
        Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
-       Accel_Key   : Gtk.Accel_Group.Gtk_Accel_Key;
+       Accel_Key   : Gdk.Types.Gdk_Key_Type;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
       function Internal
          (Widget      : System.Address;
           Accel_Group : System.Address;
-          Accel_Key   : Gtk.Accel_Group.Gtk_Accel_Key;
+          Accel_Key   : Gdk.Types.Gdk_Key_Type;
           Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Integer;
       pragma Import (C, Internal, "gtk_widget_remove_accelerator");
    begin

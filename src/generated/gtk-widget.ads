@@ -402,7 +402,7 @@ package Gtk.Widget is
       (Widget       : not null access Gtk_Widget_Record;
        Accel_Signal : UTF8_String;
        Accel_Group  : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
-       Accel_Key    : Gtk.Accel_Group.Gtk_Accel_Key;
+       Accel_Key    : Gdk.Types.Gdk_Key_Type;
        Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
        Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
    --  Installs an accelerator for this Widget in Accel_Group that causes
@@ -2391,7 +2391,7 @@ package Gtk.Widget is
    function Remove_Accelerator
       (Widget      : not null access Gtk_Widget_Record;
        Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
-       Accel_Key   : Gtk.Accel_Group.Gtk_Accel_Key;
+       Accel_Key   : Gdk.Types.Gdk_Key_Type;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator from Widget, previously installed with
    --  Gtk.Widget.Add_Accelerator.
