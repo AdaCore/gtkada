@@ -12,6 +12,17 @@ Known problems fixed in GtkAda 3.4.2
 
 Known problems fixed in GtkAda 3.4.0
 
+- M617-010 Incorrect binding for Gtk.Widget.Add_Accelerator
+  Problem:    The type for Key is incorrect
+  Workaround: Replace the type with Gdk_Key_Type
+
+- M110-027 Incorrect binding for Gtk.Tree_Selection.Get_Selected
+  Problem:    The new implementation for this function is not backward
+              compatible, and when there is no actual selection will return
+              uninitialized values.
+  Workaround: Use Gtk.Tree_Selection.Count_Selected_Rows to verify that there
+              is indeed a selection before calling Get_Selected.
+
 - L615-005 Constraint Error using the GtkAda.Canvas
   Problem:    The GtkAda.Canvas might raise a Constraint_Error when moving
               the mouse and a button has never been pressed.

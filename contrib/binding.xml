@@ -6764,7 +6764,25 @@ direction, widget state, or icon size.
 
    <package id="GtkTreeSelection">
      <parameter name="self" ada="Selection" />
-     <method id="gtk_tree_selection_get_selected" return="void"/>
+     <method id="gtk_tree_selection_get_selected" return="void">
+        <body>
+      function Internal
+        (Selection : System.Address;
+         Model     : access Gtk_Tree_Model;
+         Iter      : access Gtk_Tree_Iter) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_selection_get_selected");
+      M  : aliased Gtk_Tree_Model;
+      It : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (Get_Object (Selection), M'Access, It'Access) = 0 then
+         Iter  := Null_Iter;
+         Model := Null_Gtk_Tree_Model;
+      else
+         Model := M;
+         Iter  := It;
+      end if;
+        </body>
+     </method>
      <method id="gtk_tree_selection_get_selected_rows" bind="False"/><!-- see below -->
      <method id="gtk_tree_selection_get_tree_view" return="Gtk_Widget"/> <!-- avoid circular dep -->
      <extra>
