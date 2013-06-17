@@ -211,11 +211,10 @@ package body Gtk.Tree_Selection is
    begin
       if Internal (Get_Object (Selection), M'Access, It'Access) = 0 then
          Iter  := Null_Iter;
-         Model := Null_Gtk_Tree_Model;
       else
-         Model := M;
          Iter  := It;
       end if;
+      Model := M;
    end Get_Selected;
 
    -------------------
