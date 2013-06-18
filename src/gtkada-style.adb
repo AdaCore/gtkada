@@ -29,9 +29,12 @@ with Glib.Error;   use Glib.Error;
 with Cairo;        use Cairo;
 with Pango.Cairo;  use Pango.Cairo;
 with Gdk.Cairo;    use Gdk.Cairo;
+with Gdk.Device;   use Gdk.Device;
+with Gdk.Device_Manager; use Gdk.Device_Manager;
 with Gdk.Display;  use Gdk.Display;
 with Gdk.RGBA;     use Gdk.RGBA;
 with Gdk.Screen;   use Gdk.Screen;
+with Gdk.Types;    use Gdk.Types;
 with Gdk.Window;   use Gdk;
 
 with Gtk.Enums;         use Gtk.Enums;
@@ -785,5 +788,34 @@ package body Gtkada.Style is
               Blue  => Glib.Gdouble'Min (1.0, Color.Blue + Amount),
               Alpha => Color.Alpha);
    end Lighten;
+
+   ----------------------
+   -- Get_First_Device --
+   ----------------------
+
+   function Get_First_Device
+     (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Source : Gdk.Types.Gdk_Input_Source) return Gdk.Device.Gdk_Device
+   is
+      use Device_List;
+      Screen : constant Gdk_Screen := Widget.Get_Screen;
+      Mgr : constant Gdk_Device_Manager :=
+        Get_Device_Manager (Screen.Get_Display);
+      L : Device_List.Glist := Mgr.List_Devices (Gdk_Device_Type_Master);
+      L2 : Device_List.Glist := L;
+      Device : Gdk_Device;
+   begin
+      while L2 /= Device_List.Null_List loop
+         Device := Device_List.Get_Data (L2);
+         if Device.Get_Source = Source then
+            Device_List.Free (L);
+            return Device;
+         end if;
+         L2 := Device_List.Next (L2);
+      end loop;
+
+      Device_List.Free (L);
+      return null;
+   end Get_First_Device;
 
 end Gtkada.Style;

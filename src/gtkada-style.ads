@@ -32,8 +32,10 @@ with Glib;
 with Cairo;
 with Pango.Layout;
 with Gdk.Color;
+with Gdk.Device;
 with Gdk.Pixbuf;
 with Gdk.RGBA;
+with Gdk.Types;
 with Gtk.Enums;
 with Gtk.Style_Provider;
 with Gtk.Widget;
@@ -248,5 +250,18 @@ package Gtkada.Style is
    --  Get the position of Window within parent's window (not that this is not
    --  necessarily the same as the position within Parent if the latter does
    --  not have a window).
+
+   -------------
+   -- Devices --
+   -------------
+
+   function Get_First_Device
+     (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+      Source : Gdk.Types.Gdk_Input_Source) return Gdk.Device.Gdk_Device;
+   --  Return the first device that matches the given source.
+   --  This can be used to simulate keyboard events (using Source_Keyboard)
+   --  or mouse events (Source_Mouse) for instance.
+   --  The returned value (if not null) must be Ref-ed before being assigned
+   --  to an event for instance.
 
 end Gtkada.Style;
