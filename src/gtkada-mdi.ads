@@ -294,8 +294,8 @@ package Gtkada.MDI is
 
    procedure Set_Title
      (Child       : access MDI_Child_Record;
-      Title       : UTF8_String;
-      Short_Title : UTF8_String := "");
+      Title       : String;
+      Short_Title : String := "");
    --  Set the title for a child. Title is the title put in titlebar of
    --  the children, whereas Short_Title is the name of the notebook tab when
    --  children are maximized. By default, it is the same as Title.
@@ -303,6 +303,10 @@ package Gtkada.MDI is
    --  The default title is the empty string.
    --  This title will be the one used for the window when the child is set to
    --  floating state.
+   --
+   --  Title and Short_Title should preferably be UTF8-encoded, although this
+   --  procedure will attempt to guess the encoding if the string is not valid
+   --  UTF8.
 
    function Get_MDI (Child : access MDI_Child_Record) return MDI_Window;
    --  Return the MDI to which Child is associated. In Child is a floating

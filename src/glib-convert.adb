@@ -281,11 +281,15 @@ package body Glib.Convert is
 
       S   : constant chars_ptr := Internal
         (OS_String, OS_String'Length, Error => Error);
-      Str : constant String := Value (S);
-
    begin
-      g_free (S);
-      return Str;
+      if S /= Null_Ptr then
+         return Str : constant String := Value (S) do
+            g_free (S);
+         end return;
+      else
+         g_free (S);
+         return "";
+      end if;
    end Filename_To_UTF8;
 
    ----------------------

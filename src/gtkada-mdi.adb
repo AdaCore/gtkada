@@ -50,6 +50,7 @@ with Glib.Error;              use Glib.Error;
 with Glib.Main;               use Glib.Main;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with Glib.Unicode;            use Glib.Unicode;
 with Glib.Values;             use Glib.Values;
 
 with Cairo;                   use Cairo;
@@ -2623,25 +2624,61 @@ package body Gtkada.MDI is
 
    procedure Set_Title
      (Child       : access MDI_Child_Record;
-      Title       : UTF8_String;
-      Short_Title : UTF8_String := "")
+      Title       : String;
+      Short_Title : String := "")
    is
+      function To_UTF8 (Str : String) return String;
+      --  Ensure the output string is valid UTF8
+
+      function To_UTF8 (Str : String) return String is
+         Valid : Boolean;
+         Invalid_Pos : Natural;
+      begin
+         UTF8_Validate (Str, Valid, Invalid_Pos);
+
+         if Valid then
+            return Str;
+         else
+            declare
+               S : constant String := Glib.Convert.Filename_To_UTF8 (Str);
+            begin
+               if S /= "" then
+                  return S;
+               end if;
+            end;
+
+            declare
+               S : constant String := Glib.Convert.Locale_To_UTF8 (Str);
+            begin
+               if S /= "" then
+                  return S;
+               end if;
+            end;
+
+            return Str (Str'First .. Str'First + Invalid_Pos);
+         end if;
+      end To_UTF8;
+
+      T : constant String := To_UTF8 (Title);
+      S : constant String := To_UTF8 (Short_Title);
+
       Title_Changed       : constant Boolean := Child.Title = null
-                              or else Child.Title.all /= Title;
+                              or else Child.Title.all /= T;
       Short_Title_Changed : constant Boolean := Child.Short_Title = null
-                              or else Child.Short_Title.all /= Short_Title;
+                              or else Child.Short_Title.all /= S;
+
    begin
       if Title_Changed then
          Free (Child.Title);
-         Child.Title := new UTF8_String'(Title);
+         Child.Title := new UTF8_String'(T);
       end if;
 
       if Short_Title_Changed then
          Free (Child.Short_Title);
-         if Short_Title /= "" then
-            Child.Short_Title := new UTF8_String'(Short_Title);
+         if S /= "" then
+            Child.Short_Title := new UTF8_String'(S);
          else
-            Child.Short_Title := new UTF8_String'(Title);
+            Child.Short_Title := new UTF8_String'(T);
          end if;
       end if;
 
