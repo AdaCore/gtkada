@@ -1272,6 +1272,8 @@ package body Gtkada.MDI is
       Success      : Boolean;
       pragma Unreferenced (Success);
       Default_Bg   : Gdk.RGBA.Gdk_RGBA;
+      Homogeneous_Changed : constant Boolean :=
+         MDI.Homogeneous_Tabs /= Homogeneous_Tabs;
 
    begin
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
@@ -1378,6 +1380,10 @@ package body Gtkada.MDI is
 
                Configure_Notebook_Tabs (MDI, Note);
             end if;
+         end if;
+
+         if Homogeneous_Changed then
+            Update_Tab_Label (C);
          end if;
 
          Next (Iter);
@@ -3618,15 +3624,11 @@ package body Gtkada.MDI is
       end if;
 
       Child := MDI_Child (Get_Nth_Page (Notebook, 0));
-      if Child = null then
-         null;
-      elsif Get_Nth_Page (Notebook, 1) /= null
-         or else MDI.Show_Tabs_Policy = Always
-      then
-         Set_Property (Notebook, Show_Border_Property, False);
-
-      else
-         Set_Property (Notebook, Show_Border_Property, True);
+      if Child /= null then
+         Set_Property
+            (Notebook, Show_Border_Property,
+             Get_Nth_Page (Notebook, 1) = null
+             and then MDI.Show_Tabs_Policy /= Always);
       end if;
 
       if Hide_If_Empty then
