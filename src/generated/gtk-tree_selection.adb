@@ -206,7 +206,7 @@ package body Gtk.Tree_Selection is
          Model     : access Gtk_Tree_Model;
          Iter      : access Gtk_Tree_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_selection_get_selected");
-      M  : aliased Gtk_Tree_Model;
+      M  : aliased Gtk_Tree_Model := Null_Gtk_Tree_Model;
       It : aliased Gtk_Tree_Iter;
    begin
       if Internal (Get_Object (Selection), M'Access, It'Access) = 0 then
