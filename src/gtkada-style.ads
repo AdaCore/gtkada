@@ -58,40 +58,83 @@ package Gtkada.Style is
    --  wanting to shade a color (change it's value), (de)saturate it, or modify
    --  its hue.
 
+   type HSLA_Color is record
+      Hue        : Glib.Gdouble;
+      Saturation : Glib.Gdouble;
+      Lightness  : Glib.Gdouble;
+      Alpha      : Glib.Gdouble;
+   end record;
+   --  The Hue is the colour's position on the colour wheel, expressed in
+   --  degrees from 0° to 359°, representing the 360° of the wheel; 0°
+   --  being red, 180° being red's opposite colour cyan, and so on.
+   --  The mapping is:    0.0 => 0°
+   --                     1.0 => 360°
+   --
+   --  Saturation is the intensity of the colour, how dull or bright it is.
+   --  The lower the saturation, the duller (greyer) the colour looks. This is
+   --  expressed as a percentage, 100% being full saturation, the brightest,
+   --  and 0% being no saturation, grey.
+   --
+   --  Lightness is how light the colour is. Slightly different to saturation.
+   --  The more white in the colour the higher its Lightness value, the more
+   --  black, the lower its Lightness. So 100% Lightness turns the colour
+   --  white, 0% Lightness turns the colour black, and the "pure" colour
+   --  would be 50% Lightness.
+
+   function To_HSLA (Color : Gdk.RGBA.Gdk_RGBA) return HSLA_Color;
+   function To_RGBA (Color : HSLA_Color) return Gdk.RGBA.Gdk_RGBA;
    function To_HSV (Color   : Cairo_Color) return HSV_Color;
+   function To_Cairo (Color : Cairo_Color) return Gdk.RGBA.Gdk_RGBA;
    function To_Cairo (HSV : HSV_Color) return Cairo_Color;
    function To_Cairo (Color : Gdk.Color.Gdk_Color) return Cairo_Color;
-   function To_Cairo (Color : Gdk.RGBA.Gdk_RGBA) return Cairo_Color;
    --  Translations between one color definition to another
-
-   function Shade
-     (Color : Gdk.Color.Gdk_Color;
-      Value : Glib.Gdouble) return Cairo_Color;
-   function Shade
-     (Color : Cairo_Color;
-      Value : Glib.Gdouble) return Cairo_Color;
-   --  Modifies the lightning of the color by the specified value
 
    procedure Set_Source_Color
      (Cr : Cairo.Cairo_Context; Color : Cairo_Color);
-
-   function Lighten
-     (Color  : Gdk.RGBA.Gdk_RGBA;
-      Amount : Glib.Gdouble) return Gdk.RGBA.Gdk_RGBA;
-   --  Return a lighter version of the color
-
-   function Shade_Or_Lighten
-     (Color  : Gdk.RGBA.Gdk_RGBA;
-      Amount : Glib.Gdouble := 0.4) return Gdk.RGBA.Gdk_RGBA;
-   --  Return a lighter or darker version of Color, depending on whether color
-   --  is rather dark or rather light.
-   --  Amount is a multiplier, so 0.1 will give a shade 10% lighter or darker.
 
    function To_Hex (Color : Gdk.RGBA.Gdk_RGBA) return String;
    --  Return a hexadecimal approximate representation of the color, of the
    --  form "#rrggbb". This loses the alpha chanel.
    --  The output is suitable for use in a markup (see Gtk.Label.Set_Markup
    --  for instance)
+
+   function Complementary
+     (Color : Gdk.RGBA.Gdk_RGBA) return Gdk.RGBA.Gdk_RGBA;
+   --  Return the complementary color
+
+   ----------------------------------
+   -- Changing lightness of colors --
+   ----------------------------------
+
+   subtype Percent is Glib.Gdouble range 0.0 .. 1.0;
+
+   function Shade
+     (Color : Gdk.Color.Gdk_Color;
+      Value : Percent) return Cairo_Color;
+   function Shade
+     (Color : Cairo_Color;
+      Value : Percent) return Cairo_Color;
+   --  Modifies the lightning of the color by the specified value.
+   --
+   --  Value is a modifier: 0.0 means the color is unchanged, 0.1 means the
+   --  color is modified by 10%, and so on.
+
+   function Lighten
+     (Color  : Gdk.RGBA.Gdk_RGBA;
+      Amount : Percent) return Gdk.RGBA.Gdk_RGBA;
+   --  Return a lighter version of the color
+   --
+   --  Amount is a modifier: 0.0 means the color is unchanged, 0.1 means the
+   --  color is modified by 10%, and so on.
+
+   function Shade_Or_Lighten
+     (Color  : Gdk.RGBA.Gdk_RGBA;
+      Amount : Percent := 0.4) return Gdk.RGBA.Gdk_RGBA;
+   --  Return a lighter or darker version of Color, depending on whether color
+   --  is rather dark or rather light.
+   --
+   --  Amount is a modifier: 0.0 means the color is unchanged, 0.1 means the
+   --  color is modified by 10%, and so on.
 
    -----------------------------
    -- Extra path manipulation --

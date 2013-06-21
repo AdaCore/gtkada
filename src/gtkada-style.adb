@@ -55,18 +55,16 @@ package body Gtkada.Style is
    -- To_HSV --
    ------------
 
-   function To_HSV (Color : Cairo_Color) return HSV_Color
-   is
-      Max, Min, Del       : Gdouble;
+   function To_HSV (Color : Cairo_Color) return HSV_Color is
+      Max : constant Gdouble :=
+        Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
+      Min : constant Gdouble :=
+        Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
+      Del : constant Gdouble := Max - Min;
       Del_R, Del_G, Del_B : Gdouble;
       Ret                 : HSV_Color;
-      Tmp                 : Gdouble;
 
    begin
-      Max := Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
-      Min := Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
-      Del := Max - Min;
-
       Ret.V := Max;
       Ret.A := Color.Alpha;
 
@@ -77,31 +75,132 @@ package body Gtkada.Style is
       else
          Ret.S := Del / Max;
 
-         Del_R := (((Del - Color.Red) / 6.0) + (Del / 2.0)) / Del;
-         Del_G := (((Del - Color.Green) / 6.0) + (Del / 2.0)) / Del;
-         Del_B := (((Del - Color.Blue) / 6.0) + (Del / 2.0)) / Del;
+         Del_R := (((Max - Color.Red) / 6.0) + (Del / 2.0)) / Del;
+         Del_G := (((Max - Color.Green) / 6.0) + (Del / 2.0)) / Del;
+         Del_B := (((Max - Color.Blue) / 6.0) + (Del / 2.0)) / Del;
 
          if Max = Color.Red then
-            Tmp := Del_B - Del_G;
+            Ret.H := Del_B - Del_G;
          elsif Max = Color.Green then
-            Tmp := (1.0 / 3.0) + Del_R - Del_B;
-         elsif Max = Color.Blue then
-            Tmp := (2.0 / 3.0) + Del_G - Del_R;
+            Ret.H := (1.0 / 3.0) + Del_R - Del_B;
+         else
+            Ret.H := (2.0 / 3.0) + Del_G - Del_R;
          end if;
 
-         if Tmp < 0.0 then
-            Tmp := Tmp + 1.0;
+         if Ret.H < 0.0 then
+            Ret.H := Ret.H + 1.0;
          end if;
 
-         if Tmp >= 1.0 then
-            Tmp := Tmp - 1.0;
+         if Ret.H >= 1.0 then
+            Ret.H := Ret.H - 1.0;
          end if;
-
-         Ret.H := Tmp;
       end if;
 
       return Ret;
    end To_HSV;
+
+   ------------
+   -- To_HSL --
+   ------------
+
+   function To_HSLA (Color : Gdk.RGBA.Gdk_RGBA) return HSLA_Color is
+      --  Algorithm from http://www.easyrgb.com/
+      Min : constant Gdouble :=
+        Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
+      Max : constant Gdouble :=
+        Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
+      Del : constant Gdouble := Max - Min;
+      Result : HSLA_Color;
+      Del_R, Del_G, Del_B : Gdouble;
+   begin
+      Result.Lightness := (Max + Min) / 2.0;
+      Result.Alpha     := Color.Alpha;
+
+      --  Do we have a gray ?
+      if Del = 0.0 then
+         Result.Hue := 0.0;
+         Result.Saturation := 0.0;
+      else
+         if Result.Lightness < 0.5 then
+            Result.Saturation := Del / (Max + Min);
+         else
+            Result.Saturation := Del / (2.0 - Max - Min);
+         end if;
+
+         Del_R := ((Max - Color.Red) / 6.0 + Del / 2.0) / Max;
+         Del_G := ((Max - Color.Green) / 6.0 + Del / 2.0) / Max;
+         Del_B := ((Max - Color.Blue) / 6.0 + Del / 2.0) / Max;
+
+         if Color.Red = Max then
+            Result.Hue := Del_B - Del_G;
+         elsif Color.Green = Max then
+            Result.Hue := 1.0 / 3.0 + Del_R - Del_B;
+         else
+            Result.Hue := 2.0 / 3.0 + Del_G - Del_R;
+         end if;
+
+         if Result.Hue < 0.0 then
+            Result.Hue := Result.Hue + 1.0;
+         elsif Result.Hue > 1.0 then
+            Result.Hue := Result.Hue - 1.0;
+         end if;
+      end if;
+
+      return Result;
+   end To_HSLA;
+
+   -------------
+   -- To_RGBA --
+   -------------
+
+   function To_RGBA (Color : HSLA_Color) return Gdk.RGBA.Gdk_RGBA is
+      --  Algorithm from http://www.easyrgb.com/
+
+      V1, V2 : Gdouble;
+
+      function Hue_To_RGB (Hue : Gdouble) return Gdouble;
+      function Hue_To_RGB (Hue : Gdouble) return Gdouble is
+         H : Gdouble := Hue;
+      begin
+         if H < 0.0 then
+            H := H + 1.0;
+         elsif H > 1.0 then
+            H := H - 1.0;
+         end if;
+
+         if H * 6.0 < 1.0 then
+            return V1 + (V2 - V1) * 6.0 * H;
+         elsif H * 2.0 < 1.0 then
+            return V2;
+         elsif H * 3.0 < 2.0 then
+            return V1 + (V2 - V1) * 6.0 * (2.0 / 3.0 - H);
+         else
+            return V1;
+         end if;
+      end Hue_To_RGB;
+
+   begin
+      if Color.Saturation = 0.0 then
+         return (Red   => Color.Lightness,
+                 Green => Color.Lightness,
+                 Blue  => Color.Lightness,
+                 Alpha => Color.Alpha);
+      end if;
+
+      if Color.Lightness < 0.5 then
+         V2 := Color.Lightness * (1.0 + Color.Saturation);
+      else
+         V2 := (Color.Lightness + Color.Saturation)
+           - (Color.Lightness * Color.Saturation);
+      end if;
+
+      V1 := 2.0 * Color.Lightness - V2;
+
+      return (Red   => Hue_To_RGB (Color.Hue + 1.0 / 3.0),
+              Green => Hue_To_RGB (Color.Hue),
+              Blue  => Hue_To_RGB (Color.Hue - 1.0 / 3.0),
+              Alpha => Color.Alpha);
+   end To_RGBA;
 
    --------------
    -- To_Cairo --
@@ -116,10 +215,9 @@ package body Gtkada.Style is
       Ret.Alpha := HSV.A;
 
       if HSV.S = 0.0 then
-         Ret.Red := HSV.V;
+         Ret.Red   := HSV.V;
          Ret.Green := HSV.V;
-         Ret.Blue := HSV.V;
-
+         Ret.Blue  := HSV.V;
       else
          if HSV.H = 1.0 then
             Var_H := 0.0;
@@ -133,29 +231,29 @@ package body Gtkada.Style is
          Var_3 := HSV.V * (1.0 - HSV.S * (1.0 - (Var_H - Var_J)));
 
          if Var_J = 0.0 then
-            Ret.Red := HSV.V;
+            Ret.Red   := HSV.V;
             Ret.Green := Var_3;
-            Ret.Blue := Var_1;
+            Ret.Blue  := Var_1;
          elsif Var_J = 1.0 then
-            Ret.Red := Var_2;
+            Ret.Red   := Var_2;
             Ret.Green := HSV.V;
-            Ret.Blue := Var_1;
+            Ret.Blue  := Var_1;
          elsif Var_J = 2.0 then
-            Ret.Red := Var_1;
+            Ret.Red   := Var_1;
             Ret.Green := HSV.V;
-            Ret.Blue := Var_3;
+            Ret.Blue  := Var_3;
          elsif Var_J = 3.0 then
-            Ret.Red := Var_1;
+            Ret.Red   := Var_1;
             Ret.Green := Var_2;
-            Ret.Blue := HSV.V;
+            Ret.Blue  := HSV.V;
          elsif Var_J = 4.0 then
-            Ret.Red := Var_3;
+            Ret.Red   := Var_3;
             Ret.Green := Var_1;
-            Ret.Blue := HSV.V;
+            Ret.Blue  := HSV.V;
          else
-            Ret.Red := HSV.V;
+            Ret.Red   := HSV.V;
             Ret.Green := Var_1;
-            Ret.Blue := Var_2;
+            Ret.Blue  := Var_2;
          end if;
       end if;
 
@@ -178,12 +276,9 @@ package body Gtkada.Style is
    -- To_Cairo --
    --------------
 
-   function To_Cairo (Color : Gdk.RGBA.Gdk_RGBA) return Cairo_Color is
+   function To_Cairo (Color : Cairo_Color) return Gdk.RGBA.Gdk_RGBA is
    begin
-      return (Red   => Color.Red,
-              Green => Color.Green,
-              Blue => Color.Blue,
-              Alpha => Color.Alpha);
+      return Color;
    end To_Cairo;
 
    ------------
@@ -195,14 +290,32 @@ package body Gtkada.Style is
       function To_Hex (Val : Gdouble) return String is
          V : constant Integer := Integer (Val * 255.0);
       begin
-         return Dec_To_Hex (V / 16)
-           & Dec_To_Hex (V mod 16);
+         return Dec_To_Hex (V / 16) & Dec_To_Hex (V mod 16);
       end To_Hex;
 
    begin
-      return '#' & To_Hex (Color.Red)
-        & To_Hex (Color.Green) & To_Hex (Color.Blue);
+      return '#'
+        & To_Hex (Color.Red)
+        & To_Hex (Color.Green)
+        & To_Hex (Color.Blue);
    end To_Hex;
+
+   -------------------
+   -- Complementary --
+   -------------------
+
+   function Complementary
+     (Color : Gdk.RGBA.Gdk_RGBA) return Gdk.RGBA.Gdk_RGBA
+   is
+      V : HSLA_Color := To_HSLA (Color);
+   begin
+      V.Hue := V.Hue + 0.5;
+      if V.Hue > 1.0 then
+         V.Hue := V.Hue - 1.0;
+      end if;
+
+      return To_RGBA (V);
+   end Complementary;
 
    ----------------------
    -- Shade_Or_Lighten --
@@ -210,37 +323,18 @@ package body Gtkada.Style is
 
    function Shade_Or_Lighten
      (Color  : Gdk.RGBA.Gdk_RGBA;
-      Amount : Glib.Gdouble := 0.4) return Gdk.RGBA.Gdk_RGBA
+      Amount : Percent := 0.4) return Gdk.RGBA.Gdk_RGBA
    is
-      --  See http://www.nbdtech.com/Blog/archive/2008/04/27/
-      --    Calculating-the-Perceived-Brightness-of-a-Color.aspx
-
-      Threshold : constant Gdouble := 130.0 * 130.0 / (255.0 * 255.0);
-
-      --  The square of the brightness
-      Brightness_Square : constant Gdouble :=
-        Color.Red * Color.Red * 0.241
-        + Color.Green * Color.Green * 0.691
-        + Color.Blue * Color.Blue * 0.068;
-
-      A : Gdouble;
+      V : HSLA_Color := To_HSLA (Color);
    begin
-      if Brightness_Square < Threshold then
-         --  We cannot lighten pure black just by multiplying, so instead we do
-         --  an addition, so that we still end up with a different color
-
-         return (Red   => Gdouble'Min (Color.Red + Amount, 1.0),
-                 Green => Gdouble'Min (Color.Green + Amount, 1.0),
-                 Blue  => Gdouble'Min (Color.Blue + Amount, 1.0),
-                 Alpha => 1.0);
-
+      if V.Lightness < 0.5 then
+         V.Lightness :=
+           Gdouble'Min (1.0, V.Lightness + Amount);   --  lighten
       else
-         A := 1.0 - Amount;   --  darken the color
-         return (Red   => Gdouble'Min (Color.Red * A, 1.0),
-                 Green => Gdouble'Min (Color.Green * A, 1.0),
-                 Blue  => Gdouble'Min (Color.Blue * A, 1.0),
-                 Alpha => 1.0);
+         V.Lightness :=
+           Gdouble'Max (0.0, V.Lightness - Amount);   --  darken
       end if;
+      return To_RGBA (V);
    end Shade_Or_Lighten;
 
    -----------
@@ -249,7 +343,7 @@ package body Gtkada.Style is
 
    function Shade
      (Color : Gdk.Color.Gdk_Color;
-      Value : Glib.Gdouble)
+      Value : Percent)
       return Cairo_Color
    is
    begin
@@ -262,20 +356,13 @@ package body Gtkada.Style is
 
    function Shade
      (Color : Cairo_Color;
-      Value : Glib.Gdouble)
+      Value : Percent)
       return Cairo_Color
    is
-      HSV : HSV_Color;
-
+      V : HSLA_Color := To_HSLA (Color);
    begin
-      if Value /= 1.0 then
-         HSV := To_HSV (Color);
-         HSV.V := Gdouble'Min (1.0, HSV.V * Value);
-
-         return To_Cairo (HSV);
-      end if;
-
-      return Color;
+      V.Lightness := Gdouble'Max (0.0, V.Lightness - Value);
+      return To_RGBA (V);
    end Shade;
 
    ----------------------
@@ -346,7 +433,7 @@ package body Gtkada.Style is
 
       Cairo.Save (Cr);
 
-      HSV := To_HSV (To_Cairo (Color));
+      HSV := To_HSV (Color);
 
       HSV.V := 0.3;
       Shadow := To_Cairo (HSV);
@@ -781,12 +868,12 @@ package body Gtkada.Style is
 
    function Lighten
      (Color : Gdk.RGBA.Gdk_RGBA;
-      Amount : Glib.Gdouble) return Gdk.RGBA.Gdk_RGBA is
+      Amount : Percent) return Gdk.RGBA.Gdk_RGBA
+   is
+      V : HSLA_Color := To_HSLA (Color);
    begin
-      return (Red   => Glib.Gdouble'Min (1.0, Color.Red + Amount),
-              Green => Glib.Gdouble'Min (1.0, Color.Green + Amount),
-              Blue  => Glib.Gdouble'Min (1.0, Color.Blue + Amount),
-              Alpha => Color.Alpha);
+      V.Lightness := Gdouble'Min (1.0, V.Lightness + Amount);
+      return To_RGBA (V);
    end Lighten;
 
    ----------------------
