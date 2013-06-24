@@ -45,7 +45,7 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;         use Cairo;
+with Cairo.Region;  use Cairo.Region;
 with Glib;          use Glib;
 with Glib.Object;   use Glib.Object;
 with Glib.Types;    use Glib.Types;
@@ -94,24 +94,26 @@ package Gtk.Overlay is
    -- Signals --
    -------------
 
-   type Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Boolean is not null access function
+   type Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Int_Boolean is not null access function
      (Self       : access Gtk_Overlay_Record'Class;
       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Allocation : access Cairo.Cairo_Rectangle) return Boolean;
+      Allocation : access Cairo.Region.Cairo_Rectangle_Int)
+   return Boolean;
 
-   type Cb_GObject_Gtk_Widget_Cairo_Rectangle_Boolean is not null access function
+   type Cb_GObject_Gtk_Widget_Cairo_Rectangle_Int_Boolean is not null access function
      (Self       : access Glib.Object.GObject_Record'Class;
       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Allocation : access Cairo.Cairo_Rectangle) return Boolean;
+      Allocation : access Cairo.Region.Cairo_Rectangle_Int)
+   return Boolean;
 
    Signal_Get_Child_Position : constant Glib.Signal_Name := "get-child-position";
    procedure On_Get_Child_Position
       (Self  : not null access Gtk_Overlay_Record;
-       Call  : Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Boolean;
+       Call  : Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Int_Boolean;
        After : Boolean := False);
    procedure On_Get_Child_Position
       (Self  : not null access Gtk_Overlay_Record;
-       Call  : Cb_GObject_Gtk_Widget_Cairo_Rectangle_Boolean;
+       Call  : Cb_GObject_Gtk_Widget_Cairo_Rectangle_Int_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::get-child-position signal is emitted to determine the position

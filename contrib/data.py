@@ -592,7 +592,7 @@ naming.type_exceptions = {
     "GdkEvent*": Proxy("Gdk.Event.Gdk_Event", ""),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
-    "cairo_rectangle_int_t*": Proxy("Cairo.Cairo_Rectangle"),
+    "cairo_rectangle_int_t*": Proxy("Cairo.Region.Cairo_Rectangle_Int"),
     "cairo_content_t":       Proxy("Cairo.Cairo_Content"),
     "cairo_pattern_t*":      Proxy("Cairo.Cairo_Pattern"),
     "cairo_surface_t*":      Proxy("Cairo.Cairo_Surface"),

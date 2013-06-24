@@ -28,7 +28,7 @@ package body Gtk.Arguments is
 
    use Glib.Values;
 
-   type Cairo_Rectangle_Access is access Cairo.Cairo_Rectangle;
+   type Cairo_Rectangle_Int_Access is access Cairo.Region.Cairo_Rectangle_Int;
    type Gint_Access is access Gint;
    type Gdouble_Access is access Gdouble;
 
@@ -307,37 +307,37 @@ package body Gtk.Arguments is
       return Glib.Types.GType_Interface (Get_Address (Val));
    end Unchecked_To_Interface;
 
-   -----------------------------------------
-   -- Unchecked_To_Cairo_Rectangle_Access --
-   -----------------------------------------
+   ---------------------------------------------
+   -- Unchecked_To_Cairo_Rectangle_Int_Access --
+   ---------------------------------------------
 
-   function Unchecked_To_Cairo_Rectangle_Access
+   function Unchecked_To_Cairo_Rectangle_Int_Access
      (Args : Glib.Values.C_GValues; Num : Guint)
-      return access Cairo.Cairo_Rectangle
+      return access Cairo.Region.Cairo_Rectangle_Int
    is
       function Convert is new Ada.Unchecked_Conversion
-        (C_Proxy, Cairo_Rectangle_Access);
+        (C_Proxy, Cairo_Rectangle_Int_Access);
       Val : GValue;
    begin
       Unsafe_Nth (Args, Num, Val);
       return Convert (Get_Proxy (Val));
-   end Unchecked_To_Cairo_Rectangle_Access;
+   end Unchecked_To_Cairo_Rectangle_Int_Access;
 
-   ----------------------------------
-   -- Unchecked_To_Cairo_Rectangle --
-   ----------------------------------
+   --------------------------------------
+   -- Unchecked_To_Cairo_Rectangle_Int --
+   --------------------------------------
 
-   function Unchecked_To_Cairo_Rectangle
+   function Unchecked_To_Cairo_Rectangle_Int
      (Args : Glib.Values.C_GValues; Num : Guint)
-      return Cairo.Cairo_Rectangle
+      return Cairo.Region.Cairo_Rectangle_Int
    is
       function Convert is new Ada.Unchecked_Conversion
-        (C_Proxy, Cairo_Rectangle_Access);
+        (C_Proxy, Cairo_Rectangle_Int_Access);
       Val : GValue;
    begin
       Unsafe_Nth (Args, Num, Val);
       return Convert (Get_Proxy (Val)).all;
-   end Unchecked_To_Cairo_Rectangle;
+   end Unchecked_To_Cairo_Rectangle_Int;
 
    --------------------------------
    -- Unchecked_To_Cairo_Context --

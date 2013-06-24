@@ -345,6 +345,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                 use Cairo;
+with Cairo.Region;          use Cairo.Region;
 with Gdk.Event;             use Gdk.Event;
 with Gdk.Rectangle;         use Gdk.Rectangle;
 with Glib;                  use Glib;
@@ -1145,28 +1146,28 @@ package Gtk.Cell_Area is
    -- Signals --
    -------------
 
-   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void is not null access procedure
+   type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_Int_UTF8_String_Void is not null access procedure
      (Self      : access Gtk_Cell_Area_Record'Class;
       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-      Cell_Area : Cairo.Cairo_Rectangle;
+      Cell_Area : Cairo.Region.Cairo_Rectangle_Int;
       Path      : UTF8_String);
 
-   type Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void is not null access procedure
+   type Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_Int_UTF8_String_Void is not null access procedure
      (Self      : access Glib.Object.GObject_Record'Class;
       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Editable  : Gtk.Cell_Editable.Gtk_Cell_Editable;
-      Cell_Area : Cairo.Cairo_Rectangle;
+      Cell_Area : Cairo.Region.Cairo_Rectangle_Int;
       Path      : UTF8_String);
 
    Signal_Add_Editable : constant Glib.Signal_Name := "add-editable";
    procedure On_Add_Editable
       (Self  : not null access Gtk_Cell_Area_Record;
-       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       Call  : Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_Int_UTF8_String_Void;
        After : Boolean := False);
    procedure On_Add_Editable
       (Self  : not null access Gtk_Cell_Area_Record;
-       Call  : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_UTF8_String_Void;
+       Call  : Cb_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Cairo_Rectangle_Int_UTF8_String_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Indicates that editing has started on Renderer and that Editable should

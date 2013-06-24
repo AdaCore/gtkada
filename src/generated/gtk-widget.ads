@@ -4481,22 +4481,22 @@ package Gtk.Widget is
    --  Callback parameters:
    --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
 
-   type Cb_Gtk_Widget_Cairo_Rectangle_Void is not null access procedure
+   type Cb_Gtk_Widget_Cairo_Rectangle_Int_Void is not null access procedure
      (Self       : access Gtk_Widget_Record'Class;
-      Allocation : Cairo.Cairo_Rectangle);
+      Allocation : Cairo.Region.Cairo_Rectangle_Int);
 
-   type Cb_GObject_Cairo_Rectangle_Void is not null access procedure
+   type Cb_GObject_Cairo_Rectangle_Int_Void is not null access procedure
      (Self       : access Glib.Object.GObject_Record'Class;
-      Allocation : Cairo.Cairo_Rectangle);
+      Allocation : Cairo.Region.Cairo_Rectangle_Int);
 
    Signal_Size_Allocate : constant Glib.Signal_Name := "size-allocate";
    procedure On_Size_Allocate
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_Gtk_Widget_Cairo_Rectangle_Void;
+       Call  : Cb_Gtk_Widget_Cairo_Rectangle_Int_Void;
        After : Boolean := False);
    procedure On_Size_Allocate
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_GObject_Cairo_Rectangle_Void;
+       Call  : Cb_GObject_Cairo_Rectangle_Int_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
 

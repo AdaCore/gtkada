@@ -40,7 +40,7 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 
-with Cairo;
+with Cairo.Region;
 with Glib.Values;
 with Glib.Object;
 with Glib.Types;
@@ -205,12 +205,12 @@ package Gtk.Arguments is
    function Unchecked_To_Cairo_Context
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Cairo.Cairo_Context;
-   function Unchecked_To_Cairo_Rectangle_Access
+   function Unchecked_To_Cairo_Rectangle_Int_Access
      (Args : Glib.Values.C_GValues; Num : Guint)
-     return access Cairo.Cairo_Rectangle;
-   function Unchecked_To_Cairo_Rectangle
+     return access Cairo.Region.Cairo_Rectangle_Int;
+   function Unchecked_To_Cairo_Rectangle_Int
      (Args : Glib.Values.C_GValues; Num : Guint)
-     return Cairo.Cairo_Rectangle;
+     return Cairo.Region.Cairo_Rectangle_Int;
    pragma Inline (Unchecked_To_Object);
    pragma Inline (Unchecked_To_Boolean);
    pragma Inline (Unchecked_To_Gint);
