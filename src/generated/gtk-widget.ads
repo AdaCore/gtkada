@@ -2764,6 +2764,13 @@ package Gtk.Widget is
    --  You will only need to override this computation if you are writting
    --  your own container widgets.
 
+   procedure Inherited_Size_Allocate
+     (Klass      : Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Allocation : Gtk_Allocation);
+   --  Call the inherited size_allocate. This is useful if you have overloaded it in
+   --  your own class, but still need to call the standard implementation.
+
    ---------------------------
    -- Override Draw handler --
    ---------------------------

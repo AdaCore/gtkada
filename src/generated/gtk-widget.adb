@@ -84,6 +84,20 @@ package body Gtk.Widget is
       return Internal (Klass, Widget.Get_Object, Cr) /= 0;
    end Inherited_Draw;
 
+   procedure Inherited_Size_Allocate
+     (Klass      : Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Allocation : Gtk_Allocation)
+   is
+      procedure Internal (Klass : Ada_Gobject_Class;
+         Widget : System.Address;
+         Allocation : Gtk_Allocation);
+      pragma Import
+        (C, Internal, "ada_inherited_WIDGET_CLASS_size_allocate");
+   begin
+      Internal (Klass, Widget.Get_Object, Allocation);
+   end Inherited_Size_Allocate;
+
    procedure Set_Default_Draw_Handler
      (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler)
    is
