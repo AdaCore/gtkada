@@ -1,3 +1,10 @@
+Known problems fixed in GtkAda 3.8.2
+
+- M625-039 Redraw problems under Windows
+  Problem:    Some items (like tree view expanders, buttons in toolbars)
+              are not drawn or refreshed properly.
+  Workaround: None known.
+
 Known problems fixed in GtkAda 3.4.2
 
 - M212-027 Link errors under Windows
