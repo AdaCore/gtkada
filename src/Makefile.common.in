@@ -46,8 +46,9 @@ RANLIB = @RANLIB@
 
 # DESTDIR may be set to the path to a staging directory to install files in
 # when building packages. If DESTDIR is empty, files will be installed directly
-# in their final locations.
-DESTDIR =
+# in their final locations. GNU make documentation recommends that this variable
+# not be set in the Makefile
+#    DESTDIR =
 
 prefix        = @prefix@
 exec_prefix   = @exec_prefix@

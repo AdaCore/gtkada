@@ -5,7 +5,6 @@ MKDIR = mkdir -p
 CP=cp -p
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-DESTDIR =
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
 SUBDIRS=gtkada_rm gtkada_rm/screenshots gtkada_rm/support gtkada_rm/support/images
