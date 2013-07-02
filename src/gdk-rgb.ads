@@ -84,7 +84,7 @@ package Gdk.Rgb is
    pragma Convention (C, Rgb_Record);
 
    type Rgb_Buffer is array (Glib.Guint range <>) of Rgb_Record;
-   pragma Pack (Rgb_Buffer);
+   pragma Convention (C, Rgb_Buffer);
    --  This is the buffer that will contain the image. You can manipulate each
    --  byte in it independantly, although there is no high level routine
    --  to draw lines, circles, ...
@@ -115,7 +115,7 @@ package Gdk.Rgb is
    --  This represents the coding for a rbg value. The exact encoding depends
    --  on the visual used and its depth (pseudo-color, true-color, ...)
 
-   function Xpixel_From_Rgb (Value : in Rgb_Item) return Glib.Gulong;
+   function Xpixel_From_Rgb (Value : Rgb_Item) return Glib.Gulong;
    --  Convert the Rgb representation to the usual one found in Gdk.Color.
    --  pragma Deprecated (Xpixel_From_Rgb);
 
