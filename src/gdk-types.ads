@@ -45,7 +45,7 @@ package Gdk.Types is
    pragma Convention (C, Gdk_Point);
 
    type Gdk_Points_Array is array (Positive range <>) of Gdk_Point;
-   pragma Pack (Gdk_Points_Array);
+   pragma Convention (C, Gdk_Points_Array);
 
    type Gdk_Segment is record
       X1 : Gint;
@@ -56,7 +56,7 @@ package Gdk.Types is
    pragma Convention (C, Gdk_Segment);
 
    type Gdk_Segments_Array is array (Positive range <>) of Gdk_Segment;
-   pragma Pack (Gdk_Segments_Array);
+   pragma Convention (C, Gdk_Segments_Array);
 
    --  See at the end of the package a list of all the types that
    --  have not been "bound".
