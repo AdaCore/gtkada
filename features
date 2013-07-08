@@ -28,6 +28,9 @@ LB30-013 New subprogram Gtk.Handlers.Set_On_Exception (2012-11-30)
   exception, presumably to log the exception in an application-specific
   manner (the default is to output the exception on stderr).
 
+  These handlers are set automatically on signal and event callbacks,
+  and on idle and timeout callbacks.
+
 LB20-008 Gtk_New_* as functions (2012-12-17)
 
   GtkAda now includes a function for each version of Gtk_New*_, which
