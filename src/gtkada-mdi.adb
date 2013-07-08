@@ -3788,9 +3788,8 @@ package body Gtkada.MDI is
                Total := Note.Get_Allocated_Width
                  - Pages * 2 * (Focus_Width + Focus_Pad);
 
-               Tab.Get_Child.Get_Preferred_Width (Min, Nat);
-
                if Traces then
+                  Tab.Get_Child.Get_Preferred_Width (Min, Nat);
                   Put_Line ("Tabsize: total {Nat=" & Gint'Image (Natural_Size)
                             & " Min=" & Gint'Image (Minimum_Size)
                             & "} Child={"
@@ -3820,7 +3819,9 @@ package body Gtkada.MDI is
 
                for N in 0 .. Pages - 1 loop
                   Lab := MDI_Tab (Note.Get_Tab_Label (Note.Get_Nth_Page (N)));
-                  Lab.Queue_Resize;
+                  if Lab /= Tab then
+                     Lab.Queue_Resize;
+                  end if;
                end loop;
 
                Minimum_Size := Nat;
@@ -3853,10 +3854,99 @@ package body Gtkada.MDI is
    procedure Tab_Get_Preferred_Height
      (Label : System.Address; Minimum_Size, Natural_Size : out Gint)
    is
-      Tab : constant MDI_Tab := MDI_Tab (Glib.Object.Convert (Label));
+      Tab  : constant MDI_Tab := MDI_Tab (Glib.Object.Convert (Label));
+      Note : constant MDI_Notebook := MDI_Notebook (Tab.Get_Parent);
+      Pages       : Gint;
+      Lab         : MDI_Tab;
+      Max_Of_Min, Min, Nat    : Gint;
+      Total       : Gint;
    begin
-      --  No special handling here, the default seems good enough for us.
-      Tab.Get_Child.Get_Preferred_Height (Minimum_Size, Natural_Size);
+      case Note.Get_Tab_Pos is
+         when Pos_Left | Pos_Right =>
+            --  Do we need to recompute, or has another tab already done the
+            --  computation ?
+
+            Tab.Timestamp := Tab.Timestamp + 1;
+            if Note.Timestamp < Tab.Timestamp then
+               Note.Timestamp := Tab.Timestamp;
+
+               Pages := Note.Get_N_Pages;
+               Minimum_Size := 0;
+               Natural_Size := 0;
+               Max_Of_Min := 0;
+
+               --  Find all other MDI_Tab_Labels.
+
+               for N in 0 .. Pages - 1 loop
+                  Lab := MDI_Tab (Note.Get_Tab_Label (Note.Get_Nth_Page (N)));
+                  Lab.Get_Child.Get_Preferred_Height (Min, Nat);
+                  Natural_Size := Natural_Size + Nat;
+                  Minimum_Size := Minimum_Size + Min;
+                  Max_Of_Min := Gint'Max (Max_Of_Min, Min);
+               end loop;
+
+               Total := Note.Get_Allocated_Height;
+
+               if Traces then
+                  Put_Line ("Tabsize: total {Nat=" & Gint'Image (Natural_Size)
+                            & " Min=" & Gint'Image (Minimum_Size)
+                            & "} Child={"
+                            & Gint'Image (Min) & Gint'Image (Nat)
+                            & "} Notebook="
+                            & Gint'Image (Total) & " Pages="
+                            & Gint'Image (Pages));
+               end if;
+
+               if Natural_Size <= Total then
+                  --  All tabs can use their natural size, but we must set the
+                  --  tab's minimum size to its natural size since gtk+ always
+                  --  uses the minimum size.
+
+                  Note.Tab_Size := -1;
+               else
+                  --  All tabs should use the same size (and have a min. size)
+                  --  "100" is random here, seems to be good enough to display
+                  --  enough chars to distinguish editors.
+                  Nat := Gint'Max (Max_Of_Min, Total / Pages);
+                  Note.Tab_Size := Nat;
+               end if;
+
+               --  Will need to resize all other tabs (nothing will happen for
+               --  those that have already been refreshed, because of timestamp
+               --  comparison)
+
+               for N in 0 .. Pages - 1 loop
+                  Lab := MDI_Tab (Note.Get_Tab_Label (Note.Get_Nth_Page (N)));
+                  if Lab /= Tab then
+                     Lab.Queue_Resize;
+                  end if;
+               end loop;
+
+               Minimum_Size := Nat;
+               Natural_Size := Nat;
+
+               if Traces then
+                  Put_Line ("tab size => note.timestamp="
+                            & Integer'Image (Note.Timestamp)
+                            & " tab.timestamp="
+                            & Integer'Image (Tab.Timestamp)
+                            & " size=" & Gint'Image (Nat));
+               end if;
+            else
+               Tab.Timestamp := Note.Timestamp;
+               if Note.Tab_Size = -1 then
+                  Tab.Get_Child.Get_Preferred_Height (Min, Natural_Size);
+                  Minimum_Size := Natural_Size;
+               else
+                  Minimum_Size := Note.Tab_Size;
+                  Natural_Size := Note.Tab_Size;
+               end if;
+            end if;
+
+         when Pos_Top | Pos_Bottom =>
+            --  fallback to gtk behavior
+            Tab.Get_Child.Get_Preferred_Height (Minimum_Size, Natural_Size);
+      end case;
    end Tab_Get_Preferred_Height;
 
    ----------------------
