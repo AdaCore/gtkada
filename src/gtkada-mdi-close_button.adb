@@ -97,11 +97,13 @@ package body Close_Button is
      (Button      : out Gtkada_MDI_Close_Button;
       Tab         : access Gtk_Widget_Record'Class;
       Child       : access MDI_Child_Record'Class;
+      Horizontal  : Boolean;
       In_Titlebar : Boolean)
    is
    begin
       Button := new Gtkada_MDI_Close_Button_Record;
       Gtk.Event_Box.Initialize (Button);
+      Get_Style_Context (Button).Add_Class ("mdiCloseButton");
       Set_Visible_Window (Button, False);
 
       Button.Child       := MDI_Child (Child);
@@ -109,6 +111,7 @@ package body Close_Button is
       Button.Over        := False;
       Button.Tab_Over    := False;
       Button.In_Titlebar := In_Titlebar;
+      Button.Horizontal  := Horizontal;
 
       --  In the titlebar, we can go up to 16px as this is the size of the
       --  pixmaps, but we lower this size to 14px to be able to draw the extra
@@ -121,8 +124,12 @@ package body Close_Button is
          Button.Default_Size := 11;
       end if;
 
-      Button.Set_Size_Request
-        (Button.Default_Size, Button.Default_Size + 4);
+      if Horizontal then
+         Button.Set_Size_Request
+           (Button.Default_Size, Button.Default_Size + 4);
+      else
+         Button.Set_Size_Request (Button.Default_Size, Button.Default_Size);
+      end if;
 
       Set_Events
         (Button,
@@ -196,17 +203,25 @@ package body Close_Button is
             dW := Gdouble (Width);
          end if;
 
-         --  Height - 4 : we want 1px for the
-         --  thin hilight effect at the bottom of the button. We add another px
-         --  to center the button (compensate the hilight size).
+         --  Height - 2 : we want 1px for the thin highlight effect at the
+         --  bottom of the button. We add another px to center the button
+         --  (compensate the hilight size).
          if dW > Gdouble (Height - 2) then
             dW := Gdouble (Height - 2);
          end if;
 
          Cairo.Save (Cr);
 
-         dX := Gdouble (Width - Gint (dW));
-         dY := Gdouble ((Height - Gint (dW)) / 2);
+         if Button.Horizontal then
+            --  Align to right and center vertically
+            dX := Gdouble (Width - Gint (dW));
+            dY := Gdouble ((Height - Gint (dW)) / 2);
+         else
+            --  Align to bottom and center horizontally
+            dX := Gdouble ((Width - Gint (dW)) / 2);
+            dY := Gdouble (Height - Gint (dW));
+         end if;
+
          Cairo.Translate (Cr, dX, dY);
 
          Cairo.Set_Line_Width (Cr, 1.0);
@@ -222,13 +237,13 @@ package body Close_Button is
          if Button.Pressed
            or else Button.Over
          then
-            Base.Alpha := 0.7;
+            Base.Alpha := 0.8;
          else
             Base.Alpha := 0.4;
          end if;
 
          Lo := Shade (Base, -0.3);
-         Hi := Shade (Base, 0.6);
+         Hi := Shade (Base, 0.8);
 
          --  Clip the cross
          Cairo.Set_Fill_Rule (Cr, Cairo_Fill_Rule_Even_Odd);

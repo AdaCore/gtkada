@@ -195,12 +195,24 @@ package body Gtkada.MDI is
      (Label : System.Address; Minimum_Size, Natural_Size : out Gint);
    pragma Convention (C, Tab_Get_Preferred_Height);
 
+   type Tab_Orientation_Type is
+     (Automatic, Horizontal, Bottom_To_Top, Top_To_Bottom);
+   package Tab_Orientation_Callback is new Gtk.Handlers.User_Callback
+     (Gtk_Notebook_Record, Tab_Orientation_Type);
+
+   procedure On_Tab_Orientation
+     (Notebook    : access Gtk_Notebook_Record'Class;
+      Orientation : Tab_Orientation_Type);
+   --  Called when the user selects a new orientation for the tabs.
+
    type MDI_Notebook_Record is new Gtk_Notebook_Record with record
       Timestamp : Natural := 0;
       Tab_Size  : Gint;
       --  Used to handle the sizing of tabs (through MDI_Tab_Record). Tab_Size
       --  is set to -1 if the tabs should use their natural size.
 
+      Tab_Orientation : Tab_Orientation_Type := Automatic;
+      --  Orientation for the tabs
    end record;
    type MDI_Notebook is access all MDI_Notebook_Record'Class;
    --  The type of notebooks used in the MDI.
@@ -221,6 +233,14 @@ package body Gtkada.MDI is
 
    procedure Free is new
      Ada.Unchecked_Deallocation (UTF8_String, String_Access);
+
+   package Tab_Pos_Callback is new Gtk.Handlers.User_Callback
+     (Gtk_Notebook_Record, Gtk.Enums.Gtk_Position_Type);
+   procedure On_Tab_Pos
+     (Note : access Gtk_Notebook_Record'Class;
+      Pos  : Gtk.Enums.Gtk_Position_Type);
+   --  Called when the user changes the position of tabs for a specific
+   --  notebook.
 
    function Button_Pressed_On_Title_Icon
      (Child : access Gtk_Widget_Record'Class;
@@ -272,7 +292,7 @@ package body Gtkada.MDI is
    --  in the MDI. In both case, return the child itself
 
    function Create_Notebook
-     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook;
+     (MDI : access MDI_Window_Record'Class) return MDI_Notebook;
    --  Create a notebook, and set it up for drag-and-drop
 
    procedure Configure_Notebook_Tabs
@@ -284,7 +304,7 @@ package body Gtkada.MDI is
    --  notebook itself is hidden
 
    procedure Update_Tab_Color
-     (Note    : Gtk_Notebook;
+     (Note    : access MDI_Notebook_Record'Class;
       Focused : Boolean);
    --  Change the background color of the notebook tab containing child,
    --  depending on whether the child is selected or not.
@@ -349,7 +369,7 @@ package body Gtkada.MDI is
    procedure Put_In_Notebook
      (MDI                      : access MDI_Window_Record'Class;
       Child                    : access MDI_Child_Record'Class;
-      Notebook                 : Gtk_Notebook := null;
+      Notebook                 : MDI_Notebook := null;
       Initial_Position         : Child_Position := Position_Automatic;
       Force_Parent_Destruction : Boolean := True);
    --  Remove Child from MDI, and put it under control of a notebook.
@@ -361,7 +381,7 @@ package body Gtkada.MDI is
    --  it is possible that the notebook will be kept, albeit empty.
 
    function Get_Notebook
-     (Child : access MDI_Child_Record'Class) return Gtk_Notebook;
+     (Child : access MDI_Child_Record'Class) return MDI_Notebook;
    --  Return the notebook that directly contains Child
 
    procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class);
@@ -455,7 +475,7 @@ package body Gtkada.MDI is
       MDI              : access MDI_Window_Record'Class;
       Group            : Child_Group := Group_Any;
       Initial_Position : Child_Position := Position_Automatic)
-      return Gtk_Notebook;
+      return MDI_Notebook;
    --  Return the first notebook that contains at least one child within the
    --  given Group. The search starts in the notebook that currently has the
    --  focus.
@@ -522,6 +542,9 @@ package body Gtkada.MDI is
          In_Titlebar  : Boolean;
          --  Whether the button is in the title bar or in the tab
 
+         Horizontal   : Boolean;
+         --  Whether the button is in a horizontal tab
+
          Default_Size : Glib.Gint;
          --  The button's default size. The actual drawing depends on the final
          --  allocated space.
@@ -533,6 +556,7 @@ package body Gtkada.MDI is
         (Button      : out Gtkada_MDI_Close_Button;
          Tab         : access Gtk_Widget_Record'Class;
          Child       : access MDI_Child_Record'Class;
+         Horizontal  : Boolean;
          In_Titlebar : Boolean);
       --  Tab: the button's container. This container shall have a Gdk_Window
       --   to allow mouse motion event retrieval.
@@ -586,7 +610,7 @@ package body Gtkada.MDI is
    ------------------
 
    function Get_Notebook
-     (Child : access MDI_Child_Record'Class) return Gtk_Notebook is
+     (Child : access MDI_Child_Record'Class) return MDI_Notebook is
    begin
       case Child.State is
          when Floating  => return null;
@@ -595,7 +619,7 @@ package body Gtkada.MDI is
             if Get_Parent (Child) /= null
               and then Get_Parent (Child).all in Gtk_Notebook_Record'Class
             then
-               return Gtk_Notebook (Get_Parent (Child));
+               return MDI_Notebook (Get_Parent (Child));
             end if;
 
             return null;
@@ -1145,7 +1169,7 @@ package body Gtkada.MDI is
       then
          declare
             List     : Widget_List.Glist;
-            Current  : Gtk_Notebook;
+            Current  : MDI_Notebook;
             Child    : MDI_Child;
          begin
             if MDI.Focus_Child /= null then
@@ -1375,7 +1399,7 @@ package body Gtkada.MDI is
                if Pos_Changed
                  and then Get_Tab_Pos (Note) = Old_Tabs_Pos
                then
-                  Set_Tab_Pos (Note, MDI.Tabs_Position);
+                  On_Tab_Pos (Note, MDI.Tabs_Position);
                end if;
 
                Configure_Notebook_Tabs (MDI, Note);
@@ -1740,16 +1764,18 @@ package body Gtkada.MDI is
    -------------------------
 
    procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class) is
+      Event : constant Gtk_Event_Box :=
+        Gtk_Event_Box (Get_Parent (Child.Title_Box));
    begin
       if not Has_Title_Bar (Child) then
-         Hide (Child.Title_Box);
-         Set_Child_Visible (Child.Title_Box, False);
-         Set_Size_Request (Child.Title_Box, -1, 0);
+         Hide (Event);
+         Set_Child_Visible (Event, False);
+         Set_Size_Request (Event, -1, 0);
 
       else
-         Show (Child.Title_Box);
-         Set_Child_Visible (Child.Title_Box, True);
-         Set_Size_Request (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
+         Show (Event);
+         Set_Child_Visible (Event, True);
+         Set_Size_Request (Event, -1, Child.MDI.Title_Bar_Height);
       end if;
    end Set_Child_Title_Bar;
 
@@ -1854,7 +1880,7 @@ package body Gtkada.MDI is
                                (Get_State (Event) and Shift_Mask) /= 0;
       C2                   : MDI_Child;
       Current              : Gtk_Widget;
-      Note                 : Gtk_Notebook;
+      Note                 : MDI_Notebook;
       Position             : Child_Position;
       Pane                 : Gtkada_Multi_Paned;
       Parent_Rect          : Gdk_Rectangle;
@@ -1962,7 +1988,7 @@ package body Gtkada.MDI is
                else
                   --  We dropped in a notebook, should we reuse or create one ?
                   if Position = Position_Automatic then
-                     Note := Gtk_Notebook (Current);
+                     Note := MDI_Notebook (Current);
                   else
                      Note := Create_Notebook (MDI);
                   end if;
@@ -2080,7 +2106,7 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
       C        : constant MDI_Child := MDI_Child (Child);
-      Note     : Gtk_Notebook;
+      Note     : MDI_Notebook;
       Tmp      : Gdk_Grab_Status;
       Xroot, Yroot : Gdouble;
       Delta_X, Delta_Y : Gint;
@@ -2182,7 +2208,7 @@ package body Gtkada.MDI is
      (Widget : access Gtk_Widget_Record'Class)
    is
       Child : constant MDI_Child := MDI_Child (Widget);
-      Note  : Gtk_Notebook;
+      Note  : MDI_Notebook;
    begin
       if Child.State = Floating then
          Hide (Get_Toplevel (Get_Widget (Child)));
@@ -2205,7 +2231,7 @@ package body Gtkada.MDI is
      (Widget : access Gtk_Widget_Record'Class)
    is
       Child : constant MDI_Child := MDI_Child (Widget);
-      Note  : Gtk_Notebook;
+      Note  : MDI_Notebook;
    begin
       if Child.State = Floating then
          Show (Get_Toplevel (Get_Widget (Child)));
@@ -2317,11 +2343,9 @@ package body Gtkada.MDI is
       Add (Event, Child.Title_Box);
 
       Gtk_New (Event);
-      Event.Set_App_Paintable (True);  --  prevent standard gtk_event_box_draw
       Gtk_New (Child.Title_Icon);
       Ref (Child.Title_Icon);  --  floating a child should not destroy icon
       Event.Add (Child.Title_Icon);
-      Event.Set_Visible_Window (False);   --  to get a transparent background
       Child.Title_Box.Pack_Start (Event, Expand => False);
       Return_Callback.Object_Connect
         (Event, Signal_Button_Press_Event,
@@ -2340,7 +2364,10 @@ package body Gtkada.MDI is
       Child.Title_Label.Set_Selectable (False);
 
       if (Flags and Destroy_Button) /= 0 then
-         Close_Button.Gtk_New (Button, Child, Child, True);
+         Close_Button.Gtk_New
+           (Button, Child, Child,
+            Horizontal  => True,
+            In_Titlebar => True);
          Pack_End
            (Child.Title_Box,
             Button, Expand => False, Fill => False, Padding => 2);
@@ -2500,7 +2527,7 @@ package body Gtkada.MDI is
       Height     : Glib.Gint;
       Fixed_Size : Boolean := False)
    is
-      Notebook : constant Gtk_Notebook := Get_Notebook (Child);
+      Notebook : constant MDI_Notebook := Get_Notebook (Child);
    begin
       --  Ignore specific size requests while loading the desktop, since the
       --  latter should force the size
@@ -2866,7 +2893,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Lower_Child (Child : access MDI_Child_Record'Class) is
-      Note : Gtk_Notebook;
+      Note : MDI_Notebook;
    begin
       Ref (Child);
       Remove (Child.MDI.Items, Gtk_Widget (Child));
@@ -2892,7 +2919,7 @@ package body Gtkada.MDI is
    ---------------
 
    function Is_Raised (Child : access MDI_Child_Record'Class) return Boolean is
-      Note : Gtk_Notebook;
+      Note : MDI_Notebook;
    begin
       case Child.State is
          when Floating =>
@@ -2914,7 +2941,7 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True)
    is
       Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
-      Note          : Gtk_Notebook;
+      Note          : MDI_Notebook;
       Give          : Boolean := Give_Focus;
    begin
       Show (Child);  --  Make sure the child is visible
@@ -3014,7 +3041,7 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Color
-     (Note    : Gtk_Notebook;
+     (Note    : access MDI_Notebook_Record'Class;
       Focused : Boolean)
    is
    begin
@@ -3418,21 +3445,49 @@ package body Gtkada.MDI is
       return Child.State = Floating;
    end Is_Floating;
 
+   ------------------------
+   -- On_Tab_Orientation --
+   ------------------------
+
+   procedure On_Tab_Orientation
+     (Notebook    : access Gtk_Notebook_Record'Class;
+      Orientation : Tab_Orientation_Type)
+   is
+      Child : MDI_Child;
+      Length : constant Gint := Notebook.Get_N_Pages;
+   begin
+      MDI_Notebook (Notebook).Tab_Orientation := Orientation;
+
+      if Length > 0 then
+         for Page_Index in 0 .. Length - 1 loop
+            Child := MDI_Child (Notebook.Get_Nth_Page (Page_Index));
+            Update_Tab_Label (Child);
+         end loop;
+      end if;
+   end On_Tab_Orientation;
+
    ----------------
    -- On_Tab_Pos --
    ----------------
 
-   package Tab_Pos_Callback is new Gtk.Handlers.User_Callback
-     (Gtk_Notebook_Record, Gtk.Enums.Gtk_Position_Type);
    procedure On_Tab_Pos
      (Note : access Gtk_Notebook_Record'Class;
-      Pos  : Gtk.Enums.Gtk_Position_Type);
-
-   procedure On_Tab_Pos
-     (Note : access Gtk_Notebook_Record'Class;
-      Pos  : Gtk.Enums.Gtk_Position_Type) is
+      Pos  : Gtk.Enums.Gtk_Position_Type)
+   is
    begin
-      Set_Tab_Pos (Note, Pos);
+      Note.Set_Tab_Pos (Pos);
+
+      case Pos is
+         when Pos_Top | Pos_Bottom =>
+            Get_Style_Context (Note).Remove_Class ("rightTabs");
+            Get_Style_Context (Note).Remove_Class ("leftTabs");
+         when Pos_Left =>
+            Get_Style_Context (Note).Add_Class ("leftTabs");
+         when Pos_Right =>
+            Get_Style_Context (Note).Add_Class ("rightTabs");
+      end case;
+
+      On_Tab_Orientation (Note, MDI_Notebook (Note).Tab_Orientation);
    end On_Tab_Pos;
 
    -------------
@@ -3465,7 +3520,7 @@ package body Gtkada.MDI is
       Event    : Gdk.Event.Gdk_Event) return Boolean
    is
       C    : constant MDI_Child := MDI_Child (Child);
-      Note : constant Gtk_Notebook := Get_Notebook (C);
+      Note : constant MDI_Notebook := Get_Notebook (C);
       Menu : Gtk_Menu;
       Submenu : Gtk_Menu;
       Sep  : Gtk_Separator_Menu_Item;
@@ -3536,6 +3591,36 @@ package body Gtkada.MDI is
             On_Tab_Pos'Access, Note, Pos_Right);
          Append (Submenu, Item);
 
+         Gtk_New (Item, "Tabs rotation");
+         Menu.Append (Item);
+
+         Gtk_New (Submenu);
+         Item.Set_Submenu (Submenu);
+
+         Gtk_New (Item, "Automatic");
+         Tab_Orientation_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Orientation'Access, Note, Automatic);
+         Submenu.Append (Item);
+
+         Gtk_New (Item, "Horizontal");
+         Tab_Orientation_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Orientation'Access, Note, Horizontal);
+         Submenu.Append (Item);
+
+         Gtk_New (Item, "Bottom to top");
+         Tab_Orientation_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Orientation'Access, Note, Bottom_To_Top);
+         Submenu.Append (Item);
+
+         Gtk_New (Item, "Top to bottom");
+         Tab_Orientation_Callback.Object_Connect
+           (Item, Gtk.Menu_Item.Signal_Activate,
+            On_Tab_Orientation'Access, Note, Top_To_Bottom);
+         Submenu.Append (Item);
+
          Gtk_New (Sep);
          Menu.Append (Sep);
 
@@ -3572,16 +3657,15 @@ package body Gtkada.MDI is
    ---------------------
 
    function Create_Notebook
-     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook
+     (MDI : access MDI_Window_Record'Class) return MDI_Notebook
    is
-      Notebook : Gtk_Notebook;
+      Notebook : MDI_Notebook;
    begin
       Notebook := new MDI_Notebook_Record;
       Gtk.Notebook.Initialize (Notebook);
       Configure_Notebook_Tabs (MDI, Notebook);
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
-      Set_Tab_Pos  (Notebook, MDI.Tabs_Position);
       Notebook.Set_Group_Name ("MDI");
       Get_Style_Context (Notebook).Add_Class ("mdi");
 
@@ -3592,6 +3676,8 @@ package body Gtkada.MDI is
       Widget_Callback.Connect
         (Notebook, Signal_Switch_Page,
          Set_Focus_Child_Switch_Notebook_Page'Access);
+
+      On_Tab_Pos (Notebook, MDI.Tabs_Position);
       return Notebook;
    end Create_Notebook;
 
@@ -3773,16 +3859,57 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Label (Child : access MDI_Child_Record'Class) is
-      Note   : constant Gtk_Notebook := Get_Notebook (Child);
+      Note   : constant MDI_Notebook := Get_Notebook (Child);
       Event  : Gtk_Event_Box;
       Box    : Gtk_Box;
       Close  : Close_Button.Gtkada_MDI_Close_Button;
+      Orientation : Tab_Orientation_Type;
+
+      procedure Add_Icon;
+      procedure Add_Close_Button;
+      procedure Add_Label;
+
+      procedure Add_Icon is
+      begin
+         Gtk_New (Child.Tab_Icon, Gdk_Pixbuf'(Child.Title_Icon.Get));
+         Box.Pack_Start (Child.Tab_Icon, Expand => False, Padding => 1);
+      end Add_Icon;
+
+      procedure Add_Close_Button is
+      begin
+         if (Child.Flags and Destroy_Button) /= 0 then
+            Close_Button.Gtk_New
+              (Close, Event, Child,
+               Horizontal  => Orientation = Horizontal,
+               In_Titlebar => False);
+            Box.Pack_Start (Close, Expand => False, Padding => 2);
+         end if;
+      end Add_Close_Button;
+
+      procedure Add_Label is
+      begin
+         Gtk_New (Child.Tab_Label, Child.Short_Title.all);
+         Box.Pack_Start (Child.Tab_Label, Expand => True, Fill => True);
+         Child.Tab_Label.Set_Tooltip_Text (Child.Title.all);
+         if Child.MDI.Homogeneous_Tabs then
+            Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Middle);
+         end if;
+
+         case Orientation is
+            when Horizontal | Automatic =>
+               Child.Tab_Label.Set_Angle (0.0);
+            when Bottom_To_Top =>
+               Child.Tab_Label.Set_Angle (90.0);
+            when Top_To_Bottom =>
+               Child.Tab_Label.Set_Angle (270.0);
+         end case;
+      end Add_Label;
 
    begin
       if Note /= null and then Child.State = Normal then
          if Child.MDI.Homogeneous_Tabs then
             Event := new MDI_Tab_Record;
-            MDI_Tab (Event).Timestamp := MDI_Notebook (Note).Timestamp;
+            MDI_Tab (Event).Timestamp := Note.Timestamp;
 
             if Glib.Object.Initialize_Class_Record
               (Ancestor     => Gtk.Event_Box.Get_Type,
@@ -3805,28 +3932,40 @@ package body Gtkada.MDI is
          Event.Set_App_Paintable (True);  --  prevent gtk_event_box_draw
          Event.Set_Visible_Window (False);
 
-         Gtk_New_Hbox (Box, Homogeneous => False);
-
-         Gtk_New (Child.Tab_Icon, Gdk_Pixbuf'(Child.Title_Icon.Get));
-         Box.Pack_Start (Child.Tab_Icon, Expand => False);
-
-         Gtk_New (Child.Tab_Label, Child.Short_Title.all);
-         Child.Tab_Label.Set_Tooltip_Text (Child.Title.all);
-
-         if Child.MDI.Homogeneous_Tabs then
-            Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Middle);
+         Orientation := Note.Tab_Orientation;
+         if Orientation = Automatic then
+            case Note.Get_Tab_Pos is
+               when Pos_Top | Pos_Bottom =>
+                  Orientation := Horizontal;
+               when Pos_Left =>
+                  Orientation := Bottom_To_Top;
+               when Pos_Right =>
+                  Orientation := Top_To_Bottom;
+            end case;
          end if;
 
-         Pack_Start (Box, Child.Tab_Label, Expand => True, Fill => True);
-
-         if (Child.Flags and Destroy_Button) /= 0 then
-            Close_Button.Gtk_New (Close, Event, Child, False);
-            Pack_End (Box, Close, Expand => False, Padding => 2);
+         if Orientation = Horizontal then
+            Gtk_New_Hbox (Box, Homogeneous => False);
+         else
+            Gtk_New_Vbox (Box, Homogeneous => False);
          end if;
 
-         Add (Event, Box);
+         if Orientation = Bottom_To_Top then
+            Add_Close_Button;
+            Add_Label;
+            Add_Icon;
+         else
+            Add_Icon;
+            Add_Label;
+            Add_Close_Button;
+         end if;
 
-         Set_Tab_Label (Note, Child, Event);
+         Event.Add (Box);
+
+         Note.Set_Tab_Detachable (Child, True);
+         Note.Set_Tab_Reorderable (Child, True);
+         Note.Set_Tab_Label (Child, Event);
+
          Show_All (Event);
 
          Return_Callback.Object_Connect
@@ -3872,11 +4011,11 @@ package body Gtkada.MDI is
    procedure Put_In_Notebook
      (MDI                      : access MDI_Window_Record'Class;
       Child                    : access MDI_Child_Record'Class;
-      Notebook                 : Gtk_Notebook := null;
+      Notebook                 : MDI_Notebook := null;
       Initial_Position         : Child_Position := Position_Automatic;
       Force_Parent_Destruction : Boolean := True)
    is
-      Note                   : Gtk_Notebook;
+      Note                   : MDI_Notebook;
       Old_Parent             : Gtk_Container;
       Destroy_Old            : Boolean := False;
       Old_Note_Was_Destroyed : aliased Boolean := False;
@@ -3937,8 +4076,6 @@ package body Gtkada.MDI is
 
       Append_Page (Note, Child);
       Note.Set_Menu_Label_Text (Child, Child.Short_Title.all);
-      Note.Set_Tab_Detachable (Child, True);
-      Set_Tab_Reorderable (Note, Child, Reorderable => True);
 
       Configure_Notebook_Tabs (MDI, Note);
 
@@ -3968,12 +4105,12 @@ package body Gtkada.MDI is
       MDI              : access MDI_Window_Record'Class;
       Group            : Child_Group := Group_Any;
       Initial_Position : Child_Position := Position_Automatic)
-      return Gtk_Notebook
+      return MDI_Notebook
    is
       List                  : Widget_List.Glist := MDI.Items;
       C                     : MDI_Child;
-      Note                  : Gtk_Notebook;
-      Current               : Gtk_Notebook;
+      Note                  : MDI_Notebook;
+      Current               : MDI_Notebook;
       Default_Current_Found : Boolean := False;
    begin
       if Gtkada_Multi_Paned (Pane) = Gtkada_Multi_Paned (MDI) then
@@ -4045,7 +4182,7 @@ package body Gtkada.MDI is
 
                   if not At_End (Iter) then
                      Print_Debug ("Found empty notebook, using it");
-                     Note := Gtk_Notebook (Get_Widget (Iter));
+                     Note := MDI_Notebook (Get_Widget (Iter));
                      Current := Note;
                   end if;
                end;
@@ -4285,7 +4422,7 @@ package body Gtkada.MDI is
       Mode          : Split_Mode := Before;
       Width, Height : Glib.Gint := 0)
    is
-      Note, Note2 : Gtk_Notebook;
+      Note, Note2 : MDI_Notebook;
       Target      : MDI_Child;
       Pane        : Gtkada_Multi_Paned;
       W           : Gtk_Widget;
@@ -4338,7 +4475,7 @@ package body Gtkada.MDI is
          end case;
 
          if W /= null and then W.all in Gtk_Notebook_Record'Class then
-            Note2 := Gtk_Notebook (W);
+            Note2 := MDI_Notebook (W);
          end if;
 
          if Note2 = null then
@@ -4650,7 +4787,7 @@ package body Gtkada.MDI is
          Parent_Orientation          : Gtk_Orientation;
          Focus_Child           : in out MDI_Child;
          Width, Height         : out Gint;
-         Notebook              : out Gtk_Notebook;
+         Notebook              : out MDI_Notebook;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
          To_Hide               : in out Gtk.Widget.Widget_List.Glist;
          Empty_Notebook_Filler : in out MDI_Child);
@@ -4676,7 +4813,7 @@ package body Gtkada.MDI is
          Parent_Children_Count : Integer;
          Parent_Orientation    : Gtk_Orientation;
          User                  : User_Data;
-         Initial_Ref_Child     : Gtk_Notebook := null;
+         Initial_Ref_Child     : MDI_Notebook := null;
          To_Raise              : in out Gtk.Widget.Widget_List.Glist;
          To_Hide               : in out Gtk.Widget.Widget_List.Glist;
          Empty_Notebook_Filler : in out MDI_Child);
@@ -5105,7 +5242,7 @@ package body Gtkada.MDI is
          Parent_Orientation          : Gtk_Orientation;
          Focus_Child                 : in out MDI_Child;
          Width, Height               : out Gint;
-         Notebook                    : out Gtk_Notebook;
+         Notebook                    : out MDI_Notebook;
          To_Raise                    : in out Gtk.Widget.Widget_List.Glist;
          To_Hide                     : in out Gtk.Widget.Widget_List.Glist;
          Empty_Notebook_Filler       : in out MDI_Child)
@@ -5141,6 +5278,11 @@ package body Gtkada.MDI is
            ("Parse_Notebook_Node: created new notebook "
             & System.Address_Image (Notebook.all'Address));
 
+         Notebook.Tab_Orientation :=
+           Tab_Orientation_Type'Value
+             (Get_Attribute (Child_Node, "orientation",
+              Tab_Orientation_Type'Image (Automatic)));
+
          --  Make sure Width and Height are not too small: that could happen
          --  if the main window has not been resized yet (thus has a size 1x1)
          --  and we load a perspective (since keeping place for the children
@@ -5149,7 +5291,7 @@ package body Gtkada.MDI is
          Width := Gint'Max (Width, -1);
          Height := Gint'Max (Height, -1);
 
-         Set_Tab_Pos (Notebook, Pos);
+         On_Tab_Pos (Notebook, Pos);
          Set_Child_Visible (Notebook, True);
          Show_All (Notebook);
 
@@ -5459,7 +5601,7 @@ package body Gtkada.MDI is
          Parent_Children_Count       : Integer;
          Parent_Orientation          : Gtk_Orientation;
          User                        : User_Data;
-         Initial_Ref_Child           : Gtk_Notebook := null;
+         Initial_Ref_Child           : MDI_Notebook := null;
          To_Raise                    : in out Gtk.Widget.Widget_List.Glist;
          To_Hide                     : in out Gtk.Widget.Widget_List.Glist;
          Empty_Notebook_Filler       : in out MDI_Child)
@@ -5491,7 +5633,7 @@ package body Gtkada.MDI is
          end if;
 
          declare
-            Notebooks : array (1 .. Count) of Gtk_Notebook;
+            Notebooks : array (1 .. Count) of MDI_Notebook;
             W         : Gtk_Widget;
             Tmp_Width, Tmp_Height : Gint;
             Tmp_Orientation : Gtk_Orientation;
@@ -6089,7 +6231,7 @@ package body Gtkada.MDI is
 
          function Save_Notebook
            (Current    : Node_Ptr;
-            Note       : Gtk_Notebook;
+            Note       : MDI_Notebook;
             In_Central : Boolean) return Node_Ptr;
          --  save all pages of the notebook
 
@@ -6242,7 +6384,7 @@ package body Gtkada.MDI is
 
          function Save_Notebook
            (Current    : Node_Ptr;
-            Note       : Gtk_Notebook;
+            Note       : MDI_Notebook;
             In_Central : Boolean) return Node_Ptr
          is
             Length                  : constant Gint := Get_N_Pages (Note);
@@ -6256,6 +6398,12 @@ package body Gtkada.MDI is
             Set_Attribute
               (Parent, "Tabs",
                Gtk_Position_Type'Image (Get_Tab_Pos (Note)));
+
+            if Note.Tab_Orientation /= Automatic then
+               Set_Attribute
+                 (Parent, "orientation",
+                  Tab_Orientation_Type'Image (Note.Tab_Orientation));
+            end if;
 
             if Length > 0 then
                for Page_Index in 0 .. Length - 1 loop
@@ -6351,7 +6499,7 @@ package body Gtkada.MDI is
 
                elsif Get_Widget (Iter) /= null then
                   N := Save_Notebook
-                    (Current, Gtk_Notebook (Get_Widget (Iter)),
+                    (Current, MDI_Notebook (Get_Widget (Iter)),
                      In_Central => In_Central);
                   if N /= null then
                      Save_Size (Iter, N);
@@ -6850,7 +6998,7 @@ package body Gtkada.MDI is
       if C = null then
          return null;
       else
-         return Get_Notebook (C);
+         return Gtk_Notebook (Get_Notebook (C));
       end if;
    end Get_Notebook;
 
@@ -6987,7 +7135,7 @@ package body Gtkada.MDI is
          Override_Color (Widget, Gtk_State_Flag_Focused, C);
       end Override;
 
-      Note  : constant Gtk_Notebook := Get_Notebook (Child);
+      Note  : constant MDI_Notebook := Get_Notebook (Child);
    begin
       if Highlight then
          Show (Child);  --  Make sure the child is visible
