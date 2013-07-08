@@ -3638,6 +3638,11 @@ package body Gtkada.MDI is
                 Button        => 3,
                 Activate_Time => Gdk.Event.Get_Time (Event));
          return True;
+
+      elsif Get_Button (Event) = 2 then
+         C.Close_Child;
+         return True;
+
       end if;
       return False;
    end On_Notebook_Button_Press;
