@@ -24,6 +24,8 @@
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 
+with Gtkada.Bindings; use Gtkada.Bindings;
+
 package body Glib.Main is
 
    function Low_Level_Source_Func (Func : G_Source_Func) return Gboolean;
@@ -59,6 +61,11 @@ package body Glib.Main is
       else
          return Boolean'Pos (Func.all);
       end if;
+
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Low_Level_Source_Func;
 
    --------------
@@ -139,6 +146,10 @@ package body Glib.Main is
          Data : constant Cb_Record_Access := Convert (D);
       begin
          return Boolean'Pos (Data.Func (Data.Data.all));
+      exception
+         when E : others =>
+            Process_Exception (E);
+            return 0;
       end General_Cb;
 
       --------------
