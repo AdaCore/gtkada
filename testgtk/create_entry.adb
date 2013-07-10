@@ -1,41 +1,36 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;             use Glib;
 with Glib.Main;        use Glib.Main;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Combo;        use Gtk.Combo;
+with Gtk.Combo_Box_Text; use Gtk.Combo_Box_Text;
 with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Level_Bar;    use Gtk.Level_Bar;
 with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Search_Entry; use Gtk.Search_Entry;
 with Gtk.Separator;    use Gtk.Separator;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
@@ -76,7 +71,7 @@ package body Create_Entry is
      (Button    : access Gtk_Check_Button_Record'Class;
       The_Entry : Gtk_Entry) is
    begin
-      Set_Editable (The_Entry, Get_Active (Button));
+      The_Entry.Set_Editable (Button.Get_Active);
    end Toggle_Editable;
 
    ----------------------
@@ -88,7 +83,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry)
    is
    begin
-      Set_Overwrite_Mode (The_Entry, Get_Active (Button));
+      The_Entry.Set_Overwrite_Mode (Button.Get_Active);
    end Toggle_Overwrite;
 
    ----------------------
@@ -100,7 +95,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry)
    is
    begin
-      Set_Sensitive (The_Entry, Get_Active (Button));
+      The_Entry.Set_Sensitive (Button.Get_Active);
    end Toggle_Sensitive;
 
    -----------------------
@@ -112,7 +107,7 @@ package body Create_Entry is
       The_Entry : Gtk_Entry)
    is
    begin
-      Set_Visibility (The_Entry, Get_Active (Button));
+      The_Entry.Set_Visibility (Button.Get_Active);
    end Toggle_Visibility;
 
    -------------------
@@ -121,7 +116,7 @@ package body Create_Entry is
 
    function Pulse_Timeout (The_Entry : Gtk_Entry) return Boolean is
    begin
-      Progress_Pulse (The_Entry);
+      The_Entry.Progress_Pulse;
       return True;
    end Pulse_Timeout;
 
@@ -137,7 +132,7 @@ package body Create_Entry is
          Progress := 0.0;
       end if;
 
-      Set_Progress_Fraction (The_Entry, Progress);
+      The_Entry.Set_Progress_Fraction (Progress);
       return True;
    end Fractional_Timeout;
 
@@ -159,33 +154,21 @@ package body Create_Entry is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       use String_List;
 
-      List      : String_List.Glist;
-      Box1,
-        Box2    : Gtk_Box;
-      The_Entry : Gtk_Entry;
-      Combo     : Gtk_Combo;
-      Check     : Gtk_Check_Button;
-      Hsep      : Gtk_Hseparator;
+      Box1, Box2 : Gtk_Box;
+      The_Entry  : Gtk_Entry;
+      Combo      : Gtk_Combo_Box_Text;
+      Check      : Gtk_Check_Button;
+      Hsep       : Gtk_Hseparator;
+      Search     : Gtk_Search_Entry;
+      Level      : Gtk_Level_Bar;
 
    begin
-      Append (List, "item0");
-      Append (List, "item1 item1");
-      Append (List, "item2 item2 item2");
-      Append (List, "item3 item3 item3 item3");
-      Append (List, "item4 item4 item4 item4 item4");
-      Append (List, "item5 item5 item5 item5 item5 item5");
-      Append (List, "item6 item6 item6 item6 item6");
-      Append (List, "item7 item7 item7 item7");
-      Append (List, "item8 item8 item8");
-      Append (List, "item9 item9");
-
       Set_Label (Frame, "Entry");
 
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
 
-      Widget_Handler.Connect
-        (Box1, "destroy", Widget_Handler.To_Marshaller (On_Destroy'Access));
+      Widget_Handler.Connect (Box1, "destroy", On_Destroy'Access);
 
       Gtk_New_Vbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
@@ -216,39 +199,48 @@ package body Create_Entry is
 
       Gtk_New (Check, "Editable");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Editable'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Editable'Access, The_Entry);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Overwrite");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Overwrite'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Overwrite'Access, The_Entry);
       Set_Active (Check, False);
 
       Gtk_New (Check, "Visible");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Visibility'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Visibility'Access, The_Entry);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Sensitive");
       Pack_Start (Box2, Check, False, True, 0);
-      Entry_Cb.Connect
-        (Check, "toggled",
-         Entry_Cb.To_Marshaller (Toggle_Sensitive'Access), The_Entry);
+      Entry_Cb.Connect (Check, "toggled", Toggle_Sensitive'Access, The_Entry);
       Set_Active (Check, True);
 
       Gtk_New_Hseparator (Hsep);
       Pack_Start (Box2, Hsep);
 
-      Gtk_New (Combo);
-      Set_Popdown_Strings (Combo, List);
-      Set_Text (Gtk_Entry (Get_Entry (Combo)), "hello world");
+      Gtk_New_With_Entry (Combo);
+      Combo.Append_Text ("item0");
+      Combo.Append_Text ("item1 item1");
+      Combo.Append_Text ("item2 item2 item2");
+      Combo.Append_Text ("item3 item3 item3 item3");
+      Combo.Append_Text ("item4 item4 item4 item4 item4");
+      Combo.Append_Text ("item5 item5 item5 item5 item5 item5");
+      Combo.Append_Text ("item6 item6 item6 item6 item6");
+      Set_Text (Gtk_Entry (Combo.Get_Child), "hello world");
       Pack_Start (Box2, Combo, True, True, 0);
+
+      Gtk_New (Search);
+      Search.Set_Tooltip_Text ("A Gtk_Search_Entry");
+      Box2.Pack_Start (Search, False, False, 0);
+
+      Gtk_New (Level);
+      Level.Set_Min_Value (0.0);
+      Level.Set_Max_Value (10.0);
+      Level.Set_Value (5.0);
+      Box2.Pack_Start (Level, False, False, 0);
+      Level.Set_Tooltip_Text ("A Gtk_Level_Bar");
 
       Show_All (Frame);
    end Run;

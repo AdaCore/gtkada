@@ -1,32 +1,28 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Gdk.Types;             use Gdk.Types;
 with System;
 with Interfaces.C.Strings;
 
@@ -70,28 +66,17 @@ package body Gdk.Main is
       end if;
    end Get_Display;
 
-   ------------------
-   -- Get_Use_Xshm --
-   ------------------
-
-   function Get_Use_Xshm return Boolean is
-      function Internal return Gint;
-      pragma Import (C, Internal, "gdk_get_use_xshm");
-   begin
-      return Internal /= 0;
-   end Get_Use_Xshm;
-
    -------------------
    -- Keyboard_Grab --
    -------------------
 
    function Keyboard_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Time         : Guint32 := 0) return Gdk_Grab_Status
    is
       function Internal
-         (Window       : Gdk.Window.Gdk_Window;
+         (Window       : Gdk_Window;
           Owner_Events : Gint;
           Time         : Guint32) return Gint;
       pragma Import (C, Internal, "gdk_keyboard_grab");
@@ -118,19 +103,19 @@ package body Gdk.Main is
    ------------------
 
    function Pointer_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
-      Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
-      Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
+      Confine_To   : Gdk.Gdk_Window := null;
+      Cursor       : Gdk.Gdk_Cursor := null;
       Time         : Guint32 := 0) return Gdk_Grab_Status
    is
       function Internal
-        (Window       : Gdk.Window.Gdk_Window;
+        (Window       : Gdk_Window;
          Owner_Events : Gint;
          Event_Mask   : Gint;
-         Confine_To   : Gdk.Window.Gdk_Window;
-         Cursor       : Gdk.Cursor.Gdk_Cursor;
+         Confine_To   : Gdk_Window;
+         Cursor       : Gdk_Cursor;
          Time         : Guint32) return Gint;
       pragma Import (C, Internal, "gdk_pointer_grab");
 
@@ -168,36 +153,5 @@ package body Gdk.Main is
    begin
       Internal (Time);
    end Pointer_Ungrab;
-
-   ----------------
-   -- Set_Locale --
-   ----------------
-
-   function Set_Locale return String is
-      function Internal return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gdk_set_locale");
-
-   begin
-      return C.Strings.Value (Internal);
-   end Set_Locale;
-
-   procedure Set_Locale is
-      procedure Internal;
-      pragma Import (C, Internal, "gdk_set_locale");
-   begin
-      Internal;
-   end Set_Locale;
-
-   ------------------
-   -- Set_Use_Xshm --
-   ------------------
-
-   procedure Set_Use_Xshm (Use_Xshm : Boolean := True) is
-      procedure Internal (Use_Xshm : Gint);
-      pragma Import (C, Internal, "gdk_set_use_xshm");
-
-   begin
-      Internal (To_Gint (Use_Xshm));
-   end Set_Use_Xshm;
 
 end Gdk.Main;

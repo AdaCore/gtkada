@@ -1,32 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Display; use Gdk.Display;
 with Glib.Object; use Glib.Object;
 with Ada.Unchecked_Deallocation;
@@ -516,61 +510,51 @@ package body Gdk.Pixbuf is
       return Internal (Get_Object (Pixbuf));
    end Get_Colorspace;
 
-   -----------------------
-   -- Get_From_Drawable --
-   -----------------------
+   ---------------------
+   -- Get_From_Window --
+   ---------------------
 
-   function Get_From_Drawable
-     (Dest   : Gdk_Pixbuf;
-      Src    : Gdk.Drawable.Gdk_Drawable;
-      Cmap   : Gdk.Color.Gdk_Colormap;
+   function Get_From_Window
+     (Window : Gdk_Window;
       Src_X  : Gint;
       Src_Y  : Gint;
-      Dest_X : Gint;
-      Dest_Y : Gint;
       Width  : Gint;
       Height : Gint) return Gdk_Pixbuf
    is
       function Internal
-        (Dest   : System.Address;
-         Src    : Gdk.Drawable.Gdk_Drawable;
-         Cmap   : Gdk.Color.Gdk_Colormap;
+        (Window : Gdk_Window;
          Src_X  : Gint;
          Src_Y  : Gint;
-         Dest_X : Gint;
-         Dest_Y : Gint;
          Width  : Gint;
          Height : Gint) return System.Address;
-      pragma Import (C, Internal, "gdk_pixbuf_get_from_drawable");
+      pragma Import (C, Internal, "gdk_pixbuf_get_from_window");
 
    begin
-      if Dest = null then
-         return Convert
-           (Internal
-              (System.Null_Address,
-               Src,
-               Cmap,
-               Src_X,
-               Src_Y,
-               Dest_X,
-               Dest_Y,
-               Width,
-               Height));
+      return Convert (Internal (Window, Src_X, Src_Y, Width, Height));
+   end Get_From_Window;
 
-      else
-         return Convert
-           (Internal
-              (Get_Object (Dest),
-               Src,
-               Cmap,
-               Src_X,
-               Src_Y,
-               Dest_X,
-               Dest_Y,
-               Width,
-               Height));
-      end if;
-   end Get_From_Drawable;
+   ----------------------
+   -- Get_From_Surface --
+   ----------------------
+
+   function Get_From_Surface
+     (Surface : Cairo.Cairo_Surface;
+      Src_X   : Gint;
+      Src_Y   : Gint;
+      Width   : Gint;
+      Height  : Gint) return Gdk_Pixbuf
+   is
+      function Internal
+        (Surface : Cairo.Cairo_Surface;
+         Src_X  : Gint;
+         Src_Y  : Gint;
+         Width  : Gint;
+         Height : Gint) return System.Address;
+      pragma Import (C, Internal, "gdk_pixbuf_get_from_surface");
+
+   begin
+      return Convert (Internal (Surface, Src_X, Src_Y, Width, Height));
+   end Get_From_Surface;
 
    -------------------
    -- Get_Has_Alpha --
@@ -612,8 +596,8 @@ package body Gdk.Pixbuf is
    -- Get_Image --
    ---------------
 
-   function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf is
-      function Internal (Cursor : Gdk.Cursor.Gdk_Cursor) return System.Address;
+   function Get_Image (Cursor : Gdk.Gdk_Cursor) return Gdk_Pixbuf is
+      function Internal (Cursor : Gdk.Gdk_Cursor) return System.Address;
       pragma Import (C, Internal, "gdk_cursor_get_image");
 
    begin
@@ -650,10 +634,10 @@ package body Gdk.Pixbuf is
    ----------------
 
    function Get_Pixels
-     (Pixbuf : Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access
+     (Pixbuf : Gdk_Pixbuf) return Rgb_Buffer_Access
    is
       function Internal
-        (Pixbuf : System.Address) return Gdk.Rgb.Rgb_Buffer_Access;
+        (Pixbuf : System.Address) return Rgb_Buffer_Access;
       pragma Import (C, Internal, "gdk_pixbuf_get_pixels");
 
    begin
@@ -730,192 +714,6 @@ package body Gdk.Pixbuf is
    begin
       Internal (Iter);
    end Ref;
-
-   ----------------------------
-   -- Render_Pixmap_And_Mask --
-   ----------------------------
-
-   procedure Render_Pixmap_And_Mask
-     (Pixbuf          : Gdk_Pixbuf;
-      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : Alpha_Range)
-   is
-      procedure Internal
-        (Pixbuf          : System.Address;
-         Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-         Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-         Alpha_Threshold : Alpha_Range);
-      pragma Import (C, Internal, "gdk_pixbuf_render_pixmap_and_mask");
-
-   begin
-      Internal (Get_Object (Pixbuf), Pixmap, Mask, Alpha_Threshold);
-   end Render_Pixmap_And_Mask;
-
-   -----------------------------------------
-   -- Render_Pixmap_And_Mask_For_Colormap --
-   -----------------------------------------
-
-   procedure Render_Pixmap_And_Mask_For_Colormap
-     (Pixbuf          : Gdk_Pixbuf;
-      Colormap        : Gdk.Color.Gdk_Colormap;
-      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : Alpha_Range)
-   is
-      procedure Internal
-        (Pixbuf          : System.Address;
-         Colormap        : Gdk.Color.Gdk_Colormap;
-         Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-         Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-         Alpha_Threshold : Alpha_Range);
-      pragma Import
-        (C, Internal, "gdk_pixbuf_render_pixmap_and_mask_for_colormap");
-
-   begin
-      Internal (Get_Object (Pixbuf), Colormap, Pixmap, Mask, Alpha_Threshold);
-   end Render_Pixmap_And_Mask_For_Colormap;
-
-   ----------------------------
-   -- Render_Threshold_Alpha --
-   ----------------------------
-
-   procedure Render_Threshold_Alpha
-     (Pixbuf          : Gdk_Pixbuf;
-      Bitmap          : Gdk.Bitmap.Gdk_Bitmap;
-      Src_X           : Gint;
-      Src_Y           : Gint;
-      Dest_X          : Gint;
-      Dest_Y          : Gint;
-      Width           : Gint;
-      Height          : Gint;
-      Alpha_Threshold : Alpha_Range)
-   is
-      procedure Internal
-        (Pixbuf          : System.Address;
-         Bitmap          : Gdk.Bitmap.Gdk_Bitmap;
-         Src_X           : Gint;
-         Src_Y           : Gint;
-         Dest_X          : Gint;
-         Dest_Y          : Gint;
-         Width           : Gint;
-         Height          : Gint;
-         Alpha_Threshold : Alpha_Range);
-      pragma Import (C, Internal, "gdk_pixbuf_render_threshold_alpha");
-
-   begin
-      Internal
-        (Get_Object (Pixbuf),
-         Bitmap,
-         Src_X,
-         Src_Y,
-         Dest_X,
-         Dest_Y,
-         Width,
-         Height,
-         Alpha_Threshold);
-   end Render_Threshold_Alpha;
-
-   ------------------------
-   -- Render_To_Drawable --
-   ------------------------
-
-   procedure Render_To_Drawable
-     (Pixbuf   : Gdk_Pixbuf;
-      Drawable : Gdk.Drawable.Gdk_Drawable;
-      GC       : Gdk.GC.Gdk_GC;
-      Src_X    : Gint;
-      Src_Y    : Gint;
-      Dest_X   : Gint;
-      Dest_Y   : Gint;
-      Width    : Gint;
-      Height   : Gint;
-      Dither   : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
-      X_Dither : Gint := 0;
-      Y_Dither : Gint := 0)
-   is
-      procedure Internal
-        (Pixbuf   : System.Address;
-         Drawable : Gdk.Drawable.Gdk_Drawable;
-         GC       : Gdk.GC.Gdk_GC;
-         Src_X    : Gint;
-         Src_Y    : Gint;
-         Dest_X   : Gint;
-         Dest_Y   : Gint;
-         Width    : Gint;
-         Height   : Gint;
-         Dither   : Gdk.Rgb.Gdk_Rgb_Dither;
-         X_Dither : Gint;
-         Y_Dither : Gint);
-      pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable");
-
-   begin
-      Internal
-        (Get_Object (Pixbuf),
-         Drawable,
-         GC,
-         Src_X,
-         Src_Y,
-         Dest_X,
-         Dest_Y,
-         Width,
-         Height,
-         Dither,
-         X_Dither,
-         Y_Dither);
-   end Render_To_Drawable;
-
-   ------------------------------
-   -- Render_To_Drawable_Alpha --
-   ------------------------------
-
-   procedure Render_To_Drawable_Alpha
-     (Pixbuf          : Gdk_Pixbuf;
-      Drawable        : Gdk.Drawable.Gdk_Drawable;
-      Src_X           : Gint;
-      Src_Y           : Gint;
-      Dest_X          : Gint;
-      Dest_Y          : Gint;
-      Width           : Gint;
-      Height          : Gint;
-      Alpha           : Alpha_Mode;
-      Alpha_Threshold : Alpha_Range;
-      Dither          : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
-      X_Dither        : Gint := 0;
-      Y_Dither        : Gint := 0)
-   is
-      procedure Internal
-        (Pixbuf          : System.Address;
-         Drawable        : Gdk.Drawable.Gdk_Drawable;
-         Src_X           : Gint;
-         Src_Y           : Gint;
-         Dest_X          : Gint;
-         Dest_Y          : Gint;
-         Width           : Gint;
-         Height          : Gint;
-         Alpha           : Alpha_Mode;
-         Alpha_Threshold : Alpha_Range;
-         Dither          : Gdk.Rgb.Gdk_Rgb_Dither;
-         X_Dither        : Gint;
-         Y_Dither        : Gint);
-      pragma Import (C, Internal, "gdk_pixbuf_render_to_drawable_alpha");
-
-   begin
-      Internal
-        (Get_Object (Pixbuf),
-         Drawable,
-         Src_X,
-         Src_Y,
-         Dest_X,
-         Dest_Y,
-         Width,
-         Height,
-         Alpha,
-         Alpha_Threshold,
-         Dither,
-         X_Dither,
-         Y_Dither);
-   end Render_To_Drawable_Alpha;
 
    ---------------------------
    -- Saturate_And_Pixelate --
@@ -1148,7 +946,7 @@ package body Gdk.Pixbuf is
    -------------------------
 
    procedure Gdk_New_From_Pixbuf
-     (Cursor  : out Gdk.Cursor.Gdk_Cursor;
+     (Cursor  : out Gdk.Gdk_Cursor;
       Display : Gdk.Display.Gdk_Display := Gdk.Display.Get_Default;
       Pixbuf  : Gdk_Pixbuf;
       X       : Glib.Gint;

@@ -1,31 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This package provides routines to handle initialization and set up of the
@@ -35,10 +30,8 @@
 --  <group>Gdk, the low-level API</group>
 
 with Glib; use Glib;
-
-with Gdk.Cursor;
 with Gdk.Event;
-with Gdk.Window;
+with Gdk.Types;
 
 package Gdk.Main is
 
@@ -55,37 +48,16 @@ package Gdk.Main is
    --  Allocated structures are freed and the program exits cleanly.
    --  This function is deprecated.
 
-   function Set_Locale return String;
-   --  Initialize handling of internationalization of strings.
-   --  See Gtkada.Intl for more details.
-
-   procedure Set_Locale;
-   --  Drops the string returned by the Set_Locale function;
-
-   procedure Set_Use_Xshm (Use_Xshm : Boolean := True);
-   --  Set whether shared memory (when supported by the graphic server) should
-   --  be used.
-
-   function Get_Use_Xshm return Boolean;
-   --  Return whether shared memory on the graphic server is used.
-
    function Get_Display return String;
    --  Return the name of the display.
 
-   type Gdk_Grab_Status is
-     (Grab_Success,
-      Grab_Already_Grabbed,
-      Gdk_Grab_Invalid_Time,
-      Gdk_Grab_Not_Viewable,
-      Gdk_Grab_Frozen);
-
    function Pointer_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
-      Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
-      Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
-      Time         : Guint32 := 0) return Gdk_Grab_Status;
+      Confine_To   : Gdk.Gdk_Window := null;
+      Cursor       : Gdk.Gdk_Cursor := null;
+      Time         : Guint32 := 0) return Gdk.Types.Gdk_Grab_Status;
    --  Grab the pointer to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
@@ -95,6 +67,8 @@ package Gdk.Main is
    --    - Cursor changes the cursor for the duration of the grab
    --    - Time specifies the time
    --  Requires a corresponding call to Pointer_Ungrab
+   --
+   --  This is obsolescent in gtk-3, use Gdk.Device.Grab instead
 
    procedure Pointer_Ungrab (Time : Guint32 := 0);
    --  Release any pointer grab.
@@ -103,9 +77,9 @@ package Gdk.Main is
    --  Tell wether there is an active pointer grab in effect.
 
    function Keyboard_Grab
-     (Window       : Gdk.Window.Gdk_Window;
+     (Window       : Gdk.Gdk_Window;
       Owner_Events : Boolean := True;
-      Time         : Guint32 := 0) return Gdk_Grab_Status;
+      Time         : Guint32 := 0) return Gdk.Types.Gdk_Grab_Status;
    --  Grab the keyboard to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,

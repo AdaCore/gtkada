@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2001-2003, ACT-Europe                --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  Properties are a fully general way to modify the appareance or behavior
@@ -74,6 +68,7 @@ with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with System;
+with Glib.Types;
 with Glib.Values;
 
 package Glib.Properties is
@@ -117,6 +112,7 @@ package Glib.Properties is
    type Property_Ulong     is new Ulong_Properties.Property;
    type Property_Unichar   is new Unichar_Properties.Property;
    type Property_C_Proxy   is new Glib.Property;
+   type Property_Interface is new Glib.Property;
    type Property_String_RO is new Glib.Property;
    type Property_String_WO is new Glib.Property;
    type Property_String    is new Glib.Property;
@@ -239,5 +235,14 @@ package Glib.Properties is
    function Get_Property
      (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_C_Proxy) return C_Proxy;
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Interface;
+      Value  : Glib.Types.GType_Interface);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name : Property_Interface) return Glib.Types.GType_Interface;
 
 end Glib.Properties;

@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---               Copyright (C) 2006-2013, AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;                   use Glib;
 with Gdk.Pixbuf;             use Gdk.Pixbuf;
@@ -42,7 +37,7 @@ with Gtk.Hbutton_Box;        use Gtk.Hbutton_Box;
 with Gtk.Image;              use Gtk.Image;
 with Gtk.List_Store;         use Gtk.List_Store;
 with Gtk.Scrolled_Window;    use Gtk.Scrolled_Window;
-with Gtk.Selection;          use Gtk.Selection;
+with Gtk.Selection_Data;     use Gtk.Selection_Data;
 with Gtk.Text_Buffer;        use Gtk.Text_Buffer;
 with Gtk.Text_Iter;          use Gtk.Text_Iter;
 with Gtk.Text_View;          use Gtk.Text_View;
@@ -51,7 +46,6 @@ with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
 with Gtk.Tree_View;          use Gtk.Tree_View;
 with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
 with Gtk.Widget;             use Gtk.Widget;
-with System;                 use System;
 
 package body Create_Clipboard is
 
@@ -62,10 +56,8 @@ package body Create_Clipboard is
    --  Called when a new format is selected
 
    procedure On_Image_Retrieved
-     (Clipboard : Gtk_Clipboard;
-      Pixbuf    : System.Address;
-      Data      : System.Address);
-   pragma Convention (C, On_Image_Retrieved);
+     (Clipboard : not null access Gtk_Clipboard_Record'Class;
+      Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Called when the image has been retrieved from the clipboard
 
    List     : Gtk_List_Store;
@@ -97,24 +89,13 @@ package body Create_Clipboard is
    ------------------------
 
    procedure On_Image_Retrieved
-     (Clipboard : Gtk_Clipboard;
-      Pixbuf    : System.Address;
-      Data      : System.Address)
+     (Clipboard : not null access Gtk_Clipboard_Record'Class;
+      Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       pragma Unreferenced (Clipboard);
-      pragma Unreferenced (Data);
-      First : Gtk_Text_Iter;
-      P     : constant Gdk.Pixbuf.Gdk_Pixbuf := Gdk.Pixbuf.Convert (Pixbuf);
 
    begin
-      if P /= null then
-         Set (Image, P);
-      else
-         Get_Start_Iter (Contents, First);
-         Insert (Contents, First,
-                 "!! Could not retrieve the image from the clipboard!!!"
-                 & ASCII.LF);
-      end if;
+      Set (Image, Pixbuf);
    end On_Image_Retrieved;
 
    -------------
@@ -139,11 +120,13 @@ package body Create_Clipboard is
    -- On_Select_Format --
    ----------------------
 
-   procedure On_Select_Format (View : access Gtk_Widget_Record'Class) is
+   procedure On_Select_Format
+      (View : access Gtk_Widget_Record'Class)
+   is
       Clipboard : constant Gtk_Clipboard := Get;
       Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter;
-      Data  : Selection_Data;
+      Data  : Gtk_Selection_Data;
       First, Last : Gtk_Text_Iter;
       As_String : Boolean;
       As_Image  : Boolean;
@@ -171,8 +154,7 @@ package body Create_Clipboard is
          & ASCII.LF);
 
       if As_Image then
-         Request_Image
-           (Clipboard, On_Image_Retrieved'Access, System.Null_Address);
+         Request_Image (Clipboard, On_Image_Retrieved'Access);
       end if;
 
       Get_Selected (Get_Selection (Gtk_Tree_View (View)), Model, Iter);
@@ -186,7 +168,7 @@ package body Create_Clipboard is
       begin
          Data := Wait_For_Contents (Clipboard, Atom_Intern (Format));
 
-         if Data /= null then
+         if not Data.Is_Null then
             Insert
               (Contents,
                First,
@@ -197,7 +179,7 @@ package body Create_Clipboard is
               (Contents,
                First,
                "Type=     "
-               & Atom_Name (Get_Type (Data))
+               & Atom_Name (Get_Data_Type (Data))
                & ASCII.LF);
             Insert
               (Contents,
@@ -220,7 +202,7 @@ package body Create_Clipboard is
                   "As_String=" & Get_Data_As_String (Data));
             end if;
 
-            Selection_Data_Free (Data);
+            Free (Data);
          end if;
       end;
    end On_Select_Format;
@@ -264,7 +246,7 @@ package body Create_Clipboard is
       Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
       Pack_Start (Box2, Scrolled, Expand => True);
 
-      Gtk_New (View, List);
+      Gtk_New (View, +List);
       Add (Scrolled, View);
       Set_Headers_Visible (View, False);
 

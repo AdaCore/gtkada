@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2010-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib.Object; use Glib.Object;
 with System; use System;
@@ -35,13 +30,13 @@ package body Gdk.Cairo is
    -- Create --
    ------------
 
-   function Create (Drawable : Gdk_Drawable) return Cairo_Context is
-      function Internal (S : System.Address) return Cairo_Context;
+   function Create (Window : Gdk_Window) return Cairo_Context is
+      function Internal (S : Gdk_Window) return Cairo_Context;
       pragma Import (C, Internal, "gdk_cairo_create");
 
       Cr : Cairo_Context;
    begin
-      Cr := Internal (To_Address (Drawable));
+      Cr := Internal (Window);
       return Cr;
    end Create;
 
@@ -62,5 +57,16 @@ package body Gdk.Cairo is
    begin
       Internal (Cr, Get_Object (Pixbuf), Pixbuf_X, Pixbuf_Y);
    end Set_Source_Pixbuf;
+
+   ---------------------
+   -- Set_Source_RGBA --
+   ---------------------
+
+   procedure Set_Source_RGBA
+     (Cr       : Cairo_Context;
+      Color    : Gdk.RGBA.Gdk_RGBA) is
+   begin
+      Set_Source_Rgba (Cr, Color.Red, Color.Green, Color.Blue, Color.Alpha);
+   end Set_Source_RGBA;
 
 end Gdk.Cairo;

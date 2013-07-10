@@ -1,44 +1,30 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  This widget is a container that catches events for its child when its
---  child does not have its own window (like a Gtk_Scrolled_Window or a
---  Gtk_Label for instance). Some widgets in GtkAda do not have their own
---  window, and thus can not directly get events from the server. The
---  Gtk_Event_Box widget can be used to force its child to receive events
---  anyway.
---
---  For instance, this widget is used internally in a Gtk_Combo_Box so that
---  the application can change the cursor when the mouse is in the popup
---  window. In that case, it contains a frame, that itself contains the
---  scrolled window of the popup.
+--  The Gtk.Event_Box.Gtk_Event_Box widget is a subclass of Gtk.Bin.Gtk_Bin
+--  which also has its own window. It is useful since it allows you to catch
+--  events for widgets which do not have their own window.
 --
 --  </description>
 --  <group>Layout Containers</group>
@@ -49,7 +35,6 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Event_Box is
 
@@ -61,7 +46,12 @@ package Gtk.Event_Box is
    ------------------
 
    procedure Gtk_New (Event_Box : out Gtk_Event_Box);
-   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class);
+   procedure Initialize
+      (Event_Box : not null access Gtk_Event_Box_Record'Class);
+   --  Create a new box.
+   --  The box's child can then be set using the Gtk.Container.Add function.
+
+   function Gtk_Event_Box_New return Gtk_Event_Box;
    --  Create a new box.
    --  The box's child can then be set using the Gtk.Container.Add function.
 
@@ -73,48 +63,70 @@ package Gtk.Event_Box is
    -------------
 
    function Get_Above_Child
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
+      (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
+   --  Returns whether the event box window is above or below the windows of
+   --  its child. See Gtk.Event_Box.Set_Above_Child for details.
+   --  Since: gtk+ 2.4
+
    procedure Set_Above_Child
-      (Event_Box   : access Gtk_Event_Box_Record;
+      (Event_Box   : not null access Gtk_Event_Box_Record;
        Above_Child : Boolean);
    --  Set whether the event box window is positioned above the windows of its
    --  child, as opposed to below it. If the window is above, all events inside
    --  the event box will go to the event box. If the window is below, events
    --  in windows of child widgets will first got to that widget, and then to
-   --  its parents. The default is to keep the window below the child.
+   --  its parents.
+   --  The default is to keep the window below the child.
    --  Since: gtk+ 2.4
-   --  "above_child": True if the event box window is above the windows of its
-   --  child
+   --  "above_child": True if the event box window is above its child
 
    function Get_Visible_Window
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
+      (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
+   --  Returns whether the event box has a visible window. See
+   --  Gtk.Event_Box.Set_Visible_Window for details.
+   --  Since: gtk+ 2.4
+
    procedure Set_Visible_Window
-      (Event_Box      : access Gtk_Event_Box_Record;
+      (Event_Box      : not null access Gtk_Event_Box_Record;
        Visible_Window : Boolean);
    --  Set whether the event box uses a visible or invisible child window. The
-   --  default is to use visible windows. In an invisible window event box, the
-   --  window that the event box creates is a %GDK_INPUT_ONLY window, which
-   --  means that it is invisible and only serves to receive events. A visible
-   --  window event box creates a visible (%GDK_INPUT_OUTPUT) window that acts
-   --  as the parent window for all the widgets contained in the event box. You
-   --  should generally make your event box invisible if you just want to trap
-   --  events. Creating a visible window may cause artifacts that are visible
-   --  to the user, especially if the user is using a theme with gradients or
-   --  pixmaps. The main reason to create a non input-only event box is if you
-   --  want to set the background to a different color or draw on it.
-   --  Note: There is one unexpected issue for an invisible event box that has
-   --  its window below the child. (See Gtk.Event_Box.Set_Above_Child.) Since
-   --  the input-only window is not an ancestor window of any windows that
+   --  default is to use visible windows.
+   --  In an invisible window event box, the window that the event box creates
+   --  is a Gdk.Input_Only window, which means that it is invisible and only
+   --  serves to receive events.
+   --  A visible window event box creates a visible (Gdk.Input_Output) window
+   --  that acts as the parent window for all the widgets contained in the
+   --  event box.
+   --  You should generally make your event box invisible if you just want to
+   --  trap events. Creating a visible window may cause artifacts that are
+   --  visible to the user, especially if the user is using a theme with
+   --  gradients or pixmaps.
+   --  The main reason to create a non input-only event box is if you want to
+   --  set the background to a different color or draw on it.
+   --  Note:
+   --  There is one unexpected issue for an invisible event box that has its
+   --  window below the child. (See Gtk.Event_Box.Set_Above_Child.) Since the
+   --  input-only window is not an ancestor window of any windows that
    --  descendent widgets of the event box create, events on these windows
    --  aren't propagated up by the windowing system, but only by GTK+. The
    --  practical effect of this is if an event isn't in the event mask for the
-   --  descendant window (see Gtk.Widget.Add_Event), it won't be received by
+   --  descendant window (see Gtk.Widget.Add_Events), it won't be received by
    --  the event box.
    --  This problem doesn't occur for visible event boxes, because in that
    --  case, the event box window is actually the ancestor of the descendant
    --  windows, not just at the same place on the screen.
    --  Since: gtk+ 2.4
-   --  "visible_window": boolean value
+   --  "visible_window": True to make the event box have a visible window
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Above_Child_Property : constant Glib.Properties.Property_Boolean;
+
+   Visible_Window_Property : constant Glib.Properties.Property_Boolean;
 
    ----------------
    -- Interfaces --
@@ -123,37 +135,20 @@ package Gtk.Event_Box is
    --
    --  - "Buildable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Event_Box_Record, Gtk_Event_Box);
    function "+"
      (Widget : access Gtk_Event_Box_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Event_Box
-   renames Implements_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Above_Child_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Visible_Window_Property
-   --  Type: Boolean
-   --  Flags: read-write
-
-   Above_Child_Property : constant Glib.Properties.Property_Boolean;
-   Visible_Window_Property : constant Glib.Properties.Property_Boolean;
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
-   Above_Child_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("above-child");
    Visible_Window_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("visible-window");
+   Above_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("above-child");
 end Gtk.Event_Box;

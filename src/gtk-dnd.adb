@@ -1,40 +1,45 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Gdk.Bitmap; use Gdk.Bitmap;
-with Gdk.Color;  use Gdk.Color;
 with Gdk.Event;  use Gdk.Event;
-with Gdk.Pixmap; use Gdk.Pixmap;
 with Gdk.Types;  use Gdk.Types;
 with Gdk.Window; use Gdk.Window;
 with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.Dnd is
+
+   ----------------------
+   -- Set_Icon_Default --
+   ----------------------
+
+   procedure Set_Icon_Default (Context : Drag_Context) is
+      procedure Internal
+        (Context : System.Address);
+      pragma Import (C, Internal, "gtk_drag_set_icon_default");
+
+   begin
+      Internal (Get_Object (Context));
+   end Set_Icon_Default;
 
    ---------------------
    -- Set_Icon_Pixbuf --
@@ -47,14 +52,14 @@ package body Gtk.Dnd is
       Hot_Y   : Gint)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Pixbuf  : System.Address;
          Hot_X   : Gint;
          Hot_Y   : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_pixbuf");
 
    begin
-      Internal (Context, Get_Object (Pixbuf), Hot_X, Hot_Y);
+      Internal (Get_Object (Context), Get_Object (Pixbuf), Hot_X, Hot_Y);
    end Set_Icon_Pixbuf;
 
    -------------------
@@ -68,13 +73,13 @@ package body Gtk.Dnd is
       Hot_Y     : Gint)
    is
       procedure Internal
-        (Context   : Drag_Context;
+        (Context   : System.Address;
          Icon_Name : String;
          Hot_X     : Gint;
          Hot_Y     : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_name");
    begin
-      Internal (Context, Icon_Name & ASCII.NUL, Hot_X, Hot_Y);
+      Internal (Get_Object (Context), Icon_Name & ASCII.NUL, Hot_X, Hot_Y);
    end Set_Icon_Name;
 
    --------------------
@@ -88,13 +93,13 @@ package body Gtk.Dnd is
       Hot_Y    : Gint)
    is
       procedure Internal
-        (Context  : Drag_Context;
+        (Context  : System.Address;
          Stock_Id : String;
          Hot_X    : Gint;
          Hot_Y    : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_stock");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Stock_Id & ASCII.NUL,
                 Hot_X,
                 Hot_Y);
@@ -182,14 +187,14 @@ package body Gtk.Dnd is
 
    procedure Dest_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List)
+      Target_List : Gtk.Target_List.Gtk_Target_List)
    is
       procedure Internal
         (Widget      : System.Address;
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_dest_set_target_list");
    begin
-      Internal (Get_Object (Widget), Target_List.all'Address);
+      Internal (Get_Object (Widget), Target_List.Get_Object);
    end Dest_Set_Target_List;
 
    --------------------------
@@ -197,13 +202,16 @@ package body Gtk.Dnd is
    --------------------------
 
    function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk_Target_List
    is
       function Internal (Widget : System.Address)
                         return System.Address;
       pragma Import (C, Internal, "gtk_drag_dest_get_target_list");
+      T : Gtk_Target_List;
    begin
-      return To_Proxy (Internal (Get_Object (Widget)));
+      T.Set_Object (Internal (Get_Object (Widget)));
+      return T;
    end Dest_Get_Target_List;
 
    ----------------------------
@@ -212,14 +220,14 @@ package body Gtk.Dnd is
 
    procedure Source_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List)
+      Target_List : Gtk.Target_List.Gtk_Target_List)
    is
       procedure Internal
         (Widget      : System.Address;
          Target_List : System.Address);
       pragma Import (C, Internal, "gtk_drag_source_set_target_list");
    begin
-      Internal (Get_Object (Widget), Target_List.all'Address);
+      Internal (Get_Object (Widget), Target_List.Get_Object);
    end Source_Set_Target_List;
 
    ----------------------------
@@ -227,13 +235,17 @@ package body Gtk.Dnd is
    ----------------------------
 
    function Source_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk_Target_List
    is
       function Internal (Widget : System.Address)
                         return System.Address;
       pragma Import (C, Internal, "gtk_drag_source_get_target_list");
+
+      T : Gtk_Target_List;
    begin
-      return To_Proxy (Internal (Get_Object (Widget)));
+      T.Set_Object (Internal (Get_Object (Widget)));
+      return T;
    end Source_Get_Target_List;
 
    ----------------------
@@ -242,17 +254,18 @@ package body Gtk.Dnd is
 
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Context     : Drag_Context;
-      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom
+      Context     : Gdk.Drag_Contexts.Drag_Context;
+      Target_List : Gtk.Target_List.Gtk_Target_List) return Gdk.Types.Gdk_Atom
    is
       function Internal
         (Widget      : System.Address;
-         Context     : Drag_Context;
+         Context     : System.Address;
          Target_List : System.Address)
          return Gdk_Atom;
       pragma Import (C, Internal, "gtk_drag_dest_find_target");
    begin
-      return Internal (Get_Object (Widget), Context, Target_List.all'Address);
+      return Internal
+        (Get_Object (Widget), Get_Object (Context), Target_List.Get_Object);
    end Dest_Find_Target;
 
    ---------------------------
@@ -320,13 +333,13 @@ package body Gtk.Dnd is
 
    procedure Dest_Set_Proxy
      (Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Proxy_Window    : Gdk.Window.Gdk_Window;
+      Proxy_Window    : Gdk.Gdk_Window;
       Protocol        : Drag_Protocol;
       Use_Coordinates : Boolean)
    is
       procedure Internal
         (Widget          : System.Address;
-         Proxy_Window    : Gdk.Window.Gdk_Window;
+         Proxy_Window    : Gdk.Gdk_Window;
          Protocol        : Drag_Protocol;
          Use_Coordinates : Gint);
       pragma Import (C, Internal, "gtk_drag_dest_set_proxy");
@@ -356,9 +369,9 @@ package body Gtk.Dnd is
 
    procedure Source_Set
      (Widget            : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Start_Button_Mask : in Gdk.Types.Gdk_Modifier_Type;
-      Targets           : in Target_Entry_Array;
-      Actions           : in Drag_Action)
+      Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
+      Targets           : Target_Entry_Array;
+      Actions           : Drag_Action)
    is
       procedure Internal
         (Widget            : System.Address;
@@ -400,14 +413,15 @@ package body Gtk.Dnd is
       Time    : Guint32 := 0)
    is
       procedure Internal
-        (Context  : Drag_Context;
+        (Context  : System.Address;
          Succcess : Gint;
          Del      : Gint;
          Time     : Guint32);
       pragma Import (C, Internal, "gtk_drag_finish");
 
    begin
-      Internal (Context, Boolean'Pos (Success), Boolean'Pos (Del), Time);
+      Internal
+        (Get_Object (Context), Boolean'Pos (Success), Boolean'Pos (Del), Time);
    end Finish;
 
    --------------
@@ -422,13 +436,13 @@ package body Gtk.Dnd is
    is
       procedure Internal
         (Widget   : System.Address;
-         Context  : Drag_Context;
+         Context  : System.Address;
          Target   : Gdk.Types.Gdk_Atom;
          Time     : Guint32);
       pragma Import (C, Internal, "gtk_drag_get_data");
 
    begin
-      Internal (Get_Object (Widget), Context, Target, Time);
+      Internal (Get_Object (Widget), Get_Object (Context), Target, Time);
    end Get_Data;
 
    -----------------------
@@ -436,13 +450,13 @@ package body Gtk.Dnd is
    -----------------------
 
    function Get_Source_Widget
-     (Context : in Drag_Context) return Gtk.Widget.Gtk_Widget
+     (Context : Drag_Context) return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Context : Drag_Context) return System.Address;
+      function Internal (Context : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_drag_get_source_widget");
 
    begin
-      return Convert (Internal (Context));
+      return Convert (Internal (Get_Object (Context)));
    end Get_Source_Widget;
 
    ---------------
@@ -477,22 +491,27 @@ package body Gtk.Dnd is
 
    function Drag_Begin
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Targets : Target_List;
+      Targets : Gtk_Target_List;
       Actions : Drag_Action;
       Button  : Gint;
       Event   : Gdk.Event.Gdk_Event) return Drag_Context
    is
       function Internal
         (Widget  : System.Address;
-         Targets : Target_List;
+         Targets : System.Address;
          Actions : Drag_Action;
          Button  : Gint;
-         Event   : System.Address) return Drag_Context;
+         Event   : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_drag_begin");
-
+      Stub : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
-      return Internal (Get_Object (Widget), Targets, Actions, Button,
-                       To_Address (Event));
+      return Drag_Context
+        (Get_User_Data
+           (Internal
+              (Get_Object (Widget),
+               Get_Object (Targets),
+               Actions, Button, To_Address (Event)),
+            Stub));
    end Drag_Begin;
 
    ---------------------
@@ -506,36 +525,15 @@ package body Gtk.Dnd is
       Hot_Y   : Gint)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Widget  : System.Address;
          Hot_X   : Gint;
          Hot_Y   : Gint);
       pragma Import (C, Internal, "gtk_drag_set_icon_widget");
 
    begin
-      Internal (Context, Get_Object (Widget), Hot_X, Hot_Y);
+      Internal (Get_Object (Context), Get_Object (Widget), Hot_X, Hot_Y);
    end Set_Icon_Widget;
-
-   ---------------------
-   -- Source_Set_Icon --
-   ---------------------
-
-   procedure Source_Set_Icon
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap)
-   is
-      procedure Internal
-        (Widget : System.Address;
-         Colormap : Gdk.Gdk_Colormap;
-         Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-         Mask     : Gdk.Bitmap.Gdk_Bitmap);
-      pragma Import (C, Internal, "gtk_drag_source_set_icon");
-
-   begin
-      Internal (Get_Object (Widget), Colormap, Pixmap, Mask);
-   end Source_Set_Icon;
 
    ----------------------------
    -- Dest_Add_Image_Targets --

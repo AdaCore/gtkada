@@ -1,0 +1,152 @@
+--- src/glib-convert.adb.orig	2012-07-09 12:49:29.232400000 +0200
++++ src/glib-convert.adb	2012-07-09 12:53:50.017600000 +0200
+@@ -195,7 +195,7 @@
+         (URI      : String;
+          Hostname : access chars_ptr;
+          Error    : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_from_uri");
++      pragma Import (C, Internal, "g_filename_from_uri_utf8");
+ 
+       S   : constant chars_ptr := Internal (URI & ASCII.NUL, Hostname, Error);
+       Str : constant String := Value (S);
+@@ -219,7 +219,7 @@
+          Bytes_Read    : System.Address := System.Null_Address;
+          Bytes_Written : System.Address := System.Null_Address;
+          Error         : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_from_utf8");
++      pragma Import (C, Internal, "g_filename_from_utf8_utf8");
+ 
+       S   : constant chars_ptr := Internal
+         (UTF8_String, UTF8_String'Length, Error => Error);
+@@ -243,7 +243,7 @@
+         (URI      : String;
+          Hostname : System.Address;
+          Error    : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_to_uri");
++      pragma Import (C, Internal, "g_filename_to_uri_utf8");
+ 
+       S    : chars_ptr;
+       Host : aliased constant String := Hostname & ASCII.NUL;
+@@ -277,7 +277,7 @@
+          Bytes_Read    : System.Address := System.Null_Address;
+          Bytes_Written : System.Address := System.Null_Address;
+          Error         : GError_Access) return chars_ptr;
+-      pragma Import (C, Internal, "g_filename_to_utf8");
++      pragma Import (C, Internal, "g_filename_to_utf8_utf8");
+ 
+       S   : constant chars_ptr := Internal
+         (OS_String, OS_String'Length, Error => Error);
+--- src/gdk-pixbuf.adb.orig	2012-07-09 12:59:21.689200000 +0200
++++ src/gdk-pixbuf.adb	2012-07-09 13:00:43.994800000 +0200
+@@ -417,7 +417,7 @@
+       function Internal
+         (Filename : String;
+          Error    : access GError) return System.Address;
+-      pragma Import (C, Internal, "gdk_pixbuf_new_from_file");
++      pragma Import (C, Internal, "gdk_pixbuf_new_from_file_utf8");
+ 
+       Err : aliased GError;
+ 
+@@ -438,7 +438,7 @@
+       function Internal
+         (Filename : String;
+          Error    : access GError) return Gdk_Pixbuf_Animation;
+-      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file");
++      pragma Import (C, Internal, "gdk_pixbuf_animation_new_from_file_utf8");
+ 
+       Err : aliased GError;
+ 
+Index: src/glib-module.adb
+===================================================================
+--- src/glib-module.adb	(revision 198814)
++++ src/glib-module.adb	(working copy)
+@@ -20,7 +20,7 @@
+ -- <http://www.gnu.org/licenses/>.                                          --
+ --                                                                          --
+ ------------------------------------------------------------------------------
+-
++pragma Warnings (Off);
+ with Interfaces.C.Strings; use Interfaces.C.Strings;
+ 
+ package body Glib.Module is
+@@ -30,11 +30,8 @@
+    ----------------------
+ 
+    function Module_Supported return Boolean is
+-      function Internal return Gint;
+-      pragma Import (C, Internal, "g_module_supported");
+-
+    begin
+-      return Internal /= 0;
++      return False;
+    end Module_Supported;
+ 
+    -----------------
+@@ -45,13 +42,8 @@
+      (File_Name : String;
+       Flags     : Module_Flags := Module_Bind_Lazy) return G_Module
+    is
+-      function Internal
+-        (File_Name : String;
+-         Flags     : Module_Flags) return G_Module;
+-      pragma Import (C, Internal, "g_module_open");
+-
+    begin
+-      return Internal (File_Name & ASCII.NUL, Flags);
++      return null;
+    end Module_Open;
+ 
+    ------------------
+@@ -59,11 +51,8 @@
+    ------------------
+ 
+    function Module_Close (Module : G_Module) return Boolean is
+-      function Internal (Module : G_Module) return Gint;
+-      pragma Import (C, Internal, "g_module_close");
+-
+    begin
+-      return Internal (Module) /= 0;
++      return False;
+    end Module_Close;
+ 
+    ------------------
+@@ -71,11 +60,8 @@
+    ------------------
+ 
+    function Module_Error return String is
+-      function Internal return chars_ptr;
+-      pragma Import (C, Internal, "g_module_error");
+-
+    begin
+-      return Value (Internal);
++      return "";
+    end Module_Error;
+ 
+    ---------------------------
+@@ -106,11 +92,8 @@
+    -----------------
+ 
+    function Module_Name (Module : G_Module) return String is
+-      function Internal (Module : G_Module) return chars_ptr;
+-      pragma Import (C, Internal, "g_module_name");
+-
+    begin
+-      return Value (Internal (Module));
++      return "";
+    end Module_Name;
+ 
+    -----------------------
+@@ -121,12 +104,8 @@
+      (Directory   : String;
+       Module_Name : String) return String
+    is
+-      function Internal
+-        (Directory : String; Module_Name : String) return chars_ptr;
+-      pragma Import (C, Internal, "g_module_build_path");
+-
+    begin
+-      return Value (Internal (Directory & ASCII.NUL, Module_Name & ASCII.NUL));
++      return "";
+    end Module_Build_Path;
+ 
+ end Glib.Module;

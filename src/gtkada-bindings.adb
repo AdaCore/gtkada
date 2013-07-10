@@ -1,37 +1,39 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 2006-2013, AdaCore              --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with Glib;                 use Glib;
+with Glib.Object;          use Glib.Object;
+with GNAT.IO;
 with GNAT.Strings;         use GNAT.Strings;
 with Interfaces.C;         use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtkada.Bindings is
+
+   procedure Default_Exception_Handler
+      (Occurrence : Ada.Exceptions.Exception_Occurrence);
+   On_Exception : Exception_Handler := Default_Exception_Handler'Access;
 
    --------------------
    -- String_Or_Null --
@@ -62,6 +64,20 @@ package body Gtkada.Bindings is
 
       return To_String_List (C, Gint (Count));
    end To_String_List;
+
+   -----------------------------
+   -- To_String_List_And_Free --
+   -----------------------------
+
+   function To_String_List_And_Free
+     (C : chars_ptr_array_access) return String_List
+   is
+      Result : constant String_List := To_String_List (C.all);
+      C2 : chars_ptr_array_access := C;
+   begin
+      g_strfreev (C2);
+      return Result;
+   end To_String_List_And_Free;
 
    --------------------
    -- To_String_List --
@@ -117,27 +133,23 @@ package body Gtkada.Bindings is
       end;
    end To_Chars_Ptr;
 
-   -------------------
-   -- To_Gint_Array --
-   -------------------
+   --------------------------------
+   -- Generic_To_Address_Or_Null --
+   --------------------------------
 
---     function To_Gint_Array
---       (Arr : Unbounded_Gint_Array_Access; N : Gint) return Glib.Gint_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => 0);
---        else
---           declare
---              Result : Glib.Gint_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Gint_Array;
+   function Generic_To_Address_Or_Null
+     (Val : System.Address) return System.Address
+   is
+      type T_Access is access all T;
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, T_Access);
+   begin
+      if Convert (Val).all = Null_T then
+         return System.Null_Address;
+      else
+         return Val;
+      end if;
+   end Generic_To_Address_Or_Null;
 
    -----------------------------------
    -- To_Gint_Array_Zero_Terminated --
@@ -163,141 +175,160 @@ package body Gtkada.Bindings is
    end To_Gint_Array_Zero_Terminated;
 
    --------------------
-   -- To_Point_Array --
+   -- Value_And_Free --
    --------------------
 
---     function To_Point_Array
---       (Arr : Unbounded_Points_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Points_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => (0, 0));
---        else
---           declare
---              Result : Gdk_Points_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Point_Array;
+   function Value_And_Free
+     (Str : Interfaces.C.Strings.chars_ptr) return String
+   is
+   begin
+      if Str = Null_Ptr then
+         return "";
+      end if;
 
-   -------------------
-   -- To_Atom_Array --
-   -------------------
+      declare
+         Val : constant String := Value (Str);
+         Tmp : chars_ptr := Str;
+      begin
+         Free (Tmp);
+         return Val;
+      end;
+   end Value_And_Free;
 
---     function To_Atom_Array
---       (Arr : Unbounded_Atom_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Atom_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => Gdk.Types.Gdk_None);
---        else
---           declare
---              Result : Gdk_Atom_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Atom_Array;
+   -------------------------
+   -- Value_Allowing_Null --
+   -------------------------
 
-   --------------------
-   -- To_Color_Array --
-   --------------------
+   function Value_Allowing_Null
+     (Str : Interfaces.C.Strings.chars_ptr) return String
+   is
+   begin
+      if Str = Null_Ptr then
+         return "";
+      end if;
 
---     function To_Color_Array
---       (Arr : Unbounded_Color_Array_Access; N : Glib.Gint)
---        return Gdk.Color.Gdk_Color_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => Null_Color);
---        else
---           declare
---              Result : Gdk_Color_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Color_Array;
+      return Interfaces.C.Strings.Value (Str);
+   end Value_Allowing_Null;
 
-   --------------------
-   -- To_Pspec_Array --
-   --------------------
+   ---------------------------------
+   -- Unchecked_Do_Signal_Connect --
+   ---------------------------------
 
---     function To_Pspec_Array
---       (Arr : Unbounded_Pspec_Array_Access; N : Glib.Gint)
---        return Glib.Param_Spec_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => null);
---        else
---           declare
---              Result : Param_Spec_Array (1 .. Natural (N));
---           begin
---              for R in 0 .. Natural (N - 1) loop
---                 Result (R + 1) := Arr (R);
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Pspec_Array;
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : not null access Glib.Object.GObject_Record'Class;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null)
+   is
+      function Internal
+        (Instance : System.Address;
+         Detailed_Signal : Glib.Signal_Name;
+         Closure  : GClosure;
+         After    : Gint := 0) return Gulong;
+      pragma Import (C, Internal, "g_signal_connect_closure");
 
-   ------------------------
-   -- To_Signal_Id_Array --
-   ------------------------
+      use type System.Address;
+      Id : Gulong;
+      Closure : GClosure;
+      pragma Unreferenced (Id);
 
---     function To_Signal_Id_Array
---       (Arr : Unbounded_Signal_Id_Array_Access; N : Glib.Guint)
---        return Glib.Object.Signal_Id_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => Null_Signal_Id);
---        else
---           declare
---              Result : Signal_Id_Array (1 .. N);
---           begin
---              for R in 0 .. N - 1 loop
---                 Result (R + 1) := Arr (Natural (R));
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_Signal_Id_Array;
+   begin
+      if Slot_Object /= null then
+         Closure := CClosure_New (Handler, Get_Object (Slot_Object), Destroy);
+         Watch_Closure (Get_Object (Slot_Object), Closure);
+      else
+         Closure := CClosure_New (Handler, System.Null_Address, Destroy);
+      end if;
 
-   --------------------
-   -- To_GType_Array --
-   --------------------
+      --  Could also use Set_Meta_Marshal to pass user data to the marshaller
+      Set_Marshal (Closure, Marshaller);
 
---     function To_GType_Array
---       (Arr : Unbounded_GType_Array_Access; N : Glib.Guint)
---        return Glib.GType_Array
---     is
---     begin
---        if Arr = null then
---           return (1 .. 0 => GType_Invalid);
---        else
---           declare
---              Result : GType_Array (1 .. N);
---           begin
---              for R in 0 .. N - 1 loop
---                 Result (R + 1) := Arr (Natural (R));
---              end loop;
---              return Result;
---           end;
---        end if;
---     end To_GType_Array;
+      Id := Internal
+        (Get_Object (Object),
+         C_Name,
+         Closure => Closure,
+         After   => Boolean'Pos (After));
+   end Unchecked_Do_Signal_Connect;
+
+   ---------------------------------
+   -- Unchecked_Do_Signal_Connect --
+   ---------------------------------
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : Glib.Types.GType_Interface;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null)
+   is
+      function Internal
+        (Instance : Glib.Types.GType_Interface;
+         Detailed_Signal : Glib.Signal_Name;
+         Closure  : GClosure;
+         After    : Gint := 0) return Gulong;
+      pragma Import (C, Internal, "g_signal_connect_closure");
+
+      use type System.Address;
+      Id      : Gulong;
+      Closure : GClosure;
+      pragma Unreferenced (Id);
+
+   begin
+      if Slot_Object /= null then
+         Closure := CClosure_New (Handler, Get_Object (Slot_Object), Destroy);
+         Watch_Closure (Get_Object (Slot_Object), Closure);
+      else
+         Closure := CClosure_New (Handler, System.Null_Address, Destroy);
+      end if;
+
+      --  Could also use Set_Meta_Marshal to pass user data to the marshaller
+      Set_Marshal (Closure, Marshaller);
+
+      Id := Internal
+        (Object,
+         C_Name,
+         Closure => Closure,
+         After   => Boolean'Pos (After));
+   end Unchecked_Do_Signal_Connect;
+
+   -----------------------
+   -- Process_Exception --
+   -----------------------
+
+   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence) is
+   begin
+      On_Exception (E);
+   exception
+      when E : others =>
+         --  never propagate the exception to C
+         Default_Exception_Handler (E);
+   end Process_Exception;
+
+   -------------------------------
+   -- Default_Exception_Handler --
+   -------------------------------
+
+   procedure Default_Exception_Handler
+      (Occurrence : Ada.Exceptions.Exception_Occurrence)
+   is
+   begin
+      GNAT.IO.Put_Line
+         (GNAT.IO.Standard_Error,
+          Ada.Exceptions.Exception_Information (Occurrence));
+   end Default_Exception_Handler;
+
+   ----------------------
+   -- Set_On_Exception --
+   ----------------------
+
+   procedure Set_On_Exception (Handler : Exception_Handler) is
+   begin
+      On_Exception := Handler;
+   end Set_On_Exception;
 
 end Gtkada.Bindings;

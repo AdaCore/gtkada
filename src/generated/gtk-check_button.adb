@@ -1,41 +1,65 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Check_Button is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Check_Button is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Check_Button_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Check_Button);
+
+   -------------------------------------
+   -- Gtk_Check_Button_New_With_Label --
+   -------------------------------------
+
+   function Gtk_Check_Button_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Check_Button
+   is
+      Check_Button : constant Gtk_Check_Button := new Gtk_Check_Button_Record;
+   begin
+      Gtk.Check_Button.Initialize (Check_Button, Label);
+      return Check_Button;
+   end Gtk_Check_Button_New_With_Label;
+
+   ----------------------------------------
+   -- Gtk_Check_Button_New_With_Mnemonic --
+   ----------------------------------------
+
+   function Gtk_Check_Button_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Check_Button
+   is
+      Check_Button : constant Gtk_Check_Button := new Gtk_Check_Button_Record;
+   begin
+      Gtk.Check_Button.Initialize_With_Mnemonic (Check_Button, Label);
+      return Check_Button;
+   end Gtk_Check_Button_New_With_Mnemonic;
 
    -------------
    -- Gtk_New --
@@ -68,7 +92,7 @@ package body Gtk.Check_Button is
    ----------------
 
    procedure Initialize
-      (Check_Button : access Gtk_Check_Button_Record'Class;
+      (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String := "")
    is
       function Internal
@@ -77,14 +101,16 @@ package body Gtk.Check_Button is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Check_Button.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Check_Button, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Check_Button, Tmp_Return);
    end Initialize;
 
    ------------------------------
@@ -92,7 +118,7 @@ package body Gtk.Check_Button is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Check_Button : access Gtk_Check_Button_Record'Class;
+      (Check_Button : not null access Gtk_Check_Button_Record'Class;
        Label        : UTF8_String)
    is
       function Internal
@@ -101,9 +127,11 @@ package body Gtk.Check_Button is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Check_Button, Tmp_Return);
+      if not Check_Button.Is_Created then
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Check_Button, Tmp_Return);
+      end if;
    end Initialize_With_Mnemonic;
 
    ---------------------------
@@ -111,8 +139,8 @@ package body Gtk.Check_Button is
    ---------------------------
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Check_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Check_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_do_set_related_action");
@@ -120,18 +148,47 @@ package body Gtk.Check_Button is
       Internal (Get_Object (Self), Get_Object (Action));
    end Do_Set_Related_Action;
 
+   ---------------------
+   -- Get_Action_Name --
+   ---------------------
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Check_Button_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_actionable_get_action_name");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Action_Name;
+
+   -----------------------------
+   -- Get_Action_Target_Value --
+   -----------------------------
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Check_Button_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_actionable_get_action_target_value");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Action_Target_Value;
+
    ------------------------
    -- Get_Related_Action --
    ------------------------
 
    function Get_Related_Action
-      (Self : access Gtk_Check_Button_Record) return Gtk.Action.Gtk_Action
+      (Self : not null access Gtk_Check_Button_Record)
+       return Gtk.Action.Gtk_Action
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_activatable_get_related_action");
-      Stub : Gtk.Action.Gtk_Action_Record;
+      Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
    begin
-      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub));
+      return Gtk.Action.Gtk_Action (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Action));
    end Get_Related_Action;
 
    -------------------------------
@@ -139,21 +196,73 @@ package body Gtk.Check_Button is
    -------------------------------
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Check_Button_Record) return Boolean
+      (Self : not null access Gtk_Check_Button_Record) return Boolean
    is
       function Internal (Self : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
-      return Boolean'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)) /= 0;
    end Get_Use_Action_Appearance;
+
+   ---------------------
+   -- Set_Action_Name --
+   ---------------------
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Check_Button_Record;
+       Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Action_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_action_name");
+      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Action_Name);
+      Free (Tmp_Action_Name);
+   end Set_Action_Name;
+
+   -----------------------------
+   -- Set_Action_Target_Value --
+   -----------------------------
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Check_Button_Record;
+       Target_Value : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Target_Value : System.Address);
+      pragma Import (C, Internal, "gtk_actionable_set_action_target_value");
+   begin
+      Internal (Get_Object (Self), Get_Object (Target_Value));
+   end Set_Action_Target_Value;
+
+   ------------------------------
+   -- Set_Detailed_Action_Name --
+   ------------------------------
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Check_Button_Record;
+       Detailed_Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
+      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
+      Free (Tmp_Detailed_Action_Name);
+   end Set_Detailed_Action_Name;
 
    ------------------------
    -- Set_Related_Action --
    ------------------------
 
    procedure Set_Related_Action
-      (Self   : access Gtk_Check_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class)
+      (Self   : not null access Gtk_Check_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_set_related_action");
@@ -166,7 +275,7 @@ package body Gtk.Check_Button is
    -------------------------------
 
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Check_Button_Record;
+      (Self           : not null access Gtk_Check_Button_Record;
        Use_Appearance : Boolean)
    is
       procedure Internal (Self : System.Address; Use_Appearance : Integer);
@@ -180,13 +289,13 @@ package body Gtk.Check_Button is
    ----------------------------
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Check_Button_Record;
+      (Self   : not null access Gtk_Check_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class)
    is
       procedure Internal (Self : System.Address; Action : System.Address);
       pragma Import (C, Internal, "gtk_activatable_sync_action_properties");
    begin
-      Internal (Get_Object (Self), Get_Object (Action));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
 end Gtk.Check_Button;

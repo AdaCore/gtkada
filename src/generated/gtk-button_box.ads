@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
@@ -59,6 +53,22 @@ package Gtk.Button_Box is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Widget      : out Gtk_Button_Box;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   procedure Initialize
+      (Widget      : not null access Gtk_Button_Box_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box' orientation.
+
+   function Gtk_Button_Box_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Button_Box;
+   --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
+   --  Since: gtk+ 3.0
+   --  "orientation": the box' orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");
 
@@ -66,68 +76,83 @@ package Gtk.Button_Box is
    -- Methods --
    -------------
 
-   procedure Get_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : out Gint;
-       Ipad_Y : out Gint);
-   procedure Set_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : Gint;
-       Ipad_Y : Gint);
-   pragma Obsolescent (Set_Child_Ipadding);
-   --  Deprecated
+   function Get_Child_Non_Homogeneous
+      (Widget : not null access Gtk_Button_Box_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
+   --  Returns whether the child is exempted from homogenous sizing.
+   --  Since: gtk+ 3.2
+   --  "child": a child of Widget
+
+   procedure Set_Child_Non_Homogeneous
+      (Widget          : not null access Gtk_Button_Box_Record;
+       Child           : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Non_Homogeneous : Boolean);
+   --  Sets whether the child is exempted from homogeous sizing.
+   --  Since: gtk+ 3.2
+   --  "child": a child of Widget
+   --  "non_homogeneous": the new value
 
    function Get_Child_Secondary
-      (Widget : access Gtk_Button_Box_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
+      (Widget : not null access Gtk_Button_Box_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
+   --  Returns whether Child should appear in a secondary group of children.
+   --  Since: gtk+ 2.4
+   --  "child": a child of Widget
+
    procedure Set_Child_Secondary
-      (Widget       : access Gtk_Button_Box_Record;
-       Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Widget       : not null access Gtk_Button_Box_Record;
+       Child        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Is_Secondary : Boolean);
-   --  Set whether Child should appear in a secondary group of children. A
+   --  Sets whether Child should appear in a secondary group of children. A
    --  typical use of a secondary child is the help button in a dialog.
    --  This group appears after the other children if the style is
-   --  Buttonbox_Start, Buttonbox_Spread or Buttonbox_Edge, and before the
-   --  other children if the style is Buttonbox_End. For horizontal button
-   --  boxes, the definition of before/after depends on direction of the
-   --  widget. (See Gtk.Widget.Set_Direction) If the style is Buttonbox_Start,
-   --  or Buttonbox_End, then the secondary children are aligned at the other
-   --  end of the button box from the main children. For the other styles, they
-   --  appear immediately next to the main children.
-   --  Is_Secondary: if True, the Child appears in a secondary group of the
-   --  button box.
+   --  Gtk.Enums.Buttonbox_Start, Gtk.Enums.Buttonbox_Spread or
+   --  Gtk.Enums.Buttonbox_Edge, and before the other children if the style is
+   --  Gtk.Enums.Buttonbox_End. For horizontal button boxes, the definition of
+   --  before/after depends on direction of the widget (see
+   --  Gtk.Widget.Set_Direction). If the style is Gtk.Enums.Buttonbox_Start or
+   --  Gtk.Enums.Buttonbox_End, then the secondary children are aligned at the
+   --  other end of the button box from the main children. For the other
+   --  styles, they appear immediately next to the main children.
    --  "child": a child of Widget
    --  "is_secondary": if True, the Child appears in a secondary group of the
    --  button box.
 
-   procedure Get_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : out Gint;
-       Min_Height : out Gint);
-   pragma Obsolescent (Get_Child_Size);
-   procedure Set_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : Gint;
-       Min_Height : Gint);
-   pragma Obsolescent (Set_Child_Size);
-   --  Deprecated
-
    function Get_Layout
-      (Widget : access Gtk_Button_Box_Record)
+      (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
-   procedure Set_Layout
-      (Widget       : access Gtk_Button_Box_Record;
-       Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
+   --  Retrieves the method being used to arrange the buttons in a button box.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   procedure Set_Layout
+      (Widget       : not null access Gtk_Button_Box_Record;
+       Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
+   --  Changes the way buttons are arranged in their container.
+   --  "layout_style": the new layout style
+
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    function Get_Orientation
-      (Self : access Gtk_Button_Box_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Button_Box_Record)
+       return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
-      (Self        : access Gtk_Button_Box_Record;
+      (Self        : not null access Gtk_Button_Box_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
 
    ----------------
    -- Interfaces --
@@ -138,39 +163,27 @@ package Gtk.Button_Box is
    --
    --  - "Orientable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Button_Box_Record, Gtk_Button_Box);
    function "+"
      (Widget : access Gtk_Button_Box_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Button_Box
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Button_Box_Record, Gtk_Button_Box);
    function "+"
      (Widget : access Gtk_Button_Box_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Button_Box
-   renames Implements_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Layout_Style_Property
-   --  Type: Gtk.Enums.Gtk_Button_Box_Style
-   --  Flags: read-write
-
-   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style :=

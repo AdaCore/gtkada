@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2010-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  Bindings to the Cairo 2D graphics library.
@@ -59,7 +54,8 @@
 --
 --  In addition to drawing on on-screen widgets, drawing can also be done using
 --  the same Cairo calls to pixbufs (see Gdk.Cairo) to memory
---  (see Cairo.Image_Surface), and to PNG files (see Cairo.Png).
+--  (see Cairo.Image_Surface), and to PNG or PDF files (see Cairo.Png and
+--  Cairo.Pdf).
 --
 --  Code samples demonstrating how to use various functionalities of Cairo
 --  can be found in the testcairo example, shipped with GtkAda.
@@ -74,6 +70,7 @@ with System;
 with Interfaces.C.Strings;
 
 with Glib; use Glib;
+with Glib.Values;
 
 package Cairo is
 
@@ -87,6 +84,10 @@ package Cairo is
    --
    --  Memory management of Cairo_Context is done with subprograms
    --  Reference and Destroy, see below.
+
+   function Get_Context
+      (Value : Glib.Values.GValue) return Cairo_Context;
+   --  Support for callbacks that receive a Cairo_Context as parameter.
 
    type Cairo_Surface is private;
    --  A Cairo_Surface represents an image, either as the destination
@@ -326,11 +327,16 @@ package Cairo is
    --  Return value: the referenced Cairo_Context.
 
    procedure Destroy (Cr : Cairo_Context);
+   pragma Import (C, Destroy, "cairo_destroy");
    --  Cr: a Cairo_Context
    --
    --  Decreases the reference count on cr by one. If the result
    --  is zero, then cr and all associated resources are freed.
    --  See Reference.
+
+   procedure Surface_Destroy (Surface : Cairo_Surface);
+   pragma Import (C, Surface_Destroy, "cairo_surface_destroy");
+   --  Free the memory used by the surface
 
    function Get_Reference_Count (Cr : Cairo_Context) return Guint;
    --  Cr: a Cairo_Context
@@ -580,6 +586,45 @@ package Cairo is
    --
    --  The default operator is Cairo_Operator_Over.
 
+   function Pattern_Create_Rgb
+     (Red, Green, Blue : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Rgb, "cairo_pattern_create_rgb");
+
+   function Pattern_Create_Rgba
+     (Red, Green, Blue, Alpha : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Rgba, "cairo_pattern_create_rgba");
+
+   function Pattern_Create_For_Surface
+     (Surface : Cairo_Surface) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_For_Surface,
+                  "cairo_pattern_create_for_surface");
+
+   function Pattern_Create_Linear
+     (X0, Y0, X1, Y1 : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Linear, "cairo_pattern_create_linear");
+   --  See Pattern_Add_Color_Stop to specify the colors
+
+   function Pattern_Create_Radial
+     (Cx0, Cy0, Radius0, Cx1, Cy1, Radius1 : Gdouble) return Cairo_Pattern;
+   pragma Import (C, Pattern_Create_Radial, "cairo_pattern_create_radial");
+
+   procedure Pattern_Destroy (Pattern : Cairo_Pattern);
+   pragma Import (C, Pattern_Destroy, "cairo_pattern_destroy");
+
+   procedure Pattern_Add_Color_Stop_Rgb
+     (Pattern : Cairo_Pattern;
+      Offset  : Gdouble;
+      Red, Green, Blue : Gdouble);
+   pragma Import
+     (C, Pattern_Add_Color_Stop_Rgb, "cairo_pattern_add_color_stop_rgb");
+
+   procedure Pattern_Add_Color_Stop_Rgba
+     (Pattern : Cairo_Pattern;
+      Offset  : Gdouble;
+      Red, Green, Blue, Alpha : Gdouble);
+   pragma Import
+     (C, Pattern_Add_Color_Stop_Rgba, "cairo_pattern_add_color_stop_rgba");
+
    procedure Set_Source (Cr : Cairo_Context; Source : Cairo_Pattern);
    --  Cr: a cairo context
    --  Source: a Cairo_Pattern to be used as the Source for
@@ -597,11 +642,13 @@ package Cairo is
    --  The default source pattern is a solid pattern that is opaque black,
    --  (that is, it is equivalent to Set_Source_Rgb (Cr, 0.0, 0.0, 0.0)).
 
+   subtype Color_Range is Gdouble range 0.0 .. 1.0;
+
    procedure Set_Source_Rgb
      (Cr    : Cairo_Context;
-      Red   : Gdouble;
-      Green : Gdouble;
-      Blue  : Gdouble);
+      Red   : Color_Range;
+      Green : Color_Range;
+      Blue  : Color_Range);
    --  Cr    : a cairo context
    --  Red   : Red component of color
    --  Green : Green component of color
@@ -620,10 +667,10 @@ package Cairo is
 
    procedure Set_Source_Rgba
      (Cr    : Cairo_Context;
-      Red   : Gdouble;
-      Green : Gdouble;
-      Blue  : Gdouble;
-      Alpha : Gdouble);
+      Red   : Color_Range;
+      Green : Color_Range;
+      Blue  : Color_Range;
+      Alpha : Color_Range);
    --  Cr    : a cairo context
    --  Red   : Red component of color
    --  Green : Green component of color
@@ -1422,13 +1469,11 @@ package Cairo is
    -- Insideness testing --
    ------------------------
 
-   type Cairo_Bool is new Boolean;
-
    function In_Stroke
      (Cr   : Cairo_Context;
       X    : Gdouble;
       Y    : Gdouble)
-      return Cairo_Bool;
+      return Boolean;
    --  Cr: a cairo context
    --  X: X coordinate of the point to test
    --  Y: Y coordinate of the point to test
@@ -1448,7 +1493,7 @@ package Cairo is
      (Cr   : Cairo_Context;
       X    : Gdouble;
       Y    : Gdouble)
-      return Cairo_Bool;
+      return Boolean;
    --  Cr: a cairo context
    --  X: X coordinate of the point to test
    --  Y: Y coordinate of the point to test
@@ -1589,10 +1634,10 @@ package Cairo is
 
    procedure Clip_Extents
      (Cr : Cairo_Context;
-      X1 : access Gdouble;
-      Y1 : access Gdouble;
-      X2 : access Gdouble;
-      Y2 : access Gdouble);
+      X1 : out Gdouble;
+      Y1 : out Gdouble;
+      X2 : out Gdouble;
+      Y2 : out Gdouble);
    --  Cr: a cairo context
    --  X1: left of the resulting extents
    --  Y1: top of the resulting extents
@@ -2302,7 +2347,7 @@ package Cairo is
    --
    --  Return value: the current shape antialiasing mode.
 
-   function Has_Current_Point (Cr : Cairo_Context) return Cairo_Bool;
+   function Has_Current_Point (Cr : Cairo_Context) return Boolean;
    --  Cr: a cairo context
    --
    --  Returns whether a current point is defined on the current path.
@@ -2660,7 +2705,6 @@ package Cairo is
 private
 
    pragma Convention (C, Cairo_Destroy_Func);
-   pragma Convention (C, Cairo_Bool);
    pragma Convention (C, Cairo_Status);
    pragma Convention (C, Cairo_Operator);
    pragma Convention (C, Cairo_Antialias);
@@ -2697,7 +2741,6 @@ private
      Cairo_Font_Options (System.Null_Address);
    pragma Import (C, Create, "cairo_create");
    pragma Import (C, Reference, "cairo_reference");
-   pragma Import (C, Destroy, "cairo_destroy");
    pragma Import (C, Get_Reference_Count, "cairo_get_reference_count");
    pragma Import (C, Get_User_Data, "cairo_get_user_data");
    pragma Import (C, Set_User_Data, "cairo_set_user_data");
@@ -2761,8 +2804,6 @@ private
    pragma Import (C, Fill_Preserve, "cairo_fill_preserve");
    pragma Import (C, Copy_Page, "cairo_copy_page");
    pragma Import (C, Show_Page, "cairo_show_page");
-   pragma Import (C, In_Stroke, "cairo_in_stroke");
-   pragma Import (C, In_Fill, "cairo_in_fill");
    pragma Import (C, Stroke_Extents, "cairo_stroke_extents");
    pragma Import (C, Fill_Extents, "cairo_fill_extents");
    pragma Import (C, Reset_Clip, "cairo_reset_clip");
@@ -2793,7 +2834,6 @@ private
    pragma Import (C, Get_Source, "cairo_get_source");
    pragma Import (C, Get_Tolerance, "cairo_get_tolerance");
    pragma Import (C, Get_Antialias, "cairo_get_antialias");
-   pragma Import (C, Has_Current_Point, "cairo_has_current_point");
    pragma Import (C, Get_Current_Point, "cairo_get_current_point");
    pragma Import (C, Get_Fill_Rule, "cairo_get_fill_rule");
    pragma Import (C, Get_Line_Width, "cairo_get_line_width");

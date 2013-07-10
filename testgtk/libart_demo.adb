@@ -1,32 +1,28 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Cairo;             use Cairo;
+with Gdk.Cairo;         use Gdk.Cairo;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Label;         use Gtk.Label;
 with Glib;              use Glib;
@@ -35,9 +31,7 @@ with Gtk.Box;           use Gtk.Box;
 with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Gtk.Handlers;      use Gtk.Handlers;
-with Gtk.Style;         use Gtk.Style;
 with Gtk.Widget;        use Gtk.Widget;
-with Gdk.Rgb;           use Gdk.Rgb;
 
 package body Libart_Demo is
 
@@ -91,23 +85,18 @@ package body Libart_Demo is
       Unref (Draw.Pix);
    end Destroy;
 
-   ------------
-   -- Expose --
-   ------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose (Draw : access Image_Drawing_Record'Class) return Boolean is
+   function On_Draw
+      (Draw : access Image_Drawing_Record'Class;
+       Cr   : Cairo_Context) return Boolean is
    begin
-      Render_To_Drawable
-        (Draw.Pix,
-         Get_Window (Draw.Area),
-         Gtk.Style.Get_Black_GC (Get_Style (Draw.Area)),
-         0, 0,
-         0, 0,
-         Get_Width (Draw.Pix), Get_Height (Draw.Pix),
-         Dither_Normal,
-         0, 0);
+      Set_Source_Pixbuf (Cr, Draw.Pix, 0.0, 0.0);
+      Cairo.Paint (Cr);
       return False;
-   end Expose;
+   end On_Draw;
 
    -------------
    -- Gtk_New --
@@ -120,11 +109,6 @@ package body Libart_Demo is
    is
       Label : Gtk_Label;
    begin
-      --  The drawing area MUST be created with Gdk.Rgb colormap,
-      --  otherwise the image can not be rendered correctly.
-
-      Gtk.Widget.Push_Colormap (Gdk.Rgb.Get_Cmap);
-
       Draw := new Image_Drawing_Record;
       Initialize_Vbox (Draw, Homogeneous => False, Spacing => 0);
 
@@ -132,23 +116,21 @@ package body Libart_Demo is
       Pack_Start (Draw, Label, Expand => False, Fill => False);
 
       Draw.Pix := Pixbuf;
-      Set_USize
+      Set_Size_Request
         (Draw,
          Get_Width (Draw.Pix),
-         Get_Height (Draw.Pix) + Gint (Get_Allocation_Height (Label)));
+         Get_Height (Draw.Pix) + Get_Allocated_Height (Label));
 
       Gtk_New (Draw.Area);
       Pack_Start (Draw, Draw.Area);
 
       Expose_Cb.Object_Connect
-        (Draw.Area, "expose_event",
-         Expose_Cb.To_Marshaller (Expose'Access),
+        (Draw.Area, Signal_Draw,
+         Expose_Cb.To_Marshaller (On_Draw'Access),
          Slot_Object => Draw);
       Destroy_Cb.Connect
         (Draw, "destroy",
          Destroy_Cb.To_Marshaller (Destroy'Access));
-
-      Gtk.Widget.Pop_Colormap;
    end Gtk_New;
 
    ---------

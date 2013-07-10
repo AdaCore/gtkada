@@ -8,18 +8,29 @@ SRC=gtkbordercombo.c  gtkfontcombo.c     gtkplotbox.c \
     gtkplotps.c       gtkextra-marshal.c gtkplotbar.c \
     gtkplotcsurface.c gtkplotpc.c        gtkplotsurface.c \
     gtkplotcanvastext.c gtkplotcanvasplot.c gtkplotcanvaspixmap.c \
-    gtkplotcanvasline.c gtkplotcanvasellipse.c gtkplotcanvasrectangle.c
+    gtkplotcanvasline.c gtkplotcanvasellipse.c gtkplotcanvasrectangle.c \
+    misc_extra.c
 
 OBJ=${SRC:%.c=${OBJ_DIR}/%.o}
 OBJ_DIR=obj
 ALL_CFLAGS=@CFLAGS@ @GTK_CFLAGS@ $(FPIC)
 
 all: $(OBJ)
+	${GNATMAKE} -Pgtkextra.gpr
 
 include ../Makefile.common
 
 ${OBJ_DIR}/%.o: %.c %.h
 	$(CC) -c $(ALL_CFLAGS) $< -o $@
+
+ifeq (@HAVE_GTKEXTRA@,yes)
+install:
+	${CP} *.ads *.adb "${DESTDIR}${incdir}"
+	${CP} obj/*.ali "${DESTDIR}${alidir}/static"
+else
+install:
+	@echo "GtkExtra was not build, no install needed"
+endif
 
 clean:
 	-$(RM) ${OBJ_DIR}/*.o

@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2001-2013, AdaCore
  * Copyright (C) 1998 Janne Löf <jlof@mail.student.oulu.fi>
  *
  * This library is free software; you can redistribute it and/or
@@ -20,6 +21,7 @@
 #define __GDK_GL_H__
 
 #include <glib.h>
+#include <cairo/cairo.h>
 
 #ifdef G_OS_WIN32
  /* The GL/gl.h on Windows requires you to include <windows.h>
@@ -90,33 +92,15 @@ GdkGLContext *gdk_gl_context_new(GdkVisual *visual);
 GdkGLContext *gdk_gl_context_share_new(GdkVisual *visual, GdkGLContext *sharelist, gint direct);
 GdkGLContext *gdk_gl_context_attrlist_share_new(int *attrlist, GdkGLContext *sharelist, gint direct);
 
-gint          gdk_gl_make_current(GdkDrawable *drawable, GdkGLContext *context);
-void          gdk_gl_swap_buffers(GdkDrawable *drawable);
+gint          gdk_gl_make_current(GdkWindow *window, GdkGLContext *context);
+void          gdk_gl_swap_buffers(GdkWindow *window);
 
 
 void          gdk_gl_wait_gdk(void);
 void          gdk_gl_wait_gl(void);
 
-
-/* glpixmap stuff */
-
-#define GDK_TYPE_GL_PIXMAP            (gdk_gl_pixmap_get_type())
-#define GDK_GL_PIXMAP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GDK_TYPE_GL_PIXMAP, GdkGLPixmap))
-#define GDK_GL_PIXMAP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST (klass, GDK_TYPE_GL_PIXMAP, GdkGLPixmapClass))
-#define GDK_IS_GL_PIXMAP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDK_TYPE_GL_PIXMAP))
-#define GDK_IS_GL_PIXMAP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_GL_PIXMAP))
-#define GDK_GL_PIXMAP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_GL_PIXMAP, GdkGLPixmap))
-
-typedef struct _GdkGLPixmap GdkGLPixmap;
-
-GType        gdk_gl_pixmap_get_type(void);
-GdkGLPixmap *gdk_gl_pixmap_new(GdkVisual *visual, GdkPixmap *pixmap);
-
-gint         gdk_gl_pixmap_make_current(GdkGLPixmap *glpixmap, GdkGLContext *context);
-
-
 /* fonts */
-void gdk_gl_use_gdk_font(GdkFont *font, int first, int count, int list_base);
+// void gdk_gl_use_gdk_font(GdkFont *font, int first, int count, int list_base);
 
 
 #ifndef GTKGL_DISABLE_DEPRECATED

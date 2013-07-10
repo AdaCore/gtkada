@@ -7,7 +7,6 @@ Starting an application with GtkAda
 You need to perform some initializations to start a GtkAda application::
 
   --  predefined units of the library
-  with Gtk.Rc;
   with Gtk.Main;
   with Gtk.Enums;
   with Gtk.Window;
@@ -24,9 +23,6 @@ You need to perform some initializations to start a GtkAda application::
 
      --  Initializes GtkAda
      Gtk.Main.Init;
-
-     --  Load the resources. Note that this part is optional.
-     Gtk.Rc.Parse ("application.rc");
 
      --  Create the main window
      Create_Window;

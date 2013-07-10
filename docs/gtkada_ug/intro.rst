@@ -22,7 +22,7 @@ knowledge, it requires *less* type casting than with in C.  Its efficiency is
 about the same as the C library through the use of inline subprograms.
 
 GtkAda comes with a complete integration to the graphical interface builder
-`Glad`. This makes it even easier to develop interfaces, since you just have to
+`Glade`. This makes it even easier to develop interfaces, since you just have to
 click to create a description of the window and all the dialogs. Ada code can
 simply import that description to bring the windows to life.
 
@@ -32,8 +32,19 @@ them in a GtkAda window, as with any other 2D graphics.  This manual does not
 document OpenGL at all, see any book on OpenGL, or the specification that came
 with your OpenGL library, for more information.
 
+The following Internet sites will always contain the latest public packages for
+`GtkAda`, `gtk+`, `Glade` and `Cairo`
+
+* `http://libre.adacore.com/libre/tools/GtkAda/ <http://libre.adacore.com/libre/tools/GtkAda/>`_
+
+* `http://www.gtk.org/ <http://www.gtk.org/>`_
+
+* `http://glade.gnome.org/ <http://glade.gnome.org/>`_
+
+* `http://www.cairographics.org/ <http://www.cairographics.org/>`_
+
 The scheme used for GtkAda's version numbers is the following: the major and
-minor version number is the same as for the underlying gtk+ library (e.g 2.24).
+minor version number is the same as for the underlying gtk+ library (e.g 2.18).
 The micro version number depends on GtkAda's release number.
 
 This toolkit was tested on the following systems:
@@ -41,13 +52,12 @@ This toolkit was tested on the following systems:
 * GNU Linux/x86
 * GNU Linux/x86-64
 * Solaris/sparc
-* Solaris/sparc64
-* Windows XP/Vista/7
+* Windows XP/Vista/2003
 
 with the latest version of the `GNAT` compiler, developed and supported by
 Ada Core Technologies (see `http://www.adacore.com <http://www.adacore.com>`_).
 
-This version of GtkAda is known to be compatible with `gtk+` **2.24.8**.
+This version of GtkAda is known to be compatible with `gtk+` **3.8.x**
 This release may or may not be compatible with older versions of
 gtk+.
 

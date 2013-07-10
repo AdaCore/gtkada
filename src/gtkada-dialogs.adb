@@ -1,47 +1,39 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
---                 Copyright (C) 2001-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Strings;       use Ada.Strings;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
-with Gdk.Pixmap;        use Gdk.Pixmap;
-with Gdk.Color;         use Gdk.Color;
 with Gdk.Event;         use Gdk.Event;
+with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Gdk.Window;        use Gdk.Window;
 
 with Glib;              use Glib;
 
 with Gtk.Box;           use Gtk.Box;
+with Gtk.Image;         use Gtk.Image;
 with Gtk.Label;         use Gtk.Label;
-pragma Warnings (Off);  --  Gtk.Pixmap is obsolescent
-with Gtk.Pixmap;        use Gtk.Pixmap;
-pragma Warnings (On);
 with Gtk.Widget;        use Gtk.Widget;
 
 with Gtkada.Intl;       use Gtkada.Intl;
@@ -110,7 +102,7 @@ package body Gtkada.Dialogs is
 
    begin
       if Parent = null
-         or else not Realized_Is_Set (Parent)
+         or else not Get_Realized (Parent)
       then
          Set_Position (Dialog, Win_Pos_Mouse);
 
@@ -223,9 +215,8 @@ package body Gtkada.Dialogs is
       Dialog      : Gtk_Dialog;
       Label       : Gtk_Label;
       Box         : Gtk_Box;
-      Pix         : Gtk_Pixmap;
-      Pixmap      : Gdk_Pixmap;
-      Mask        : Gdk_Pixmap;
+      Img         : Gtk_Image;
+      Pixmap      : Gdk_Pixbuf;
 
       use Gdk;
    begin
@@ -242,33 +233,25 @@ package body Gtkada.Dialogs is
 
       case Dialog_Type is
          when Warning =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Warning_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Warning_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Warning");
             end if;
 
          when Error =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Error_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Error_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Error");
             end if;
 
          when Information =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Information_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Information_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Information");
             end if;
 
          when Confirmation =>
-            Create_From_Xpm_D
-              (Pixmap, Get_Window (Dialog), Mask,
-               Null_Color, Confirmation_Xpm);
+            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Confirmation_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Confirmation");
             end if;
@@ -278,11 +261,11 @@ package body Gtkada.Dialogs is
       end case;
 
       Gtk_New_Hbox (Box);
-      Pack_Start (Get_Vbox (Dialog), Box, Padding => 10);
+      Pack_Start (Get_Content_Area (Dialog), Box, Padding => 10);
 
       if Pixmap /= null then
-         Gtk_New (Pix, Pixmap, Mask);
-         Pack_Start (Box, Pix, Padding => 10);
+         Gtk_New (Img, Pixmap);
+         Pack_Start (Box, Img, Padding => 10);
       end if;
 
       Gtk_New (Label, Msg);

@@ -5,7 +5,7 @@ with "opengl/testgtk_opengl";
 project TestGtk is
 
    for Languages use ("Ada");
-   for Main use ("testgtk.adb", "testcairo.adb");
+   for Main use ("testgtk.adb");
    for Source_Dirs use ("./");
    for Object_Dir use "obj/";
    for Exec_Dir use ".";
@@ -16,7 +16,8 @@ project TestGtk is
 
    package Compiler is
       for Default_Switches ("Ada") use
-         ("-gnatQ", "-gnatwa", "-gnatay3abcefhiklmnprt", "-g", "-O1");
+         ("-gnatQ", "-gnatwae", "-gnatay3abcefhiklmnprt", "-g", "-O0",
+          "-gnat05");
    end Compiler;
 
    package Binder   renames Shared.Binder;

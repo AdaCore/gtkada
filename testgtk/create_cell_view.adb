@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 2006 AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;                   use Glib;
 with Glib.Properties;        use Glib.Properties;
@@ -54,9 +49,9 @@ package body Create_Cell_View is
 
    procedure Compute_Column_3
      (Cell_Layout : Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
+      Cell : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Model : Gtk.Tree_Model.Gtk_Tree_Model;
+      Iter : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Compute dynamically what to display in the third column of the view,
    --  based on the contents of the model. In this example, this is a
    --  concatenation of the two model columns
@@ -79,7 +74,8 @@ package body Create_Cell_View is
    -- Move_To_Previous --
    ----------------------
 
-   procedure Move_To_Previous (View : access Gtk_Widget_Record'Class) is
+   procedure Move_To_Previous
+      (View : access Gtk_Widget_Record'Class) is
    begin
       if Prev (Path) then
          Set_Displayed_Row (Gtk_Cell_View (View), Path);
@@ -90,7 +86,8 @@ package body Create_Cell_View is
    -- Move_To_Next --
    ------------------
 
-   procedure Move_To_Next (View : access Gtk_Widget_Record'Class) is
+   procedure Move_To_Next
+      (View : access Gtk_Widget_Record'Class) is
    begin
       Next (Path);
       Set_Displayed_Row (Gtk_Cell_View (View), Path);
@@ -102,9 +99,9 @@ package body Create_Cell_View is
 
    procedure Compute_Column_3
      (Cell_Layout : Gtk_Cell_Layout;
-      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-      Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Cell : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Model : Gtk.Tree_Model.Gtk_Tree_Model;
+      Iter  : Gtk.Tree_Model.Gtk_Tree_Iter)
    is
       pragma Unreferenced (Cell_Layout);
    begin
@@ -164,7 +161,7 @@ package body Create_Cell_View is
 
       Gtk_New (View);
       Pack_Start (Box, View, Expand => True, Fill => False);
-      Set_Model (View, Gtk_Tree_Model (Model));
+      Set_Model (View, +Model);
 
       Gtk_New (Render);
       Pack_Start    (+View, Render, Expand => True);
@@ -180,7 +177,7 @@ package body Create_Cell_View is
       Pack_Start (+View, Render, Expand => True);
       Set_Cell_Data_Func (+View, Render, Compute_Column_3'Access);
 
-      Path := Gtk_New_First;
+      Gtk_New_First (Path);
       Set_Displayed_Row (View, Path);
 
       Widget_Callback.Object_Connect

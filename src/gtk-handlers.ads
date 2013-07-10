@@ -1,31 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --
@@ -169,13 +164,14 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 
+with Cairo;
 with Glib.Values;
 with Gdk.Event;
 with Glib.Object;
+with Gtkada.Bindings;   use Gtkada.Bindings;
 with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
-with Gtk.Notebook;
 with Gtk.Tree_Model;
 with Gtk.Widget;
 
@@ -187,8 +183,6 @@ package Gtk.Handlers is
 
    pragma Elaborate_Body;
 
-   type GClosure is new Glib.C_Proxy;
-
    Null_Handler_Id : constant Gulong := 0;
 
    type Handler_Id is record
@@ -197,6 +191,18 @@ package Gtk.Handlers is
    end record;
    --  This uniquely identifies a connection widget<->signal.
    --  Closure is an internal data, that you should not use.
+
+   function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
+      return System.Address;
+
+   procedure Set_On_Exception (Handler : Gtkada.Bindings.Exception_Handler)
+     renames Gtkada.Bindings.Set_On_Exception;
+   --  Set the handler that catch all exceptions occurring in a a callback. An
+   --  exception should never be propagated to C to avoid undefined behavior.
+   --  By default, unhandled exceptions are printed to stderr.
+   --  This function can be used to provide your own global exception handler,
+   --  which presumably will simply log the exception in application-specific
+   --  manner.
 
    ---------------------------------------------------------
    --  These handlers should return a value
@@ -324,14 +330,19 @@ package Gtk.Handlers is
         (Guint, Glib.Values.Get_Uint);
       package Event_Marshaller is new Marshallers.Generic_Marshaller
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
+      package Context_Marshaller is new Marshallers.Generic_Marshaller
+        (Cairo.Cairo_Context, Cairo.Get_Context);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
          return Marshallers.Marshaller renames Gint_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Context_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Context_Marshaller.To_Marshaller;
 
       function To_Marshaller
         (Cb : Guint_Marshaller.Handler)
@@ -349,11 +360,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -384,12 +390,6 @@ package Gtk.Handlers is
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
          return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
-
-      function Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
    private
       --  <doc_ignore>
@@ -425,12 +425,17 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
+      --
+      --  If you get an error here while compiling, this is because you are not
+      --  instantiating this package at library-level.
+      --
       --  </doc_ignore>
 
    end Return_Callback;
@@ -544,8 +549,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -567,11 +570,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -602,12 +600,6 @@ package Gtk.Handlers is
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
          return Return_Type renames Marshallers.Void_Marshaller.Emit_By_Name;
-
-      function Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         return Return_Type renames Notebook_Page_Marshaller.Emit_By_Name;
 
    private
       --  <doc_ignore>
@@ -645,10 +637,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -759,8 +752,6 @@ package Gtk.Handlers is
       package Guint_Marshaller renames Internal_Cb.Guint_Marshaller;
       package Event_Marshaller renames Internal_Cb.Event_Marshaller;
       package Widget_Marshaller renames Internal_Cb.Widget_Marshaller;
-      package Notebook_Page_Marshaller
-        renames Internal_Cb.Notebook_Page_Marshaller;
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -780,10 +771,6 @@ package Gtk.Handlers is
          renames Internal_Cb.To_Marshaller;
       function To_Marshaller
         (Cb : Internal_Cb.Marshallers.Void_Marshaller.Handler)
-         return Internal_Cb.Marshallers.Marshaller
-         renames Internal_Cb.To_Marshaller;
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
          return Internal_Cb.Marshallers.Marshaller
          renames Internal_Cb.To_Marshaller;
 
@@ -814,12 +801,6 @@ package Gtk.Handlers is
       function Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name)
-         return Return_Type renames Internal_Cb.Emit_By_Name;
-
-      function Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
          return Return_Type renames Internal_Cb.Emit_By_Name;
 
    end User_Return_Callback_With_Setup;
@@ -919,8 +900,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
       package Tree_Path_Marshaller is new Marshallers.Generic_Marshaller
         (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
       package Tree_Iter_Tree_Path_Marshaller is
@@ -952,11 +931,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       function To_Marshaller
         (Cb : Tree_Path_Marshaller.Handler)
@@ -1001,24 +975,18 @@ package Gtk.Handlers is
          Name   : Glib.Signal_Name)
          renames Marshallers.Void_Marshaller.Emit_By_Name;
 
-      procedure Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         renames Notebook_Page_Marshaller.Emit_By_Name;
-
       procedure Emit_By_Name is
         new Tree_Path_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address);
+              (To_Address);
 
       procedure Emit_By_Name is
         new Tree_Iter_Tree_Path_Marshaller.Emit_By_Name_Generic
               (Gtk.Tree_Model.To_Address,
-               Gtk.Tree_Model.To_Address);
+               To_Address);
 
       procedure Emit_By_Name is
         new Tree_Path_Tree_Iter_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address,
+              (To_Address,
                Gtk.Tree_Model.To_Address);
 
    private
@@ -1050,10 +1018,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -1168,8 +1137,6 @@ package Gtk.Handlers is
         (Gdk.Event.Gdk_Event, Gdk.Event.Get_Event);
       package Widget_Marshaller is new Marshallers.Generic_Widget_Marshaller
         (Gtk.Widget.Gtk_Widget_Record, Gtk.Widget.Gtk_Widget);
-      package Notebook_Page_Marshaller is new Marshallers.Generic_Marshaller
-        (Gtk.Notebook.Gtk_Notebook_Page, Gtk.Notebook.Get_Notebook_Page);
       package Tree_Path_Marshaller is new Marshallers.Generic_Marshaller
         (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path);
       package Tree_Iter_Tree_Path_Marshaller is
@@ -1201,11 +1168,6 @@ package Gtk.Handlers is
         (Cb : Marshallers.Void_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Marshallers.Void_Marshaller.To_Marshaller;
-
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
-         return Marshallers.Marshaller
-         renames Notebook_Page_Marshaller.To_Marshaller;
 
       function To_Marshaller
         (Cb : Tree_Path_Marshaller.Handler)
@@ -1250,24 +1212,18 @@ package Gtk.Handlers is
          Name   : Glib.Signal_Name)
          renames Marshallers.Void_Marshaller.Emit_By_Name;
 
-      procedure Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         renames Notebook_Page_Marshaller.Emit_By_Name;
-
       procedure Emit_By_Name is
         new Tree_Path_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address);
+              (To_Address);
 
       procedure Emit_By_Name is
         new Tree_Iter_Tree_Path_Marshaller.Emit_By_Name_Generic
               (Gtk.Tree_Model.To_Address,
-               Gtk.Tree_Model.To_Address);
+               To_Address);
 
       procedure Emit_By_Name is
         new Tree_Path_Tree_Iter_Marshaller.Emit_By_Name_Generic
-              (Gtk.Tree_Model.To_Address,
+              (To_Address,
                Gtk.Tree_Model.To_Address);
 
    private
@@ -1306,10 +1262,11 @@ package Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : Glib.Values.GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
+      First_M : constant C_Marshaller := First_Marshaller'Access;
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
       --  </doc_ignore>
@@ -1418,8 +1375,6 @@ package Gtk.Handlers is
       package Guint_Marshaller renames Internal_Cb.Guint_Marshaller;
       package Event_Marshaller renames Internal_Cb.Event_Marshaller;
       package Widget_Marshaller renames Internal_Cb.Widget_Marshaller;
-      package Notebook_Page_Marshaller
-        renames Internal_Cb.Notebook_Page_Marshaller;
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -1439,10 +1394,6 @@ package Gtk.Handlers is
          renames Internal_Cb.To_Marshaller;
       function To_Marshaller
         (Cb : Internal_Cb.Marshallers.Void_Marshaller.Handler)
-         return Internal_Cb.Marshallers.Marshaller
-         renames Internal_Cb.To_Marshaller;
-      function To_Marshaller
-        (Cb : Notebook_Page_Marshaller.Handler)
          return Internal_Cb.Marshallers.Marshaller
          renames Internal_Cb.To_Marshaller;
 
@@ -1472,12 +1423,6 @@ package Gtk.Handlers is
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : Glib.Signal_Name) renames Internal_Cb.Emit_By_Name;
-
-      procedure Emit_By_Name
-        (Object : access Widget_Type'Class;
-         Name   : Glib.Signal_Name;
-         Param  : Gtk.Notebook.Gtk_Notebook_Page)
-         renames Internal_Cb.Emit_By_Name;
 
    end User_Callback_With_Setup;
 
@@ -1520,6 +1465,43 @@ package Gtk.Handlers is
      (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id);
    --  See Handler_Block.
+
+   --------------
+   -- Internal --
+   --------------
+   --  The following subprograms are used internally by GtkAda, and should not
+   --  be used directly from applications.
+
+   function Do_Signal_Connect
+     (Object              : Glib.Object.GObject;
+      Name                : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Func_Data           : System.Address;
+      Destroy             : System.Address;
+      After               : Boolean;
+      Slot_Object         : System.Address := System.Null_Address;
+      Expect_Return_Value : Boolean) return Handler_Id;
+   --  Internal function used to connect the signal.
+   --  * Object is the object that will emit the signal.
+   --  * Marshaller is the C convention subprogram that will be called directly
+   --    by gtk+, and is in charge of translating the arguments into a form
+   --    suitable for calling the user's Handler callback. This subprogram
+   --    does not check the profile of the Handler and whether the Marshaller
+   --    will call it with the proper format, so is potentially dangerous.
+   --  * Func_Data is an extra parameter passed to Handler by the Marshaller.
+   --    It might be ignored, depending on the Marshaller.
+   --  * Destroy is called when the handler is destroyed, for instance because
+   --    the object itself is destroyed.
+   --  * After indicates whether the handler is called after or before the
+   --    default handler set by gtk+ for this signal.
+   --  * Slot_Object is the object passed to the handler, if any. When this
+   --    object is destroyed, the handler should be automatically disconnected.
+   --    This object is not automatically connected to the handler, only the
+   --    watch to destroy the handler is set in place.
+   --  * Expect_Return_Value should be true if the user is connecting a
+   --    function to the signal, False if he is connecting a procedure. This is
+   --    used to check that the user has used the proper form of handler.
 
    --  </doc_ignore>
 

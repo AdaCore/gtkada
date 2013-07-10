@@ -1,40 +1,35 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Viewport is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Viewport is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Viewport_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Viewport);
 
    -------------
    -- Gtk_New --
@@ -50,12 +45,27 @@ package body Gtk.Viewport is
       Gtk.Viewport.Initialize (Viewport, Hadjustment, Vadjustment);
    end Gtk_New;
 
+   ----------------------
+   -- Gtk_Viewport_New --
+   ----------------------
+
+   function Gtk_Viewport_New
+      (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
+       Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
+       return Gtk_Viewport
+   is
+      Viewport : constant Gtk_Viewport := new Gtk_Viewport_Record;
+   begin
+      Gtk.Viewport.Initialize (Viewport, Hadjustment, Vadjustment);
+      return Viewport;
+   end Gtk_Viewport_New;
+
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize
-      (Viewport    : access Gtk_Viewport_Record'Class;
+      (Viewport    : not null access Gtk_Viewport_Record'Class;
        Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null)
    is
@@ -64,7 +74,9 @@ package body Gtk.Viewport is
           Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_new");
    begin
-      Set_Object (Viewport, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      if not Viewport.Is_Created then
+         Set_Object (Viewport, Internal (Get_Object_Or_Null (GObject (Hadjustment)), Get_Object_Or_Null (GObject (Vadjustment))));
+      end if;
    end Initialize;
 
    --------------------
@@ -72,117 +84,180 @@ package body Gtk.Viewport is
    --------------------
 
    function Get_Bin_Window
-      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
+      (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Viewport : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Viewport : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_viewport_get_bin_window");
    begin
       return Internal (Get_Object (Viewport));
    end Get_Bin_Window;
 
    ---------------------
-   -- Get_Hadjustment --
-   ---------------------
-
-   function Get_Hadjustment
-      (Viewport : access Gtk_Viewport_Record)
-       return Gtk.Adjustment.Gtk_Adjustment
-   is
-      function Internal (Viewport : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
-      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
-   begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
-   end Get_Hadjustment;
-
-   ---------------------
    -- Get_Shadow_Type --
    ---------------------
 
    function Get_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record)
+      (Viewport : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Viewport : System.Address) return Integer;
+      function Internal
+         (Viewport : System.Address) return Gtk.Enums.Gtk_Shadow_Type;
       pragma Import (C, Internal, "gtk_viewport_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Viewport)));
+      return Internal (Get_Object (Viewport));
    end Get_Shadow_Type;
-
-   ---------------------
-   -- Get_Vadjustment --
-   ---------------------
-
-   function Get_Vadjustment
-      (Viewport : access Gtk_Viewport_Record)
-       return Gtk.Adjustment.Gtk_Adjustment
-   is
-      function Internal (Viewport : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
-      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
-   begin
-      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
-   end Get_Vadjustment;
 
    ---------------------
    -- Get_View_Window --
    ---------------------
 
    function Get_View_Window
-      (Viewport : access Gtk_Viewport_Record) return Gdk.Window.Gdk_Window
+      (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Viewport : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Viewport : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_viewport_get_view_window");
    begin
       return Internal (Get_Object (Viewport));
    end Get_View_Window;
 
    ---------------------
-   -- Set_Hadjustment --
-   ---------------------
-
-   procedure Set_Hadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-   is
-      procedure Internal
-         (Viewport   : System.Address;
-          Adjustment : System.Address);
-      pragma Import (C, Internal, "gtk_viewport_set_hadjustment");
-   begin
-      Internal (Get_Object (Viewport), Get_Object (Adjustment));
-   end Set_Hadjustment;
-
-   ---------------------
    -- Set_Shadow_Type --
    ---------------------
 
    procedure Set_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record;
+      (Viewport : not null access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Viewport : System.Address; The_Type : Integer);
+      procedure Internal
+         (Viewport : System.Address;
+          The_Type : Gtk.Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_viewport_set_shadow_type");
    begin
-      Internal (Get_Object (Viewport), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Viewport), The_Type);
    end Set_Shadow_Type;
+
+   ---------------------
+   -- Get_Hadjustment --
+   ---------------------
+
+   function Get_Hadjustment
+      (Self : not null access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
+   end Get_Hadjustment;
+
+   ------------------------
+   -- Get_Hscroll_Policy --
+   ------------------------
+
+   function Get_Hscroll_Policy
+      (Self : not null access Gtk_Viewport_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Scrollable_Policy;
+      pragma Import (C, Internal, "gtk_scrollable_get_hscroll_policy");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Hscroll_Policy;
+
+   ---------------------
+   -- Get_Vadjustment --
+   ---------------------
+
+   function Get_Vadjustment
+      (Self : not null access Gtk_Viewport_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
+   end Get_Vadjustment;
+
+   ------------------------
+   -- Get_Vscroll_Policy --
+   ------------------------
+
+   function Get_Vscroll_Policy
+      (Self : not null access Gtk_Viewport_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Scrollable_Policy;
+      pragma Import (C, Internal, "gtk_scrollable_get_vscroll_policy");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Vscroll_Policy;
+
+   ---------------------
+   -- Set_Hadjustment --
+   ---------------------
+
+   procedure Set_Hadjustment
+      (Self        : not null access Gtk_Viewport_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Hadjustment : System.Address);
+      pragma Import (C, Internal, "gtk_scrollable_set_hadjustment");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Hadjustment)));
+   end Set_Hadjustment;
+
+   ------------------------
+   -- Set_Hscroll_Policy --
+   ------------------------
+
+   procedure Set_Hscroll_Policy
+      (Self   : not null access Gtk_Viewport_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+      pragma Import (C, Internal, "gtk_scrollable_set_hscroll_policy");
+   begin
+      Internal (Get_Object (Self), Policy);
+   end Set_Hscroll_Policy;
 
    ---------------------
    -- Set_Vadjustment --
    ---------------------
 
    procedure Set_Vadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+      (Self        : not null access Gtk_Viewport_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
-         (Viewport   : System.Address;
-          Adjustment : System.Address);
-      pragma Import (C, Internal, "gtk_viewport_set_vadjustment");
+         (Self        : System.Address;
+          Vadjustment : System.Address);
+      pragma Import (C, Internal, "gtk_scrollable_set_vadjustment");
    begin
-      Internal (Get_Object (Viewport), Get_Object (Adjustment));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Vadjustment)));
    end Set_Vadjustment;
+
+   ------------------------
+   -- Set_Vscroll_Policy --
+   ------------------------
+
+   procedure Set_Vscroll_Policy
+      (Self   : not null access Gtk_Viewport_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+      pragma Import (C, Internal, "gtk_scrollable_set_vscroll_policy");
+   begin
+      Internal (Get_Object (Self), Policy);
+   end Set_Vscroll_Policy;
 
 end Gtk.Viewport;

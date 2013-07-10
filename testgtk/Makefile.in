@@ -2,7 +2,6 @@
 
 examples=$(prefix)/share/examples/gtkada/testgtk
 
-target  = testgtk
 src_dir = ../src
 opengl_dir = $(src_dir)/opengl
 
@@ -34,9 +33,9 @@ endif
 GNATMAKELDFLAGS = -largs -L$(src_dir)/lib-obj -L$(opengl_dir) -lgtkada \
   $(GTKADA_GL_LIBS) @GTK_LIBS_FOR_GNATMAKE@ $(TARGET_LFLAGS)
 
-all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
+all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) run_gprbuild
 
-$(target): force
+run_gprbuild: force
 	${GNATMAKE} -Ptestgtk ${GPR_BUILD} -largs ${GNATMAKELDFLAGS} ${OPENGL_C_OBJECTS} ${OPENGL_LIBS}
 
 opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
@@ -52,7 +51,8 @@ install: force
 	$(RM) b~*
 	-$(INSTALL_PROGRAM) testgtk$(EXEEXT) "${DESTDIR}$(examples)"
 	-$(INSTALL_PROGRAM) testcairo$(EXEEXT) "${DESTDIR}$(examples)"
-	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml "${DESTDIR}$(examples)"
+	-$(INSTALL_PROGRAM) application$(EXEEXT) "${DESTDIR}$(examples)"
+	$(CP) *.ad? *.xpm *.png *.jpg *.gif *.lwo *.xml *.css "${DESTDIR}$(examples)"
 	$(CP) opengl/*.ad? opengl/*.[ch] "${DESTDIR}$(examples)/opengl"
 
 clean: module_clean

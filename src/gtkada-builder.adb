@@ -1,32 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                    Copyright (C) 2011-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2011-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;               use System;
 with System.Assertions;    use System.Assertions;
 
@@ -36,6 +30,7 @@ with Ada.Unchecked_Deallocation;
 
 with Glib;        use Glib;
 
+with Gtk.Builder;     use Gtk.Builder;
 with Gtk.Handlers;    use Gtk.Handlers;
 with Gtkada.Handlers; use Gtkada.Handlers;
 
@@ -49,14 +44,12 @@ package body Gtkada.Builder is
      (Gtkada_Builder_Record, Boolean);
 
    procedure Wrapper_Callback
-     (C_Builder        : System.Address;
-      C_Object         : System.Address;
-      C_Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      C_Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      C_Connect_Object : System.Address;
-      Flags            : Glib.G_Connect_Flags;
-      User_Data        : System.Address);
-   pragma Convention (C, Wrapper_Callback);
+     (Builder        : not null access Gtk_Builder_Record'Class;
+      Object         : not null access Glib.Object.GObject_Record'Class;
+      Signal_Name    : UTF8_String;
+      Handler_Name   : UTF8_String;
+      Connect_Object : access Glib.Object.GObject_Record'Class;
+      Flags          : Glib.G_Connect_Flags);
    --  Low-level subprogram to perform signal connections.
 
    procedure Connect
@@ -148,7 +141,6 @@ package body Gtkada.Builder is
                     (Handler.The_Builder_Return_Handler)),
                Slot_Object => The_Builder,
                After       => After);
-
       end case;
    end Connect;
 
@@ -157,31 +149,24 @@ package body Gtkada.Builder is
    ----------------------
 
    procedure Wrapper_Callback
-     (C_Builder        : System.Address;
-      C_Object         : System.Address;
-      C_Signal_Name    : Interfaces.C.Strings.chars_ptr;
-      C_Handler_Name   : Interfaces.C.Strings.chars_ptr;
-      C_Connect_Object : System.Address;
-      Flags            : Glib.G_Connect_Flags;
-      User_Data        : System.Address)
+     (Builder        : not null access Gtk_Builder_Record'Class;
+      Object         : not null access Glib.Object.GObject_Record'Class;
+      Signal_Name    : UTF8_String;
+      Handler_Name   : UTF8_String;
+      Connect_Object : access Glib.Object.GObject_Record'Class;
+      Flags          : Glib.G_Connect_Flags)
    is
-      pragma Unreferenced (User_Data);
-      Object      : constant GObject := Convert (C_Object);
-      Signal_Name : constant String := Value (C_Signal_Name);
       After       : constant Boolean := (Flags and G_Connect_After) /= 0;
-      Builder     : constant Gtkada_Builder :=
-        Gtkada_Builder (Convert (C_Builder));
+      GBuilder    : constant Gtkada_Builder := Gtkada_Builder (Builder);
 
       The_Marshaller : Universal_Marshaller_Access;
       --  The universal marshaller
-
-      Handler_Name  : constant String := Value (C_Handler_Name);
 
       C : Cursor;
    begin
       --  Find the marshaller corresponding to the handler name.
 
-      C := Find (Builder.Handlers, To_Unbounded_String (Handler_Name));
+      C := Find (GBuilder.Handlers, To_Unbounded_String (Handler_Name));
 
       if C = No_Element then
          Raise_Assert_Failure
@@ -194,14 +179,13 @@ package body Gtkada.Builder is
 
       --  Now do the actual connect
 
-         Connect (Handler_Name => Handler_Name,
-                  Handler     => The_Marshaller.all,
-                  Base_Object => Object,
-                  Signal      => Glib.Signal_Name (Signal_Name),
-                  After       => After,
-                  The_Builder => Builder,
-                  Slot_Object => Convert (C_Connect_Object));
-
+      Connect (Handler_Name => Handler_Name,
+               Handler     => The_Marshaller.all,
+               Base_Object => GObject (Object),
+               Signal      => Glib.Signal_Name (Signal_Name),
+               After       => After,
+               The_Builder => GBuilder,
+               Slot_Object => GObject (Connect_Object));
    end Wrapper_Callback;
 
    ----------------------
@@ -286,10 +270,7 @@ package body Gtkada.Builder is
 
    procedure Do_Connect (Builder : access Gtkada_Builder_Record'Class) is
    begin
-      Connect_Signals_Full
-        (Builder,
-         Wrapper_Callback'Access,
-         User_Data => Glib.Object.Get_Object (Builder));
+      Connect_Signals_Full (Builder, Wrapper_Callback'Access);
    end Do_Connect;
 
    ----------------

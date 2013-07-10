@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2001-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This package provides an interface to generic values as used in the
@@ -55,6 +50,9 @@ package Glib.Values is
    --  table can be of any type.
    --  The index of the first element is always 1.
 
+   type C_GValues is new System.Address;
+   --  An array of GValues
+
    type GValue_Array is array (Gint range <>) of GValue;
 
    function Make_Values (Nb : Guint) return GValues;
@@ -62,7 +60,7 @@ package Glib.Values is
    --  causes the allocation of an underlying C array, and this memory
    --  should be deallocated after use using procedure Free (see below).
 
-   function Make_Values (Nb : Guint; Val : System.Address) return GValues;
+   function Make_Values (Nb : Guint; Val : C_GValues) return GValues;
    --  Build a GValues structure from the given C array. Nb should be the
    --  number of elements in the Values array.
 
@@ -71,6 +69,37 @@ package Glib.Values is
 
    function Nth (Val : GValues; Num : Guint) return GValue;
    --  Return the Num-th element from Values.
+   --  In general, the returned value does not need to be unset, since it is
+   --  still handled by C (in particular when processing the parameters for a
+   --  callback).
+
+   --  <doc_ignore>
+
+   procedure Unsafe_Nth (Values : C_GValues; Num : Guint; V : in out GValue);
+   pragma Import (C, Unsafe_Nth, "ada_gvalue_nth");
+   --  This returns the Num-th element, starting at 0. This procedure does
+   --  not check that Values contains at least Num elements, so is potentially
+   --  dangerous.
+   --  In general, the returned value does not need to be unset, since it is
+   --  still handled by C (in particular when processing the parameters for a
+   --  callback).
+
+   generic
+      type T is private;
+   function Unsafe_Proxy_Nth (Values : C_GValues; Num : Guint) return T;
+   pragma Inline (Unsafe_Proxy_Nth);
+   --  Extract a point from Values (at index Num, 0-based), and convert it to
+   --  T. This is unsafe because no check is made that Num is a valid index,
+   --  and no check is made that casting to T makes sense.
+
+   generic
+      type T is (<>);
+   function Unsafe_Enum_Nth
+     (Values : C_GValues; Num : Guint) return T;
+   pragma Inline (Unsafe_Enum_Nth);
+   --  Used for enumeration types
+
+   --  </doc_ignore>
 
    -------------------------------------------------
    -- Conversion functions, interfacing to GValue --
@@ -162,7 +191,8 @@ package Glib.Values is
    function Get_Flags (Value : GValue) return Glib.Guint;
    --  ??? Should really manipulate Glib.Properties.Creation.Flags_Int_Value
 
-   procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject);
+   procedure Set_Object
+      (Value : in out GValue; To : access Glib.Object.GObject_Record'Class);
    function Get_Object (Value : GValue) return Glib.Object.GObject;
    --  These are used to manipulate GObject instances.
 
@@ -179,7 +209,7 @@ private
 
    type GValues is record
       Nb  : Guint;
-      Arr : System.Address;
+      Arr : C_GValues;
    end record;
 
    pragma Import (C, Set_Char, "g_value_set_char");

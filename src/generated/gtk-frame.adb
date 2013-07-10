@@ -1,41 +1,50 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Frame is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Frame is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Frame_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Frame);
+
+   -------------------
+   -- Gtk_Frame_New --
+   -------------------
+
+   function Gtk_Frame_New (Label : UTF8_String := "") return Gtk_Frame is
+      Frame : constant Gtk_Frame := new Gtk_Frame_Record;
+   begin
+      Gtk.Frame.Initialize (Frame, Label);
+      return Frame;
+   end Gtk_Frame_New;
 
    -------------
    -- Gtk_New --
@@ -52,7 +61,7 @@ package body Gtk.Frame is
    ----------------
 
    procedure Initialize
-      (Frame : access Gtk_Frame_Record'Class;
+      (Frame : not null access Gtk_Frame_Record'Class;
        Label : UTF8_String := "")
    is
       function Internal
@@ -61,26 +70,30 @@ package body Gtk.Frame is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Frame.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_Label);
+         Free (Tmp_Label);
+         Set_Object (Frame, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Label);
-      Free (Tmp_Label);
-      Set_Object (Frame, Tmp_Return);
    end Initialize;
 
    ---------------
    -- Get_Label --
    ---------------
 
-   function Get_Label (Frame : access Gtk_Frame_Record) return UTF8_String is
+   function Get_Label
+      (Frame : not null access Gtk_Frame_Record) return UTF8_String
+   is
       function Internal
          (Frame : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Frame)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Frame)));
    end Get_Label;
 
    ---------------------
@@ -88,7 +101,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Get_Label_Align
-      (Frame  : access Gtk_Frame_Record;
+      (Frame  : not null access Gtk_Frame_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat)
    is
@@ -106,13 +119,14 @@ package body Gtk.Frame is
    ----------------------
 
    function Get_Label_Widget
-      (Frame : access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget
+      (Frame : not null access Gtk_Frame_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Frame : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_get_label_widget");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Frame)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Frame)), Stub_Gtk_Widget));
    end Get_Label_Widget;
 
    ---------------------
@@ -120,12 +134,14 @@ package body Gtk.Frame is
    ---------------------
 
    function Get_Shadow_Type
-      (Frame : access Gtk_Frame_Record) return Gtk.Enums.Gtk_Shadow_Type
+      (Frame : not null access Gtk_Frame_Record)
+       return Gtk.Enums.Gtk_Shadow_Type
    is
-      function Internal (Frame : System.Address) return Integer;
+      function Internal
+         (Frame : System.Address) return Gtk.Enums.Gtk_Shadow_Type;
       pragma Import (C, Internal, "gtk_frame_get_shadow_type");
    begin
-      return Gtk.Enums.Gtk_Shadow_Type'Val (Internal (Get_Object (Frame)));
+      return Internal (Get_Object (Frame));
    end Get_Shadow_Type;
 
    ---------------
@@ -133,15 +149,20 @@ package body Gtk.Frame is
    ---------------
 
    procedure Set_Label
-      (Frame : access Gtk_Frame_Record;
-       Label : UTF8_String)
+      (Frame : not null access Gtk_Frame_Record;
+       Label : UTF8_String := "")
    is
       procedure Internal
          (Frame : System.Address;
           Label : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_frame_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Interfaces.C.Strings.chars_ptr;
    begin
+      if Label = "" then
+         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Label := New_String (Label);
+      end if;
       Internal (Get_Object (Frame), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;
@@ -151,7 +172,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Label_Align
-      (Frame  : access Gtk_Frame_Record;
+      (Frame  : not null access Gtk_Frame_Record;
        Xalign : Gfloat;
        Yalign : Gfloat)
    is
@@ -169,8 +190,8 @@ package body Gtk.Frame is
    ----------------------
 
    procedure Set_Label_Widget
-      (Frame        : access Gtk_Frame_Record;
-       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Frame        : not null access Gtk_Frame_Record;
+       Label_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Frame        : System.Address;
@@ -185,13 +206,15 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Frame    : access Gtk_Frame_Record;
+      (Frame    : not null access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Frame : System.Address; The_Type : Integer);
+      procedure Internal
+         (Frame    : System.Address;
+          The_Type : Gtk.Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_frame_set_shadow_type");
    begin
-      Internal (Get_Object (Frame), Gtk.Enums.Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Frame), The_Type);
    end Set_Shadow_Type;
 
 end Gtk.Frame;

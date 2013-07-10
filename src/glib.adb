@@ -1,33 +1,29 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with System;               use System;
 
 package body Glib is
 
@@ -35,7 +31,7 @@ package body Glib is
    -- To_Boolean_Array --
    ----------------------
 
-   function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array is
+   function To_Boolean_Array (A : Gboolean_Array) return Boolean_Array is
       Result : Boolean_Array (A'Range);
    begin
       for Index in A'Range loop
@@ -49,7 +45,7 @@ package body Glib is
    -- To_Gint --
    -------------
 
-   function To_Gint (Bool : in Boolean) return Gint is
+   function To_Gint (Bool : Boolean) return Gint is
    begin
       if Bool then
          return 1;
@@ -62,7 +58,7 @@ package body Glib is
    -- Quark_From_String --
    -----------------------
 
-   function Quark_From_String (Id : in String) return GQuark is
+   function Quark_From_String (Id : String) return GQuark is
       function Internal (Id : String) return GQuark;
       pragma Import (C, Internal, "g_quark_from_string");
    begin
@@ -73,7 +69,7 @@ package body Glib is
    -- Quark_Try_String --
    ----------------------
 
-   function Quark_Try_String (Id : in String) return GQuark is
+   function Quark_Try_String (Id : String) return GQuark is
       function Internal (Id : String) return GQuark;
       pragma Import (C, Internal, "g_quark_try_string");
    begin
@@ -84,7 +80,7 @@ package body Glib is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Type_Num : in GType) return String is
+   function Type_Name (Type_Num : GType) return String is
       function Internal (Type_Num : GType) return chars_ptr;
       pragma Import (C, Internal, "g_type_name");
       Ret : constant chars_ptr := Internal (Type_Num);
@@ -100,7 +96,7 @@ package body Glib is
    -- Type_From_Name --
    --------------------
 
-   function Type_From_Name (Name : in String) return GType is
+   function Type_From_Name (Name : String) return GType is
       function Internal (Name : String) return GType;
       pragma Import (C, Internal, "g_type_from_name");
    begin
@@ -145,4 +141,30 @@ package body Glib is
       return Internal (Name & ASCII.NUL, Copy, Free);
    end Boxed_Type_Register_Static;
 
+   ----------------
+   -- Get_Object --
+   ----------------
+
+   function Get_Object (Self : C_Boxed'Class) return System.Address is
+   begin
+      return Self.Ptr;
+   end Get_Object;
+
+   ----------------
+   -- Set_Object --
+   ----------------
+
+   procedure Set_Object (Self : in out C_Boxed'Class; Ptr : System.Address) is
+   begin
+      Self.Ptr := Ptr;
+   end Set_Object;
+
+   -------------
+   -- Is_Null --
+   -------------
+
+   function Is_Null (Self : C_Boxed'Class) return Boolean is
+   begin
+      return Self.Ptr = System.Null_Address;
+   end Is_Null;
 end Glib;

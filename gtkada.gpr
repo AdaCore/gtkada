@@ -1,6 +1,5 @@
 with "testgtk/testgtk";
 with "src/gtkada_src";
-with "src/gnome/gnome";
 with "src/opengl/opengl";
 with "src/tools/tools";
 with "shared";
@@ -8,5 +7,6 @@ with "contrib/contrib";
 
 project GtkAda is
    for Source_Files use ();
+   for Object_Dir use "src/lib-obj";
    package IDE renames Shared.IDE;
 end GtkAda;

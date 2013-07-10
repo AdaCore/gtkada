@@ -1,50 +1,137 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  Dialog boxes are a convenient way to prompt the user for a small amount of
---  input, eg. to display a message, ask a question, or anything else that does
---  not require extensive effort on the user's part.
+--  input, e.g. to display a message, ask a question, or anything else that
+--  does not require extensive effort on the user's part.
 --
---  Gtkada treats a dialog as a window split horizontally. The top section is
---  a Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should
---  be packed. The second area is known as the action_area. This is generally
---  used for packing buttons into the dialog which may perform functions such
---  as cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
+--  GTK+ treats a dialog as a window split vertically. The top section is a
+--  Gtk.Box.Gtk_Vbox, and is where widgets such as a Gtk.Label.Gtk_Label or a
+--  Gtk.GEntry.Gtk_Entry should be packed. The bottom area is known as the
+--  <structfield>action_area</structfield>. This is generally used for packing
+--  buttons into the dialog which may perform functions such as cancel, ok, or
+--  apply.
+--
+--  Gtk.Dialog.Gtk_Dialog boxes are created with a call to Gtk.Dialog.Gtk_New
+--  or gtk_dialog_new_with_buttons. gtk_dialog_new_with_buttons is recommended;
+--  it allows you to set the dialog title, some convenient flags, and add
+--  simple buttons.
 --
 --  If 'dialog' is a newly created dialog, the two primary areas of the window
---  can be accessed using Get_Vbox and Get_Action_Area as can be seen from the
---  example, below.
+--  can be accessed through Gtk.Dialog.Get_Content_Area and
+--  Gtk.Dialog.Get_Action_Area, as can be seen from the example below.
 --
 --  A 'modal' dialog (that is, one which freezes the rest of the application
---  from user input), can be created by calling Set_Modal on the dialog.
+--  from user input), can be created by calling Gtk.Window.Set_Modal on the
+--  dialog. Use the GTK_WINDOW macro to cast the widget returned from
+--  Gtk.Dialog.Gtk_New into a Gtk.Window.Gtk_Window. When using
+--  gtk_dialog_new_with_buttons you can also pass the GTK_DIALOG_MODAL flag to
+--  make a dialog modal.
 --
+--  If you add buttons to Gtk.Dialog.Gtk_Dialog using
+--  gtk_dialog_new_with_buttons, Gtk.Dialog.Add_Button, gtk_dialog_add_buttons,
+--  or Gtk.Dialog.Add_Action_Widget, clicking the button will emit a signal
+--  called Gtk.Dialog.Gtk_Dialog::response with a response ID that you
+--  specified. GTK+ will never assign a meaning to positive response IDs; these
+--  are entirely user-defined. But for convenience, you can use the response
+--  IDs in the Gtk_Response_Type enumeration (these all have values less than
+--  zero). If a dialog receives a delete event, the
+--  Gtk.Dialog.Gtk_Dialog::response signal will be emitted with a response ID
+--  of GTK_RESPONSE_DELETE_EVENT.
+--
+--  If you want to block waiting for a dialog to return before returning
+--  control flow to your code, you can call Gtk.Dialog.Run. This function
+--  enters a recursive main loop and waits for the user to respond to the
+--  dialog, returning the response ID corresponding to the button the user
+--  clicked.
+--
+--  For the simple dialog in the following example, in reality you'd probably
+--  use Gtk.Message_Dialog.Gtk_Message_Dialog to save yourself some effort. But
+--  you'd need to create the dialog contents manually if you had more than a
+--  simple message in the dialog.
+--
+--  == Simple GtkDialog usage ==
+--
+--    /* Function to open a dialog box displaying the message provided. */
+--    void
+--    quick_message (gchar *message)
+--    {
+--       GtkWidget *dialog, *label, *content_area;
+--       /* Create the widgets */
+--       dialog = gtk_dialog_new_with_buttons ("Message",
+--          main_application_window,
+--          GTK_DIALOG_DESTROY_WITH_PARENT,
+--          GTK_STOCK_OK,
+--          GTK_RESPONSE_NONE,
+--          NULL);
+--       content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+--       label = gtk_label_new (message);
+--       /* Ensure that the dialog box is destroyed when the user responds */
+--       g_signal_connect_swapped (dialog,
+--          "response",
+--          G_CALLBACK (gtk_widget_destroy),
+--          dialog);
+--       /* Add the label, and show everything we've added to the dialog */
+--       gtk_container_add (GTK_CONTAINER (content_area), label);
+--       gtk_widget_show_all (dialog);
+--    }
+--
+--  == GtkDialog as GtkBuildable ==
+--
+--  The GtkDialog implementation of the Gtk.Buildable.Gtk_Buildable interface
+--  exposes the Vbox and Action_Area as internal children with the names "vbox"
+--  and "action_area".
+--
+--  GtkDialog supports a custom <action-widgets> element, which can contain
+--  multiple <action-widget> elements. The "response" attribute specifies a
+--  numeric response, and the content of the element is the id of widget (which
+--  should be a child of the dialogs Action_Area).
+--
+--  == A <structname>GtkDialog</structname> UI definition fragment. ==
+--
+--    <object class="GtkDialog" id="dialog1">
+--    <child internal-child="vbox">"
+--    <object class="GtkVBox" id="vbox">
+--    <child internal-child="action_area">
+--    <object class="GtkHButtonBox" id="button_box">
+--    <child>
+--    <object class="GtkButton" id="button_cancel"/>
+--    </child>
+--    <child>
+--    <object class="GtkButton" id="button_ok"/>
+--    </child>
+--    </object>
+--    </child>
+--    </object>
+--    </child>
+--    <action-widgets>
+--    <action-widget response="3">button_ok</action-widget>
+--    <action-widget response="-5">button_cancel</action-widget>
+--    </action-widgets>
+--    </object>
+--  </description>
+--  <description>
 --  See Gtkada.Dialogs for a higher level dialog interface.
 --
 --  </description>
@@ -53,13 +140,14 @@
 --  <testgtk>create_dialog.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Box;         use Gtk.Box;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Widget;      use Gtk.Widget;
-with Gtk.Window;      use Gtk.Window;
+with Gdk.Screen;    use Gdk.Screen;
+with Glib;          use Glib;
+with Glib.Object;   use Glib.Object;
+with Glib.Types;    use Glib.Types;
+with Gtk.Box;       use Gtk.Box;
+with Gtk.Buildable; use Gtk.Buildable;
+with Gtk.Widget;    use Gtk.Widget;
+with Gtk.Window;    use Gtk.Window;
 
 package Gtk.Dialog is
 
@@ -120,7 +208,25 @@ package Gtk.Dialog is
    ------------------
 
    procedure Gtk_New (Dialog : out Gtk_Dialog);
-   procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
+   procedure Initialize (Dialog : not null access Gtk_Dialog_Record'Class);
+   --  Creates a new dialog box.
+   --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
+   --  but into the Vbox and Action_Area, as described above.
+
+   function Gtk_Dialog_New return Gtk_Dialog;
+   --  Creates a new dialog box.
+   --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
+   --  but into the Vbox and Action_Area, as described above.
+
+   function Gtk_Dialog_New
+      (Title  : UTF8_String;
+       Parent : Gtk.Window.Gtk_Window := null;
+       Flags  : Gtk_Dialog_Flags) return Gtk_Dialog;
+   --  Create a new dialog with a specific title, and specific attributes.
+   --  Parent is the transient parent for the dialog (ie the one that is used
+   --  for reference for the flag Destroy_With_Parent, or to compute the
+   --  initial position of the dialog).
+   --  Since: gtk+ GtkAda 1.0
 
    procedure Gtk_New
       (Dialog : out Gtk_Dialog;
@@ -128,7 +234,7 @@ package Gtk.Dialog is
        Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags);
    procedure Initialize
-      (Dialog : access Gtk_Dialog_Record'Class;
+      (Dialog : not null access Gtk_Dialog_Record'Class;
        Title  : UTF8_String;
        Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags);
@@ -146,8 +252,8 @@ package Gtk.Dialog is
    -------------
 
    procedure Add_Action_Widget
-      (Dialog      : access Gtk_Dialog_Record;
-       Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Dialog      : not null access Gtk_Dialog_Record;
+       Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Response_Id : Gtk_Response_Type);
    --  Adds an activatable widget to the action area of a
    --  Gtk.Dialog.Gtk_Dialog, connecting a signal handler that will emit the
@@ -159,7 +265,7 @@ package Gtk.Dialog is
    --  "response_id": response ID for Child
 
    function Add_Button
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Text        : UTF8_String;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Adds a button with the given text (or a stock button, if Button_Text is
@@ -171,37 +277,25 @@ package Gtk.Dialog is
    --  "response_id": response ID for the button
 
    function Get_Action_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Returns the action area of Dialog.
    --  Since: gtk+ 2.14
 
    function Get_Content_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Returns the content area of Dialog.
    --  Since: gtk+ 2.14
 
-   function Get_Has_Separator
-      (Dialog : access Gtk_Dialog_Record) return Boolean;
-   pragma Obsolescent (Get_Has_Separator);
-   procedure Set_Has_Separator
-      (Dialog  : access Gtk_Dialog_Record;
-       Setting : Boolean);
-   pragma Obsolescent (Set_Has_Separator);
-   --  Sets whether the dialog has a separator above the buttons.
-   --  Deprecated since 2.22, This function will be removed in GTK+ 3
-   --  "setting": True to have a separator
-
    function Get_Response_For_Widget
-      (Dialog : access Gtk_Dialog_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Dialog : not null access Gtk_Dialog_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Response_Type;
-   --  Gets the response id of a widget in the action area of a dialog. if
-   --  Widget doesn't have a response id set.
+   --  Gets the response id of a widget in the action area of a dialog.
    --  Since: gtk+ 2.8
    --  "widget": a widget in the action area of Dialog
 
    function Get_Widget_For_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
@@ -209,7 +303,7 @@ package Gtk.Dialog is
    --  "response_id": the response ID used by the Dialog widget
 
    procedure Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type);
    --  Emits the Gtk.Dialog.Gtk_Dialog::response signal with the given
    --  response ID. Used to indicate that the user has responded to the dialog
@@ -217,15 +311,17 @@ package Gtk.Dialog is
    --  the ::response signal and take appropriate action.
    --  "response_id": response ID
 
-   function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type;
+   function Run
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk_Response_Type;
    --  Blocks in a recursive main loop until the Dialog either emits the
    --  Gtk.Dialog.Gtk_Dialog::response signal, or is destroyed. If the dialog
    --  is destroyed during the call to Gtk.Dialog.Run, Gtk.Dialog.Run returns
    --  GTK_RESPONSE_NONE. Otherwise, it returns the response ID from the
-   --  ::response signal emission. Before entering the recursive main loop,
-   --  Gtk.Dialog.Run calls Gtk.Widget.Show on the dialog for you. Note that
-   --  you still need to show any children of the dialog yourself. During
-   --  Gtk.Dialog.Run, the default behavior of
+   --  ::response signal emission.
+   --  Before entering the recursive main loop, Gtk.Dialog.Run calls
+   --  Gtk.Widget.Show on the dialog for you. Note that you still need to show
+   --  any children of the dialog yourself.
+   --  During Gtk.Dialog.Run, the default behavior of
    --  Gtk.Widget.Gtk_Widget::delete-event is disabled; if the dialog receives
    --  ::delete_event, it will not be destroyed as windows usually are, and
    --  Gtk.Dialog.Run will return GTK_RESPONSE_DELETE_EVENT. Also, during
@@ -233,20 +329,22 @@ package Gtk.Dialog is
    --  return at any time by calling Gtk.Dialog.Response to emit the ::response
    --  signal. Destroying the dialog during Gtk.Dialog.Run is a very bad idea,
    --  because your post-run code won't know whether the dialog was destroyed
-   --  or not. After Gtk.Dialog.Run returns, you are responsible for hiding or
-   --  destroying the dialog if you wish to do so. Typical usage of this
-   --  function might be: |[ gint result = gtk_dialog_run (GTK_DIALOG
-   --  (dialog)); switch (result) { case GTK_RESPONSE_ACCEPT:
-   --  do_application_specific_something (); break; default:
-   --  do_nothing_since_dialog_was_cancelled (); break; } gtk_widget_destroy
-   --  (dialog); ]| Note that even though the recursive main loop gives the
-   --  effect of a modal dialog (it prevents the user from interacting with
-   --  other windows in the same window group while the dialog is run),
-   --  callbacks such as timeouts, IO channel watches, DND drops, etc,
-   --  <emphasis>will</emphasis> be triggered during a Gtk.Dialog.Run call.
+   --  or not.
+   --  After Gtk.Dialog.Run returns, you are responsible for hiding or
+   --  destroying the dialog if you wish to do so.
+   --  Typical usage of this function might be: |[ gint result =
+   --  gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) { case
+   --  GTK_RESPONSE_ACCEPT: do_application_specific_something (); break;
+   --  default: do_nothing_since_dialog_was_cancelled (); break; }
+   --  gtk_widget_destroy (dialog); ]|
+   --  Note that even though the recursive main loop gives the effect of a
+   --  modal dialog (it prevents the user from interacting with other windows
+   --  in the same window group while the dialog is run), callbacks such as
+   --  timeouts, IO channel watches, DND drops, etc, *will* be triggered during
+   --  a Gtk.Dialog.Run call.
 
    procedure Set_Default_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type);
    --  Sets the last widget in the dialog's action area with the given
    --  Response_Id as the default widget for the dialog. Pressing "Enter"
@@ -254,12 +352,12 @@ package Gtk.Dialog is
    --  "response_id": a response ID
 
    procedure Set_Response_Sensitive
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type;
        Setting     : Boolean);
-   --  Calls <literal>gtk_widget_set_sensitive (widget, Setting)</literal> for
-   --  each widget in the dialog's action area with the given Response_Id. A
-   --  convenient way to sensitize/desensitize dialog buttons.
+   --  Calls 'gtk_widget_set_sensitive (widget, Setting)' for each widget in
+   --  the dialog's action area with the given Response_Id. A convenient way to
+   --  sensitize/desensitize dialog buttons.
    --  "response_id": a response ID
    --  "setting": True for sensitive
 
@@ -283,7 +381,7 @@ package Gtk.Dialog is
    --  Use this function after adding all the buttons to your dialog.
 
    function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null)  return Boolean;
+     (Screen : Gdk.Screen.Gdk_Screen := null)  return Boolean;
    --  Returns True if dialogs are expected to use an alternative button order
    --  on the given screen (or current screen if null) . See
    --  Set_Alternative_Button_Order_From_Array for more details about
@@ -296,12 +394,53 @@ package Gtk.Dialog is
    --
    --  Returns: Whether the alternative button order should be used
 
-   ------------
-   -- Fields --
-   ------------
+   -------------
+   -- Signals --
+   -------------
 
-   function Get_Vbox
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+   type Cb_Gtk_Dialog_Void is not null access procedure (Self : access Gtk_Dialog_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_Close : constant Glib.Signal_Name := "close";
+   procedure On_Close
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_Gtk_Dialog_Void;
+       After : Boolean := False);
+   procedure On_Close
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
+   --  signal</link> which gets emitted when the user uses a keybinding to
+   --  close the dialog.
+   --
+   --  The default binding for this signal is the Escape key.
+
+   type Cb_Gtk_Dialog_Gtk_Response_Type_Void is not null access procedure
+     (Self        : access Gtk_Dialog_Record'Class;
+      Response_Id : Gtk_Response_Type);
+
+   type Cb_GObject_Gtk_Response_Type_Void is not null access procedure
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Response_Id : Gtk_Response_Type);
+
+   Signal_Response : constant Glib.Signal_Name := "response";
+   procedure On_Response
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_Gtk_Dialog_Gtk_Response_Type_Void;
+       After : Boolean := False);
+   procedure On_Response
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_GObject_Gtk_Response_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  Emitted when an action widget is clicked, the dialog receives a delete
+   --  event, or the application programmer calls Gtk.Dialog.Response. On a
+   --  delete event, the response ID is GTK_RESPONSE_DELETE_EVENT. Otherwise,
+   --  it depends on which action widget was clicked.
 
    ----------------
    -- Interfaces --
@@ -310,55 +449,15 @@ package Gtk.Dialog is
    --
    --  - "Buildable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Dialog_Record, Gtk_Dialog);
    function "+"
      (Widget : access Gtk_Dialog_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Dialog
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Has_Separator_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  When True, the dialog has a separator bar above its buttons.
-
-   Has_Separator_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "close"
-   --     procedure Handler (Self : access Gtk_Dialog_Record'Class);
-   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted when the user uses a keybinding to
-   --  close the dialog. The default binding for this signal is the Escape key.
-   --
-   --  "response"
-   --     procedure Handler
-   --       (Self        : access Gtk_Dialog_Record'Class;
-   --        Response_Id : Gtk_Response_Type);
-   --    --  "response_id": the response ID
-   --  Emitted when an action widget is clicked, the dialog receives a delete
-   --  event, or the application programmer calls Gtk.Dialog.Response. On a
-   --  delete event, the response ID is GTK_RESPONSE_DELETE_EVENT. Otherwise,
-   --  it depends on which action widget was clicked.
-
-   Signal_Close : constant Glib.Signal_Name := "close";
-   Signal_Response : constant Glib.Signal_Name := "response";
-
-private
-   Has_Separator_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("has-separator");
 end Gtk.Dialog;

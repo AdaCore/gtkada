@@ -1,38 +1,39 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Dialog is
+
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
       New_Order : Response_Type_Array)
@@ -49,17 +50,43 @@ package body Gtk.Dialog is
    end Set_Alternative_Button_Order_From_Array;
 
    function Gtk_Alternative_Dialog_Button_Order
-     (Screen : Gdk.Gdk_Screen := null) return Boolean
+     (Screen : Gdk.Screen.Gdk_Screen := null) return Boolean
    is
-      function Internal (Screen : Gdk.Gdk_Screen) return Gboolean;
+      function Internal (Screen : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
    begin
-      return Boolean'Val (Internal (Screen));
+      return Boolean'Val (Internal (Get_Object (Screen)));
    end Gtk_Alternative_Dialog_Button_Order;
 
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Dialog is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Dialog_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Dialog);
+
+   --------------------
+   -- Gtk_Dialog_New --
+   --------------------
+
+   function Gtk_Dialog_New return Gtk_Dialog is
+      Dialog : constant Gtk_Dialog := new Gtk_Dialog_Record;
+   begin
+      Gtk.Dialog.Initialize (Dialog);
+      return Dialog;
+   end Gtk_Dialog_New;
+
+   --------------------
+   -- Gtk_Dialog_New --
+   --------------------
+
+   function Gtk_Dialog_New
+      (Title  : UTF8_String;
+       Parent : Gtk.Window.Gtk_Window := null;
+       Flags  : Gtk_Dialog_Flags) return Gtk_Dialog
+   is
+      Dialog : constant Gtk_Dialog := new Gtk_Dialog_Record;
+   begin
+      Gtk.Dialog.Initialize (Dialog, Title, Parent, Flags);
+      return Dialog;
+   end Gtk_Dialog_New;
 
    -------------
    -- Gtk_New --
@@ -90,11 +117,13 @@ package body Gtk.Dialog is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Dialog : access Gtk_Dialog_Record'Class) is
+   procedure Initialize (Dialog : not null access Gtk_Dialog_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new");
    begin
-      Set_Object (Dialog, Internal);
+      if not Dialog.Is_Created then
+         Set_Object (Dialog, Internal);
+      end if;
    end Initialize;
 
    ----------------
@@ -102,7 +131,7 @@ package body Gtk.Dialog is
    ----------------
 
    procedure Initialize
-      (Dialog : access Gtk_Dialog_Record'Class;
+      (Dialog : not null access Gtk_Dialog_Record'Class;
        Title  : UTF8_String;
        Parent : Gtk.Window.Gtk_Window := null;
        Flags  : Gtk_Dialog_Flags)
@@ -115,9 +144,11 @@ package body Gtk.Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Flags);
-      Free (Tmp_Title);
-      Set_Object (Dialog, Tmp_Return);
+      if not Dialog.Is_Created then
+         Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Parent)), Flags);
+         Free (Tmp_Title);
+         Set_Object (Dialog, Tmp_Return);
+      end if;
    end Initialize;
 
    -----------------------
@@ -125,8 +156,8 @@ package body Gtk.Dialog is
    -----------------------
 
    procedure Add_Action_Widget
-      (Dialog      : access Gtk_Dialog_Record;
-       Child       : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Dialog      : not null access Gtk_Dialog_Record;
+       Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Response_Id : Gtk_Response_Type)
    is
       procedure Internal
@@ -143,7 +174,7 @@ package body Gtk.Dialog is
    ----------------
 
    function Add_Button
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Text        : UTF8_String;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget
    is
@@ -152,13 +183,13 @@ package body Gtk.Dialog is
           Text        : Interfaces.C.Strings.chars_ptr;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_add_button");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
-      Stub       : Gtk.Widget.Gtk_Widget_Record;
-      Tmp_Return : System.Address;
+      Tmp_Text        : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+      Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Dialog), Tmp_Text, Response_Id);
       Free (Tmp_Text);
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub_Gtk_Widget));
    end Add_Button;
 
    ---------------------
@@ -166,13 +197,13 @@ package body Gtk.Dialog is
    ---------------------
 
    function Get_Action_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_action_area");
-      Stub : Gtk.Box.Gtk_Box_Record;
+      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Action_Area;
 
    ----------------------
@@ -180,35 +211,22 @@ package body Gtk.Dialog is
    ----------------------
 
    function Get_Content_Area
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_content_area");
-      Stub : Gtk.Box.Gtk_Box_Record;
+      Stub_Gtk_Box : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Content_Area;
-
-   -----------------------
-   -- Get_Has_Separator --
-   -----------------------
-
-   function Get_Has_Separator
-      (Dialog : access Gtk_Dialog_Record) return Boolean
-   is
-      function Internal (Dialog : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_dialog_get_has_separator");
-   begin
-      return Boolean'Val (Internal (Get_Object (Dialog)));
-   end Get_Has_Separator;
 
    -----------------------------
    -- Get_Response_For_Widget --
    -----------------------------
 
    function Get_Response_For_Widget
-      (Dialog : access Gtk_Dialog_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Dialog : not null access Gtk_Dialog_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Response_Type
    is
       function Internal
@@ -224,16 +242,16 @@ package body Gtk.Dialog is
    -----------------------------
 
    function Get_Widget_For_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Dialog      : System.Address;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_get_widget_for_response");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog), Response_Id), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog), Response_Id), Stub_Gtk_Widget));
    end Get_Widget_For_Response;
 
    --------------
@@ -241,7 +259,7 @@ package body Gtk.Dialog is
    --------------
 
    procedure Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type)
    is
       procedure Internal
@@ -256,7 +274,9 @@ package body Gtk.Dialog is
    -- Run --
    ---------
 
-   function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type is
+   function Run
+      (Dialog : not null access Gtk_Dialog_Record) return Gtk_Response_Type
+   is
       function Internal (Dialog : System.Address) return Gtk_Response_Type;
       pragma Import (C, Internal, "gtk_dialog_run");
    begin
@@ -268,7 +288,7 @@ package body Gtk.Dialog is
    --------------------------
 
    procedure Set_Default_Response
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type)
    is
       procedure Internal
@@ -279,26 +299,12 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), Response_Id);
    end Set_Default_Response;
 
-   -----------------------
-   -- Set_Has_Separator --
-   -----------------------
-
-   procedure Set_Has_Separator
-      (Dialog  : access Gtk_Dialog_Record;
-       Setting : Boolean)
-   is
-      procedure Internal (Dialog : System.Address; Setting : Integer);
-      pragma Import (C, Internal, "gtk_dialog_set_has_separator");
-   begin
-      Internal (Get_Object (Dialog), Boolean'Pos (Setting));
-   end Set_Has_Separator;
-
    ----------------------------
    -- Set_Response_Sensitive --
    ----------------------------
 
    procedure Set_Response_Sensitive
-      (Dialog      : access Gtk_Dialog_Record;
+      (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type;
        Setting     : Boolean)
    is
@@ -311,18 +317,302 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
 
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Dialog_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Dialog_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Dialog_Gtk_Response_Type_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Dialog_Gtk_Response_Type_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Response_Type_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Response_Type_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Dialog_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Dialog_Gtk_Response_Type_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Response_Type_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Response_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Response_Type_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Dialog_Gtk_Response_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Dialog_Gtk_Response_Type_Void);
+
+   procedure Marsh_Gtk_Dialog_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Dialog_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Dialog_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Dialog_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Dialog_Gtk_Response_Type_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Dialog_Gtk_Response_Type_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Response_Type_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Response_Type_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------------------------
+   -- Marsh_GObject_Gtk_Response_Type_Void --
+   ------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Response_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Response_Type_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Gtk_Response_Type (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Response_Type_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ---------------------------------------------
+   -- Marsh_Gtk_Dialog_Gtk_Response_Type_Void --
+   ---------------------------------------------
+
+   procedure Marsh_Gtk_Dialog_Gtk_Response_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Dialog_Gtk_Response_Type_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Dialog := Gtk_Dialog (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Response_Type (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Dialog_Gtk_Response_Type_Void;
+
+   ---------------------------
+   -- Marsh_Gtk_Dialog_Void --
+   ---------------------------
+
+   procedure Marsh_Gtk_Dialog_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Dialog_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Dialog := Gtk_Dialog (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Dialog_Void;
+
    --------------
-   -- Get_Vbox --
+   -- On_Close --
    --------------
 
-   function Get_Vbox
-      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
+   procedure On_Close
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_Gtk_Dialog_Void;
+       After : Boolean := False)
    is
-      function Internal (Dialog : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtkada_GtkDialog_get_vbox");
-      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
-   end Get_Vbox;
+      Connect (Self, "close" & ASCII.NUL, Call, After);
+   end On_Close;
+
+   --------------
+   -- On_Close --
+   --------------
+
+   procedure On_Close
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "close" & ASCII.NUL, Call, After, Slot);
+   end On_Close;
+
+   -----------------
+   -- On_Response --
+   -----------------
+
+   procedure On_Response
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_Gtk_Dialog_Gtk_Response_Type_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "response" & ASCII.NUL, Call, After);
+   end On_Response;
+
+   -----------------
+   -- On_Response --
+   -----------------
+
+   procedure On_Response
+      (Self  : not null access Gtk_Dialog_Record;
+       Call  : Cb_GObject_Gtk_Response_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "response" & ASCII.NUL, Call, After, Slot);
+   end On_Response;
 
 end Gtk.Dialog;

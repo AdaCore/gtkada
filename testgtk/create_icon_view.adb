@@ -1,32 +1,28 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                  Copyright (C) 2006-2013, AdaCore                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Gdk.Dnd;                  use Gdk.Dnd;
+with Gdk.Drag_Contexts;        use Gdk.Drag_Contexts;
 with Gdk.Pixbuf;               use Gdk.Pixbuf;
 with Gdk.Types;                use Gdk.Types;
 with Glib;                     use Glib;
@@ -46,15 +42,15 @@ with Gtk.Frame;                use Gtk.Frame;
 with Gtk.Icon_View;            use Gtk.Icon_View;
 with Gtk.List_Store;           use Gtk.List_Store;
 with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
-with Gtk.Selection;            use Gtk.Selection;
 with Gtk.Tree_Model;           use Gtk.Tree_Model;
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
+with Gtk.Target_List;          use Gtk.Target_List;
 
 package body Create_Icon_View is
 
    Item_Targets : constant Target_Entry_Array :=
      (1 => (Target => New_String ("GTK_TREE_MODEL_ROW"),
-            Flags  => Target_Same_App,
+            Flags  => Gtk_Target_Same_App,
             Info   => 0));
 
    procedure Fill_Model (List : Gtk_List_Store);
@@ -92,10 +88,13 @@ package body Create_Icon_View is
    is
       M    : constant Gtk_List_Store := Gtk_List_Store (Model);
       Path_String : constant String := To_String (Params, 1);
-      Path        : constant Gtk_Tree_Path := Gtk_New (Path_String);
-      Iter        : constant Gtk_Tree_Iter := Get_Iter (M, Path);
-      Value       : constant Boolean := Get_Boolean (M, Iter, 2);
+      Path        : Gtk_Tree_Path;
+      Iter        : Gtk_Tree_Iter;
+      Value       : Boolean;
    begin
+      Gtk_New (Path, Path_String);
+      Iter := Get_Iter (M, Path);
+      Value := M.Get_Boolean (Iter, 2);
       Set         (M, Iter, 2, not Value);
       Path_Free (Path);
    end Toggled;
@@ -155,9 +154,8 @@ package body Create_Icon_View is
           1 => GType_String,         --  Text for the icon
           2 => GType_Boolean,        --  Toggle activated ?
           3 => GType_String));       --  Tooltip
-      Set_Model (View, Gtk_Tree_Model (List));
-
-      Fill_Model (Gtk_List_Store (Get_Model (View)));
+      Set_Model (View, +List);
+      Fill_Model (List);
 
       --  Position 3 in our model is the column that we use for tooltips.
       Set_Tooltip_Column (View, 3);

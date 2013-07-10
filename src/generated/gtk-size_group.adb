@@ -1,40 +1,35 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Size_Group is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Size_Group is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Size_Group_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Size_Group);
 
    -------------
    -- Gtk_New --
@@ -49,18 +44,33 @@ package body Gtk.Size_Group is
       Gtk.Size_Group.Initialize (Size_Group, Mode);
    end Gtk_New;
 
+   ------------------------
+   -- Gtk_Size_Group_New --
+   ------------------------
+
+   function Gtk_Size_Group_New
+      (Mode : Size_Group_Mode := Both) return Gtk_Size_Group
+   is
+      Size_Group : constant Gtk_Size_Group := new Gtk_Size_Group_Record;
+   begin
+      Gtk.Size_Group.Initialize (Size_Group, Mode);
+      return Size_Group;
+   end Gtk_Size_Group_New;
+
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize
-      (Size_Group : access Gtk_Size_Group_Record'Class;
+      (Size_Group : not null access Gtk_Size_Group_Record'Class;
        Mode       : Size_Group_Mode := Both)
    is
       function Internal (Mode : Size_Group_Mode) return System.Address;
       pragma Import (C, Internal, "gtk_size_group_new");
    begin
-      Set_Object (Size_Group, Internal (Mode));
+      if not Size_Group.Is_Created then
+         Set_Object (Size_Group, Internal (Mode));
+      end if;
    end Initialize;
 
    ----------------
@@ -68,8 +78,8 @@ package body Gtk.Size_Group is
    ----------------
 
    procedure Add_Widget
-      (Size_Group : access Gtk_Size_Group_Record;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Size_Group : not null access Gtk_Size_Group_Record;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Size_Group : System.Address;
@@ -84,12 +94,12 @@ package body Gtk.Size_Group is
    -----------------------
 
    function Get_Ignore_Hidden
-      (Size_Group : access Gtk_Size_Group_Record) return Boolean
+      (Size_Group : not null access Gtk_Size_Group_Record) return Boolean
    is
       function Internal (Size_Group : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_size_group_get_ignore_hidden");
    begin
-      return Boolean'Val (Internal (Get_Object (Size_Group)));
+      return Internal (Get_Object (Size_Group)) /= 0;
    end Get_Ignore_Hidden;
 
    --------------
@@ -97,7 +107,8 @@ package body Gtk.Size_Group is
    --------------
 
    function Get_Mode
-      (Size_Group : access Gtk_Size_Group_Record) return Size_Group_Mode
+      (Size_Group : not null access Gtk_Size_Group_Record)
+       return Size_Group_Mode
    is
       function Internal (Size_Group : System.Address) return Size_Group_Mode;
       pragma Import (C, Internal, "gtk_size_group_get_mode");
@@ -110,12 +121,12 @@ package body Gtk.Size_Group is
    -----------------
 
    function Get_Widgets
-      (Size_Group : access Gtk_Size_Group_Record)
-       return Gtk.Widget.Widget_SList.GSList
+      (Size_Group : not null access Gtk_Size_Group_Record)
+       return Gtk.Widget.Widget_SList.GSlist
    is
       function Internal (Size_Group : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_size_group_get_widgets");
-      Tmp_Return : Gtk.Widget.Widget_SList.GSList;
+      Tmp_Return : Gtk.Widget.Widget_SList.GSlist;
    begin
       Gtk.Widget.Widget_SList.Set_Object (Tmp_Return, Internal (Get_Object (Size_Group)));
       return Tmp_Return;
@@ -126,8 +137,8 @@ package body Gtk.Size_Group is
    -------------------
 
    procedure Remove_Widget
-      (Size_Group : access Gtk_Size_Group_Record;
-       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Size_Group : not null access Gtk_Size_Group_Record;
+       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Size_Group : System.Address;
@@ -142,7 +153,7 @@ package body Gtk.Size_Group is
    -----------------------
 
    procedure Set_Ignore_Hidden
-      (Size_Group    : access Gtk_Size_Group_Record;
+      (Size_Group    : not null access Gtk_Size_Group_Record;
        Ignore_Hidden : Boolean)
    is
       procedure Internal
@@ -158,7 +169,7 @@ package body Gtk.Size_Group is
    --------------
 
    procedure Set_Mode
-      (Size_Group : access Gtk_Size_Group_Record;
+      (Size_Group : not null access Gtk_Size_Group_Record;
        Mode       : Size_Group_Mode)
    is
       procedure Internal

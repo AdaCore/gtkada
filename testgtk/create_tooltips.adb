@@ -1,58 +1,40 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Gdk.RGBA;          use Gdk.RGBA;
 with Glib;              use Glib;
 with Glib.Object;       use Glib.Object;
-with Gtk.Arguments;     use Gtk.Arguments;
 with Gtk.Box;           use Gtk.Box;
-with Gtk.Button;        use Gtk.Button;
-with Gtk.Handlers;      use Gtk.Handlers;
-pragma Warnings (Off);  --  Gtk.Tips_Query is obsolescent
-with Gtk.Tips_Query;    use Gtk.Tips_Query;
-pragma Warnings (On);
-with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Tooltips;      use Gtk.Tooltips;
+with Gtk.Check_Button;  use Gtk.Check_Button;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Label;         use Gtk.Label;
+with Gtk.Stock;         use Gtk.Stock;
+with Gtk.Tooltip;       use Gtk.Tooltip;
 with Gtk.Widget;        use Gtk.Widget;
+with Gtk.Window;        use Gtk.Window;
 with Gtk;               use Gtk;
-with Ada.Text_IO;
-with Common;            use Common;
 
 package body Create_Tooltips is
-
-   package Tooltips_Data is new User_Data (Gtk_Tooltips);
-   --  This is required to set tooltips for a widget.
-
-   package Query_Cb is new Handlers.Callback (Gtk_Tips_Query_Record);
-   package Entered_Cb is new Handlers.User_Callback
-     (Gtk_Tips_Query_Record, Gtk_Toggle_Button);
-   package Selected_Cb is new Handlers.Return_Callback
-     (Gtk_Tips_Query_Record, Gint);
 
    ----------
    -- Help --
@@ -61,161 +43,115 @@ package body Create_Tooltips is
    function Help return String is
    begin
       return "@bGtk_Tooltips@B allow you to provide short help texts to the"
-        & " user. This also requires a @bGtk_Tips_Query@B widget, that"
-        & " displays tooltips and has a ""What's this"" functionnality."
+        & " user. " & ASCII.LF
         & " Through the @bwidget_entered@B and @bwidget_selected@B signals,"
         & " you can decide to display some extensive help.";
    end Help;
 
-   --------------------
-   -- Widget_Entered --
-   --------------------
+   ----------------------
+   -- Query_Tooltip_Cb --
+   ----------------------
 
-   procedure Widget_Entered (Tips_Query  : access Gtk_Tips_Query_Record'Class;
-                             Params      : Gtk.Arguments.Gtk_Args;
-                             Toggle      : Gtk_Toggle_Button)
+   function Query_Tooltip_Cb
+      (Check        : access Gtk_Widget_Record'Class;
+       X, Y         : Gint;
+       Keyboard_Tip : Boolean;
+       Tooltip      : not null access GObject_Record'Class)
+      return Boolean
    is
-      --  Widget    : Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
-      Tip_Text    : constant String := To_String (Params, 2);
-      --  Tip_Private : String := To_String (Params, 3);
-
+      pragma Unreferenced (X, Y, Keyboard_Tip);
    begin
-      if Get_Active (Toggle) then
-         if Tip_Text'Length /= 0 then
-            Set_Text (Tips_Query, "There is a Tip!");
-         else
-            Set_Text (Tips_Query, "There is no Tip!");
-         end if;
-         --  Don't let GtkTipsQuery reset it's label
-         Emit_Stop_By_Name (Tips_Query, "widget_entered");
-      end if;
-   end Widget_Entered;
+      Gtk_Tooltip (Tooltip).Set_Markup
+         ("The text of the widget is <b>"""
+          & Gtk_Check_Button (Check).Get_Label & """</b>");
+      Gtk_Tooltip (Tooltip).Set_Icon_From_Stock (Stock_Delete, Icon_Size_Menu);
+      return True;
+   end Query_Tooltip_Cb;
 
-   ---------------------
-   -- Widget_Selected --
-   ---------------------
+   -----------------------------
+   -- Query_Tooltip_Custom_Cb --
+   -----------------------------
 
-   function Widget_Selected (Tips_Query  : access Gtk_Tips_Query_Record'Class;
-                             Params      : Gtk.Arguments.Gtk_Args)
-                            return Gint
+   function Query_Tooltip_Custom_Cb
+      (Check        : access Gtk_Widget_Record'Class;
+       X, Y         : Gint;
+       Keyboard_Tip : Boolean;
+       Tooltip      : not null access GObject_Record'Class)
+      return Boolean
    is
-      Widget    : constant Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
-      --  Tip_Text    : String := To_String (Params, 2);
-      Tip_Private : constant String := To_String (Params, 3);
-      pragma Warnings (Off, Tips_Query);
+      pragma Unreferenced (X, Y, Keyboard_Tip, Tooltip);
+      Window : constant Gtk_Window := Gtk_Window (Check.Get_Tooltip_Window);
+      Color  : constant Gdk_RGBA := (0.0, 0.0, 1.0, 0.5);
    begin
-      if Is_Created (Widget.all) then
-         Ada.Text_IO.Put ("Help ");
-         if Tip_Private'Length = 0 then
-            Ada.Text_IO.Put ("None");
-         else
-            Ada.Text_IO.Put (Tip_Private);
-         end if;
-         Ada.Text_IO.Put_Line (" requested for "
-                               & Type_Name (Get_Type (Widget)));
-      end if;
-      return 0;
-   end Widget_Selected;
-
-   -----------------
-   -- Start_Query --
-   -----------------
-
-   procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record'Class) is
-   begin
-      Gtk.Tips_Query.Start_Query (Tips_Query);
-   end Start_Query;
-
-   -----------------
-   -- Get_Data_Cb --
-   -----------------
-
-   procedure Get_Data_Cb (Button : access Gtk_Button_Record'Class) is
-      Data : constant Gtk.Tooltips.Tooltips_Data :=
-        Gtk.Tooltips.Get_Data (Button);
-   begin
-      Ada.Text_IO.Put_Line ("Result of call to Gtk.Tooltips.Get_Data:");
-      Ada.Text_IO.Put_Line ("   Text=" & Data.Text);
-      Ada.Text_IO.Put_Line ("   Text_Private=" & Data.Text_Private);
-   end Get_Data_Cb;
+      Window.Override_Background_Color (Gtk_State_Flag_Normal, Color);
+      return True;
+   end Query_Tooltip_Custom_Cb;
 
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1,
-        Box2,
-        Box3     : Gtk_Box;
-      Button     : Gtk_Button;
-      Tooltips   : Gtk_Tooltips;
-      Toggle     : Gtk_Toggle_Button;
-      Tips_Query : Gtk_Tips_Query;
-      Frame2     : Gtk_Frame;
+      Box1       : Gtk_Box;
+      Check      : Gtk_Check_Button;
       Vbox       : Gtk_Box;
+      Label      : Gtk_Label;
+      Tooltip_Window : Gtk_Window;
 
    begin
       Set_Label (Frame, "Tooltips");
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
       Add (Frame, Vbox);
 
-      Gtk_New (Tooltips);
-      Tooltips_Data.Set (Vbox, Tooltips, "tooltips");
-
       Gtk_New_Vbox (Box1, False, 0);
       Pack_Start (Vbox, Box1, Expand => False, Fill => False);
 
-      Gtk_New_Vbox (Box2, False, 10);
-      Set_Border_Width (Box2, 10);
-      Pack_Start (Box1, Box2, True, True, 0);
+      --  A check button using the tooltip-markup property
 
-      Gtk_New (Button, "Button1");
-      Show (Button);
-      Pack_Start (Box2, Button, False, False, 0);
-      Set_Tip (Tooltips, Button, "This is button 1",
-               "ContextHelp/buttons/1");
+      Gtk_New (Check, "Using the tooltip-markup property");
+      Box1.Pack_Start (Check, False, False, 0);
+      Check.Set_Tooltip_Text ("Hello, I am a static tooltip.");
 
-      Gtk_New (Button, "(Print result of Get_Data)");
-      Pack_Start (Box2, Button, False, False, 0);
-      Set_Tip (Tooltips, Button,
-               "This is button 2. This is also a really long tool tip which"
-               &" probably won't fit on a single line and will therefore "
-               & "need to be wrapped. Hopefully the wrapping will work "
-               & "correctly.", "ContextHelp/buttons/2");
-      Button_Handler.Connect
-        (Button, "clicked",
-         Button_Handler.To_Marshaller (Get_Data_Cb'Access));
+      --  A check button using the query-tooltip signal
 
-      Gtk_New (Toggle, "Override TipsQuery Label");
-      Pack_Start (Box2, Toggle, False, False, 0);
-      Set_Tip (Tooltips, Toggle, "Toggle TipsQuery view.", "Hi!");
+      Gtk_New (Check, "Using the query-tooltip signal");
+      Box1.Pack_Start (Check, False, False, 0);
+      Check.Set_Has_Tooltip (True);
+      Check.On_Query_Tooltip (Query_Tooltip_Cb'Access);
 
-      Gtk_New_Vbox (Box3, False, 5);
-      Set_Border_Width (Box3, 5);
+      --  A label
 
-      Gtk_New (Tips_Query);
+      Gtk_New (Label, "A simple label");
+      Box1.Pack_Start (Label, False, False, 0);
+      Label.Set_Selectable (False);
+      Label.Set_Tooltip_Text ("Label and tooltip");
 
-      Gtk_New (Button, "[?]");
-      Pack_Start (Box3, Button, False, False, 0);
-      Query_Cb.Object_Connect
-        (Button, "clicked",
-         Query_Cb.To_Marshaller (Start_Query'Access),
-         Slot_Object => Tips_Query);
-      Set_Tip (Tooltips, Button, "Start the Tooltips Inspector",
-               "ContextHelp/buttons/?");
+      --  A selectable label
 
-      Pack_Start (Box3, Tips_Query, False, False, 0);
-      Set_Caller (Tips_Query, Button);
-      Entered_Cb.Connect (Tips_Query, "widget_entered",
-                          Widget_Entered'Access, Toggle);
-      Selected_Cb.Connect (Tips_Query, "widget_selected",
-                           Widget_Selected'Access);
+      Gtk_New (Label, "A selectable label");
+      Box1.Pack_Start (Label, False, False, 0);
+      Label.Set_Selectable (True);
+      Label.Set_Tooltip_Text ("<b>Another</b> Label tooltip");
 
-      Gtk_New (Frame2, "Tooltips Inspector");
-      Set_Border_Width (Frame2, 0);
-      Pack_Start (Box2, Frame2, True, True, 10);
+      --  Another one, with a custom tooltip window
 
-      Add (Frame2, Box3);
+      Gtk_New (Tooltip_Window, Window_Popup);
+      Gtk_New (Label, "in custom tooltip window");
+      Tooltip_Window.Add (Label);
+      Label.Show;
+
+      Gtk_New (Check, "Using a custom tooltip window");
+      Box1.Pack_Start (Check, False, False, 0);
+      Check.Set_Tooltip_Window (Tooltip_Window);
+      Check.Set_Has_Tooltip (True);
+      Check.On_Query_Tooltip (Query_Tooltip_Custom_Cb'Access);
+
+      --  An insensitive button
+
+      Gtk_New (Check, "Insensitive button");
+      Box1.Pack_Start (Check, False, False, 0);
+      Check.Set_Sensitive (False);
+      Check.Set_Tooltip_Text ("Insensitive!");
 
       Show_All (Frame);
    end Run;

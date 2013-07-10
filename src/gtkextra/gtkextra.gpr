@@ -1,12 +1,12 @@
 with "../../shared";
 
 project GtkExtra is
-   for Languages use ("C");
+   for Languages use ("Ada", "C");
    for Object_Dir use "obj";
 
    case Shared.Build_Extra is
-       when "True"  => for Source_Dirs use (".");
-       when "False" => for Source_Dirs use ();
+       when "yes"  => for Source_Dirs use (".");
+       when "no" => for Source_Dirs use ();
    end case;
 
    package Builder  renames Shared.Builder;

@@ -1,45 +1,37 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003-2006 AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Cairo;            use Cairo;
 with Glib;             use Glib;
 with Glib.Error;       use Glib.Error;
 with Glib.Main;        use Glib.Main;
-with Gdk.Event;        use Gdk.Event;
+with Gdk.Cairo;        use Gdk.Cairo;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
-with Gdk.Rgb;          use Gdk.Rgb;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Image;        use Gtk.Image;
 with Gtk.Label;        use Gtk.Label;
-with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtkada.Handlers;  use Gtkada.Handlers;
 
@@ -90,9 +82,9 @@ package body Create_Pixbuf is
    --  Load the images for the demo.
    --  Return False if one of the pixmaps could not be loaded
 
-   function Expose_Cb
+   function On_Draw
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean;
+      Cr     : Cairo_Context) return Boolean;
    --  Expose callback for the drawing area
 
    function Timeout_Handler return Boolean;
@@ -126,53 +118,23 @@ package body Create_Pixbuf is
       return True;
    end Load_Pixbufs;
 
-   ---------------
-   -- Expose_Cb --
-   ---------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose_Cb
+   function On_Draw
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+      Cr     : Cairo_Context) return Boolean
    is
-      --  Num_Bytes_Per_Pixel : constant := 3;
-      --  Number of bytes for each pixel (Red, Green, Blue)
-
-      Rowstride : constant Gint := Get_Rowstride (Frame);
-      Pixels    : constant Rgb_Buffer_Access := Get_Pixels (Frame);
-      X         : constant Gint := Get_Area (Event).X;
-      Y         : constant Gint := Get_Area (Event).Y;
-      W         : Gint := Gint (Get_Area (Event).Width);
-      H         : Gint := Gint (Get_Area (Event).Height);
-
+      pragma Unreferenced (Widget);
    begin
-      --  The following tests handle the cases where we try to redraw the area
-      --  outside of the background image.
-      if X + W > Back_Width then
-         W := Back_Width - X;
-      end if;
-
-      if Y + H > Back_Height then
-         H := Back_Height - Y;
-      end if;
-
-      if W <= 0 or else H <= 0 then
-         return True;
-      end if;
-
-      Draw_Rgb_Image_Dithalign
-        (Drawable  => Get_Window (Widget),
-         GC        => Get_Black_GC (Get_Style (Widget)),
-         X         => X,
-         Y         => Y,
-         Width     => W,
-         Height    => H,
-         Dith      => Dither_Normal,
-         Rgb_Buf   => Pixels.all,
-         Rowstride => Rowstride,
-         Xdith     => X,
-         Ydith     => Y);
+      Set_Source_Pixbuf (Cr,
+                         Pixbuf => Frame,
+                         Pixbuf_X => 0.0,
+                         Pixbuf_Y => 0.0);
+      Cairo.Paint (Cr);
       return True;
-   end Expose_Cb;
+   end On_Draw;
 
    ---------------------
    -- Timeout_Handler --
@@ -268,7 +230,7 @@ package body Create_Pixbuf is
    ----------------
 
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
+      pragma Unreferenced (Widget);
    begin
       Remove (Timeout_Id);
       Timeout_Id := 0;
@@ -297,10 +259,10 @@ package body Create_Pixbuf is
          Width           => Back_Width,
          Height          => Back_Height);
 
-      Widget_Callback.Connect
-        (Da, "destroy", Widget_Callback.To_Marshaller (Destroy_Cb'Access));
+      Widget_Callback.Connect (Da, "destroy", Destroy_Cb'Access);
       Return_Callback.Connect
-        (Da, "expose_event", Return_Callback.To_Marshaller (Expose_Cb'Access));
+        (Da, Signal_Draw,
+         Return_Callback.To_Marshaller (On_Draw'Access));
 
       Timeout_Id := Timeout_Add (Frame_Delay, Timeout_Handler'Access);
 

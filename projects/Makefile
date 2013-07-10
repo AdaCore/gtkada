@@ -27,11 +27,6 @@ ifeq ($(HAVE_OPENGL), True)
 	${CP} gtkada_gl.gpr "${DESTDIR}${PRJDIR}"
 endif	
 
-ifeq ($(HAVE_GNOME), True)
-	./generate_prj.sh GtkAda_Gnome ${DEFAULT_LIBRARY_TYPE} ${SOVER} gnome "${libdir}"
-	${CP} gtkada_gnome.gpr "${DESTDIR}${PRJDIR}"
-endif	
-
 ifeq ($(OS),Windows_NT)
 	${CP} gtkada_install_*.gpr "${DESTDIR}${incdir}"
 endif

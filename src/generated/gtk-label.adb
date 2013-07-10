@@ -1,41 +1,64 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Label is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Label is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Label_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Label);
+
+   -------------------
+   -- Gtk_Label_New --
+   -------------------
+
+   function Gtk_Label_New (Str : UTF8_String := "") return Gtk_Label is
+      Label : constant Gtk_Label := new Gtk_Label_Record;
+   begin
+      Gtk.Label.Initialize (Label, Str);
+      return Label;
+   end Gtk_Label_New;
+
+   ---------------------------------
+   -- Gtk_Label_New_With_Mnemonic --
+   ---------------------------------
+
+   function Gtk_Label_New_With_Mnemonic (Str : UTF8_String) return Gtk_Label is
+      Label : constant Gtk_Label := new Gtk_Label_Record;
+   begin
+      Gtk.Label.Initialize_With_Mnemonic (Label, Str);
+      return Label;
+   end Gtk_Label_New_With_Mnemonic;
 
    -------------
    -- Gtk_New --
@@ -65,7 +88,7 @@ package body Gtk.Label is
    ----------------
 
    procedure Initialize
-      (Label : access Gtk_Label_Record'Class;
+      (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "")
    is
       function Internal
@@ -74,9 +97,11 @@ package body Gtk.Label is
       Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Str);
-      Free (Tmp_Str);
-      Set_Object (Label, Tmp_Return);
+      if not Label.Is_Created then
+         Tmp_Return := Internal (Tmp_Str);
+         Free (Tmp_Str);
+         Set_Object (Label, Tmp_Return);
+      end if;
    end Initialize;
 
    ------------------------------
@@ -84,7 +109,7 @@ package body Gtk.Label is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-      (Label : access Gtk_Label_Record'Class;
+      (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String)
    is
       function Internal
@@ -93,16 +118,20 @@ package body Gtk.Label is
       Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Str);
-      Free (Tmp_Str);
-      Set_Object (Label, Tmp_Return);
+      if not Label.Is_Created then
+         Tmp_Return := Internal (Tmp_Str);
+         Free (Tmp_Str);
+         Set_Object (Label, Tmp_Return);
+      end if;
    end Initialize_With_Mnemonic;
 
    ---------------
    -- Get_Angle --
    ---------------
 
-   function Get_Angle (Label : access Gtk_Label_Record) return Gdouble is
+   function Get_Angle
+      (Label : not null access Gtk_Label_Record) return Gdouble
+   is
       function Internal (Label : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_label_get_angle");
    begin
@@ -114,14 +143,13 @@ package body Gtk.Label is
    --------------------
 
    function Get_Attributes
-      (Label : access Gtk_Label_Record)
+      (Label : not null access Gtk_Label_Record)
        return Pango.Attributes.Pango_Attr_List
    is
-      function Internal
-         (Label : System.Address) return Pango.Attributes.Pango_Attr_List;
+      function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_attributes");
    begin
-      return Internal (Get_Object (Label));
+      return From_Object (Internal (Get_Object (Label)));
    end Get_Attributes;
 
    ---------------------
@@ -129,13 +157,13 @@ package body Gtk.Label is
    ---------------------
 
    function Get_Current_Uri
-      (Label : access Gtk_Label_Record) return UTF8_String
+      (Label : not null access Gtk_Label_Record) return UTF8_String
    is
       function Internal
          (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_current_uri");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Current_Uri;
 
    -------------------
@@ -143,13 +171,14 @@ package body Gtk.Label is
    -------------------
 
    function Get_Ellipsize
-      (Label : access Gtk_Label_Record)
+      (Label : not null access Gtk_Label_Record)
        return Pango.Layout.Pango_Ellipsize_Mode
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal
+         (Label : System.Address) return Pango.Layout.Pango_Ellipsize_Mode;
       pragma Import (C, Internal, "gtk_label_get_ellipsize");
    begin
-      return Pango.Layout.Pango_Ellipsize_Mode'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label));
    end Get_Ellipsize;
 
    -----------------
@@ -157,24 +186,28 @@ package body Gtk.Label is
    -----------------
 
    function Get_Justify
-      (Label : access Gtk_Label_Record) return Gtk.Enums.Gtk_Justification
+      (Label : not null access Gtk_Label_Record)
+       return Gtk.Enums.Gtk_Justification
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal
+         (Label : System.Address) return Gtk.Enums.Gtk_Justification;
       pragma Import (C, Internal, "gtk_label_get_justify");
    begin
-      return Gtk.Enums.Gtk_Justification'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label));
    end Get_Justify;
 
    ---------------
    -- Get_Label --
    ---------------
 
-   function Get_Label (Label : access Gtk_Label_Record) return UTF8_String is
+   function Get_Label
+      (Label : not null access Gtk_Label_Record) return UTF8_String
+   is
       function Internal
          (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Label;
 
    ----------------
@@ -182,13 +215,14 @@ package body Gtk.Label is
    ----------------
 
    function Get_Layout
-      (Label : access Gtk_Label_Record) return Pango.Layout.Pango_Layout
+      (Label : not null access Gtk_Label_Record)
+       return Pango.Layout.Pango_Layout
    is
       function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_layout");
-      Stub : Pango.Layout.Pango_Layout_Record;
+      Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
    begin
-      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Label)), Stub));
+      return Pango.Layout.Pango_Layout (Get_User_Data (Internal (Get_Object (Label)), Stub_Pango_Layout));
    end Get_Layout;
 
    ------------------------
@@ -196,7 +230,7 @@ package body Gtk.Label is
    ------------------------
 
    procedure Get_Layout_Offsets
-      (Label : access Gtk_Label_Record;
+      (Label : not null access Gtk_Label_Record;
        X     : out Gint;
        Y     : out Gint)
    is
@@ -213,11 +247,13 @@ package body Gtk.Label is
    -- Get_Line_Wrap --
    -------------------
 
-   function Get_Line_Wrap (Label : access Gtk_Label_Record) return Boolean is
+   function Get_Line_Wrap
+      (Label : not null access Gtk_Label_Record) return Boolean
+   is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_line_wrap");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Line_Wrap;
 
    ------------------------
@@ -225,12 +261,14 @@ package body Gtk.Label is
    ------------------------
 
    function Get_Line_Wrap_Mode
-      (Label : access Gtk_Label_Record) return Pango.Layout.Pango_Wrap_Mode
+      (Label : not null access Gtk_Label_Record)
+       return Pango.Enums.Wrap_Mode
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal
+         (Label : System.Address) return Pango.Enums.Wrap_Mode;
       pragma Import (C, Internal, "gtk_label_get_line_wrap_mode");
    begin
-      return Pango.Layout.Pango_Wrap_Mode'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label));
    end Get_Line_Wrap_Mode;
 
    -------------------------
@@ -238,7 +276,7 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Max_Width_Chars
-      (Label : access Gtk_Label_Record) return Gint
+      (Label : not null access Gtk_Label_Record) return Gint
    is
       function Internal (Label : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_label_get_max_width_chars");
@@ -251,7 +289,7 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Mnemonic_Keyval
-      (Label : access Gtk_Label_Record) return Guint
+      (Label : not null access Gtk_Label_Record) return Guint
    is
       function Internal (Label : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_label_get_mnemonic_keyval");
@@ -264,24 +302,27 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Mnemonic_Widget
-      (Label : access Gtk_Label_Record) return Gtk.Widget.Gtk_Widget
+      (Label : not null access Gtk_Label_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_label_get_mnemonic_widget");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Label)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Label)), Stub_Gtk_Widget));
    end Get_Mnemonic_Widget;
 
    --------------------
    -- Get_Selectable --
    --------------------
 
-   function Get_Selectable (Label : access Gtk_Label_Record) return Boolean is
+   function Get_Selectable
+      (Label : not null access Gtk_Label_Record) return Boolean
+   is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_selectable");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Selectable;
 
    --------------------------
@@ -289,7 +330,7 @@ package body Gtk.Label is
    --------------------------
 
    procedure Get_Selection_Bounds
-      (Label         : access Gtk_Label_Record;
+      (Label         : not null access Gtk_Label_Record;
        Start         : out Gint;
        The_End       : out Gint;
        Has_Selection : out Boolean)
@@ -306,7 +347,7 @@ package body Gtk.Label is
       Tmp_Return := Internal (Get_Object (Label), Acc_Start'Access, Acc_The_End'Access);
       Start := Acc_Start;
       The_End := Acc_The_End;
-      Has_Selection := Boolean'Val (Tmp_Return);
+      Has_Selection := Tmp_Return /= 0;
    end Get_Selection_Bounds;
 
    --------------------------
@@ -314,24 +355,26 @@ package body Gtk.Label is
    --------------------------
 
    function Get_Single_Line_Mode
-      (Label : access Gtk_Label_Record) return Boolean
+      (Label : not null access Gtk_Label_Record) return Boolean
    is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_single_line_mode");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Single_Line_Mode;
 
    --------------
    -- Get_Text --
    --------------
 
-   function Get_Text (Label : access Gtk_Label_Record) return UTF8_String is
+   function Get_Text
+      (Label : not null access Gtk_Label_Record) return UTF8_String
+   is
       function Internal
          (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Label)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Text;
 
    -----------------------------
@@ -339,23 +382,25 @@ package body Gtk.Label is
    -----------------------------
 
    function Get_Track_Visited_Links
-      (Label : access Gtk_Label_Record) return Boolean
+      (Label : not null access Gtk_Label_Record) return Boolean
    is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_track_visited_links");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Track_Visited_Links;
 
    --------------------
    -- Get_Use_Markup --
    --------------------
 
-   function Get_Use_Markup (Label : access Gtk_Label_Record) return Boolean is
+   function Get_Use_Markup
+      (Label : not null access Gtk_Label_Record) return Boolean
+   is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_use_markup");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Use_Markup;
 
    -----------------------
@@ -363,51 +408,33 @@ package body Gtk.Label is
    -----------------------
 
    function Get_Use_Underline
-      (Label : access Gtk_Label_Record) return Boolean
+      (Label : not null access Gtk_Label_Record) return Boolean
    is
       function Internal (Label : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_label_get_use_underline");
    begin
-      return Boolean'Val (Internal (Get_Object (Label)));
+      return Internal (Get_Object (Label)) /= 0;
    end Get_Use_Underline;
 
    ---------------------
    -- Get_Width_Chars --
    ---------------------
 
-   function Get_Width_Chars (Label : access Gtk_Label_Record) return Gint is
+   function Get_Width_Chars
+      (Label : not null access Gtk_Label_Record) return Gint
+   is
       function Internal (Label : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_label_get_width_chars");
    begin
       return Internal (Get_Object (Label));
    end Get_Width_Chars;
 
-   -----------------
-   -- Parse_Uline --
-   -----------------
-
-   function Parse_Uline
-      (Label  : access Gtk_Label_Record;
-       String : UTF8_String) return Guint
-   is
-      function Internal
-         (Label  : System.Address;
-          String : Interfaces.C.Strings.chars_ptr) return Guint;
-      pragma Import (C, Internal, "gtk_label_parse_uline");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
-      Tmp_Return : Guint;
-   begin
-      Tmp_Return := Internal (Get_Object (Label), Tmp_String);
-      Free (Tmp_String);
-      return Tmp_Return;
-   end Parse_Uline;
-
    -------------------
    -- Select_Region --
    -------------------
 
    procedure Select_Region
-      (Label        : access Gtk_Label_Record;
+      (Label        : not null access Gtk_Label_Record;
        Start_Offset : Gint := -1;
        End_Offset   : Gint := -1)
    is
@@ -424,7 +451,10 @@ package body Gtk.Label is
    -- Set_Angle --
    ---------------
 
-   procedure Set_Angle (Label : access Gtk_Label_Record; Angle : Gdouble) is
+   procedure Set_Angle
+      (Label : not null access Gtk_Label_Record;
+       Angle : Gdouble)
+   is
       procedure Internal (Label : System.Address; Angle : Gdouble);
       pragma Import (C, Internal, "gtk_label_set_angle");
    begin
@@ -436,15 +466,13 @@ package body Gtk.Label is
    --------------------
 
    procedure Set_Attributes
-      (Label : access Gtk_Label_Record;
-       Attrs : out Pango.Attributes.Pango_Attr_List)
+      (Label : not null access Gtk_Label_Record;
+       Attrs : Pango.Attributes.Pango_Attr_List)
    is
-      procedure Internal
-         (Label : System.Address;
-          Attrs : out Pango.Attributes.Pango_Attr_List);
+      procedure Internal (Label : System.Address; Attrs : System.Address);
       pragma Import (C, Internal, "gtk_label_set_attributes");
    begin
-      Internal (Get_Object (Label), Attrs);
+      Internal (Get_Object (Label), Get_Object (Attrs));
    end Set_Attributes;
 
    -------------------
@@ -452,13 +480,15 @@ package body Gtk.Label is
    -------------------
 
    procedure Set_Ellipsize
-      (Label : access Gtk_Label_Record;
+      (Label : not null access Gtk_Label_Record;
        Mode  : Pango.Layout.Pango_Ellipsize_Mode)
    is
-      procedure Internal (Label : System.Address; Mode : Integer);
+      procedure Internal
+         (Label : System.Address;
+          Mode  : Pango.Layout.Pango_Ellipsize_Mode);
       pragma Import (C, Internal, "gtk_label_set_ellipsize");
    begin
-      Internal (Get_Object (Label), Pango.Layout.Pango_Ellipsize_Mode'Pos (Mode));
+      Internal (Get_Object (Label), Mode);
    end Set_Ellipsize;
 
    -----------------
@@ -466,20 +496,25 @@ package body Gtk.Label is
    -----------------
 
    procedure Set_Justify
-      (Label : access Gtk_Label_Record;
+      (Label : not null access Gtk_Label_Record;
        Jtype : Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Label : System.Address; Jtype : Integer);
+      procedure Internal
+         (Label : System.Address;
+          Jtype : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_label_set_justify");
    begin
-      Internal (Get_Object (Label), Gtk.Enums.Gtk_Justification'Pos (Jtype));
+      Internal (Get_Object (Label), Jtype);
    end Set_Justify;
 
    ---------------
    -- Set_Label --
    ---------------
 
-   procedure Set_Label (Label : access Gtk_Label_Record; Str : UTF8_String) is
+   procedure Set_Label
+      (Label : not null access Gtk_Label_Record;
+       Str   : UTF8_String)
+   is
       procedure Internal
          (Label : System.Address;
           Str   : Interfaces.C.Strings.chars_ptr);
@@ -494,7 +529,10 @@ package body Gtk.Label is
    -- Set_Line_Wrap --
    -------------------
 
-   procedure Set_Line_Wrap (Label : access Gtk_Label_Record; Wrap : Boolean) is
+   procedure Set_Line_Wrap
+      (Label : not null access Gtk_Label_Record;
+       Wrap  : Boolean)
+   is
       procedure Internal (Label : System.Address; Wrap : Integer);
       pragma Import (C, Internal, "gtk_label_set_line_wrap");
    begin
@@ -506,20 +544,25 @@ package body Gtk.Label is
    ------------------------
 
    procedure Set_Line_Wrap_Mode
-      (Label     : access Gtk_Label_Record;
-       Wrap_Mode : Pango.Layout.Pango_Wrap_Mode)
+      (Label     : not null access Gtk_Label_Record;
+       Wrap_Mode : Pango.Enums.Wrap_Mode)
    is
-      procedure Internal (Label : System.Address; Wrap_Mode : Integer);
+      procedure Internal
+         (Label     : System.Address;
+          Wrap_Mode : Pango.Enums.Wrap_Mode);
       pragma Import (C, Internal, "gtk_label_set_line_wrap_mode");
    begin
-      Internal (Get_Object (Label), Pango.Layout.Pango_Wrap_Mode'Pos (Wrap_Mode));
+      Internal (Get_Object (Label), Wrap_Mode);
    end Set_Line_Wrap_Mode;
 
    ----------------
    -- Set_Markup --
    ----------------
 
-   procedure Set_Markup (Label : access Gtk_Label_Record; Str : UTF8_String) is
+   procedure Set_Markup
+      (Label : not null access Gtk_Label_Record;
+       Str   : UTF8_String)
+   is
       procedure Internal
          (Label : System.Address;
           Str   : Interfaces.C.Strings.chars_ptr);
@@ -535,7 +578,7 @@ package body Gtk.Label is
    ------------------------------
 
    procedure Set_Markup_With_Mnemonic
-      (Label : access Gtk_Label_Record;
+      (Label : not null access Gtk_Label_Record;
        Str   : UTF8_String)
    is
       procedure Internal
@@ -553,7 +596,7 @@ package body Gtk.Label is
    -------------------------
 
    procedure Set_Max_Width_Chars
-      (Label   : access Gtk_Label_Record;
+      (Label   : not null access Gtk_Label_Record;
        N_Chars : Gint)
    is
       procedure Internal (Label : System.Address; N_Chars : Gint);
@@ -567,13 +610,13 @@ package body Gtk.Label is
    -------------------------
 
    procedure Set_Mnemonic_Widget
-      (Label  : access Gtk_Label_Record;
+      (Label  : not null access Gtk_Label_Record;
        Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Label : System.Address; Widget : System.Address);
       pragma Import (C, Internal, "gtk_label_set_mnemonic_widget");
    begin
-      Internal (Get_Object (Label), Get_Object (Widget));
+      Internal (Get_Object (Label), Get_Object_Or_Null (GObject (Widget)));
    end Set_Mnemonic_Widget;
 
    -----------------
@@ -581,7 +624,7 @@ package body Gtk.Label is
    -----------------
 
    procedure Set_Pattern
-      (Label   : access Gtk_Label_Record;
+      (Label   : not null access Gtk_Label_Record;
        Pattern : UTF8_String)
    is
       procedure Internal
@@ -599,7 +642,7 @@ package body Gtk.Label is
    --------------------
 
    procedure Set_Selectable
-      (Label   : access Gtk_Label_Record;
+      (Label   : not null access Gtk_Label_Record;
        Setting : Boolean)
    is
       procedure Internal (Label : System.Address; Setting : Integer);
@@ -613,7 +656,7 @@ package body Gtk.Label is
    --------------------------
 
    procedure Set_Single_Line_Mode
-      (Label            : access Gtk_Label_Record;
+      (Label            : not null access Gtk_Label_Record;
        Single_Line_Mode : Boolean)
    is
       procedure Internal
@@ -628,7 +671,10 @@ package body Gtk.Label is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String) is
+   procedure Set_Text
+      (Label : not null access Gtk_Label_Record;
+       Str   : UTF8_String)
+   is
       procedure Internal
          (Label : System.Address;
           Str   : Interfaces.C.Strings.chars_ptr);
@@ -644,7 +690,7 @@ package body Gtk.Label is
    ----------------------------
 
    procedure Set_Text_With_Mnemonic
-      (Label : access Gtk_Label_Record;
+      (Label : not null access Gtk_Label_Record;
        Str   : UTF8_String)
    is
       procedure Internal
@@ -662,7 +708,7 @@ package body Gtk.Label is
    -----------------------------
 
    procedure Set_Track_Visited_Links
-      (Label       : access Gtk_Label_Record;
+      (Label       : not null access Gtk_Label_Record;
        Track_Links : Boolean)
    is
       procedure Internal (Label : System.Address; Track_Links : Integer);
@@ -676,7 +722,7 @@ package body Gtk.Label is
    --------------------
 
    procedure Set_Use_Markup
-      (Label   : access Gtk_Label_Record;
+      (Label   : not null access Gtk_Label_Record;
        Setting : Boolean)
    is
       procedure Internal (Label : System.Address; Setting : Integer);
@@ -690,7 +736,7 @@ package body Gtk.Label is
    -----------------------
 
    procedure Set_Use_Underline
-      (Label   : access Gtk_Label_Record;
+      (Label   : not null access Gtk_Label_Record;
        Setting : Boolean)
    is
       procedure Internal (Label : System.Address; Setting : Integer);
@@ -704,7 +750,7 @@ package body Gtk.Label is
    ---------------------
 
    procedure Set_Width_Chars
-      (Label   : access Gtk_Label_Record;
+      (Label   : not null access Gtk_Label_Record;
        N_Chars : Gint)
    is
       procedure Internal (Label : System.Address; N_Chars : Gint);
@@ -712,5 +758,628 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), N_Chars);
    end Set_Width_Chars;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Label_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Label_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Label_UTF8_String_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Label_UTF8_String_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Label_Gtk_Menu_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Label_Gtk_Menu_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Menu_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Menu_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_UTF8_String_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_Gtk_Menu_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Menu_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Menu_Void);
+
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   procedure Marsh_GObject_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Boolean);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Label_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Label_Gtk_Menu_Void);
+
+   procedure Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void);
+
+   procedure Marsh_Gtk_Label_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Label_UTF8_String_Boolean);
+
+   procedure Marsh_Gtk_Label_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Label_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Label_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_UTF8_String_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Label_UTF8_String_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Label_Gtk_Menu_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Label_Gtk_Menu_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Label_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Menu_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Menu_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------------
+   -- Marsh_GObject_Gtk_Menu_Void --
+   ---------------------------------
+
+   procedure Marsh_GObject_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Menu_Void;
+
+   -------------------------------------------------------
+   -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void --
+   -------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+
+   ---------------------------------------
+   -- Marsh_GObject_UTF8_String_Boolean --
+   ---------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_Boolean;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   -----------------------------------
+   -- Marsh_Gtk_Label_Gtk_Menu_Void --
+   -----------------------------------
+
+   procedure Marsh_Gtk_Label_Gtk_Menu_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Label_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Label_Gtk_Menu_Void;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
+
+   -----------------------------------------
+   -- Marsh_Gtk_Label_UTF8_String_Boolean --
+   -----------------------------------------
+
+   procedure Marsh_Gtk_Label_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Label_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Label_UTF8_String_Boolean;
+
+   --------------------------
+   -- Marsh_Gtk_Label_Void --
+   --------------------------
+
+   procedure Marsh_Gtk_Label_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Label_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Label_Void;
+
+   ------------------------------
+   -- On_Activate_Current_Link --
+   ------------------------------
+
+   procedure On_Activate_Current_Link
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "activate-current-link" & ASCII.NUL, Call, After);
+   end On_Activate_Current_Link;
+
+   ------------------------------
+   -- On_Activate_Current_Link --
+   ------------------------------
+
+   procedure On_Activate_Current_Link
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "activate-current-link" & ASCII.NUL, Call, After, Slot);
+   end On_Activate_Current_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_UTF8_String_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "activate-link" & ASCII.NUL, Call, After);
+   end On_Activate_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_UTF8_String_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "activate-link" & ASCII.NUL, Call, After, Slot);
+   end On_Activate_Link;
+
+   -----------------------
+   -- On_Copy_Clipboard --
+   -----------------------
+
+   procedure On_Copy_Clipboard
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "copy-clipboard" & ASCII.NUL, Call, After);
+   end On_Copy_Clipboard;
+
+   -----------------------
+   -- On_Copy_Clipboard --
+   -----------------------
+
+   procedure On_Copy_Clipboard
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "copy-clipboard" & ASCII.NUL, Call, After, Slot);
+   end On_Copy_Clipboard;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "move-cursor" & ASCII.NUL, Call, After);
+   end On_Move_Cursor;
+
+   --------------------
+   -- On_Move_Cursor --
+   --------------------
+
+   procedure On_Move_Cursor
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "move-cursor" & ASCII.NUL, Call, After, Slot);
+   end On_Move_Cursor;
+
+   -----------------------
+   -- On_Populate_Popup --
+   -----------------------
+
+   procedure On_Populate_Popup
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_Gtk_Label_Gtk_Menu_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "populate-popup" & ASCII.NUL, Call, After);
+   end On_Populate_Popup;
+
+   -----------------------
+   -- On_Populate_Popup --
+   -----------------------
+
+   procedure On_Populate_Popup
+      (Self  : not null access Gtk_Label_Record;
+       Call  : Cb_GObject_Gtk_Menu_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "populate-popup" & ASCII.NUL, Call, After, Slot);
+   end On_Populate_Popup;
 
 end Gtk.Label;

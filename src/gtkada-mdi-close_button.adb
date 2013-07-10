@@ -1,52 +1,60 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                 Copyright (C) 2011-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2011-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Numerics;    use Ada.Numerics;
-
-with Cairo.Pattern;   use Cairo.Pattern;
-
+with Cairo.Pattern;   use Cairo, Cairo.Pattern;
 with Glib;            use Glib;
 
 separate (Gtkada.MDI)
 package body Close_Button is
 
-   type Cairo_Color is record
-      R, G, B : Gdouble;
+   type Color_HSV is record
+      Hue        : Gdouble;
+      Saturation : Gdouble;
+      Value      : Gdouble;
+      Alpha      : Gdouble;
    end record;
 
+   function To_HSV (Color : Gdk_RGBA) return Color_HSV;
+   function To_RGB (Color : Color_HSV) return Gdk_RGBA;
+   --  Convertion between the Red-Green-Blue color space and
+   --  the Hue-Saturation-Value one.
+
+   procedure Clip_Luminance (Color : in out Gdk_RGBA);
+   --  Clips the color's luminance so that we can highligh/darken it.
+   --  This prevents too light or too dark colors as base color for the button.
+
    function Shade
-     (Color : Gdk_Color;
-      Value : Gdouble) return Cairo_Color;
+     (Color       : Gdk_RGBA;
+      Delta_Value : Gdouble) return Gdk_RGBA;
+   --  Resulting color's luminance is old one + Delta_Value, cliped to the
+   --  range 0 - 100% (e.g. 0.0 - 1.0)
 
    function On_Draw
-     (Widget : access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget  : access Gtk_Widget_Record'Class;
+      Cr      : Cairo.Cairo_Context)
       return Boolean;
-   --  draws the close button upon expose event
+   --  draws the close button upon "draw" event
 
    procedure Rounded_Rectangle
      (Cr         : Cairo_Context;
@@ -60,33 +68,22 @@ package body Close_Button is
    --  Draws a cross centered on W / 2.0 of current size and thin.
 
    function On_Tab_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
 
    function On_Tab_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
 
-   function On_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
-
-   function On_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Crossing)
-      return Boolean;
+   function On_Enter (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   function On_Leave (Widget : access Gtk_Widget_Record'Class) return Boolean;
 
    function On_Mouse_Pressed
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Button)
+      Event  : Gdk_Event)
       return Boolean;
 
    function On_Mouse_Released
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Button)
+      Event  : Gdk_Event)
       return Boolean;
 
    procedure Invalidate (Widget : access Gtk_Widget_Record'Class);
@@ -100,11 +97,13 @@ package body Close_Button is
      (Button      : out Gtkada_MDI_Close_Button;
       Tab         : access Gtk_Widget_Record'Class;
       Child       : access MDI_Child_Record'Class;
+      Horizontal  : Boolean;
       In_Titlebar : Boolean)
    is
    begin
       Button := new Gtkada_MDI_Close_Button_Record;
       Gtk.Event_Box.Initialize (Button);
+      Get_Style_Context (Button).Add_Class ("mdiCloseButton");
       Set_Visible_Window (Button, False);
 
       Button.Child       := MDI_Child (Child);
@@ -112,27 +111,33 @@ package body Close_Button is
       Button.Over        := False;
       Button.Tab_Over    := False;
       Button.In_Titlebar := In_Titlebar;
+      Button.Horizontal  := Horizontal;
 
       --  In the titlebar, we can go up to 16px as this is the size of the
       --  pixmaps, but we lower this size to 14px to be able to draw the extra
       --  border for the hilight.
 
-      --  In the tab, we keep it small however so that this does not take too
-      --  much space.
+      --  In the tab, we keep it smaller, as space is limited there.
       if In_Titlebar then
-         Button.Default_Size := 14;
+         Button.Default_Size := 12;
       else
          Button.Default_Size := 11;
       end if;
 
-      Set_Size_Request (Button, Button.Default_Size, Button.Default_Size + 4);
+      if Horizontal then
+         Button.Set_Size_Request
+           (Button.Default_Size, Button.Default_Size + 4);
+      else
+         Button.Set_Size_Request (Button.Default_Size, Button.Default_Size);
+      end if;
+
       Set_Events
         (Button,
          Get_Events (Button) or Pointer_Motion_Mask or
            Button_Press_Mask or Button_Release_Mask or
            Enter_Notify_Mask or Leave_Notify_Mask);
       Return_Callback.Connect
-        (Button, Signal_Expose_Event,
+        (Button, Signal_Draw,
          Return_Callback.To_Marshaller (On_Draw'Access));
       Return_Callback.Connect
         (Button, Signal_Enter_Notify_Event,
@@ -161,40 +166,35 @@ package body Close_Button is
    -------------
 
    function On_Draw
-     (Widget : access Gtk_Widget_Record'Class; Event : Gdk_Event)
+     (Widget : access Gtk_Widget_Record'Class;
+      Cr     : Cairo_Context)
       return Boolean
    is
-      pragma Unreferenced (Event);
-
       Button  : constant Gtkada_MDI_Close_Button :=
                   Gtkada_MDI_Close_Button (Widget);
-      Cr      : Cairo_Context;
-      Alpha   : Gdouble;
-      X, Y    : Gint;
       Width   : Gint;
       Height  : Gint;
       dW      : Gdouble;
+      dX, dY  : Gdouble;
       Cross_W : Gdouble;
-      Bg      : Gdk_Color;
-      Base    : Cairo_Color;
-      Lo, Hi  : Cairo_Color;
+      Base    : Gdk_RGBA;
+      Lo, Hi  : Gdk_RGBA;
       Ptrn    : Cairo_Pattern;
-      Note    : constant Gtk_Notebook :=
-                 Gtk_Notebook (Get_Parent (Button.Child));
+      Alloc   : Gtk_Allocation;
+      Ctx     : Gtk_Style_Context;
 
    begin
       if not Button.In_Titlebar
         and then not Button.Tab_Over
         and then not Button.Over
       then
-         return True;
+         return False;
       end if;
 
-      if Realized_Is_Set (Button) then
-         X      := Get_Allocation_X (Button);
-         Y      := Get_Allocation_Y (Button);
-         Width  := Get_Allocation_Width (Button);
-         Height := Get_Allocation_Height (Button);
+      if Button.Get_Realized then
+         Button.Get_Allocation (Alloc);
+         Width  := Alloc.Width;
+         Height := Alloc.Height;
 
          dW := Gdouble (Button.Default_Size);
 
@@ -203,48 +203,47 @@ package body Close_Button is
             dW := Gdouble (Width);
          end if;
 
-         --  Height - 4 : we want at least 1 px margin (so *2) + 1px for the
-         --  thin hilight effect at the bottom of the button. We add another px
-         --  to center the button (compensate the hilight size).
-         if dW > Gdouble (Height - 4) then
-            dW := Gdouble (Height - 4);
+         --  Height - 2 : we want 1px for the thin highlight effect at the
+         --  bottom of the button. We add another px to center the button
+         --  (compensate the hilight size).
+         if dW > Gdouble (Height - 2) then
+            dW := Gdouble (Height - 2);
          end if;
 
-         X := X + Width - Gint (dW);
-         Y := Y + (Height - Gint (dW)) / 2;
+         Cairo.Save (Cr);
 
-         Cr := Create (Get_Window (Button));
+         if Button.Horizontal then
+            --  Align to right and center vertically
+            dX := Gdouble (Width - Gint (dW));
+            dY := Gdouble ((Height - Gint (dW)) / 2);
+         else
+            --  Align to bottom and center horizontally
+            dX := Gdouble ((Width - Gint (dW)) / 2);
+            dY := Gdouble (Height - Gint (dW));
+         end if;
+
+         Cairo.Translate (Cr, dX, dY);
 
          Cairo.Set_Line_Width (Cr, 1.0);
-         Cairo.Translate (Cr, Gdouble (X), Gdouble (Y));
          Cross_W := dW * 0.7;
 
          --  Retrieve the parent's actual background color for a nice
          --  transparency effect
-         if Button.Child.MDI.Focus_Child = Button.Child then
-            Bg := Button.Child.MDI.Focus_Title_Color;
-         elsif Button.In_Titlebar
-           and then Get_Current_Page (Note) = Page_Num (Note, Button.Child)
-         then
-            Bg := Button.Child.MDI.Title_Bar_Color;
-         else
-            Bg := Gtk.Style.Get_Bg (Get_Style (Button.Child), State_Normal);
-         end if;
+         Ctx := Get_Style_Context (Button.Child);
+         Ctx.Get_Color (Gtk_State_Flag_Normal, Base);
+         Clip_Luminance (Base);
 
          --  Shade the color according to the button's state
-         if Button.Pressed then
-            Base := Shade (Bg, 0.5);
-            Alpha := 1.0;
-         elsif Button.Over then
-            Base := Shade (Bg, 0.65);
-            Alpha := 1.0;
+         if Button.Pressed
+           or else Button.Over
+         then
+            Base.Alpha := 0.8;
          else
-            Base := Shade (Bg, 0.8);
-            Alpha := 0.6;
+            Base.Alpha := 0.4;
          end if;
 
-         Lo := Shade (Bg, 0.6);
-         Hi := Shade (Bg, 1.25);
+         Lo := Shade (Base, -0.3);
+         Hi := Shade (Base, 0.8);
 
          --  Clip the cross
          Cairo.Set_Fill_Rule (Cr, Cairo_Fill_Rule_Even_Odd);
@@ -257,7 +256,9 @@ package body Close_Button is
          --  Now actually draw the button
 
          --  Fill the base color
-         Cairo.Set_Source_Rgba (Cr, Base.R, Base.G, Base.B, Alpha);
+         Cairo.Set_Source_Rgba
+           (Cr, Base.Red, Base.Green, Base.Blue, Base.Alpha);
+         --  And draw inside a rounded rectangle
          Rounded_Rectangle (Cr, 0.0, 0.0, dW, dW, 2.5);
          Cairo.Fill (Cr);
 
@@ -265,9 +266,9 @@ package body Close_Button is
          Ptrn := Cairo.Pattern.Create_Radial
            (dW * 0.5, dW * 0.5, 2.0, dW * 0.5, dW * 0.5, Cross_W / 2.0);
          Cairo.Pattern.Add_Color_Stop_Rgba
-           (Ptrn, 0.0, Lo.R, Lo.G, Lo.B, Alpha);
+           (Ptrn, 0.0, Lo.Red, Lo.Green, Lo.Blue, Lo.Alpha);
          Cairo.Pattern.Add_Color_Stop_Rgba
-           (Ptrn, 1.0, Lo.R, Lo.G, Lo.B, 0.0);
+           (Ptrn, 1.0, Lo.Red, Lo.Green, Lo.Blue, 0.0);
          Rounded_Rectangle (Cr, 0.0, 0.0, dW, dW, 2.5);
          Cairo.Set_Source (Cr, Ptrn);
          Cairo.Pattern.Destroy (Ptrn);
@@ -275,51 +276,187 @@ package body Close_Button is
 
          --  Add a hilighted border with height bigger than shadowed border
          --  to just display a thin hilighted border under the button
-         Cairo.Set_Source_Rgba (Cr, Hi.R, Hi.G, Hi.B, Alpha);
-         Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW, 2.5);
+         Cairo.Set_Source_Rgba (Cr, Hi.Red, Hi.Green, Hi.Blue, Hi.Alpha);
+
+         if Button.Pressed then
+            --  Keep the highlight under the button
+            Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW, 2.5);
+            --  Add a highlight inside the button, opposite direction as usual
+            Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW - 2.0, 2.5);
+         else
+            Rounded_Rectangle (Cr, 0.5, 1.5, dW - 1.0, dW - 1.0, 2.5);
+         end if;
+
          Cairo.Stroke (Cr);
 
          --  Now add the shadowed border
-         Cairo.Set_Source_Rgba (Cr, Lo.R, Lo.G, Lo.B, Alpha);
+         Cairo.Set_Source_Rgba (Cr, Lo.Red, Lo.Green, Lo.Blue, Lo.Alpha);
          Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW - 1.0, 2.5);
          Cairo.Stroke (Cr);
 
-         Cairo.Destroy (Cr);
+         Cairo.Restore (Cr);
       end if;
 
-      return True;
+      return False;
    end On_Draw;
+
+   ------------
+   -- To_HSV --
+   ------------
+
+   function To_HSV (Color : Gdk_RGBA) return Color_HSV is
+      Ret            : Color_HSV;
+      Min, Max, Delt : Gdouble;
+   begin
+      Ret.Alpha := Color.Alpha;
+      Min := Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
+      Max := Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
+
+      Ret.Value := Max;
+      Delt := Max - Min;
+
+      if Max > 0.0 then
+         Ret.Saturation := Delt / Max;
+      else
+         Ret.Saturation := 0.0;
+         Ret.Hue := 0.0;
+
+         return Ret;
+      end if;
+
+      if Color.Red >= Max then
+         Ret.Hue := (Color.Green - Color.Blue) / Delt;
+      elsif Color.Green >= Max then
+         Ret.Hue := 2.0 + (Color.Blue - Color.Red) / Delt;
+      else
+         Ret.Hue := 4.0 + (Color.Red - Color.Green) / Delt;
+      end if;
+
+      Ret.Hue := Ret.Hue * 60.0;
+
+      if Ret.Hue < 0.0 then
+         Ret.Hue := Ret.Hue + 360.0;
+      end if;
+
+      return Ret;
+   end To_HSV;
+
+   ------------
+   -- To_RGB --
+   ------------
+
+   function To_RGB (Color : Color_HSV) return Gdk_RGBA
+   is
+      Hh, P, Q, T, Ff : Gdouble;
+      J               : Integer;
+      Ret             : Gdk_RGBA;
+   begin
+      if Color.Saturation <= 0.0 then
+         Ret := (Color.Value, Color.Value, Color.Value, Color.Alpha);
+
+         return Ret;
+      end if;
+
+      Hh := Color.Hue;
+
+      while Hh >= 360.0 loop
+         Hh := Hh - 360.0;
+      end loop;
+
+      while Hh < 0.0 loop
+         Hh := Hh + 360.0;
+      end loop;
+
+      Hh := Hh / 60.0;
+      J := Integer (Gdouble'Floor (Hh));
+      Ff := Hh - Gdouble (J);
+      P := Color.Value * (1.0 - Color.Saturation);
+      Q := Color.Value * (1.0 - (Color.Saturation * Ff));
+      T := Color.Value * (1.0 - (Color.Saturation * (1.0 - Ff)));
+
+      case J is
+         when 0 =>
+            Ret :=
+              (Red   => Color.Value,
+               Green => T,
+               Blue  => P,
+               Alpha => Color.Alpha);
+         when 1 =>
+            Ret :=
+              (Red   => Q,
+               Green => Color.Value,
+               Blue  => P,
+               Alpha => Color.Alpha);
+         when 2 =>
+            Ret :=
+              (Red   => P,
+               Green => Color.Value,
+               Blue  => T,
+               Alpha => Color.Alpha);
+         when 3 =>
+            Ret :=
+              (Red   => P,
+               Green => Q,
+               Blue  => Color.Value,
+               Alpha => Color.Alpha);
+         when 4 =>
+            Ret :=
+              (Red   => T,
+               Green => P,
+               Blue  => Color.Value,
+               Alpha => Color.Alpha);
+         when others =>
+            Ret :=
+              (Red   => Color.Value,
+               Green => P,
+               Blue  => Q,
+               Alpha => Color.Alpha);
+      end case;
+
+      return Ret;
+   end To_RGB;
+
+   --------------------
+   -- Clip_Luminance --
+   --------------------
+
+   procedure Clip_Luminance (Color : in out Gdk_RGBA)
+   is
+      HSV : Color_HSV;
+
+   begin
+      HSV := To_HSV (Color);
+
+      if HSV.Value > 0.85 then
+         HSV.Value := 0.85;
+      elsif HSV.Value < 0.15 then
+         HSV.Value := 0.15;
+      else
+         return;
+      end if;
+
+      Color := To_RGB (HSV);
+   end Clip_Luminance;
 
    -----------
    -- Shade --
    -----------
 
    function Shade
-     (Color : Gdk_Color;
-      Value : Gdouble) return Cairo_Color
+     (Color       : Gdk_RGBA;
+      Delta_Value : Gdouble) return Gdk_RGBA
    is
-      Ret : Cairo_Color;
+      HSV : Color_HSV := To_HSV (Color);
    begin
-      Ret :=
-        (R => Gdouble (Red (Color)) / 65535.0 * Value,
-         G => Gdouble (Green (Color)) / 65535.0 * Value,
-         B => Gdouble (Blue (Color)) / 65535.0 * Value);
+      HSV.Value := HSV.Value + Delta_Value;
 
-      if Value > 1.0 then
-         if Ret.R > 1.0 then
-            Ret.R := 1.0;
-         end if;
-
-         if Ret.G > 1.0 then
-            Ret.G := 1.0;
-         end if;
-
-         if Ret.B > 1.0 then
-            Ret.B := 1.0;
-         end if;
+      if HSV.Value > 1.0 then
+         HSV.Value := 1.0;
+      elsif HSV.Value < 0.0 then
+         HSV.Value := 0.0;
       end if;
 
-      return Ret;
+      return To_RGB (HSV);
    end Shade;
 
    -----------------------
@@ -354,6 +491,8 @@ package body Close_Button is
    begin
       Cairo.Get_Matrix (Cr, Matrix'Access);
 
+      --  We follow the cross's dots in the following order:
+      --
       --      10+--+9
       --      11|  |8
       --  12 +--+  +--+ 7
@@ -392,15 +531,11 @@ package body Close_Button is
    ----------------
 
    procedure Invalidate (Widget : access Gtk_Widget_Record'Class) is
+      Alloc : Gtk_Allocation;
    begin
-      if Realized_Is_Set (Widget) then
-         Invalidate_Rect
-           (Gtk.Widget.Get_Window (Widget),
-            (Get_Allocation_X (Widget),
-             Get_Allocation_Y (Widget),
-             Get_Allocation_Width (Widget),
-             Get_Allocation_Height (Widget)),
-            False);
+      if Widget.Get_Realized then
+         Widget.Get_Allocation (Alloc);
+         Invalidate_Rect (Gtk.Widget.Get_Window (Widget), Alloc, False);
          Queue_Draw (Widget);
       end if;
    end Invalidate;
@@ -410,11 +545,8 @@ package body Close_Button is
    ------------------
 
    function On_Tab_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
-      return Boolean
-   is
-      pragma Unreferenced (Event);
+     (Widget : access Gtk_Widget_Record'Class)
+      return Boolean is
    begin
       Gtkada_MDI_Close_Button (Widget).Tab_Over := True;
       Invalidate (Widget);
@@ -427,14 +559,12 @@ package body Close_Button is
    ------------------
 
    function On_Tab_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
+     (Widget : access Gtk_Widget_Record'Class)
       return Boolean
    is
    begin
       Gtkada_MDI_Close_Button (Widget).Tab_Over := False;
-
-      return On_Leave (Widget, Event);
+      return On_Leave (Widget);
    end On_Tab_Leave;
 
    --------------
@@ -442,11 +572,8 @@ package body Close_Button is
    --------------
 
    function On_Enter
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
-      return Boolean
-   is
-      pragma Unreferenced (Event);
+     (Widget : access Gtk_Widget_Record'Class)
+      return Boolean is
    begin
       Gtkada_MDI_Close_Button (Widget).Over := True;
       Invalidate (Widget);
@@ -459,11 +586,8 @@ package body Close_Button is
    --------------
 
    function On_Leave
-     (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Crossing)
-      return Boolean
-   is
-      pragma Unreferenced (Event);
+     (Widget : access Gtk_Widget_Record'Class)
+      return Boolean is
    begin
       Gtkada_MDI_Close_Button (Widget).Over := False;
       Gtkada_MDI_Close_Button (Widget).Pressed := False;
@@ -478,17 +602,16 @@ package body Close_Button is
 
    function On_Mouse_Pressed
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Button)
+      Event  : Gdk.Event.Gdk_Event)
       return Boolean
    is
       Button : constant Gtkada_MDI_Close_Button :=
                  Gtkada_MDI_Close_Button (Widget);
 
    begin
-      if Gdk.Event.Get_Button (Event) = 1 and then Button.Over then
+      if Event.Button.Button = 1 and then Button.Over then
          Button.Pressed := True;
          Invalidate (Widget);
-
          return True;
       end if;
 
@@ -501,16 +624,15 @@ package body Close_Button is
 
    function On_Mouse_Released
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Button)
+      Event  : Gdk_Event)
       return Boolean
    is
       Button : constant Gtkada_MDI_Close_Button :=
                  Gtkada_MDI_Close_Button (Widget);
 
    begin
-      if Button.Pressed and then Gdk.Event.Get_Button (Event) = 1 then
+      if Button.Pressed and then Event.Button.Button = 1 then
          Close_Child (Button.Child);
-
          return True;
       end if;
 

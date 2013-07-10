@@ -1,37 +1,30 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                  Copyright (C) 2010-2013, AdaCore                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2010-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Text_IO;         use Ada.Text_IO;
 
 with Glib;                use Glib;
 with Glib.Main;           use Glib.Main;
-
-with Gdk.Pixbuf;          use Gdk.Pixbuf;
 
 with Gtk;                 use Gtk;
 with Gtk.Alignment;       use Gtk.Alignment;
@@ -85,7 +78,7 @@ package body Create_Assistant is
      (Gtk_Check_Button_Record, Page_Data);
    package Radio_Button_Char_Cb is new Handlers.User_Callback
      (Gtk_Radio_Button_Record, Character);
-   package Forward_Page_Functions is new Generic_Assistant_Functions
+   package Forward_Page_Functions is new Set_Forward_page_Func_User_Data
      (Gtk_Assistant);
    use Forward_Page_Functions;
 
@@ -162,7 +155,8 @@ package body Create_Assistant is
    -- Cancel_Callback --
    ---------------------
 
-   procedure Cancel_Callback (Assistant : access Gtk_Assistant_Record'Class) is
+   procedure Cancel_Callback
+      (Assistant : access Gtk_Assistant_Record'Class) is
    begin
       Put_Line ("cancel");
       Hide (Assistant);
@@ -172,7 +166,8 @@ package body Create_Assistant is
    -- Close_Callback --
    --------------------
 
-   procedure Close_Callback (Assistant : access Gtk_Assistant_Record'Class) is
+   procedure Close_Callback
+      (Assistant : access Gtk_Assistant_Record'Class) is
    begin
       Put_Line ("close");
       Hide (Assistant);
@@ -182,7 +177,9 @@ package body Create_Assistant is
    -- Apply_Callback --
    --------------------
 
-   procedure Apply_Callback (Assistant : access Gtk_Assistant_Record'Class) is
+   procedure Apply_Callback
+      (Assistant : access Gtk_Assistant_Record'Class)
+   is
       pragma Unreferenced (Assistant);
    begin
       Put_Line ("apply");
@@ -280,7 +277,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Page, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -385,7 +382,7 @@ package body Create_Assistant is
 
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -413,11 +410,7 @@ package body Create_Assistant is
    --------------------------------------
 
    function Nonlinear_Assistant_Forward_Page
-     (Current_Page : Gint;
-      Assistant    : Gtk_Assistant)
-      return Gint
-   is
-      pragma Unreferenced (Assistant);
+     (Current_Page : Gint) return Gint is
    begin
       case Current_Page is
          when 0 =>
@@ -457,8 +450,8 @@ package body Create_Assistant is
          Assistant_Cb.Connect (Assistant, "apply",   Apply_Callback'Access);
          Assistant_Cb.Connect (Assistant, "prepare", Prepare_Callback'Access);
 
-         Set_Forward_Page_Func
-           (Assistant, Nonlinear_Assistant_Forward_Page'Access, null);
+         Assistant.Set_Forward_Page_Func
+           (Nonlinear_Assistant_Forward_Page'Access);
 
          Gtk_New_Vbox (Page, False, 6);
 
@@ -498,7 +491,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Label, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -560,7 +553,7 @@ package body Create_Assistant is
          Assistant_Cb.Connect (Assistant, "apply",   Apply_Callback'Access);
          Assistant_Cb.Connect (Assistant, "prepare", Prepare_Callback'Access);
 
-         Set_Forward_Page_Func
+         Forward_Page_Functions.Set_Forward_Page_Func
            (Assistant, Looping_Assistant_Forward_Page'Access, Assistant);
 
          Gtk_New (Label, "Introduction");
@@ -596,7 +589,7 @@ package body Create_Assistant is
          Set_Page_Complete (Assistant, Label, True);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);
@@ -614,7 +607,6 @@ package body Create_Assistant is
       Assistant : Gtk_Assistant renames All_Assistants (Full_Featured);
       Button    : Gtk_Button;
       Label     : Gtk_Label;
-      Pixbuf    : Gdk_Pixbuf;
       Tmp       : Gint;
       pragma Unreferenced (Widget);
       pragma Warnings (Off, Tmp);
@@ -638,14 +630,6 @@ package body Create_Assistant is
          Set_Page_Title (Assistant, Label, "Page 1");
          Set_Page_Complete (Assistant, Label, True);
 
-         --  Set a side image
-         Pixbuf := Render_Icon (Label, Stock_Dialog_Warning, Icon_Size_Dialog);
-         Set_Page_Side_Image (Assistant, Label, Pixbuf);
-
-         --  Set a header image
-         Pixbuf := Render_Icon (Label, Stock_Dialog_Info, Icon_Size_Dialog);
-         Set_Page_Header_Image (Assistant, Label, Pixbuf);
-
          Gtk_New (Label, "Invisible page");
          Tmp := Append_Page (Assistant, Label);
 
@@ -655,13 +639,9 @@ package body Create_Assistant is
          Set_Page_Title (Assistant, Label, "Page 3");
          Set_Page_Type (Assistant, Label, Gtk_Assistant_Page_Confirm);
          Set_Page_Complete (Assistant, Label, True);
-
-         --  Set a header image
-         Pixbuf := Render_Icon (Label, Stock_Dialog_Info, Icon_Size_Dialog);
-         Set_Page_Header_Image (Assistant, Label, Pixbuf);
       end if;
 
-      if not Visible_Is_Set (Assistant) then
+      if not Assistant.Get_Visible then
          Show (Assistant);
       else
          Destroy (Assistant);

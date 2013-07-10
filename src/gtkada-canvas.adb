@@ -1,31 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000, E. Briot, J. Brobecker and A. Charlet  --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Numerics;                       use Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
@@ -45,25 +40,23 @@ with Glib;                               use Glib;
 with Glib.Graphs;                        use Glib.Graphs;
 with Glib.Main;                          use Glib.Main;
 with Glib.Object;                        use Glib.Object;
-with Glib.Values;                        use Glib.Values;
 
+with Gdk;                                use Gdk;
 with Gdk.Cairo;                          use Gdk.Cairo;
 with Gdk.Color;                          use Gdk.Color;
 with Gdk.Cursor;                         use Gdk.Cursor;
 with Gdk.Event;                          use Gdk.Event;
 with Gdk.Rectangle;                      use Gdk.Rectangle;
+with Gdk.RGBA;                           use Gdk.RGBA;
 with Gdk.Window;                         use Gdk.Window;
 with Gdk.Types;                          use Gdk.Types;
 with Gdk.Types.Keysyms;                  use Gdk.Types.Keysyms;
 
 with Gtk.Adjustment;                     use Gtk.Adjustment;
 with Gtk.Arguments;                      use Gtk.Arguments;
-with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Handlers;
-with Gtk.Main;                           use Gtk.Main;
-pragma Elaborate_All (Gtk.Main);
-with Gtk.Style;                          use Gtk.Style;
+with Gtk.Main;
 with Gtk.Widget;                         use Gtk.Widget;
 
 with Gtkada.Handlers;                    use Gtkada.Handlers;
@@ -80,12 +73,12 @@ package body Gtkada.Canvas is
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Double_Elementary_Functions;
 
-   use type Gdk_Window;
+   use type Gdk.Gdk_Window;
    use type System.Address;
 
    Traces : constant Boolean := False;
 
-   Class_Record : GObject_Class := Uninitialized_Class;
+   Class_Record : Ada_GObject_Class := Uninitialized_Class;
    --  This pointer will keep a pointer to the C 'class record' for
    --  gtk. To avoid allocating memory for each widget, this may be done
    --  only once, and reused.
@@ -120,6 +113,11 @@ package body Gtkada.Canvas is
                 6 => New_String (String (Signal_Item_Moved)));
    --  Array of the signals created for this widget
 
+   type Bounds_Modification_Mode is (Grow_Only, Clamp, Do_Not_Change);
+   --  Grow_Only : the bounds of the canvas may grow but should not shrink
+   --  Clamp : the bounds get adjusted to the current item requisitions
+   --  Do_Not_Change: no modification is made to the bounds of the canvas
+
    -----------------
    -- Subprograms --
    -----------------
@@ -132,12 +130,13 @@ package body Gtkada.Canvas is
    package Canvas_Timeout is
      new Glib.Main.Generic_Sources (Interactive_Canvas);
 
-   function Expose
+   function On_Draw
      (Canv  : access Gtk_Widget_Record'Class;
-      Event : Gdk.Event.Gdk_Event) return Boolean;
-   --  Handle the expose events for a canvas.
+      Cr    : Cairo_Context) return Boolean;
+   --  Handle the "draw" events for a canvas.
 
-   procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class);
+   procedure Canvas_Destroyed
+      (Canvas : access Gtk_Widget_Record'Class);
    --  Called when the canvas is being destroyed. All the items and links
    --  are removed, and the double-buffer is freed
 
@@ -227,15 +226,10 @@ package body Gtkada.Canvas is
 
    procedure Update_Adjustments
      (Canvas       : access Interactive_Canvas_Record'Class;
-      Min_Max      : Boolean := True;
-      Page_Size    : Boolean := True;
-      Clip_Value   : Boolean := True;
-      Send_Changed : Boolean := True);
+      Behavior     : Bounds_Modification_Mode := Clamp);
    --  Update the adjustments of the canvas.
    --  The bounds for the adjustments are automatically computed, given the
    --  list of items in it.
-   --  If Clip_Value is set, this also makes sure that the adjustment values
-   --  remain in the adjustment range
 
    procedure Draw_Arrow_Head
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -256,8 +250,7 @@ package body Gtkada.Canvas is
    --  should already include zoom processing.
 
    procedure Set_Scroll_Adjustments
-     (Canvas : access Gtk_Widget_Record'Class;
-      Args   : GValues);
+     (Canvas : access Gtk_Widget_Record'Class);
    --  Change the two adjustments used for the canvas (in a callback)
 
    procedure Scrolled (Canvas : access Gtk_Widget_Record'Class);
@@ -292,9 +285,7 @@ package body Gtkada.Canvas is
    procedure Scroll_Canvas_To_Area
      (Canvas             : access Interactive_Canvas_Record'Class;
       X1, Y1, X2, Y2     : Gdouble;
-      Canvas_X, Canvas_Y : Gdouble := 0.5;
-      Ignore_If_Visible  : Boolean := True;
-      Report_Adj_Changed : Boolean := True);
+      Canvas_X, Canvas_Y : Gdouble := 0.5);
    --  Scroll the visible area of the canvas so that the given area
    --  (X1, Y1) .. (X2, Y2) is made visible.
    --  These are in world coordinates.
@@ -305,7 +296,8 @@ package body Gtkada.Canvas is
 
    function Move_Selection
      (Canvas : access Interactive_Canvas_Record'Class;
-      New_Offset_X_World, New_Offset_Y_World : Gdouble) return Boolean;
+      New_Offset_X_World, New_Offset_Y_World : Gdouble;
+      Behavior : Bounds_Modification_Mode) return Boolean;
    --  Moves all selected items by a specific amount.
    --  The move is relative to the initial position of the items, and
    --  (Delta_X_World, Delta_Y_World) are given in world coordinates.
@@ -317,16 +309,12 @@ package body Gtkada.Canvas is
    procedure Show_Item
      (Canvas             : access Interactive_Canvas_Record'Class;
       Item               : access Canvas_Item_Record'Class;
-      Canvas_X, Canvas_Y : Gdouble;
-      Report_Adj_Changed : Boolean := True);
+      Canvas_X, Canvas_Y : Gdouble);
    --  Like Show_Item.
    --  (Canvas_X, Canvas_Y) are the position in the canvas where the center of
    --  the item should be put. (0,0) is on the top-left, (1,1) is bottom-right.
    --
    --  Nothing is done if the item is already visible.
-   --
-   --  If Report_Adj_Changed is true, the "changed" signal might be sent if the
-   --  adjustments are changed. However, this might result in flickering.
 
    procedure Draw_Dashed_Selection
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -359,14 +347,77 @@ package body Gtkada.Canvas is
    procedure Scroll_Canvas_To_Item
      (Canvas             : access Interactive_Canvas_Record'Class;
       Item               : access Canvas_Item_Record'Class;
-      Canvas_X, Canvas_Y : Gdouble := 0.5;
-      Report_Adj_Changed : Boolean := True);
+      Canvas_X, Canvas_Y : Gdouble := 0.5);
    --  Scroll the canvas to the item. This function tries to scroll the canvas
-   --  as less as possible, typically used when the item is moving out of the
+   --  as little as possible, typically used when the item is moving out of the
    --  window.
 
    function Create
      (Canvas : access Interactive_Canvas_Record'Class) return Cairo_Context;
+   --  ???
+
+   procedure Get_Visible_World
+     (Canvas         : access Interactive_Canvas_Record'Class;
+      X1, Y1, X2, Y2 : out Gdouble);
+   --  Return the world area currently visible in the canvas
+
+   -----------------------
+   -- Get_Visible_World --
+   -----------------------
+
+   procedure Get_Visible_World
+     (Canvas         : access Interactive_Canvas_Record'Class;
+      X1, Y1, X2, Y2 : out Gdouble)
+   is
+      X_Ignored, Y_Ignored : Gint;
+
+      Hadj : constant Gtk_Adjustment := Canvas.Get_Hadjustment;
+      Vadj : constant Gtk_Adjustment := Canvas.Get_Vadjustment;
+
+      Window_Width, Window_Height : Gint;
+      Canvas_Width, Canvas_Height : Guint;
+
+      X_Ratio : Gdouble;
+      Y_Ratio : Gdouble;
+
+      Dest_X, Dest_Y : Gint;
+      Result : Boolean;
+   begin
+      Translate_Coordinates
+        (Canvas,
+         Get_Parent (Canvas),
+         0, 0, Dest_X, Dest_Y, Result);
+
+      Get_Geometry
+        (Canvas.Get_Window,
+         X_Ignored, Y_Ignored,
+         Window_Width, Window_Height);
+
+      Canvas.Get_Size (Canvas_Width, Canvas_Height);
+
+      X_Ratio := ((Hadj.Get_Upper - Hadj.Get_Page_Size) - Hadj.Get_Lower);
+
+      if X_Ratio < 0.001 then
+         X1 := Canvas.World_X;
+      else
+         X1 := Canvas.World_X +
+           (Gdouble (Canvas_Width) - Gdouble (Window_Width))
+           * Hadj.Get_Value / (X_Ratio * Canvas.Zoom);
+      end if;
+
+      Y_Ratio := ((Vadj.Get_Upper - Vadj.Get_Page_Size) - Vadj.Get_Lower);
+
+      if Y_Ratio < 0.001 then
+         Y1 := Canvas.World_Y;
+      else
+         Y1 := Canvas.World_Y
+           + (Gdouble (Canvas_Height) - Gdouble (Window_Height))
+              * Vadj.Get_Value / (Y_Ratio * Canvas.Zoom);
+      end if;
+
+      X2 := X1 + Gdouble (Window_Width) / Canvas.Zoom;
+      Y2 := Y1 + Gdouble (Window_Height) / Canvas.Zoom;
+   end Get_Visible_World;
 
    ------------
    -- Create --
@@ -375,14 +426,12 @@ package body Gtkada.Canvas is
    function Create
      (Canvas : access Interactive_Canvas_Record'Class) return Cairo_Context
    is
-      Cr             : constant Cairo_Context := Create (Get_Window (Canvas));
-      X_Base, Y_Base : Gdouble;
+      Cr             : constant Cairo_Context := Create
+        (Get_Bin_Window (Canvas));
    begin
-      To_World_Coordinates
-        (Canvas, 0, 0, X_Base, Y_Base);
-      Cairo.Translate (Cr, -X_Base * Canvas.Zoom, -Y_Base * Canvas.Zoom);
+      Cairo.Translate (Cr, -Canvas.World_X, -Canvas.World_Y);
+
       Cairo.Scale (Cr, Canvas.Zoom, Canvas.Zoom);
-      Set_Source_Color (Cr, Get_Fg (Get_Style (Canvas), State_Normal));
       Set_Line_Width (Cr, 1.0);
 
       return Cr;
@@ -417,9 +466,11 @@ package body Gtkada.Canvas is
       X_World : out Gdouble;
       Y_World : out Gdouble)
    is
+      X1W, Y1W, X2W, Y2W : Gdouble;
    begin
-      X_World := Canvas.World_X + Gdouble (X) / Canvas.Zoom;
-      Y_World := Canvas.World_Y + Gdouble (Y) / Canvas.Zoom;
+      Get_Visible_World (Canvas, X1W, Y1W, X2W, Y2W);
+      X_World := X1W + Gdouble (X) / Canvas.Zoom;
+      Y_World := Y1W + Gdouble (Y) / Canvas.Zoom;
    end To_World_Coordinates;
 
    --------------------------
@@ -432,9 +483,11 @@ package body Gtkada.Canvas is
       X_World : out Gdouble;
       Y_World : out Gdouble)
    is
+      X, Y : Gdouble;
    begin
-      X_World := Canvas.World_X + Get_X (Event) / Canvas.Zoom;
-      Y_World := Canvas.World_Y + Get_Y (Event) / Canvas.Zoom;
+      Get_Coords (Event, X, Y);
+      X_World := (Canvas.World_X + X) / Canvas.Zoom;
+      Y_World := (Canvas.World_Y + Y) / Canvas.Zoom;
    end To_World_Coordinates;
 
    ---------------------------
@@ -447,33 +500,20 @@ package body Gtkada.Canvas is
       Width  : out Glib.Gdouble;
       Height : out Glib.Gdouble)
    is
+      Layout_Width, Layout_Height : Guint;
    begin
-      X := Get_Lower (Canvas.Hadj);
-      Y := Get_Lower (Canvas.Vadj);
-      Width := Get_Upper (Canvas.Hadj) - X;
-      Height := Get_Lower (Canvas.Vadj) - Y;
+      X := Canvas.World_X;
+      Y := Canvas.World_Y;
+      Get_Size (Canvas, Layout_Width, Layout_Height);
+      Width := Gdouble (Layout_Width) / Canvas.Zoom;
+      Height := Gdouble (Layout_Height) / Canvas.Zoom;
    end Get_World_Coordinates;
 
-   -------------
-   -- Gtk_New --
-   -------------
+   --------------
+   -- Get_Type --
+   --------------
 
-   procedure Gtk_New
-     (Canvas : out Interactive_Canvas; Auto_Layout : Boolean := True)
-   is
-   begin
-      Canvas := new Interactive_Canvas_Record;
-      Gtkada.Canvas.Initialize (Canvas, Auto_Layout);
-   end Gtk_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
-     (Canvas      : access Interactive_Canvas_Record'Class;
-      Auto_Layout : Boolean := True)
-   is
+   function Get_Type return Glib.GType is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => Gdk.Event.Get_Type,      2 => GType_None),
          2 => (1 => GType_Pointer,           2 => GType_None),
@@ -485,32 +525,44 @@ package body Gtkada.Canvas is
       --  This must be defined in this function rather than at the
       --  library-level, or the value of Gdk_Event.Get_Type is not yet
       --  initialized.
-
-      Style : Gtk_Style;
-
    begin
-      Gtk.Drawing_Area.Initialize (Canvas);
+      Initialize_Class_Record
+        (Gtk.Layout.Get_Type, Class_Record,
+         "GtkAdaCanvas", Signals, Signal_Parameters);
+      return Class_Record.The_Type;
+   end Get_Type;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+     (Canvas : out Interactive_Canvas; Auto_Layout : Boolean := True) is
+   begin
+      Canvas := new Interactive_Canvas_Record;
+      Gtkada.Canvas.Initialize (Canvas, Auto_Layout);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Canvas      : access Interactive_Canvas_Record'Class;
+      Auto_Layout : Boolean := True) is
+   begin
+      G_New (Canvas, Gtkada.Canvas.Get_Type);
+
       Canvas.Offset_X_World := 0;
       Canvas.Offset_Y_World := 0;
       Canvas.World_X := 0.0;
       Canvas.World_Y := 0.0;
-
       Set_Directed (Canvas.Children, True);
       Canvas.Auto_Layout := Auto_Layout;
 
-      --  The following call is required to initialize the class record,
-      --  and the new signals created for this widget.
-      --  Note also that we keep Class_Record, so that the memory allocation
-      --  is done only once.
-      Initialize_Class_Record
-        (Canvas, Signals, Class_Record,
-         "GtkAdaCanvas", Signal_Parameters);
-      Set_Scroll_Adjustments_Signal
-        (Class_Record, "set_scroll_adjustments");
-
       Return_Callback.Connect
-        (Canvas, "expose_event",
-         Return_Callback.To_Marshaller (Expose'Access));
+        (Canvas, Signal_Draw,
+         Return_Callback.To_Marshaller (On_Draw'Access));
       Return_Callback.Connect
         (Canvas, "button_press_event",
          Return_Callback.To_Marshaller (Button_Pressed'Access));
@@ -526,14 +578,11 @@ package body Gtkada.Canvas is
       Widget_Callback.Connect
         (Canvas, "size_allocate", Size_Allocate'Access);
       Widget_Callback.Connect
-        (Canvas, "set_scroll_adjustments", Set_Scroll_Adjustments'Access);
-      Widget_Callback.Connect
         (Canvas, "destroy",
          Widget_Callback.To_Marshaller (Canvas_Destroyed'Access));
 
-      Style := Get_Style (Canvas);
-      Set_Bg (Style, State_Normal, Gdk_Color'(Get_White (Style)));
-      Set_Style (Canvas, Style);
+      Widget_Callback.Connect
+        (Canvas, "notify::hadjustment", Set_Scroll_Adjustments'Access);
 
       Canvas.Annotation_Layout := Create_Pango_Layout (Canvas);
 
@@ -547,11 +596,10 @@ package body Gtkada.Canvas is
            or Button_Release_Mask
            or Key_Press_Mask
            or Key_Release_Mask);
-      Set_Flags (Canvas, Can_Focus);
+      Canvas.Set_Can_Focus (True);
 
       --  Configure with default values
       Configure (Canvas);
-      Set_Scroll_Adjustments (Canvas, null, null);
    end Initialize;
 
    --------------
@@ -561,7 +609,7 @@ package body Gtkada.Canvas is
    function Get_Vadj
      (Canvas : access Interactive_Canvas_Record'Class) return Gtk_Adjustment is
    begin
-      return Canvas.Vadj;
+      return Canvas.Get_Vadjustment;
    end Get_Vadj;
 
    --------------
@@ -571,14 +619,16 @@ package body Gtkada.Canvas is
    function Get_Hadj
      (Canvas : access Interactive_Canvas_Record'Class) return Gtk_Adjustment is
    begin
-      return Canvas.Hadj;
+      return Canvas.Get_Hadjustment;
    end Get_Hadj;
 
    ----------------------
    -- Canvas_Destroyed --
    ----------------------
 
-   procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class) is
+   procedure Canvas_Destroyed
+      (Canvas : access Gtk_Widget_Record'Class)
+   is
       C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
       if C.Scrolling_Timeout_Id /= 0 then
@@ -588,9 +638,6 @@ package body Gtkada.Canvas is
       Clear (C);
 
       Unref (C.Annotation_Layout);
-
-      Unref (C.Hadj);
-      Unref (C.Vadj);
    end Canvas_Destroyed;
 
    ----------------------------
@@ -598,46 +645,18 @@ package body Gtkada.Canvas is
    ----------------------------
 
    procedure Set_Scroll_Adjustments
-     (Canvas : access Gtk_Widget_Record'Class;
-      Args   : GValues)
+     (Canvas : access Gtk_Widget_Record'Class)
    is
-      Hadj : constant System.Address := Get_Address (Nth (Args, 1));
-      Vadj : constant System.Address := Get_Address (Nth (Args, 2));
       Canv : constant Interactive_Canvas := Interactive_Canvas (Canvas);
-      Stub : Gtk_Adjustment_Record;
 
    begin
-      if Canv.Hadj /= null then
-         Unref (Canv.Hadj);
-      end if;
-
-      if Hadj /= System.Null_Address then
-         Canv.Hadj := Gtk_Adjustment (Get_User_Data (Hadj, Stub));
-      else
-         Gtk_New (Canv.Hadj, 0.0, 0.0, 0.0, 1.0, 1.0);
-      end if;
-      Ref (Canv.Hadj);
-      Ref_Sink (Canv.Hadj);
-
-      if Canv.Vadj /= null then
-         Unref (Canv.Vadj);
-      end if;
-
-      if Vadj /= System.Null_Address then
-         Canv.Vadj := Gtk_Adjustment (Get_User_Data (Vadj, Stub));
-      else
-         Gtk_New (Canv.Vadj, 0.0, 0.0, 0.0, 1.0, 1.0);
-      end if;
-      Ref (Canv.Vadj);
-      Ref_Sink (Canv.Vadj);
-
       Scrolled (Canvas);
 
       Widget_Callback.Object_Connect
-        (Canv.Hadj, "value_changed",
+        (Canv.Get_Hadjustment, "value_changed",
          Widget_Callback.To_Marshaller (Scrolled'Access), Canv);
       Widget_Callback.Object_Connect
-        (Canv.Vadj, "value_changed",
+        (Canv.Get_Vadjustment, "value_changed",
          Widget_Callback.To_Marshaller (Scrolled'Access), Canv);
 
       Update_Adjustments (Canv);
@@ -746,20 +765,32 @@ package body Gtkada.Canvas is
                  and then Item.Selected
                then
                   X_Min := Gdouble'Min
-                    (X_Min, Gdouble (Item.Coord.X + Canvas.Offset_X_World));
+                    (X_Min, Gdouble
+                       (Item.Coord.X + Item.Coord.Width +
+                          Canvas.Offset_X_World));
                   X_Max := Gdouble'Max
-                    (X_Max, Gdouble (Item.Coord.X + Item.Coord.Width +
-                                       Canvas.Offset_X_World));
+                    (X_Max, Gdouble (Item.Coord.X + Canvas.Offset_X_World));
                   Y_Min := Gdouble'Min
-                    (Y_Min, Gdouble (Item.Coord.Y + Canvas.Offset_Y_World));
+                    (Y_Min, Gdouble
+                       (Item.Coord.Y + Item.Coord.Height +
+                          Canvas.Offset_Y_World));
                   Y_Max := Gdouble'Max
-                    (Y_Max, Gdouble (Item.Coord.Y + Item.Coord.Height +
-                                       Canvas.Offset_Y_World));
+                    (Y_Max, Gdouble (Item.Coord.Y + Canvas.Offset_Y_World));
                end if;
             end if;
 
             Next (Current);
          end loop;
+
+         if X_Min = Gdouble'Last then
+            --  This can happen if there is no visible item:
+            --  in this case, return a box of size 0.
+            X_Min := 0.0;
+            X_Max := 0.0;
+            Y_Min := 0.0;
+            Y_Max := 0.0;
+         end if;
+
       end if;
    end Get_Bounding_Box;
 
@@ -768,88 +799,18 @@ package body Gtkada.Canvas is
    ------------------------
 
    procedure Update_Adjustments
-     (Canvas       : access Interactive_Canvas_Record'Class;
-      Min_Max      : Boolean := True;
-      Page_Size    : Boolean := True;
-      Clip_Value   : Boolean := True;
-      Send_Changed : Boolean := True)
+     (Canvas   : access Interactive_Canvas_Record'Class;
+      Behavior : Bounds_Modification_Mode := Clamp)
    is
-      procedure Update_Axis
-        (Adj      : access Gtk_Adjustment_Record'Class;
-         Min, Max : Gdouble;
-         Size     : Gdouble);
-      --  Takes care of one of the axis
-
-      -----------------
-      -- Update_Axis --
-      -----------------
-
-      procedure Update_Axis
-        (Adj      : access Gtk_Adjustment_Record'Class;
-         Min, Max : Gdouble;
-         Size     : Gdouble)
-      is
-         Changed_Sent : Boolean := False;
-         Vals_Changed : Boolean := False;
-         Tmp          : Gdouble;
-
-      begin
-         if Min_Max then
-            Tmp := Min;
-            if Tmp > Get_Value (Adj) then
-               Tmp := Get_Value (Adj);
-            end if;
-            if Get_Lower (Adj) /= Tmp then
-               Set_Lower          (Adj, Tmp);
-               Vals_Changed := True;
-            end if;
-            Tmp := Max;
-            if Tmp < Get_Value (Adj) + Size then
-               Tmp := Get_Value (Adj) + Size - 1.0;
-            end if;
-            if Get_Upper (Adj) /= Tmp then
-               Set_Upper          (Adj, Tmp);
-               Vals_Changed := True;
-            end if;
-         end if;
-
-         if Page_Size then
-            if Get_Page_Size (Adj) /= Size then
-               Set_Page_Size      (Adj, Size);
-               Set_Step_Increment (Adj, Size / 10.0);
-               Set_Page_Increment (Adj, Size / 2.0);
-               Vals_Changed := True;
-            end if;
-         end if;
-
-         if Clip_Value then
-            if Get_Value (Adj) < Min then
-               Set_Value (Adj, Min);
-               --  this call emits the changed signal
-               Changed_Sent := True;
-            end if;
-
-            if Get_Value (Adj) + Size > Max then
-               Set_Value (Adj, Max - Size);
-               --  this call emits the changed signal
-               Changed_Sent := True;
-            end if;
-         end if;
-
-         if Send_Changed and then Vals_Changed and then not Changed_Sent then
-            --  If the changed signal was not sent, then we manually send it
-            Changed (Adj);
-         end if;
-      end Update_Axis;
-
       X_Max, Y_Max, X_Min, Y_Min : Gdouble;
 
    begin
       --  If the canvas was properly initialized
-      if Realized_Is_Set (Canvas)
-        and then Get_Allocation_Width (Canvas) /= 1
+      if Get_Realized (Canvas)
+        and then Get_Allocated_Width (Canvas) /= 1
       then
          Get_Bounding_Box (Canvas, X_Min, X_Max, Y_Min, Y_Max);
+
          --  Add some space around this bounding box
          --  ??? Use a constant
          X_Min := X_Min - 20.0;
@@ -857,12 +818,35 @@ package body Gtkada.Canvas is
          X_Max := X_Max + 20.0;
          Y_Max := Y_Max + 20.0;
 
-         Update_Axis
-           (Canvas.Hadj, X_Min, X_Max,
-            Gdouble (Get_Allocation_Width (Canvas)) / Canvas.Zoom);
-         Update_Axis
-           (Canvas.Vadj, Y_Min, Y_Max,
-            Gdouble (Get_Allocation_Height (Canvas)) / Canvas.Zoom);
+         case Behavior is
+            when Do_Not_Change =>
+               null;
+
+            when Grow_Only =>
+               Canvas.World_X := Gdouble'Min (Canvas.World_X, X_Min);
+               Canvas.World_Y := Gdouble'Min (Canvas.World_Y, Y_Min);
+
+               declare
+                  Width, Height : Guint;
+               begin
+                  Canvas.Get_Size (Width, Height);
+                  Canvas.Set_Size
+                    (Guint'Max
+                       (Guint ((X_Max - X_Min) * Canvas.Zoom),
+                        Width),
+                     Guint'Max
+                       (Guint ((Y_Max - Y_Min) * Canvas.Zoom),
+                        Height));
+               end;
+
+            when Clamp =>
+               Canvas.World_X := X_Min;
+               Canvas.World_Y := Y_Min;
+
+               Canvas.Set_Size
+                 (Guint ((X_Max - X_Min) * Canvas.Zoom),
+                  Guint ((Y_Max - Y_Min) * Canvas.Zoom));
+         end case;
       end if;
    end Update_Adjustments;
 
@@ -1000,8 +984,8 @@ package body Gtkada.Canvas is
             else
                --  Else put the item in the first line, at the first possible
                --  location
-               X1 := Gint (Get_Lower (Canvas.Hadj)) + Step;
-               Y1 := Gint (Get_Lower (Canvas.Vadj)) + Step;
+               X1 := Gint (Get_Lower (Canvas.Get_Hadjustment)) + Step;
+               Y1 := Gint (Get_Lower (Canvas.Get_Vadjustment)) + Step;
 
                loop
                   Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
@@ -1455,8 +1439,7 @@ package body Gtkada.Canvas is
          Get_Pixel_Size (Canvas.Annotation_Layout, W, H);
 
          Cairo.Save (Cr);
-         Gdk.Cairo.Set_Source_Color
-           (Cr, Get_Bg (Get_Style (Canvas), State_Normal));
+         Gdk.Cairo.Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.0));
          Cairo.Set_Line_Width (Cr, 1.0);
          Cairo.Rectangle
            (Cr,
@@ -1564,16 +1547,15 @@ package body Gtkada.Canvas is
    procedure Scroll_Canvas_To_Item
      (Canvas             : access Interactive_Canvas_Record'Class;
       Item               : access Canvas_Item_Record'Class;
-      Canvas_X, Canvas_Y : Gdouble := 0.5;
-      Report_Adj_Changed : Boolean := True)
+      Canvas_X, Canvas_Y : Gdouble := 0.5)
    is
       X1, Y1 : Gint;
    begin
       --  If no size was allocated yet, memorize the item for later (see
       --  the callback for size_allocate)
 
-      if Get_Allocation_Width (Canvas) = 1
-        or else Get_Allocation_Height (Canvas) = 1
+      if Get_Allocated_Width (Canvas) = 1
+        or else Get_Allocated_Height (Canvas) = 1
       then
          Canvas.Show_Item     := Canvas_Item (Item);
          Canvas.Show_Canvas_X := Canvas_X;
@@ -1586,8 +1568,7 @@ package body Gtkada.Canvas is
             Gdouble (X1),
             Gdouble (Y1),
             Gdouble (X1 + Item.Coord.Width),
-            Gdouble (Y1 + Item.Coord.Height),
-            Canvas_X, Canvas_Y, Report_Adj_Changed);
+            Gdouble (Y1 + Item.Coord.Height));
       end if;
    end Scroll_Canvas_To_Item;
 
@@ -1598,85 +1579,67 @@ package body Gtkada.Canvas is
    procedure Scroll_Canvas_To_Area
      (Canvas             : access Interactive_Canvas_Record'Class;
       X1, Y1, X2, Y2     : Gdouble;
-      Canvas_X, Canvas_Y : Gdouble := 0.5;
-      Ignore_If_Visible  : Boolean := True;
-      Report_Adj_Changed : Boolean := True)
+      Canvas_X, Canvas_Y : Gdouble := 0.5)
    is
-      procedure Center_On_Coordinate
-        (Adj        : access Gtk_Adjustment_Record'Class;
-         Min, Max   : Gdouble;
-         Canvas_Pos : Gdouble);
-      --  Takes care of one of the axis
+      pragma Unreferenced (Canvas_Y, Canvas_X);
+      X_Ignored, Y_Ignored : Gint;
+      Window_Width, Window_Height : Gint;
 
-      --------------------------
-      -- Center_On_Coordinate --
-      --------------------------
+      Canvas_Width, Canvas_Height : Guint;
+      Percent_X, Percent_Y        : Gdouble;
 
-      procedure Center_On_Coordinate
-        (Adj        : access Gtk_Adjustment_Record'Class;
-         Min, Max   : Gdouble;
-         Canvas_Pos : Gdouble)
-      is
-         Adj_Changed : Boolean := False;
-         Val         : constant Gdouble := Get_Value (Adj);
-         Size        : constant Gdouble := Get_Page_Size (Adj);
-         N_Val       : Gdouble;
+      Hadj : constant Gtk_Adjustment := Canvas.Get_Hadjustment;
+      Vadj : constant Gtk_Adjustment := Canvas.Get_Vadjustment;
 
-      begin
-         if Ignore_If_Visible
-           and then Min >= Val and then Max <= Val + Size
-         then
-            return;
-         end if;
+      X1_Visible, Y1_Visible, X2_Visible, Y2_Visible : Gdouble;
 
-         --  Calculate the new scroll value
-
-         if Canvas_Pos > 1.0 then
-            --  Minimal scrolling is needed
-            if Min < Val then
-               N_Val := Min;
-            elsif Max > Val + Size then
-               N_Val := Max - Size;
-            end if;
-
-         else
-            --  Align the center of the region with the given canvas location
-            N_Val := (Min + Max) / 2.0 - Size * Canvas_Pos;
-         end if;
-
-         --  Do we need to extend the canvas to show the region ?
-
-         if Max > Get_Upper (Adj) then
-            Set_Upper (Adj, Max);
-            Adj_Changed := True;
-         end if;
-
-         if N_Val + Size > Get_Upper (Adj) then
-            Set_Upper (Adj, N_Val + Size - 1.0);
-            Adj_Changed := True;
-         end if;
-
-         if Min < Get_Lower (Adj) then
-            Set_Lower (Adj, Min);
-            Adj_Changed := True;
-         end if;
-
-         if N_Val < Get_Lower (Adj) then
-            Set_Lower (Adj, N_Val);
-            Adj_Changed := True;
-         end if;
-
-         if Report_Adj_Changed and then Adj_Changed then
-            Changed (Adj);
-         end if;
-
-         --  Now scroll appropriately
-         Set_Value (Adj, N_Val);
-      end Center_On_Coordinate;
-
+      Target_X, Target_Y : Gdouble;
    begin
-      Center_On_Coordinate (Canvas.Hadj, X1, X2, Canvas_X);
-      Center_On_Coordinate (Canvas.Vadj, Y1, Y2, Canvas_Y);
+      Canvas.Get_Visible_World
+        (X1_Visible, Y1_Visible, X2_Visible, Y2_Visible);
+
+      Get_Geometry
+        (Canvas.Get_Window,
+         X_Ignored, Y_Ignored,
+         Window_Width, Window_Height);
+
+      Canvas.Get_Size (Canvas_Width, Canvas_Height);
+
+      if X1 < X1_Visible
+        or else X2 > X2_Visible
+      then
+         if X1 < X1_Visible then
+            Target_X := X1;
+         else
+            Target_X := X1_Visible + X2 - X2_Visible;
+         end if;
+
+         Percent_X := (Target_X - Canvas.World_X) /
+           (Gdouble (Gint (Canvas_Width)) - Gdouble (Window_Width));
+
+         Set_Value
+           (Hadj,
+            ((Hadj.Get_Upper - Hadj.Get_Page_Size) - Hadj.Get_Lower)
+            * Percent_X * Canvas.Zoom);
+      end if;
+
+      if Y1 < Y1_Visible
+        or else Y2 > Y2_Visible
+      then
+         if Y1 < Y1_Visible then
+            Target_Y := Y1;
+         else
+            Target_Y := Y1_Visible + Y2 - Y2_Visible;
+         end if;
+
+         Percent_Y := (Target_Y - Canvas.World_Y) /
+           (Gdouble (Gint (Canvas_Height)) - Gdouble (Window_Height));
+
+         Set_Value
+           (Vadj,
+            ((Vadj.Get_Upper - Vadj.Get_Page_Size) - Vadj.Get_Lower)
+            * Percent_Y * Canvas.Zoom);
+      end if;
    end Scroll_Canvas_To_Area;
 
    --------------------------
@@ -2322,9 +2285,10 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Cr     : Cairo_Context)
    is
+      pragma Unreferenced (Canvas);
    begin
       Cairo.Save (Cr);
-      Set_Source_Color (Cr, Get_Bg (Get_Style (Canvas), State_Normal));
+      Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.0));
       Paint (Cr);
       Cairo.Restore (Cr);
    end Draw_Background;
@@ -2362,8 +2326,6 @@ package body Gtkada.Canvas is
          Y      => Gint (Y_Min - 20.0),
          Width  => Gint (X_Max - X_Min + 40.0),
          Height => Gint (Y_Max - Y_Min + 40.0));
-      Cairo.Translate (Cr, -X_Min + 20.0, -Y_Min + 20.0);
-
       Draw_Area (Canvas, Area, Cr);
    end Draw_All;
 
@@ -2377,7 +2339,7 @@ package body Gtkada.Canvas is
    is
       Cr     : Cairo_Context;
    begin
-      if not Realized_Is_Set (Canvas) then
+      if not Get_Realized (Canvas) then
          return;
       end if;
 
@@ -2403,7 +2365,7 @@ package body Gtkada.Canvas is
    begin
       --  If the GC was not created, do not do anything
 
-      if not Realized_Is_Set (Canvas) then
+      if not Get_Realized (Canvas) then
          return;
       end if;
 
@@ -2480,36 +2442,35 @@ package body Gtkada.Canvas is
       end if;
    end Draw_Area;
 
-   ------------
-   -- Expose --
-   ------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose
+   function On_Draw
      (Canv  : access Gtk_Widget_Record'Class;
-      Event : Gdk.Event.Gdk_Event) return Boolean
+      Cr    : Cairo_Context) return Boolean
    is
+      pragma Unreferenced (Cr);
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
-      Rect   : Cairo_Rectangle_Int renames Get_Area (Event);
-      X_W, Y_W : Gdouble;
+      X1, X2, Y1, Y2 : Gdouble;
    begin
-      To_World_Coordinates
-        (Canvas, Rect.X, Rect.Y, X_W, Y_W);
+      Get_Visible_World (Canvas, X1, Y1, X2, Y2);
 
-      if X_W >= Gdouble (Gint'First)
-        and then X_W <= Gdouble (Gint'Last)
-        and then Y_W >= Gdouble (Gint'First)
-        and then Y_W <= Gdouble (Gint'Last)
+      if X1 >= Gdouble (Gint'First)
+        and then X1 <= Gdouble (Gint'Last)
+        and then Y1 >= Gdouble (Gint'First)
+        and then Y1 <= Gdouble (Gint'Last)
       then
          Draw_Area
            (Canvas,
-            (X      => Gint (X_W),
-             Y      => Gint (Y_W),
-             Width  => Gint (Gdouble (Rect.Width) / Canvas.Zoom),
-             Height => Gint (Gdouble (Rect.Height) / Canvas.Zoom)));
+            (X      => Gint (X1),
+             Y      => Gint (Y1),
+             Width  => Gint (X2 - X1),
+             Height => Gint (Y2 - Y1)));
       end if;
 
       return False;
-   end Expose;
+   end On_Draw;
 
    ---------------------
    -- Set_Screen_Size --
@@ -2542,8 +2503,7 @@ package body Gtkada.Canvas is
      (Item : access Canvas_Item_Record;
       Cr   : Cairo.Cairo_Context)
    is
-      Sel : constant Gdk_Color :=
-              Get_Bg (Get_Style (Item.Canvas), State_Selected);
+      Sel : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
       P   : Cairo_Pattern;
 
    begin
@@ -2561,12 +2521,7 @@ package body Gtkada.Canvas is
          Gdouble (Item.Coord.Width),
          Gdouble (Item.Coord.Height));
 
-      Cairo.Set_Source_Rgba
-        (Cr,
-         Gdouble (Red (Sel)) / 65535.0,
-         Gdouble (Green (Sel)) / 65535.0,
-         Gdouble (Blue (Sel)) / 65535.0,
-         0.5);
+      Set_Source_RGBA (Cr, Sel);
 
       Cairo.Fill (Cr);
 
@@ -2585,10 +2540,10 @@ package body Gtkada.Canvas is
    is
       Canvas    : constant Interactive_Canvas := Interactive_Canvas (Canv);
       Value     : constant Gdouble := Canvas.World_Y;
-      Upper     : constant Gdouble := Get_Upper (Canvas.Vadj);
-      Lower     : constant Gdouble := Get_Lower (Canvas.Vadj);
+      Upper     : constant Gdouble := Get_Upper (Canvas.Get_Vadjustment);
+      Lower     : constant Gdouble := Get_Lower (Canvas.Get_Vadjustment);
       Page_Incr : constant Gdouble := Scrolling_Amount_Max;
-      Page_Size : constant Gdouble := Get_Page_Size (Canvas.Vadj);
+      Page_Size : constant Gdouble := Get_Page_Size (Canvas.Get_Vadjustment);
       Step_Incr : constant Gdouble := Scrolling_Amount_Min;
 
    begin
@@ -2597,75 +2552,75 @@ package body Gtkada.Canvas is
 
       case Get_Key_Val (Event) is
          when GDK_Home =>
-            Set_Value (Canvas.Vadj, Lower);
+            Set_Value (Canvas.Get_Vadjustment, Lower);
             return True;
 
          when GDK_End =>
-            Set_Value (Canvas.Vadj, Upper - Page_Size);
+            Set_Value (Canvas.Get_Vadjustment, Upper - Page_Size);
             return True;
 
          when GDK_Page_Up =>
             if Value >= Lower + Page_Incr then
-               Set_Value (Canvas.Vadj, Value - Page_Incr);
+               Set_Value (Canvas.Get_Vadjustment, Value - Page_Incr);
             else
-               Set_Value (Canvas.Vadj, Lower);
+               Set_Value (Canvas.Get_Vadjustment, Lower);
             end if;
             return True;
 
          when GDK_Page_Down =>
             if Value + Page_Incr + Page_Size <= Upper then
-               Set_Value (Canvas.Vadj, Value + Page_Incr);
+               Set_Value (Canvas.Get_Vadjustment, Value + Page_Incr);
             else
-               Set_Value (Canvas.Vadj, Upper - Page_Size);
+               Set_Value (Canvas.Get_Vadjustment, Upper - Page_Size);
             end if;
             return True;
 
          when GDK_Up | GDK_KP_Up =>
             if Value - Step_Incr >= Lower then
-               Set_Value (Canvas.Vadj, Value - Step_Incr);
+               Set_Value (Canvas.Get_Vadjustment, Value - Step_Incr);
             else
-               Set_Value (Canvas.Vadj, Lower);
+               Set_Value (Canvas.Get_Vadjustment, Lower);
             end if;
             Gtk.Handlers.Emit_Stop_By_Name (Canvas, "key_press_event");
             return True;
 
          when GDK_Down | GDK_KP_Down =>
             if Value + Step_Incr + Page_Size <= Upper then
-               Set_Value (Canvas.Vadj, Value + Step_Incr);
+               Set_Value (Canvas.Get_Vadjustment, Value + Step_Incr);
             else
-               Set_Value (Canvas.Vadj, Upper - Page_Size);
+               Set_Value (Canvas.Get_Vadjustment, Upper - Page_Size);
             end if;
             Gtk.Handlers.Emit_Stop_By_Name (Canvas, "key_press_event");
             return True;
 
          when GDK_Left | GDK_KP_Left =>
             if Canvas.World_X -
-              Get_Step_Increment (Canvas.Hadj) >=
-                Get_Lower (Canvas.Hadj)
+              Get_Step_Increment (Canvas.Get_Hadjustment) >=
+                Get_Lower (Canvas.Get_Hadjustment)
             then
-               Set_Value (Canvas.Hadj,
+               Set_Value (Canvas.Get_Hadjustment,
                           Canvas.World_X
-                          - Get_Step_Increment (Canvas.Hadj));
+                          - Get_Step_Increment (Canvas.Get_Hadjustment));
             else
-               Set_Value (Canvas.Hadj,
-                          Get_Lower (Canvas.Hadj));
+               Set_Value (Canvas.Get_Hadjustment,
+                          Get_Lower (Canvas.Get_Hadjustment));
             end if;
             Gtk.Handlers.Emit_Stop_By_Name (Canvas, "key_press_event");
             return True;
 
          when GDK_Right | GDK_KP_Right =>
             if Canvas.World_X +
-              Get_Step_Increment (Canvas.Hadj) +
-              Get_Page_Size (Canvas.Hadj) <=
-                Get_Upper (Canvas.Hadj)
+              Get_Step_Increment (Canvas.Get_Hadjustment) +
+              Get_Page_Size (Canvas.Get_Hadjustment) <=
+                Get_Upper (Canvas.Get_Hadjustment)
             then
-               Set_Value (Canvas.Hadj,
+               Set_Value (Canvas.Get_Hadjustment,
                           Canvas.World_X +
-                            Get_Step_Increment (Canvas.Hadj));
+                            Get_Step_Increment (Canvas.Get_Hadjustment));
             else
-               Set_Value (Canvas.Hadj,
-                          Get_Upper (Canvas.Hadj) -
-                            Get_Page_Size (Canvas.Hadj));
+               Set_Value (Canvas.Get_Hadjustment,
+                          Get_Upper (Canvas.Get_Hadjustment) -
+                            Get_Page_Size (Canvas.Get_Hadjustment));
             end if;
             Gtk.Handlers.Emit_Stop_By_Name (Canvas, "key_press_event");
             return True;
@@ -2771,16 +2726,16 @@ package body Gtkada.Canvas is
       Event : Gdk_Event) return Boolean
    is
       Canvas  : constant Interactive_Canvas := Interactive_Canvas (Canv);
-      Cursor  : Gdk.Cursor.Gdk_Cursor;
+      Cursor  : Gdk.Gdk_Cursor;
       Handled : Boolean;
+      X, Y    : Gdouble;
 
    begin
-      if Get_Window (Event) /= Get_Window (Canvas) then
+      if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
       end if;
 
       Grab_Focus (Canvas);
-      Set_Flags (Canvas, Has_Focus);
 
       To_World_Coordinates
         (Canvas, Event, Canvas.World_X_At_Click, Canvas.World_Y_At_Click);
@@ -2791,6 +2746,7 @@ package body Gtkada.Canvas is
 
       if Traces then
          if Canvas.Item_Press /= null then
+            Get_Coords (Event, X, Y);
             Put_Line ("Clicked on Item at world coordinates ("
                       & Gdouble'Image (Canvas.World_X_At_Click)
                       & Gdouble'Image (Canvas.World_Y_At_Click)
@@ -2799,8 +2755,8 @@ package body Gtkada.Canvas is
                       & Gint'Image (Canvas.Item_Press.Coord.Y)
                       & Gint'Image (Canvas.Item_Press.Coord.Width)
                       & Gint'Image (Canvas.Item_Press.Coord.Height)
-                      & ") mouse=" & Gint'Image (Gint (Get_X (Event)))
-                      & Gint'Image (Gint (Get_Y (Event))));
+                      & ") mouse=" & Gint'Image (Gint (X))
+                      & Gint'Image (Gint (Y)));
          else
             Put_Line ("Clicked outside of item at world coordinates "
                       & Gdouble'Image (Canvas.World_X_At_Click)
@@ -2827,13 +2783,11 @@ package body Gtkada.Canvas is
                Add_To_Selection (Canvas, Canvas.Item_Press);
             end if;
          else
-            Set_X
-              (Event,
-               Canvas.World_X_At_Click - Gdouble (Canvas.Item_Press.Coord.X));
-            Set_Y
-              (Event,
-               Canvas.World_Y_At_Click - Gdouble (Canvas.Item_Press.Coord.Y));
-            Handled := On_Button_Click (Canvas.Item_Press, Event);
+            Event.Button.X :=
+              Canvas.World_X_At_Click - Gdouble (Canvas.Item_Press.Coord.X);
+            Event.Button.Y :=
+               Canvas.World_Y_At_Click - Gdouble (Canvas.Item_Press.Coord.Y);
+            Handled := On_Button_Click (Canvas.Item_Press, Event.Button);
 
             if not Handled then
                --  If not handled, then:
@@ -2854,16 +2808,10 @@ package body Gtkada.Canvas is
          end if;
       end if;
 
-      --  Clicks other than left mouse button are transmitted directly
-
-      if Get_Button (Event) /= 1 then
-         return False;
-      end if;
-
       --  Change the cursor to give visual feedback
 
       Gdk_New (Cursor, Fleur);
-      Set_Cursor (Get_Window (Canvas), Cursor);
+      Set_Cursor (Get_Bin_Window (Canvas), Cursor);
       Unref (Cursor);
 
       --  Initialize the move
@@ -2876,7 +2824,7 @@ package body Gtkada.Canvas is
       --  Make sure that no other widget steals the events while we are
       --  moving an item.
 
-      Grab_Add (Canvas);
+      Canvas.Grab_Add;
 
       return False;
 
@@ -2896,11 +2844,13 @@ package body Gtkada.Canvas is
       Canvas             : constant Interactive_Canvas :=
                              Interactive_Canvas (Canv);
       X_Scroll, Y_Scroll : Gdouble;
+      X, Y               : Gdouble;
       Dead               : Boolean;
       pragma Unreferenced (Dead);
 
+      Mouse_X_Canvas, Mouse_Y_Canvas : Gint;
    begin
-      if Get_Window (Event) /= Get_Window (Canvas) then
+      if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
       end if;
 
@@ -2909,21 +2859,25 @@ package body Gtkada.Canvas is
             New_X, New_Y : Gdouble;
          begin
             To_World_Coordinates (Canvas, Event, New_X, New_Y);
-            Set_X (Event, New_X - Gdouble (Canvas.Item_Press.Coord.X));
-            Set_Y (Event, New_Y - Gdouble (Canvas.Item_Press.Coord.Y));
+            Event.Button.X := New_X - Gdouble (Canvas.Item_Press.Coord.X);
+            Event.Button.Y := New_Y - Gdouble (Canvas.Item_Press.Coord.Y);
          end;
 
-         return On_Button_Click (Canvas.Item_Press, Event);
+         return On_Button_Click (Canvas.Item_Press, Event.Button);
       end if;
 
       --  Are we in the scrolling box ? If yes, do not move the item
       --  directly, but establish the timeout callbacks that will take care
       --  of the scrolling
 
+      Get_Coords (Event, X, Y);
+      Mouse_X_Canvas := Gint (X);
+      Mouse_Y_Canvas := Gint (Y);
+
       Test_Scrolling_Box
         (Canvas            => Canvas,
-         Mouse_X_In_Canvas => Gint (Get_X (Event)),
-         Mouse_Y_In_Canvas => Gint (Get_Y (Event)),
+         Mouse_X_In_Canvas => Mouse_X_Canvas,
+         Mouse_Y_In_Canvas => Mouse_Y_Canvas,
          X_Scroll          => X_Scroll,
          Y_Scroll          => Y_Scroll);
 
@@ -2933,6 +2887,7 @@ package body Gtkada.Canvas is
                Put_Line ("Button_Motion, within the scrolling box,"
                          & " starting timeout");
             end if;
+            Canvas.Scrolling_Device := Gtk.Main.Get_Current_Event_Device;
             Canvas.Scrolling_Timeout_Id := Canvas_Timeout.Timeout_Add
               (Timeout_Between_Scrolls, Scrolling_Timeout'Access, Canvas);
          end if;
@@ -2957,7 +2912,8 @@ package body Gtkada.Canvas is
       Dead := Move_Selection
         (Canvas,
          New_Offset_X_World => X_Scroll - Canvas.World_X_At_Click,
-         New_Offset_Y_World => Y_Scroll - Canvas.World_Y_At_Click);
+         New_Offset_Y_World => Y_Scroll - Canvas.World_Y_At_Click,
+         Behavior => Do_Not_Change);
 
       return False;
    end Button_Motion;
@@ -2977,12 +2933,12 @@ package body Gtkada.Canvas is
       Handled      : Boolean;
 
    begin
-      Grab_Remove (Canvas);
+      Canvas.Grab_Remove;
 
       --  Restore the standard cursor
-      Set_Cursor (Get_Window (Canvas), null);
+      Set_Cursor (Get_Bin_Window (Canvas), null);
 
-      if Get_Window (Event) /= Get_Window (Canvas) then
+      if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
       end if;
 
@@ -2999,11 +2955,11 @@ package body Gtkada.Canvas is
             New_X, New_Y : Gdouble;
          begin
             To_World_Coordinates (Canvas, Event, New_X, New_Y);
-            Set_X (Event, New_X - Gdouble (Canvas.Item_Press.Coord.X));
-            Set_Y (Event, New_Y - Gdouble (Canvas.Item_Press.Coord.Y));
+            Event.Button.X := New_X - Gdouble (Canvas.Item_Press.Coord.X);
+            Event.Button.Y := New_Y - Gdouble (Canvas.Item_Press.Coord.Y);
          end;
 
-         Handled := On_Button_Click (Canvas.Item_Press, Event);
+         Handled := On_Button_Click (Canvas.Item_Press, Event.Button);
          Canvas.Item_Press := null;
 
          return Handled;
@@ -3125,12 +3081,17 @@ package body Gtkada.Canvas is
       X_Scroll : out Gdouble;
       Y_Scroll : out Gdouble)
    is
+      X_Ignored, Y_Ignored : Gint;
+      Width, Height : Gint;
    begin
+      Get_Geometry
+        (Canvas.Get_Window,
+         X_Ignored, Y_Ignored,
+         Width, Height);
+
       if Mouse_X_In_Canvas < Scrolling_Margin then
          X_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
-      elsif Mouse_X_In_Canvas >
-        Gint (Get_Allocation_Width (Canvas)) - Scrolling_Margin
-      then
+      elsif Mouse_X_In_Canvas > Width - Scrolling_Margin then
          X_Scroll := Canvas.Surround_Box_Scroll / Canvas.Zoom;
       else
          X_Scroll := 0.0;
@@ -3138,9 +3099,7 @@ package body Gtkada.Canvas is
 
       if Mouse_Y_In_Canvas < Scrolling_Margin then
          Y_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
-      elsif Mouse_Y_In_Canvas >
-        Gint (Get_Allocation_Height (Canvas)) - Scrolling_Margin
-      then
+      elsif Mouse_Y_In_Canvas > Height - Scrolling_Margin then
          Y_Scroll := Canvas.Surround_Box_Scroll / Canvas.Zoom;
       else
          Y_Scroll := 0.0;
@@ -3165,21 +3124,34 @@ package body Gtkada.Canvas is
       Mask                           : Gdk_Modifier_Type;
       W                              : Gdk_Window;
       X_Scroll, Y_Scroll             : Gdouble;
+      Cr                             : Cairo_Context;
+
+      Pointer_World_X, Pointer_World_Y : Gdouble;
+
    begin
       if Traces then
          Put_Line ("Scrolling timeout");
       end if;
 
-      Get_Pointer
-        (Get_Window (Canvas), Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
+      W := Get_Window (Canvas);
+
+      Get_Device_Position
+        (Get_Window (Canvas), Canvas.Scrolling_Device,
+         Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
+
       Test_Scrolling_Box
         (Canvas, Mouse_X_Canvas, Mouse_Y_Canvas, X_Scroll, Y_Scroll);
+
+      To_World_Coordinates
+        (Canvas, Mouse_X_Canvas, Mouse_Y_Canvas,
+         Pointer_World_X, Pointer_World_Y);
 
       if (X_Scroll /= 0.0 or else Y_Scroll /= 0.0)
         and then Move_Selection
           (Canvas,
            New_Offset_X_World => X_Scroll + Gdouble (Canvas.Offset_X_World),
-           New_Offset_Y_World => Y_Scroll + Gdouble (Canvas.Offset_Y_World))
+           New_Offset_Y_World => Y_Scroll + Gdouble (Canvas.Offset_Y_World),
+          Behavior => Clamp)
       then
          --  Keep increasing the speed
          if Canvas.Surround_Box_Scroll < Scrolling_Amount_Max then
@@ -3190,7 +3162,10 @@ package body Gtkada.Canvas is
          --  Force an immediate draw, since Queue_Draw would only redraw in
          --  an idle event, and thus might not happen before the next timeout.
          --  With lots of items, this would break the scrolling.
-         Draw (Canvas);
+
+         Cr := Create (Canvas);
+         Draw_All (Canvas, Cr);
+         Destroy (Cr);
          return True;
       else
          Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
@@ -3211,38 +3186,38 @@ package body Gtkada.Canvas is
       Item  : Canvas_Item;
       X, Y  : Gint;
       Rect  : Gdk_Rectangle;
-      Sel   : constant Gdk_Color :=
-                Get_Bg (Get_Style (Canvas), State_Selected);
+      Sel   : Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
 
    begin
       if Canvas.Selected_Count = 0 then
          Rect := Get_Background_Selection_Rectangle (Canvas);
-         Rectangle
+
+         Cairo.Save (Cr);
+
+         Cairo.Translate
+           (Cr, Gdouble (Rect.X), Gdouble (Rect.Y));
+
+         Cairo.Rectangle
            (Cr,
-            Gdouble (Rect.X) + 0.5,
-            Gdouble (Rect.Y) + 0.5,
+            0.5,
+            0.5,
             Gdouble (Rect.Width) - 1.0,
             Gdouble (Rect.Height) - 1.0);
 
-         Cairo.Set_Source_Rgba
-           (Cr,
-            Gdouble (Red (Sel)) / 65535.0,
-            Gdouble (Green (Sel)) / 65535.0,
-            Gdouble (Blue (Sel)) / 65535.0,
-            0.3);
+         Sel.Alpha := 0.3;
+         Set_Source_RGBA (Cr, Sel);
          Fill_Preserve (Cr);
-         Set_Source_Color (Cr, Sel);
+
+         Sel.Alpha := 1.0;
+         Set_Source_RGBA (Cr, Sel);
          Stroke (Cr);
+
+         Cairo.Restore (Cr);
 
       else
          Iter := Start (Canvas, Selected_Only => True);
          Cairo.Set_Operator (Cr, Cairo_Operator_Xor);
-         Set_Source_Rgba
-           (Cr,
-            Gdouble (Red (Sel)) / 65535.0,
-            Gdouble (Green (Sel)) / 65535.0,
-            Gdouble (Blue (Sel)) / 65535.0,
-            0.5);
+         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 0.5));
 
          loop
             Item := Get (Iter);
@@ -3257,7 +3232,7 @@ package body Gtkada.Canvas is
                   Y := Y - Y mod Gint (Canvas.Grid_Size);
                end if;
 
-               Rectangle
+               Cairo.Rectangle
                  (Cr,
                   Gdouble (X) + 0.5,
                   Gdouble (Y) + 0.5,
@@ -3279,7 +3254,8 @@ package body Gtkada.Canvas is
 
    function Move_Selection
      (Canvas : access Interactive_Canvas_Record'Class;
-      New_Offset_X_World, New_Offset_Y_World : Gdouble) return Boolean
+      New_Offset_X_World, New_Offset_Y_World : Gdouble;
+      Behavior : Bounds_Modification_Mode) return Boolean
    is
       Z : Gdouble renames Canvas.Zoom;
    begin
@@ -3304,7 +3280,7 @@ package body Gtkada.Canvas is
       Canvas.Offset_X_World := Gint (New_Offset_X_World);
       Canvas.Offset_Y_World := Gint (New_Offset_Y_World);
 
-      Update_Adjustments (Canvas, Clip_Value => False);
+      Update_Adjustments (Canvas, Behavior);
 
       Scroll_Canvas_To_Area
         (Canvas,
@@ -3315,11 +3291,7 @@ package body Gtkada.Canvas is
          Canvas.World_X_At_Click +
            Gdouble (Canvas.Offset_X_World + Scrolling_Margin),
          Canvas.World_Y_At_Click +
-           Gdouble (Canvas.Offset_Y_World + Scrolling_Margin),
-         Canvas_X => 2.0,
-         Canvas_Y => 2.0,
-         Ignore_If_Visible => True,
-         Report_Adj_Changed => True);
+           Gdouble (Canvas.Offset_Y_World + Scrolling_Margin));
 
       Queue_Draw (Canvas);
 
@@ -3495,12 +3467,11 @@ package body Gtkada.Canvas is
    procedure Show_Item
      (Canvas             : access Interactive_Canvas_Record'Class;
       Item               : access Canvas_Item_Record'Class;
-      Canvas_X, Canvas_Y : Gdouble;
-      Report_Adj_Changed : Boolean := True)
+      Canvas_X, Canvas_Y : Gdouble)
    is
    begin
       Scroll_Canvas_To_Item
-        (Canvas, Item, Canvas_X, Canvas_Y, Report_Adj_Changed);
+        (Canvas, Item, Canvas_X, Canvas_Y);
    end Show_Item;
 
    ----------------
@@ -3610,7 +3581,7 @@ package body Gtkada.Canvas is
       if Item.Selected then
          Canvas.Selected_Count := Canvas.Selected_Count - 1;
          Item.Selected := False;
-         if not In_Destruction_Is_Set (Canvas) then
+         if not Canvas.In_Destruction then
             Selected (Item, Canvas, Is_Selected => False);
          end if;
 
@@ -3790,12 +3761,7 @@ package body Gtkada.Canvas is
       Canvas.Freeze := True;
       --  Only update the page size, other values will be updated when
       --  centering the zoom area
-      Update_Adjustments
-        (Canvas,
-         Min_Max      => False,
-         Page_Size    => True,
-         Clip_Value   => False,
-         Send_Changed => False);
+      Update_Adjustments (Canvas);
 
       --  Display the proper area in the canvas
       --  When zooming out, we want to keep the old area centered into the
@@ -3805,9 +3771,7 @@ package body Gtkada.Canvas is
       Scroll_Canvas_To_Area
         (Canvas,
          Canvas.Zoom_X, Canvas.Zoom_Y, Canvas.Zoom_X, Canvas.Zoom_Y,
-         Canvas_X => 0.5, Canvas_Y => 0.5,
-         Ignore_If_Visible => False,
-         Report_Adj_Changed => True);
+         Canvas_X => 0.5, Canvas_Y => 0.5);
       Canvas.Freeze := False;
 
       Queue_Draw (Canvas);
@@ -3834,10 +3798,10 @@ package body Gtkada.Canvas is
       Canvas.Initial_Zoom := Canvas.Zoom;
       Canvas.Zoom_X :=
         Canvas.World_X +
-        Gdouble (Get_Allocation_Width (Canvas)) / Canvas.Zoom / 2.0;
+        Gdouble (Get_Allocated_Width (Canvas)) / Canvas.Zoom / 2.0;
       Canvas.Zoom_Y :=
         Canvas.World_Y +
-          Gdouble (Get_Allocation_Height (Canvas)) / Canvas.Zoom / 2.0;
+          Gdouble (Get_Allocated_Height (Canvas)) / Canvas.Zoom / 2.0;
       Canvas.Zoom_Start := Ada.Calendar.Clock;
 
       --  Do we want smooth scrolling ?
@@ -3867,10 +3831,7 @@ package body Gtkada.Canvas is
    --------------
 
    procedure Scrolled (Canvas : access Gtk_Widget_Record'Class) is
-      C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
    begin
-      C.World_X := Get_Value (C.Hadj);
-      C.World_Y := Get_Value (C.Vadj);
       Queue_Draw (Canvas);
    end Scrolled;
 

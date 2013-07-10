@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                 Copyright (C) 2003-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2003-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This widget implements a multi-paned widget, similar to the standard
@@ -34,9 +29,9 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
-with Glib;       use Glib;
-with Gdk.Cursor;
-with Gdk.GC;
+with Cairo;
+with Gdk;
+with Glib;          use Glib;
 with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
@@ -45,11 +40,6 @@ package Gtkada.Multi_Paned is
    type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record
      with private;
    type Gtkada_Multi_Paned is access all Gtkada_Multi_Paned_Record'Class;
-
-   Handle_Width : constant := 6;
-   --  Width, in pixels, of the resizing handles.
-   --  ??? Should be read from theme with
-   --     gtk_widget_style_get (gtk_paned, "handle_size", &handle_size, NULL)
 
    type Pane is private;
    --  An area of the window, which can is splitted either horizontally or
@@ -71,6 +61,13 @@ package Gtkada.Multi_Paned is
    procedure Gtk_New (Win : out Gtkada_Multi_Paned);
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class);
    --  Create a new paned window.
+
+   function Get_Type return Glib.GType;
+   --  Return the internal type
+
+   function Handle_Size
+     (Win : access Gtkada_Multi_Paned_Record'Class) return Gint;
+   --  returns the size of the handle
 
    procedure Set_Opaque_Resizing
      (Win : access Gtkada_Multi_Paned_Record; Opaque : Boolean);
@@ -251,11 +248,21 @@ package Gtkada.Multi_Paned is
    --  panes). The parent size is the total size devoted to its children,
    --  omitting the size occupied by resize handles.
 
+   -----------
+   -- Debug --
+   -----------
+   --  The following subprograms are only intended for debugging purposes.
+
    procedure Dump (Split : access Gtkada_Multi_Paned_Record'Class);
    --  Dump the configuration of Split to stdout. This is only intended for
    --  testing purposes. If you want to save and restore this configuration,
    --  you should look at Gtkada.MDI instead, which contains all the
    --  subprograms needed to handle desktops.
+
+   type Debug_Level_Change is (Debug_Preserve, Debug_Increase, Debug_Decrease);
+   procedure Print_Debug
+     (Msg : String; Mode : Debug_Level_Change := Debug_Preserve);
+   --  Debug support
 
 private
    type Child_Description;
@@ -265,23 +272,32 @@ private
    Root_Pane : constant Pane := null;
 
    type Child_Iterator is record
+      Split   : Gtkada_Multi_Paned;
       Current : Child_Description_Access;
       Depth   : Natural := 0;
    end record;
 
-   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
-      Frozen      : Boolean := False;
-      Children    : Child_Description_Access;
-      GC          : Gdk.GC.Gdk_GC;
+   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with
+      record
+         Frozen      : Boolean := False;
+         Children    : Child_Description_Access;
 
-      Initial_Pos  : Gint;
-      Selected     : Child_Description_Access;
-      Selected_Pos : Gtk.Widget.Gtk_Allocation;
+         Initial_Pos  : Gint;
+         Selected     : Child_Description_Access;
+         Selected_Pos : Gtk.Widget.Gtk_Allocation;
 
-      Cursor_Double_H_Arrow : Gdk.Cursor.Gdk_Cursor;
-      Cursor_Double_V_Arrow : Gdk.Cursor.Gdk_Cursor;
+         Cursor_Double_H_Arrow : Gdk.Gdk_Cursor;
+         Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
 
-      Opaque_Resizing        : Boolean := False;
-   end record;
+         Opaque_Resizing        : Boolean := False;
+
+         Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
+
+         Handle_Width : Gint := 6;
+         --  Width, in pixels, of the resizing handles.
+         --  ??? Should be read from theme with
+         --     gtk_widget_style_get
+         --        (gtk_paned, "handle_size", &handle_size, NULL)
+      end record;
 
 end Gtkada.Multi_Paned;

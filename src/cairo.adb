@@ -1,32 +1,37 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2010-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 package body Cairo is
+
+   -----------------
+   -- Get_Context --
+   -----------------
+
+   function Get_Context
+      (Value : Glib.Values.GValue) return Cairo_Context is
+   begin
+      return Cairo_Context (Glib.Values.Get_Address (Value));
+   end Get_Context;
 
    --------------
    -- Set_Dash --
@@ -135,5 +140,48 @@ package body Cairo is
    begin
       C_Text_Path (Cr, Tmp'Address);
    end Text_Path;
+
+   ---------------
+   -- In_Stroke --
+   ---------------
+
+   function In_Stroke
+     (Cr   : Cairo_Context;
+      X    : Gdouble;
+      Y    : Gdouble)
+      return Boolean
+   is
+      function Internal (C : Cairo_Context; X, Y : Gdouble) return Gboolean;
+      pragma Import (C, Internal, "cairo_in_stroke");
+   begin
+      return Internal (Cr, X, Y) /= 0;
+   end In_Stroke;
+
+   -------------
+   -- In_Fill --
+   -------------
+
+   function In_Fill
+     (Cr   : Cairo_Context;
+      X    : Gdouble;
+      Y    : Gdouble)
+      return Boolean
+   is
+      function Internal (C : Cairo_Context; X, Y : Gdouble) return Gboolean;
+      pragma Import (C, Internal, "cairo_in_fill");
+   begin
+      return Internal (Cr, X, Y) /= 0;
+   end In_Fill;
+
+   -----------------------
+   -- Has_Current_Point --
+   -----------------------
+
+   function Has_Current_Point (Cr : Cairo_Context) return Boolean is
+      function Internal (Cr : Cairo_Context) return Gboolean;
+      pragma Import (C, Internal, "cairo_has_current_point");
+   begin
+      return Internal (Cr) /= 0;
+   end Has_Current_Point;
 
 end Cairo;

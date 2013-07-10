@@ -1,33 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2003 ACT Europe                 --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;             use Glib;
 with Gtk;              use Gtk;
@@ -37,12 +29,9 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Handlers;     use Gtk.Handlers;
-with Gtk.Option_Menu;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
-with Gtkada.Types;     use Gtkada.Types;
 with Interfaces.C.Strings;
-with Gtk.Extra.Plot;
 
 package Common is
 
@@ -64,8 +53,9 @@ package Common is
    type Gtk_Window_Access is access all Gtk_Window;
    package Destroy_Handler is new Handlers.User_Callback
      (Gtk_Window_Record, Gtk_Window_Access);
-   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record'Class;
-                             Ptr : Gtk_Window_Access);
+   procedure Destroy_Window
+      (Win : access Gtk.Window.Gtk_Window_Record'Class;
+       Ptr : Gtk_Window_Access);
 
    type Gtk_Dialog_Access is access all Gtk_Dialog;
    package Destroy_Dialog_Handler is new Handlers.User_Callback
@@ -73,23 +63,9 @@ package Common is
    procedure Destroy_Dialog (Win : access Gtk_Dialog_Record'Class;
                              Ptr : Gtk_Dialog_Access);
 
-   procedure Build_Option_Menu
-     (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-      Gr      : in out Widget_SList.GSlist;
-      Items   : Chars_Ptr_Array;
-      History : Gint;
-      Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler);
-   --  Builds an option menu with the given list of items.
-   --  If 'History' is in Items'Range, then item number 'History'
-   --  will be set to active.
-
    function Image_Of (I : Gint) return String;
    --  Returns the image of the given Gint. The leading spaces are
    --  stripped.
-
-   procedure Set_Default_Plot_Attributes
-     (Plot : access Gtk.Extra.Plot.Gtk_Plot_Record'Class);
-   --  Set the default attributes for a plot (fonts,...)
 
    package ICS renames Interfaces.C.Strings;
    Book_Open_Xpm    : ICS.chars_ptr_array :=

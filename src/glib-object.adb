@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2001-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
@@ -52,6 +47,15 @@ package body Glib.Object is
 
    function To_Object is new Ada.Unchecked_Conversion
      (System.Address, GObject);
+
+   function Initialize_Class_Record
+     (Ancestor     : GType;
+      Class_Record : System.Address;  --   Address of Ada_Gobject_Class
+      Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+     return Boolean;
+   --  Internal version of Initialize_Class_Record
 
    ----------------
    -- Deallocate --
@@ -85,10 +89,26 @@ package body Glib.Object is
    -- G_New --
    -----------
 
-   procedure G_New (Object : out GObject) is
+   procedure G_New
+      (Object : not null access GObject_Record'Class; Typ : GType)
+   is
+      function Internal (Typ : GType) return System.Address;
+      pragma Import (C, Internal, "ada_g_object_new");
    begin
-      Object := new GObject_Record;
-      Initialize (Object);
+      if not Object.Is_Created then
+         Set_Object (Object, Internal (Typ));
+      end if;
+   end G_New;
+
+   -----------
+   -- G_New --
+   -----------
+
+   procedure G_New
+      (Object : not null access GObject_Record'Class; Typ : Ada_GObject_Class)
+   is
+   begin
+      G_New (Object, Typ.The_Type);
    end G_New;
 
    ----------------
@@ -96,10 +116,8 @@ package body Glib.Object is
    ----------------
 
    procedure Initialize (Object : access GObject_Record'Class) is
-      function Internal (Typ : GType) return System.Address;
-      pragma Import (C, Internal, "ada_g_object_new");
    begin
-      Set_Object (Object, Internal (GType_Object));
+      G_New (Object, GType_Object);
    end Initialize;
 
    ----------------
@@ -289,22 +307,55 @@ package body Glib.Object is
    -----------------------------
 
    procedure Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Class_Record : in out GObject_Class;
+     (Ancestor     : GType;
+      Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
    is
+      Ignored : Boolean;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Initialize_Class_Record
+         (Ancestor, Class_Record'Address, Type_Name, Signals, Parameters);
+   end Initialize_Class_Record;
+
+   -----------------------------
+   -- Initialize_Class_Record --
+   -----------------------------
+
+   function Initialize_Class_Record
+     (Ancestor     : GType;
+      Class_Record : not null access Ada_GObject_Class;
+      Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+     return Boolean is
+   begin
+      return Initialize_Class_Record
+         (Ancestor, Class_Record.all'Address, Type_Name, Signals, Parameters);
+   end Initialize_Class_Record;
+
+   -----------------------------
+   -- Initialize_Class_Record --
+   -----------------------------
+
+   function Initialize_Class_Record
+     (Ancestor     : GType;
+      Class_Record : System.Address;  --   Address of Ada_Gobject_Class
+      Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+     return Boolean
+   is
       function Internal
-        (Object         : System.Address;
+        (Ancestor       : GType;
          NSignals       : Gint;
          Signals        : System.Address;
          Parameters     : System.Address;
          Max_Parameters : Gint;
-         Class_Record   : GObject_Class;
-         Type_Name      : String;
-         Num_Virtual    : Gint;
-         Virtual        : System.Address) return GObject_Class;
+         Class_Record   : System.Address;
+         Type_Name      : String) return Integer;
       pragma Import (C, Internal, "ada_initialize_class_record");
 
       Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
@@ -319,16 +370,30 @@ package body Glib.Object is
          Num := Parameters'Length (2);
       end if;
 
-      Class_Record := Internal
-        (Get_Object (Object),
+      return Internal
+        (Ancestor,
          Signals'Length,
          Signals'Address,
          Pa,
          Num,
          Class_Record,
-         Type_Name & ASCII.NUL,
-         0, System.Null_Address);
+         Type_Name & ASCII.NUL) /= 0;
    end Initialize_Class_Record;
+
+   -------------------
+   -- Add_Interface --
+   -------------------
+
+   procedure Add_Interface
+      (Klass : Ada_GObject_Class;
+       Iface : GType;
+       Info  : not null access GInterface_Info)
+   is
+      procedure Internal (Klass, Iface : GType; Info : access GInterface_Info);
+      pragma Import (C, Internal, "g_type_add_interface_static");
+   begin
+      Internal (Klass.The_Type, Iface, Info);
+   end Add_Interface;
 
    --------------
    -- List_Ids --
@@ -668,6 +733,47 @@ package body Glib.Object is
       end Remove;
    end User_Data;
 
+   -----------------------
+   -- User_Data_Closure --
+   -----------------------
+
+   package body User_Data_Closure is
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+         (User_Data_Type, Data_Access);
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+         (Internal_Data, Internal_Data_Access);
+
+      ---------------
+      -- Free_Data --
+      ---------------
+
+      procedure Free_Data (Data : System.Address) is
+         D : Internal_Data_Access := Convert (Data);
+      begin
+         if D /= null and then D.Data /= null then
+            Destroy (D.Data.all);
+            Unchecked_Free (D.Data);
+         end if;
+         Unchecked_Free (D);
+      end Free_Data;
+
+      -----------
+      -- Build --
+      -----------
+
+      function Build
+         (Func : System.Address; Data : User_Data_Type)
+         return System.Address
+      is
+         D : constant Internal_Data_Access := new Internal_Data'
+            (Func => Func,
+             Data => new User_Data_Type'(Data));
+      begin
+         return D.all'Address;
+      end Build;
+
+   end User_Data_Closure;
+
    -------------
    -- Convert --
    -------------
@@ -762,7 +868,8 @@ package body Glib.Object is
       pragma Import (C, Internal, "g_object_class_list_properties");
 
       N      : aliased Guint;
-      Output : constant Unbounded_Array_Access := Internal (Class, N'Access);
+      Output : constant Unbounded_Array_Access :=
+         Internal (Class, N'Access);
       Result : constant Param_Spec_Array := To_Array (Output, Integer (N));
    begin
       --  Doc says we should free, but that results in double-deallocation...

@@ -1,31 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <group>Gdk, the low-level API</group>
 
@@ -140,8 +135,31 @@ package Gdk.Types is
      (Source_Mouse,
       Source_Pen,
       Source_Eraser,
-      Source_Cursor);
+      Source_Cursor,
+      Source_Keyboard,
+      Source_Touchscreen,
+      Source_Touchpad);
    pragma Convention (C, Gdk_Input_Source);
+
+   type Gdk_Grab_Status is
+     (Grab_Success,   --  successfully grabbed
+      Grab_Already_Grabbed,   --  resource actively grabbed by another client
+      Grab_Invalid_Time,      --  resource grabbed more recently than the
+                              --  specified time
+      Grab_Not_Viewable,      --  grab window or confine_to_window are not
+                              --  viewable
+      Grab_Frozen);           --  resource is frozen by an active grab of
+                              --  another client
+   --  Indicates the success or reason of failure for a grab attempt
+
+   type Gdk_Grab_Ownership is
+     (Ownership_None,
+      Ownership_Window,
+      Ownership_Application);
+   --  Defines how device grabs interact with other devices:
+   --     None: all other devices' events are allowed
+   --     Window: other devices' events are blocked for the grab window
+   --     Application: other devices' events are blocked for the whole app.
 
    type Gdk_Key_Type is new Guint;
    --  see Gdk.Types.Keysyms for key type constants
@@ -160,11 +178,28 @@ package Gdk.Types is
    Button3_Mask  : constant Gdk_Modifier_Type;
    Button4_Mask  : constant Gdk_Modifier_Type;
    Button5_Mask  : constant Gdk_Modifier_Type;
+   Super_Mask    : constant Gdk_Modifier_Type;
+   Hyper_Mask    : constant Gdk_Modifier_Type;
+   Meta_Mask     : constant Gdk_Modifier_Type;
    Release_Mask  : constant Gdk_Modifier_Type;
    Modifier_Mask : constant Gdk_Modifier_Type;
-   Meta_Mask     : constant Gdk_Modifier_Type;
 
    Default_Modifier_Mask : constant Gdk_Modifier_Type;
+
+   type Gdk_Modifier_Intent is
+      (Primary_Accelerator,
+       Context_Menu,
+       Extend_Selection,
+       Modify_Selection,
+       No_Text_Input,
+       Shift_Group);
+   --  This enum is used with gdk_keymap_get_modifier_mask() and
+   --  gdk_get_modifier_mask() in order to determine what modifiers the
+   --  currently used windowing system backend uses for particular
+   --  purposes. For example, on X11/Windows, the Control key is used for
+   --  invoking menu shortcuts (accelerators), whereas on Apple computers
+   --  it's the Command key (which correspond to %GDK_CONTROL_MASK and
+   --  GDK_MOD2_MASK, respectively).
 
    subtype Gdk_WChar is Standard.Wide_Character;
    subtype Gdk_WString is Standard.Wide_String;
@@ -243,9 +278,11 @@ private
    Button3_Mask : constant Gdk_Modifier_Type := 2 ** 10;
    Button4_Mask : constant Gdk_Modifier_Type := 2 ** 11;
    Button5_Mask : constant Gdk_Modifier_Type := 2 ** 12;
-   Release_Mask  : constant Gdk_Modifier_Type := 2 ** 13;
+   Super_Mask    : constant Gdk_Modifier_Type := 2 ** 26;
+   Hyper_Mask    : constant Gdk_Modifier_Type := 2 ** 27;
    Meta_Mask     : constant Gdk_Modifier_Type := 2 ** 28;
-   Modifier_Mask : constant Gdk_Modifier_Type := 16#3FFF#;
+   Release_Mask  : constant Gdk_Modifier_Type := 2 ** 30;
+   Modifier_Mask : constant Gdk_Modifier_Type := 16#5C001FFF#;
 
    function Internal_Defaut_Modifier_Mask return Gdk_Modifier_Type;
    pragma Import

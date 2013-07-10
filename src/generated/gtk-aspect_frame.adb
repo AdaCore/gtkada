@@ -1,41 +1,55 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Aspect_Frame is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Aspect_Frame is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Aspect_Frame_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Aspect_Frame);
+
+   --------------------------
+   -- Gtk_Aspect_Frame_New --
+   --------------------------
+
+   function Gtk_Aspect_Frame_New
+      (Label      : UTF8_String := "";
+       Xalign     : Gfloat;
+       Yalign     : Gfloat;
+       Ratio      : Gfloat;
+       Obey_Child : Boolean) return Gtk_Aspect_Frame
+   is
+      Aspect_Frame : constant Gtk_Aspect_Frame := new Gtk_Aspect_Frame_Record;
+   begin
+      Gtk.Aspect_Frame.Initialize (Aspect_Frame, Label, Xalign, Yalign, Ratio, Obey_Child);
+      return Aspect_Frame;
+   end Gtk_Aspect_Frame_New;
 
    -------------
    -- Gtk_New --
@@ -59,7 +73,7 @@ package body Gtk.Aspect_Frame is
    ----------------
 
    procedure Initialize
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
+      (Aspect_Frame : not null access Gtk_Aspect_Frame_Record'Class;
        Label        : UTF8_String := "";
        Xalign       : Gfloat;
        Yalign       : Gfloat;
@@ -76,14 +90,16 @@ package body Gtk.Aspect_Frame is
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
-      if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
+      if not Aspect_Frame.Is_Created then
+         if Label = "" then
+            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
+         Tmp_Return := Internal (Tmp_Label, Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));
+         Free (Tmp_Label);
+         Set_Object (Aspect_Frame, Tmp_Return);
       end if;
-      Tmp_Return := Internal (Tmp_Label, Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));
-      Free (Tmp_Label);
-      Set_Object (Aspect_Frame, Tmp_Return);
    end Initialize;
 
    ---------
@@ -91,7 +107,7 @@ package body Gtk.Aspect_Frame is
    ---------
 
    procedure Set
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+      (Aspect_Frame : not null access Gtk_Aspect_Frame_Record;
        Xalign       : Gfloat;
        Yalign       : Gfloat;
        Ratio        : Gfloat;
@@ -107,44 +123,5 @@ package body Gtk.Aspect_Frame is
    begin
       Internal (Get_Object (Aspect_Frame), Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));
    end Set;
-
-   ---------------
-   -- Get_Ratio --
-   ---------------
-
-   function Get_Ratio
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
-   is
-      function Internal (Aspect_Frame : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtkada_GtkAspectFrame_get_ratio");
-   begin
-      return Internal (Get_Object (Aspect_Frame));
-   end Get_Ratio;
-
-   ----------------
-   -- Get_Xalign --
-   ----------------
-
-   function Get_Xalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
-   is
-      function Internal (Aspect_Frame : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtkada_GtkAspectFrame_get_xalign");
-   begin
-      return Internal (Get_Object (Aspect_Frame));
-   end Get_Xalign;
-
-   ----------------
-   -- Get_Yalign --
-   ----------------
-
-   function Get_Yalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
-   is
-      function Internal (Aspect_Frame : System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtkada_GtkAspectFrame_get_yalign");
-   begin
-      return Internal (Get_Object (Aspect_Frame));
-   end Get_Yalign;
 
 end Gtk.Aspect_Frame;

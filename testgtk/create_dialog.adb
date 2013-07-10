@@ -1,33 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                 Copyright (C) 2003 ACT Europe                     --
---                  Copyright (C) 2010-2013, AdaCore                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Text_IO;               use Ada.Text_IO;
 with GNAT.Strings;              use GNAT.Strings;
@@ -89,7 +81,7 @@ package body Create_Dialog is
      (Lab : access Gtk_Label_Record'Class;
       Ptr : Gtk_Label_Access)
    is
-      pragma Warnings (Off, Lab);
+      pragma Unreferenced (Lab);
    begin
       Ptr.all := null;
    end Destroyed;
@@ -99,16 +91,14 @@ package body Create_Dialog is
    ------------------
 
    procedure Label_Toggle (Button : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Button);
+      pragma Unreferenced (Button);
    begin
       if Global_Label = null then
          Gtk_New (Global_Label, "Dialog Test");
          Label_Destroy.Connect
-           (Global_Label, "destroy",
-            Label_Destroy.To_Marshaller (Destroyed'Access),
-            Global_Label'Access);
+           (Global_Label, "destroy", Destroyed'Access, Global_Label'Access);
          Set_Padding (Global_Label, 10, 10);
-         Pack_Start (Get_Vbox (Dialog), Global_Label, True, True, 0);
+         Pack_Start (Get_Content_Area (Dialog), Global_Label, True, True, 0);
          Show (Global_Label);
       else
          Destroy (Global_Label);
@@ -131,18 +121,16 @@ package body Create_Dialog is
             Dialog'Access);
          Set_Title (Dialog, "Gtk_Dialog");
          Set_Border_Width (Dialog, 0);
-         Set_USize (Dialog, 200, 110);
+         Set_Size_Request (Dialog, 200, 110);
 
          Gtk_New (Button, "OK");
-         Set_Flags (Button, Can_Default);
+         Button.Set_Can_Default (True);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Grab_Default (Button);
          Show (Button);
 
          Gtk_New (Button, "Toggle");
-         Widget_Handler.Connect
-           (Button, "clicked",
-            Widget_Handler.To_Marshaller (Label_Toggle'Access));
+         Widget_Handler.Connect (Button, "clicked", Label_Toggle'Access);
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
          Show (Dialog);
@@ -155,7 +143,9 @@ package body Create_Dialog is
    -- Cancel_Recent_Dialog --
    --------------------------
 
-   procedure Cancel_Recent_Dialog (Widget : access Gtk_Widget_Record'Class) is
+   procedure Cancel_Recent_Dialog
+      (Widget : access Gtk_Widget_Record'Class)
+   is
       pragma Unreferenced (Widget);
    begin
       Put_Line ("Recent dialog cancelled.");
@@ -183,32 +173,38 @@ package body Create_Dialog is
    -- Recent_Dialog --
    -------------------
 
-   procedure Recent_Dialog (Widget : access Gtk_Widget_Record'Class) is
+   procedure Recent_Dialog
+      (Widget : access Gtk_Widget_Record'Class)
+   is
       RManager : constant Gtk_Recent_Manager := Gtk.Recent_Manager.Get_Default;
       Button   : Gtk_Button;
       RChooser : Gtk_Recent_Chooser;
-      Empty    : GNAT.Strings.String_List (1 .. 0) := (others => null);
+      Empty    : constant GNAT.Strings.String_List (1 .. 0) :=
+                  (others => null);
+
+      --  Content to add to the recent list.
+      URL      : constant String := "http://www.adacore.com/";
    begin
       --  Before we do anything, in case the system's recent list is empty,
       --  let's make sure we have something to show.
-      if Has_Item (RManager, "file://README") then
-         Put_Line ("No need to add README to recent list.");
+      if Has_Item (RManager, URL) then
+         Put_Line ("No need to add " & URL & " to recent list.");
       else
          if
            Add_Full
              (RManager,
-              Uri          => "file://README",
-              Display_Name => "./README",
-              Description  => "our README file",
+              Uri          => URL,
+              Display_Name => URL,
+              Description  => "AdaCore's web site",
               Mime_Type    => "text/plain",
               App_Name     => "testgtk",
               App_Exec     => "testgtk",
               Groups       => Empty,
               Is_Private   => True)
          then
-            Put_Line ("Successfuly added README to recent list.");
+            Put_Line ("Successfuly added " & URL & " to recent list.");
          else
-            Put_Line ("Problem adding README to recent list.");
+            Put_Line ("Problem adding " & URL & " to recent list.");
          end if;
       end if;
 
@@ -258,15 +254,11 @@ package body Create_Dialog is
       Add (Frame, Box1);
 
       Gtk_New (Button, "Simple Dialog");
-      Widget_Handler.Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Basic_Dialog'Access));
+      Widget_Handler.Connect (Button, "clicked", Basic_Dialog'Access);
       Pack_Start (Box1, Button, False, False, 10);
 
       Gtk_New (Button, "Recent Chooser Dialog");
-      Widget_Handler.Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Recent_Dialog'Access));
+      Widget_Handler.Connect (Button, "clicked", Recent_Dialog'Access);
       Pack_Start (Box1, Button, False, False, 10);
 
       Show_All (Frame);

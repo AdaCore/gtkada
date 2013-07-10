@@ -1,46 +1,44 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gtkada.Bindings;      use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Buildable is
+
    ---------------
    -- Add_Child --
    ---------------
 
    procedure Add_Child
       (Self     : Gtk_Buildable;
-       Builder  : access Gtk.Builder.Gtk_Builder_Record'Class;
-       Child    : access Glib.Object.GObject_Record'Class;
-       The_Type : UTF8_String)
+       Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
+       Child    : not null access Glib.Object.GObject_Record'Class;
+       The_Type : UTF8_String := "")
    is
       procedure Internal
          (Self     : Gtk_Buildable;
@@ -48,8 +46,13 @@ package body Gtk.Buildable is
           Child    : System.Address;
           The_Type : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_buildable_add_child");
-      Tmp_The_Type : Interfaces.C.Strings.chars_ptr := New_String (The_Type);
+      Tmp_The_Type : Interfaces.C.Strings.chars_ptr;
    begin
+      if The_Type = "" then
+         Tmp_The_Type := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_The_Type := New_String (The_Type);
+      end if;
       Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_The_Type);
       Free (Tmp_The_Type);
    end Add_Child;
@@ -60,7 +63,7 @@ package body Gtk.Buildable is
 
    function Construct_Child
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String) return Glib.Object.GObject
    is
       function Internal
@@ -68,13 +71,13 @@ package body Gtk.Buildable is
           Builder : System.Address;
           Name    : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_buildable_construct_child");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Stub       : Glib.Object.GObject_Record;
-      Tmp_Return : System.Address;
+      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Stub_GObject : Glib.Object.GObject_Record;
+      Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Self, Get_Object (Builder), Tmp_Name);
       Free (Tmp_Name);
-      return Get_User_Data (Tmp_Return, Stub);
+      return Get_User_Data (Tmp_Return, Stub_GObject);
    end Construct_Child;
 
    ---------------------
@@ -83,7 +86,7 @@ package body Gtk.Buildable is
 
    procedure Custom_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
        Data    : System.Address)
@@ -97,7 +100,7 @@ package body Gtk.Buildable is
       pragma Import (C, Internal, "gtk_buildable_custom_finished");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin
-      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_Tagname, Data);
+      Internal (Self, Get_Object (Builder), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
    end Custom_Finished;
 
@@ -107,21 +110,21 @@ package body Gtk.Buildable is
 
    procedure Custom_Tag_End
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
-       Data    : System.Address)
+       Data    : in out System.Address)
    is
       procedure Internal
          (Self    : Gtk_Buildable;
           Builder : System.Address;
           Child   : System.Address;
           Tagname : Interfaces.C.Strings.chars_ptr;
-          Data    : System.Address);
+          Data    : in out System.Address);
       pragma Import (C, Internal, "gtk_buildable_custom_tag_end");
       Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
    begin
-      Internal (Self, Get_Object (Builder), Get_Object (Child), Tmp_Tagname, Data);
+      Internal (Self, Get_Object (Builder), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
    end Custom_Tag_End;
 
@@ -131,7 +134,7 @@ package body Gtk.Buildable is
 
    function Get_Internal_Child
       (Self      : Gtk_Buildable;
-       Builder   : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder   : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Childname : UTF8_String) return Glib.Object.GObject
    is
       function Internal
@@ -140,12 +143,12 @@ package body Gtk.Buildable is
           Childname : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_buildable_get_internal_child");
       Tmp_Childname : Interfaces.C.Strings.chars_ptr := New_String (Childname);
-      Stub          : Glib.Object.GObject_Record;
+      Stub_GObject  : Glib.Object.GObject_Record;
       Tmp_Return    : System.Address;
    begin
       Tmp_Return := Internal (Self, Get_Object (Builder), Tmp_Childname);
       Free (Tmp_Childname);
-      return Get_User_Data (Tmp_Return, Stub);
+      return Get_User_Data (Tmp_Return, Stub_GObject);
    end Get_Internal_Child;
 
    --------------
@@ -157,7 +160,7 @@ package body Gtk.Buildable is
          (Self : Gtk_Buildable) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_buildable_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Self));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
    end Get_Name;
 
    ---------------------
@@ -166,7 +169,7 @@ package body Gtk.Buildable is
 
    procedure Parser_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class)
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class)
    is
       procedure Internal (Self : Gtk_Buildable; Builder : System.Address);
       pragma Import (C, Internal, "gtk_buildable_parser_finished");
@@ -180,15 +183,15 @@ package body Gtk.Buildable is
 
    procedure Set_Buildable_Property
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String;
-       Value   : out Glib.Values.GValue)
+       Value   : in out Glib.Values.GValue)
    is
       procedure Internal
          (Self    : Gtk_Buildable;
           Builder : System.Address;
           Name    : Interfaces.C.Strings.chars_ptr;
-          Value   : out Glib.Values.GValue);
+          Value   : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_buildable_set_buildable_property");
       Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
    begin
@@ -210,5 +213,10 @@ package body Gtk.Buildable is
       Internal (Self, Tmp_Name);
       Free (Tmp_Name);
    end Set_Name;
+
+   function "+" (W : Gtk_Buildable) return Gtk_Buildable is
+   begin
+      return W;
+   end "+";
 
 end Gtk.Buildable;

@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                   Copyright (C) 2001-2013, AdaCore                --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --
@@ -44,6 +39,7 @@ package Glib.Object is
 
    type GObject_Record is tagged private;
    type GObject is access all GObject_Record'Class;
+   pragma No_Strict_Aliasing (GObject);
    --  The base type for Glib/Gdk/Gtk objects. It basically gives access
    --  to an underlying C object. This is not a controlled type for
    --  efficiency reasons and because glib takes care of the memory
@@ -68,13 +64,6 @@ package Glib.Object is
    ----------------
    -- Life cycle --
    ----------------
-
-   procedure G_New (Object : out GObject);
-   --  Create a new GObject.
-   --  This is only required when you want to create an Ada tagged type to
-   --  which you can attach new signals. Most of the time, you only need to
-   --  directly create the appropriate Gtk Widget by calling the correct
-   --  Gtk_New procedure.
 
    procedure Initialize (Object : access GObject_Record'Class);
    --  Internal initialization function.
@@ -238,11 +227,20 @@ package Glib.Object is
    --  when doing introspection.
 
    type GObject_Class is new GType_Class;
-   Uninitialized_Class : constant GObject_Class;
+   Null_GObject_Class : constant GObject_Class;
+
+   type Ada_GObject_Class is record
+      The_Type     : GType := 0;
+   end record;
+   pragma Convention (C, Ada_GObject_Class);
+   Uninitialized_Class : constant Ada_GObject_Class;
    --  This type encloses all the informations related to a specific type of
    --  object or widget. All instances of such an object have a pointer to this
    --  structure, that includes the definition of all the signals that exist
    --  for a given object, all its properties,...
+   --
+   --  A GObject_Class can be retrieved from an Ada_GObject_Class by calling
+   --  Glib.Types.Class_Ref.
 
    type Signal_Parameter_Types is
      array (Natural range <>, Natural range <>) of GType;
@@ -260,27 +258,32 @@ package Glib.Object is
    --  defines two signals, the first with a single Gdk_Event parameter, the
    --  second with two ints parameters.
 
+   No_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
+      (1 .. 0 => Gtkada.Types.Null_Ptr);
    Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
      (others => (others => GType_None));
    --  An empty array, used as a default parameter in Initialize_Class_Record.
 
    procedure Initialize_Class_Record
-     (Object       : access GObject_Record'Class;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Class_Record : in out GObject_Class;
+     (Ancestor     : GType;
+      Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
+   function Initialize_Class_Record
+     (Ancestor     : GType;
+      Class_Record : not null access Ada_GObject_Class;
+      Type_Name    : String;
+      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+      return Boolean;
    --  Create the class record for a new object type.
-   --  It is associated with Signals'Length new signals. A pointer to the
+   --  It is associated with Signals new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
-   --  If Class_Record /= System.Null_Address, no memory allocation is
+   --  If Class_Record /= Uninitialized_Class, no memory allocation is
    --  performed, we just reuse it. As a result, each instantiation of an
    --  object will share the same GObject_Class, exactly as is done for gtk+.
    --
-   --  Note: The underlying C object must already have been initialized
-   --  by a call to its parent's Initialize function.
-   --  Parameters'Length should be the same as Signals'Length, or the result
-   --  is undefined.
    --  As a special case, if Parameters has its default value, all signals are
    --  created with no argument. This is done for backward compatibility
    --  mainly, and you should instead give it an explicit value.
@@ -289,12 +292,115 @@ package Glib.Object is
    --  Only the signals with no parameter can be connected from C code.
    --  However, any signal can be connected from Ada. This is due to the way
    --  we define default marshallers for the signals.
+   --
+   --  The function returns True if the class record was just created (i.e.
+   --  only the first time). This can be used to do further initialization
+   --  at that point, like calling Gtk.Widget.Set_Default_Draw_Handler.
 
    function Type_From_Class (Class_Record : GObject_Class) return GType;
    --  Return the internal gtk+ type that describes the newly created
    --  Class_Record.
    --  See the function Glib.Types.Class_Peek for the opposite function
    --  converting from a GType to a GObject_Class.
+
+   procedure G_New
+      (Object : not null access GObject_Record'Class;
+       Typ    : GType);
+   procedure G_New
+      (Object : not null access GObject_Record'Class;
+       Typ    : Ada_GObject_Class);
+   --  Create a new instance of Typ (at the C level). This has no effect if
+   --  the C object has already been created (so that G_New can be called
+   --  from Initialize (and you can call the parent's Initialize).
+   --
+   --  Object must have been allocated first, but you should not have called
+   --  any of the Gtk_New procedures yet.
+   --  This procedure is meant to be used when you create your own object
+   --  types with own signals, properties,... The code would thus be
+   --
+   --   Klass : aliased Ada_GObject_Class := Uninitialized_Class;
+   --
+   --   function Get_Type return GType is
+   --   begin
+   --      if Initialize_Class_Record
+   --         (Ancestor     => Gtk.Button.Get_Type,
+   --          Class_Record => Klass'Access,
+   --          Type_Name    => "My_Widget")
+   --      begin
+   --         --  Add interfaces if needed
+   --         Add_Interface (Klass, ..., new GInterface_Info'(...));
+   --
+   --         --  Override the inherited methods
+   --         Gtk.Widget.Set_Default_Draw_Handler (...);
+   --
+   --         --  Install properties
+   --         Install_Style_Property
+   --            (Glib.Types.Class_Ref (Klass),
+   --             Gnew_Int (...));
+   --      end if;
+   --      return Klass.The_Type;
+   --   end Get_Type;
+   --
+   --   procedure Gtk_New (Self : out My_Widget) is
+   --   begin
+   --      Self := new My_Widget_Record;  --  create the Ada wrapper
+   --      Initialize (Self);
+   --   end Gtk_New;
+   --
+   --   procedure Initialize (Self : not null access My_Widget_Record'Class) is
+   --   begin
+   --      G_New (Self, Get_Type); --  allocate the C widget, unless done
+   --
+   --      --  Initialize parent fields
+   --
+   --      My_Widget_Parent.Initialize (Self);
+   --
+   --      --  Initialization of the Ada types
+   --      ...
+   --   end Initialize;
+
+   ----------------
+   -- Interfaces --
+   ----------------
+
+   type GInterfaceInitFunc is access procedure
+      (Iface : System.Address;
+       Data  : System.Address);
+   pragma Convention (C, GInterfaceInitFunc);
+   --  The interface initialization function. This function should initialize
+   --  all internal data and allocate any resources required by the interface.
+   --  Iface: the interface structure to initialize. It is allocated
+   --    specifically for each class instance that implements the interface.
+   --    The exact type depends on the interface that is implemented. This is
+   --    in general a record that contains a number of access to procedures
+   --    for the interface methods. See for instance Gtk.Tree_Model.Interfaces
+   --  Data: the data supplied to the GInterface_Info.
+
+   type GInterfaceFinalizeFunc is access procedure
+      (Iface : System.Address;
+       Data  : System.Address);
+   pragma Convention (C, GInterfaceFinalizeFunc);
+   --  The interface finalization function.
+   --  This function should destroy any internal data and release any resources
+   --  allocated by the corresponding init func.
+
+   type GInterface_Info is record
+      Interface_Init     : GInterfaceInitFunc := null;
+      Interface_Finalize : GInterfaceFinalizeFunc := null;
+      Interface_Data     : System.Address := System.Null_Address;
+   end record;
+   pragma Convention (C, GInterface_Info);
+   --  A structure that provides information to the type system which is used
+   --  specifically for managing interface types.
+
+   procedure Add_Interface
+      (Klass : Ada_GObject_Class;
+       Iface : GType;
+       Info  : not null access GInterface_Info);
+   --  State that Klass implements the given interface. It will need to
+   --  override the inherited methods. This is low-level handling.
+   --  Info should be allocated in this call, and is never freed in the
+   --  lifetime of the application.
 
    ------------------------------
    -- Properties introspection --
@@ -424,6 +530,43 @@ package Glib.Object is
    package Object_List is new Glib.GSlist.Generic_SList (GObject);
    package Object_Simple_List is new Glib.Glist.Generic_List (GObject);
 
+   --  <doc_ignore>
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type);
+   package User_Data_Closure is
+      --  This package is meant for internal use in GtkAda application.
+      --  It provides a convenient wrapper around user-provided data, to
+      --  be passed to callbacks.
+
+      type Data_Access is access all User_Data_Type;
+
+      type Internal_Data is record
+         Func       : System.Address;  --  The actual user callback
+         Data       : Data_Access;
+      end record;
+      type Internal_Data_Access is access all Internal_Data;
+
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Internal_Data_Access);
+
+      function Build
+         (Func : System.Address; Data : User_Data_Type)
+         return System.Address;
+      pragma Inline (Build);
+      --  Allocate a new user data.
+      --  It returns an access to Internal_Data_Access, but in a form easier
+      --  to pass to a C function.
+
+      procedure Free_Data (Data : System.Address);
+      pragma Convention (C, Free_Data);
+      --  Callback suitable for calling from C, to free user data
+
+   end User_Data_Closure;
+
+   --  </doc_ignore>
+
 private
 
    type GObject_Record is tagged record
@@ -432,8 +575,9 @@ private
 
    type Interface_Vtable is new Glib.C_Proxy;
 
-   Uninitialized_Class : constant GObject_Class :=
-     GObject_Class (System.Null_Address);
+   Null_GObject_Class : constant GObject_Class :=
+      GObject_Class (System.Null_Address);
+   Uninitialized_Class : constant Ada_GObject_Class := (The_Type => 0);
 
    type Signal_Query is record
       Signal_Id    : Guint;

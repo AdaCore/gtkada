@@ -12,6 +12,11 @@ with Gtk.GLArea;       use Gtk.GLArea;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
+with Gtk.Widget; use Gtk.Widget;
+with Cairo;
+with Gdk;
+with Gtk.Main;
+
 #else
 with Gtk.Label; use Gtk.Label;
 #end if;
@@ -82,22 +87,23 @@ package body View_Gl is
    -------------------
    -- Glarea_Expose --
    -------------------
-
-   function Glarea_Expose (Area  : access My_Glarea_Record'Class;
-                           Event : Gdk_Event)
-                          return Boolean
+   function Glarea_Expose
+      (Self : access Gtk_Widget_Record'Class;
+       Cr   : Cairo.Cairo_Context) return Boolean
    is
+      Area : constant My_Glarea := My_Glarea (Self);
       --  Event is an Expose_Event, but no need to cast, this is tested
       --  automatically by GtkAda
 
       M : Trackball.Matrix;
+      pragma Unreferenced (Cr);
 
    begin
       --  Draw only the last expose event
 
-      if Get_Count (Event) > 0 then
-         return True;
-      end if;
+--       if Get_Count (Event) > 0 then
+--          return True;
+--       end if;
 
       --  OpenGL calls can be done only if make_current returns true
 
@@ -148,12 +154,12 @@ package body View_Gl is
       if Make_Current (Area) then
 #if WIN32 then
          glViewport (0, 0,
-                     GLsizei (Get_Allocation_Width (Area)),
-                     GLsizei (Get_Allocation_Height (Area)));
+                     GLsizei (Get_Allocated_Width (Area)),
+                     GLsizei (Get_Allocated_Height (Area)));
 #else
          glViewport (0, 0,
-                     Integer (Get_Allocation_Width (Area)),
-                     Integer (Get_Allocation_Height (Area)));
+                     Integer (Get_Allocated_Width (Area)),
+                     Integer (Get_Allocated_Height (Area)));
 #end if;
       end if;
       return True;
@@ -173,16 +179,15 @@ package body View_Gl is
    -- Button_Press --
    ------------------
 
-   function Button_Press (Area : access My_Glarea_Record'Class;
-                          Event : Gdk_Event)
-                         return Boolean
+   function Button_Press
+      (Self  : access Gtk_Widget_Record'Class;
+       Event : Gdk.Event.Gdk_Event_Button) return Boolean
    is
-      --  Event is an Gdk_Event_Button, but no need to cast, this is tested
-      --  automatically by GtkAda
+      Area : constant My_Glarea := My_Glarea (Self);
    begin
-      if Get_Button (Event) = 1 then
-         Area.Mesh_Info.Beginx := Float (Get_X (Event));
-         Area.Mesh_Info.Beginy := Float (Get_Y (Event));
+      if Event.Button = 1 then
+         Area.Mesh_Info.Beginx := Float (Event.X);
+         Area.Mesh_Info.Beginy := Float (Event.Y);
          return True;
       end if;
       return False;
@@ -192,29 +197,31 @@ package body View_Gl is
    -- Motion_Notify --
    -------------------
 
-   function Motion_Notify (Area : access My_Glarea_Record'Class;
-                           Event : Gdk_Event)
-                          return Boolean
+   function Motion_Notify
+      (Self  : access Gtk_Widget_Record'Class;
+       Event : Gdk.Event.Gdk_Event_Motion) return Boolean
    is
+      Area : constant My_Glarea := My_Glarea (Self);
       --  Event is an Gdk_Event_Motion, but no need to cast, this is tested
       --  automatically by GtkAda
       X, Y : Gint;
-      Win  : Gdk_Window;
+      Win  : Gdk.Gdk_Window;
       State : Gdk_Modifier_Type;
       Rect  : Gdk_Rectangle;
 
    begin
-      if Get_Is_Hint (Event) then
-         Get_Pointer (Get_Window (Event), X, Y, State, Win);
+      if Event.Is_Hint /= 0 then
+         Gdk.Window.Get_Device_Position
+           (Event.Window, Gtk.Main.Get_Current_Event_Device, X, Y, State, Win);
       else
-         X := Gint (Get_X (Event));
-         Y := Gint (Get_Y (Event));
-         State := Get_State (Event);
+         X := Gint (Event.X);
+         Y := Gint (Event.Y);
+         State := Event.State;
       end if;
       Rect.X := 0;
       Rect.Y := 0;
-      Rect.Width  := Gint (Get_Allocation_Width (Area));
-      Rect.Height := Gint (Get_Allocation_Height (Area));
+      Rect.Width  := Get_Allocated_Width (Area);
+      Rect.Height := Get_Allocated_Height (Area);
 
       if (State and Button1_Mask) /= 0 then
          --  Drag in progress, simulate trackball
@@ -234,7 +241,8 @@ package body View_Gl is
                        Dest => Area.Mesh_Info.Quat);
 
             --  orientation has changed, redraw mesh
-            Draw (Area, Rect);
+            Queue_Draw_Area
+              (Area, Rect.X, Rect.Y, Rect.Width, Rect.Height);
          end;
       end if;
 
@@ -251,7 +259,7 @@ package body View_Gl is
          end if;
 
          --  Zoom has changed, redraw mesh
-         Draw (Area, Rect);
+         Queue_Draw_Area (Area, Rect.X, Rect.Y, Rect.Width, Rect.Height);
       end if;
 
       Area.Mesh_Info.Beginx := Float (X);
@@ -306,18 +314,17 @@ package body View_Gl is
       Set_Events (Area, Exposure_Mask or Button_Press_Mask
                   or Button_Release_Mask or Pointer_Motion_Mask
                   or Pointer_Motion_Hint_Mask);
-      Event_Cb.Connect (Area, "expose_event",
-                        Event_Cb.To_Marshaller (Glarea_Expose'Access));
-      Event_Cb.Connect (Area, "motion_notify_event",
-                        Event_Cb.To_Marshaller (Motion_Notify'Access));
-      Event_Cb.Connect (Area, "button_press_event",
-                        Event_Cb.To_Marshaller (Button_Press'Access));
+
+      Area.On_Draw (Glarea_Expose'Access);
+      Area.On_Button_Press_Event (Button_Press'Access);
+      Area.On_Motion_Notify_Event (Motion_Notify'Access);
+
       Event_Cb.Connect (Area, "configure_event",
                         Event_Cb.To_Marshaller (Configure'Access));
       Void_Cb.Connect (Area, "destroy",
                        Void_Cb.To_Marshaller (GlArea_Destroy'Access));
 
-      Set_USize (Area, 200, Gint (200.0 / VIEW_ASPECT));
+      Set_Size_Request (Area, 200, Gint (200.0 / VIEW_ASPECT));
 
       --  Set up mesh info
       Area.Mesh_Info.Do_Init := True;

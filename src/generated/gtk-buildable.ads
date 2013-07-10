@@ -1,42 +1,42 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  Gtk_Buildable allows objects to extend and customize their deserialization
---  from Gtk_Builder UI descriptions. The interface includes methods for
---  setting names and properties of objects, parsing custom tags and
---  constructing child objects.
+--  GtkBuildable allows objects to extend and customize their deserialization
+--  from <link linkend="BUILDER-UI">GtkBuilder UI descriptions</link>. The
+--  interface includes methods for setting names and properties of objects,
+--  parsing custom tags and constructing child objects.
 --
---  The Gtk_Buildable interface is implemented by all widgets and many of the
+--  The GtkBuildable interface is implemented by all widgets and many of the
 --  non-widget objects that are provided by GTK+. The main user of this
---  interface is Gtk_Builder. There should be very little need for applications
---  to call any gtk_buildable_... functions.
+--  interface is Gtk.Builder.Gtk_Builder. There should be very little need for
+--  applications to call any <function>gtk_buildable_...</function> functions.
+--
+--  Note:
+--
+--  An object only needs to implement this interface if it needs to extend the
+--  Gtk.Builder.Gtk_Builder format or run any extra routines at deserialization
+--  time
 --
 --  </description>
 
@@ -50,6 +50,7 @@ with Gtk.Builder; use Gtk.Builder;
 package Gtk.Buildable is
 
    type Gtk_Buildable is new Glib.Types.GType_Interface;
+   Null_Gtk_Buildable : constant Gtk_Buildable;
 
    ------------------
    -- Constructors --
@@ -64,9 +65,9 @@ package Gtk.Buildable is
 
    procedure Add_Child
       (Self     : Gtk_Buildable;
-       Builder  : access Gtk.Builder.Gtk_Builder_Record'Class;
-       Child    : access Glib.Object.GObject_Record'Class;
-       The_Type : UTF8_String);
+       Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
+       Child    : not null access Glib.Object.GObject_Record'Class;
+       The_Type : UTF8_String := "");
    --  Adds a child to Buildable. Type is an optional string describing how
    --  the child should be added.
    --  Since: gtk+ 2.12
@@ -76,7 +77,7 @@ package Gtk.Buildable is
 
    function Construct_Child
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String) return Glib.Object.GObject;
    --  Constructs a child of Buildable with the name Name.
    --  Gtk.Builder.Gtk_Builder calls this function if a "constructor" has been
@@ -87,7 +88,7 @@ package Gtk.Buildable is
 
    procedure Custom_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
        Data    : System.Address);
@@ -101,10 +102,10 @@ package Gtk.Buildable is
 
    procedure Custom_Tag_End
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child   : access Glib.Object.GObject_Record'Class;
        Tagname : UTF8_String;
-       Data    : System.Address);
+       Data    : in out System.Address);
    --  This is called at the end of each custom element handled by the
    --  buildable.
    --  Since: gtk+ 2.12
@@ -115,7 +116,7 @@ package Gtk.Buildable is
 
    function Get_Internal_Child
       (Self      : Gtk_Buildable;
-       Builder   : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder   : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Childname : UTF8_String) return Glib.Object.GObject;
    --  Get the internal child called Childname of the Buildable object.
    --  Since: gtk+ 2.12
@@ -123,6 +124,12 @@ package Gtk.Buildable is
    --  "childname": name of child
 
    function Get_Name (Self : Gtk_Buildable) return UTF8_String;
+   --  Gets the name of the Buildable object.
+   --  Gtk.Builder.Gtk_Builder sets the name based on the <link
+   --  linkend="BUILDER-UI">GtkBuilder UI definition</link> used to construct
+   --  the Buildable.
+   --  Since: gtk+ 2.12
+
    procedure Set_Name (Self : Gtk_Buildable; Name : UTF8_String);
    --  Sets the name of the Buildable object.
    --  Since: gtk+ 2.12
@@ -130,7 +137,7 @@ package Gtk.Buildable is
 
    procedure Parser_Finished
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class);
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class);
    --  Called when the builder finishes the parsing of a <link
    --  linkend="BUILDER-UI">GtkBuilder UI definition</link>. Note that this
    --  will be called once for each time Gtk.Builder.Add_From_File or
@@ -140,13 +147,27 @@ package Gtk.Buildable is
 
    procedure Set_Buildable_Property
       (Self    : Gtk_Buildable;
-       Builder : access Gtk.Builder.Gtk_Builder_Record'Class;
+       Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Name    : UTF8_String;
-       Value   : out Glib.Values.GValue);
+       Value   : in out Glib.Values.GValue);
    --  Sets the property name Name to Value on the Buildable object.
    --  Since: gtk+ 2.12
    --  "builder": a Gtk.Builder.Gtk_Builder
    --  "name": name of property
    --  "value": value of property
 
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Buildable"
+
+   function "+" (W : Gtk_Buildable) return Gtk_Buildable;
+   pragma Inline ("+");
+
+private
+
+Null_Gtk_Buildable : constant Gtk_Buildable :=
+   Gtk_Buildable (Glib.Types.Null_Interface);
 end Gtk.Buildable;

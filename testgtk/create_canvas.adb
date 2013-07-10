@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                Copyright (C) 2000-2013, AdaCore                   --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Ada.Numerics.Discrete_Random;
 
@@ -40,8 +34,8 @@ with Cairo.Surface;       use Cairo.Surface;
 with Pango.Cairo;         use Pango.Cairo;
 
 with Gdk.Cairo;           use Gdk.Cairo;
-with Gdk.Color;           use Gdk.Color;
 with Gdk.Event;           use Gdk.Event;
+with Gdk.RGBA;            use Gdk.RGBA;
 
 with Gtk.Arrow;           use Gtk.Arrow;
 with Gtk.Box;             use Gtk.Box;
@@ -57,7 +51,6 @@ with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Adjustment;      use Gtk.Adjustment;
 with Pango.Layout;        use Pango.Layout;
-with Gtk.Style;           use Gtk.Style;
 
 package body Create_Canvas is
 
@@ -74,8 +67,8 @@ package body Create_Canvas is
 
    type Display_Item_Record is new Canvas_Item_Record with record
       Canvas : Interactive_Canvas;
-      Color  : Gdk.Color.Gdk_Color;
-      Title  : Gdk.Color.Gdk_Color;
+      Color  : Gdk.RGBA.Gdk_RGBA;
+      Title  : Gdk.RGBA.Gdk_RGBA;
       W, H   : Gint;
       Num    : Positive;
    end record;
@@ -202,7 +195,7 @@ package body Create_Canvas is
       new String'("orange1"),
       new String'("pink"));
 
-   Colors : array (Color_Type) of Gdk_Color;
+   Colors : array (Color_Type) of Gdk_RGBA;
 
    Items_List : array (1 .. 500) of Canvas_Item;
    Last_Item : Positive;
@@ -260,12 +253,12 @@ package body Create_Canvas is
       Cr     : Cairo_Context)
    is
    begin
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Color);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Color);
       Cairo.Rectangle
         (Cr, 0.5, 0.5, Gdouble (Item.W) - 1.0, Gdouble (Item.H) - 1.0);
       Cairo.Fill (Cr);
 
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Title);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
       Rectangle
         (Cr, 0.5, 0.5, Gdouble (Item.W) - 1.0, Gdouble (Item.H) - 1.0);
       Cairo.Stroke (Cr);
@@ -290,14 +283,14 @@ package body Create_Canvas is
    begin
       Cairo.Save (Cr);
 
-      Set_Source_Color (Cr, Item.Color);
+      Set_Source_RGBA (Cr, Item.Color);
       Rectangle
         (Cr, 0.5, 0.5,
          W - 2.0 * Arrow - 1.0,
          H - 1.0);
       Cairo.Fill (Cr);
 
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Title);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
       Rectangle
         (Cr, 0.5, 0.5,
          W - 2.0 * Arrow - 1.0,
@@ -354,7 +347,7 @@ package body Create_Canvas is
 
       Draw (Display_Item_Record (Item.all)'Access, Cr);
 
-      Gdk.Cairo.Set_Source_Color (Cr, Item.Title);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
       Cairo.Rectangle
         (Cr, Item_Width_10 - 0.5, Item_Height_10 - 0.5, 21.0, 21.0);
       Cairo.Stroke (Cr);
@@ -370,18 +363,18 @@ package body Create_Canvas is
    is
       Rect : constant Cairo_Rectangle_Int := Get_Coord (Item);
    begin
-      if Get_Event_Type (Event) = Button_Press
-        and then Get_Button (Event) = 1
+      if Event.The_Type = Button_Press
+        and then Event.Button = 1
       then
-         if Gint (Get_Y (Event)) > Rect.Height - 4 then
+         if Gint (Event.Y) > Rect.Height - 4 then
             return True;
          end if;
 
-      elsif Get_Event_Type (Event) = Motion_Notify then
-         if Get_Y (Event) > 4.0 then
+      elsif Event.The_Type = Motion_Notify then
+         if Event.Y > 4.0 then
             Set_Screen_Size
               (Item, Get_Coord (Item).Width,
-               Gint (Get_Y (Event)));
+               Gint (Event.Y));
          end if;
 
          return True;
@@ -406,8 +399,7 @@ package body Create_Canvas is
          Cairo.Restore (Cr);
       else
          Cairo.Save (Cr);
-         Gdk.Cairo.Set_Source_Color
-           (Cr, Get_Bg (Get_Style (Canvas), State_Normal));
+         Gdk.Cairo.Set_Source_RGBA (Cr, (0.8, 0.8, 0.8, 1.0));
          Cairo.Paint (Cr);
          Cairo.Restore (Cr);
       end if;
@@ -461,7 +453,7 @@ package body Create_Canvas is
    begin
       Item.Canvas := Interactive_Canvas (Canvas);
       Item.Color := Colors (Color_Random.Random (Color_Gen));
-      Item.Title := Get_Black (Get_Default_Style);
+      Item.Title := (0.0, 0.0, 0.0, 1.0);
       Item.W := Item_Width * Random (Zoom_Gen);
       Item.H := Item_Height * Random (Zoom_Gen);
       Item.Num := Last_Item;
@@ -492,7 +484,9 @@ package body Create_Canvas is
    -- Clear --
    -----------
 
-   procedure Clear (Canvas : access Interactive_Canvas_Record'Class) is
+   procedure Clear
+      (Canvas : access Interactive_Canvas_Record'Class)
+   is
       function Remove_Internal
         (Canvas : access Interactive_Canvas_Record'Class;
          Item   : access Canvas_Item_Record'Class) return Boolean is
@@ -760,7 +754,6 @@ package body Create_Canvas is
       Canvas  : Image_Canvas)
    is
       Surface : Cairo_Surface;
-      Style   : Gtk_Style;
 
    begin
       if Get_Active (Gtk_Check_Button (Bg_Draw)) then
@@ -772,25 +765,11 @@ package body Create_Canvas is
            (Canvas.Background, Cairo_Extend_Repeat);
          Destroy (Surface);
 
-         Style := Get_Default_Style;
-         Set_Bg
-           (Style, State_Normal, Gdk_Color'(Get_Black (Style)));
-         Set_Fg
-           (Style, State_Normal, Gdk_Color'(Get_Light (Style, State_Normal)));
-         Set_Style (Canvas, Style);
-
       else
          if Canvas.Background /= Null_Pattern then
             Destroy (Canvas.Background);
             Canvas.Background := Null_Pattern;
          end if;
-
-         Style := Get_Default_Style;
-         Set_Bg
-           (Style, State_Normal, Gdk_Color'(Get_Light (Style, State_Normal)));
-         Set_Fg
-           (Style, State_Normal, Gdk_Color'(Get_Black (Style)));
-         Set_Style (Canvas, Style);
       end if;
       Refresh_Canvas (Canvas);
    end Background_Changed;
@@ -809,6 +788,7 @@ package body Create_Canvas is
       Adj      : Gtk_Adjustment;
       F        : Gtk_Frame;
       Align    : Gtk_Check_Button;
+      Success  : Boolean;
 
    begin
       Last_Item := Items_List'First;
@@ -952,11 +932,11 @@ package body Create_Canvas is
 
       Realize (Canvas);
 
-      --  Initialize the colors
+      --  Initialize the colors. They no longer need to be allocated in
+      --  gtk3.
 
       for J in Color_Names'Range loop
-         Colors (J) := Parse (Color_Names (J).all);
-         Alloc (Gtk.Widget.Get_Default_Colormap, Colors (J));
+         Parse (Colors (J), Color_Names (J).all, Success);
       end loop;
 
       Layout := Create_Pango_Layout (Frame);

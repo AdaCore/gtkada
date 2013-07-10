@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2006 AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;                use Glib;
 with Gtk.Adjustment;      use Gtk.Adjustment;
@@ -36,14 +30,13 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.GEntry;          use Gtk.GEntry;
 with Gtk.Label;           use Gtk.Label;
 with Glib.Main;           use Glib.Main;
-with Gtk.Option_Menu;     use Gtk.Option_Menu;
+with Gtk.Combo_Box_Text;  use Gtk.Combo_Box_Text;
 with Gtk.Progress_Bar;    use Gtk.Progress_Bar;
-with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
-with Gtk.Table;           use Gtk.Table;
+with Gtk.Grid;            use Gtk.Grid;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk;                 use Gtk;
-with Gtkada.Types;        use Gtkada.Types;
+with Gtkada.Handlers;     use Gtkada.Handlers;
 
 with Common; use Common;
 
@@ -51,21 +44,17 @@ package body Create_Progress is
 
    package Time_Cb  is new Glib.Main.Generic_Sources (Gtk_Progress_Bar);
 
-   Items1 : constant Chars_Ptr_Array :=
-     "Left-Right" + "Right-Left" + "Bottom-Top" + "Top-Bottom";
-
    type ProgressData is record
       Pbar            : Gtk_Progress_Bar;
       Block_Spin      : Gtk_Spin_Button;
-      X_Align_Spin    : Gtk_Spin_Button;
-      Y_Align_Spin    : Gtk_Spin_Button;
-      Step_Spin       : Gtk_Spin_Button;
-      Act_Blocks_Spin : Gtk_Spin_Button;
       Label           : Gtk_Label;
-      Omenu1          : Gtk_Option_Menu;
+      Omenu1          : Gtk_Combo_Box_Text;
       Omenu1_Group    : Widget_SList.GSlist;
+      Omenu2          : Gtk_Combo_Box_Text;
+      Omenu2_Group    : Widget_SList.GSlist;
       Gentry          : Gtk_Entry;
       Timer           : G_Source_Id;
+      Activity        : Boolean := False;
    end record;
 
    Pdata : ProgressData;
@@ -89,16 +78,20 @@ package body Create_Progress is
    function Progress_Timeout (Pbar : Gtk_Progress_Bar) return Boolean is
       pragma Warnings (Off, Pbar);
       New_Val : Gdouble;
-      Adj     : constant Gtk_Adjustment := Get_Adjustment (Pdata.Pbar);
-
    begin
-      New_Val := Get_Value (Adj) + 5.0;
-
-      if New_Val > Get_Upper (Adj) then
-         New_Val := Get_Lower (Adj);
+      New_Val := Get_Fraction (Pdata.Pbar);
+      New_Val := New_Val + 0.01;
+      if New_Val > 1.0 then
+         New_Val := 0.0;
       end if;
 
-      Set_Value (Adj, New_Val);
+      if Pdata.Activity then
+         Pdata.Pbar.Pulse;
+         Pdata.Label.Set_Text ("???");
+      else
+         Set_Fraction (Pdata.Pbar, New_Val);
+         Pdata.Label.Set_Text (Integer'Image (Integer (New_Val * 100.0)));
+      end if;
 
       return True;
    end Progress_Timeout;
@@ -107,8 +100,10 @@ package body Create_Progress is
    -- Destroy_Progress --
    ----------------------
 
-   procedure Destroy_Progress (Window : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Window);
+   procedure Destroy_Progress
+      (Window : access Gtk_Widget_Record'Class)
+   is
+      pragma Unreferenced (Window);
    begin
       Remove (Pdata.Timer);
       Pdata.Omenu1_Group := Widget_SList.Null_List;
@@ -117,44 +112,49 @@ package body Create_Progress is
       --  destroyed elsewhere. No need to do that here.
    end Destroy_Progress;
 
+   ----------------------
+   -- Toggle_Inversion --
+   ----------------------
+
+   procedure Toggle_Inversion
+      (Widget : access Gtk_Widget_Record'Class)
+   is
+      Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
+      Current : constant UTF8_String := Combo.Get_Active_Text;
+      Is_Inverted : constant Boolean := Current = "Inverted";
+   begin
+      Pdata.Pbar.Set_Inverted (Is_Inverted);
+   end Toggle_Inversion;
+
    ------------------------
    -- Toggle_Orientation --
    ------------------------
 
-   procedure Toggle_Orientation (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
-      I : constant Natural := Selected_Button (Pdata.Omenu1_Group);
+   procedure Toggle_Orientation
+      (Widget : access Gtk_Widget_Record'Class)
+   is
+      Combo : constant Gtk_Combo_Box_Text := Gtk_Combo_Box_Text (Widget);
+      Current : constant UTF8_String := Combo.Get_Active_Text;
    begin
-      Set_Orientation (Pdata.Pbar,
-                       Gtk_Progress_Bar_Orientation'Val (3 - I));
+      if Current = "Horizontal" then
+         Set_Orientation (Pdata.Pbar, Orientation_Horizontal);
+      else
+         Set_Orientation (Pdata.Pbar, Orientation_Vertical);
+      end if;
    end Toggle_Orientation;
 
    ----------------------
    -- Toggle_Show_Text --
    ----------------------
 
-   procedure Toggle_Show_Text (Widget : access Gtk_Check_Button_Record'Class)
+   procedure Toggle_Show_Text
+      (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Show_Text (Progress  => Pdata.Pbar,
-                     Show_Text => Get_Active (Widget));
+      Set_Show_Text (Progress_Bar => Pdata.Pbar,
+                     Show_Text    => Get_Active (Widget));
       Set_Sensitive (Pdata.Gentry, Get_Active (Widget));
-      Set_Sensitive (Pdata.X_Align_Spin, Get_Active (Widget));
-      Set_Sensitive (Pdata.Y_Align_Spin, Get_Active (Widget));
    end Toggle_Show_Text;
-
-   ------------------
-   -- Adjust_Align --
-   ------------------
-
-   procedure Adjust_Align (Adj : access Gtk_Adjustment_Record'Class) is
-      pragma Warnings (Off, Adj);
-   begin
-      Set_Text_Alignment
-        (Pdata.Pbar,
-         Gfloat (Get_Value (Pdata.X_Align_Spin)),
-         Gfloat (Get_Value (Pdata.Y_Align_Spin)));
-   end Adjust_Align;
 
    --------------------------
    -- Toggle_Activity_Mode --
@@ -164,19 +164,20 @@ package body Create_Progress is
      (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Activity_Mode (Pdata.Pbar, Get_Active (Widget));
-      Set_Sensitive (Pdata.Step_Spin, Get_Active (Widget));
-      Set_Sensitive (Pdata.Act_Blocks_Spin, Get_Active (Widget));
+      Pdata.Activity := Get_Active (Widget);
    end Toggle_Activity_Mode;
 
    -------------------
    -- Entry_Changed --
    -------------------
 
-   procedure Entry_Changed (Widget : access Gtk_Widget_Record'Class) is
-      pragma Warnings (Off, Widget);
+   procedure Entry_Changed
+      (Widget : access Gtk_Widget_Record'Class)
+   is
+      pragma Unreferenced (Widget);
    begin
-      Set_Format_String (Pdata.Pbar, Get_Text (Pdata.Gentry));
+      --  ??? will text with control characters display as expected?
+      Set_Text (Pdata.Pbar, Get_Text (Pdata.Gentry));
    end Entry_Changed;
 
    ---------
@@ -191,7 +192,7 @@ package body Create_Progress is
       Align  : Gtk_Alignment;
       Adj    : Gtk_Adjustment;
       Label  : Gtk_Label;
-      Tab    : Gtk_Table;
+      Tab    : Gtk_Grid;
       Check  : Gtk_Check_Button;
 
    begin
@@ -203,9 +204,7 @@ package body Create_Progress is
       Set_Border_Width (Vbox, 10);
       Add (Frame, Vbox);
 
-      Widget_Handler.Connect
-        (Vbox, "destroy",
-         Widget_Handler.To_Marshaller (Destroy_Progress'Access));
+      Widget_Handler.Connect (Vbox, "destroy", Destroy_Progress'Access);
 
       Gtk_New (Frame2, "Progress");
       Pack_Start (Vbox, Frame2, False, True, 0);
@@ -221,8 +220,8 @@ package body Create_Progress is
       Pack_Start (Vbox2, Align, False, False, 5);
 
       Gtk_New (Pdata.Pbar);
-      Configure (Pdata.Pbar, 1.0, 1.0, 300.0);
-      Set_Format_String (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
+      --  ??? will text with control characters display as expected?
+      Set_Text (Pdata.Pbar, "");
       Add (Align, Pdata.Pbar);
 
       Pdata.Timer := Time_Cb.Timeout_Add
@@ -250,100 +249,74 @@ package body Create_Progress is
       Gtk_New_Vbox (Vbox2, False, 5);
       Add (Frame2, Vbox2);
 
-      Gtk_New (Tab,
-               Rows        => 7,
-               Columns     => 2,
-               Homogeneous => False);
+      Gtk_New (Tab);
       Pack_Start (Vbox2, Tab, False, True, 0);
 
+      --  Orientation
+
       Gtk_New (Label, "Orientation :");
-      Attach (Tab, Label, 0, 1, 0, 1, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Label, 0, 0);
       Set_Alignment (Label, 0.0, 0.5);
 
-      Build_Option_Menu (Pdata.Omenu1, Pdata.Omenu1_Group,
-                         Items1, 0, Toggle_Orientation'Access);
+      Gtk_New (Pdata.Omenu1);
+      Pdata.Omenu1.Append_Text ("Horizontal");
+      Pdata.Omenu1.Append_Text ("Vertical");
+      Widget_Callback.Connect
+         (Pdata.Omenu1, "changed", Toggle_Orientation'Access);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 0, 1, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 0);
       Pack_Start (Hbox, Pdata.Omenu1, True, True, 0);
+
+      --  Inversion
+
+      Gtk_New (Label, "Inversion :");
+      Tab.Attach (Label, 0, 1);
+      Set_Alignment (Label, 0.0, 0.5);
+
+      Gtk_New (Pdata.Omenu2);
+      Pdata.Omenu2.Append_Text ("Not Inverted");
+      Pdata.Omenu2.Append_Text ("Inverted");
+      Widget_Callback.Connect
+         (Pdata.Omenu2, "changed", Toggle_Inversion'Access);
+
+      Gtk_New_Hbox (Hbox, False, 0);
+      Tab.Attach (Hbox, 1, 1);
+      Pack_Start (Hbox, Pdata.Omenu2, True, True, 0);
+
+      --  Show Text
 
       Gtk_New (Check, "Show Text");
       Check_Handler.Connect
         (Check, "clicked",
          Check_Handler.To_Marshaller (Toggle_Show_Text'Access));
-      Attach (Tab, Check, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Check, 0, 2);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 1, 2, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 2);
 
-      Gtk_New (Label, "Format : ");
+      --  Format
+
+      Gtk_New (Label, "Text (leave empty to display a percentage) : ");
       Pack_Start (Hbox, Label, False, True, 0);
 
       Gtk_New (Pdata.Gentry);
       Widget_Handler.Object_Connect
-        (Pdata.Gentry, "changed",
-         Widget_Handler.To_Marshaller (Entry_Changed'Access),
+        (Pdata.Gentry, "changed", Entry_Changed'Access,
          Slot_Object => Pdata.Gentry);
       Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
-      Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
-      Set_USize (Pdata.Gentry, 100, -1);
+      Set_Text (Pdata.Gentry, "");
+      Set_Size_Request (Pdata.Gentry, 100, -1);
       Set_Sensitive (Pdata.Gentry, False);
 
-      Gtk_New (Label, "Text align :");
-      Attach (Tab, Label, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-      Set_Alignment (Label, 0.0, 0.5);
-
-      Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 2, 3, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      Gtk_New (Label, "x :");
-      Pack_Start (Hbox, Label, False, True, 5);
-
-      Gtk_New (Adj,
-               Value          => 0.5,
-               Lower          => 0.0,
-               Upper          => 1.0,
-               Step_Increment => 0.1,
-               Page_Increment => 0.1,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.X_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
-      Pack_Start (Hbox, Pdata.X_Align_Spin, False, True, 0);
-      Set_Sensitive (Pdata.X_Align_Spin, False);
-      Adj_Handler.Connect
-        (Adj, "value_changed",
-         Adj_Handler.To_Marshaller (Adjust_Align'Access));
-
-      Gtk_New (Label, "y :");
-      Pack_Start (Hbox, Label, False, True, 5);
-
-      Gtk_New (Adj,
-               Value          => 0.5,
-               Lower          => 0.0,
-               Upper          => 1.0,
-               Step_Increment => 0.1,
-               Page_Increment => 0.1,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.Y_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
-      Pack_Start (Hbox, Pdata.Y_Align_Spin, False, True, 0);
-      Set_Sensitive (Pdata.Y_Align_Spin, False);
-      Adj_Handler.Connect
-        (Adj, "value_changed",
-         Adj_Handler.To_Marshaller (Adjust_Align'Access));
+      --  Block Count
 
       Gtk_New (Label, "Block count :");
-      Attach (Tab, Label, 0, 1, 4, 5, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Label, 0, 4);
       Set_Alignment (Label, 0.0, 0.5);
 
       Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 4, 5, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
+      Tab.Attach (Hbox, 1, 4);
 
       Gtk_New (Adj,
                Value          => 10.0,
@@ -356,52 +329,13 @@ package body Create_Progress is
       Pack_Start (Hbox, Pdata.Block_Spin, False, True, 0);
       Set_Sensitive (Pdata.Block_Spin, False);
 
+      --  Activity Mode
+
       Gtk_New (Check, "Activity mode");
-      Check_Handler.Connect
-        (Check, "clicked",
-         Check_Handler.To_Marshaller (Toggle_Activity_Mode'Access));
-      Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 5, 6, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      Gtk_New (Label, "Step size :");
-      Pack_Start (Hbox, Label, False, True, 0);
-
-      Gtk_New (Adj,
-               Value          => 3.0,
-               Lower          => 1.0,
-               Upper          => 20.0,
-               Step_Increment => 1.0,
-               Page_Increment => 5.0,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.Step_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
-      Pack_Start (Hbox, Pdata.Step_Spin, False, True, 0);
-      Set_Sensitive (Pdata.Step_Spin, False);
-
-      Gtk_New_Hbox (Hbox, False, 0);
-      Attach (Tab, Hbox, 1, 2, 6, 7, Enums.Expand or Enums.Fill,
-              Enums.Expand or Enums.Fill, 5, 5);
-
-      Gtk_New (Label, "Blocks :");
-      Pack_Start (Hbox, Label, False, True, 0);
-
-      Gtk_New (Adj,
-               Value          => 5.0,
-               Lower          => 2.0,
-               Upper          => 10.0,
-               Step_Increment => 1.0,
-               Page_Increment => 5.0,
-               Page_Size      => 0.0);
-      Gtk_New (Pdata.Act_Blocks_Spin, Adj, Climb_Rate => 0.0,
-               The_Digits => 0);
-      Pack_Start (Hbox, Pdata.Act_Blocks_Spin, False, True, 0);
-      Set_Sensitive (Pdata.Act_Blocks_Spin, False);
+      Check_Handler.Connect (Check, "clicked", Toggle_Activity_Mode'Access);
+      Tab.Attach (Check, 0, 5);
 
       Show_All (Vbox);
    end Run;
 
 end Create_Progress;
-

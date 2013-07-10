@@ -25,7 +25,7 @@ install:
 	$(MAKE) -C $(projects_dir) install
 	$(MAKE) -C $(testgtk_dir) install
 	$(MAKE) -C $(doc_dir) install
-	$(MAKE) -C $(example_dir) install
+	#$(MAKE) -C $(example_dir) install
 	$(MAKE) -C $(xml_dir) install
 	@echo '------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                              --'
@@ -39,15 +39,20 @@ docs:
 	$(MAKE) -C docs
 
 
-GIR_FILES=contrib/Gtk-2.0.gir
-
 # Generate the binding automatically, through a python script
-# The list of files to generate is in contrib/binding.py
-
 generate: force
 	${RM} src/generated/*.ad?
-	python contrib/binding.py ${GIR_FILES} contrib/binding.xml
-	cd src/generated; gnatchop -q -w tmp.ada
+	python contrib/binding.py \
+	   --gir-file=contrib/GLib-2.0.gir \
+	   --gir-file=contrib/GObject-2.0.gir \
+		--gir-file=contrib/Gtk-3.0.gir \
+		--gir-file=contrib/Gdk-3.0.gir \
+		--gir-file=contrib/Pango-1.0.gir \
+		--gir-file=contrib/Gio-2.0.gir \
+		--xml-file=contrib/binding.xml \
+		--ada-output=src/generated/tmp.ada \
+		--c-output=src/misc_generated.c
+	cd src/generated; gnatchop -gnat05 -q -w tmp.ada
 
 clean-generic:
 	-${RM} core
@@ -58,7 +63,7 @@ mostlyclean-generic: clean-generic
 
 clean: clean-generic
 	-$(MAKE) -C $(testgtk_dir) clean
-	-$(MAKE) -C $(example_dir) clean
+	#-$(MAKE) -C $(example_dir) clean
 	-$(MAKE) -C $(src_dir) clean
 
 distclean: mostlyclean-generic

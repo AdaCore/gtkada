@@ -1,32 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright 2000-2006 AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;             use Glib;
 with Gtk.Box;          use Gtk.Box;
@@ -114,8 +107,9 @@ package body Create_Test_Idle is
    -- Toggle_Container --
    ----------------------
 
-   procedure Toggle_Container (Button : access My_Button_Record'Class;
-                               Contain : in Gtk_Box) is
+   procedure Toggle_Container
+      (Button  : access My_Button_Record'Class;
+       Contain : in Gtk_Box) is
    begin
       Set_Resize_Mode (Contain, Button.Value);
    end Toggle_Container;
@@ -140,9 +134,7 @@ package body Create_Test_Idle is
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
       Add (Frame, Vbox);
 
-      Widget_Handler.Connect
-        (Vbox, "destroy",
-         Widget_Handler.To_Marshaller (Destroy_Idle'Access));
+      Widget_Handler.Connect (Vbox, "destroy", Destroy_Idle'Access);
 
       Gtk_New (Label, "count : " & Integer'Image (Count));
       Set_Padding (Label, 10, 10);
@@ -186,22 +178,17 @@ package body Create_Test_Idle is
 
       Gtk_New (Button, "start");
       Label_Handler.Object_Connect
-        (Button, "clicked",
-         Label_Handler.To_Marshaller (Start_Idle'Access),
-         Slot_Object => Label);
-      Set_Flags (Button, Can_Default);
+        (Button, "clicked", Start_Idle'Access, Slot_Object => Label);
+      Button.Set_Can_Default (True);
       Pack_Start (Vbox, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
       Widget_Handler.Object_Connect
-        (Button, "clicked",
-         Widget_Handler.To_Marshaller (Destroy_Idle'Access),
-         Slot_Object => Vbox);
-      Set_Flags (Button, Can_Default);
+        (Button, "clicked", Destroy_Idle'Access, Slot_Object => Vbox);
+      Button.Set_Can_Default (True);
       Pack_Start (Vbox, Button, False, False, 0);
 
       Show_All (Frame);
    end Run;
 
 end Create_Test_Idle;
-

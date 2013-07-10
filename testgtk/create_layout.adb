@@ -1,35 +1,28 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Gdk.Drawable;        use Gdk.Drawable;
+with Cairo;               use Cairo;
 with Gdk.Event;           use Gdk.Event;
-with Gdk.Rectangle;       use Gdk.Rectangle;
 with Gdk.Window;          use Gdk.Window;
 with Glib;                use Glib;
 with Gtk.Adjustment;      use Gtk.Adjustment;
@@ -40,7 +33,7 @@ with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Layout;          use Gtk.Layout;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Style;           use Gtk.Style;
+with Gtk.Widget;          use Gtk.Widget;
 
 package body Create_Layout is
 
@@ -64,45 +57,50 @@ package body Create_Layout is
         & " @bGtk_Scrolled_Window@B widget, as is the case in this demo."
         & ASCII.LF
         & "In this demo, the background is painted by a callback on the"
-        & " expose_event, and thus does not occupy any memory."
+        & " draw event, and thus does not occupy any memory."
         & " The Layout has a size of 1600 by 128000.";
    end Help;
 
-   --------------------
-   -- Expose_Handler --
-   --------------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Expose_Handler (Layout : access Gtk_Layout_Record'Class;
-                            Event  : Gdk_Event_Expose)
-                           return Boolean
+   function On_Draw
+      (Layout : access Gtk_Layout_Record'Class;
+       Cr     : Cairo_Context) return Boolean
    is
-      Area : constant Gdk_Rectangle := Get_Area (Event);
-      Imin, Imax : Guint;
-      Jmin, Jmax : Guint;
+      Imin, Imax : Gdouble;
+      Jmin, Jmax : Gdouble;
+      Xmin, Xmax : Gint;
+      Ymin, Ymax : Gint;
+      X, Y : Gint;
    begin
-      Imin := Guint (Area.X) / 10;
-      Imax := (Guint (Area.X) + Guint (Area.Width) + 9) / 10;
-      Jmin := Guint (Area.Y) / 10;
-      Jmax := (Guint (Area.Y) + Guint (Area.Height) + 9) / 10;
+      Gdk.Window.Get_Position (Layout.Get_Bin_Window, X, Y);
+      Cairo.Translate (Cr, Gdouble (X), Gdouble (Y));
 
-      Clear_Area (Get_Window (Layout), Area.X, Area.Y, Gint (Area.Width),
-                  Gint (Area.Height));
+      Clip_Extents (Cr, Imin, Jmin, Imax, Jmax);
+      Xmin := Gint (Imin / 10.0);
+      Xmax := Gint ((Imax + 9.0) / 10.0);
+      Ymin := Gint (Jmin / 10.0);
+      Ymax := Gint ((Jmax + 9.0) / 10.0);
 
-      for I in Imin .. Imax - 1 loop
-         for J in Jmin .. Jmax - 1 loop
+      for I in Xmin .. Xmax - 1 loop
+         for J in Ymin .. Ymax - 1 loop
             if (I + J) mod 2 /= 0 then
-               Draw_Rectangle (Get_Bin_Window (Layout),
-                               Get_Black_GC (Get_Style (Layout)),
-                               True,
-                               Gint (10 * I),
-                               Gint (10 * J),
-                               Gint (1 + I mod 10),
-                               Gint (1 + J mod 10));
+               Rectangle (Cr,
+                          X      => Gdouble (10 * I),
+                          Y      => Gdouble (10 * J),
+                          Width  => Gdouble (1 + I mod 10),
+                          Height => Gdouble (1 + J mod 10));
             end if;
          end loop;
       end loop;
+
+      Set_Source_Rgb (Cr, Red => 0.0, Green => 0.0, Blue => 0.0);
+      Cairo.Fill (Cr);
+
       return True;
-   end Expose_Handler;
+   end On_Draw;
 
    ---------
    -- Run --
@@ -127,9 +125,8 @@ package body Create_Layout is
       Set_Step_Increment (Get_Hadjustment (Layout), 10.0);
       Set_Step_Increment (Get_Vadjustment (Layout), 10.0);
 
-
-      Event_Cb.Connect (Layout, "expose_event",
-                        Event_Cb.To_Marshaller (Expose_Handler'Access));
+      Event_Cb.Connect (Layout, Signal_Draw,
+                        Event_Cb.To_Marshaller (On_Draw'Access));
       Set_Size (Layout, 1600, 128000);
 
       for I in 0 .. Gint'(15) loop

@@ -591,17 +591,13 @@ GTKADA_MICRO_VERSION
 GTKADA_MINOR_VERSION
 GTKADA_MAJOR_VERSION
 GTKADA_VERSION
-HAVE_GNOME
-GNOME_STATIC_LIBS
-GNOME_LIBS
-GNOME_CFLAGS
 HAVE_OPENGL
 GL_CFLAGS
 GL_LIBS
+HAVE_GTKEXTRA
 HAVE_GETTEXT
 GETTEXT_INTL
 USE_NLS
-DEFINE_UNDERLINE_ERROR
 GTK_LIBS_FOR_GNATMAKE
 GTK_LIBS
 GTK_CFLAGS
@@ -686,6 +682,7 @@ enable_static
 enable_shared
 enable_build
 enable_nls
+enable_gtkextra
 with_GL
 with_GL_prefix
 '
@@ -1318,6 +1315,7 @@ Optional Features:
                           libraries are preselected by default
 --enable-build=<type>       Default build type for the library (Debug, Production)
   --disable-nls           do not use Native Language Support
+  --enable-gtkextra       Build the gtkextra widgets
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1893,9 +1891,9 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 # Current release settings
-GTKADA_MAJOR_VERSION=2
-GTKADA_MINOR_VERSION=24
-GTKADA_MICRO_VERSION=4
+GTKADA_MAJOR_VERSION=3
+GTKADA_MINOR_VERSION=8
+GTKADA_MICRO_VERSION=1
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 ac_aux_dir=
@@ -3346,17 +3344,17 @@ $as_echo "no" >&6; }
 fi
 
 
-  min_gtk_version=2.24.0
+  min_gtk_version=3.8.0
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTK - version >= $min_gtk_version" >&5
 $as_echo_n "checking for GTK - version >= $min_gtk_version... " >&6; }
   no_gtk=""
-  GTK="gtk+-2.0"
+  GTK="gtk+-3.0"
   if test "$PKG_CONFIG" = "no" ; then
     no_gtk=yes
   else
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
-    GTK_LIBS=`$PKG_CONFIG $GTK --libs`
+    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
     gtk_config_major_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
     gtk_config_minor_version=`$PKG_CONFIG $GTK --modversion | \
@@ -3511,43 +3509,6 @@ rm -f core conftest.err conftest.$ac_objext \
 
 
   rm -f conf.gtktest
-
-
-# checking for PANGO_UNDERLINE_ERROR
-
-  ac_save_CFLAGS="$CFLAGS"
-  ac_save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $GTK_CFLAGS"
-  LIBS="$LIBS $GTK_LIBS"
-  CFLAGS="$CFLAGS $GTK_CFLAGS"
-  LIBS="$LIBS $GTK_LIBS"
-  DEFINE_UNDERLINE_ERROR="#undef HAVE_PANGO_UNDERLINE_ERROR"
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO_UNDERLINE_ERROR" >&5
-$as_echo_n "checking for PANGO_UNDERLINE_ERROR... " >&6; }
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
- #include <pango/pango.h>
-int
-main ()
-{
- PangoUnderline underline = PANGO_UNDERLINE_ERROR;
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      DEFINE_UNDERLINE_ERROR="#define HAVE_PANGO_UNDERLINE_ERROR"
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-  CFLAGS="$ac_save_CFLAGS"
-  LIBS="$ac_save_LIBS"
 
 
 # Gettext stuff
@@ -3707,6 +3668,20 @@ fi
 
 
 
+
+
+# Should we compile with gtkextra ?
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtkextra" >&5
+$as_echo_n "checking for gtkextra... " >&6; }
+# Check whether --enable-gtkextra was given.
+if test "${enable_gtkextra+set}" = set; then :
+  enableval=$enable_gtkextra; HAVE_GTKEXTRA=$enableval
+else
+  HAVE_GTKEXTRA=no
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $HAVE_GTKEXTRA" >&5
+$as_echo "$HAVE_GTKEXTRA" >&6; }
 
 
 # try to find OpenGL if present
@@ -3911,41 +3886,6 @@ $as_echo "*** OpenGL support will not be integrated into GtkAda ***" >&6; }
 
 
 
-# try to find gnome if present
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gnome2" >&5
-$as_echo_n "checking for gnome2... " >&6; }
-  GNOME_CFLAGS=""
-  GNOME_LIBS=""
-  GNOME_STATIC_LIBS=""
-
-  if test "$PKG_CONFIG" = "no" ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    HAVE_GNOME="False"
-  else
-    GNOMEUI="libgnomeui-2.0"
-    GNOME_PREFIX=`$PKG_CONFIG $GNOMEUI --variable=prefix`
-    if test "x$GNOME_PREFIX" = "x"; then
-      HAVE_GNOME="False"
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      HAVE_GNOME="True"
-      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags`
-      GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
-      GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui-2.a $GNOME_PREFIX/lib/libgnome-2.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a $GNOME_PREFIX/lib/libbonoboui-2.a"
-    fi
-  fi
-
-
-
-
-
-
-
 # Set the version number of GtkAda
 
 
@@ -3961,7 +3901,7 @@ EXEC_PREFIX="$prefix"
 
 libdir='${prefix}/lib'
 
-ac_config_files="$ac_config_files Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/gnome/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr"
+ac_config_files="$ac_config_files Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4677,7 +4617,6 @@ do
     "testgtk/Makefile") CONFIG_FILES="$CONFIG_FILES testgtk/Makefile" ;;
     "src/gtkextra/Makefile") CONFIG_FILES="$CONFIG_FILES src/gtkextra/Makefile" ;;
     "src/opengl/Makefile") CONFIG_FILES="$CONFIG_FILES src/opengl/Makefile" ;;
-    "src/gnome/Makefile") CONFIG_FILES="$CONFIG_FILES src/gnome/Makefile" ;;
     "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
     "docs/gtkada_rm/Makefile") CONFIG_FILES="$CONFIG_FILES docs/gtkada_rm/Makefile" ;;
     "po/Makefile") CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;

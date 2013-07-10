@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                 Copyright (C) 2006-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  This is a unit purely internal to GtkAda, to ease binding and avoid code
 --  duplication.
@@ -32,16 +27,37 @@
 --  release to release.
 --  See also Gtkada.Types
 
---  with Gdk.Color;
---  with Gdk.Types;
+with Ada.Exceptions;
 with Glib;
---  with Glib.Object;
+with Glib.Object;
+with Glib.Types;
+with Glib.Values;
 with Gtkada.C;
 with GNAT.Strings;
 with Interfaces.C.Strings;
+with System;
 
 package Gtkada.Bindings is
    package ICS renames Interfaces.C.Strings;
+
+   generic
+      type T is private;
+      Null_T : T;
+      with function "=" (T1, T2 : T) return Boolean is <>;
+   function Generic_To_Address_Or_Null
+     (Val : System.Address) return System.Address;
+   --  Return either a Null_Address or a pointer to Val, depending on
+   --  whether Val is the null value for the type.
+   --  In all cases, Val is supposed to be an access to T.
+   --  In Ada2012, these could be replaced with expression functions instead.
+
+   function Value_And_Free
+     (Str : Interfaces.C.Strings.chars_ptr) return String;
+   --  Returns the value stored in Str, and free the memory occupied by Str.
+
+   function Value_Allowing_Null
+     (Str : Interfaces.C.Strings.chars_ptr) return String;
+   --  Return the value stored in Str, and an empty string if Str is null.
 
    -------------
    -- Strings --
@@ -65,6 +81,11 @@ package Gtkada.Bindings is
      (C : ICS.chars_ptr_array) return GNAT.Strings.String_List;
    --  Converts C into a String_List. Returned value must be freed by caller,
    --  as well as C. C is NULL terminated.
+
+   function To_String_List_And_Free
+     (C : chars_ptr_array_access) return GNAT.Strings.String_List;
+   --  Converts C into a String_List, and frees C.
+   --  Returned value must be freed by caller.
 
    function To_String_List
      (C : ICS.chars_ptr_array; N : Glib.Gint)
@@ -92,85 +113,104 @@ package Gtkada.Bindings is
 
    package Gint_Arrays is new Gtkada.C.Unbounded_Arrays
      (Glib.Gint, 0, Natural, Glib.Gint_Array);
---     package Points_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
---     package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
---        Natural, Gdk.Types.Gdk_Atom_Array);
    package Pspec_Arrays is new Gtkada.C.Unbounded_Arrays
      (Glib.Param_Spec, null, Natural, Glib.Param_Spec_Array);
---     package Signal_Id_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Glib.Signal_Id, Glib.Null_Signal_Id, Glib.Guint,
---        Glib.Object.Signal_Id_Array);
    package GType_Arrays is new Gtkada.C.Unbounded_Arrays
      (Glib.GType, Glib.GType_None, Glib.Guint, Glib.GType_Array);
---     package Color_Arrays is new Gtkada.C.Unbounded_Arrays
---       (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
---        Gdk.Color.Gdk_Color_Array);
 
---     type Unbounded_Gint_Array is array (Natural) of Glib.Gint;
---     pragma Convention (C, Unbounded_Gint_Array);
---     type Unbounded_Gint_Array_Access is access Unbounded_Gint_Array;
---     procedure G_Free (Arr : in out Unbounded_Gint_Array_Access);
---     function To_Gint_Array
---       (Arr : Unbounded_Gint_Array_Access; N : Glib.Gint)
---        return Glib.Gint_Array;
    function To_Gint_Array_Zero_Terminated
      (Arr : Gint_Arrays.Unbounded_Array_Access)
       return Glib.Gint_Array;
    --  Converts Arr, stopping at the first 0 encountered
 
---     type Unbounded_Points_Array is array (Natural) of Gdk.Types.Gdk_Point;
---     pragma Convention (C, Unbounded_Points_Array);
---     type Unbounded_Points_Array_Access is access Unbounded_Points_Array;
---     procedure G_Free (Arr : in out Unbounded_Points_Array_Access);
---     function To_Point_Array
---       (Arr : Unbounded_Points_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Points_Array;
+   -------------
+   -- Signals --
+   -------------
 
---     type Unbounded_Atom_Array is array (Natural) of Gdk.Types.Gdk_Atom;
---     pragma Convention (C, Unbounded_Atom_Array);
---     type Unbounded_Atom_Array_Access is access Unbounded_Atom_Array;
---     procedure G_Free (Arr : in out Unbounded_Atom_Array_Access);
---     function To_Atom_Array
---       (Arr : Unbounded_Atom_Array_Access; N : Glib.Gint)
---        return Gdk.Types.Gdk_Atom_Array;
+   type GClosure is new Glib.C_Proxy;
 
---     type Unbounded_Pspec_Array is array (Natural) of Glib.Param_Spec;
---     pragma Convention (C, Unbounded_Pspec_Array);
---     type Unbounded_Pspec_Array_Access is access Unbounded_Pspec_Array;
---     procedure G_Free (Arr : in out Unbounded_Pspec_Array_Access);
---     function To_Pspec_Array
---       (Arr : Unbounded_Pspec_Array_Access; N : Glib.Gint)
---        return Glib.Param_Spec_Array;
+   type C_Marshaller is access procedure
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;  --  Will contain returned value
+      N_Params        : Glib.Guint;          --  Number of entries in Params
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      Marsh_Data      : System.Address);
+   pragma Convention (C, C_Marshaller);
+   --  A function called directly from gtk+ when dispatching signals to
+   --  handlers. This procedure is in charge of converting the parameters from
+   --  the array of GValues in Params to suitable formats for calling the
+   --  proper Ada handler given by the user. This handler is encoded in the
+   --  user_data, which has an actual type specific to each of the generic
+   --  packages below.
+   --  Marsh_Data is the data passed via Set_Meta_Marshal, null otherwise.
+   --  This is meant for internal GtkAda use only.
 
---     type Unbounded_Signal_Id_Array is array (Natural) of Glib.Signal_Id;
---     pragma Convention (C, Unbounded_Signal_Id_Array);
---   type Unbounded_Signal_Id_Array_Access is access Unbounded_Signal_Id_Array;
---     procedure G_Free (Arr : in out Unbounded_Signal_Id_Array_Access);
---     function To_Signal_Id_Array
---       (Arr : Unbounded_Signal_Id_Array_Access; N : Glib.Guint)
---        return Glib.Object.Signal_Id_Array;
+   function CClosure_New
+     (Callback  : System.Address;
+      User_Data : System.Address;
+      Destroy   : System.Address) return GClosure;
+   pragma Import (C, CClosure_New, "g_cclosure_new");
 
---     type Unbounded_GType_Array is array (Natural) of Glib.GType;
---     pragma Convention (C, Unbounded_GType_Array);
---     type Unbounded_GType_Array_Access is access Unbounded_GType_Array;
---     procedure G_Free (Arr : in out Unbounded_GType_Array_Access);
---     function To_GType_Array
---       (Arr : Unbounded_GType_Array_Access; N : Glib.Guint)
---        return Glib.GType_Array;
+   procedure Set_Marshal (Closure : GClosure; Marshaller : C_Marshaller);
+   pragma Import (C, Set_Marshal, "g_closure_set_marshal");
 
---     type Unbounded_Color_Array is array (Natural) of Gdk.Color.Gdk_Color;
---     pragma Convention (C, Unbounded_Color_Array);
---     type Unbounded_Color_Array_Access is access Unbounded_Color_Array;
---     procedure G_Free (Arr : in out Unbounded_Color_Array_Access);
---     function To_Color_Array
---       (Arr : Unbounded_Color_Array_Access; N : Glib.Gint)
---        return Gdk.Color.Gdk_Color_Array;
---     function Convert is new Ada.Unchecked_Conversion
---       (System.Address, Unbounded_Color_Array_Access);
+   procedure Set_Meta_Marshal
+     (Closure    : GClosure;
+      Marsh_Data : System.Address;
+      Marshaller : C_Marshaller);
+   pragma Import (C, Set_Meta_Marshal, "g_closure_set_meta_marshal");
+
+   function Get_Data (Closure : GClosure) return System.Address;
+   pragma Import (C, Get_Data, "ada_gclosure_get_data");
+
+   function Get_Callback (C : GClosure) return System.Address;
+   pragma Import (C, Get_Callback, "ada_cclosure_get_callback");
+   --  Return the user handler set in the closure. This is the procedure that
+   --  should process the signal.
+
+   procedure Watch_Closure (Object : System.Address; Closure : GClosure);
+   pragma Import (C, Watch_Closure, "g_object_watch_closure");
+   --  The closure will be destroyed when Object is destroyed.
+
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : not null access Glib.Object.GObject_Record'Class;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null);
+   procedure Unchecked_Do_Signal_Connect
+     (Object              : Glib.Types.GType_Interface;
+      C_Name              : Glib.Signal_Name;
+      Marshaller          : C_Marshaller;
+      Handler             : System.Address;
+      Destroy             : System.Address := System.Null_Address;
+      After               : Boolean := False;
+      Slot_Object         : access Glib.Object.GObject_Record'Class := null);
+   --  Same as above, but this removes a number of check, like whether the
+   --  signal exists, and whether the user has properly passed a procedure or
+   --  function depending on the signal type.
+   --
+   --  * C_Name must be NUL-terminated.
+
+   procedure Set_Value (Value : Glib.Values.GValue; Val : System.Address);
+   pragma Import (C, Set_Value, "ada_gvalue_set");
+   --  Function used internally to specify the value returned by a callback.
+   --  Val will be dereferenced as appropriate, depending on the type expected
+   --  by Value.
+
+   type Exception_Handler is not null access procedure
+      (Occurrence : Ada.Exceptions.Exception_Occurrence);
+
+   procedure Set_On_Exception (Handler : Exception_Handler);
+   --  See user documentation in Gtk.Handlers.Set_On_Exception
+
+   procedure Process_Exception (E : Ada.Exceptions.Exception_Occurrence);
+   --  Process the exception through the handler set by Set_On_Exception.
+   --  This procedure never raises an exception.
 
 private
---   pragma Import (C, g_free, "g_free");
    pragma Import (C, g_strfreev, "g_strfreev");
 end Gtkada.Bindings;

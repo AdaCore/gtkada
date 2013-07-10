@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---               Copyright (C) 2006-2013, AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;                     use Glib;
 with Glib.Object;              use Glib.Object;
@@ -45,14 +40,14 @@ package body Create_Tree_Filter is
    Column_0 : constant := 0;
 
    function Custom_Filter
-     (Model : access Gtk_Tree_Model_Record'Class;
+     (Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter) return Boolean;
    --  Decide whether a row should be made visible or not
 
    procedure Custom_Appearance
-     (Model  : access Gtk_Tree_Model_Filter_Record'Class;
+     (Model  : Gtk_Tree_Model;
       Iter   : Gtk_Tree_Iter;
-      Value  : out GValue;
+      Value  : in out GValue;
       Column : Gint);
    --  Change the appearance of the view dynamically
 
@@ -82,7 +77,7 @@ package body Create_Tree_Filter is
    -------------------
 
    function Custom_Filter
-     (Model : access Gtk_Tree_Model_Record'Class;
+     (Model : Gtk_Tree_Model;
       Iter  : Gtk_Tree_Iter) return Boolean
    is
       Value : constant Gint := Get_Int (Model, Iter, Column_0);
@@ -95,16 +90,18 @@ package body Create_Tree_Filter is
    -----------------------
 
    procedure Custom_Appearance
-     (Model  : access Gtk_Tree_Model_Filter_Record'Class;
+     (Model  : Gtk_Tree_Model;
       Iter   : Gtk_Tree_Iter;
-      Value  : out GValue;
+      Value  : in out GValue;
       Column : Gint)
    is
+      Filter : constant Gtk_Tree_Model_Filter :=
+         Gtk_Tree_Model_Filter'(-Model);
       Val        : Gint;
       Child_Iter : Gtk_Tree_Iter;
    begin
-      Convert_Iter_To_Child_Iter (Model, Child_Iter, Iter);
-      Val := Get_Int (Get_Model (Model), Child_Iter, Column);
+      Convert_Iter_To_Child_Iter (Filter, Child_Iter, Iter);
+      Val := Get_Int (Get_Model (Filter), Child_Iter, Column);
       Set_String (Value, "This is line" & Gint'Image (Val));
    end Custom_Appearance;
 
@@ -144,7 +141,7 @@ package body Create_Tree_Filter is
       --  function, but that could be a simple row in the model as well. The
       --  function is slightly more flexible, though.
 
-      Gtk_New (Filter, Model);
+      Gtk_New (Filter, +Model);
       Set_Visible_Func (Filter, Custom_Filter'Access);
       Set_Modify_Func  (Filter, (0 => GType_String), Custom_Appearance'Access);
 

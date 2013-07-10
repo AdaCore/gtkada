@@ -1,62 +1,34 @@
------------------------------------------------------------------------
---              GtkAda - Ada95 binding for Gtk+/Gnome                --
---                                                                   --
---                     Copyright (C) 2001-2006                       --
---                             AdaCore                               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with System;
+
+with Glib.Object; use Glib.Object;
 
 with Gdk;    use Gdk;
 with Gtk;    use Gtk;
 
 package body Gdk.Dnd is
-
-   ----------------------
-   -- Drag_Context_Ref --
-   ----------------------
-
-   procedure Drag_Context_Ref (Context : Drag_Context)
-   is
-      procedure Internal (Context : Drag_Context);
-      pragma Import (C, Internal, "gdk_drag_context_ref");
-   begin
-      Internal (Context);
-   end Drag_Context_Ref;
-
-   ------------------------
-   -- Drag_Context_Unref --
-   ------------------------
-
-   procedure Drag_Context_Unref (Context : Drag_Context)
-   is
-      procedure Internal (Context : Drag_Context);
-      pragma Import (C, Internal, "gdk_drag_context_unref");
-   begin
-      Internal (Context);
-   end Drag_Context_Unref;
 
    -----------------
    -- Drag_Status --
@@ -68,12 +40,12 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Action  : Gint;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drag_status");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Drag_Action'Pos (Action),
                 Time);
    end Drag_Status;
@@ -88,12 +60,12 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Ok      : Gint;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drop_reply");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Boolean'Pos (Ok),
                 Time);
    end Drop_Reply;
@@ -108,12 +80,12 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Success : Gint;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drop_finish");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Boolean'Pos (Success),
                 Time);
    end Drop_Finish;
@@ -125,11 +97,11 @@ package body Gdk.Dnd is
    function Drag_Get_Selection (Context : Drag_Context)
                                 return Gdk_Atom
    is
-      function Internal (Context : Drag_Context)
+      function Internal (Context : System.Address)
                          return Gdk_Atom;
       pragma Import (C, Internal, "gdk_drag_get_selection");
    begin
-      return Internal (Context);
+      return Internal (Get_Object (Context));
    end Drag_Get_Selection;
 
    ----------------
@@ -137,67 +109,70 @@ package body Gdk.Dnd is
    ----------------
 
    function Drag_Begin
-     (Window  : Gdk.Window.Gdk_Window;
-      Targets : Target_List)
+     (Window  : Gdk.Gdk_Window;
+      Targets : Gtk.Target_List.Gtk_Target_List)
       return Drag_Context
    is
       function Internal
         (Window  : Gdk_Window;
          Targets : System.Address)
-         return Drag_Context;
+         return System.Address;
       pragma Import (C, Internal, "gdk_drag_begin");
+      Stub : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
-      return Internal (Window,
-                       Targets.all'Address);
+      return Drag_Context
+        (Get_User_Data (Internal (Window, Targets.Get_Object), Stub));
    end Drag_Begin;
 
    -----------------------
    -- Drag_Get_Protocol --
    -----------------------
 
-   function Drag_Get_Protocol
-     (Xid      : Guint32;
+   function Drag_Context_Get_Protocol
+     (Context  : Drag_Context;
       Protocol : Drag_Protocol)
-      return Guint32
+      return Drag_Protocol
    is
       function Internal
-        (Xid      : Guint32;
+        (Context  : System.Address;
          Protocol : Drag_Protocol)
-         return Guint32;
-      pragma Import (C, Internal, "gdk_drag_get_protocol");
+         return Drag_Protocol;
+      pragma Import (C, Internal, "gdk_drag_context_get_protocol");
    begin
-      return Internal (Xid,
-                       Protocol);
-   end Drag_Get_Protocol;
+      return Internal (Get_Object (Context), Protocol);
+   end Drag_Context_Get_Protocol;
 
    ----------------------
    -- Drag_Find_Window --
    ----------------------
 
-   procedure Drag_Find_Window
+   procedure Drag_Find_Window_For_Screen
      (Context     : Drag_Context;
-      Drag_Window : Gdk.Window.Gdk_Window;
+      Drag_Window : Gdk.Gdk_Window;
+      Screen      : Gdk.Screen.Gdk_Screen;
       X_Root      : Gint;
       Y_Root      : Gint;
-      Dest_Window : Gdk.Window.Gdk_Window;
+      Dest_Window : Gdk.Gdk_Window;
       Protocol    : Drag_Protocol)
    is
       procedure Internal
-        (Context     : Drag_Context;
+        (Context     : System.Address;
          Drag_Window : Gdk_Window;
+         Screen      : System.Address;
          X_Root      : Gint;
          Y_Root      : Gint;
          Dest_Window : Gdk_Window;
          Protocol    : Drag_Protocol);
-      pragma Import (C, Internal, "gdk_drag_find_window");
+      pragma Import (C, Internal, "gdk_drag_find_window_for_screen");
    begin
-      Internal (Context,
+      Internal (Get_Object (Context),
                 Drag_Window,
+                Get_Object (Screen),
                 X_Root,
                 Y_Root,
                 Dest_Window,
                 Protocol);
-   end Drag_Find_Window;
+   end Drag_Find_Window_For_Screen;
 
    -----------------
    -- Drag_Motion --
@@ -205,7 +180,7 @@ package body Gdk.Dnd is
 
    function Drag_Motion
      (Context          : Drag_Context;
-      Dest_Window      : Gdk.Window.Gdk_Window;
+      Dest_Window      : Gdk.Gdk_Window;
       Protocol         : Drag_Protocol;
       X_Root           : Gint;
       Y_Root           : Gint;
@@ -215,7 +190,7 @@ package body Gdk.Dnd is
       return Boolean
    is
       function Internal
-        (Context          : Drag_Context;
+        (Context          : System.Address;
          Dest_Window      : Gdk_Window;
          Protocol         : Gint;
          X_Root           : Gint;
@@ -226,7 +201,7 @@ package body Gdk.Dnd is
          return Gint;
       pragma Import (C, Internal, "gdk_drag_motion");
    begin
-      return Boolean'Val (Internal (Context,
+      return Boolean'Val (Internal (Get_Object (Context),
                                     Dest_Window,
                                     Drag_Protocol'Pos (Protocol),
                                     X_Root,
@@ -245,12 +220,11 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drag_drop");
    begin
-      Internal (Context,
-                Time);
+      Internal (Get_Object (Context), Time);
    end Drag_Drop;
 
    ----------------
@@ -262,12 +236,11 @@ package body Gdk.Dnd is
       Time    : Guint32)
    is
       procedure Internal
-        (Context : Drag_Context;
+        (Context : System.Address;
          Time    : Guint32);
       pragma Import (C, Internal, "gdk_drag_abort");
    begin
-      Internal (Context,
-                Time);
+      Internal (Get_Object (Context), Time);
    end Drag_Abort;
 
    -----------------
@@ -275,16 +248,17 @@ package body Gdk.Dnd is
    -----------------
 
    function Get_Targets (Context : Drag_Context) return Gdk_Atom_Array is
-      function Targets_Count (Context : Drag_Context) return Guint;
+      function Targets_Count (Context : System.Address) return Guint;
       pragma Import (C, Targets_Count, "ada_gtk_dnd_context_targets_count");
 
-      procedure Internal (Context : Drag_Context; Result : Gdk_Atom_Array);
+      procedure Internal (Context : System.Address; Result : Gdk_Atom_Array);
       pragma Import (C, Internal, "ada_gtk_dnd_context_get_targets");
 
-      Length : constant Natural := Natural (Targets_Count (Context));
+      Length : constant Natural := Natural
+        (Targets_Count (Get_Object (Context)));
       Result : Gdk_Atom_Array (0 .. Length - 1);
    begin
-      Internal (Context, Result);
+      Internal (Get_Object (Context), Result);
       return Result;
    end Get_Targets;
 

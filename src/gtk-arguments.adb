@@ -1,37 +1,36 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2000-2013, AdaCore                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Arguments is
 
    use Glib.Values;
+
+   type Cairo_Rectangle_Int_Access is access Cairo.Region.Cairo_Rectangle_Int;
+   type Gint_Access is access Gint;
+   type Gdouble_Access is access Gdouble;
 
    -------------
    -- To_Gint --
@@ -76,7 +75,7 @@ package body Gtk.Arguments is
    -- To_C_Proxy --
    ----------------
 
-   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy is
+   function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Glib.C_Proxy is
    begin
       return Get_Proxy (Nth (Args, Guint (Num)));
    end To_C_Proxy;
@@ -86,9 +85,13 @@ package body Gtk.Arguments is
    --------------
 
    function To_Event (Args : Gtk_Args; Num : Positive)
-     return Gdk.Event.Gdk_Event is
+      return Gdk.Event.Gdk_Event
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Gdk.Event.Gdk_Event);
+      Proxy : constant C_Proxy := Get_Proxy (Nth (Args, Guint (Num)));
    begin
-      return Gdk.Event.Gdk_Event (Get_Proxy (Nth (Args, Guint (Num))));
+      return Convert (Proxy);
    end To_Event;
 
    ----------------------
@@ -120,7 +123,7 @@ package body Gtk.Arguments is
    is
       pragma Warnings (Off);
       --  This UC is safe aliasing-wise, so kill warning
-      function Internal is new Unchecked_Conversion
+      function Internal is new Ada.Unchecked_Conversion
         (System.Address, Gtk.Widget.Gtk_Requisition_Access);
       pragma Warnings (On);
 
@@ -138,7 +141,7 @@ package body Gtk.Arguments is
    is
       pragma Warnings (Off);
       --  This UC is safe aliasing-wise, so kill warning
-      function Internal is new Unchecked_Conversion
+      function Internal is new Ada.Unchecked_Conversion
         (System.Address, Gtk.Widget.Gtk_Allocation_Access);
       pragma Warnings (On);
 
@@ -155,4 +158,222 @@ package body Gtk.Arguments is
       return Get_String (Nth (Args, Guint (Num)));
    end To_String;
 
+   --------------------------
+   -- Unchecked_To_Boolean --
+   --------------------------
+
+   function Unchecked_To_Boolean
+     (Args : Glib.Values.C_GValues; Num : Guint) return Boolean
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Boolean (Val);
+   end Unchecked_To_Boolean;
+
+   --------------------------
+   -- Unchecked_To_Gdouble --
+   --------------------------
+
+   function Unchecked_To_Gdouble
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdouble
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Double (Val);
+   end Unchecked_To_Gdouble;
+
+   -----------------------
+   -- Unchecked_To_Gint --
+   -----------------------
+
+   function Unchecked_To_Gint
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gint
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Int (Val);
+   end Unchecked_To_Gint;
+
+   ------------------------------
+   -- Unchecked_To_Gint_Access --
+   ------------------------------
+
+   function Unchecked_To_Gint_Access
+     (Args : Glib.Values.C_GValues; Num : Guint) return access Gint
+   is
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Gint_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Address (Val));
+   end Unchecked_To_Gint_Access;
+
+   ---------------------------------
+   -- Unchecked_To_Gdouble_Access --
+   ---------------------------------
+
+   function Unchecked_To_Gdouble_Access
+     (Args : Glib.Values.C_GValues; Num : Guint) return access Gdouble
+   is
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Gdouble_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Address (Val));
+   end Unchecked_To_Gdouble_Access;
+
+   ------------------------
+   -- Unchecked_To_Guint --
+   ------------------------
+
+   function Unchecked_To_Guint
+     (Args : Glib.Values.C_GValues; Num : Guint) return Guint
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Uint (Val);
+   end Unchecked_To_Guint;
+
+   -----------------------------
+   -- Unchecked_To_Context_Id --
+   -----------------------------
+
+   function Unchecked_To_Context_Id
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gtk.Status_Bar.Context_Id
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gtk.Status_Bar.Context_Id (Get_Uint (Val));
+   end Unchecked_To_Context_Id;
+
+   ------------------------------
+   -- Unchecked_To_UTF8_String --
+   ------------------------------
+
+   function Unchecked_To_UTF8_String
+     (Args : Glib.Values.C_GValues; Num : Guint) return UTF8_String
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_String (Val);
+   end Unchecked_To_UTF8_String;
+
+   --------------------------
+   -- Unchecked_To_Address --
+   --------------------------
+
+   function Unchecked_To_Address
+     (Args : Glib.Values.C_GValues; Num : Guint) return System.Address
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Get_Address (Val);
+   end Unchecked_To_Address;
+
+   -------------------------
+   -- Unchecked_To_Object --
+   -------------------------
+
+   function Unchecked_To_Object
+     (Args : Glib.Values.C_GValues; Num : Guint) return Glib.Object.GObject
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Glib.Object.Convert (Get_Address (Val));
+   end Unchecked_To_Object;
+
+   ----------------------------
+   -- Unchecked_To_Interface --
+   ----------------------------
+
+   function Unchecked_To_Interface
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Glib.Types.GType_Interface
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Glib.Types.GType_Interface (Get_Address (Val));
+   end Unchecked_To_Interface;
+
+   ---------------------------------------------
+   -- Unchecked_To_Cairo_Rectangle_Int_Access --
+   ---------------------------------------------
+
+   function Unchecked_To_Cairo_Rectangle_Int_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return access Cairo.Region.Cairo_Rectangle_Int
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Cairo_Rectangle_Int_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Proxy (Val));
+   end Unchecked_To_Cairo_Rectangle_Int_Access;
+
+   --------------------------------------
+   -- Unchecked_To_Cairo_Rectangle_Int --
+   --------------------------------------
+
+   function Unchecked_To_Cairo_Rectangle_Int
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Cairo.Region.Cairo_Rectangle_Int
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Cairo_Rectangle_Int_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Proxy (Val)).all;
+   end Unchecked_To_Cairo_Rectangle_Int;
+
+   --------------------------------
+   -- Unchecked_To_Cairo_Context --
+   --------------------------------
+
+   function Unchecked_To_Cairo_Context
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Cairo.Cairo_Context
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Cairo.Get_Context (Val);
+   end Unchecked_To_Cairo_Context;
+
+   ---------------------------
+   -- Unchecked_To_Gdk_RGBA --
+   ---------------------------
+
+   function Unchecked_To_Gdk_RGBA
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gdk.RGBA.Get_Value (Val);
+   end Unchecked_To_Gdk_RGBA;
+
+   -------------------------------
+   -- Unchecked_To_Gdk_Key_Type --
+   -------------------------------
+
+   function Unchecked_To_Gdk_Key_Type
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type
+   is
+   begin
+      return Gdk.Types.Gdk_Key_Type (Unchecked_To_Guint (Args, Num));
+   end Unchecked_To_Gdk_Key_Type;
 end Gtk.Arguments;

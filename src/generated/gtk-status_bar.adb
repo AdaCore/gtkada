@@ -1,55 +1,42 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Status_Bar is
-   function Convert (Msg : Status_Bar_Msg) return System.Address is
-   begin
-      return Msg'Address;
-      --  This function is anyway not supposed to be used
-   end Convert;
 
-   function Convert (Msg : System.Address) return Status_Bar_Msg is
-      type Status_Bar_Msg_Access is access all Status_Bar_Msg;
-      function Internal is new
-      Ada.Unchecked_Conversion (System.Address, Status_Bar_Msg_Access);
-   begin
-      return Internal (Msg).all;
-   end Convert;
-
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+   package Type_Conversion_Gtk_Status_Bar is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Status_Bar_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Status_Bar);
 
    -------------
    -- Gtk_New --
@@ -61,15 +48,30 @@ package body Gtk.Status_Bar is
       Gtk.Status_Bar.Initialize (Statusbar);
    end Gtk_New;
 
+   ------------------------
+   -- Gtk_Status_Bar_New --
+   ------------------------
+
+   function Gtk_Status_Bar_New return Gtk_Status_Bar is
+      Statusbar : constant Gtk_Status_Bar := new Gtk_Status_Bar_Record;
+   begin
+      Gtk.Status_Bar.Initialize (Statusbar);
+      return Statusbar;
+   end Gtk_Status_Bar_New;
+
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record'Class) is
+   procedure Initialize
+      (Statusbar : not null access Gtk_Status_Bar_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_new");
    begin
-      Set_Object (Statusbar, Internal);
+      if not Statusbar.Is_Created then
+         Set_Object (Statusbar, Internal);
+      end if;
    end Initialize;
 
    --------------------
@@ -77,7 +79,7 @@ package body Gtk.Status_Bar is
    --------------------
 
    function Get_Context_Id
-      (Statusbar           : access Gtk_Status_Bar_Record;
+      (Statusbar           : not null access Gtk_Status_Bar_Record;
        Context_Description : UTF8_String) return Context_Id
    is
       function Internal
@@ -93,32 +95,19 @@ package body Gtk.Status_Bar is
       return Tmp_Return;
    end Get_Context_Id;
 
-   -------------------------
-   -- Get_Has_Resize_Grip --
-   -------------------------
-
-   function Get_Has_Resize_Grip
-      (Statusbar : access Gtk_Status_Bar_Record) return Boolean
-   is
-      function Internal (Statusbar : System.Address) return Integer;
-      pragma Import (C, Internal, "gtk_statusbar_get_has_resize_grip");
-   begin
-      return Boolean'Val (Internal (Get_Object (Statusbar)));
-   end Get_Has_Resize_Grip;
-
    ----------------------
    -- Get_Message_Area --
    ----------------------
 
    function Get_Message_Area
-      (Statusbar : access Gtk_Status_Bar_Record)
+      (Statusbar : not null access Gtk_Status_Bar_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Statusbar : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_get_message_area");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Statusbar)), Stub_Gtk_Widget));
    end Get_Message_Area;
 
    ---------
@@ -126,7 +115,7 @@ package body Gtk.Status_Bar is
    ---------
 
    procedure Pop
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id)
    is
       procedure Internal (Statusbar : System.Address; Context : Context_Id);
@@ -140,7 +129,7 @@ package body Gtk.Status_Bar is
    ----------
 
    function Push
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Text      : UTF8_String) return Message_Id
    is
@@ -162,7 +151,7 @@ package body Gtk.Status_Bar is
    ------------
 
    procedure Remove
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Message   : Message_Id)
    is
@@ -180,7 +169,7 @@ package body Gtk.Status_Bar is
    ----------------
 
    procedure Remove_All
-      (Statusbar : access Gtk_Status_Bar_Record;
+      (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id)
    is
       procedure Internal (Statusbar : System.Address; Context : Context_Id);
@@ -189,47 +178,19 @@ package body Gtk.Status_Bar is
       Internal (Get_Object (Statusbar), Context);
    end Remove_All;
 
-   -------------------------
-   -- Set_Has_Resize_Grip --
-   -------------------------
-
-   procedure Set_Has_Resize_Grip
-      (Statusbar : access Gtk_Status_Bar_Record;
-       Setting   : Boolean)
-   is
-      procedure Internal (Statusbar : System.Address; Setting : Integer);
-      pragma Import (C, Internal, "gtk_statusbar_set_has_resize_grip");
-   begin
-      Internal (Get_Object (Statusbar), Boolean'Pos (Setting));
-   end Set_Has_Resize_Grip;
-
-   ------------------
-   -- Get_Messages --
-   ------------------
-
-   function Get_Messages
-      (Statusbar : access Gtk_Status_Bar_Record)
-       return Gtk.Status_Bar.Messages_List.GSlist
-   is
-      function Internal (Statusbar : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtkada_GtkStatusbar_get_messages");
-      Tmp_Return : Messages_List.GSlist;
-   begin
-      Gtk.Status_Bar.Messages_List.Set_Object (Tmp_Return, Internal (Get_Object (Statusbar)));
-      return Tmp_Return;
-   end Get_Messages;
-
    ---------------------
    -- Get_Orientation --
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Status_Bar_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Status_Bar_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -237,13 +198,192 @@ package body Gtk.Status_Bar is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Status_Bar_Record;
+      (Self        : not null access Gtk_Status_Bar_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Context_Id_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Context_Id_UTF8_String_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Status_Bar_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Status_Bar_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Context_Id_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Context_Id_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Context_Id_UTF8_String_Void);
+
+   procedure Marsh_Gtk_Status_Bar_Context_Id_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Status_Bar_Context_Id_UTF8_String_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Status_Bar_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Status_Bar_Context_Id_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Status_Bar_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Context_Id_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Context_Id_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   -----------------------------------------------
+   -- Marsh_GObject_Context_Id_UTF8_String_Void --
+   -----------------------------------------------
+
+   procedure Marsh_GObject_Context_Id_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Context_Id_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Context_Id (Params, 1), Unchecked_To_UTF8_String (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Context_Id_UTF8_String_Void;
+
+   ------------------------------------------------------
+   -- Marsh_Gtk_Status_Bar_Context_Id_UTF8_String_Void --
+   ------------------------------------------------------
+
+   procedure Marsh_Gtk_Status_Bar_Context_Id_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Status_Bar := Gtk_Status_Bar (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Context_Id (Params, 1), Unchecked_To_UTF8_String (Params, 2));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+
+   --------------------
+   -- On_Text_Popped --
+   --------------------
+
+   procedure On_Text_Popped
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "text-popped" & ASCII.NUL, Call, After);
+   end On_Text_Popped;
+
+   --------------------
+   -- On_Text_Popped --
+   --------------------
+
+   procedure On_Text_Popped
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_GObject_Context_Id_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "text-popped" & ASCII.NUL, Call, After, Slot);
+   end On_Text_Popped;
+
+   --------------------
+   -- On_Text_Pushed --
+   --------------------
+
+   procedure On_Text_Pushed
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_Gtk_Status_Bar_Context_Id_UTF8_String_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "text-pushed" & ASCII.NUL, Call, After);
+   end On_Text_Pushed;
+
+   --------------------
+   -- On_Text_Pushed --
+   --------------------
+
+   procedure On_Text_Pushed
+      (Self  : not null access Gtk_Status_Bar_Record;
+       Call  : Cb_GObject_Context_Id_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "text-pushed" & ASCII.NUL, Call, After, Slot);
+   end On_Text_Pushed;
 
 end Gtk.Status_Bar;

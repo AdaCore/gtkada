@@ -1,36 +1,31 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 2003                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2004-2013, AdaCore              --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2003-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Gdk.Bitmap;         use Gdk.Bitmap;
-with Gdk.Color;          use Gdk.Color;
-with Gdk.Pixmap;         use Gdk.Pixmap;
+with Ada.Text_IO;        use Ada.Text_IO;
+with Cairo.PDF;
+with Cairo;              use Cairo;
+with Gdk.RGBA;           use Gdk.RGBA;
+with Glib;               use Glib;
 with Glib.Xml_Int;       use Glib.Xml_Int;
 with Gtk;                use Gtk;
 with Gtk.Accel_Group;    use Gtk.Accel_Group;
@@ -46,8 +41,6 @@ with Gtkada.Handlers;    use Gtkada.Handlers;
 with Gtk.Toggle_Tool_Button;  use Gtk.Toggle_Tool_Button;
 with Gtk.Tool_Button;    use Gtk.Tool_Button;
 with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Window;         use Gtk.Window;
-with Gtk.Image;          use Gtk.Image;
 
 package body Create_MDI is
 
@@ -58,7 +51,8 @@ package body Create_MDI is
    procedure On_Snapshot  (Button : access Gtk_Widget_Record'Class);
    procedure Do_Configure (MDI : access MDI_Window_Record'Class);
 
-   procedure On_Save_Desktop (Button : access Gtk_Widget_Record'Class);
+   procedure On_Save_Desktop
+      (Button : access Gtk_Widget_Record'Class);
    procedure Load_Desktop;
    --  Load the desktop (and all known perspectives) from an external
    --  XML file. Or create that file from the current desktop.
@@ -134,7 +128,10 @@ package body Create_MDI is
         & " or the user can drag a window outside of the MDI to float it"
         & ASCII.LF
         & "A contextual menu exists in the notebook tabs to close windows,"
-        & " or change the location of tabs.";
+        & " or change the location of tabs."
+        & ASCII.LF
+        & "The button Screenshot is independent of the MDI, and shows how"
+        & " to do a screenshot of a widget into a PDF file (screenshot.pdf).";
    end Help;
 
    ------------------
@@ -142,19 +139,12 @@ package body Create_MDI is
    ------------------
 
    procedure Do_Configure (MDI : access MDI_Window_Record'Class) is
-      Bg_Color, Title_Color, Focus_Color : Gdk_Color;
+      Title_Color, Focus_Color : Gdk_RGBA;
+      Success : Boolean;
    begin
-      Bg_Color := Parse ("#8A8A8A");
-      Alloc (Get_Colormap (MDI), Bg_Color);
-
-      Title_Color := Parse ("#7D7D7D");
-      Alloc (Get_Colormap (MDI), Title_Color);
-
-      Focus_Color := Parse ("#5894FA");
-      Alloc (Get_Colormap (MDI), Focus_Color);
-
+      Parse (Title_Color, "#7D7D7D", Success);
+      Parse (Focus_Color, "#5894FA", Success);
       Configure (MDI,
-                 Background_Color  => Bg_Color,
                  Title_Bar_Color   => Title_Color,
                  Focus_Title_Color => Focus_Color,
                  Opaque_Resize     => Opaque,
@@ -178,41 +168,40 @@ package body Create_MDI is
    -- On_Snapshot --
    -----------------
 
-   Iterator : Child_Iterator;
-
    procedure On_Snapshot (Button : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Button);
-      Child : MDI_Child;
-      Pixmap : Gdk_Pixmap;
-      Window : Gtk_Window;
-      Image  : Gtk_Image;
-   begin
-      Child := Get (Iterator);
+      Child : MDI_Child := MDI.Get_Focus_Child;
+      Context : Cairo_Context;
+      Width, Height : Gint;
+      Pdf : Cairo_Surface;
 
+   begin
       if Child = null then
-         Iterator := First_Child (MDI);
-         Child := Get (Iterator);
-      else
-         Next (Iterator);
+         Child := Get (MDI.First_Child);
       end if;
 
-      Pixmap := Get_Snapshot (Child, null);
+      --  Take a snapshot of the widget
 
-      Gtk_New (Window);
-      Set_Default_Size (Window, 800, 600);
+      Width  := Get_Allocated_Width (Child);
+      Height := Get_Allocated_Height (Child);
+      Pdf := Cairo.PDF.Create (
+         "snapshot.pdf", Gdouble (Width), Gdouble (Height));
+      Context := Cairo.Create (Pdf);
+      Child.Draw (Cr => Context);
+      Destroy (Context);
+      Surface_Destroy (Pdf);
 
-      Gtk_New (Image, Pixmap, Null_Bitmap);
-      Add (Window, Image);
-      Show_All (Window);
+      Put_Line ("Screenshot created in snapshot.pdf");
    end On_Snapshot;
 
    ---------------------
    -- On_Save_Desktop --
    ---------------------
 
-   procedure On_Save_Desktop (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Save_Desktop
+      (Button : access Gtk_Widget_Record'Class)
+   is
       pragma Unreferenced (Button);
-
       Perspectives, Central : Node_Ptr;
    begin
       Desktops.Save_Desktop (MDI, 0, Perspectives, Central);
@@ -265,7 +254,8 @@ package body Create_MDI is
       Gtk_New (Label, "This is the" & Integer'Image (Index) & " window");
       Pack_Start (Box, Label);
 
-      Set_Title (Child, "Window" & Integer'Image (Index));
+      Set_Title (Child, "Long Title for Window" & Integer'Image (Index),
+                 "Window" & Integer'Image (Index));
 
       Show_All (Child);
       return Child;

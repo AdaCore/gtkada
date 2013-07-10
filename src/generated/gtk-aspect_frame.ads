@@ -1,44 +1,37 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Aspect_Frame is the same type of widget as a frame, but it
---  constrains its child to a specific aspect ratio between its width and its
---  height.
---
---  This ratio can either be given explicitly by the user, or chosen from the
---  widget's initial size request (might be different from the one if was
---  actually given).
+--  The Gtk.Aspect_Frame.Gtk_Aspect_Frame is useful when you want pack a
+--  widget so that it can resize but always retains the same aspect ratio. For
+--  instance, one might be drawing a small preview of a larger image.
+--  Gtk.Aspect_Frame.Gtk_Aspect_Frame derives from Gtk.Frame.Gtk_Frame, so it
+--  can draw a label and a frame around the child. The frame will be
+--  "shrink-wrapped" to the size of the child.
 --
 --  </description>
 --  <group>Layout Containers</group>
---  <testgtk>create_frame.adb.adb</testgtk>
+--  <testgtk>create_frame.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -46,7 +39,6 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Frame;       use Gtk.Frame;
-with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Aspect_Frame is
 
@@ -65,7 +57,7 @@ package Gtk.Aspect_Frame is
        Ratio        : Gfloat;
        Obey_Child   : Boolean);
    procedure Initialize
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
+      (Aspect_Frame : not null access Gtk_Aspect_Frame_Record'Class;
        Label        : UTF8_String := "";
        Xalign       : Gfloat;
        Yalign       : Gfloat;
@@ -77,8 +69,26 @@ package Gtk.Aspect_Frame is
    --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
    --  aligned) to 1.0 (right aligned)
    --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
-   --  to 1.0 (right aligned)
+   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top aligned) to
+   --  1.0 (bottom aligned)
+   --  "ratio": The desired aspect ratio.
+   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
+   --  from the requistion of the child.
+
+   function Gtk_Aspect_Frame_New
+      (Label      : UTF8_String := "";
+       Xalign     : Gfloat;
+       Yalign     : Gfloat;
+       Ratio      : Gfloat;
+       Obey_Child : Boolean) return Gtk_Aspect_Frame;
+   --  Create a new Gtk.Aspect_Frame.Gtk_Aspect_Frame.
+   --  "label": Label text.
+   --  "xalign": Horizontal alignment of the child within the allocation of
+   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
+   --  aligned) to 1.0 (right aligned)
+   --  "yalign": Vertical alignment of the child within the allocation of the
+   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top aligned) to
+   --  1.0 (bottom aligned)
    --  "ratio": The desired aspect ratio.
    --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
@@ -91,7 +101,7 @@ package Gtk.Aspect_Frame is
    -------------
 
    procedure Set
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+      (Aspect_Frame : not null access Gtk_Aspect_Frame_Record;
        Xalign       : Gfloat;
        Yalign       : Gfloat;
        Ratio        : Gfloat;
@@ -101,24 +111,25 @@ package Gtk.Aspect_Frame is
    --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
    --  aligned) to 1.0 (right aligned)
    --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left aligned)
-   --  to 1.0 (right aligned)
+   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top aligned) to
+   --  1.0 (bottom aligned)
    --  "ratio": The desired aspect ratio.
    --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
    --  from the requistion of the child.
 
-   ------------
-   -- Fields --
-   ------------
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
-   function Get_Xalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean;
 
-   function Get_Yalign
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
+   Ratio_Property : constant Glib.Properties.Property_Float;
 
-   function Get_Ratio
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
+   Xalign_Property : constant Glib.Properties.Property_Float;
+
+   Yalign_Property : constant Glib.Properties.Property_Float;
 
    ----------------
    -- Interfaces --
@@ -127,51 +138,24 @@ package Gtk.Aspect_Frame is
    --
    --  - "Buildable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Aspect_Frame_Record, Gtk_Aspect_Frame);
    function "+"
      (Widget : access Gtk_Aspect_Frame_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Aspect_Frame
-   renames Implements_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Obey_Child_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Ratio_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Xalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-   --
-   --  Name: Yalign_Property
-   --  Type: Gfloat
-   --  Flags: read-write
-
-   Obey_Child_Property : constant Glib.Properties.Property_Boolean;
-   Ratio_Property : constant Glib.Properties.Property_Float;
-   Xalign_Property : constant Glib.Properties.Property_Float;
-   Yalign_Property : constant Glib.Properties.Property_Float;
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
-   Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("obey-child");
-   Ratio_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("ratio");
-   Xalign_Property : constant Glib.Properties.Property_Float :=
-     Glib.Properties.Build ("xalign");
    Yalign_Property : constant Glib.Properties.Property_Float :=
      Glib.Properties.Build ("yalign");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
+   Ratio_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("ratio");
+   Obey_Child_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("obey-child");
 end Gtk.Aspect_Frame;

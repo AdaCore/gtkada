@@ -18,7 +18,9 @@ GtkAda User's Guide
    glade
    new_widgets
    debugging
+   transition
    reporting_bugs
+   gtk_parasite
    bibliography
    license
    

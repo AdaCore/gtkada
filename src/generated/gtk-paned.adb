@@ -1,40 +1,63 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Paned is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Paned is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Paned_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Paned);
+
+   --------------------
+   -- Gtk_Hpaned_New --
+   --------------------
+
+   function Gtk_Hpaned_New return Gtk_Hpaned is
+      Paned : constant Gtk_Hpaned := new Gtk_Hpaned_Record;
+   begin
+      Gtk.Paned.Initialize_Hpaned (Paned);
+      return Paned;
+   end Gtk_Hpaned_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Paned       : out Gtk_Paned;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+   begin
+      Paned := new Gtk_Paned_Record;
+      Gtk.Paned.Initialize (Paned, Orientation);
+   end Gtk_New;
 
    --------------------
    -- Gtk_New_Hpaned --
@@ -56,26 +79,75 @@ package body Gtk.Paned is
       Gtk.Paned.Initialize_Vpaned (Paned);
    end Gtk_New_Vpaned;
 
+   -------------------
+   -- Gtk_Paned_New --
+   -------------------
+
+   function Gtk_Paned_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Paned
+   is
+      Paned : constant Gtk_Paned := new Gtk_Paned_Record;
+   begin
+      Gtk.Paned.Initialize (Paned, Orientation);
+      return Paned;
+   end Gtk_Paned_New;
+
+   --------------------
+   -- Gtk_Vpaned_New --
+   --------------------
+
+   function Gtk_Vpaned_New return Gtk_Vpaned is
+      Paned : constant Gtk_Vpaned := new Gtk_Vpaned_Record;
+   begin
+      Gtk.Paned.Initialize_Vpaned (Paned);
+      return Paned;
+   end Gtk_Vpaned_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Paned       : not null access Gtk_Paned_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      function Internal
+         (Orientation : Gtk.Enums.Gtk_Orientation) return System.Address;
+      pragma Import (C, Internal, "gtk_paned_new");
+   begin
+      if not Paned.Is_Created then
+         Set_Object (Paned, Internal (Orientation));
+      end if;
+   end Initialize;
+
    -----------------------
    -- Initialize_Hpaned --
    -----------------------
 
-   procedure Initialize_Hpaned (Paned : access Gtk_Hpaned_Record'Class) is
+   procedure Initialize_Hpaned
+      (Paned : not null access Gtk_Hpaned_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hpaned_new");
    begin
-      Set_Object (Paned, Internal);
+      if not Paned.Is_Created then
+         Set_Object (Paned, Internal);
+      end if;
    end Initialize_Hpaned;
 
    -----------------------
    -- Initialize_Vpaned --
    -----------------------
 
-   procedure Initialize_Vpaned (Paned : access Gtk_Vpaned_Record'Class) is
+   procedure Initialize_Vpaned
+      (Paned : not null access Gtk_Vpaned_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vpaned_new");
    begin
-      Set_Object (Paned, Internal);
+      if not Paned.Is_Created then
+         Set_Object (Paned, Internal);
+      end if;
    end Initialize_Vpaned;
 
    ----------
@@ -83,8 +155,8 @@ package body Gtk.Paned is
    ----------
 
    procedure Add1
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add1");
@@ -97,8 +169,8 @@ package body Gtk.Paned is
    ----------
 
    procedure Add2
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Paned : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_paned_add2");
@@ -106,38 +178,19 @@ package body Gtk.Paned is
       Internal (Get_Object (Paned), Get_Object (Child));
    end Add2;
 
-   ----------------------
-   -- Compute_Position --
-   ----------------------
-
-   procedure Compute_Position
-      (Paned      : access Gtk_Paned_Record;
-       Allocation : Gint;
-       Child1_Req : Gint;
-       Child2_Req : Gint)
-   is
-      procedure Internal
-         (Paned      : System.Address;
-          Allocation : Gint;
-          Child1_Req : Gint;
-          Child2_Req : Gint);
-      pragma Import (C, Internal, "gtk_paned_compute_position");
-   begin
-      Internal (Get_Object (Paned), Allocation, Child1_Req, Child2_Req);
-   end Compute_Position;
-
    ----------------
    -- Get_Child1 --
    ----------------
 
    function Get_Child1
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child1");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_Gtk_Widget));
    end Get_Child1;
 
    ----------------
@@ -145,13 +198,14 @@ package body Gtk.Paned is
    ----------------
 
    function Get_Child2
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget
    is
       function Internal (Paned : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_paned_get_child2");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Paned)), Stub_Gtk_Widget));
    end Get_Child2;
 
    -----------------------
@@ -159,10 +213,9 @@ package body Gtk.Paned is
    -----------------------
 
    function Get_Handle_Window
-      (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window
+      (Paned : not null access Gtk_Paned_Record) return Gdk.Gdk_Window
    is
-      function Internal
-         (Paned : System.Address) return Gdk.Window.Gdk_Window;
+      function Internal (Paned : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gtk_paned_get_handle_window");
    begin
       return Internal (Get_Object (Paned));
@@ -172,7 +225,9 @@ package body Gtk.Paned is
    -- Get_Position --
    ------------------
 
-   function Get_Position (Paned : access Gtk_Paned_Record) return Gint is
+   function Get_Position
+      (Paned : not null access Gtk_Paned_Record) return Gint
+   is
       function Internal (Paned : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_paned_get_position");
    begin
@@ -184,8 +239,8 @@ package body Gtk.Paned is
    -----------
 
    procedure Pack1
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := True)
    is
@@ -204,8 +259,8 @@ package body Gtk.Paned is
    -----------
 
    procedure Pack2
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False)
    is
@@ -223,7 +278,10 @@ package body Gtk.Paned is
    -- Set_Position --
    ------------------
 
-   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint) is
+   procedure Set_Position
+      (Paned    : not null access Gtk_Paned_Record;
+       Position : Gint)
+   is
       procedure Internal (Paned : System.Address; Position : Gint);
       pragma Import (C, Internal, "gtk_paned_set_position");
    begin
@@ -235,12 +293,14 @@ package body Gtk.Paned is
    ---------------------
 
    function Get_Orientation
-      (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation
+      (Self : not null access Gtk_Paned_Record)
+       return Gtk.Enums.Gtk_Orientation
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
       pragma Import (C, Internal, "gtk_orientable_get_orientation");
    begin
-      return Gtk.Enums.Gtk_Orientation'Val (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self));
    end Get_Orientation;
 
    ---------------------
@@ -248,13 +308,548 @@ package body Gtk.Paned is
    ---------------------
 
    procedure Set_Orientation
-      (Self        : access Gtk_Paned_Record;
+      (Self        : not null access Gtk_Paned_Record;
        Orientation : Gtk.Enums.Gtk_Orientation)
    is
-      procedure Internal (Self : System.Address; Orientation : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
       pragma Import (C, Internal, "gtk_orientable_set_orientation");
    begin
-      Internal (Get_Object (Self), Gtk.Enums.Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Paned_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Paned_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Paned_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Paned_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Scroll_Type_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Scroll_Type_Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Paned_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Paned_Boolean_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Scroll_Type_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Boolean);
+
+   procedure Marsh_GObject_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Boolean_Boolean);
+
+   procedure Marsh_GObject_Gtk_Scroll_Type_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Scroll_Type_Boolean);
+
+   procedure Marsh_Gtk_Paned_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Paned_Boolean);
+
+   procedure Marsh_Gtk_Paned_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Paned_Boolean_Boolean);
+
+   procedure Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Paned_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Paned_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Paned_Boolean_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Paned_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Paned_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Scroll_Type_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Scroll_Type_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------
+   -- Marsh_GObject_Boolean --
+   ---------------------------
+
+   procedure Marsh_GObject_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj);
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Boolean;
+
+   -----------------------------------
+   -- Marsh_GObject_Boolean_Boolean --
+   -----------------------------------
+
+   procedure Marsh_GObject_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Boolean_Boolean;
+
+   -------------------------------------------
+   -- Marsh_GObject_Gtk_Scroll_Type_Boolean --
+   -------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Scroll_Type_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Scroll_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Scroll_Type_Boolean;
+
+   -----------------------------
+   -- Marsh_Gtk_Paned_Boolean --
+   -----------------------------
+
+   procedure Marsh_Gtk_Paned_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Paned_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Paned := Gtk_Paned (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj);
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Paned_Boolean;
+
+   -------------------------------------
+   -- Marsh_Gtk_Paned_Boolean_Boolean --
+   -------------------------------------
+
+   procedure Marsh_Gtk_Paned_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Paned_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Paned := Gtk_Paned (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Paned_Boolean_Boolean;
+
+   ---------------------------------------------
+   -- Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean --
+   ---------------------------------------------
+
+   procedure Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Paned := Gtk_Paned (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean;
+
+   ------------------------
+   -- On_Accept_Position --
+   ------------------------
+
+   procedure On_Accept_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "accept-position" & ASCII.NUL, Call, After);
+   end On_Accept_Position;
+
+   ------------------------
+   -- On_Accept_Position --
+   ------------------------
+
+   procedure On_Accept_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "accept-position" & ASCII.NUL, Call, After, Slot);
+   end On_Accept_Position;
+
+   ------------------------
+   -- On_Cancel_Position --
+   ------------------------
+
+   procedure On_Cancel_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "cancel-position" & ASCII.NUL, Call, After);
+   end On_Cancel_Position;
+
+   ------------------------
+   -- On_Cancel_Position --
+   ------------------------
+
+   procedure On_Cancel_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "cancel-position" & ASCII.NUL, Call, After, Slot);
+   end On_Cancel_Position;
+
+   --------------------------
+   -- On_Cycle_Child_Focus --
+   --------------------------
+
+   procedure On_Cycle_Child_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "cycle-child-focus" & ASCII.NUL, Call, After);
+   end On_Cycle_Child_Focus;
+
+   --------------------------
+   -- On_Cycle_Child_Focus --
+   --------------------------
+
+   procedure On_Cycle_Child_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "cycle-child-focus" & ASCII.NUL, Call, After, Slot);
+   end On_Cycle_Child_Focus;
+
+   ---------------------------
+   -- On_Cycle_Handle_Focus --
+   ---------------------------
+
+   procedure On_Cycle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "cycle-handle-focus" & ASCII.NUL, Call, After);
+   end On_Cycle_Handle_Focus;
+
+   ---------------------------
+   -- On_Cycle_Handle_Focus --
+   ---------------------------
+
+   procedure On_Cycle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "cycle-handle-focus" & ASCII.NUL, Call, After, Slot);
+   end On_Cycle_Handle_Focus;
+
+   --------------------
+   -- On_Move_Handle --
+   --------------------
+
+   procedure On_Move_Handle
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "move-handle" & ASCII.NUL, Call, After);
+   end On_Move_Handle;
+
+   --------------------
+   -- On_Move_Handle --
+   --------------------
+
+   procedure On_Move_Handle
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "move-handle" & ASCII.NUL, Call, After, Slot);
+   end On_Move_Handle;
+
+   ----------------------------
+   -- On_Toggle_Handle_Focus --
+   ----------------------------
+
+   procedure On_Toggle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "toggle-handle-focus" & ASCII.NUL, Call, After);
+   end On_Toggle_Handle_Focus;
+
+   ----------------------------
+   -- On_Toggle_Handle_Focus --
+   ----------------------------
+
+   procedure On_Toggle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "toggle-handle-focus" & ASCII.NUL, Call, After, Slot);
+   end On_Toggle_Handle_Focus;
 
 end Gtk.Paned;

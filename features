@@ -9,6 +9,44 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 3.4.1
+----------------------------
+
+L726-002 New On_* procedures to ease signal connection (2012-12-20)
+
+  Each widget has a number of additional primitives to ease signal
+  connection. For instance, one can use
+      Button.On_Clicked (Handler'Access);
+  now. See the user's guide for more information.
+
+LB30-013 New subprogram Gtk.Handlers.Set_On_Exception (2012-11-30)
+
+  It was always recommended that Ada callbacks should not propagate
+  exceptions to the C gtk+ layer. To enforce this, GtkAda now has its
+  own internal exception handlers. But it is possible for applications
+  to register a subprogram to call when a callback has raised an
+  exception, presumably to log the exception in an application-specific
+  manner (the default is to output the exception on stderr).
+
+  These handlers are set automatically on signal and event callbacks,
+  and on idle and timeout callbacks.
+
+LB20-008 Gtk_New_* as functions (2012-12-17)
+
+  GtkAda now includes a function for each version of Gtk_New*_, which
+  might be simpler to use in some contexts. In particular, local variables
+  can now be initialized directly in their declarations.
+
+L413-025 Binding for Gtk.Recent_Chooser_Menu
+
+  A new binding for Gtk.Recent_Chooser_Menu has been added.  This
+  widget shows a list of recently used resources in menu form.
+
+L125-027 Remove support for GNOME widgets (2012-01-25)
+
+  These widgets were no longer support nor up-to-date with regards to
+  the GNOME libraries themselves, so were removed.
+
 New features in GtkAda 2.24.1
 -----------------------------
 

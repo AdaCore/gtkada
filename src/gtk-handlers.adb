@@ -1,31 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with System;
 with System.Assertions;       use System.Assertions;
@@ -40,20 +35,6 @@ package body Gtk.Handlers is
       return Guint;
    --  Convenience function that returns the number of arguments for this
    --  signal
-
-   function Do_Signal_Connect
-     (Object              : Glib.Object.GObject;
-      Name                : Glib.Signal_Name;
-      Marshaller          : System.Address;
-      Handler             : System.Address;
-      Func_Data           : System.Address;
-      Destroy             : System.Address;
-      After               : Boolean;
-      Slot_Object         : System.Address := System.Null_Address;
-      Expect_Return_Value : Boolean) return Handler_Id;
-   --  Internal function used to connect the signal.
-   --  Expect_Return_Value should be true if the user is connecting a function
-   --  to the signal, False if he is connecting a procedure
 
    function G_Signal_Parse_Name
      (Detailed_Signal    : Glib.Signal_Name;
@@ -78,30 +59,6 @@ package body Gtk.Handlers is
    function Signal_Lookup
      (Name : Glib.Signal_Name; IType : GType) return Signal_Id;
    pragma Import (C, Signal_Lookup, "g_signal_lookup");
-
-   procedure Set_Value (Value : GValue; Val : System.Address);
-   pragma Import (C, Set_Value, "ada_gvalue_set");
-   --  Function used internally to specify the value returned by a callback.
-
-   --------------------------------
-   -- Glib.Closure small binding --
-   --------------------------------
-
-   function CClosure_New
-     (Callback  : System.Address;
-      User_Data : System.Address;
-      Destroy   : System.Address) return GClosure;
-   pragma Import (C, CClosure_New, "g_cclosure_new");
-
-   procedure Set_Marshal (Closure : GClosure; Marshaller : System.Address);
-   pragma Import (C, Set_Marshal, "g_closure_set_marshal");
-
-   function Get_Data (Closure : GClosure) return System.Address;
-   pragma Import (C, Get_Data, "ada_gclosure_get_data");
-
-   procedure Watch_Closure (Object : System.Address; Closure : GClosure);
-   pragma Import (C, Watch_Closure, "g_object_watch_closure");
-   --  The closure will be destroyed when Object is destroyed.
 
    ---------------------
    -- Count_Arguments --
@@ -131,7 +88,7 @@ package body Gtk.Handlers is
    function Do_Signal_Connect
      (Object              : Glib.Object.GObject;
       Name                : Glib.Signal_Name;
-      Marshaller          : System.Address;
+      Marshaller          : C_Marshaller;
       Handler             : System.Address;
       Func_Data           : System.Address;
       Destroy             : System.Address;
@@ -155,12 +112,6 @@ package body Gtk.Handlers is
       Q       : Signal_Query;
 
    begin
-      --  When the handler is destroyed, for instance because Object is
-      --  destroyed, then the closure is destroyed as well, and Destroy gets
-      --  called.
-      --  The closure is invoked when the signal is emitted. As a result,
-      --  Handler is called, with Func_Data as a parameter.
-
       Success := G_Signal_Parse_Name
         (Detailed_Signal    => Name & ASCII.NUL,
          Itype              => Get_Type (Object),
@@ -364,7 +315,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -409,6 +360,10 @@ package body Gtk.Handlers is
          end if;
 
          Set_Value (Return_Value, Value'Address);
+
+      exception
+         when E : others =>
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -430,7 +385,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -459,7 +414,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -488,7 +443,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -517,7 +472,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -593,7 +548,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -634,6 +589,10 @@ package body Gtk.Handlers is
          end if;
 
          Set_Value (Return_Value, Value'Address);
+
+      exception
+         when E : others =>
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -770,7 +729,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -799,7 +758,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -828,7 +787,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -857,7 +816,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -930,7 +889,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -969,6 +928,9 @@ package body Gtk.Handlers is
                Data.Func (Data.Object, Values);
             end if;
          end if;
+      exception
+         when E : others =>
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -1097,7 +1059,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1126,7 +1088,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1153,7 +1115,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1182,7 +1144,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1253,7 +1215,7 @@ package body Gtk.Handlers is
         (Closure         : GClosure;
          Return_Value    : GValue;
          N_Params        : Guint;
-         Params          : System.Address;
+         Params          : Glib.Values.C_GValues;
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
@@ -1291,6 +1253,9 @@ package body Gtk.Handlers is
               (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
                Values, Data.User.all);
          end if;
+      exception
+         when E : others =>
+            Process_Exception (E);
       end First_Marshaller;
 
       -------------
@@ -1426,7 +1391,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1455,7 +1420,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
@@ -1485,7 +1450,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1514,7 +1479,7 @@ package body Gtk.Handlers is
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
             Name,
-            First_Marshaller'Address,
+            First_M,
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
@@ -1989,7 +1954,8 @@ package body Gtk.Handlers is
    -- Handlers_Destroy --
    ----------------------
 
-   procedure Handlers_Destroy (Obj : access Glib.Object.GObject_Record'Class)
+   procedure Handlers_Destroy
+      (Obj : access Glib.Object.GObject_Record'Class)
    is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "g_signal_handlers_destroy");
@@ -2011,6 +1977,17 @@ package body Gtk.Handlers is
    begin
       Internal (Obj => Get_Object (Obj), Id => Id.Id);
    end Handler_Unblock;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
+      return System.Address
+   is
+   begin
+      return Get_Object (Path);
+   end To_Address;
 
 end Gtk.Handlers;
 

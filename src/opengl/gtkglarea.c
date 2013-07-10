@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2001-2013, AdaCore
  * Copyright (C) 1997-1998 Janne Löf <jlof@mail.student.oulu.fi>
  *
  * This library is free software; you can redistribute it and/or
@@ -23,7 +24,7 @@
 
 static void gtk_gl_area_class_init    (GtkGLAreaClass *klass);
 static void gtk_gl_area_init          (GtkGLArea      *glarea);
-static void gtk_gl_area_destroy       (GtkObject      *object); /* change to finalize? */
+static void gtk_gl_area_destroy       (GObject      *object); /* change to finalize? */
 
 static GtkDrawingAreaClass *parent_class = NULL;
 
@@ -58,12 +59,12 @@ gtk_gl_area_get_type (void)
 static void
 gtk_gl_area_class_init (GtkGLAreaClass *klass)
 {
-  GtkObjectClass *object_class;
+  GObjectClass *object_class;
 
   parent_class = g_type_class_peek_parent(klass);
-  object_class = (GtkObjectClass*) klass;
+  object_class = (GObjectClass*) klass;
 
-  object_class->destroy = gtk_gl_area_destroy;
+  object_class->finalize = gtk_gl_area_destroy;
 }
 
 
@@ -136,8 +137,8 @@ gtk_gl_area_share_new (int *attrlist, GtkGLArea *share)
 
 #if defined GDK_WINDOWING_X11
   /* use colormap and visual suitable for OpenGL rendering */
-  gtk_widget_push_colormap(gdk_colormap_new(visual,TRUE));
-  gtk_widget_push_visual(visual);
+  // gtk_widget_push_colormap(gdk_colormap_new(visual,TRUE));
+  // gtk_widget_push_visual(visual);
 #endif
 
   gl_area = g_object_new(GTK_TYPE_GL_AREA, NULL);
@@ -145,8 +146,8 @@ gtk_gl_area_share_new (int *attrlist, GtkGLArea *share)
 
 #if defined GDK_WINDOWING_X11
   /* pop back defaults */
-  gtk_widget_pop_visual();
-  gtk_widget_pop_colormap();
+  // gtk_widget_pop_visual();
+  // gtk_widget_pop_colormap();
 #endif
 
   return GTK_WIDGET(gl_area);
@@ -154,7 +155,7 @@ gtk_gl_area_share_new (int *attrlist, GtkGLArea *share)
 
 
 static void
-gtk_gl_area_destroy(GtkObject *object)
+gtk_gl_area_destroy(GObject *object)
 {
   GtkGLArea *gl_area;
 
@@ -167,8 +168,8 @@ gtk_gl_area_destroy(GtkObject *object)
     g_object_unref(gl_area->glcontext);
   gl_area->glcontext = NULL;
 
-  if (GTK_OBJECT_CLASS (parent_class)->destroy)
-    (* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+  if (G_OBJECT_GET_CLASS (parent_class)->finalize)
+    (* G_OBJECT_GET_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -176,16 +177,16 @@ gint gtk_gl_area_make_current(GtkGLArea *gl_area)
 {
   g_return_val_if_fail(gl_area != NULL, FALSE);
   g_return_val_if_fail(GTK_IS_GL_AREA (gl_area), FALSE);
-  g_return_val_if_fail(GTK_WIDGET_REALIZED(gl_area), FALSE);
+  // g_return_val_if_fail(GTK_WIDGET_REALIZED(gl_area), FALSE);
 
-  return gdk_gl_make_current(GTK_WIDGET(gl_area)->window, gl_area->glcontext);
+  return gdk_gl_make_current(gtk_widget_get_window(GTK_WIDGET(gl_area)), gl_area->glcontext);
 }
 
 void gtk_gl_area_swap_buffers(GtkGLArea *gl_area)
 {
   g_return_if_fail(gl_area != NULL);
   g_return_if_fail(GTK_IS_GL_AREA(gl_area));
-  g_return_if_fail(GTK_WIDGET_REALIZED(gl_area));
+  // g_return_if_fail(GTK_WIDGET_REALIZED(gl_area));
 
-  gdk_gl_swap_buffers(GTK_WIDGET(gl_area)->window);
+  gdk_gl_swap_buffers(gtk_widget_get_window (GTK_WIDGET (gl_area)));
 }

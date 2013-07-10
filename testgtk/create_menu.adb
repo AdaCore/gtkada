@@ -1,53 +1,39 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
-
-with Gdk.Color;   use Gdk.Color;
-
+with Gdk.RGBA;    use Gdk.RGBA;
 with Gtk;                   use Gtk;
 with Gtkada.Handlers;       use Gtkada.Handlers;
-
 with Gtk.Box;               use Gtk.Box;
 with Gtk.Button;            use Gtk.Button;
+with Gtk.Combo_Box_Text;    use Gtk.Combo_Box_Text;
 with Gtk.Menu;              use Gtk.Menu;
 with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Menu_Bar;          use Gtk.Menu_Bar;
+with Gtk.Menu_Button;       use Gtk.Menu_Button;
 with Gtk.Menu_Item;         use Gtk.Menu_Item;
-
---  Gtk.Option_Menu is obsolescent, but we would still like to test it.
---  Deactivate obsolencence warning.
-pragma Warnings (Off);
-with Gtk.Option_Menu;       use Gtk.Option_Menu;
-pragma Warnings (On);
-
 with Gtk.Spin_Button;       use Gtk.Spin_Button;
 with Gtk.Radio_Menu_Item;   use Gtk.Radio_Menu_Item;
 with Gtk.Tearoff_Menu_Item; use Gtk.Tearoff_Menu_Item;
@@ -57,20 +43,22 @@ with Common;                use Common;
 
 package body Create_Menu is
 
-   package My_Popup is new Gtk.Menu.User_Menu_Popup (Gint);
+   package My_Popup is new Gtk.Menu.Popup_User_Data (Gint);
    use My_Popup;
 
    procedure Position_At_0
-     (Menu : access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint);
+     (Menu : not null access Gtk_Menu_Record'Class;
+      X    : in out Gint;
+      Y    : in out Gint;
+      Push_In : out Boolean);
    --  Position function at coordinates 0,0.
 
    procedure Position_At_Data
-     (Menu : access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint;
-      Val  : access Gint);
+     (Menu : not null access Gtk_Menu_Record'Class;
+      X    : in out Gint;
+      Y    : in out Gint;
+      Push_In : out Boolean;
+      Val  : Gint);
    --  Position function at coordinates Val,Val.
 
    procedure Popup_At_Position (Widget : access GObject_Record'Class);
@@ -84,14 +72,16 @@ package body Create_Menu is
    -------------------
 
    procedure Position_At_0
-     (Menu : access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint)
+     (Menu : not null access Gtk_Menu_Record'Class;
+      X    : in out Gint;
+      Y    : in out Gint;
+      Push_In : out Boolean)
    is
       pragma Unreferenced (Menu);
    begin
       X := 0;
       Y := 0;
+      Push_In := True;
    end Position_At_0;
 
    ----------------------
@@ -99,26 +89,30 @@ package body Create_Menu is
    ----------------------
 
    procedure Position_At_Data
-     (Menu : access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint;
-      Val  : access Gint)
+     (Menu : not null access Gtk_Menu_Record'Class;
+      X    : in out Gint;
+      Y    : in out Gint;
+      Push_In : out Boolean;
+      Val  : Gint)
    is
       pragma Unreferenced (Menu);
    begin
-      X := Val.all;
-      Y := Val.all;
+      X := Val;
+      Y := Val;
+      Push_In := True;
    end Position_At_Data;
 
    -----------------------
    -- Popup_At_Position --
    -----------------------
 
-   procedure Popup_At_Position (Widget : access GObject_Record'Class) is
+   procedure Popup_At_Position
+      (Widget : access GObject_Record'Class)
+   is
       Spin : constant Gtk_Spin_Button := Gtk_Spin_Button (Widget);
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
-      Val : aliased Gint := Get_Value_As_Int (Spin);
+      Val : constant Gint := Get_Value_As_Int (Spin);
    begin
       Gtk_New (Menu);
 
@@ -134,7 +128,7 @@ package body Create_Menu is
       My_Popup.Popup
         (Menu => Menu,
          Func => Position_At_Data'Access,
-         Data => Val'Access);
+         Data => Val);
    end Popup_At_Position;
 
    -----------
@@ -200,11 +194,8 @@ package body Create_Menu is
         & " item is selected. Typically, all menu items in a menu bar have"
         & " submenus."
         & ASCII.LF
-        & "The @bGtk_Option_Menu@B widget is a button that pops up a"
-        & " @bGtk_Menu@B when clicked. It's used inside dialogs and such."
-        & " This is different from the @bGtk_Combo_Box@B that you can see"
-        & " in the @bEntry@B demo, since a @bGtk_Option_Menu@B does not have"
-        & " any editable entry associated with it.";
+        & "This page also includes a @bGtk_Menu_Button@B (with an arrow)"
+        & " which pops up a menu when clicked on.";
    end Help;
 
    -----------------
@@ -217,7 +208,10 @@ package body Create_Menu is
       Menu      : Gtk_Menu;
       Group     : Widget_SList.GSlist;
       Menu_Item : Gtk_Radio_Menu_Item;
-      Red : constant Gdk_Color := Parse ("red");
+      Red : constant Gdk_RGBA := (Red   => 1.0,
+                                  Green => 0.0,
+                                  Blue  => 0.0,
+                                  Alpha => 1.0);
    begin
       Gtk_New (Menu);
 
@@ -239,9 +233,7 @@ package body Create_Menu is
          Show (Menu_Item);
 
          if J = 1 then
-            for S in Gtk_State_Type'Range loop
-               Modify_Fg (Get_Child (Menu_Item), S, Red);
-            end loop;
+            Menu_Item.Get_Child.Override_Color (0, Red);
          end if;
 
          if J = 3 then
@@ -264,14 +256,14 @@ package body Create_Menu is
       Box2 : Gtk_Box;
       Menu_Bar  : Gtk_Menu_Bar;
       Menu : Gtk_Menu;
+      Menu_Button    : Gtk_Menu_Button;
       Menu_Item : Gtk_Menu_Item;
-      Option_Menu : Gtk_Option_Menu;
+      Combo : Gtk_Combo_Box_Text;
 
       Button : Gtk_Button;
       Spin   : Gtk_Spin_Button;
 
    begin
-
       Set_Label (Frame, "Menus");
       Gtk_New_Vbox (Box1, False, 0);
       Add (Frame, Box1);
@@ -292,27 +284,25 @@ package body Create_Menu is
       Gtk_New (Menu_Item, "bar");
       Set_Submenu (Menu_Item, Create_Menu (4, True));
 
-      Set_Right_Justified (Menu_Item, True);
       Append (Menu_Bar, Menu_Item);
 
       Gtk_New_Vbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
       Pack_Start (Box1, Box2, False, False, 0);
 
-      Gtk_New (Option_Menu);
-      Set_Menu (Option_Menu, Create_Menu (1, False));
-      Set_History (Option_Menu, 3);
-      Pack_Start (Box2, Option_Menu, False, False, 0);
+      Gtk_New (Combo);
+      for J in 0 .. 5 loop
+         Combo.Append_Text ("Item" & Integer'Image (J));
+      end loop;
+      Pack_Start (Box2, Combo, False, False, 0);
 
       Gtk_New (Button, "Popup at 0,0 coordinates");
       Pack_Start (Box1, Button, False, False, 3);
 
-      Button_Handler.Connect
-        (Button, "clicked",
-         Button_Handler.To_Marshaller (Popup'Access));
+      Button_Handler.Connect (Button, "clicked", Popup'Access);
 
       Gtk_New_Hbox (Box2, False, 10);
-               Pack_Start (Box1, Box2, False, False, 0);
+      Pack_Start (Box1, Box2, False, False, 0);
 
       Gtk_New (Spin, 0.0, 800.0, 100.0);
       Set_Value (Spin, 200.0);
@@ -325,6 +315,17 @@ package body Create_Menu is
         (Button, "clicked",
          Popup_At_Position'Access,
          Spin);
+
+      ---------------------
+      -- Gtk_Menu_Button --
+      ---------------------
+
+      Gtk_New (Menu_Button);
+      Box1.Pack_Start (Menu_Button, False, False, 10);
+      Menu_Button.Set_Tooltip_Text ("A Gtk_Menu_Button");
+
+      Menu := Create_Menu (2, True);
+      Menu_Button.Set_Popup (Menu);
 
       Show_All (Frame);
    end Run;

@@ -1,39 +1,34 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                Copyright (C) 2006-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2006-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Gdk.Color;              use Gdk.Color;
 with Gdk.Pixbuf;             use Gdk.Pixbuf;
-with Gdk.Rgb;                use Gdk.Rgb;
 with Glib;                   use Glib;
 with Gtk.Box;                use Gtk.Box;
 with Gtk.Frame;              use Gtk.Frame;
 with Gtk.Cell_Renderer_Pixbuf; use Gtk.Cell_Renderer_Pixbuf;
 with Gtk.Cell_Renderer_Text;   use Gtk.Cell_Renderer_Text;
+with Gtk.Combo_Box_Text;     use Gtk.Combo_Box_Text;
 with Gtk.Combo_Box;          use Gtk.Combo_Box;
 with Gtk.Cell_Layout;        use Gtk.Cell_Layout;
 with Gtk.List_Store;         use Gtk.List_Store;
@@ -76,7 +71,7 @@ package body Create_Combo_Box is
    procedure Fill_Pixbuf (Pix : Gdk_Pixbuf; Color : String) is
       GColor : Gdk_Color;
       Num     : Guint;
-      Pixels  : Gdk.Rgb.Rgb_Buffer_Access;
+      Pixels  : Rgb_Buffer_Access;
    begin
       GColor := Parse (Color);
 
@@ -137,6 +132,7 @@ package body Create_Combo_Box is
       Model      : Gtk_List_Store;
       Iter       : Gtk_Tree_Iter;
       Combo      : Gtk_Combo_Box;
+      TCombo      : Gtk_Combo_Box_Text;
       Render     : Gtk_Cell_Renderer_Text;
       Pix        : Gtk_Cell_Renderer_Pixbuf;
    begin
@@ -147,12 +143,12 @@ package body Create_Combo_Box is
 
       --  A simple text combo
 
-      Gtk_New_Text (Combo);
-      Pack_Start (Box, Combo, Expand => False);
-      Append_Text (Combo, "Simple Text Combo 1");
-      Append_Text (Combo, "Simple Text Combo 2");
-      Append_Text (Combo, "Simple Text Combo 3");
-      Set_Active (Combo, 0);
+      Gtk_New (TCombo);
+      Pack_Start (Box, TCombo, Expand => False);
+      Append_Text (TCombo, "Simple Text Combo 1");
+      Append_Text (TCombo, "Simple Text Combo 2");
+      Append_Text (TCombo, "Simple Text Combo 3");
+      Set_Active (TCombo, 0);
 
       --  Create a model. This is a set of rows, each with two columns in this
       --  specific case.
@@ -180,7 +176,7 @@ package body Create_Combo_Box is
       --  doesn't come directly from a column (see create_cell_view for
       --  instance)
 
-      Gtk_New_With_Model (Combo, Model);
+      Gtk_New_With_Model (Combo, +Model);
       Pack_Start (Box, Combo, Expand => False);
 
       Gtk_New (Pix);
@@ -207,7 +203,7 @@ package body Create_Combo_Box is
       Append_Color_Pixbuf (Model, "pink");
       Append_Color_Pixbuf (Model, "magenta");
 
-      Gtk_New_With_Model (Combo, Model);
+      Gtk_New_With_Model (Combo, +Model);
       Pack_Start (Box, Combo, Expand => False);
       Set_Wrap_Width (Combo, 3);  --  Make it a matrix
 

@@ -1,37 +1,31 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  A separator is a vertical or horizontal line that can be displayed between
---  widgets, to provide visual grouping of the widgets into meaningful groups.
---  It is for instance used in dialogs to isolate the actual contents of the
---  dialogs and the various buttons to acknowledge the dialog (OK, Cancel,...)
+--  GtkSeparator is a horizontal or vertical separator widget, depending on
+--  the value of the Gtk.Orientable.Gtk_Orientable:orientation property, used
+--  to group the widgets within a window. It displays a line with a shadow to
+--  make it appear sunken into the interface.
 --
 --  </description>
 --  <screenshot>gtk-separator</screenshot>
@@ -50,42 +44,70 @@ package Gtk.Separator is
    type Gtk_Separator_Record is new Gtk_Widget_Record with null record;
    type Gtk_Separator is access all Gtk_Separator_Record'Class;
 
-   subtype Gtk_Vseparator_Record is Gtk_Separator_Record;
-   subtype Gtk_Vseparator is Gtk_Separator;
-
    subtype Gtk_Hseparator_Record is Gtk_Separator_Record;
    subtype Gtk_Hseparator is Gtk_Separator;
+
+   subtype Gtk_Vseparator_Record is Gtk_Separator_Record;
+   subtype Gtk_Vseparator is Gtk_Separator;
 
    ------------------
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Separator   : out Gtk_Separator;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   procedure Initialize
+      (Separator   : not null access Gtk_Separator_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Separator.Gtk_Separator with the given orientation.
+   --  Since: gtk+ 3.0
+   --  "orientation": the separator's orientation.
+
+   function Gtk_Separator_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Separator;
+   --  Creates a new Gtk.Separator.Gtk_Separator with the given orientation.
+   --  Since: gtk+ 3.0
+   --  "orientation": the separator's orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_get_type");
 
+   procedure Gtk_New_Hseparator (Separator : out Gtk_Hseparator);
+   procedure Initialize_Hseparator
+      (Separator : not null access Gtk_Hseparator_Record'Class);
+   --  Creates a new Gtk.Separator.Gtk_Hseparator.
+
+   function Gtk_Hseparator_New return Gtk_Hseparator;
+   --  Creates a new Gtk.Separator.Gtk_Hseparator.
+
+   function Hseparator_Get_Type return Glib.GType;
+   pragma Import (C, Hseparator_Get_Type, "gtk_hseparator_get_type");
+
    procedure Gtk_New_Vseparator (Separator : out Gtk_Vseparator);
    procedure Initialize_Vseparator
-      (Separator : access Gtk_Vseparator_Record'Class);
+      (Separator : not null access Gtk_Vseparator_Record'Class);
+   --  Creates a new Gtk.Separator.Gtk_Vseparator.
+
+   function Gtk_Vseparator_New return Gtk_Vseparator;
    --  Creates a new Gtk.Separator.Gtk_Vseparator.
 
    function Vseparator_Get_Type return Glib.GType;
    pragma Import (C, Vseparator_Get_Type, "gtk_vseparator_get_type");
 
-   procedure Gtk_New_Hseparator (Separator : out Gtk_Hseparator);
-   procedure Initialize_Hseparator
-      (Separator : access Gtk_Hseparator_Record'Class);
-
-   function Hseparator_Get_Type return Glib.GType;
-   pragma Import (C, Hseparator_Get_Type, "gtk_hseparator_get_type");
-
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    function Get_Orientation
-      (Self : access Gtk_Separator_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Separator_Record)
+       return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
-      (Self        : access Gtk_Separator_Record;
+      (Self        : not null access Gtk_Separator_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
@@ -97,26 +119,26 @@ package Gtk.Separator is
    --
    --  - "Orientable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Separator_Record, Gtk_Separator);
    function "+"
      (Widget : access Gtk_Separator_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Separator
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Separator_Record, Gtk_Separator);
    function "+"
      (Widget : access Gtk_Separator_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Separator
-   renames Implements_Orientable.To_Object;
+   renames Implements_Gtk_Orientable.To_Object;
 
 end Gtk.Separator;

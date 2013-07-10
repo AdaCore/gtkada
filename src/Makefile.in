@@ -1,7 +1,16 @@
 all: dirs libs tools
 
+# Whether to build GtkExtra and OpenGL. Position these to "yes" to enable.
+GTKEXTRA_SUPPORT=no
+GL_SUPPORT=no
+
+## This line restricts to the Gtk3 API. Comment it out to compile with Gtk2.
+RESTRICT_FLAGS = \
+ -DGTK_DISABLE_DEPRECATED -DGSEAL_ENABLE -DGTK_DISABLE_SINGLE_INCLUDES \
+ -DGDK_DISABLE_DEPRECATED
+
 CFLAGS = -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS \
- @CFLAGS@ -Wall @GTK_CFLAGS@ -I.. $(FPIC)
+ @CFLAGS@ $(RESTRICT_FLAGS) -Wall @GTK_CFLAGS@ -I.. $(FPIC)
 
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
@@ -17,11 +26,16 @@ SONAME        = libgtkada-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 endif
 ARCHIVENAME   = libgtkada.a
 
-c_objects = misc.o misc_extra.o misc_broken.o misc_generated.o
-c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
-c_extra_objects = ../gtkextra/obj/gtk*.o
+ifeq ($(GL_SUPPORT),yes)
+opengl_libs = opengl
+else
+opengl_libs =
+endif
 
-SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects} ${c_extra_objects}
+c_objects = misc.o misc_generated.o
+c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
+
+SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects}
 GTKADA_LIBS=
 EXTERNAL_LIBS=
 include Makefile.common
@@ -35,16 +49,20 @@ INSTALL_SCRIPT  = @INSTALL_SCRIPT@
 
 ## General and public targets
 
-libs: ada ${c_objects_dir} gtkextra
+libs: ada ${c_objects_dir}
 ifeq ($(BUILD_SHARED),yes)
 libs: ${OBJ_DIR}/$(SONAME)
 endif
 ifeq ($(BUILD_STATIC),yes)
 libs: ${OBJ_DIR}/${ARCHIVENAME}
 endif
-libs: opengl gnome
+libs: ${opengl_libs}
 
-opengl gtkextra gnome tools: force
+ifeq (${HAVE_GTKEXTRA},yes)
+libs: gtkextra
+endif
+
+opengl gtkextra tools: force
 	$(MAKE) -C $@
 
 ## Private targets
@@ -101,8 +119,8 @@ install: force
 	      $(CP) $(OBJ_DIR)/cairo*.ali "${DESTDIR}$(alidir)/static"; \
 	   fi; \
            $(MAKE) -C opengl install; \
-           $(MAKE) -C gnome install; \
            $(MAKE) -C tools install; \
+           $(MAKE) -C gtkextra install; \
 	   if [ ${BUILD_STATIC} = yes ]; then \
 	      $(CHMOD) ugo-w "${DESTDIR}$(alidir)/static"/*.ali; \
 	   fi; \
@@ -117,20 +135,14 @@ clean:
 	-${RM} .\#*
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
-	$(MAKE) -C gnome clean
 	$(MAKE) -C tools clean
 
 distclean: force
 	-${RM} Makefile
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
-	$(MAKE) -C gnome distclean
 	$(MAKE) -C tools distclean
 	-$(RM) Makefile.common
-
-## Find the list of bindings that are not up-to-date
-bindings_not_up_to_date:
-	@egrep -L "2.8.17|gtkextra 2.1.1|glib 2.10" *.ads | grep -v gtkada | grep -v b~ | grep -v dgate_callbacks
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly

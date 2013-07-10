@@ -1,40 +1,46 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
 package body Gtk.Event_Box is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Event_Box is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Event_Box_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Event_Box);
+
+   -----------------------
+   -- Gtk_Event_Box_New --
+   -----------------------
+
+   function Gtk_Event_Box_New return Gtk_Event_Box is
+      Event_Box : constant Gtk_Event_Box := new Gtk_Event_Box_Record;
+   begin
+      Gtk.Event_Box.Initialize (Event_Box);
+      return Event_Box;
+   end Gtk_Event_Box_New;
 
    -------------
    -- Gtk_New --
@@ -50,11 +56,15 @@ package body Gtk.Event_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class) is
+   procedure Initialize
+      (Event_Box : not null access Gtk_Event_Box_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_event_box_new");
    begin
-      Set_Object (Event_Box, Internal);
+      if not Event_Box.Is_Created then
+         Set_Object (Event_Box, Internal);
+      end if;
    end Initialize;
 
    ---------------------
@@ -62,12 +72,12 @@ package body Gtk.Event_Box is
    ---------------------
 
    function Get_Above_Child
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean
+      (Event_Box : not null access Gtk_Event_Box_Record) return Boolean
    is
       function Internal (Event_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_event_box_get_above_child");
    begin
-      return Boolean'Val (Internal (Get_Object (Event_Box)));
+      return Internal (Get_Object (Event_Box)) /= 0;
    end Get_Above_Child;
 
    ------------------------
@@ -75,12 +85,12 @@ package body Gtk.Event_Box is
    ------------------------
 
    function Get_Visible_Window
-      (Event_Box : access Gtk_Event_Box_Record) return Boolean
+      (Event_Box : not null access Gtk_Event_Box_Record) return Boolean
    is
       function Internal (Event_Box : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_event_box_get_visible_window");
    begin
-      return Boolean'Val (Internal (Get_Object (Event_Box)));
+      return Internal (Get_Object (Event_Box)) /= 0;
    end Get_Visible_Window;
 
    ---------------------
@@ -88,7 +98,7 @@ package body Gtk.Event_Box is
    ---------------------
 
    procedure Set_Above_Child
-      (Event_Box   : access Gtk_Event_Box_Record;
+      (Event_Box   : not null access Gtk_Event_Box_Record;
        Above_Child : Boolean)
    is
       procedure Internal (Event_Box : System.Address; Above_Child : Integer);
@@ -102,7 +112,7 @@ package body Gtk.Event_Box is
    ------------------------
 
    procedure Set_Visible_Window
-      (Event_Box      : access Gtk_Event_Box_Record;
+      (Event_Box      : not null access Gtk_Event_Box_Record;
        Visible_Window : Boolean)
    is
       procedure Internal

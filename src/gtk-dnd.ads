@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2000-2010 AdaCore                    --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  Like all modern GUI toolkits, GtkAda has a full support for drag-and-drop
@@ -84,17 +79,14 @@
 --  <group>Inter-Process communication</group>
 --  <testgtk>create_dnd.adb</testgtk>
 
-with Gdk.Bitmap;
-with Gdk.Color;
-with Gdk.Dnd;        use Gdk.Dnd;
+with Gdk.Dnd;           use Gdk.Dnd;
+with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
 with Gdk.Event;
-with Gdk.Pixmap;
 with Gdk.Pixbuf;
 with Gdk.Types;
-with Gdk.Window;
 
 with Gtk.Widget;
-with Gtk.Selection;  use Gtk.Selection;
+with Gtk.Target_List; use Gtk.Target_List;
 
 package Gtk.Dnd is
 
@@ -159,7 +151,7 @@ package Gtk.Dnd is
 
    procedure Dest_Set_Proxy
      (Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Proxy_Window    : Gdk.Window.Gdk_Window;
+      Proxy_Window    : Gdk.Gdk_Window;
       Protocol        : Drag_Protocol;
       Use_Coordinates : Boolean);
    --  Set this widget as a proxy for drops to another window.
@@ -176,9 +168,10 @@ package Gtk.Dnd is
 
    procedure Dest_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List);
+      Target_List : Gtk.Target_List.Gtk_Target_List);
    function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Target_List.Gtk_Target_List;
    --  Sets the target types that this widget can accept from drag-and-drop.
    --  The widget must first be made into a drag destination with
    --  Dest_Set.
@@ -196,8 +189,8 @@ package Gtk.Dnd is
 
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Context     : Gdk.Dnd.Drag_Context;
-      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom;
+      Context     : Gdk.Drag_Contexts.Drag_Context;
+      Target_List : Gtk.Target_List.Gtk_Target_List) return Gdk.Types.Gdk_Atom;
    --  Looks for a match between the targets set for context and the
    --  Target_List, returning the first matching target, otherwise returning
    --  GDK_NONE. Target_List should usually be the return value from
@@ -249,9 +242,10 @@ package Gtk.Dnd is
 
    procedure Source_Set_Target_List
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Target_List : Gtk.Selection.Target_List);
+      Target_List : Gtk.Target_List.Gtk_Target_List);
    function Source_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Target_List.Gtk_Target_List;
    --  Changes the target types that this widget offers for drag-and-drop. The
    --  widget must first be made into a drag source with Source_Set.
 
@@ -267,11 +261,6 @@ package Gtk.Dnd is
    --  and Source_Set_Target_List
    --  Widget: a #GtkWidget that's is a drag source
 
-   procedure Source_Set_Icon
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap);
    procedure Source_Set_Icon_Pixbuf
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
@@ -330,7 +319,7 @@ package Gtk.Dnd is
 
    function Drag_Begin
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Targets : Target_List;
+      Targets : Gtk_Target_List;
       Actions : Drag_Action;
       Button  : Gint;
       Event   : Gdk.Event.Gdk_Event) return Drag_Context;
@@ -371,18 +360,6 @@ package Gtk.Dnd is
    --  coordinates of the hot point (that will be just under the mouse) within
    --  Widget.
 
-   procedure Set_Icon_Pixmap
-     (Context  : Drag_Context;
-      Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap;
-      Hot_X    : Gint;
-      Hot_Y    : Gint);
-   --  Sets a given pixmap as the icon for a given drag. GtkAda retains a
-   --  reference count for the arguments, and will release them when they are
-   --  no longer needed.
-   --  (Hot_X, Hot_Y) is the coordinates of the hotspot within Pixmap.
-
    procedure Set_Icon_Default (Context : Drag_Context);
    --  Set the icon for a particular drag to the default icon.
    --  This must be called with a context for the source side of a drag.
@@ -421,28 +398,6 @@ package Gtk.Dnd is
    --  size of the icon depends on the icon theme (the icon is
    --  loaded at the symbolic size GTK_ICON_SIZE_DND), thus
    --  Hot_X and Hot_Y have to be used with care.
-
-   -----------------
-   -- Obsolescent --
-   -----------------
-   --  All subprograms below are now obsolescent in gtk+. They might be removed
-   --  from future versions of gtk+ (and therefore GtkAda).
-   --  To find out whether your code uses any of these, we recommend compiling
-   --  with the -gnatwj switch
-   --  <doc_ignore>
-
-   procedure Set_Default_Icon
-     (Colormap : Gdk.Color.Gdk_Colormap;
-      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : Gdk.Bitmap.Gdk_Bitmap;
-      Hot_X    : Gint;
-      Hot_Y    : Gint);
-   pragma Obsolescent; --  Set_Default_Icon
-   --  Change the default drag icon. GtkAda retains a reference count for the
-   --  arguments, and will release them when they are no longer needed.
-   --  This procedure is deprecated.
-
-   --  </doc_ignore>
 
    -------------
    -- Signals --
@@ -572,8 +527,4 @@ private
    Dest_Default_Highlight : constant Dest_Defaults := 2 ** 1;
    Dest_Default_Drop      : constant Dest_Defaults := 2 ** 2;
    Dest_Default_All       : constant Dest_Defaults := 7;
-
-   pragma Import (C, Set_Icon_Pixmap, "gtk_drag_set_icon_pixmap");
-   pragma Import (C, Set_Icon_Default, "gtk_drag_set_icon_default");
-   pragma Import (C, Set_Default_Icon, "gtk_drag_set_default_icon");
 end Gtk.Dnd;

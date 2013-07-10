@@ -1,33 +1,28 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
 with Gtk.Adjustment;    use Gtk.Adjustment;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
@@ -47,7 +42,6 @@ package body Create_Spin is
    --  This is basic Gtk_Button, except that is has an extra internal
    --  data.
 
-   package Spin_O_Cb is new Handlers.Callback (Gtk_Spin_Button_Record);
    package Spin_Cb is new Handlers.User_Callback
      (Gtk_Toggle_Button_Record, Gtk_Spin_Button);
    package Button_Cb is new Handlers.User_Callback (My_Button_Record, Gint);
@@ -73,17 +67,19 @@ package body Create_Spin is
    -- Change_Digits --
    -------------------
 
-   procedure Change_Digits (Spin : access Gtk_Spin_Button_Record'Class) is
+   procedure Change_Digits (Spin : access GObject_Record'Class) is
+      S : constant Gtk_Spin_Button := Gtk_Spin_Button (Spin);
    begin
-      Set_Digits (Spinner1, Guint (Get_Value_As_Int (Spin)));
+      Set_Digits (Spinner1, Guint (S.Get_Value_As_Int));
    end Change_Digits;
 
    -----------------
    -- Toggle_Snap --
    -----------------
 
-   procedure Toggle_Snap (Widget : access Gtk_Toggle_Button_Record'Class;
-                          Spin : in Gtk_Spin_Button) is
+   procedure Toggle_Snap
+      (Widget : access Gtk_Toggle_Button_Record'Class;
+       Spin : Gtk_Spin_Button) is
    begin
       Set_Snap_To_Ticks (Spin, Get_Active (Widget));
    end Toggle_Snap;
@@ -92,8 +88,9 @@ package body Create_Spin is
    -- Toggle_Numeric --
    --------------------
 
-   procedure Toggle_Numeric (Widget : access Gtk_Toggle_Button_Record'Class;
-                             Spin : in Gtk_Spin_Button) is
+   procedure Toggle_Numeric
+      (Widget : access Gtk_Toggle_Button_Record'Class;
+       Spin   : Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Get_Active (Widget));
    end Toggle_Numeric;
@@ -103,7 +100,7 @@ package body Create_Spin is
    ---------------
 
    procedure Get_Value (Widget : access My_Button_Record'Class;
-                        Data   : in Gint)
+                        Data   : Gint)
    is
       Spin  : constant Gtk_Spin_Button := Spinner1;
    begin
@@ -177,7 +174,7 @@ package body Create_Spin is
       Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
       Gtk_New (Spinner, Adj, 0.0, 0);
       Set_Wrap (Spinner, True);
-      Set_USize (Spinner, 55, 0);
+      Set_Size_Request (Spinner, 55, 0);
       Pack_Start (Vbox2, Spinner, False, False, 0);
 
       Gtk_New (Frame2, "Accelerated");
@@ -198,7 +195,7 @@ package body Create_Spin is
       Gtk_New (Adj, 0.0, -10000.0, 10000.0, 0.5, 100.0, 0.0);
       Gtk_New (Spinner1, Adj, 1.0, 2);
       Set_Wrap (Spinner1, True);
-      Set_USize (Spinner1, 100, 0);
+      Set_Size_Request (Spinner1, 100, 0);
       Set_Update_Policy (Spinner1, Update_Always);
       Pack_Start (Vbox2, Spinner1, False, False, 0);
 
@@ -210,10 +207,7 @@ package body Create_Spin is
       Gtk_New (Adj, 2.0, 1.0, 5.0, 1.0, 1.0, 0.0);
       Gtk_New (Spinner2, Adj, 0.0, 0);
       Set_Wrap (Spinner2, True);
-      Spin_O_Cb.Object_Connect
-        (Adj, "value_changed",
-         Spin_O_Cb.To_Marshaller (Change_Digits'Access),
-         Slot_Object => Spinner2);
+      Adj.On_Value_Changed (Change_Digits'Access, Spinner2);
 
       Pack_Start (Vbox2, Spinner2, False, False, 0);
 
@@ -221,16 +215,12 @@ package body Create_Spin is
       Pack_Start (VBox, Hbox, False, False, 5);
 
       Gtk_New (Check, "Snap to 0.5-ticks");
-      Spin_Cb.Connect
-        (Check, "clicked",
-         Spin_Cb.To_Marshaller (Toggle_Snap'Access), Spinner1);
+      Spin_Cb.Connect (Check, "clicked", Toggle_Snap'Access, Spinner1);
       Pack_Start (VBox, Check, False, False, 0);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Snap Numeric only input mode");
-      Spin_Cb.Connect
-        (Check, "clicked",
-         Spin_Cb.To_Marshaller (Toggle_Numeric'Access), Spinner1);
+      Spin_Cb.Connect (Check, "clicked", Toggle_Numeric'Access, Spinner1);
       Pack_Start (VBox, Check, False, False, 0);
       Set_Active (Check, True);
 
@@ -241,15 +231,13 @@ package body Create_Spin is
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Int");
       Myb.Label := Label;
-      Button_Cb.Connect (Myb, "clicked",
-                         Button_Cb.To_Marshaller (Get_Value'Access), 1);
+      Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 1);
       Pack_Start (Hbox, Myb, False, False, 5);
 
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Float");
       Myb.Label := Label;
-      Button_Cb.Connect (Myb, "clicked",
-                         Button_Cb.To_Marshaller (Get_Value'Access), 2);
+      Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 2);
       Pack_Start (Hbox, Myb, False, False, 5);
 
       Pack_Start (VBox, Label, False, False, 0);
@@ -259,13 +247,3 @@ package body Create_Spin is
    end Run;
 
 end Create_Spin;
-
-
-
-
-
-
-
-
-
-

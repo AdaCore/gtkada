@@ -9,7 +9,7 @@ project OpenGL is
        when "False" => for Source_Dirs use ();
    end case;
 
-   for Languages use ("Ada");
+   for Languages use ("Ada", "C");
    package Builder  renames Shared.Builder;
    package Compiler renames Shared.Compiler;
    package IDE      renames Shared.IDE;

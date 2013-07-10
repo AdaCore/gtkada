@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                 Copyright (C) 2010-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2010-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Ada_2005;
 
@@ -40,6 +35,16 @@ with Glib.Object; use Glib.Object;
 with Gdk.Cairo;
 with Gdk.Pixbuf; use Gdk.Pixbuf;
 
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
+with Gtk.Drawing_Area;    use Gtk.Drawing_Area;
+with Gtk.Print_Context;   use Gtk.Print_Context;
+with Gtk.Print_Operation; use Gtk.Print_Operation;
+with Gtk.Window;          use Gtk.Window;
+
+with Gtkada.Printing;     use Gtkada.Printing;
+
+with Cairo;         use Cairo;
 with Cairo.Matrix;  use Cairo.Matrix;
 with Cairo.Pattern; use Cairo.Pattern;
 with Cairo.Image_Surface; use Cairo.Image_Surface;
@@ -53,51 +58,61 @@ with Pango.Font;   use Pango.Font;
 package body Testcairo_Drawing is
 
    Two_Pi : constant Gdouble := Gdouble (2.0 * Ada.Numerics.Pi);
-
    Background : Gdk_Pixbuf := null;
 
    package Gdouble_Numerics is new Ada.Numerics.Generic_Elementary_Functions
      (Gdouble);
    use Gdouble_Numerics;
 
-   ---------------------
-   -- Draw_On_Context --
-   ---------------------
+   type Cairo_Demo_Record is new Gtk_Box_Record with record
+      Test : Test_Type;
+   end record;
+   type Cairo_Demo is access all Cairo_Demo_Record'Class;
 
-   procedure Draw_On_Context
-     (Cr   : Cairo_Context;
-      Win  : Gtk_Widget;
-      Test : Test_Type)
+   type Testcairo_Print_Operation_Record is new Gtkada_Print_Operation_Record
+   with record
+      Widget : Cairo_Demo;
+   end record;
+   type Testcairo_Print_Operation is access all
+     Testcairo_Print_Operation_Record'Class;
+
+   overriding procedure Draw_Page
+     (Op          : access Testcairo_Print_Operation_Record;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint);
+   --  Handler responsible for printing pages
+
+   ---------------
+   -- On_Redraw --
+   ---------------
+
+   function On_Redraw
+      (Demo : access GObject_Record'Class;
+       Cr   : Cairo_Context) return Boolean
    is
-      D, D2, D3 : Gdouble;
-      M, M2, M3 : Cairo_Matrix_Access;
-
-      P   : Cairo_Pattern;
-      Opt : Cairo_Font_Options;
-
+      Win : constant Cairo_Demo := Cairo_Demo (Demo);
+      D, D2, D3     : Gdouble;
+      M, M2, M3     : Cairo_Matrix_Access;
+      P             : Cairo_Pattern;
+      Opt           : Cairo_Font_Options;
       Image_Surface : Cairo_Surface;
       Status        : Cairo_Status;
-
       Idx           : Natural;
       Error         : Glib.Error.GError;
    begin
-      case Test is
+      case Win.Test is
          when Image =>
             if Background = null then
                Gdk_New_From_File (Background, "background.jpg", Error);
             end if;
 
             Gdk.Cairo.Set_Source_Pixbuf (Cr, Background, 10.0, 10.0);
-
             Cairo.Paint (Cr);
 
          when Rectangles =>
             for J in reverse 1 .. 10 loop
                D := Gdouble (J);
-               --  Create a color
                Set_Source_Rgb (Cr, D / 10.0, 0.5 - D / 20.0, 0.0);
-
-               --  Draw a rectangle
                Rectangle (Cr, 0.0, 0.0, D * 10.0, D * 10.0);
                Fill (Cr);
             end loop;
@@ -542,6 +557,84 @@ package body Testcairo_Drawing is
                Put_Line (Status'Img);
             end;
       end case;
-   end Draw_On_Context;
 
+      return False;
+   end On_Redraw;
+
+   ---------------
+   -- Draw_Page --
+   ---------------
+
+   procedure Draw_Page
+     (Op          : access Testcairo_Print_Operation_Record;
+      Context     : Gtk_Print_Context;
+      Page_Number : Gint)
+   is
+      Cr  : Cairo_Context;
+      Tmp : Boolean;
+      pragma Unreferenced (Tmp, Page_Number);
+   begin
+      Cr := Get_Cairo_Context (Context);
+      Tmp := On_Redraw (Op.Widget, Cr);
+   end Draw_Page;
+
+   -----------------
+   -- On_Print_Cb --
+   -----------------
+
+   procedure On_Print_Cb (Demo : access GObject_Record'Class) is
+      D : constant Cairo_Demo := Cairo_Demo (Demo);
+      Print_Op : Testcairo_Print_Operation;
+      Result   : Gtk_Print_Operation_Result;
+      pragma Unreferenced (Result);
+   begin
+      Print_Op := new Testcairo_Print_Operation_Record;
+      Print_Op.Widget := D;
+      Gtkada.Printing.Initialize (Print_Op);
+
+      Print_Op.Set_N_Pages (1);
+
+      --  Call up the print operation dialog
+      Result := Connect_And_Run
+         (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (D)));
+   end On_Print_Cb;
+
+   --------------
+   -- Run_Test --
+   --------------
+
+   procedure Run_Test
+      (Frame : access Gtk_Frame_Record'Class;
+       Test  : Test_Type)
+   is
+      Box    : Cairo_Demo;
+      Area   : Gtk_Drawing_Area;
+      Button : Gtk_Button;
+   begin
+      Frame.Set_Label ("Cairo demo -- " & Test'Img);
+
+      Box := new Cairo_Demo_Record;
+      Box.Test := Test;
+      Initialize_Vbox (Box, Homogeneous => False);
+      Frame.Add (Box);
+
+      Gtk_New (Area);
+      Box.Pack_Start (Area, Expand => True, Fill => True);
+      Area.On_Draw (On_Redraw'Access, Box);
+
+      Gtk_New (Button, "Print");
+      Box.Pack_Start (Button, Expand => False);
+      Button.On_Clicked (On_Print_Cb'Access, Box);
+
+      Frame.Show_All;
+   end Run_Test;
+
+   ---------
+   -- Run --
+   ---------
+
+   procedure Run (Frame : access Gtk_Frame_Record'Class) is
+   begin
+      Run_Test (Frame, Test);
+   end Run;
 end Testcairo_Drawing;

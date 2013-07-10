@@ -22,17 +22,16 @@ The home page for gtk is
 
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 2.24.4. This package is an Ada graphical library
+This is GtkAda version 3.8.1. This package is an Ada graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada
 as the programming language.
 
-This library has been tested using Gtk+ 2.24.8 on the following systems:
+This library has been tested using Gtk+ 3.8.2 on the following systems:
 
    - GNU Linux/x86
    - GNU Linux/x86-64
    - Solaris/sparc
-   - Solaris/x86
    - Windows XP/Vista/7
 
 Disclaimer
@@ -52,5 +51,8 @@ Temple Place - Suite 330, Boston, -- MA 02111-1307, USA.
 Documentation
 =============
 
-The GtkAda reference manul and user's guide can be found under the
-docs/ subdirectory in various formats (texinfo, ps, txt, info, html)
+The GtkAda User's Guide can be found:
+  - HTML version: in docs/gtkada_ug/_build/html/index.html
+  - PDF  version: in docs/gtkada_ug/_build/latex/GtkAda.pdf 
+The GtkAda Reference Manual can be found:
+  - HTML version: in gtkada_rm/gtkada_rm/index.html 

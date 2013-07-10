@@ -9,7 +9,9 @@ project Shared is
    type Boolean_Type is ("True", "False");
    Build_Gnome  : Boolean_Type := external ("GNOME",  "True");
    Build_Opengl : Boolean_Type := external ("OPENGL", "True");
-   Build_Extra  : Boolean_Type := external ("EXTRA",  "True");
+
+   type Yes_No is ("yes", "no");
+   Build_Extra  : Yes_No := external ("EXTRA",  "no");
 
    for Source_Files use ();
 
@@ -17,10 +19,10 @@ project Shared is
       case Build is
          when "Debug" =>
              for Default_Switches ("Ada") use
-                ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0");
+                ("-gnat05", "-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0");
          when "Production" =>
              for Default_Switches ("Ada") use
-                ("-gnatQ", "-O2", "-gnatn", "-gnatws");
+                ("-gnat05", "-gnatQ", "-O2", "-gnatn", "-gnatws");
       end case;
       for Local_Configuration_Pragmas use "src/gnat.adc";
    end Compiler;

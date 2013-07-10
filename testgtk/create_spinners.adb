@@ -1,38 +1,35 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                  Copyright (C) 2011-2013, AdaCore                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2011-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib.Main;       use Glib.Main;
 with Glib.Properties; use Glib.Properties;
-
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Label;       use Gtk.Label;
 with Gtk.Spinner;     use Gtk.Spinner;
-with Gtk.Table;       use Gtk.Table;
+with Gtk.Grid;        use Gtk.Grid;
+with Gtk.Widget;      use Gtk.Widget;
+
+with Common;          use Common;
 
 package body Create_Spinners is
 
@@ -41,6 +38,12 @@ package body Create_Spinners is
 
    --  Function passed to Time_Cb.Timeout_Add, to be invoked periodically.
    function Spinner_Timeout (Spinner : Gtk_Spinner) return Boolean;
+
+   --  A handle referencing our timeout
+   Timer : G_Source_Id := No_Source_Id;
+
+   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class);
+   --  Callback invoked when our spinner widget is destroyed.
 
    ----------
    -- Help --
@@ -62,41 +65,27 @@ package body Create_Spinners is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Active_Spinner, Transition_Spinner, Inactive_Spinner : Gtk_Spinner;
       Active_Label,   Transition_Label,   Inactive_Label   : Gtk_Label;
-      Table1 : Gtk_Table;
-      Timer  : G_Source_Id;
-
+      Table1 : Gtk_Grid;
    begin
       Set_Label (Frame, "Spinners");
 
-      Gtk_New (Table1, Rows => 3, Columns => 2, Homogeneous => False);
-      Add (Frame, Table1);
+      Gtk_New (Table1);
+      Frame.Add (Table1);
 
       Gtk_New (Active_Label, "Active spinner:");
       Gtk_New (Active_Spinner);
-      Attach
-        (Table1, Active_Label, 0, 1, 0, 1,
-         Xpadding => 10, Ypadding => 10);
-      Attach
-        (Table1, Active_Spinner, 1, 2, 0, 1,
-         Xpadding => 25, Ypadding => 25);
+      Table1.Attach (Active_Label, 0, 0);
+      Table1.Attach (Active_Spinner, 1, 0);
 
       Gtk_New (Transition_Label, "On/Off spinner:");
       Gtk_New (Transition_Spinner);
-      Attach
-        (Table1, Transition_Label, 0, 1, 1, 2,
-         Xpadding => 10, Ypadding => 10);
-      Attach
-        (Table1, Transition_Spinner, 1, 2, 1, 2,
-         Xpadding => 25, Ypadding => 25);
+      Table1.Attach (Transition_Label, 0, 1);
+      Table1.Attach (Transition_Spinner, 1, 1);
 
       Gtk_New (Inactive_Label, "Inactive spinner:");
       Gtk_New (Inactive_Spinner);
-      Attach
-        (Table1, Inactive_Label, 0, 1, 2, 3,
-         Xpadding => 10, Ypadding => 10);
-      Attach
-        (Table1, Inactive_Spinner, 1, 2, 2, 3,
-         Xpadding => 25, Ypadding => 25);
+      Table1.Attach (Inactive_Label, 0, 2);
+      Table1.Attach (Inactive_Spinner, 1, 2);
 
       --  Start one spinner, set another pulsing, and don't touch the
       --  third (so that it stays off).
@@ -104,6 +93,13 @@ package body Create_Spinners is
 
       Timer := Time_Cb.Timeout_Add
         (1_000, Spinner_Timeout'Access, Transition_Spinner);
+
+      --  Make sure to disengage the timer if the spinner is destroyed,
+      --  otherwise when Spinner_Timeout is called we'll raise an
+      --  exception.
+      Widget_Handler.Connect
+        (Transition_Spinner, "destroy",
+         Widget_Handler.To_Marshaller (Stop_Timeout'Access));
 
       Show_All (Frame);
    end Run;
@@ -121,5 +117,18 @@ package body Create_Spinners is
 
       return True;
    end Spinner_Timeout;
+
+   ------------------
+   -- Stop_Timeout --
+   ------------------
+
+   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Widget);
+   begin
+      if Timer /= No_Source_Id then
+         Remove (Timer);
+         Timer := No_Source_Id;
+      end if;
+   end Stop_Timeout;
 
 end Create_Spinners;

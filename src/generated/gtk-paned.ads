@@ -1,59 +1,68 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Paned is a container that organizes its two children either
---  horizontally or vertically. The initial size allocated to the children
---  depends on the size they request. However, the user has the possibility to
---  interactively move a separation bar between the two to enlarge one of the
---  children, while at the same time shrinking the second one. The bar can be
---  moved by clicking with the mouse on a small cursor displayed in the bar,
---  and then dragging the mouse.
+--  Gtk.Paned.Gtk_Paned has two panes, arranged either horizontally or
+--  vertically. The division between the two panes is adjustable by the user by
+--  dragging a handle.
 --
---  No additional decoration is provided around the children.
+--  Child widgets are added to the panes of the widget with Gtk.Paned.Pack1
+--  and Gtk.Paned.Pack2. The division between the two children is set by
+--  default from the size requests of the children, but it can be adjusted by
+--  the user.
 --
---  Each child has two parameters, Resize and Shrink.
+--  A paned widget draws a separator between the two child widgets and a small
+--  handle that the user can drag to adjust the division. It does not draw any
+--  relief around the children or around the separator. (The space in which the
+--  separator is called the gutter.) Often, it is useful to put each child
+--  inside a Gtk.Frame.Gtk_Frame with the shadow type set to
+--  Gtk.Enums.Shadow_In so that the gutter appears as a ridge. No separator is
+--  drawn if one of the children is missing.
 --
---  If Shrink is True, then the widget can be made smaller than its
---  requisition size by the user. Set this to False if you want to set a
---  minimum size.
+--  Each child has two options that can be set, Resize and Shrink. If Resize
+--  is true, then when the Gtk.Paned.Gtk_Paned is resized, that child will
+--  expand or shrink along with the paned widget. If Shrink is true, then that
+--  child can be made smaller than its requisition by the user. Setting Shrink
+--  to False allows the application to set a minimum size. If Resize is false
+--  for both children, then this is treated as if Resize is true for both
+--  children.
 --
---  if Resize is True, this means that the child accepts to be resized, and
---  will not require any size. Thus, the size allocated to it will be the total
---  size allocated to the container minus the size requested by the other
---  child. If Resize is False, the child should ask for a specific size, which
---  it will get. The other child will be resized accordingly. If both Child
---  have the same value for Resize (either True or False), then the size
---  allocated to each is a ratio between the size requested by both.
+--  The application can set the position of the slider as if it were set by
+--  the user, by calling Gtk.Paned.Set_Position.
 --
---  When you use Set_Position with a parameter other than -1, or the user
---  moves the handle to resize the widgets, the behavior of Resize is canceled.
+--  == Creating a paned widget with minimum sizes. ==
+--
+--    GtkWidget *hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+--    GtkWidget *frame1 = gtk_frame_new (NULL);
+--    GtkWidget *frame2 = gtk_frame_new (NULL);
+--    gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
+--    gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
+--    gtk_widget_set_size_request (hpaned, 200, -1);
+--    gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
+--    gtk_widget_set_size_request (frame1, 50, -1);
+--    gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
+--    gtk_widget_set_size_request (frame2, 50, -1);
+--
 --
 --  </description>
 --  <screenshot>gtk-paned</screenshot>
@@ -61,8 +70,9 @@
 --  <testgtk>create_paned.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Window;      use Gdk.Window;
+with Gdk;             use Gdk;
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Buildable;   use Gtk.Buildable;
@@ -86,18 +96,42 @@ package Gtk.Paned is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New
+      (Paned       : out Gtk_Paned;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   procedure Initialize
+      (Paned       : not null access Gtk_Paned_Record'Class;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Creates a new Gtk.Paned.Gtk_Paned widget.
+   --  Since: gtk+ 3.0
+   --  "orientation": the paned's orientation.
+
+   function Gtk_Paned_New
+      (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Paned;
+   --  Creates a new Gtk.Paned.Gtk_Paned widget.
+   --  Since: gtk+ 3.0
+   --  "orientation": the paned's orientation.
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_paned_get_type");
 
    procedure Gtk_New_Hpaned (Paned : out Gtk_Hpaned);
-   procedure Initialize_Hpaned (Paned : access Gtk_Hpaned_Record'Class);
+   procedure Initialize_Hpaned
+      (Paned : not null access Gtk_Hpaned_Record'Class);
+   --  The children will be displayed next to each other
+
+   function Gtk_Hpaned_New return Gtk_Hpaned;
    --  The children will be displayed next to each other
 
    function Get_Type_Hpaned return Glib.GType;
    pragma Import (C, Get_Type_Hpaned, "gtk_hpaned_get_type");
 
    procedure Gtk_New_Vpaned (Paned : out Gtk_Vpaned);
-   procedure Initialize_Vpaned (Paned : access Gtk_Vpaned_Record'Class);
+   procedure Initialize_Vpaned
+      (Paned : not null access Gtk_Vpaned_Record'Class);
+   --  The children will be displayed one on top of the other
+
+   function Gtk_Vpaned_New return Gtk_Vpaned;
    --  The children will be displayed one on top of the other
 
    function Get_Type_Vpaned return Glib.GType;
@@ -108,53 +142,55 @@ package Gtk.Paned is
    -------------
 
    procedure Add1
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add the first child of the container. The child will be displayed
    --  either in the top or in the left pane, depending on the orientation of
    --  the container. This is equivalent to using the Pack1 procedure with its
    --  default parameters.
+   --  "child": the child to add
 
    procedure Add2
-      (Paned : access Gtk_Paned_Record;
-       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Paned : not null access Gtk_Paned_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add the second child of the container. It will be displayed in the
    --  bottom or right pane, depending on the container's orientation. This is
    --  equivalent to using Pack2 with its default parameters.
-
-   procedure Compute_Position
-      (Paned      : access Gtk_Paned_Record;
-       Allocation : Gint;
-       Child1_Req : Gint;
-       Child2_Req : Gint);
+   --  "child": the child to add
 
    function Get_Child1
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget;
    --  Obtains the first child of the paned widget.
    --  Since: gtk+ 2.4
 
    function Get_Child2
-      (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
+      (Paned : not null access Gtk_Paned_Record)
+       return Gtk.Widget.Gtk_Widget;
    --  Obtains the second child of the paned widget.
    --  Since: gtk+ 2.4
 
    function Get_Handle_Window
-      (Paned : access Gtk_Paned_Record) return Gdk.Window.Gdk_Window;
-   --  Returns the Gdk.Window.Gdk_Window of the handle. This function is
-   --  useful when handling button or motion events because it enables the
-   --  callback to distinguish between the window of the paned, a child and the
-   --  handle.
+      (Paned : not null access Gtk_Paned_Record) return Gdk.Gdk_Window;
+   --  Returns the Gdk.Gdk_Window of the handle. This function is useful when
+   --  handling button or motion events because it enables the callback to
+   --  distinguish between the window of the paned, a child and the handle.
    --  Since: gtk+ 2.20
 
-   function Get_Position (Paned : access Gtk_Paned_Record) return Gint;
-   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint);
+   function Get_Position
+      (Paned : not null access Gtk_Paned_Record) return Gint;
+   --  Obtains the position of the divider between the two panes.
+
+   procedure Set_Position
+      (Paned    : not null access Gtk_Paned_Record;
+       Position : Gint);
    --  Sets the position of the divider between the two panes.
    --  "position": pixel position of divider, a negative value means that the
    --  position is unset.
 
    procedure Pack1
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := True);
    --  Add a child to the top or left pane. You can not change dynamically the
@@ -163,22 +199,177 @@ package Gtk.Paned is
    --  should also first call Glib.Object.Ref on the child so as to be sure it
    --  is not destroyed when you remove it, and Glib.Object.Unref it at the
    --  end. See the example in testgtk/ in the GtkAda distribution.
+   --  "child": the child to add
+   --  "resize": should this child expand when the paned widget is resized.
+   --  "shrink": can this child be made smaller than its requisition.
 
    procedure Pack2
-      (Paned  : access Gtk_Paned_Record;
-       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Paned  : not null access Gtk_Paned_Record;
+       Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Resize : Boolean := False;
        Shrink : Boolean := False);
+   --  Adds a child to the bottom or right pane.
+   --  "child": the child to add
+   --  "resize": should this child expand when the paned widget is resized.
+   --  "shrink": can this child be made smaller than its requisition.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    function Get_Orientation
-      (Self : access Gtk_Paned_Record) return Gtk.Enums.Gtk_Orientation;
+      (Self : not null access Gtk_Paned_Record)
+       return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
-      (Self        : access Gtk_Paned_Record;
+      (Self        : not null access Gtk_Paned_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Max_Position_Property : constant Glib.Properties.Property_Int;
+   --  The largest possible value for the position property. This property is
+   --  derived from the size and shrinkability of the widget's children.
+
+   Min_Position_Property : constant Glib.Properties.Property_Int;
+   --  The smallest possible value for the position property. This property is
+   --  derived from the size and shrinkability of the widget's children.
+
+   Position_Property : constant Glib.Properties.Property_Int;
+
+   Position_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   -------------
+   -- Signals --
+   -------------
+
+   type Cb_Gtk_Paned_Boolean is not null access function
+     (Self : access Gtk_Paned_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
+   Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";
+   procedure On_Accept_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False);
+   procedure On_Accept_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::accept-position signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to accept the current position of the handle when moving it using key
+   --  bindings.
+   --
+   --  The default binding for this signal is Return or Space.
+
+   Signal_Cancel_Position : constant Glib.Signal_Name := "cancel-position";
+   procedure On_Cancel_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False);
+   procedure On_Cancel_Position
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::cancel-position signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to cancel moving the position of the handle using key bindings. The
+   --  position of the handle will be reset to the value prior to moving it.
+   --
+   --  The default binding for this signal is Escape.
+
+   type Cb_Gtk_Paned_Boolean_Boolean is not null access function
+     (Self     : access Gtk_Paned_Record'Class;
+      Reversed : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self     : access Glib.Object.GObject_Record'Class;
+      Reversed : Boolean) return Boolean;
+
+   Signal_Cycle_Child_Focus : constant Glib.Signal_Name := "cycle-child-focus";
+   procedure On_Cycle_Child_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean_Boolean;
+       After : Boolean := False);
+   procedure On_Cycle_Child_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::cycle-child-focus signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to cycle the focus between the children of the paned.
+   --
+   --  The default binding is f6.
+
+   Signal_Cycle_Handle_Focus : constant Glib.Signal_Name := "cycle-handle-focus";
+   procedure On_Cycle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean_Boolean;
+       After : Boolean := False);
+   procedure On_Cycle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::cycle-handle-focus signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to cycle whether the paned should grab focus to allow the user to change
+   --  position of the handle by using key bindings.
+   --
+   --  The default binding for this signal is f8.
+
+   type Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean is not null access function
+     (Self        : access Gtk_Paned_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+
+   type Cb_GObject_Gtk_Scroll_Type_Boolean is not null access function
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
+
+   Signal_Move_Handle : constant Glib.Signal_Name := "move-handle";
+   procedure On_Move_Handle
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Gtk_Scroll_Type_Boolean;
+       After : Boolean := False);
+   procedure On_Move_Handle
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Gtk_Scroll_Type_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::move-handle signal is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to move the handle when the user is using key bindings to move it.
+
+   Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
+   procedure On_Toggle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_Gtk_Paned_Boolean;
+       After : Boolean := False);
+   procedure On_Toggle_Handle_Focus
+      (Self  : not null access Gtk_Paned_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::toggle-handle-focus is a <link
+   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
+   --  to accept the current position of the handle and then move focus to the
+   --  next widget in the focus chain.
+   --
+   --  The default binding is Tab.
 
    ----------------
    -- Interfaces --
@@ -189,137 +380,35 @@ package Gtk.Paned is
    --
    --  - "Orientable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Paned_Record, Gtk_Paned);
    function "+"
      (Widget : access Gtk_Paned_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Paned
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Paned_Record, Gtk_Paned);
    function "+"
      (Widget : access Gtk_Paned_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Paned
-   renames Implements_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Max_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The largest possible value for the position property. This property is
-   --  derived from the size and shrinkability of the widget's children.
-   --
-   --  Name: Min_Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --  The smallest possible value for the position property. This property is
-   --  derived from the size and shrinkability of the widget's children.
-   --
-   --  Name: Position_Property
-   --  Type: Gint
-   --  Flags: read-write
-   --
-   --  Name: Position_Set_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-
-   Max_Position_Property : constant Glib.Properties.Property_Int;
-   Min_Position_Property : constant Glib.Properties.Property_Int;
-   Position_Property : constant Glib.Properties.Property_Int;
-   Position_Set_Property : constant Glib.Properties.Property_Boolean;
-
-   -------------
-   -- Signals --
-   -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "accept-position"
-   --     function Handler
-   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
-   --  The ::accept-position signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to accept the current position of the handle when moving it using key
-   --  bindings. The default binding for this signal is Return or Space.
-   --
-   --  "cancel-position"
-   --     function Handler
-   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
-   --  The ::cancel-position signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cancel moving the position of the handle using key bindings. The
-   --  position of the handle will be reset to the value prior to moving it.
-   --  The default binding for this signal is Escape.
-   --
-   --  "cycle-child-focus"
-   --     function Handler
-   --       (Self     : access Gtk_Paned_Record'Class;
-   --        Reversed : Boolean) return Boolean;
-   --    --  "reversed": whether cycling backward or forward
-   --  The ::cycle-child-focus signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle the focus between the children of the paned. The default
-   --  binding is f6.
-   --
-   --  "cycle-handle-focus"
-   --     function Handler
-   --       (Self     : access Gtk_Paned_Record'Class;
-   --        Reversed : Boolean) return Boolean;
-   --    --  "reversed": whether cycling backward or forward
-   --  The ::cycle-handle-focus signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle whether the paned should grab focus to allow the user to change
-   --  position of the handle by using key bindings. The default binding for
-   --  this signal is f8.
-   --
-   --  "move-handle"
-   --     function Handler
-   --       (Self        : access Gtk_Paned_Record'Class;
-   --        Scroll_Type : Gtk.Enums.Gtk_Scroll_Type) return Boolean;
-   --    --  "scroll_type": a Gtk.Enums.Gtk_Scroll_Type
-   --  The ::move-handle signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to move the handle when the user is using key bindings to move it.
-   --
-   --  "toggle-handle-focus"
-   --     function Handler
-   --       (Self : access Gtk_Paned_Record'Class) return Boolean;
-   --  The ::toggle-handle-focus is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to accept the current position of the handle and then move focus to the
-   --  next widget in the focus chain. The default binding is Tab.
-
-   Signal_Accept_Position : constant Glib.Signal_Name := "accept-position";
-   Signal_Cancel_Position : constant Glib.Signal_Name := "cancel-position";
-   Signal_Cycle_Child_Focus : constant Glib.Signal_Name := "cycle-child-focus";
-   Signal_Cycle_Handle_Focus : constant Glib.Signal_Name := "cycle-handle-focus";
-   Signal_Move_Handle : constant Glib.Signal_Name := "move-handle";
-   Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
-   Max_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("max-position");
-   Min_Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("min-position");
-   Position_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("position");
    Position_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("position-set");
+   Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("position");
+   Min_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("min-position");
+   Max_Position_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-position");
 end Gtk.Paned;

@@ -1,31 +1,26 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --
@@ -53,7 +48,6 @@
 with Glib; use Glib;
 with Glib.Object;
 with Glib.Values;
-with Gdk.Visual;
 
 package Gdk.Color is
 
@@ -66,6 +60,16 @@ package Gdk.Color is
 
    type Gdk_Color_Array is array (Natural range <>) of Gdk_Color;
    --  An array of colors.
+
+   type Gdk_Color_Unconstrained_Array is array (Natural) of Gdk_Color;
+   pragma Convention (C, Gdk_Color_Unconstrained_Array);
+   --  An array of colors as returned by C. This is only useful in a few
+   --  low-level subprograms that also pass the size as argument
+
+   function To_Array
+      (Colors   : Gdk_Color_Unconstrained_Array;
+       N_Colors : Gint) return Gdk_Color_Array;
+   --  Return a version of Colors easier to use in Ada.
 
    Null_Color : constant Gdk_Color;
    --  No color. For most functions, this will select the default color in the
@@ -119,15 +123,6 @@ package Gdk.Color is
    -- Creating and Destroying colors --
    ------------------------------------
 
-   procedure Gdk_New
-     (Colormap     : out Gdk_Colormap;
-      Visual       : Gdk.Visual.Gdk_Visual;
-      Private_Cmap : Boolean);
-   --  Create a new colormap for the visual.
-   --  If Private_Cmap is true, then the
-   --  colormap won't be modifiable outside this scope. This might result in
-   --  some strange colors on the display...
-
    procedure Ref (Colormap : Gdk_Colormap);
    --  Increment the ref-count for the color.
 
@@ -135,53 +130,6 @@ package Gdk.Color is
    --  Unref is the only way to destroy a colormap once you no longer need it.
    --  Note that because gtk+ uses reference counts, the colormap will not
    --  be actually destroyed while at least one object is using it.
-
-   procedure Change
-     (Colormap : Gdk_Colormap; Ncolors : Gint);
-   --  Change the first Ncolors defined in Colormap.
-
-   procedure Alloc_Colors
-     (Colormap   : Gdk_Colormap;
-      Colors     : in out Gdk_Color_Array;
-      Writeable  : Boolean := False;
-      Best_Match : Boolean := True;
-      Success    : out Boolean_Array;
-      Result     : out Gint);
-   --  Allocate a set of colors.
-   --  The parameters are the same as for Alloc_Color
-   --  Result is the number of colors not successfully allocated.
-   --
-   --  The size of the Boolean_Array is equal to the length of the
-   --  Colors_Array. Usage of an array of a different size will
-   --  probably lead to a Constraint_Error.
-
-   procedure Alloc_Color
-     (Colormap   : Gdk_Colormap;
-      Color      : in out Gdk_Color;
-      Writeable  : Boolean := False;
-      Best_Match : Boolean := True;
-      Success    : out Boolean);
-   --  Allocate a new color.
-   --  The fields RGB should have been set before calling this function.
-   --  If Writeable is True, the color will be allocated read/write, that can
-   --  be changed at any time. Not all visuals support this. On modern systems
-   --  this usage has become less useful than before, since redrawing the
-   --  screen with a new color is about as fast.
-   --  If Best_Match is True, and the exact color can not be allocated, GtkAda
-   --  will find the closest possible match, and modify the fields Red, Green
-   --  and Blue of Color.
-   --  Note that the allocation has more chances to succeed if Writeable is
-   --  False and Best_Match is True.
-   --  When you no longer use a color, you should call Free.
-
-   procedure Free_Colors (Colormap : Gdk_Colormap; Colors : Gdk_Color_Array);
-   --  Free Colors, assuming they are allocated in Colormap.
-
-   procedure Get_Visual
-     (Colormap : Gdk_Colormap;
-      Visual   : out Gdk.Visual.Gdk_Visual);
-   --  Get the visual associated with a colormap.
-   --  The main information you can get from there is the depth of the display.
 
    procedure Copy (Source : Gdk_Color; Destination : out Gdk_Color);
    --  Copy the Source color to Destination.
@@ -205,62 +153,10 @@ package Gdk.Color is
    --    systems.
 
    function Equal (Colora, Colorb : Gdk_Color) return Boolean;
+   function "=" (Colora, Colorb : Gdk_Color) return Boolean renames Equal;
    --  True if the Red, Green and Blue components of both colors are equal.
 
    --  <doc_ignore>
-   --------------------------
-   -- Deprecated functions --
-   --------------------------
-
-   procedure Store (Colormap : Gdk_Colormap; Colors : Gdk_Color_Array);
-   --  Store the Colors in the Colormap.
-
-   procedure Alloc
-     (Colormap   : Gdk_Colormap;
-      Contiguous : Boolean;
-      Planes     : Gulong_Array;
-      Pixels     : Gulong_Array;
-      Succeeded  : out Boolean);
-   --  Allocate some Read/Write color cells.
-   --  Color cells' values can be changed
-   --  dynamically. The pixels allocated are returned in Pixels.
-   --  See XAllocColorCells(3) on Unix systems.
-   --  The Planes parameter can be used to nondestructively overlay one
-   --  set of graphics over another. See the X11 manual for more info.
-   --  Note that this is a low-level function which you should rarely
-   --  have to use.
-
-   procedure Free
-     (Colormap : Gdk_Colormap;
-      Pixels   : Gulong_Array;
-      Planes   : Gulong);
-   --  Free some colors in the colormap.
-   --  See XFreeColors(3) on Unix systems.
-
-   function White (Colormap : Gdk_Colormap) return Gdk_Color;
-   --  Return the default white color for the colormap.
-   --  If this color was not found or could not be allocated, Wrong_Color is
-   --  raised.
-
-   function Black (Colormap : Gdk_Colormap) return Gdk_Color;
-   --  Return the default black colors for the colormap.
-   --  If this color is not found or could not be allocated, Wrong_Color is
-   --  raised.
-
-   procedure Alloc
-     (Colormap  : Gdk_Colormap;
-      Color     : in out Gdk_Color);
-   --  Same function as Alloc_Colors above, but for a single color.
-   --  The color is allocated non-writeable, and the best-match is taken.
-   --  Raises Wrong_Color if the color could not be allocated
-
-   procedure Change
-     (Colormap  : Gdk_Colormap;
-      Color     : in out Gdk_Color;
-      Succeeded : out Boolean);
-   --  Change the Read/Write colormap cell corresponding to Color.
-   --  The new value is the one contained in the Red, Green and Blue
-   --  fields of Color.
 
    function To_String (Color : Gdk_Color) return String;
    --  Return the RGB values of Color under the form "#RRGGBB".
@@ -287,6 +183,16 @@ package Gdk.Color is
    function  Get_Value (Value : Glib.Values.GValue) return Gdk_Color;
    --  Store or retrieve a color from a value
 
+   --  </doc_ignore>
+
+   --  <doc_ignore>
+   function Gdk_Color_Or_Null (Val : System.Address) return System.Address;
+   --  Used for the GtkAda binding itself.
+   --  Return either a Null_Address or a pointer to Val, depending on
+   --  whether Val is the null value for the type.
+   --  In all cases, Val is supposed to be an access to the type mentioned in
+   --  the name of the subprogram.
+   --  In Ada2012, these could be replaced with expression functions instead.
    --  </doc_ignore>
 
 private

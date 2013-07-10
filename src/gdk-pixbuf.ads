@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This object provides image manipulation routines.
@@ -47,18 +42,11 @@
 
 with Interfaces.C.Strings;
 with System;
-
+with Cairo;
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;
 with Glib.Object;
-with Gdk.Bitmap;
-with Gdk.Drawable;
-with Gdk.Color;
-with Gdk.Cursor;
 with Gdk.Display;
-with Gdk.GC;
-with Gdk.Pixmap;
-with Gdk.Rgb;
 
 package Gdk.Pixbuf is
 
@@ -151,7 +139,34 @@ package Gdk.Pixbuf is
 
    type Alpha_Range is range 0 .. 255;
    --  Valid values for alpha parameters.
+
    pragma Convention (C, Alpha_Range);
+   type Gdk_Rgb_Dither is (Dither_None, Dither_Normal, Dither_Max);
+   --  The three kinds of dithering that are implemented in this package:
+   --  - Dither_None: No dithering will be done
+   --  - Dither_Normal: Specifies dithering on 8 bit displays, but not 16-bit.
+   --                   Usually the best choice.
+   --  - Dither_Max: Specifies dithering on every kind of display
+   for Gdk_Rgb_Dither'Size use Glib.Gint'Size;
+
+   type Rgb_Record is record
+      Red, Green, Blue : Glib.Guchar;
+   end record;
+   pragma Convention (C, Rgb_Record);
+
+   --  This is the buffer that will contain the image. You can manipulate each
+   --  byte in it independantly, although there is no high level routine
+   --  to draw lines, circles, ...
+   --  Once you are done drawing into this buffer, you can copy it to any
+   --  drawable on the screen, *if* the widget was created with the correct
+   --  visual and colormap (see above).
+
+   type Unchecked_Rgb_Buffer is array (Glib.Guint) of Rgb_Record;
+   pragma Convention (C, Unchecked_Rgb_Buffer);
+   type Rgb_Buffer_Access is access all Unchecked_Rgb_Buffer;
+   pragma Convention (C, Rgb_Buffer_Access);
+   --  Type used By Get_Pixels to return an array with no
+   --  bound checks that is compatible with C (also known as a flat array).
 
    --------------
    -- Get_Type --
@@ -176,7 +191,7 @@ package Gdk.Pixbuf is
    function Get_Bits_Per_Sample (Pixbuf : Gdk_Pixbuf) return Gint;
    --  Number of bits per color sample.
 
-   function Get_Pixels (Pixbuf : Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access;
+   function Get_Pixels (Pixbuf : Gdk_Pixbuf) return Rgb_Buffer_Access;
    --  Return a pointer to the pixel data of the image.
 
    function Get_Width (Pixbuf : Gdk_Pixbuf) return Gint;
@@ -296,141 +311,48 @@ package Gdk.Pixbuf is
    -- Rendering --
    ---------------
 
-   procedure Render_Threshold_Alpha
-     (Pixbuf          : Gdk_Pixbuf;
-      Bitmap          : Gdk.Bitmap.Gdk_Bitmap;
-      Src_X           : Gint;
-      Src_Y           : Gint;
-      Dest_X          : Gint;
-      Dest_Y          : Gint;
-      Width           : Gint;
-      Height          : Gint;
-      Alpha_Threshold : Alpha_Range);
-   --  Take the opacity values in a rectangular portion of a pixbuf and
-   --  thresholds them to produce a bi-level alpha mask that can be used as
-   --  a clipping mask for a drawable.
-   --  Bitmap is the bitmap where the bilevel mask will be painted to.
-   --  Alpha_Threshold are the opacity values below which a pixel will be
-   --  painted as zero. All other values will be painted as one.
-
-   procedure Render_To_Drawable
-     (Pixbuf   : Gdk_Pixbuf;
-      Drawable : Gdk.Drawable.Gdk_Drawable;
-      GC       : Gdk.GC.Gdk_GC;
-      Src_X    : Gint;
-      Src_Y    : Gint;
-      Dest_X   : Gint;
-      Dest_Y   : Gint;
-      Width    : Gint;
-      Height   : Gint;
-      Dither   : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
-      X_Dither : Gint := 0;
-      Y_Dither : Gint := 0);
-   --  Render a rectangular portion of a pixbuf to a drawable while using the
-   --  specified GC. This is done using Gdk.RGB, so the specified drawable
-   --  must have the Gdk.RGB visual and colormap.  Note that this function
-   --  will ignore the opacity information for images with an alpha channel;
-   --  the GC must already have the clipping mask set if you want transparent
-   --  regions to show through.
-   --
-   --  For an explanation of dither offsets, see the Gdk.RGB documentation.  In
-   --  brief, the dither offset is important when re-rendering partial regions
-   --  of an image to a rendered version of the full image, or for when the
-   --  offsets to a base position change, as in scrolling.  The dither matrix
-   --  has to be shifted for consistent visual results.  If you do not have
-   --  any of these cases, the dither offsets can be both zero.
-
-   procedure Render_To_Drawable_Alpha
-     (Pixbuf          : Gdk_Pixbuf;
-      Drawable        : Gdk.Drawable.Gdk_Drawable;
-      Src_X           : Gint;
-      Src_Y           : Gint;
-      Dest_X          : Gint;
-      Dest_Y          : Gint;
-      Width           : Gint;
-      Height          : Gint;
-      Alpha           : Alpha_Mode;
-      Alpha_Threshold : Alpha_Range;
-      Dither          : Gdk.Rgb.Gdk_Rgb_Dither := Gdk.Rgb.Dither_Normal;
-      X_Dither        : Gint := 0;
-      Y_Dither        : Gint := 0);
-   --  Render a rectangular portion of a pixbuf to a drawable.
-   --  This is done using Gdk.RGB, so the specified drawable must have the
-   --  Gdk_RGB visual and colormap. When used with Alpha_Bilevel, this function
-   --  has to create a bitmap out of the thresholded alpha channel of the
-   --  image and, it has to set this bitmap as the clipping mask for the GC
-   --  used for drawing.  This can be a significant performance penalty
-   --  depending on the size and the complexity of the alpha channel of the
-   --  image. If performance is crucial, consider handling the alpha channel
-   --  yourself (possibly by caching it in your application) and using
-   --  Render_To_Drawable or Gdk.RGB directly instead.
-   --
-   --  If the image does have opacity information and Alpha_Mode
-   --  is Alpha_Bilevel, specifies the threshold value for opacity values
-
-   procedure Render_Pixmap_And_Mask
-     (Pixbuf          : Gdk_Pixbuf;
-      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : Alpha_Range);
-   procedure Render_Pixmap_And_Mask_For_Colormap
-     (Pixbuf          : Gdk_Pixbuf;
-      Colormap        : Gdk.Color.Gdk_Colormap;
-      Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
-      Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : Alpha_Range);
-   --  Creates a pixmap and a mask bitmap which are returned in the Pixmap
-   --  and Mask arguments, respectively, and renders a pixbuf and its
-   --  corresponding tresholded alpha mask to them.  This is merely a
-   --  convenience function; applications that need to render pixbufs with
-   --  dither offsets or to given drawables should use Render_To_Drawable_Alpha
-   --  or Render_To_Drawable
-   --  The pixmap that is created uses Colormap.
-   --  This colormap must match the colormap of the window where the pixmap
-   --  will eventually be used or an error will result.
-
-   function Get_From_Drawable
-     (Dest   : Gdk_Pixbuf;
-      Src    : Gdk.Drawable.Gdk_Drawable;
-      Cmap   : Gdk.Color.Gdk_Colormap;
+   function Get_From_Window
+     (Window : Gdk_Window;
       Src_X  : Gint;
       Src_Y  : Gint;
-      Dest_X : Gint;
-      Dest_Y : Gint;
       Width  : Gint;
       Height : Gint) return Gdk_Pixbuf;
-   --  Transfer image data from a Gdk drawable and converts it to an RGB(A)
-   --  representation inside a Gdk_Pixbuf.
+   function Get_From_Surface
+     (Surface : Cairo.Cairo_Surface;
+      Src_X   : Gint;
+      Src_Y   : Gint;
+      Width   : Gint;
+      Height  : Gint) return Gdk_Pixbuf;
+   --  Transfers image data from a Gdk_Window and converts it to an RGB(A)
+   --  representation inside a Gdk_Pixbuf. In other words, copies
+   --  image data from a server-side drawable to a client-side RGB(A) buffer.
+   --  This allows you to efficiently read individual pixels on the client
+   --  side.
    --
-   --  If the drawable src is a pixmap, then a suitable colormap must be
-   --  specified, since pixmaps are just blocks of pixel data without an
-   --  associated colormap.
-   --  If the drawable is a window, the Cmap argument will be ignored and the
-   --  window's own colormap will be used instead.
+   --  This function will create an RGB pixbuf with 8 bits per channel with
+   --  the same size specified by the Width and Height arguments. The pixbuf
+   --  will contain an alpha channel if the window contains one.
    --
-   --  If the specified destination pixbuf Dest is Null_Pixbuf, then this
-   --  function will create an RGB pixbuf with 8 bits per channel and no
-   --  alpha, with the same size specified by the Width and Height
-   --  arguments. In this case, the Dest_x and Dest_y arguments must be
-   --  specified as 0, otherwise the function will return Null_Pixbuf.  If the
-   --  specified destination pixbuf is not Null_Pixbuf and it contains alpha
-   --  information, then the filled pixels will be set to full opacity.
+   --  If the window is off the screen, then there is no image data in the
+   --  obscured/offscreen regions to be placed in the pixbuf. The contents
+   --  of portions of the pixbuf corresponding to the offscreen region are
+   --  undefined.
    --
-   --  If the specified drawable is a pixmap, then the requested source
-   --  rectangle must be completely contained within the pixmap, otherwise the
-   --  function will return Null_Pixbuf.
+   --  If the window you're obtaining data from is partially obscured by other
+   --  windows, then the contents of the pixbuf areas corresponding to the
+   --  obscured regions are undefined.
    --
-   --  If the specified drawable is a window, then it must be viewable, i.e.
-   --  all of its ancestors up to the root window must be mapped.  Also, the
-   --  specified source rectangle must be completely contained within the
-   --  window and within the screen.  If regions of the window are obscured by
-   --  non-inferior windows, the contents of those regions are undefined.
-   --  The contents of regions obscured by inferior windows of a different
-   --  depth than that of the source window will also be undefined.
+   --  If the window is not mapped (typically because it's iconified/minimized
+   --  or not on the current workspace), then Null_Pixbuf will be returned.
    --
-   --  Return value: The same pixbuf as Dest if it was non-NULL, or a
-   --  newly-created pixbuf with a reference count of 1 if no destination
-   --  pixbuf was specified.
+   --  If memory can't be allocated for the return value, Null_Pixbuf
+   --  will be returned instead.
+   --
+   --  (In short, there are several ways this function can fail, and if it
+   --   fails it returns Null_Pixbuf; so check the return value.)
+   --
+   --  Return value: (transfer full): A newly-created pixbuf with a reference
+   --      count of 1, or Null_Pixbuf on error
 
    -------------
    -- Scaling --
@@ -664,7 +586,7 @@ package Gdk.Pixbuf is
    -------------
 
    procedure Gdk_New_From_Pixbuf
-     (Cursor  : out Gdk.Cursor.Gdk_Cursor;
+     (Cursor  : out Gdk.Gdk_Cursor;
       Display : Gdk.Display.Gdk_Display := Gdk.Display.Get_Default;
       Pixbuf  : Gdk_Pixbuf;
       X       : Glib.Gint;
@@ -680,7 +602,7 @@ package Gdk.Pixbuf is
    --  On the X backend, support for RGBA cursors requires a sufficently new
    --  version of the X Render extension.
 
-   function Get_Image (Cursor : Gdk.Cursor.Gdk_Cursor) return Gdk_Pixbuf;
+   function Get_Image (Cursor : Gdk.Gdk_Cursor) return Gdk_Pixbuf;
    --  Return the image stored in the cursor
 
    --  <doc_ignore>

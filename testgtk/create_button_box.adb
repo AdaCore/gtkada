@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
@@ -39,12 +33,10 @@ with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
-   function Create_Bbox (Horizontal : in Boolean;
-                         Title      : in String;
-                         Spacing    : in Gint;
-                         Child_W    : in Gint;
-                         Child_H    : in Gint;
-                         Layout     : in Gtk_Button_Box_Style)
+   function Create_Bbox (Horizontal : Boolean;
+                         Title      : String;
+                         Spacing    : Gint;
+                         Layout     : Gtk_Button_Box_Style)
                          return Gtk_Frame;
    --  Create one of the sample button box
 
@@ -67,12 +59,10 @@ package body Create_Button_Box is
    -- Create_Bbox --
    -----------------
 
-   function Create_Bbox (Horizontal : in Boolean;
-                         Title      : in String;
-                         Spacing    : in Gint;
-                         Child_W    : in Gint;
-                         Child_H    : in Gint;
-                         Layout     : in Gtk_Button_Box_Style)
+   function Create_Bbox (Horizontal : Boolean;
+                         Title      : String;
+                         Spacing    : Gint;
+                         Layout     : Gtk_Button_Box_Style)
                          return Gtk_Frame
    is
       Bbox   : Gtk_Button_Box;
@@ -101,7 +91,6 @@ package body Create_Button_Box is
 
       Set_Layout (Bbox, Layout);
       Set_Spacing (Bbox, Spacing);
-      Set_Child_Size (Bbox, Child_W, Child_H);
 
       Gtk_New (Button, Label => "OK");
       Add (Bbox, Button);
@@ -143,18 +132,17 @@ package body Create_Button_Box is
       Add (Frame_Horz, Vbox);
 
       Pack_Start
-        (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Buttonbox_Spread),
+        (Vbox, Create_Bbox (True, "Spread", 20, Buttonbox_Spread),
          True, True, 0);
       Pack_Start
-        (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Buttonbox_Edge),
+        (Vbox, Create_Bbox (True, "Edge", 20, Buttonbox_Edge),
          True, True, 5);
       Pack_Start
-        (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Buttonbox_Start),
+        (Vbox, Create_Bbox (True, "Start", 20, Buttonbox_Start),
          True, True, 5);
       Pack_Start
-        (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_End),
+        (Vbox, Create_Bbox (True, "End", 20, Buttonbox_End),
          True, True, 5);
-
 
       Gtk_New (Frame_Vert, "Vertical Button Boxes");
       Pack_Start (Main_Vbox,
@@ -167,19 +155,18 @@ package body Create_Button_Box is
       Add (Frame_Vert, Hbox);
 
       Pack_Start
-        (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Buttonbox_Spread),
+        (Hbox, Create_Bbox (False, "Spread", 20, Buttonbox_Spread),
          True, True, 0);
       Pack_Start
-        (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Buttonbox_Edge),
+        (Hbox, Create_Bbox (False, "Edge", 20, Buttonbox_Edge),
          True, True, 5);
       Pack_Start
-        (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Buttonbox_Start),
+        (Hbox, Create_Bbox (False, "Start", 20, Buttonbox_Start),
          True, True, 5);
       Pack_Start
-        (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_End),
+        (Hbox, Create_Bbox (False, "End", 20, Buttonbox_End),
          True, True, 5);
       Show_All (Main_Vbox);
    end Run;
 
 end Create_Button_Box;
-

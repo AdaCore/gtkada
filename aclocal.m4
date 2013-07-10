@@ -235,13 +235,13 @@ dnl
   min_gtk_version=ifelse([$1], ,1.3.0,$1)
   AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
   no_gtk=""
-  GTK="gtk+-2.0"
+  GTK="gtk+-3.0"
   if test "$PKG_CONFIG" = "no" ; then
     no_gtk=yes
   else
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
-    GTK_LIBS=`$PKG_CONFIG $GTK --libs`
+    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
     gtk_config_major_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
     gtk_config_minor_version=`$PKG_CONFIG $GTK --modversion | \
@@ -249,7 +249,7 @@ dnl
     gtk_config_micro_version=`$PKG_CONFIG $GTK --modversion | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
 
-    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g'`
+    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's/-framework \([[^ ]]*\)/-Wl,-framework -Wl,\1/g'`
 
     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
@@ -283,7 +283,7 @@ main ()
       (gtk_minor_version != $gtk_config_minor_version) ||
       (gtk_micro_version != $gtk_config_micro_version))
     {
-      printf("\n*** 'pkg-config --version' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
+      printf("\n*** 'pkg-config --modversion' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
              $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
              gtk_major_version, gtk_minor_version, gtk_micro_version);
       printf ("*** was found! If pkg-config was correct, then it is best\n");
@@ -368,32 +368,6 @@ main ()
   AC_SUBST(GTK_LIBS)
   AC_SUBST(GTK_LIBS_FOR_GNATMAKE)
   rm -f conf.gtktest
-])
-
-#############################################################
-#
-#  Checking for PANGO_UNDERLINE_ERROR
-#
-#############################################################
-
-AC_DEFUN(AM_PANGO_UNDERLINE_ERROR,
-[   
-  ac_save_CFLAGS="$CFLAGS"
-  ac_save_LIBS="$LIBS"
-  CFLAGS="$CFLAGS $GTK_CFLAGS"
-  LIBS="$LIBS $GTK_LIBS"
-  CFLAGS="$CFLAGS $GTK_CFLAGS"
-  LIBS="$LIBS $GTK_LIBS"
-  DEFINE_UNDERLINE_ERROR="#undef HAVE_PANGO_UNDERLINE_ERROR"
-  AC_MSG_CHECKING(for PANGO_UNDERLINE_ERROR)
-  AC_TRY_LINK([ #include <pango/pango.h> ],
-    [ PangoUnderline underline = PANGO_UNDERLINE_ERROR; ],
-    [ AC_MSG_RESULT(yes)
-      DEFINE_UNDERLINE_ERROR="#define HAVE_PANGO_UNDERLINE_ERROR" ],
-    AC_MSG_RESULT(no))
-  AC_SUBST(DEFINE_UNDERLINE_ERROR)
-  CFLAGS="$ac_save_CFLAGS"
-  LIBS="$ac_save_LIBS"
 ])
 
 #############################################################
@@ -517,43 +491,6 @@ AC_DEFUN(AM_CHECK_OPENGL,
    AC_SUBST(GL_CFLAGS)
    AC_SUBST(HAVE_OPENGL)
 
-])
-
-#############################################################
-#
-#  Checking for gnome2
-#
-#############################################################
-
-AC_DEFUN(AM_CHECK_GNOME,
-[   
-  AC_MSG_CHECKING(for gnome2)
-  GNOME_CFLAGS=""
-  GNOME_LIBS=""
-  GNOME_STATIC_LIBS=""
-
-  if test "$PKG_CONFIG" = "no" ; then
-    AC_MSG_RESULT(no)
-    HAVE_GNOME="False"
-  else
-    GNOMEUI="libgnomeui-2.0"
-    GNOME_PREFIX=`$PKG_CONFIG $GNOMEUI --variable=prefix`
-    if test "x$GNOME_PREFIX" = "x"; then
-      HAVE_GNOME="False"
-      AC_MSG_RESULT(no)
-    else
-      AC_MSG_RESULT(yes)
-      HAVE_GNOME="True"
-      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags`
-      GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
-      GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui-2.a $GNOME_PREFIX/lib/libgnome-2.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a $GNOME_PREFIX/lib/libbonoboui-2.a" 
-    fi
-  fi
-
-  AC_SUBST(GNOME_CFLAGS)
-  AC_SUBST(GNOME_LIBS)
-  AC_SUBST(GNOME_STATIC_LIBS)
-  AC_SUBST(HAVE_GNOME)
 ])
 
 #############################################################

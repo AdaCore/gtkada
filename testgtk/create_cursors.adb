@@ -1,39 +1,33 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Unchecked_Conversion;
 
+with Cairo;            use Cairo;
 with Glib;             use Glib;
+with Gdk;              use Gdk;
 with Gdk.Cursor;       use Gdk.Cursor;
-with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
-with Gdk.GC;           use Gdk.GC;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;
@@ -42,7 +36,6 @@ with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Handlers;     use Gtk.Handlers;
 with Gtk.Spin_Button;  use Gtk.Spin_Button;
-with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
 
@@ -60,7 +53,7 @@ package body Create_Cursors is
    package Spin3_Cb is new Handlers.User_Return_Callback
      (Gtk_Widget_Record, Gint, My_Spin_Button);
    package Da_Cb is new Handlers.Return_Callback
-     (Gtk_Drawing_Area_Record, Gint);
+     (Gtk_Drawing_Area_Record, Boolean);
 
    ----------
    -- Help --
@@ -76,39 +69,38 @@ package body Create_Cursors is
         & " @bGtk_Drawing_Area@B.";
    end Help;
 
-   -------------------------
-   -- Cursor_Expose_Event --
-   -------------------------
+   -------------
+   -- On_Draw --
+   -------------
 
-   function Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record'Class)
-                                return Gint
+   function On_Draw
+      (Darea : access Gtk_Drawing_Area_Record'Class;
+       Cr    : Cairo_Context) return Boolean
    is
-      Style      : constant Gtk_Style := Get_Style (Darea);
-      Draw       : constant Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
-      White_GC   : constant Gdk_GC := Get_White_GC (Style);
-      Black_GC   : constant Gdk_GC := Get_Black_GC (Style);
-      Gray_GC    : constant Gdk_GC := Get_Bg_GC (Style, State_Normal);
-      Max_Width  : constant Gint  := Get_Allocation_Width (Darea);
-      Max_Height : constant Gint  := Get_Allocation_Height (Darea);
+      W       : constant Gdouble  := Gdouble (Get_Allocated_Width (Darea));
+      H       : constant Gdouble  := Gdouble (Get_Allocated_Height (Darea));
 
    begin
-      Draw_Rectangle (Draw, White_GC, True, 0, 0,
-                      Max_Width, Max_Height / 2);
-      Draw_Rectangle (Draw, Black_GC, True, 0, Max_Height / 2,
-                      Max_Width, Max_Height / 2);
-      Draw_Rectangle (Draw, Gray_GC, True, Max_Width / 3,
-                      Max_Height / 3, Max_Width / 3,
-                      Max_Height / 3);
-      return 0;
-   end Cursor_Expose_Event;
+      Rectangle (Cr, 0.0, 0.0, W, H / 2.0);
+      Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
+      Cairo.Fill (Cr);
+
+      Rectangle (Cr, 0.0, H / 2.0, W, H / 2.0);
+      Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
+      Cairo.Fill (Cr);
+
+      Rectangle (Cr, W / 3.0, H / 3.0, W / 3.0, H / 3.0);
+      Set_Source_Rgb (Cr, 0.5, 0.5, 0.5);
+      Cairo.Fill (Cr);
+      return False;
+   end On_Draw;
 
    ----------------
    -- Set_Cursor --
    ----------------
 
-
    procedure Set_Cursor (Spinner : access My_Spin_Button_Record'Class;
-                         Widget  : in Gtk_Drawing_Area)
+                         Widget  : Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
       function To_Cursor is new Unchecked_Conversion
@@ -117,7 +109,7 @@ package body Create_Cursors is
 
       C      : Gint := Get_Value_As_Int (Spinner);
       Window : constant Gdk_Window := Get_Window (Widget);
-      Cursor : Gdk_Cursor := Null_Cursor;
+      Cursor : Gdk_Cursor := null;
    begin
       C := C mod 154;
       Gdk_New (Cursor, To_Cursor (C));
@@ -127,7 +119,7 @@ package body Create_Cursors is
       --  Note: the cursor pixmap is copied to the server, which keeps it as
       --  long at it needs. On the client side, it is possible to delete the
       --  cursor right now.
-      Destroy (Cursor);
+      Unref (Cursor);
    end Set_Cursor;
 
    ------------------
@@ -199,22 +191,16 @@ package body Create_Cursors is
       Pack_Start (Vbox, Frame2);
 
       Gtk_New (Darea);
-      Set_USize (Darea, 80, 80);
+      Set_Size_Request (Darea, 80, 80);
       Add (Frame2, Darea);
-      Da_Cb.Object_Connect
-        (Darea, "expose_event",
-         Da_Cb.To_Marshaller (Cursor_Expose_Event'Access),
-         Darea);
+      Da_Cb.Connect (Darea, Signal_Draw, Da_Cb.To_Marshaller (On_Draw'Access));
 
       Unrealize (Darea); --  Required for the call to Set_Events
       Set_Events (Darea, Exposure_Mask or Button_Press_Mask);
 
       Spin3_Cb.Connect (Darea, "button_press_event",
-                        Spin3_Cb.To_Marshaller (Cursor_Event'Access),
-                        Spinner);
-      Spin2_Cb.Connect (Spinner, "changed",
-                        Spin2_Cb.To_Marshaller (Set_Cursor'Access),
-                        Darea);
+                        Spin3_Cb.To_Marshaller (Cursor_Event'Access), Spinner);
+      Spin2_Cb.Connect (Spinner, "changed", Set_Cursor'Access, Darea);
 
       Gtk_New (Spinner.Label, "XXX");
       Pack_Start (Vbox, Spinner.Label, False, False, 0);
@@ -223,5 +209,3 @@ package body Create_Cursors is
    end Run;
 
 end Create_Cursors;
-
-

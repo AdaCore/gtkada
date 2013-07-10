@@ -1,34 +1,27 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 2003                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2004-2005                       --
---                           AdaCore                                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2003-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Glib.Object;        use Glib.Object;
 with Gtk;                use Gtk;
 with Gtk.Box;            use Gtk.Box;
 with Gtk.Button;         use Gtk.Button;
@@ -39,13 +32,14 @@ with Gtk.Toolbar;        use Gtk.Toolbar;
 with Gtkada.Handlers;    use Gtkada.Handlers;
 with Gtk.Vbutton_Box;    use Gtk.Vbutton_Box;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
+with Gtk.Tool_Button;    use Gtk.Tool_Button;
 with Gtk.Enums;          use Gtk.Enums;
 
 package body Create_Splittable is
 
    function Create_Child
       (Bar : Gtk_Toolbar; Title : String) return Gtk_Widget;
-   procedure On_Destroy (Button : access Gtk_Widget_Record'Class);
+   procedure On_Destroy (Button : access GObject_Record'Class);
    procedure On_Toggle  (Button : access Gtk_Widget_Record'Class);
    procedure On_Resize  (Button : access Gtk_Widget_Record'Class);
    procedure On_Split_V (Button : access Gtk_Widget_Record'Class);
@@ -64,7 +58,20 @@ package body Create_Splittable is
    function Help return String is
    begin
       return "A Gtkada-specific widget, where children can be resized"
-        & " interactively by the user, as well as splitted.";
+        & " interactively by the user, as well as splitted." & ASCII.LF
+        & ASCII.LF
+        & "It is similar to a Gtk.Paned widget, but with a number of"
+        & " differences: there are multiple children (only two for a"
+        & " Gtk_Paned), which cannot be emulated by nested multiple"
+        & " Gtk_Paned widgets. For instance, if you drag the right-most"
+        & " vertical separator towards the left, it will eventually also"
+        & " move the left-most separator. This would not happen if you"
+        & " had two nested Gtk_Paned." & ASCII.LF
+        & ASCII.LF
+        & "It provides non-opaque resizing, whereas a Gtk_Paned only"
+        & " provides opaque resizing. The latter can be slow when the"
+        & " application is running on a remote machine with a local"
+        & " display.";
    end Help;
 
    ---------------
@@ -82,9 +89,9 @@ package body Create_Splittable is
    -- On_Destroy --
    ----------------
 
-   procedure On_Destroy (Button : access Gtk_Widget_Record'Class) is
+   procedure On_Destroy (Button : access GObject_Record'Class) is
    begin
-      Destroy (Button);
+      Destroy (Gtk_Widget (Button));
    end On_Destroy;
 
    ---------------
@@ -93,7 +100,7 @@ package body Create_Splittable is
 
    procedure On_Toggle (Button : access Gtk_Widget_Record'Class) is
    begin
-      if Visible_Is_Set (Button) then
+      if Button.Get_Visible then
          Hide (Button);
       else
          Show (Button);
@@ -138,8 +145,8 @@ package body Create_Splittable is
    procedure On_Fixed (Button : access Gtk_Widget_Record'Class) is
    begin
       Set_Size (Pane, Button,
-                Get_Allocation_Width (Button),
-                Get_Allocation_Height (Button),
+                Get_Allocated_Width (Button),
+                Get_Allocated_Height (Button),
                 Fixed_Size => True);
    end On_Fixed;
 
@@ -153,7 +160,7 @@ package body Create_Splittable is
       Frame  : Gtk_Frame;
       Box    : Gtk_Vbutton_Box;
       Button : Gtk_Button;
-      Item   : Gtk_Button;
+      Item   : Gtk_Tool_Button;
    begin
       Gtk_New (Frame);
 
@@ -163,41 +170,30 @@ package body Create_Splittable is
 
       Gtk_New (Button, "Destroy_" & Title);
       Pack_Start (Box, Button, Expand => False);
-      Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Destroy'Unrestricted_Access),
-         Frame);
+      Button.On_Clicked (On_Destroy'Access, Slot => Frame);
 
       Gtk_New (Button, "Resize_" & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Resize'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Resize'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Split_V " & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Split_V'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Split_V'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Split_H " & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Split_H'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Split_H'Unrestricted_Access, Frame);
 
       Gtk_New (Button, "Fixed_Size " & Title);
       Pack_Start (Box, Button, Expand => False);
       Widget_Callback.Object_Connect
-        (Button, "clicked",
-         Widget_Callback.To_Marshaller (On_Fixed'Unrestricted_Access),
-         Frame);
+        (Button, "clicked", On_Fixed'Unrestricted_Access, Frame);
 
       if Bar /= null then
-         Gtk_New (Item, "Toggle_" & Title);
+         Gtk_New (Item, Label => "Toggle_" & Title);
          Add (Bar, Item);
          Widget_Callback.Object_Connect
            (Item, "clicked",
@@ -251,4 +247,3 @@ package body Create_Splittable is
    end Run;
 
 end Create_Splittable;
-

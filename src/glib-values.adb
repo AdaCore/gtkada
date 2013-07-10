@@ -1,31 +1,27 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                Copyright (C) 2001-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Glib.Values is
@@ -35,11 +31,11 @@ package body Glib.Values is
    ----------
 
    procedure Free (Val : in out GValues) is
-      procedure Internal (Value_Array : System.Address);
+      procedure Internal (Value_Array : C_GValues);
       pragma Import (C, Internal, "g_value_array_free");
    begin
       Internal (Val.Arr);
-      Val := (Nb => 0, Arr => System.Null_Address);
+      Val := (Nb => 0, Arr => C_GValues (System.Null_Address));
    end Free;
 
    -----------------
@@ -103,13 +99,13 @@ package body Glib.Values is
    -----------------
 
    function Make_Values (Nb : Guint) return GValues is
-      function Internal (N_Prealloced : Guint) return System.Address;
+      function Internal (N_Prealloced : Guint) return C_GValues;
       pragma Import (C, Internal, "g_value_array_new");
    begin
       return (Nb => Nb, Arr => Internal (Nb));
    end Make_Values;
 
-   function Make_Values (Nb : Guint; Val : System.Address) return GValues is
+   function Make_Values (Nb : Guint; Val : C_GValues) return GValues is
    begin
       return (Nb => Nb, Arr => Val);
    end Make_Values;
@@ -119,8 +115,7 @@ package body Glib.Values is
    ---------
 
    function Nth (Val : GValues; Num : Guint) return GValue is
-      procedure Internal
-        (Val : System.Address; Num : Guint; V : in out GValue);
+      procedure Internal (Val : C_GValues; Num : Guint; V : in out GValue);
       pragma Import (C, Internal, "ada_gvalue_nth");
       V : GValue;
    begin
@@ -148,14 +143,16 @@ package body Glib.Values is
    -- Set_Object --
    ----------------
 
-   procedure Set_Object (Value : in out GValue; To : Glib.Object.GObject) is
+   procedure Set_Object
+      (Value : in out GValue; To : access Glib.Object.GObject_Record'Class)
+   is
       procedure Internal
         (Value : in out Glib.Values.GValue;
          To    : System.Address);
       pragma Import (C, Internal, "g_value_set_object");
 
    begin
-      Internal (Value, Glib.Object.Convert (To));
+      Internal (Value, Glib.Object.Convert (Glib.Object.GObject (To)));
    end Set_Object;
 
    ----------------
@@ -181,6 +178,32 @@ package body Glib.Values is
       Internal (Value, G_Type);
    end Init;
 
+   ----------------------
+   -- Unsafe_Proxy_Nth --
+   ----------------------
+
+   function Unsafe_Proxy_Nth (Values : C_GValues; Num : Guint) return T is
+      type T_Access is access T;
+      function Convert is new Ada.Unchecked_Conversion (C_Proxy, T_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Values, Num, Val);
+      return Convert (Get_Proxy (Val)).all;
+   end Unsafe_Proxy_Nth;
+
+   ---------------------
+   -- Unsafe_Enum_Nth --
+   ---------------------
+
+   function Unsafe_Enum_Nth
+     (Values : C_GValues; Num : Guint) return T
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Values, Num, Val);
+      return T'Val (Get_Int (Val));
+   end Unsafe_Enum_Nth;
+
    function C_Gvalue_Size return Natural;
    pragma Import (C, C_Gvalue_Size, "ada_c_gvalue_size");
 
@@ -188,4 +211,5 @@ begin
    if GValue'Size /= C_Gvalue_Size * 8 then
       raise Program_Error;
    end if;
+
 end Glib.Values;

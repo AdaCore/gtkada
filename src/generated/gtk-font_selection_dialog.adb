@@ -1,41 +1,52 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Font_Selection_Dialog is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Font_Selection_Dialog is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Font_Selection_Dialog_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Font_Selection_Dialog);
+
+   -----------------------------------
+   -- Gtk_Font_Selection_Dialog_New --
+   -----------------------------------
+
+   function Gtk_Font_Selection_Dialog_New
+      (Title : UTF8_String) return Gtk_Font_Selection_Dialog
+   is
+      Dialog : constant Gtk_Font_Selection_Dialog := new Gtk_Font_Selection_Dialog_Record;
+   begin
+      Gtk.Font_Selection_Dialog.Initialize (Dialog, Title);
+      return Dialog;
+   end Gtk_Font_Selection_Dialog_New;
 
    -------------
    -- Gtk_New --
@@ -55,7 +66,7 @@ package body Gtk.Font_Selection_Dialog is
    ----------------
 
    procedure Initialize
-      (Dialog : access Gtk_Font_Selection_Dialog_Record'Class;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record'Class;
        Title  : UTF8_String)
    is
       function Internal
@@ -64,67 +75,41 @@ package body Gtk.Font_Selection_Dialog is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Title);
-      Free (Tmp_Title);
-      Set_Object (Dialog, Tmp_Return);
+      if not Dialog.Is_Created then
+         Tmp_Return := Internal (Tmp_Title);
+         Free (Tmp_Title);
+         Set_Object (Dialog, Tmp_Return);
+      end if;
    end Initialize;
-
-   ----------------------
-   -- Get_Apply_Button --
-   ----------------------
-
-   function Get_Apply_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
-       return Gtk.Widget.Gtk_Widget
-   is
-      function Internal (Dialog : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_font_selection_dialog_get_apply_button");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
-   begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
-   end Get_Apply_Button;
 
    -----------------------
    -- Get_Cancel_Button --
    -----------------------
 
    function Get_Cancel_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_cancel_button");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
    end Get_Cancel_Button;
-
-   --------------
-   -- Get_Font --
-   --------------
-
-   function Get_Font
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
-       return Gdk.Font.Gdk_Font
-   is
-      function Internal (Dialog : System.Address) return Gdk.Font.Gdk_Font;
-      pragma Import (C, Internal, "gtk_font_selection_dialog_get_font");
-   begin
-      return Internal (Get_Object (Dialog));
-   end Get_Font;
 
    -------------------
    -- Get_Font_Name --
    -------------------
 
    function Get_Font_Name
-      (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
+       return UTF8_String
    is
       function Internal
          (Dialog : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Dialog)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Dialog)));
    end Get_Font_Name;
 
    ------------------------
@@ -132,14 +117,14 @@ package body Gtk.Font_Selection_Dialog is
    ------------------------
 
    function Get_Font_Selection
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font_selection");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
    end Get_Font_Selection;
 
    -------------------
@@ -147,14 +132,14 @@ package body Gtk.Font_Selection_Dialog is
    -------------------
 
    function Get_Ok_Button
-      (Dialog : access Gtk_Font_Selection_Dialog_Record)
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_ok_button");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
    end Get_Ok_Button;
 
    ----------------------
@@ -162,13 +147,14 @@ package body Gtk.Font_Selection_Dialog is
    ----------------------
 
    function Get_Preview_Text
-      (Dialog : access Gtk_Font_Selection_Dialog_Record) return UTF8_String
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
+       return UTF8_String
    is
       function Internal
          (Dialog : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_preview_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Dialog)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Dialog)));
    end Get_Preview_Text;
 
    -------------------
@@ -176,7 +162,7 @@ package body Gtk.Font_Selection_Dialog is
    -------------------
 
    function Set_Font_Name
-      (Dialog   : access Gtk_Font_Selection_Dialog_Record;
+      (Dialog   : not null access Gtk_Font_Selection_Dialog_Record;
        Fontname : UTF8_String) return Boolean
    is
       function Internal
@@ -188,7 +174,7 @@ package body Gtk.Font_Selection_Dialog is
    begin
       Tmp_Return := Internal (Get_Object (Dialog), Tmp_Fontname);
       Free (Tmp_Fontname);
-      return Boolean'Val (Tmp_Return);
+      return Tmp_Return /= 0;
    end Set_Font_Name;
 
    ----------------------
@@ -196,7 +182,7 @@ package body Gtk.Font_Selection_Dialog is
    ----------------------
 
    procedure Set_Preview_Text
-      (Dialog : access Gtk_Font_Selection_Dialog_Record;
+      (Dialog : not null access Gtk_Font_Selection_Dialog_Record;
        Text   : UTF8_String)
    is
       procedure Internal

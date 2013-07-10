@@ -1,32 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                    Copyright (C) 2010-2013, AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;              use Glib;
 with Gtk;               use Gtk;
@@ -38,7 +31,6 @@ with Gtk.Scale;         use Gtk.Scale;
 with Gtk.Scale_Button;  use Gtk.Scale_Button;
 with Gtk.Scrollbar;     use Gtk.Scrollbar;
 with Gtk.Volume_Button; use Gtk.Volume_Button;
-with Gtkada.Types;      use Gtkada.Types;
 
 package body Create_Range is
 
@@ -95,8 +87,7 @@ package body Create_Range is
 
       Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
       Gtk_New_Hscale (Scale, Adjustment);
-      Set_USize (Scale, 150, 80);
-      Set_Update_Policy (Scale, Update_Delayed);
+      Scale.Set_Size_Request (150, 80);
       Set_Digits (Scale, 1);
       Set_Draw_Value (Scale, True);
       Set_Value_Pos (Scale, Pos_Bottom);
@@ -107,7 +98,6 @@ package body Create_Range is
       end loop;
 
       Gtk_New_Hscrollbar (Scrollbar, Adjustment);
-      Set_Update_Policy (Scrollbar, Update_Continuous);
       Pack_Start (Box2, Scrollbar, True, True, 0);
 
       Gtk_New_Hbox (Box3, False, 10);
@@ -116,7 +106,8 @@ package body Create_Range is
       Gtk_New (Label, "Scale button:");
       Pack_Start (Box3, Label, False, False, 0);
 
-      Scale_Button := Gtk_New (Icon_Size_Button, 0.0, 100.0, 2.0, Null_Array);
+      Gtk_New (Scale_Button, Icon_Size_Button, 0.0, 100.0, 2.0,
+               Icons => (1 .. 0 => null));
       Pack_Start (Box3, Scale_Button, False, False, 0);
 
       Gtk_New (Label, "Volume button:");

@@ -1,32 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                     Copyright (C) 2000-2006 AdaCore               --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;              use Glib;
 with Gtk.Box;           use Gtk.Box;
@@ -37,13 +30,13 @@ with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Size_Group;    use Gtk.Size_Group;
-with Gtk.Table;         use Gtk.Table;
+with Gtk.Grid;          use Gtk.Grid;
 
 package body Create_Size_Groups is
 
    procedure Add_Row
-     (Table : access Gtk_Table_Record'Class;
-      Row   : Guint;
+     (Table : access Gtk_Grid_Record'Class;
+      Row   : Gint;
       Group : Gtk_Size_Group;
       Text  : String);
    --  Add a new row in Table, with a label Text .
@@ -82,8 +75,8 @@ package body Create_Size_Groups is
    -------------
 
    procedure Add_Row
-     (Table : access Gtk_Table_Record'Class;
-      Row   : Guint;
+     (Table : access Gtk_Grid_Record'Class;
+      Row   : Gint;
       Group : Gtk_Size_Group;
       Text  : String)
    is
@@ -92,27 +85,11 @@ package body Create_Size_Groups is
    begin
       Gtk_New (Label, Text);
       Set_Alignment (Label, 0.0, 1.0);
-      Attach
-        (Table         => Table,
-         Child         => Label,
-         Left_Attach   => 0,
-         Right_Attach  => 1,
-         Top_Attach    => Row,
-         Bottom_Attach => Row + 1,
-         Xoptions      => Expand or Fill,
-         Yoptions      => 0);
+      Table.Attach (Label, 0, Row);
 
       Gtk_New (Button, Text);
       Gtk.Size_Group.Add_Widget (Group, Button);
-      Attach
-        (Table         => Table,
-         Child         => Button,
-         Left_Attach   => 1,
-         Right_Attach  => 2,
-         Top_Attach    => Row,
-         Bottom_Attach => Row + 1,
-         Xoptions      => 0,  --  !!! Do not force any size, see Help
-         Yoptions      => 0);
+      Table.Attach (Button, 1, Row);
    end Add_Row;
 
    ---------------------
@@ -140,7 +117,7 @@ package body Create_Size_Groups is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Vbox   : Gtk_Box;
       Group  : Gtk_Size_Group;
-      Table  : Gtk_Table;
+      Table  : Gtk_Grid;
       F      : Gtk_Frame;
       Toggle : Gtk_Check_Button;
 
@@ -154,37 +131,29 @@ package body Create_Size_Groups is
       Gtk_New (F, "Options1");
       Pack_Start (Vbox, F, Expand => False, Fill => False);
 
-      Gtk_New (Table, 2, 2, False);
-      Add (F, Table);
-      Set_Border_Width (Table, 5);
-      Set_Row_Spacings (Table, 5);
-      Set_Col_Spacings (Table, 10);
+      Gtk_New (Table);
+      F.Add (Table);
+      Table.Set_Border_Width (5);
 
       Add_Row (Table, 0, Group, "foofoofoofoofoofoofoofoofoo");
       Add_Row (Table, 1, Group, "foofoofoo");
 
-
       Gtk_New (F, "Options2");
-      Pack_Start (Vbox, F, Expand => False, Fill => False);
+      Vbox.Pack_Start (F, Expand => False, Fill => False);
 
-      Gtk_New (Table, 2, 2, False);
-      Add (F, Table);
-      Set_Border_Width (Table, 5);
-      Set_Row_Spacings (Table, 5);
-      Set_Col_Spacings (Table, 10);
+      Gtk_New (Table);
+      F.Add (Table);
+      Table.Set_Border_Width (5);
 
       Add_Row (Table, 0, Group, "foo");
       Add_Row (Table, 1, Group, "foofoofoofoofoofoo");
 
-
       Gtk_New (Toggle, "Enable grouping");
-      Pack_Start (Vbox, Toggle, Expand => False, Fill => False);
-      Set_Active (Toggle, True);
-      Toggle_Cb.Connect
-        (Toggle, "toggled",
-         Toggle_Cb.To_Marshaller (Toggle_Grouping'Access), Group);
+      Vbox.Pack_Start (Toggle, Expand => False, Fill => False);
+      Toggle.Set_Active (True);
+      Toggle_Cb.Connect (Toggle, "toggled", Toggle_Grouping'Access, Group);
 
-      Show_All (Frame);
+      Frame.Show_All;
    end Run;
 
 end Create_Size_Groups;

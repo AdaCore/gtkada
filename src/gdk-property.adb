@@ -1,32 +1,28 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
+with Glib.Object;  use Glib.Object;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 
@@ -85,7 +81,7 @@ package body Gdk.Property is
    ------------
 
    procedure Change
-     (Window    : Gdk.Window.Gdk_Window;
+     (Window    : Gdk.Gdk_Window;
       Property  : Gdk.Types.Gdk_Atom;
       The_Type  : Gdk.Types.Gdk_Atom;
       Format    : Gint;
@@ -93,7 +89,7 @@ package body Gdk.Property is
       Data      : Guchar_Array)
    is
       procedure Internal
-        (Window    : Gdk.Window.Gdk_Window;
+        (Window    : Gdk.Gdk_Window;
          Property  : Gdk.Types.Gdk_Atom;
          The_Type  : Gdk.Types.Gdk_Atom;
          Format    : Gint;
@@ -103,7 +99,8 @@ package body Gdk.Property is
       pragma Import (C, Internal, "gdk_property_change");
 
    begin
-      Internal (Window, Property, The_Type, Format, Mode, Data, Data'Length);
+      Internal (Window, Property, The_Type, Format,
+                Mode, Data, Data'Length);
    end Change;
 
    ---------
@@ -111,7 +108,7 @@ package body Gdk.Property is
    ---------
 
    procedure Get
-     (Window               : Gdk.Window.Gdk_Window;
+     (Window               : Gdk.Gdk_Window;
       Property             : Gdk.Types.Gdk_Atom;
       The_Type             : Gdk.Types.Gdk_Atom;
       Offset               : Gulong;
@@ -123,7 +120,7 @@ package body Gdk.Property is
       Success              : out Boolean)
    is
       procedure Internal
-        (Window               : Gdk.Window.Gdk_Window;
+        (Window               : Gdk_Window;
          Property             : Gdk.Types.Gdk_Atom;
          The_Type             : Gdk.Types.Gdk_Atom;
          Offset               : Gulong;

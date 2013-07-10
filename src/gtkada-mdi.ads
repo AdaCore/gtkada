@@ -1,30 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---                 Copyright (C) 2001-2013, AdaCore                  --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2001-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This widget organizes its children into resizable panes. Within each
@@ -34,25 +29,26 @@
 --  <group>Layout containers</group>
 
 with Ada.Tags;
+with Cairo;
 with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Main;
 with Glib.Xml_Int;
-with Gdk.Color;
-with Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
+with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
 with Gtk.Box;
+with Gtk.Css_Provider;
 with Gtk.Enums;
 with Gtk.Event_Box;
 with Gtk.Handlers;
+with Gtk.Image;
 with Gtk.Label;
 with Gtk.Menu;
 with Gtk.Menu_Item;
 with Gtk.Notebook;
-with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
@@ -60,7 +56,6 @@ with Gtk.Window;
 with Gtkada.Handlers;
 with Gtkada.Multi_Paned;
 with Pango.Font;
-with Pango.Layout;
 
 package Gtkada.MDI is
 
@@ -113,6 +108,10 @@ package Gtkada.MDI is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Glib.GType;
+   function Child_Get_Type return Glib.GType;
+   --  Return the type describing the MDI or a MDI_Child
+
    procedure Setup_Toplevel_Window
      (MDI    : access MDI_Window_Record;
       Parent : access Gtk.Window.Gtk_Window_Record'Class);
@@ -128,12 +127,12 @@ package Gtkada.MDI is
       Opaque_Resize             : Boolean := False;
       Close_Floating_Is_Unfloat : Boolean := True;
       Title_Font         : Pango.Font.Pango_Font_Description := null;
-      Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Focus_Title_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
-      Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
-      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic);
+      Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Top;
+      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic;
+      Homogeneous_Tabs   : Boolean := True);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it (unless its flag
@@ -147,6 +146,21 @@ package Gtkada.MDI is
    --  Title_Bar_Color in exchange.
    --  Tabs_Position indicates where the notebook tabs should be put.
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
+   --
+   --  If Homogeneous_Tabs is true, then the notebook tabs will only use their
+   --  natural size when they all fit in the notebook's width. Otherwise, they
+   --  are resized (and ellipsized as needed) so that more of them show.
+   --  Changing this setup requires a restart of the MDI.
+   --
+   --  Calling configure will define a default CSS to properly theme the MDI.
+   --  This CSS relies on mainly two widget classes to behave:
+   --  * mdifocused, corresponding to the notebook having the focus
+   --  * mdititle, corresponding to the title bar
+   --  This default CSS renders the active tab of the active notebook with the
+   --  color defined in Focus_Title_Color. Same for the color of the title
+   --  bar (uses Title_Bar_Color for non-active title bar).
+   --  This behavior can at any point be overriden by users by defining
+   --  their own and load it at run-time.
 
    function Independent_Perspectives
      (MDI : access MDI_Window_Record) return Boolean;
@@ -280,8 +294,8 @@ package Gtkada.MDI is
 
    procedure Set_Title
      (Child       : access MDI_Child_Record;
-      Title       : UTF8_String;
-      Short_Title : UTF8_String := "");
+      Title       : String;
+      Short_Title : String := "");
    --  Set the title for a child. Title is the title put in titlebar of
    --  the children, whereas Short_Title is the name of the notebook tab when
    --  children are maximized. By default, it is the same as Title.
@@ -289,6 +303,10 @@ package Gtkada.MDI is
    --  The default title is the empty string.
    --  This title will be the one used for the window when the child is set to
    --  floating state.
+   --
+   --  Title and Short_Title should preferably be UTF8-encoded, although this
+   --  procedure will attempt to guess the encoding if the string is not valid
+   --  UTF8.
 
    function Get_MDI (Child : access MDI_Child_Record) return MDI_Window;
    --  Return the MDI to which Child is associated. In Child is a floating
@@ -313,10 +331,13 @@ package Gtkada.MDI is
    --  Associate an icon with Child. This icon is visible in the title bar, the
    --  notebook tabs, the Window menu and the interactive selection dialog.
    --  The icon is updated dynamically on the screen.
+   --  The Icon can safely be unrefed by the caller (and should, if the pixbuf
+   --  was newly allocated).
 
    function Get_Icon
      (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
-   --  Returns the icon associated with Child
+   --  Returns the icon associated with Child. The returned pixbuf is owned
+   --  by the MDI and must not be freed by the caller.
 
    ---------------------------
    -- Drag and Drop support --
@@ -341,14 +362,9 @@ package Gtkada.MDI is
       Message : String);
    --  Override the message that is displayed in the popup window while
    --  performing a drag. By default, this message mentions:
-   --     "... will be (preserved|hidden) when changing perspective"
+   --     "Use control to move the whole notebook"
    --     "Use shift to create a new view for editors"
    --  so might not be suitable for all applications.
-   --  Through this function you can override the message. If you insert the
-   --  special sequence "(#)" in the message, it will be replaced either with
-   --  "preserved" or "hidden" depending on where the drop occurs (the central
-   --  area or the perspectives). It could also be replaced by an empty string
-   --  if the MDI was configured with independent perspectives.
    --  You can use markup like "<b>...</b>" to put keywords in bold.
    --
    --  Passing an empty string for Message will restore the default message.
@@ -980,13 +996,14 @@ private
       Focus_Widget  : Gtk.Widget.Gtk_Widget;
       --  The widget which should actually get the keyboard focus
 
-      Icon          : Gdk.Pixbuf.Gdk_Pixbuf;
-
       Title_Box     : Gtk.Box.Gtk_Box;
+      Title_Label   : Gtk.Label.Gtk_Label;
+      Title_Icon    : Gtk.Image.Gtk_Image;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
 
       Tab_Label     : Gtk.Label.Gtk_Label;
+      Tab_Icon      : Gtk.Image.Gtk_Image;
       --  label used when child is in a notebook, null if not in a notebook
    end record;
 
@@ -1052,54 +1069,45 @@ private
       Dnd_Message : String_Access;
       --  The message displayed during a dnd operation (see Set_Dnd_Message)
 
-      Accel_Path_Prefix  : String_Access;
+      Accel_Path_Prefix   : String_Access;
       --  The Accel path used for the dynamic menu
 
-      Menu               : Gtk.Menu.Gtk_Menu;
-      Float_Menu_Item    : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
-      Float_Menu_Item_Id : Gtk.Handlers.Handler_Id;
-      Close_Menu_Item    : Gtk.Menu_Item.Gtk_Menu_Item;
+      Menu                : Gtk.Menu.Gtk_Menu;
+      Float_Menu_Item     : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
+      Float_Menu_Item_Id  : Gtk.Handlers.Handler_Id;
+      Close_Menu_Item     : Gtk.Menu_Item.Gtk_Menu_Item;
       --  The dynamic menu used to provide access to the most common
       --  functions of MDI.
 
-      Tab_Factory : Tab_Contextual_Menu_Factory;
+      Tab_Factory         : Tab_Contextual_Menu_Factory;
       --  Build the contextual menu when right-clicking on tabs
-
-      Title_Layout        : Pango.Layout.Pango_Layout;
-      --  Layout used to draw titles in the MDI children
 
       Title_Bar_Height    : Glib.Gint;
       --  Height of the title bar for all the children
+
+      Title_Font : Pango.Font.Pango_Font_Description;
+      --  The font used for the titles of the children
 
       Close_Floating_Is_Unfloat : Boolean;
       --  True if destroying a floating window will put the child back in the
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
 
-      Highlight_Style : Gtk.Style.Gtk_Style;
-      --  Style to use to highlight the tabs and menus for the highlighted
-      --  children.
+      Title_Bar_Color     : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Focus_Title_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Default_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Css_Provider        : Gtk.Css_Provider.Gtk_Css_Provider;
 
-      Background_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Default_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-
-      Cursor_Cross      : Gdk.Cursor.Gdk_Cursor;
-      Cursor_Fleur      : Gdk.Cursor.Gdk_Cursor;
+      Cursor_Cross        : Gdk.Gdk_Cursor;
+      Cursor_Fleur        : Gdk.Gdk_Cursor;
       --  Cached cursors
 
       Draw_Title_Bars   : Title_Bars_Policy := Always;
-      Tabs_Position     : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
+      Tabs_Position     : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Top;
       Show_Tabs_Policy  : Show_Tabs_Policy_Enum := Automatic;
 
       Selection_Dialog : Gtk.Widget.Gtk_Widget;
       --  The interactive dialog for selecting new children.
-
-      Dnd_Window       : Gtk.Window.Gtk_Window;
-      Dnd_Window_Label : Gtk.Label.Gtk_Label;
-      --  The small window displayed while a drag-and-drop operation is
-      --  taking place.
 
       Group : Gtk.Accel_Group.Gtk_Accel_Group;
 
@@ -1112,12 +1120,19 @@ private
       Use_Short_Titles_For_Floats : Boolean := False;
       --  Set to true if all floating children should use their short titles
 
+      Homogeneous_Tabs : Boolean := True;
+
       --  Handling of Dnd
       Drag_Start_X, Drag_Start_Y : Gint;
       In_Drag           : Drag_Status := No_Drag;
       Dnd_Rectangle     : Gdk.Rectangle.Gdk_Rectangle;  --  Highlighted area
+
+      Dnd_Rectangle_Real : Gdk.Rectangle.Gdk_Rectangle;
+      --  Area to redraw to delete the Dnd overlay window
+
       Dnd_Target        : Gdk.Gdk_Window;     --  The current target for DND
-      Dnd_Target_Window : Gtk.Window.Gtk_Window;  --  The overlay window
+
+      Dnd_Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
 
       --  Loaded perspectives
       Perspective_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item;

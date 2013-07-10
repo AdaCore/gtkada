@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Glib;                use Glib;
 with Glib.Properties;     use Glib.Properties;
@@ -45,7 +39,6 @@ with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Paned;           use Gtk.Paned;
-with Gtk.Style;           use Gtk.Style;
 with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
 with Gtk.Text_Iter;       use Gtk.Text_Iter;
 with Gtk.Text_Mark;       use Gtk.Text_Mark;
@@ -66,6 +59,7 @@ with Ada.Strings.Fixed;
 
 with Create_About;
 with Create_Alignment;
+with Create_Application;
 with Create_Arrow;
 with Create_Assistant;
 with Create_Box;
@@ -73,13 +67,13 @@ with Create_Builder;
 with Create_Gtkada_Builder;
 with Create_Button_Box;
 with Create_Buttons;
+with Create_Cairo;
 with Create_Calendar;
 with Create_Canvas;
 with Create_Cell_View;
 with Create_Check_Buttons;
 with Create_Clipboard;
-with Create_Clist;
-with Create_Ctree;
+with Create_Color_Chooser;
 with Create_Color_Selection;
 with Create_Combo_Box;
 with Create_Cursors;
@@ -91,15 +85,10 @@ with Create_File_Chooser;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Font_Selection;
-with Create_Gamma_Curve;
-with Create_Gc;
-with Create_Handle_Box;
 with Create_Icon_View;
-with Create_Item_Factory;
 with Create_Label;
 with Create_Layout;
 with Create_Link_Buttons;
-with Create_List;
 with Create_Main_Loop;
 with Create_Menu;
 with Create_MDI;
@@ -107,23 +96,18 @@ with Create_Notebook;
 with Create_Opacity;
 with Create_Paned;
 with Create_Pixbuf;
-with Create_Pixmap;
-with Create_Plot;
-with Create_Plot_3D;
-with Create_Plot_Realtime;
-with Create_Preview_Color;
-with Create_Preview_Gray;
+--  with Create_Plot;
+--  with Create_Plot_3D;
+--  with Create_Plot_Realtime;
 with Create_Print;
 with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
 with Create_Reparent;
-with Create_Rulers;
 with Create_Scrolled;
-with Create_Scroll_Test;
 with Create_Selection;
 with Create_Size_Groups;
-with Create_Sheet;
+--  with Create_Sheet;
 with Create_Sources;
 with Create_Spin;
 with Create_Spinners;
@@ -141,6 +125,8 @@ with Create_Tree_View;
 with Create_UI_Manager;
 with Common; use Common;
 with View_Gl; use View_Gl;
+with Create_Css_Accordion;
+with Create_Css_Editor;
 
 with Libart_Demo;  use Libart_Demo;
 
@@ -155,10 +141,9 @@ package body Main_Windows is
    procedure Display_Help (Button : access Gtk_Widget_Record'Class);
    --  Display an Help window for the current demo
 
-   package Notebook_Cb is new Gtk.Handlers.User_Callback
-     (Gtk_Notebook_Record, Gtk_Notebook);
+   package Notebook_Cb is new Gtk.Handlers.Callback (Gtk_Notebook_Record);
 
-   Help_Dialog : Gtk.Dialog.Gtk_Dialog;
+   Help_Dialog : aliased Gtk.Dialog.Gtk_Dialog;
    Help_Text   : Gtk.Text_Buffer.Gtk_Text_Buffer;
    --  The dialog used to display the help window
 
@@ -178,7 +163,8 @@ package body Main_Windows is
    type String_Access is access String;
    function NS (S : String) return String_Access;
 
-   procedure Tree_Select_Child (View : access Gtk_Widget_Record'Class);
+   procedure Tree_Select_Child
+      (View : access Gtk_Widget_Record'Class);
    --  Callbacks when a different item in the tree is selected.
 
    package Window_Cb is new Handlers.Callback (Gtk_Widget_Record);
@@ -192,9 +178,8 @@ package body Main_Windows is
    procedure Destroy_Help (Button : access Gtk_Widget_Record'Class);
    function Opengl_Help return String;
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : Gtk.Gtk_Notebook_Page;
-                          User     : Gtk_Notebook);
+   procedure Switch_Page
+      (Notebook : access Gtk_Notebook_Record'Class);
    --  Called when a new notebook page is selected
 
    procedure Create_Demo_Frame
@@ -204,16 +189,20 @@ package body Main_Windows is
       Gtkada_Demo, Pixbuf_Demo : Boolean);
    --  Create the main demo frame
 
-   type Demo_Type is (Box, Base, Complex, Gimp, GdkD, Gtkada, Misc, Pixbuf);
+   type Demo_Type is
+     (Box, Base, Complex, Colors_And_Fonts, GdkD, Gtkada, Misc, CSS, Pixbuf,
+      Cairo);
    --  The available types for demos.
    --  Each of them is a tree item, whose subitems are the matching demos.
    --  Box:     Containers
    --  Base:    Basic widgets, found in all GUI toolkits
    --  Complex: More interesting widgets
-   --  Gimp:    Widgets developped for gimp, that could be reused
+   --  Colors_And_Fonts:    Widgets developped for gimp, that could be reused
    --  Misc:    Demonstrates some features that are not widgets
+   --  Misc:    Demonstrates features about CSS styling
    --  Gtkada:  Widgets specific to GtkAda
    --  Pixbuf:  Demonstrate the use of images
+   --  Cairo:   Low-level manipulation of pixels.
 
    type Tree_Item_Information is record
       Label  : String_Access;
@@ -239,6 +228,8 @@ package body Main_Windows is
                                          Create_Pixbuf.Help'Access),
       (NS ("animated gif"),     Pixbuf,  Create_Pixbuf.Run_Gif'Access,
                                          Create_Pixbuf.Help_Gif'Access),
+      (NS ("application"),      Complex, Create_Application.Run'Access,
+                                         Create_Application.Help'Access),
       (NS ("arrow"),            Base,    Create_Arrow.Run'Access,
                                          Create_Arrow.Help'Access),
       (NS ("assistant"),        Complex, Create_Assistant.Run'Access,
@@ -255,6 +246,32 @@ package body Main_Windows is
                                          Create_Buttons.Help'Access),
       (NS ("calendar"),         Base,    Create_Calendar.Run'Access,
                                          Create_Calendar.Help'Access),
+
+      (NS ("Simple rectangles"), Cairo,
+       Create_Cairo.Run_Rectangles'Access, Create_Cairo.Help'Access),
+      (NS ("Transparency"), Cairo,
+       Create_Cairo.Run_Transparency'Access, Create_Cairo.Help'Access),
+      (NS ("Compositing operators"), Cairo,
+       Create_Cairo.Run_Operators'Access, Create_Cairo.Help'Access),
+      (NS ("Translating, rotation and scaling"), Cairo,
+       Create_Cairo.Run_Matrix'Access, Create_Cairo.Help'Access),
+      (NS ("Direct transformations"), Cairo,
+       Create_Cairo.Run_Transformations'Access, Create_Cairo.Help'Access),
+      (NS ("Paths"), Cairo,
+       Create_Cairo.Run_Paths'Access, Create_Cairo.Help'Access),
+      (NS ("Patterns"), Cairo,
+       Create_Cairo.Run_Patterns'Access, Create_Cairo.Help'Access),
+      (NS ("The 'toy' text API"), Cairo,
+       Create_Cairo.Run_Toy_Text'Access, Create_Cairo.Help'Access),
+      (NS ("Rendering text with pango"), Cairo,
+       Create_Cairo.Run_Pango_Text'Access, Create_Cairo.Help'Access),
+      (NS ("Painting and clipping"), Cairo,
+       Create_Cairo.Run_Clip_And_Paint'Access, Create_Cairo.Help'Access),
+      (NS ("Using surfaces and saving to PNG"), Cairo,
+       Create_Cairo.Run_Surface_And_Png'Access, Create_Cairo.Help'Access),
+      (NS ("Image as background"), Cairo,
+       Create_Cairo.Run_Image'Access, Create_Cairo.Help'Access),
+
       (NS ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
                                          Create_Canvas.Help'Access),
       (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
@@ -263,16 +280,20 @@ package body Main_Windows is
                                          Create_Check_Buttons.Help'Access),
       (NS ("clipboard"),        Misc,    Create_Clipboard.Run'Access,
                                          Create_Clipboard.Help'Access),
-      (NS ("clist"),            Complex, Create_Clist.Run'Access,
-                                         Create_Clist.Help'Access),
-      (NS ("ctree"),            Complex, Create_Ctree.Run'Access,
-                                         Create_Ctree.Help'Access),
-      (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access,
+      (NS ("color selection"),  Colors_And_Fonts,
+                                         Create_Color_Selection.Run'Access,
                                          Create_Color_Selection.Help'Access),
+      (NS ("color chooser"),    Colors_And_Fonts,
+                                         Create_Color_Chooser.Run'Access,
+                                         Create_Color_Chooser.Help'Access),
       (NS ("combo boxes"),      Complex, Create_Combo_Box.Run'Access,
                                          Create_Combo_Box.Help'Access),
       (NS ("cursors"),          Misc,    Create_Cursors.Run'Access,
-                                         Create_Cursors.Help'Access),
+       Create_Cursors.Help'Access),
+      (NS ("CSS accordion"),    CSS,    Create_Css_Accordion.Run'Access,
+       Create_Css_Accordion.Help'Access),
+      (NS ("CSS editor"),       CSS,    Create_Css_Editor.Run'Access,
+       Create_Css_Editor.Help'Access),
       (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
                                          Create_Dialog.Help'Access),
       (NS ("drag-and-drop"),    Complex, Create_Dnd.Run'Access,
@@ -287,28 +308,19 @@ package body Main_Windows is
                                          Create_File_Selection.Help'Access),
       (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
                                          Create_Fixed.Help'Access),
-      (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access,
+      (NS ("font selection"),   Colors_And_Fonts,
+                                         Create_Font_Selection.Run'Access,
                                          Create_Font_Selection.Help'Access),
       (NS ("frame/aspect frame"), Box,   Create_Frame.Run'Access,
                                          Create_Frame.Help'Access),
-      (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
-                                         Create_Gamma_Curve.Help'Access),
-      (NS ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
-                                         Create_Gc.Help'Access),
-      (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
-                                         Create_Handle_Box.Help'Access),
       (NS ("icon view"),        Complex, Create_Icon_View.Run'Access,
                                          Create_Icon_View.Help'Access),
-      (NS ("item factory"),     Complex, Create_Item_Factory.Run'Access,
-                                         Create_Item_Factory.Help'Access),
       (NS ("labels"),           Base,    Create_Label.Run'Access,
                                          Create_Label.Help'Access),
       (NS ("layout"),           Box,     Create_Layout.Run'Access,
                                          Create_Layout.Help'Access),
       (NS ("link buttons"),     Base,    Create_Link_Buttons.Run'Access,
                                          Create_Link_Buttons.Help'Access),
-      (NS ("list"),             Base,    Create_List.Run'Access,
-                                         Create_List.Help'Access),
       (NS ("menus"),            Base,    Create_Menu.Run'Access,
                                          Create_Menu.Help'Access),
       (NS ("mdi"),              Gtkada,  Create_MDI.Run'Access,
@@ -325,19 +337,13 @@ package body Main_Windows is
                                          Create_Opacity.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
                                          Create_Paned.Help'Access),
-      (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
-                                         Create_Pixmap.Help'Access),
-      (NS ("plot"),             Complex, Create_Plot.Run'Access,
-                                         Create_Plot.Help'Access),
-      (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
-                                         Create_Plot_3D.Help'Access),
-      (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
-                                         Create_Plot_Realtime.Help'Access),
+      --  (NS ("plot"),             Complex, Create_Plot.Run'Access,
+      --                                     Create_Plot.Help'Access),
+      --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
+      --                                     Create_Plot_3D.Help'Access),
+      --  (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
+      --                                     Create_Plot_Realtime.Help'Access),
       (NS ("properties"),       Misc,    null, null),
-      (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
-                                         Create_Preview_Color.Help'Access),
-      (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
-                                         Create_Preview_Gray.Help'Access),
       (NS ("printing"),         Base,    Create_Print.Run'Access,
                                          Create_Print.Help'Access),
       (NS ("progress bar"),     Complex, Create_Progress.Run'Access,
@@ -350,8 +356,6 @@ package body Main_Windows is
       (NS ("rc file"),          Misc,    null, null),
       (NS ("reparent"),         Complex, Create_Reparent.Run'Access,
                                          Create_Reparent.Help'Access),
-      (NS ("rulers"),           Gimp,    Create_Rulers.Run'Access,
-                                         Create_Rulers.Help'Access),
       (NS ("saved position"),   Misc,    null, null),
       (NS ("scaling/composing"), Pixbuf,  Libart_Demo.Run'Access,
                                          Libart_Demo.Help'Access),
@@ -360,8 +364,8 @@ package body Main_Windows is
       (NS ("selection"),        Complex, Create_Selection.Run'Access,
                                          Create_Selection.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
-      (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
-                                         Create_Sheet.Help'Access),
+      --  (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
+      --                                     Create_Sheet.Help'Access),
       (NS ("size groups"),      Box,     Create_Size_Groups.Run'Access,
                                          Create_Size_Groups.Help'Access),
       (NS ("event sources"),    Misc,    Create_Sources.Run'Access,
@@ -379,8 +383,6 @@ package body Main_Windows is
                                          Create_Test_Idle.Help'Access),
       (NS ("test mainloop"),    Misc,    Create_Main_Loop.Run'Access,
                                          Create_Main_Loop.Help'Access),
-      (NS ("test scrolling"),   Misc,    Create_Scroll_Test.Run'Access,
-                                         Create_Scroll_Test.Help'Access),
       (NS ("test selection"),   Misc,    null, null),
       (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access,
                                          Create_Test_Timeout.Help'Access),
@@ -434,12 +436,16 @@ package body Main_Windows is
                   Set (Tree, Sibling, 0, "Base widgets");
                when Complex =>
                   Set (Tree, Sibling, 0, "Composite widgets");
-               when Gimp    =>
-                  Set (Tree, Sibling, 0, "Gimp widgets");
+               when Colors_And_Fonts    =>
+                  Set (Tree, Sibling, 0, "Colors and fonts");
                when Misc    =>
                   Set (Tree, Sibling, 0, "Misc. demos");
+               when CSS     =>
+                  Set (Tree, Sibling, 0, "CSS demos");
                when GdkD    =>
                   Set (Tree, Sibling, 0, "Gdk demos");
+               when Cairo   =>
+                  Set (Tree, Sibling, 0, "Cairo");
                when Gtkada  =>
                   Set (Tree, Sibling, 0, "GtkAda widgets");
                   Frame_Num := 2;
@@ -518,18 +524,21 @@ package body Main_Windows is
    begin
       if Help_Dialog = null then
          Gtk_New (Help_Dialog);
-         Set_Policy (Help_Dialog, Allow_Shrink => True, Allow_Grow => True,
-                     Auto_Shrink => True);
+         Help_Dialog.Set_Resizable (True);
          Set_Title (Help_Dialog, "testgtk help");
          Set_Default_Size (Help_Dialog, 640, 450);
+         Destroy_Dialog_Handler.Connect
+           (Help_Dialog, "destroy",
+            Destroy_Dialog_Handler.To_Marshaller (Destroy_Dialog'Access),
+            Help_Dialog'Access);
 
-         Set_Spacing (Get_Vbox (Help_Dialog), 3);
+         Set_Spacing (Get_Content_Area (Help_Dialog), 3);
 
          Gtk_New (Label, "Information on this demo");
-         Pack_Start (Get_Vbox (Help_Dialog), Label, False, True, 0);
+         Pack_Start (Get_Content_Area (Help_Dialog), Label, False, True, 0);
 
          Gtk_New (Scrolled);
-         Pack_Start (Get_Vbox (Help_Dialog), Scrolled, True, True, 0);
+         Pack_Start (Get_Content_Area (Help_Dialog), Scrolled, True, True, 0);
          Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
 
          Gtk_New (Help_Text);
@@ -544,7 +553,7 @@ package body Main_Windows is
            (Close, "clicked",
             Widget_Handler.To_Marshaller (Destroy_Help'Access),
             Slot_Object => Help_Dialog);
-         Set_Flags (Close, Can_Default);
+         Close.Set_Can_Default (True);
          Grab_Default (Close);
 
          Blue_Tag := Create_Tag (Help_Text, "blue");
@@ -576,8 +585,8 @@ package body Main_Windows is
             --  Points to the first character of the next line
 
          begin
+            --  In gtk3, the colors no longer need to be allocated.
             Set_Rgb (Blue, 16#0#, 16#0#, 16#FFFF#);
-            Alloc (Get_Default_Colormap, Blue);
 
             loop
 
@@ -678,7 +687,9 @@ package body Main_Windows is
    -- Tree_Select_Child --
    -----------------------
 
-   procedure Tree_Select_Child (View : access Gtk_Widget_Record'Class) is
+   procedure Tree_Select_Child
+      (View : access Gtk_Widget_Record'Class)
+   is
       Model     : Gtk_Tree_Model;
       Iter      : Gtk_Tree_Iter;
       Demo_Num  : Integer;
@@ -714,7 +725,7 @@ package body Main_Windows is
    procedure Gtk_New (Win : out Main_Window) is
    begin
       Win := new Main_Window_Record;
-      Initialize (Win);
+      Main_Windows.Initialize (Win);
    end Gtk_New;
 
    -----------------
@@ -738,12 +749,8 @@ package body Main_Windows is
    -- Switch_Page --
    -----------------
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : Gtk.Gtk_Notebook_Page;
-                          User     : Gtk_Notebook)
-   is
-      pragma Warnings (Off, Page);
-      pragma Warnings (Off, User);
+   procedure Switch_Page
+      (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       if Get_Current_Page (Notebook) = 3 then
          Set_Help (Opengl_Help'Access);
@@ -790,7 +797,7 @@ package body Main_Windows is
       Gtk_New (Model, (1 => GType_String,
                        2 => GType_Int,
                        3 => GType_Int));
-      Gtk_New (Tree, Model);
+      Gtk_New (Tree, +Model);
       Set_Headers_Visible (Tree, False);
 
       Modify_Font (Tree, From_String ("Sans 8"));
@@ -803,7 +810,7 @@ package body Main_Windows is
       Add_Attribute (Col, Render, "text", 0);
 
       Set_Mode (Get_Selection (Tree), Gtk.Enums.Selection_Single);
-      Add_With_Viewport (Scrolled, Tree);
+      Scrolled.Add (Tree);
 
       Fill_Gtk_Tree (Model, Gtkada_Demo, Pixbuf_Demo);
 
@@ -827,7 +834,6 @@ package body Main_Windows is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
       Vbox     : Gtk.Box.Gtk_Box;
-      Style    : Gtk_Style;
       Button   : Gtk.Button.Gtk_Button;
       Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
 
@@ -845,21 +851,15 @@ package body Main_Windows is
       Add (Win, Vbox);
 
       --  Label
-      Style := Copy (Get_Style (Win));
-      Set_Font_Description (Style, From_String ("Helvetica Bold 18"));
-
-      Gtk_New (Label, "GtkAda, the portable Ada95 GUI");
-      Set_Style (Label, Style);
+      Gtk_New (Label, "GtkAda, the portable Ada GUI");
+      Override_Font (Label, From_String ("Helvetica Bold 18"));
       Pack_Start (Vbox, Label, Expand => False, Fill => False, Padding => 10);
 
       --  Notebook creation
       Gtk_New (Win.Notebook);
       Pack_Start (Vbox, Win.Notebook, Expand => True, Fill => True);
       Notebook_Cb.Connect
-        (Win.Notebook, "switch_page",
-         Notebook_Cb.To_Marshaller (Switch_Page'Access),
-         Win.Notebook,
-         After => True);
+        (Win.Notebook, "switch_page", Switch_Page'Access, After => True);
 
       --  First page: Gtk demos
       Create_Demo_Frame (Win, 1, "Gtk demo", False, False);

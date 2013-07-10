@@ -1,35 +1,39 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  This package defines a separator widget that can be inserted in a toolbar,
---  to create groups of widgets in the latter.
+--  A Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item is a
+--  Gtk.Tool_Item.Gtk_Tool_Item that separates groups of other Gtk_Tool_Items.
+--  Depending on the theme, a Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
+--  will often look like a vertical line on horizontally docked toolbars.
+--
+--  If the Gtk.Toolbar.Gtk_Toolbar child property "expand" is True and the
+--  property Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item:draw is False, a
+--  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item will act as a "spring" that
+--  forces other items to the ends of the toolbar.
+--
+--  Use Gtk.Separator_Tool_Item.Gtk_New to create a new
+--  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item.
 --
 --  </description>
 --  <group>Menus and Toolbars</group>
@@ -53,7 +57,12 @@ package Gtk.Separator_Tool_Item is
    ------------------
 
    procedure Gtk_New (Item : out Gtk_Separator_Tool_Item);
-   procedure Initialize (Item : access Gtk_Separator_Tool_Item_Record'Class);
+   procedure Initialize
+      (Item : not null access Gtk_Separator_Tool_Item_Record'Class);
+   --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
+   --  Since: gtk+ 2.4
+
+   function Gtk_Separator_Tool_Item_New return Gtk_Separator_Tool_Item;
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
    --  Since: gtk+ 2.4
 
@@ -65,9 +74,13 @@ package Gtk.Separator_Tool_Item is
    -------------
 
    function Get_Draw
-      (Item : access Gtk_Separator_Tool_Item_Record) return Boolean;
+      (Item : not null access Gtk_Separator_Tool_Item_Record) return Boolean;
+   --  Returns whether Item is drawn as a line, or just blank. See
+   --  Gtk.Separator_Tool_Item.Set_Draw.
+   --  Since: gtk+ 2.4
+
    procedure Set_Draw
-      (Item : access Gtk_Separator_Tool_Item_Record;
+      (Item : not null access Gtk_Separator_Tool_Item_Record;
        Draw : Boolean);
    --  Whether Item is drawn as a vertical line, or just blank. Setting this
    --  to False along with Gtk.Tool_Item.Set_Expand is useful to create an item
@@ -75,30 +88,43 @@ package Gtk.Separator_Tool_Item is
    --  Since: gtk+ 2.4
    --  "draw": whether Item is drawn as a vertical line
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Separator_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Separator_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Separator_Tool_Item_Record)
+      (Self : not null access Gtk_Separator_Tool_Item_Record)
        return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
-      (Self   : access Gtk_Separator_Tool_Item_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Separator_Tool_Item_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Separator_Tool_Item_Record) return Boolean;
+      (Self : not null access Gtk_Separator_Tool_Item_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Separator_Tool_Item_Record;
+      (Self           : not null access Gtk_Separator_Tool_Item_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Separator_Tool_Item_Record;
+      (Self   : not null access Gtk_Separator_Tool_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Draw_Property : constant Glib.Properties.Property_Boolean;
 
    ----------------
    -- Interfaces --
@@ -109,39 +135,27 @@ package Gtk.Separator_Tool_Item is
    --
    --  - "Buildable"
 
-   package Implements_Activatable is new Glib.Types.Implements
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
      (Gtk.Activatable.Gtk_Activatable, Gtk_Separator_Tool_Item_Record, Gtk_Separator_Tool_Item);
    function "+"
      (Widget : access Gtk_Separator_Tool_Item_Record'Class)
    return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
+   renames Implements_Gtk_Activatable.To_Interface;
    function "-"
      (Interf : Gtk.Activatable.Gtk_Activatable)
    return Gtk_Separator_Tool_Item
-   renames Implements_Activatable.To_Object;
+   renames Implements_Gtk_Activatable.To_Object;
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Separator_Tool_Item_Record, Gtk_Separator_Tool_Item);
    function "+"
      (Widget : access Gtk_Separator_Tool_Item_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Separator_Tool_Item
-   renames Implements_Buildable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Draw_Property
-   --  Type: Boolean
-   --  Flags: read-write
-
-   Draw_Property : constant Glib.Properties.Property_Boolean;
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
    Draw_Property : constant Glib.Properties.Property_Boolean :=

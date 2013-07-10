@@ -1,31 +1,25 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
 --  This widget provides a nice way for the user of your application to select
@@ -48,8 +42,6 @@
 --  <testgtk>create_font_selection.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;             use Gdk;
-with Gdk.Font;        use Gdk.Font;
 with Glib;            use Glib;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
@@ -61,7 +53,7 @@ with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Font_Selection is
 
-   type Gtk_Font_Selection_Record is new Gtk_Vbox_Record with null record;
+   type Gtk_Font_Selection_Record is new Gtk_Box_Record with null record;
    type Gtk_Font_Selection is access all Gtk_Font_Selection_Record'Class;
 
    ------------------
@@ -69,7 +61,11 @@ package Gtk.Font_Selection is
    ------------------
 
    procedure Gtk_New (Fontsel : out Gtk_Font_Selection);
-   procedure Initialize (Fontsel : access Gtk_Font_Selection_Record'Class);
+   procedure Initialize
+      (Fontsel : not null access Gtk_Font_Selection_Record'Class);
+   --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
+
+   function Gtk_Font_Selection_New return Gtk_Font_Selection;
    --  Creates a new Gtk.Font_Selection.Gtk_Font_Selection.
 
    function Get_Type return Glib.GType;
@@ -80,81 +76,121 @@ package Gtk.Font_Selection is
    -------------
 
    function Get_Face_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
-   --  This returns the Gtk.Treeview.Gtk_Treeview which lists all styles
+   pragma Obsolescent (Get_Face_List);
+   --  This returns the Gtk.Tree_View.Gtk_Tree_View which lists all styles
    --  available for the selected font. For example, 'Regular', 'Bold', etc.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Family_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
-   --  This returns the Gtk.Treeview.Gtk_Treeview that lists font families,
+   pragma Obsolescent (Get_Family_List);
+   --  This returns the Gtk.Tree_View.Gtk_Tree_View that lists font families,
    --  for example, 'Sans', 'Serif', etc.
    --  Since: gtk+ 2.14
-
-   function Get_Font
-      (Fontsel : access Gtk_Font_Selection_Record) return Gdk.Font.Gdk_Font;
-   pragma Obsolescent (Get_Font);
-   --  Gets the currently-selected font.
-   --  Deprecated since 2.0, Use Gtk.Font_Selection.Get_Font_Name instead.
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Font_Name
-      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
+      (Fontsel : not null access Gtk_Font_Selection_Record)
+       return UTF8_String;
+   pragma Obsolescent (Get_Font_Name);
+   --  Gets the currently-selected font name.
+   --  Note that this can be a different string than what you set with
+   --  Gtk.Font_Selection.Set_Font_Name, as the font selection widget may
+   --  normalize font names and thus return a string with a different
+   --  structure. For example, "Helvetica Italic Bold 12" could be normalized
+   --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
+   --  compare two font descriptions.
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+
    function Set_Font_Name
-      (Fontsel  : access Gtk_Font_Selection_Record;
+      (Fontsel  : not null access Gtk_Font_Selection_Record;
        Fontname : UTF8_String) return Boolean;
-   --  Sets the currently-selected font. Note that the Fontsel needs to know
-   --  the screen in which it will appear for this to work; this can be
-   --  guaranteed by simply making sure that the such font exists or if the
-   --  Fontsel doesn't belong to a particular screen yet.
+   pragma Obsolescent (Set_Font_Name);
+   --  Sets the currently-selected font.
+   --  Note that the Fontsel needs to know the screen in which it will appear
+   --  for this to work; this can be guaranteed by simply making sure that the
+   --  Fontsel is inserted in a toplevel window before you call this function.
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Preview_Entry
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Preview_Entry);
    --  This returns the Gtk.GEntry.Gtk_Entry used to display the font as a
    --  preview.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
+      (Fontsel : not null access Gtk_Font_Selection_Record)
+       return UTF8_String;
+   pragma Obsolescent (Get_Preview_Text);
+   --  Gets the text displayed in the preview area.
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+
    procedure Set_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record;
+      (Fontsel : not null access Gtk_Font_Selection_Record;
        Text    : UTF8_String);
+   pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area. The Text is used to show
    --  how the selected font looks.
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
    --  "text": the text to display in the preview area
 
    function Get_Size
-      (Fontsel : access Gtk_Font_Selection_Record) return Gint;
-   --  The selected font size. or -1 if no font size is selected.
+      (Fontsel : not null access Gtk_Font_Selection_Record) return Gint;
+   pragma Obsolescent (Get_Size);
+   --  The selected font size.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Size_Entry
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Size_Entry);
    --  This returns the Gtk.GEntry.Gtk_Entry used to allow the user to edit
    --  the font number manually instead of selecting it from the list of font
    --  sizes.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
    function Get_Size_List
-      (Fontsel : access Gtk_Font_Selection_Record)
+      (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
-   --  This returns the GtkTreeeView used to list font sizes.
+   pragma Obsolescent (Get_Size_List);
+   --  This returns the Gtk.Tree_View.Gtk_Tree_View used to list font sizes.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    function Get_Orientation
-      (Self : access Gtk_Font_Selection_Record)
+      (Self : not null access Gtk_Font_Selection_Record)
        return Gtk.Enums.Gtk_Orientation;
+
    procedure Set_Orientation
-      (Self        : access Gtk_Font_Selection_Record;
+      (Self        : not null access Gtk_Font_Selection_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Font_Name_Property : constant Glib.Properties.Property_String;
+
+   Preview_Text_Property : constant Glib.Properties.Property_String;
 
    ----------------
    -- Interfaces --
@@ -165,55 +201,31 @@ package Gtk.Font_Selection is
    --
    --  - "Orientable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Font_Selection_Record, Gtk_Font_Selection);
    function "+"
      (Widget : access Gtk_Font_Selection_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Font_Selection
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
-   package Implements_Orientable is new Glib.Types.Implements
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
      (Gtk.Orientable.Gtk_Orientable, Gtk_Font_Selection_Record, Gtk_Font_Selection);
    function "+"
      (Widget : access Gtk_Font_Selection_Record'Class)
    return Gtk.Orientable.Gtk_Orientable
-   renames Implements_Orientable.To_Interface;
+   renames Implements_Gtk_Orientable.To_Interface;
    function "-"
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Font_Selection
-   renames Implements_Orientable.To_Object;
-
-   ----------------
-   -- Properties --
-   ----------------
-   --  The following properties are defined for this widget. See
-   --  Glib.Properties for more information on properties)
-   --
-   --  Name: Font_Property
-   --  Type: Gdk.Font
-   --  Flags: read-write
-   --
-   --  Name: Font_Name_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-   --
-   --  Name: Preview_Text_Property
-   --  Type: UTF8_String
-   --  Flags: read-write
-
-   Font_Property : constant Glib.Properties.Property_Boxed;
-   Font_Name_Property : constant Glib.Properties.Property_String;
-   Preview_Text_Property : constant Glib.Properties.Property_String;
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
-   Font_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("font");
-   Font_Name_Property : constant Glib.Properties.Property_String :=
-     Glib.Properties.Build ("font-name");
    Preview_Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("preview-text");
+   Font_Name_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font-name");
 end Gtk.Font_Selection;

@@ -1,42 +1,54 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.About_Dialog is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_About_Dialog is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_About_Dialog_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_About_Dialog);
+
+   --------------------------
+   -- Gtk_About_Dialog_New --
+   --------------------------
+
+   function Gtk_About_Dialog_New return Gtk_About_Dialog is
+      About : constant Gtk_About_Dialog := new Gtk_About_Dialog_Record;
+   begin
+      Gtk.About_Dialog.Initialize (About);
+      return About;
+   end Gtk_About_Dialog_New;
 
    -------------
    -- Gtk_New --
@@ -52,19 +64,45 @@ package body Gtk.About_Dialog is
    -- Initialize --
    ----------------
 
-   procedure Initialize (About : access Gtk_About_Dialog_Record'Class) is
+   procedure Initialize
+      (About : not null access Gtk_About_Dialog_Record'Class)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_new");
    begin
-      Set_Object (About, Internal);
+      if not About.Is_Created then
+         Set_Object (About, Internal);
+      end if;
    end Initialize;
+
+   ------------------------
+   -- Add_Credit_Section --
+   ------------------------
+
+   procedure Add_Credit_Section
+      (About        : not null access Gtk_About_Dialog_Record;
+       Section_Name : UTF8_String;
+       People       : GNAT.Strings.String_List)
+   is
+      procedure Internal
+         (About        : System.Address;
+          Section_Name : Interfaces.C.Strings.chars_ptr;
+          People       : Interfaces.C.Strings.chars_ptr_array);
+      pragma Import (C, Internal, "gtk_about_dialog_add_credit_section");
+      Tmp_Section_Name : Interfaces.C.Strings.chars_ptr := New_String (Section_Name);
+      Tmp_People       : Interfaces.C.Strings.chars_ptr_array := From_String_List (People);
+   begin
+      Internal (Get_Object (About), Tmp_Section_Name, Tmp_People);
+      GtkAda.Types.Free (Tmp_People);
+      Free (Tmp_Section_Name);
+   end Add_Credit_Section;
 
    -----------------
    -- Get_Artists --
    -----------------
 
    function Get_Artists
-      (About : access Gtk_About_Dialog_Record)
+      (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
@@ -79,7 +117,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Authors
-      (About : access Gtk_About_Dialog_Record)
+      (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
@@ -94,13 +132,13 @@ package body Gtk.About_Dialog is
    ------------------
 
    function Get_Comments
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_comments");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Comments;
 
    -------------------
@@ -108,13 +146,13 @@ package body Gtk.About_Dialog is
    -------------------
 
    function Get_Copyright
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_copyright");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Copyright;
 
    ---------------------
@@ -122,7 +160,7 @@ package body Gtk.About_Dialog is
    ---------------------
 
    function Get_Documenters
-      (About : access Gtk_About_Dialog_Record)
+      (About : not null access Gtk_About_Dialog_Record)
        return GNAT.Strings.String_List
    is
       function Internal
@@ -137,27 +175,41 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_License
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_license");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_License;
+
+   ----------------------
+   -- Get_License_Type --
+   ----------------------
+
+   function Get_License_Type
+      (About : not null access Gtk_About_Dialog_Record) return Gtk_License
+   is
+      function Internal (About : System.Address) return Gtk_License;
+      pragma Import (C, Internal, "gtk_about_dialog_get_license_type");
+   begin
+      return Internal (Get_Object (About));
+   end Get_License_Type;
 
    --------------
    -- Get_Logo --
    --------------
 
    function Get_Logo
-      (About : access Gtk_About_Dialog_Record) return Gdk.Pixbuf.Gdk_Pixbuf
+      (About : not null access Gtk_About_Dialog_Record)
+       return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal (About : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo");
-      Stub : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin
-      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub));
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (About)), Stub_Gdk_Pixbuf));
    end Get_Logo;
 
    ------------------------
@@ -165,41 +217,27 @@ package body Gtk.About_Dialog is
    ------------------------
 
    function Get_Logo_Icon_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo_icon_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Logo_Icon_Name;
-
-   --------------
-   -- Get_Name --
-   --------------
-
-   function Get_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
-   is
-      function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gtk_about_dialog_get_name");
-   begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
-   end Get_Name;
 
    ----------------------
    -- Get_Program_Name --
    ----------------------
 
    function Get_Program_Name
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_program_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Program_Name;
 
    ----------------------------
@@ -207,13 +245,13 @@ package body Gtk.About_Dialog is
    ----------------------------
 
    function Get_Translator_Credits
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_translator_credits");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Translator_Credits;
 
    -----------------
@@ -221,13 +259,13 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Version
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_version");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Version;
 
    -----------------
@@ -235,13 +273,13 @@ package body Gtk.About_Dialog is
    -----------------
 
    function Get_Website
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Website;
 
    -----------------------
@@ -249,13 +287,13 @@ package body Gtk.About_Dialog is
    -----------------------
 
    function Get_Website_Label
-      (About : access Gtk_About_Dialog_Record) return UTF8_String
+      (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
          (About : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website_label");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (About)));
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
    end Get_Website_Label;
 
    ----------------------
@@ -263,12 +301,12 @@ package body Gtk.About_Dialog is
    ----------------------
 
    function Get_Wrap_License
-      (About : access Gtk_About_Dialog_Record) return Boolean
+      (About : not null access Gtk_About_Dialog_Record) return Boolean
    is
       function Internal (About : System.Address) return Integer;
       pragma Import (C, Internal, "gtk_about_dialog_get_wrap_license");
    begin
-      return Boolean'Val (Internal (Get_Object (About)));
+      return Internal (Get_Object (About)) /= 0;
    end Get_Wrap_License;
 
    -----------------
@@ -276,7 +314,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Artists
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        Artists : GNAT.Strings.String_List)
    is
       procedure Internal
@@ -294,7 +332,7 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Authors
-      (About   : access Gtk_About_Dialog_Record;
+      (About   : not null access Gtk_About_Dialog_Record;
        Authors : GNAT.Strings.String_List)
    is
       procedure Internal
@@ -312,15 +350,20 @@ package body Gtk.About_Dialog is
    ------------------
 
    procedure Set_Comments
-      (About    : access Gtk_About_Dialog_Record;
-       Comments : UTF8_String)
+      (About    : not null access Gtk_About_Dialog_Record;
+       Comments : UTF8_String := "")
    is
       procedure Internal
          (About    : System.Address;
           Comments : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_comments");
-      Tmp_Comments : Interfaces.C.Strings.chars_ptr := New_String (Comments);
+      Tmp_Comments : Interfaces.C.Strings.chars_ptr;
    begin
+      if Comments = "" then
+         Tmp_Comments := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Comments := New_String (Comments);
+      end if;
       Internal (Get_Object (About), Tmp_Comments);
       Free (Tmp_Comments);
    end Set_Comments;
@@ -330,15 +373,20 @@ package body Gtk.About_Dialog is
    -------------------
 
    procedure Set_Copyright
-      (About     : access Gtk_About_Dialog_Record;
-       Copyright : UTF8_String)
+      (About     : not null access Gtk_About_Dialog_Record;
+       Copyright : UTF8_String := "")
    is
       procedure Internal
          (About     : System.Address;
           Copyright : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_copyright");
-      Tmp_Copyright : Interfaces.C.Strings.chars_ptr := New_String (Copyright);
+      Tmp_Copyright : Interfaces.C.Strings.chars_ptr;
    begin
+      if Copyright = "" then
+         Tmp_Copyright := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Copyright := New_String (Copyright);
+      end if;
       Internal (Get_Object (About), Tmp_Copyright);
       Free (Tmp_Copyright);
    end Set_Copyright;
@@ -348,7 +396,7 @@ package body Gtk.About_Dialog is
    ---------------------
 
    procedure Set_Documenters
-      (About       : access Gtk_About_Dialog_Record;
+      (About       : not null access Gtk_About_Dialog_Record;
        Documenters : GNAT.Strings.String_List)
    is
       procedure Internal
@@ -366,31 +414,52 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_License
-      (About   : access Gtk_About_Dialog_Record;
-       License : UTF8_String)
+      (About   : not null access Gtk_About_Dialog_Record;
+       License : UTF8_String := "")
    is
       procedure Internal
          (About   : System.Address;
           License : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_license");
-      Tmp_License : Interfaces.C.Strings.chars_ptr := New_String (License);
+      Tmp_License : Interfaces.C.Strings.chars_ptr;
    begin
+      if License = "" then
+         Tmp_License := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_License := New_String (License);
+      end if;
       Internal (Get_Object (About), Tmp_License);
       Free (Tmp_License);
    end Set_License;
+
+   ----------------------
+   -- Set_License_Type --
+   ----------------------
+
+   procedure Set_License_Type
+      (About        : not null access Gtk_About_Dialog_Record;
+       License_Type : Gtk_License)
+   is
+      procedure Internal
+         (About        : System.Address;
+          License_Type : Gtk_License);
+      pragma Import (C, Internal, "gtk_about_dialog_set_license_type");
+   begin
+      Internal (Get_Object (About), License_Type);
+   end Set_License_Type;
 
    --------------
    -- Set_Logo --
    --------------
 
    procedure Set_Logo
-      (About : access Gtk_About_Dialog_Record;
+      (About : not null access Gtk_About_Dialog_Record;
        Logo  : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal (About : System.Address; Logo : System.Address);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo");
    begin
-      Internal (Get_Object (About), Get_Object (Logo));
+      Internal (Get_Object (About), Get_Object_Or_Null (GObject (Logo)));
    end Set_Logo;
 
    ------------------------
@@ -398,43 +467,30 @@ package body Gtk.About_Dialog is
    ------------------------
 
    procedure Set_Logo_Icon_Name
-      (About     : access Gtk_About_Dialog_Record;
-       Icon_Name : UTF8_String)
+      (About     : not null access Gtk_About_Dialog_Record;
+       Icon_Name : UTF8_String := "")
    is
       procedure Internal
          (About     : System.Address;
           Icon_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
    begin
+      if Icon_Name = "" then
+         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Icon_Name := New_String (Icon_Name);
+      end if;
       Internal (Get_Object (About), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Logo_Icon_Name;
-
-   --------------
-   -- Set_Name --
-   --------------
-
-   procedure Set_Name
-      (About : access Gtk_About_Dialog_Record;
-       Name  : UTF8_String)
-   is
-      procedure Internal
-         (About : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr);
-      pragma Import (C, Internal, "gtk_about_dialog_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
-   begin
-      Internal (Get_Object (About), Tmp_Name);
-      Free (Tmp_Name);
-   end Set_Name;
 
    ----------------------
    -- Set_Program_Name --
    ----------------------
 
    procedure Set_Program_Name
-      (About : access Gtk_About_Dialog_Record;
+      (About : not null access Gtk_About_Dialog_Record;
        Name  : UTF8_String)
    is
       procedure Internal
@@ -452,15 +508,20 @@ package body Gtk.About_Dialog is
    ----------------------------
 
    procedure Set_Translator_Credits
-      (About              : access Gtk_About_Dialog_Record;
-       Translator_Credits : UTF8_String)
+      (About              : not null access Gtk_About_Dialog_Record;
+       Translator_Credits : UTF8_String := "")
    is
       procedure Internal
          (About              : System.Address;
           Translator_Credits : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_translator_credits");
-      Tmp_Translator_Credits : Interfaces.C.Strings.chars_ptr := New_String (Translator_Credits);
+      Tmp_Translator_Credits : Interfaces.C.Strings.chars_ptr;
    begin
+      if Translator_Credits = "" then
+         Tmp_Translator_Credits := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Translator_Credits := New_String (Translator_Credits);
+      end if;
       Internal (Get_Object (About), Tmp_Translator_Credits);
       Free (Tmp_Translator_Credits);
    end Set_Translator_Credits;
@@ -470,15 +531,20 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Version
-      (About   : access Gtk_About_Dialog_Record;
-       Version : UTF8_String)
+      (About   : not null access Gtk_About_Dialog_Record;
+       Version : UTF8_String := "")
    is
       procedure Internal
          (About   : System.Address;
           Version : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_version");
-      Tmp_Version : Interfaces.C.Strings.chars_ptr := New_String (Version);
+      Tmp_Version : Interfaces.C.Strings.chars_ptr;
    begin
+      if Version = "" then
+         Tmp_Version := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Version := New_String (Version);
+      end if;
       Internal (Get_Object (About), Tmp_Version);
       Free (Tmp_Version);
    end Set_Version;
@@ -488,15 +554,20 @@ package body Gtk.About_Dialog is
    -----------------
 
    procedure Set_Website
-      (About   : access Gtk_About_Dialog_Record;
-       Website : UTF8_String)
+      (About   : not null access Gtk_About_Dialog_Record;
+       Website : UTF8_String := "")
    is
       procedure Internal
          (About   : System.Address;
           Website : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_website");
-      Tmp_Website : Interfaces.C.Strings.chars_ptr := New_String (Website);
+      Tmp_Website : Interfaces.C.Strings.chars_ptr;
    begin
+      if Website = "" then
+         Tmp_Website := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Website := New_String (Website);
+      end if;
       Internal (Get_Object (About), Tmp_Website);
       Free (Tmp_Website);
    end Set_Website;
@@ -506,7 +577,7 @@ package body Gtk.About_Dialog is
    -----------------------
 
    procedure Set_Website_Label
-      (About         : access Gtk_About_Dialog_Record;
+      (About         : not null access Gtk_About_Dialog_Record;
        Website_Label : UTF8_String)
    is
       procedure Internal
@@ -524,7 +595,7 @@ package body Gtk.About_Dialog is
    ----------------------
 
    procedure Set_Wrap_License
-      (About        : access Gtk_About_Dialog_Record;
+      (About        : not null access Gtk_About_Dialog_Record;
        Wrap_License : Boolean)
    is
       procedure Internal (About : System.Address; Wrap_License : Integer);
@@ -533,40 +604,156 @@ package body Gtk.About_Dialog is
       Internal (Get_Object (About), Boolean'Pos (Wrap_License));
    end Set_Wrap_License;
 
-   --------------------
-   -- Set_Email_Hook --
-   --------------------
+   use type System.Address;
 
-   function Set_Email_Hook
-      (Func    : Activate_Link_Func;
-       Data    : System.Address;
-       Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_About_Dialog_UTF8_String_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_About_Dialog_UTF8_String_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_About_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_About_Dialog_UTF8_String_Boolean;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_About_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Boolean);
+
+   procedure Marsh_Gtk_About_Dialog_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_About_Dialog_UTF8_String_Boolean);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_About_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_About_Dialog_UTF8_String_Boolean;
+       After   : Boolean)
    is
-      function Internal
-         (Func    : Activate_Link_Func;
-          Data    : System.Address;
-          Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
-      pragma Import (C, Internal, "gtk_about_dialog_set_email_hook");
    begin
-      return Internal (Func, Data, Destroy);
-   end Set_Email_Hook;
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_About_Dialog_UTF8_String_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
 
    ------------------
-   -- Set_Url_Hook --
+   -- Connect_Slot --
    ------------------
 
-   function Set_Url_Hook
-      (Func    : Activate_Link_Func;
-       Data    : System.Address;
-       Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func
+   procedure Connect_Slot
+      (Object  : access Gtk_About_Dialog_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
    is
-      function Internal
-         (Func    : Activate_Link_Func;
-          Data    : System.Address;
-          Destroy : Glib.G_Destroy_Notify_Address) return Activate_Link_Func;
-      pragma Import (C, Internal, "gtk_about_dialog_set_url_hook");
    begin
-      return Internal (Func, Data, Destroy);
-   end Set_Url_Hook;
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ---------------------------------------
+   -- Marsh_GObject_UTF8_String_Boolean --
+   ---------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_Boolean;
+
+   ------------------------------------------------
+   -- Marsh_Gtk_About_Dialog_UTF8_String_Boolean --
+   ------------------------------------------------
+
+   procedure Marsh_Gtk_About_Dialog_UTF8_String_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_About_Dialog_UTF8_String_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_About_Dialog := Gtk_About_Dialog (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_About_Dialog_UTF8_String_Boolean;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self  : not null access Gtk_About_Dialog_Record;
+       Call  : Cb_Gtk_About_Dialog_UTF8_String_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "activate-link" & ASCII.NUL, Call, After);
+   end On_Activate_Link;
+
+   ----------------------
+   -- On_Activate_Link --
+   ----------------------
+
+   procedure On_Activate_Link
+      (Self  : not null access Gtk_About_Dialog_Record;
+       Call  : Cb_GObject_UTF8_String_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "activate-link" & ASCII.NUL, Call, After, Slot);
+   end On_Activate_Link;
 
 end Gtk.About_Dialog;

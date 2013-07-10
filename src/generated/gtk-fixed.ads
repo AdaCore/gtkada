@@ -1,40 +1,62 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk_Fixed widget is a container which can place child widgets at fixed
---  positions and with fixed sizes, given in pixels.
+--  The Gtk.Fixed.Gtk_Fixed widget is a container which can place child
+--  widgets at fixed positions and with fixed sizes, given in pixels.
+--  Gtk.Fixed.Gtk_Fixed performs no automatic layout management.
 --
---  Note that it is usually bad practice to use the Gtk_Fixed container in
---  GtkAda. Instead, you should consider using one of the other many containers
---  available, that will allow you to handle resizing of your windows, as well
---  as font size changes easily.
+--  For most applications, you should not use this container! It keeps you
+--  from having to learn about the other GTK+ containers, but it results in
+--  broken applications. With Gtk.Fixed.Gtk_Fixed, the following things will
+--  result in truncated text, overlapping widgets, and other display bugs:
+--
+-- 
+--
+--     * Themes, which may change widget sizes.
+--
+--     * Fonts other than the one you used to write the app will of course
+--  change the size of widgets containing text; keep in mind that users may use
+--  a larger font because of difficulty reading the default, or they may be
+--  using Windows or the framebuffer port of GTK+, where different fonts are
+--  available.
+--
+--     * Translation of text into other languages changes its size. Also,
+--  display of non-English text will use a different font in many cases.
+--
+--  In addition, the fixed widget can't properly be mirrored in right-to-left
+--  languages such as Hebrew and Arabic. i.e. normally GTK+ will flip the
+--  interface to put labels to the right of the thing they label, but it can't
+--  do that with Gtk.Fixed.Gtk_Fixed. So your application will not be usable in
+--  right-to-left languages.
+--
+--  Finally, fixed positioning makes it kind of annoying to add/remove GUI
+--  elements, since you have to reposition all the other elements. This is a
+--  long-term maintenance problem for your application.
+--
+--  If you know none of these things are an issue for your application, and
+--  prefer the simplicity of Gtk.Fixed.Gtk_Fixed, by all means use the widget.
+--  But you should be aware of the tradeoffs.
 --
 --  </description>
 --  <screenshot>gtk-fixed</screenshot>
@@ -58,7 +80,11 @@ package Gtk.Fixed is
    ------------------
 
    procedure Gtk_New (Fixed : out Gtk_Fixed);
-   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class);
+   procedure Initialize (Fixed : not null access Gtk_Fixed_Record'Class);
+   --  Creates a new Gtk.Fixed.Gtk_Fixed.
+
+   function Gtk_Fixed_New return Gtk_Fixed;
+   --  Creates a new Gtk.Fixed.Gtk_Fixed.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_fixed_get_type");
@@ -67,39 +93,29 @@ package Gtk.Fixed is
    -- Methods --
    -------------
 
-   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean;
-   pragma Obsolescent (Get_Has_Window);
-   procedure Set_Has_Window
-      (Fixed      : access Gtk_Fixed_Record;
-       Has_Window : Boolean := False);
-   pragma Obsolescent (Set_Has_Window);
-   --  Sets whether a Gtk.Fixed.Gtk_Fixed widget is created with a separate
-   --  Gdk.Window.Gdk_Window for Widget->window or not. (By default, it will be
-   --  created with no separate Gdk.Window.Gdk_Window). This function must be
-   --  called while the Gtk.Fixed.Gtk_Fixed is not realized, for instance,
-   --  immediately after the window is created. This function was added to
-   --  provide an easy migration path for older applications which may expect
-   --  Gtk.Fixed.Gtk_Fixed to have a separate window.
-   --  Deprecated since 2.20, Use Gtk.Widget.Set_Has_Window instead.
-   --  "has_window": True if a separate window should be created
-
    procedure Move
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Fixed  : not null access Gtk_Fixed_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint);
    --  Move a child of a GtkFixed container to the given position. X indicates
    --  the horizontal position to place the widget at. Y is the vertical
    --  position to place the widget at.
+   --  "widget": the child widget.
+   --  "x": the horizontal position to move the widget to.
+   --  "y": the vertical position to move the widget to.
 
    procedure Put
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      (Fixed  : not null access Gtk_Fixed_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : Gint;
        Y      : Gint);
    --  Add Widget to a Fixed container at the given position. X indicates the
    --  horizontal position to place the widget at. Y is the vertical position
    --  to place the widget at.
+   --  "widget": the widget to add.
+   --  "x": the horizontal position to place the widget at.
+   --  "y": the vertical position to place the widget at.
 
    ----------------
    -- Interfaces --
@@ -108,15 +124,15 @@ package Gtk.Fixed is
    --
    --  - "Buildable"
 
-   package Implements_Buildable is new Glib.Types.Implements
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Fixed_Record, Gtk_Fixed);
    function "+"
      (Widget : access Gtk_Fixed_Record'Class)
    return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
+   renames Implements_Gtk_Buildable.To_Interface;
    function "-"
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Fixed
-   renames Implements_Buildable.To_Object;
+   renames Implements_Gtk_Buildable.To_Object;
 
 end Gtk.Fixed;

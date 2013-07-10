@@ -1,46 +1,42 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 with Gdk;                         use Gdk;
 with Gdk.Color;                   use Gdk.Color;
+with Gdk.RGBA;                    use Gdk.RGBA;
 with Gtk;                         use Gtk;
 with Glib;                        use Glib;
 with Glib.Properties;
 with Gtk.Color_Selection;         use Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;  use Gtk.Color_Selection_Dialog;
+with Gtk.Button;                  use Gtk.Button;
 with Gtk.Enums;
 with Gtk.Handlers;
 with Gtk.Settings;                use Gtk.Settings;
 with Common;                      use Common;
 with Ada.Text_IO;                 use Ada.Text_IO;
 with Gtk.Widget;                  use Gtk.Widget;
+with System;
 
 package body Create_Color_Selection is
 
@@ -59,7 +55,10 @@ package body Create_Color_Selection is
    --  Called when the dialog is destroyed
 
    procedure On_Palette_Changed
-     (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array);
+     (Screen : System.Address;
+      Colors : Gdk.Color.Gdk_Color_Unconstrained_Array;
+      N_Colors : Gint);
+   pragma Convention (C, On_Palette_Changed);
    --  Called when the palette is changed
 
    ----------
@@ -91,7 +90,7 @@ package body Create_Color_Selection is
    -- Close_Window --
    ------------------
 
-   procedure Close_Window (Win : access Gtk.Widget.Gtk_Widget_Record'Class) is
+   procedure Close_Window (Win : access Gtk_Widget_Record'Class) is
    begin
       Destroy (Win);
    end Close_Window;
@@ -101,17 +100,17 @@ package body Create_Color_Selection is
    ------------------------
 
    procedure On_Palette_Changed
-     (Screen : Gdk.Gdk_Screen; Colors : Gdk.Color.Gdk_Color_Array)
+     (Screen : System.Address;
+      Colors : Gdk.Color.Gdk_Color_Unconstrained_Array;
+      N_Colors : Gint)
    is
       pragma Unreferenced (Screen);
-      Str : constant String := Palette_To_String (Colors);
+      Palette : constant Gdk_Color_Array := To_Array (Colors, N_Colors);
+      Str : constant String := Palette_To_String (Palette);
    begin
-      Put_Line ("Palette has changed: ");
-      Put_Line ("Palette=" & Str);
-
+      Put_Line ("Palette has changed, and became " & Str);
       Glib.Properties.Set_Property
-        (Get_Default, Gtk_Color_Palette,
-         Palette_To_String (Colors));
+         (Get_Default, Gtk_Color_Palette_Property, Str);
    end On_Palette_Changed;
 
    --------------
@@ -121,16 +120,14 @@ package body Create_Color_Selection is
    procedure Color_Ok
      (Dialog : access Gtk_Color_Selection_Dialog_Record'Class)
    is
-      Color : Gdk_Color;
+      Color : Gdk_RGBA;
    begin
-      Get_Current_Color (Get_Colorsel (Dialog), Color);
-
+      Get_Current_Rgba (Get_Color_Selection (Dialog), Color);
       Put_Line ("Selected color is: ");
-      Put ("Red=" & Guint16'Image (Red (Color)));
-      Put (" Green=" & Guint16'Image (Green (Color)));
-      Put (" Blue=" & Guint16'Image (Blue (Color)));
-      Put_Line (" Alpha="
-           & Guint16'Image (Get_Current_Alpha (Get_Colorsel (Dialog))));
+      Put ("Red=" & Color.Red'Img);
+      Put (" Green=" & Color.Green'Img);
+      Put (" Blue=" & Color.Blue'Img);
+      Put_Line (" Alpha=" & Color.Alpha'Img);
    end Color_Ok;
 
    ---------
@@ -139,17 +136,14 @@ package body Create_Color_Selection is
 
    procedure Run (Frame : access Gtk_Frame_Record'Class) is
       pragma Warnings (Off, Frame);
-      Old : Gtk_Color_Selection_Change_Palette_With_Screen_Func;
-      pragma Unreferenced (Old);
    begin
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
          Set_Position (Dialog, Enums.Win_Pos_Mouse);
 
-         Set_Has_Palette (Get_Colorsel (Dialog), True);
-         Set_Has_Opacity_Control (Get_Colorsel (Dialog), True);
-         Old :=
-           Set_Change_Palette_With_Screen_Hook (On_Palette_Changed'Access);
+         Set_Has_Palette (Get_Color_Selection (Dialog), True);
+         Set_Has_Opacity_Control (Get_Color_Selection (Dialog), True);
+         Set_Change_Palette_With_Screen_Hook (On_Palette_Changed'Access);
 
          Destroy_Dialog_Cb.Connect
            (Dialog, "destroy",
@@ -157,14 +151,16 @@ package body Create_Color_Selection is
             Dialog'Access);
 
          Color_Sel_Cb.Object_Connect
-           (Get_OK_Button (Dialog),
+           (Gtk_Button
+              (Glib.Properties.Get_Property (Dialog, Ok_Button_Property)),
             "clicked",
             Color_Sel_Cb.To_Marshaller (Color_Ok'Access),
             Slot_Object => Dialog);
          Widget_Handler.Object_Connect
-           (Get_Cancel_Button (Dialog),
+           (Gtk_Button
+              (Glib.Properties.Get_Property (Dialog, Cancel_Button_Property)),
             "clicked",
-            Widget_Handler.To_Marshaller (Close_Window'Access),
+            Close_Window'Access,
             Slot_Object => Dialog);
          Show (Dialog);
       else

@@ -1,0 +1,245 @@
+diff --git a/contrib/Gdk-3.0.gir b/contrib/Gdk-3.0.gir
+index bca08b5..e8d11e3 100644
+--- a/contrib/Gdk-3.0.gir
++++ b/contrib/Gdk-3.0.gir
+@@ -4535,7 +4535,7 @@ can also cause #GdkEventGrabBroken events.</doc>
+         <type name="ModifierType"/>
+       </field>
+       <field name="keyval" writable="1">
+-        <type name="guint" c:type="guint"/>
++        <type name="GdkKeyType" c:type="GdkKeyType"/>
+       </field>
+       <field name="length" writable="1">
+         <type name="gint" c:type="gint"/>
+diff --git a/contrib/Gtk-3.0.gir b/contrib/Gtk-3.0.gir
+index e84240b..81d84cb 100644
+--- a/contrib/Gtk-3.0.gir
++++ b/contrib/Gtk-3.0.gir
+@@ -2003,7 +2003,7 @@ changed::&lt;replaceable&gt;accel_path&lt;/replaceable&gt;.</doc>
+           </parameter>
+           <parameter name="accel_key" transfer-ownership="none">
+             <doc xml:whitespace="preserve">the key value for the new accelerator</doc>
+-            <type name="guint" c:type="guint"/>
++            <type name="guint" c:type="GdkKeyType"/>
+           </parameter>
+           <parameter name="accel_mods" transfer-ownership="none">
+             <doc xml:whitespace="preserve">the modifier mask for the new accelerator</doc>
+@@ -2032,7 +2032,7 @@ changed::&lt;replaceable&gt;accel_path&lt;/replaceable&gt;.</doc>
+         </parameter>
+         <parameter name="accel_key" transfer-ownership="none">
+           <doc xml:whitespace="preserve">Key of the current accelerator</doc>
+-          <type name="guint" c:type="guint"/>
++          <type name="guint" c:type="GdkKeyType"/>
+         </parameter>
+         <parameter name="accel_mods" transfer-ownership="none">
+           <doc xml:whitespace="preserve">Modifiers of the current accelerator</doc>
+@@ -10734,6 +10734,9 @@ domain.</doc>
+             <doc xml:whitespace="preserve">the name of the file to parse</doc>
+             <type name="utf8" c:type="const gchar*"/>
+           </parameter>
++          <parameter name="error">
++             <type name="GError" c:type="GError**" direction="in"/>
++          </parameter>
+         </parameters>
+       </method>
+       <method name="add_from_resource"
+@@ -11286,7 +11289,7 @@ subsequent calls will do nothing.</doc>
+           <doc xml:whitespace="preserve">name of the handler</doc>
+           <type name="utf8" c:type="const gchar*"/>
+         </parameter>
+-        <parameter name="connect_object" transfer-ownership="none">
++        <parameter name="connect_object" transfer-ownership="none" allow-none="1">
+           <doc xml:whitespace="preserve">a #GObject, if non-%NULL, use g_signal_connect_object()</doc>
+           <type name="GObject.Object" c:type="GObject*"/>
+         </parameter>
+@@ -20712,7 +20715,7 @@ Since 3.6</doc>
+         <type name="gboolean" c:type="gboolean"/>
+       </property>
+       <property name="weight" writable="1" transfer-ownership="none">
+-        <type name="gint" c:type="gint"/>
++        <type name="PangoWeight" c:type="PangoWeight"/>
+       </property>
+       <property name="weight-set" writable="1" transfer-ownership="none">
+         <type name="gboolean" c:type="gboolean"/>
+@@ -27980,7 +27983,7 @@ fallback for all widgets.</doc>
+           <parameter name="section" transfer-ownership="none">
+             <type name="CssSection" c:type="GtkCssSection*"/>
+           </parameter>
+-          <parameter name="error" transfer-ownership="none">
++          <parameter name="error" transfer-ownership="none" allow-none="1">
+             <type name="GLib.Error" c:type="const GError*"/>
+           </parameter>
+         </parameters>
+@@ -28009,6 +28012,9 @@ information.</doc>
+             <doc xml:whitespace="preserve">the length of @data in bytes, or -1 for NUL terminated strings. If @length is not -1, the code will assume it is not NUL terminated and will potentially do a copy.</doc>
+             <type name="gssize" c:type="gssize"/>
+           </parameter>
++          <parameter name="error" allow-none="1">
++             <type name="GError" c:type="GError**" direction="in"/>
++          </parameter>
+         </parameters>
+       </method>
+       <method name="load_from_file"
+@@ -28049,6 +28055,9 @@ any previously loaded information.</doc>
+             <doc xml:whitespace="preserve">the path of a filename to load, in the GLib filename encoding</doc>
+             <type name="utf8" c:type="const gchar*"/>
+           </parameter>
++          <parameter name="error">
++             <type name="GError" c:type="GError**" direction="in"/>
++          </parameter>
+         </parameters>
+       </method>
+       <method name="to_string"
+@@ -30105,7 +30114,7 @@ it from being inserted entirely.</doc>
+                      caller-allocates="0"
+                      transfer-ownership="full">
+             <doc xml:whitespace="preserve">the position, in characters, at which to insert the new text. this is an in-out parameter.  After the signal emission is finished, it should point after the newly inserted text.</doc>
+-            <type name="gint" c:type="gpointer"/>
++            <type name="gint" c:type="gint"/>
+           </parameter>
+         </parameters>
+       </glib:signal>
+@@ -76870,7 +76879,7 @@ The default conversion uses g_strtod().</doc>
+                      caller-allocates="0"
+                      transfer-ownership="full">
+             <doc xml:whitespace="preserve">return location for the new value</doc>
+-            <type name="gdouble" c:type="gpointer"/>
++            <type name="gdouble" c:type="gdouble"/>
+           </parameter>
+         </parameters>
+       </glib:signal>
+@@ -90411,7 +90420,7 @@ locale, see also gtk_get_default_language().</doc>
+         <type name="gboolean" c:type="gboolean"/>
+       </property>
+       <property name="weight" writable="1" transfer-ownership="none">
+-        <type name="gint" c:type="gint"/>
++        <type name="PangoWeight" c:type="PangoWeight"/>
+       </property>
+       <property name="weight-set" writable="1" transfer-ownership="none">
+         <type name="gboolean" c:type="gboolean"/>
+@@ -99663,26 +99672,6 @@ Please note that nodes that are deleted are not unreffed.</doc>
+           </parameter>
+         </parameters>
+       </virtual-method>
+-      <method name="filter_new"
+-              c:identifier="gtk_tree_model_filter_new"
+-              version="2.4">
+-        <doc xml:whitespace="preserve">Creates a new #GtkTreeModel, with @child_model as the child_model
+-and @root as the virtual root.</doc>
+-        <return-value transfer-ownership="full">
+-          <doc xml:whitespace="preserve">A new #GtkTreeModel.</doc>
+-          <type name="TreeModel" c:type="GtkTreeModel*"/>
+-        </return-value>
+-        <parameters>
+-          <instance-parameter name="child_model" transfer-ownership="none">
+-            <doc xml:whitespace="preserve">A #GtkTreeModel.</doc>
+-            <type name="TreeModel" c:type="GtkTreeModel*"/>
+-          </instance-parameter>
+-          <parameter name="root" transfer-ownership="none" allow-none="1">
+-            <doc xml:whitespace="preserve">A #GtkTreePath or %NULL.</doc>
+-            <type name="TreePath" c:type="GtkTreePath*"/>
+-          </parameter>
+-        </parameters>
+-      </method>
+       <method name="foreach" c:identifier="gtk_tree_model_foreach">
+         <doc xml:whitespace="preserve">Calls func on each node in model in a depth-first fashion.
+ 
+@@ -100281,20 +100270,6 @@ reordered.</doc>
+           </parameter>
+         </parameters>
+       </method>
+-      <method name="sort_new_with_model"
+-              c:identifier="gtk_tree_model_sort_new_with_model">
+-        <doc xml:whitespace="preserve">Creates a new #GtkTreeModel, with @child_model as the child model.</doc>
+-        <return-value transfer-ownership="full">
+-          <doc xml:whitespace="preserve">A new #GtkTreeModel.</doc>
+-          <type name="TreeModel" c:type="GtkTreeModel*"/>
+-        </return-value>
+-        <parameters>
+-          <instance-parameter name="child_model" transfer-ownership="none">
+-            <doc xml:whitespace="preserve">A #GtkTreeModel</doc>
+-            <type name="TreeModel" c:type="GtkTreeModel*"/>
+-          </instance-parameter>
+-        </parameters>
+-      </method>
+       <method name="unref_node" c:identifier="gtk_tree_model_unref_node">
+         <doc xml:whitespace="preserve">Lets the tree unref the node.
+ 
+@@ -100533,6 +100508,26 @@ yourself.</doc>
+           </parameter>
+         </parameters>
+       </virtual-method>
++      <constructor name="filter_new"
++              c:identifier="gtk_tree_model_filter_new"
++              version="2.4">
++        <doc xml:whitespace="preserve">Creates a new #GtkTreeModel, with @child_model as the child_model
++and @root as the virtual root.</doc>
++        <return-value transfer-ownership="full">
++          <doc xml:whitespace="preserve">A new #GtkTreeModel.</doc>
++          <type name="TreeModel" c:type="GtkTreeModel*"/>
++        </return-value>
++        <parameters>
++          <parameter name="child_model" transfer-ownership="none">
++            <doc xml:whitespace="preserve">A #GtkTreeModel.</doc>
++            <type name="TreeModel" c:type="GtkTreeModel*"/>
++          </parameter>
++          <parameter name="root" transfer-ownership="none" allow-none="1">
++            <doc xml:whitespace="preserve">A #GtkTreePath or %NULL.</doc>
++            <type name="TreePath" c:type="GtkTreePath*"/>
++          </parameter>
++        </parameters>
++      </constructor>
+       <method name="clear_cache"
+               c:identifier="gtk_tree_model_filter_clear_cache"
+               version="2.4">
+@@ -101523,6 +101518,20 @@ selection_changed (GtkTreeSelection *selection, gpointer data)
+       <implements name="TreeDragSource"/>
+       <implements name="TreeModel"/>
+       <implements name="TreeSortable"/>
++      <constructor name="sort_new_with_model"
++              c:identifier="gtk_tree_model_sort_new_with_model">
++        <doc xml:whitespace="preserve">Creates a new #GtkTreeModel, with @child_model as the child model.</doc>
++        <return-value transfer-ownership="full">
++          <doc xml:whitespace="preserve">A new #GtkTreeModel.</doc>
++          <type name="TreeModel" c:type="GtkTreeModel*"/>
++        </return-value>
++        <parameters>
++          <parameter name="child_model" transfer-ownership="none">
++            <doc xml:whitespace="preserve">A #GtkTreeModel</doc>
++            <type name="TreeModel" c:type="GtkTreeModel*"/>
++          </parameter>
++        </parameters>
++      </constructor>
+       <method name="clear_cache"
+               c:identifier="gtk_tree_model_sort_clear_cache">
+         <doc xml:whitespace="preserve">This function should almost never be called.  It clears the @tree_model_sort
+@@ -109230,6 +109239,9 @@ merges it with the current contents of @manager.</doc>
+             <doc xml:whitespace="preserve">the name of the file to parse</doc>
+             <type name="filename" c:type="gchar*"/>
+           </parameter>
++          <parameter name="error">
++             <type name="GError" c:type="GError**" direction="in"/>
++          </parameter>
+         </parameters>
+       </method>
+       <method name="add_ui_from_resource"
+@@ -109251,6 +109263,9 @@ merges it with the current contents of @manager.</doc>
+             <doc xml:whitespace="preserve">the resource path of the file to parse</doc>
+             <type name="utf8" c:type="const gchar*"/>
+           </parameter>
++          <parameter name="error">
++             <type name="GError" c:type="GError**" direction="in"/>
++          </parameter>
+         </parameters>
+       </method>
+       <method name="add_ui_from_string"
+@@ -109277,6 +109292,9 @@ element is added if it is missing.</doc>
+             <doc xml:whitespace="preserve">the length of @buffer (may be -1 if @buffer is nul-terminated)</doc>
+             <type name="gssize" c:type="gssize"/>
+           </parameter>
++          <parameter name="error">
++             <type name="GError" c:type="GError**" direction="in"/>
++          </parameter>
+         </parameters>
+       </method>
+       <method name="ensure_update"

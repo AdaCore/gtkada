@@ -1,0 +1,15 @@
+.notebook tab {
+   background-image: -gtk-gradient (linear, left top, left bottom, from(#999), to(#fff));
+}
+
+GtkNotebook .active {
+   color: red;
+   background-color: yellow;
+}
+
+GtkTreeView *:hover {
+   color: #009900;
+}
+.notebook :active {
+   background-image:none;
+}

@@ -1,35 +1,31 @@
------------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
---                                                                   --
---                  Copyright (C) 2008-2013, AdaCore                 --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 2008-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Ada.Unchecked_Conversion;
+with Glib.Object;     use Glib.Object;
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtk.Tree_Model;  use Gtk.Tree_Model;
 with System;
-
-with Glib.Object;
 
 package body Gtkada.Abstract_Tree_Model is
 
@@ -37,13 +33,6 @@ package body Gtkada.Abstract_Tree_Model is
 
    type Gtk_Tree_Iter_Access is access all Gtk.Tree_Model.Gtk_Tree_Iter;
    pragma Convention (C, Gtk_Tree_Iter_Access);
-
-   type GInterface_Info is record
-      interface_init     : System.Address := System.Null_Address;
-      interface_finalize : System.Address := System.Null_Address;
-      interface_data     : System.Address := System.Null_Address;
-   end record;
-   pragma Convention (C, GInterface_Info);
 
    type GTypeInterface is record
       g_type          : Glib.GType;
@@ -65,6 +54,7 @@ package body Gtkada.Abstract_Tree_Model is
       get_path              : System.Address := System.Null_Address;
       get_value             : System.Address := System.Null_Address;
       iter_next             : System.Address := System.Null_Address;
+      iter_previous         : System.Address := System.Null_Address;
       iter_children         : System.Address := System.Null_Address;
       iter_has_child        : System.Address := System.Null_Address;
       iter_n_children       : System.Address := System.Null_Address;
@@ -73,226 +63,277 @@ package body Gtkada.Abstract_Tree_Model is
       ref_node              : System.Address := System.Null_Address;
       unref_node            : System.Address := System.Null_Address;
    end record;
+   type GtkTreeModelInterface_Access is access GtkTreeModelInterface;
    pragma Convention (C, GtkTreeModelInterface);
 
-   procedure Tree_Model_Interface_Init (Iface : in out GtkTreeModelInterface);
+   function Convert is new Ada.Unchecked_Conversion
+      (System.Address, GtkTreeModelInterface_Access);
+
+   procedure Tree_Model_Interface_Init (Iface, Data : System.Address);
    pragma Convention (C, Tree_Model_Interface_Init);
 
    function Dispatch_Get_Flags
-     (Tree_Model : System.Address) return Gtk.Tree_Model.Tree_Model_Flags;
+     (Tree_Model : Gtk_Tree_Model) return Gtk.Tree_Model.Tree_Model_Flags;
    pragma Convention (C, Dispatch_Get_Flags);
 
    function Dispatch_Get_N_Columns
-     (Tree_Model : System.Address) return Glib.Gint;
+     (Tree_Model : Gtk_Tree_Model) return Glib.Gint;
    pragma Convention (C, Dispatch_Get_N_Columns);
 
    function Dispatch_Get_Column_Type
-     (Tree_Model : System.Address;
+     (Tree_Model : Gtk_Tree_Model;
       Index      : Glib.Gint) return Glib.GType;
    pragma Convention (C, Dispatch_Get_Column_Type);
 
    function Dispatch_Get_Iter
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gboolean;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Path       : System.Address) return Glib.Gboolean;
    pragma Convention (C, Dispatch_Get_Iter);
 
    function Dispatch_Get_Path
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Gtk.Tree_Model.Gtk_Tree_Path;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return System.Address;
    pragma Convention (C, Dispatch_Get_Path);
 
    procedure Dispatch_Get_Value
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Glib.Gint;
       Value      : out Glib.Values.GValue);
    pragma Convention (C, Dispatch_Get_Value);
 
    function Dispatch_Iter_Next
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Next);
 
    function Dispatch_Iter_Children
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Children);
 
    function Dispatch_Iter_Has_Child
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Has_Child);
 
    function Dispatch_Iter_N_Children
-     (Tree_Model : System.Address;
+     (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter_Access)
       return Glib.Gint;
    pragma Convention (C, Dispatch_Iter_N_Children);
 
    function Dispatch_Iter_Nth_Child
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access;
       N          : Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Nth_Child);
 
    function Dispatch_Iter_Parent
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Child      : Gtk.Tree_Model.Gtk_Tree_Iter)
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Child      : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean;
    pragma Convention (C, Dispatch_Iter_Parent);
 
    procedure Dispatch_Ref_Node
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter_Access);
    pragma Convention (C, Dispatch_Ref_Node);
 
    procedure Dispatch_Unref_Node
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter_Access);
    pragma Convention (C, Dispatch_Unref_Node);
 
-   Class_Record : Glib.Object.GObject_Class := Glib.Object.Uninitialized_Class;
-   Info         : constant GInterface_Info  :=
-     (interface_init => Tree_Model_Interface_Init'Address,
-      others         => System.Null_Address);
+   Class_Record : aliased Glib.Object.Ada_GObject_Class :=
+      Glib.Object.Uninitialized_Class;
 
    ------------------------------
    -- Dispatch_Get_Column_Type --
    ------------------------------
 
    function Dispatch_Get_Column_Type
-     (Tree_Model : System.Address;
+     (Tree_Model : Gtk_Tree_Model;
       Index      : Glib.Gint)
       return Glib.GType
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      return
-        Gtk.Tree_Model.Get_Column_Type
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-           Index);
+      return T.Get_Column_Type (Index);
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return Glib.GType_None;
    end Dispatch_Get_Column_Type;
+
+   function Get_Column_Type
+      (Self  : access Gtk_Abstract_Tree_Model_Record;
+       Index : Glib.Gint) return Glib.GType is
+   begin
+      --  The default implementation is to call gtk+ default function
+      return Gtk.Tree_Model.Get_Column_Type (+Self, Index);
+   end Get_Column_Type;
 
    ------------------------
    -- Dispatch_Get_Flags --
    ------------------------
 
    function Dispatch_Get_Flags
-     (Tree_Model : System.Address)
+     (Tree_Model : Gtk_Tree_Model)
       return Gtk.Tree_Model.Tree_Model_Flags
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      return
-        Gtk.Tree_Model.Get_Flags
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)));
+      return T.Get_Flags;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Get_Flags;
+
+   function Get_Flags
+      (Self : access Gtk_Abstract_Tree_Model_Record) return Tree_Model_Flags
+   is
+      pragma Unreferenced (Self);
+   begin
+      --  We cannot call gtk+'s function here, or that will result in a
+      --  Storage_Error if the user hasn't overridden this function.
+      return 0;
+   end Get_Flags;
 
    -----------------------
    -- Dispatch_Get_Iter --
    -----------------------
 
    function Dispatch_Get_Iter
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gboolean
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Path       : System.Address) return Glib.Gboolean
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
+      P : constant Gtk_Tree_Path := From_Object (Path);
    begin
-      Iter.all :=
-        Gtk.Tree_Model.Get_Iter
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-           Path);
-
+      Iter.all := T.Get_Iter (P);
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
-
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Get_Iter;
+
+   function Get_Iter
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Path : Gtk_Tree_Path) return Gtk_Tree_Iter
+   is
+   begin
+      return Gtk.Tree_Model.Get_Iter (+Self, Path);
+   end Get_Iter;
 
    -----------------------
    -- Dispatch_Get_Path --
    -----------------------
 
    function Dispatch_Get_Path
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Gtk.Tree_Model.Gtk_Tree_Path
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return System.Address
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      return
-        Gtk.Tree_Model.Get_Path
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-           Iter);
+      return T.Get_Path (Iter.all).Get_Object;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return System.Null_Address;
    end Dispatch_Get_Path;
+
+   function Get_Path
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Iter : Gtk_Tree_Iter) return Gtk_Tree_Path
+   is
+   begin
+      return Gtk.Tree_Model.Get_Path (+Self, Iter);
+   end Get_Path;
 
    ----------------------------
    -- Dispatch_Get_N_Columns --
    ----------------------------
 
    function Dispatch_Get_N_Columns
-     (Tree_Model : System.Address)
+     (Tree_Model : Gtk_Tree_Model)
       return Glib.Gint
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      return
-        Gtk.Tree_Model.Get_N_Columns
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)));
+      return T.Get_N_Columns;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Get_N_Columns;
+
+   function Get_N_Columns
+      (Self : access Gtk_Abstract_Tree_Model_Record) return Glib.Gint
+   is
+   begin
+      return Gtk.Tree_Model.Get_N_Columns (+Self);
+   end Get_N_Columns;
 
    ------------------------
    -- Dispatch_Get_Value --
    ------------------------
 
    procedure Dispatch_Get_Value
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Glib.Gint;
       Value      : out Glib.Values.GValue)
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      Gtk.Tree_Model.Get_Value
-        (Gtk.Tree_Model.Gtk_Tree_Model
-           (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-         Iter,
-         Column,
-         Value);
+      if Iter.all = Null_Iter then
+         raise Program_Error with "passing a null_iter to Get_Value";
+      end if;
+      T.Get_Value (Iter.all, Column, Value);
+   exception
+      when E : others =>
+         Process_Exception (E);
+         Glib.Values.Unset (Value);
    end Dispatch_Get_Value;
+
+   procedure Get_Value
+      (Self   : access Gtk_Abstract_Tree_Model_Record;
+       Iter   : Gtk_Tree_Iter;
+       Column : Glib.Gint;
+       Value  : out Glib.Values.GValue)
+   is
+   begin
+      Gtk.Tree_Model.Get_Value (+Self, Iter, Column, Value);
+   end Get_Value;
 
    ----------------------------
    -- Dispatch_Iter_Children --
    ----------------------------
 
    function Dispatch_Iter_Children
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access)
       return Glib.Gboolean
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
       Real_Parent : Gtk.Tree_Model.Gtk_Tree_Iter;
    begin
       --  Gtk should normally never pass null to that function. Unfortunately,
@@ -305,292 +346,300 @@ package body Gtkada.Abstract_Tree_Model is
          Real_Parent := Gtk.Tree_Model.Null_Iter;
       end if;
 
-      Iter.all :=
-        Gtk.Tree_Model.Children
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-           Real_Parent);
-
+      Iter.all := T.Children (Real_Parent);
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
-
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Children;
+
+   function Children
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Parent : Gtk_Tree_Iter) return Gtk_Tree_Iter
+   is
+   begin
+      return Gtk.Tree_Model.Children (+Self, Parent);
+   end Children;
 
    -----------------------------
    -- Dispatch_Iter_Has_Child --
    -----------------------------
 
    function Dispatch_Iter_Has_Child
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      if Gtk.Tree_Model.Has_Child
-        (Gtk.Tree_Model.Gtk_Tree_Model
-           (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-         Iter)
-      then
+      if T.Has_Child (Iter.all) then
          return 1;
-
       else
          return 0;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Has_Child;
+
+   function Has_Child
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Iter : Gtk_Tree_Iter) return Boolean
+   is
+   begin
+      return Gtk.Tree_Model.Has_Child (+Self, Iter);
+   end Has_Child;
 
    ------------------------------
    -- Dispatch_Iter_N_Children --
    ------------------------------
 
    function Dispatch_Iter_N_Children
-     (Tree_Model : System.Address;
+     (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter_Access)
       return Glib.Gint
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
       if Iter = null then
-         return
-           Gtk.Tree_Model.N_Children
-             (Gtk.Tree_Model.Gtk_Tree_Model
-                  (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-              Gtk.Tree_Model.Null_Iter);
-
+         return T.N_Children (Null_Iter);
       else
-         return
-           Gtk.Tree_Model.N_Children
-             (Gtk.Tree_Model.Gtk_Tree_Model
-                  (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-              Iter.all);
+         return T.N_Children (Iter.all);
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_N_Children;
+
+   function N_Children
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Iter : Gtk_Tree_Iter := Null_Iter) return Glib.Gint
+   is
+   begin
+      return Gtk.Tree_Model.N_Children (+Self, Iter);
+   end N_Children;
 
    ------------------------
    -- Dispatch_Iter_Next --
    ------------------------
 
    function Dispatch_Iter_Next
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
+      return Glib.Gboolean
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      Gtk.Tree_Model.Next
-        (Gtk.Tree_Model.Gtk_Tree_Model
-           (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-         Iter.all);
-
+      T.Next (Iter.all);
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
-
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Next;
+
+   procedure Next
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Iter : in out Gtk_Tree_Iter)
+   is
+   begin
+      Gtk.Tree_Model.Next (+Self, Iter);
+   end Next;
 
    -----------------------------
    -- Dispatch_Iter_Nth_Child --
    -----------------------------
 
    function Dispatch_Iter_Nth_Child
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter_Access;
       N          : Glib.Gint) return Glib.Gboolean
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      --  Parent can be null, GtkAda assume it can't.
+      --  Parent can be null, GtkAda assumes it can't.
 
       if Parent = null then
-         Iter.all :=
-           Gtk.Tree_Model.Nth_Child
-             (Gtk.Tree_Model.Gtk_Tree_Model
-                  (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-              Gtk.Tree_Model.Null_Iter,
-              N);
-
+         Iter.all := T.Nth_Child (Null_Iter, N);
       else
-         Iter.all :=
-           Gtk.Tree_Model.Nth_Child
-             (Gtk.Tree_Model.Gtk_Tree_Model
-                  (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-              Parent.all,
-              N);
+         Iter.all := T.Nth_Child (Parent.all, N);
       end if;
 
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
-
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Nth_Child;
+
+   function Nth_Child
+      (Self   : access Gtk_Abstract_Tree_Model_Record;
+       Parent : Gtk_Tree_Iter;
+       N      : Glib.Gint) return Gtk_Tree_Iter is
+   begin
+      return Gtk.Tree_Model.Nth_Child (+Self, Parent, N);
+   end Nth_Child;
 
    --------------------------
    -- Dispatch_Iter_Parent --
    --------------------------
 
    function Dispatch_Iter_Parent
-     (Tree_Model : System.Address;
-      Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-      Child      : Gtk.Tree_Model.Gtk_Tree_Iter)
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : not null access Gtk.Tree_Model.Gtk_Tree_Iter;
+      Child      : not null access Gtk.Tree_Model.Gtk_Tree_Iter)
       return Glib.Gboolean
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      Iter.all :=
-        Gtk.Tree_Model.Parent
-          (Gtk.Tree_Model.Gtk_Tree_Model
-               (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-           Child);
-
+      Iter.all := T.Parent (Child.all);
       if Iter.all = Gtk.Tree_Model.Null_Iter then
          return 0;
-
       else
          return 1;
       end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
+         return 0;
    end Dispatch_Iter_Parent;
+
+   function Parent
+      (Self  : access Gtk_Abstract_Tree_Model_Record;
+       Child : Gtk_Tree_Iter) return Gtk_Tree_Iter is
+   begin
+      return Gtk.Tree_Model.Parent (+Self, Child);
+   end Parent;
 
    -----------------------
    -- Dispatch_Ref_Node --
    -----------------------
 
    procedure Dispatch_Ref_Node
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter_Access)
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      Gtk.Tree_Model.Ref_Node
-        (Gtk.Tree_Model.Gtk_Tree_Model
-           (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-         Iter);
+      if Iter /= null then
+         T.Ref_Node (Iter.all);
+      end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
    end Dispatch_Ref_Node;
+
+   procedure Ref_Node
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Iter : Gtk_Tree_Iter)
+   is
+      pragma Unreferenced (Self, Iter);
+   begin
+      --  We cannot call gtk+'s function here, or that will result in a
+      --  Storage_Error if the user hasn't overridden this function.
+      null;
+      --  Gtk.Tree_Model.Ref_Node (+Self, Iter);
+   end Ref_Node;
 
    -------------------------
    -- Dispatch_Unref_Node --
    -------------------------
 
    procedure Dispatch_Unref_Node
-     (Tree_Model : System.Address;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter_Access)
    is
-      Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
-
+      T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      Gtk.Tree_Model.Unref_Node
-        (Gtk.Tree_Model.Gtk_Tree_Model
-           (Glib.Object.Get_User_Data (Tree_Model, Stub)),
-         Iter);
+      if Iter /= null then
+         T.Unref_Node (Iter.all);
+      end if;
+   exception
+      when E : others =>
+         Process_Exception (E);
    end Dispatch_Unref_Node;
 
-   ---------------
-   -- Get_Flags --
-   ---------------
-
-   function Get_Flags
-     (Self : access Gtk_Abstract_Tree_Model_Record)
-      return Gtk.Tree_Model.Tree_Model_Flags
+   procedure Unref_Node
+      (Self : access Gtk_Abstract_Tree_Model_Record;
+       Iter : Gtk_Tree_Iter)
    is
-      pragma Unreferenced (Self);
-      --  This parameter is used for call dispatching.
-
+      pragma Unreferenced (Self, Iter);
    begin
-      return 0;
-   end Get_Flags;
+      --  We cannot call gtk+'s function here, or that will result in a
+      --  Storage_Error if the user hasn't overridden this function.
+      null;
+      --  Gtk.Tree_Model.Unref_Node (+Self, Iter);
+   end Unref_Node;
+
+   --------------
+   -- Get_Type --
+   --------------
+
+   function Get_Type return Glib.GType is
+   begin
+      if Glib.Object.Initialize_Class_Record
+        (Ancestor     => Glib.GType_Object,
+         Class_Record => Class_Record'Access,
+         Type_Name    => "GtkAdaAbstractTreeModel")
+      then
+         Add_Interface
+           (Class_Record,
+            Gtk.Tree_Model.Get_Type,
+            new GInterface_Info'
+               (Interface_Init => Tree_Model_Interface_Init'Access,
+                Interface_Finalize => null,
+                Interface_Data     => System.Null_Address));
+      end if;
+      return Class_Record.The_Type;
+   end Get_Type;
 
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize (Self : access Gtk_Abstract_Tree_Model_Record'Class) is
-      use type Glib.Object.GObject_Class;
-      Empty : Interfaces.C.Strings.chars_ptr_array (1 .. 0);
-
-      procedure Init_Interface
-        (Class : Glib.GType;
-         Iface : Glib.GType;
-         Info  : GInterface_Info);
-      pragma Import (C, Init_Interface, "g_type_add_interface_static");
-
-      Initialized : constant Boolean :=
-        Class_Record /= Glib.Object.Uninitialized_Class;
-
    begin
-      Glib.Object.Initialize (Self);
-
-      Glib.Object.Initialize_Class_Record
-        (Self,
-         Empty,
-         Class_Record,
-         "GtkAdaAbstractTreeModel");
-
-      if not Initialized then
-         Init_Interface
-           (Glib.Object.Type_From_Class (Class_Record),
-            Gtk.Tree_Model.Get_Type,
-            Info);
-      end if;
+      G_New (Self, Get_Type);
    end Initialize;
-
-   --------------
-   -- Ref_Node --
-   --------------
-
-   procedure Ref_Node
-     (Self : access Gtk_Abstract_Tree_Model_Record;
-      Iter : Gtk.Tree_Model.Gtk_Tree_Iter)
-   is
-   begin
-      null;
-   end Ref_Node;
 
    -------------------------------
    -- Tree_Model_Interface_Init --
    -------------------------------
 
-   procedure Tree_Model_Interface_Init
-     (Iface : in out GtkTreeModelInterface)
-   is
+   procedure Tree_Model_Interface_Init (Iface, Data : System.Address) is
+      pragma Unreferenced (Data);
+      F : constant GtkTreeModelInterface_Access := Convert (Iface);
    begin
-      Iface.get_flags       := Dispatch_Get_Flags'Address;
-      Iface.get_n_columns   := Dispatch_Get_N_Columns'Address;
-      Iface.get_column_type := Dispatch_Get_Column_Type'Address;
-      Iface.get_iter        := Dispatch_Get_Iter'Address;
-      Iface.get_path        := Dispatch_Get_Path'Address;
-      Iface.get_value       := Dispatch_Get_Value'Address;
-      Iface.iter_next       := Dispatch_Iter_Next'Address;
-      Iface.iter_children   := Dispatch_Iter_Children'Address;
-      Iface.iter_has_child  := Dispatch_Iter_Has_Child'Address;
-      Iface.iter_n_children := Dispatch_Iter_N_Children'Address;
-      Iface.iter_nth_child  := Dispatch_Iter_Nth_Child'Address;
-      Iface.iter_parent     := Dispatch_Iter_Parent'Address;
-      Iface.ref_node        := Dispatch_Ref_Node'Address;
-      Iface.unref_node      := Dispatch_Unref_Node'Address;
+      F.get_flags       := Dispatch_Get_Flags'Address;
+      F.get_n_columns   := Dispatch_Get_N_Columns'Address;
+      F.get_column_type := Dispatch_Get_Column_Type'Address;
+      F.get_iter        := Dispatch_Get_Iter'Address;
+      F.get_path        := Dispatch_Get_Path'Address;
+      F.get_value       := Dispatch_Get_Value'Address;
+      F.iter_next       := Dispatch_Iter_Next'Address;
+      F.iter_children   := Dispatch_Iter_Children'Address;
+      F.iter_has_child  := Dispatch_Iter_Has_Child'Address;
+      F.iter_n_children := Dispatch_Iter_N_Children'Address;
+      F.iter_nth_child  := Dispatch_Iter_Nth_Child'Address;
+      F.iter_parent     := Dispatch_Iter_Parent'Address;
+      F.ref_node        := Dispatch_Ref_Node'Address;
+      F.unref_node      := Dispatch_Unref_Node'Address;
    end Tree_Model_Interface_Init;
-
-   ----------------
-   -- Unref_Node --
-   ----------------
-
-   procedure Unref_Node
-     (Self : access Gtk_Abstract_Tree_Model_Record;
-      Iter : Gtk.Tree_Model.Gtk_Tree_Iter)
-   is
-   begin
-      null;
-   end Unref_Node;
 
 end Gtkada.Abstract_Tree_Model;

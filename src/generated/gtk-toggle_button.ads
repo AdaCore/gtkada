@@ -1,37 +1,68 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk_Toggle_Button is like a regular button, but can be in one of two
---  states, "active" or "inactive". Its visual aspect is modified when the
---  state is changed.
+--  A Gtk.Toggle_Button.Gtk_Toggle_Button is a Gtk.Button.Gtk_Button which
+--  will remain 'pressed-in' when clicked. Clicking again will cause the toggle
+--  button to return to its normal state.
 --
+--  A toggle button is created by calling either gtk_toggle_button_new or
+--  Gtk.Toggle_Button.Gtk_New. If using the former, it is advisable to pack a
+--  widget, (such as a Gtk.Label.Gtk_Label and/or a Gtk.Image.Gtk_Image), into
+--  the toggle button's container. (See Gtk.Button.Gtk_Button for more
+--  information).
+--
+--  The state of a Gtk.Toggle_Button.Gtk_Toggle_Button can be set specifically
+--  using Gtk.Toggle_Button.Set_Active, and retrieved using
+--  Gtk.Toggle_Button.Get_Active.
+--
+--  To simply switch the state of a toggle button, use
+--  Gtk.Toggle_Button.Toggled.
+--
+--  == Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets. ==
+--
+--    void make_toggles (void) {
+--       GtkWidget *dialog, *toggle1, *toggle2;
+--       dialog = gtk_dialog_new (<!-- -->);
+--          toggle1 = gtk_toggle_button_new_with_label ("Hi, i'm a toggle button.");
+--          // Makes this toggle button invisible
+--          gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle1), TRUE);
+--             g_signal_connect (toggle1, "toggled",
+--             G_CALLBACK (output_state), NULL);
+--             gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+--             toggle1, FALSE, FALSE, 2);
+--          toggle2 = gtk_toggle_button_new_with_label ("Hi, i'm another toggle button.");
+--          gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle2), FALSE);
+--             g_signal_connect (toggle2, "toggled",
+--             G_CALLBACK (output_state), NULL);
+--             gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+--             toggle2, FALSE, FALSE, 2);
+--          gtk_widget_show_all (dialog);
+--       }
+--
+--
+--  </description>
+--  <description>
 --  You should consider using a Gtk_Check_Button instead, since it looks nicer
 --  and provides more visual clues that the button can be toggled.
 --
@@ -42,13 +73,15 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 with Gtk.Action;      use Gtk.Action;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Activatable; use Gtk.Activatable;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Button;      use Gtk.Button;
-with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Toggle_Button is
 
@@ -63,19 +96,38 @@ package Gtk.Toggle_Button is
       (Toggle_Button : out Gtk_Toggle_Button;
        Label         : UTF8_String := "");
    procedure Initialize
-      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String := "");
    --  Initialize a button. If Label is "", then no label is created inside
    --  the button and you will have to provide your own child through a call to
    --  Gtk.Container.Add. This is the recommended way to put a pixmap inside a
    --  toggle button.
+   --  "label": a string containing the message to be placed in the toggle
+   --  button.
+
+   function Gtk_Toggle_Button_New_With_Label
+      (Label : UTF8_String := "") return Gtk_Toggle_Button;
+   --  Initialize a button. If Label is "", then no label is created inside
+   --  the button and you will have to provide your own child through a call to
+   --  Gtk.Container.Add. This is the recommended way to put a pixmap inside a
+   --  toggle button.
+   --  "label": a string containing the message to be placed in the toggle
+   --  button.
 
    procedure Gtk_New_With_Mnemonic
       (Toggle_Button : out Gtk_Toggle_Button;
        Label         : UTF8_String);
    procedure Initialize_With_Mnemonic
-      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record'Class;
        Label         : UTF8_String);
+   --  Creates a new Gtk.Toggle_Button.Gtk_Toggle_Button containing a label.
+   --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the button.
+   --  "label": the text of the button, with an underscore in front of the
+   --  mnemonic character
+
+   function Gtk_Toggle_Button_New_With_Mnemonic
+      (Label : UTF8_String) return Gtk_Toggle_Button;
    --  Creates a new Gtk.Toggle_Button.Gtk_Toggle_Button containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the button.
@@ -90,17 +142,26 @@ package Gtk.Toggle_Button is
    -------------
 
    function Get_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean;
+   --  Queries a Gtk.Toggle_Button.Gtk_Toggle_Button and returns its current
+   --  state. Returns True if the toggle button is pressed in and False if it
+   --  is raised.
+
    procedure Set_Active
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Is_Active     : Boolean);
    --  Change the state of the button. When Is_Active is True, the button is
    --  drawn as a pressed button
+   --  "is_active": True or False.
 
    function Get_Inconsistent
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean;
+   --  Gets the value set by Gtk.Toggle_Button.Set_Inconsistent.
+
    procedure Set_Inconsistent
-      (Toggle_Button : access Gtk_Toggle_Button_Record;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Setting       : Boolean := True);
    --  If the user has selected a range of elements (such as some text or
    --  spreadsheet cells) that are affected by a toggle button, and the current
@@ -113,113 +174,163 @@ package Gtk.Toggle_Button is
    --  "setting": True if state is inconsistent
 
    function Get_Mode
-      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record)
+       return Boolean;
+   --  Retrieves whether the button is displayed as a separate indicator and
+   --  label. See Gtk.Toggle_Button.Set_Mode.
+
    procedure Set_Mode
-      (Toggle_Button  : access Gtk_Toggle_Button_Record;
+      (Toggle_Button  : not null access Gtk_Toggle_Button_Record;
        Draw_Indicator : Boolean);
    --  Sets whether the button is displayed as a separate indicator and label.
-   --  You can call this function on a checkbutton or a radiobutton with This
-   --  function only affects instances of classes like
+   --  You can call this function on a checkbutton or a radiobutton with
+   --  Draw_Indicator = False to make the button look like a normal button
+   --  This function only affects instances of classes like
    --  Gtk.Check_Button.Gtk_Check_Button and Gtk.Radio_Button.Gtk_Radio_Button
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
    --  Gtk.Toggle_Button.Gtk_Toggle_Button itself.
    --  "draw_indicator": if True, draw the button as a separate indicator and
    --  label; if False, draw the button like a normal button
 
-   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
+   procedure Toggled
+      (Toggle_Button : not null access Gtk_Toggle_Button_Record);
+   --  Emits the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal on the
+   --  Gtk.Toggle_Button.Gtk_Toggle_Button. There is no good reason for an
+   --  application ever to call this function.
 
-   ---------------------
-   -- Interfaces_Impl --
-   ---------------------
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Toggle_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Toggle_Button_Record;
+       Action_Name : UTF8_String);
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Toggle_Button_Record)
+       return Glib.Variant.Gvariant;
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Toggle_Button_Record;
+       Target_Value : Glib.Variant.Gvariant);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Toggle_Button_Record;
+       Detailed_Action_Name : UTF8_String);
 
    procedure Do_Set_Related_Action
-      (Self   : access Gtk_Toggle_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Toggle_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Related_Action
-      (Self : access Gtk_Toggle_Button_Record) return Gtk.Action.Gtk_Action;
+      (Self : not null access Gtk_Toggle_Button_Record)
+       return Gtk.Action.Gtk_Action;
+
    procedure Set_Related_Action
-      (Self   : access Gtk_Toggle_Button_Record;
-       Action : access Gtk.Action.Gtk_Action_Record'Class);
+      (Self   : not null access Gtk_Toggle_Button_Record;
+       Action : not null access Gtk.Action.Gtk_Action_Record'Class);
 
    function Get_Use_Action_Appearance
-      (Self : access Gtk_Toggle_Button_Record) return Boolean;
+      (Self : not null access Gtk_Toggle_Button_Record) return Boolean;
+
    procedure Set_Use_Action_Appearance
-      (Self           : access Gtk_Toggle_Button_Record;
+      (Self           : not null access Gtk_Toggle_Button_Record;
        Use_Appearance : Boolean);
 
    procedure Sync_Action_Properties
-      (Self   : access Gtk_Toggle_Button_Record;
+      (Self   : not null access Gtk_Toggle_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Activatable"
-   --
-   --  - "Buildable"
-
-   package Implements_Activatable is new Glib.Types.Implements
-     (Gtk.Activatable.Gtk_Activatable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
-   function "+"
-     (Widget : access Gtk_Toggle_Button_Record'Class)
-   return Gtk.Activatable.Gtk_Activatable
-   renames Implements_Activatable.To_Interface;
-   function "-"
-     (Interf : Gtk.Activatable.Gtk_Activatable)
-   return Gtk_Toggle_Button
-   renames Implements_Activatable.To_Object;
-
-   package Implements_Buildable is new Glib.Types.Implements
-     (Gtk.Buildable.Gtk_Buildable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
-   function "+"
-     (Widget : access Gtk_Toggle_Button_Record'Class)
-   return Gtk.Buildable.Gtk_Buildable
-   renames Implements_Buildable.To_Interface;
-   function "-"
-     (Interf : Gtk.Buildable.Gtk_Buildable)
-   return Gtk_Toggle_Button
-   renames Implements_Buildable.To_Object;
 
    ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
-   --
-   --  Name: Active_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Draw_Indicator_Property
-   --  Type: Boolean
-   --  Flags: read-write
-   --
-   --  Name: Inconsistent_Property
-   --  Type: Boolean
-   --  Flags: read-write
 
    Active_Property : constant Glib.Properties.Property_Boolean;
+
    Draw_Indicator_Property : constant Glib.Properties.Property_Boolean;
+
    Inconsistent_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
    -------------
-   --  The following new signals are defined for this widget:
-   --
-   --  "toggled"
-   --     procedure Handler (Self : access Gtk_Toggle_Button_Record'Class);
+
+   type Cb_Gtk_Toggle_Button_Void is not null access procedure
+     (Self : access Gtk_Toggle_Button_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
 
    Signal_Toggled : constant Glib.Signal_Name := "toggled";
+   procedure On_Toggled
+      (Self  : not null access Gtk_Toggle_Button_Record;
+       Call  : Cb_Gtk_Toggle_Button_Void;
+       After : Boolean := False);
+   procedure On_Toggled
+      (Self  : not null access Gtk_Toggle_Button_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  Should be connected if you wish to perform an action whenever the
+   --  Gtk.Toggle_Button.Gtk_Toggle_Button's state is changed.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Actionable"
+   --
+   --  - "Activatable"
+   --
+   --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
+   function "+"
+     (Widget : access Gtk_Toggle_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Toggle_Button
+   renames Implements_Gtk_Actionable.To_Object;
+
+   package Implements_Gtk_Activatable is new Glib.Types.Implements
+     (Gtk.Activatable.Gtk_Activatable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
+   function "+"
+     (Widget : access Gtk_Toggle_Button_Record'Class)
+   return Gtk.Activatable.Gtk_Activatable
+   renames Implements_Gtk_Activatable.To_Interface;
+   function "-"
+     (Interf : Gtk.Activatable.Gtk_Activatable)
+   return Gtk_Toggle_Button
+   renames Implements_Gtk_Activatable.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Toggle_Button_Record, Gtk_Toggle_Button);
+   function "+"
+     (Widget : access Gtk_Toggle_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Toggle_Button
+   renames Implements_Gtk_Buildable.To_Object;
 
 private
-   Active_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("active");
-   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("draw-indicator");
    Inconsistent_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("inconsistent");
+   Draw_Indicator_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("draw-indicator");
+   Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("active");
 end Gtk.Toggle_Button;

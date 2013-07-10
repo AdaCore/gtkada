@@ -3,9 +3,9 @@ AC_PREREQ(2.50)
 AC_INIT(src/glib.ads)
 
 # Current release settings
-GTKADA_MAJOR_VERSION=2
-GTKADA_MINOR_VERSION=24
-GTKADA_MICRO_VERSION=4
+GTKADA_MAJOR_VERSION=3
+GTKADA_MINOR_VERSION=8
+GTKADA_MICRO_VERSION=1
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 AC_CANONICAL_SYSTEM
@@ -23,20 +23,25 @@ AC_PROG_RANLIB
 CHECK_BUILD_TYPE
 
 # checking for gtk
-AM_PATH_GTK(2.24.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
-
-# checking for PANGO_UNDERLINE_ERROR
-AM_PANGO_UNDERLINE_ERROR
+AM_PATH_GTK(3.8.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 # Gettext stuff
 ALL_LINGUAS="fr"
 AM_GNU_GETTEXT
 
+# Should we compile with gtkextra ?
+AC_MSG_CHECKING(for gtkextra)
+AC_ARG_ENABLE(gtkextra,
+  [AC_HELP_STRING(
+    [--enable-gtkextra],
+    [Build the gtkextra widgets])],
+  HAVE_GTKEXTRA=$enableval,
+  HAVE_GTKEXTRA=no)
+AC_MSG_RESULT($HAVE_GTKEXTRA)
+AC_SUBST(HAVE_GTKEXTRA)
+
 # try to find OpenGL if present
 AM_CHECK_OPENGL
-
-# try to find gnome if present
-AM_CHECK_GNOME
 
 # Set the version number of GtkAda
 AC_SUBST(GTKADA_VERSION)
@@ -53,4 +58,4 @@ AC_SUBST(EXEC_PREFIX)
 
 libdir='${prefix}/lib'
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/gnome/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)
+AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)

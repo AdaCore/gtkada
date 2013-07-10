@@ -7,7 +7,7 @@ project Generate_Docs is
    --  Number of parallel compilations that should be performed
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-gnatc", "-gnatQ");
+      for Default_Switches ("Ada") use ("-gnatc", "-gnatQ", "-gnat05");
    end Compiler;
 
    package Builder is

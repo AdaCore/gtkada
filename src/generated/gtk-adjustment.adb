@@ -1,40 +1,57 @@
------------------------------------------------------------------------
---               GtkAda - Ada95 binding for Gtk+/Gnome               --
---                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
---                                                                   --
--- This library is free software; you can redistribute it and/or     --
--- modify it under the terms of the GNU General Public               --
--- License as published by the Free Software Foundation; either      --
--- version 2 of the License, or (at your option) any later version.  --
---                                                                   --
--- This library is distributed in the hope that it will be useful,   --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
--- General Public License for more details.                          --
---                                                                   --
--- You should have received a copy of the GNU General Public         --
--- License along with this library; if not, write to the             --
--- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
--- Boston, MA 02111-1307, USA.                                       --
---                                                                   --
--- As a special exception, if other files instantiate generics from  --
--- this unit, or you link this unit with other files to produce an   --
--- executable, this  unit  does not  by itself cause  the resulting  --
--- executable to be covered by the GNU General Public License. This  --
--- exception does not however invalidate any other reasons why the   --
--- executable file  might be covered by the  GNU Public License.     --
------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2013, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
+with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Adjustment is
-   package Type_Conversion is new Glib.Type_Conversion_Hooks.Hook_Registrator
+
+   package Type_Conversion_Gtk_Adjustment is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Adjustment_Record);
-   pragma Unreferenced (Type_Conversion);
+   pragma Unreferenced (Type_Conversion_Gtk_Adjustment);
+
+   ------------------------
+   -- Gtk_Adjustment_New --
+   ------------------------
+
+   function Gtk_Adjustment_New
+      (Value          : Gdouble;
+       Lower          : Gdouble;
+       Upper          : Gdouble;
+       Step_Increment : Gdouble;
+       Page_Increment : Gdouble;
+       Page_Size      : Gdouble := 0.0) return Gtk_Adjustment
+   is
+      Adjustment : constant Gtk_Adjustment := new Gtk_Adjustment_Record;
+   begin
+      Gtk.Adjustment.Initialize (Adjustment, Value, Lower, Upper, Step_Increment, Page_Increment, Page_Size);
+      return Adjustment;
+   end Gtk_Adjustment_New;
 
    -------------
    -- Gtk_New --
@@ -59,7 +76,7 @@ package body Gtk.Adjustment is
    ----------------
 
    procedure Initialize
-      (Adjustment     : access Gtk_Adjustment_Record'Class;
+      (Adjustment     : not null access Gtk_Adjustment_Record'Class;
        Value          : Gdouble;
        Lower          : Gdouble;
        Upper          : Gdouble;
@@ -76,14 +93,16 @@ package body Gtk.Adjustment is
           Page_Size      : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_adjustment_new");
    begin
-      Set_Object (Adjustment, Internal (Value, Lower, Upper, Step_Increment, Page_Increment, Page_Size));
+      if not Adjustment.Is_Created then
+         Set_Object (Adjustment, Internal (Value, Lower, Upper, Step_Increment, Page_Increment, Page_Size));
+      end if;
    end Initialize;
 
    -------------
    -- Changed --
    -------------
 
-   procedure Changed (Adjustment : access Gtk_Adjustment_Record) is
+   procedure Changed (Adjustment : not null access Gtk_Adjustment_Record) is
       procedure Internal (Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_adjustment_changed");
    begin
@@ -95,7 +114,7 @@ package body Gtk.Adjustment is
    ----------------
 
    procedure Clamp_Page
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Lower      : Gdouble;
        Upper      : Gdouble)
    is
@@ -113,7 +132,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Configure
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Value          : Gdouble;
        Lower          : Gdouble;
        Upper          : Gdouble;
@@ -139,7 +158,7 @@ package body Gtk.Adjustment is
    ---------------
 
    function Get_Lower
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_lower");
@@ -147,12 +166,25 @@ package body Gtk.Adjustment is
       return Internal (Get_Object (Adjustment));
    end Get_Lower;
 
+   ---------------------------
+   -- Get_Minimum_Increment --
+   ---------------------------
+
+   function Get_Minimum_Increment
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
+   is
+      function Internal (Adjustment : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_adjustment_get_minimum_increment");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Minimum_Increment;
+
    ------------------------
    -- Get_Page_Increment --
    ------------------------
 
    function Get_Page_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_page_increment");
@@ -165,7 +197,7 @@ package body Gtk.Adjustment is
    -------------------
 
    function Get_Page_Size
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_page_size");
@@ -178,7 +210,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    function Get_Step_Increment
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_step_increment");
@@ -191,7 +223,7 @@ package body Gtk.Adjustment is
    ---------------
 
    function Get_Upper
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_upper");
@@ -204,7 +236,7 @@ package body Gtk.Adjustment is
    ---------------
 
    function Get_Value
-      (Adjustment : access Gtk_Adjustment_Record) return Gdouble
+      (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble
    is
       function Internal (Adjustment : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_adjustment_get_value");
@@ -217,7 +249,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Set_Lower
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Lower      : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Lower : Gdouble);
@@ -231,7 +263,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    procedure Set_Page_Increment
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Page_Increment : Gdouble)
    is
       procedure Internal
@@ -247,7 +279,7 @@ package body Gtk.Adjustment is
    -------------------
 
    procedure Set_Page_Size
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Page_Size  : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Page_Size : Gdouble);
@@ -261,7 +293,7 @@ package body Gtk.Adjustment is
    ------------------------
 
    procedure Set_Step_Increment
-      (Adjustment     : access Gtk_Adjustment_Record;
+      (Adjustment     : not null access Gtk_Adjustment_Record;
        Step_Increment : Gdouble)
    is
       procedure Internal
@@ -277,7 +309,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Set_Upper
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Upper      : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Upper : Gdouble);
@@ -291,7 +323,7 @@ package body Gtk.Adjustment is
    ---------------
 
    procedure Set_Value
-      (Adjustment : access Gtk_Adjustment_Record;
+      (Adjustment : not null access Gtk_Adjustment_Record;
        Value      : Gdouble)
    is
       procedure Internal (Adjustment : System.Address; Value : Gdouble);
@@ -304,11 +336,190 @@ package body Gtk.Adjustment is
    -- Value_Changed --
    -------------------
 
-   procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record) is
+   procedure Value_Changed
+      (Adjustment : not null access Gtk_Adjustment_Record)
+   is
       procedure Internal (Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_adjustment_value_changed");
    begin
       Internal (Get_Object (Adjustment));
    end Value_Changed;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Adjustment_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Adjustment_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Adjustment_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Adjustment_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Adjustment_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Adjustment_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Adjustment_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Adjustment_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Adjustment_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Adjustment_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Adjustment_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   -------------------------------
+   -- Marsh_Gtk_Adjustment_Void --
+   -------------------------------
+
+   procedure Marsh_Gtk_Adjustment_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Adjustment_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Adjustment := Gtk_Adjustment (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Adjustment_Void;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_Gtk_Adjustment_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "changed" & ASCII.NUL, Call, After);
+   end On_Changed;
+
+   ----------------
+   -- On_Changed --
+   ----------------
+
+   procedure On_Changed
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "changed" & ASCII.NUL, Call, After, Slot);
+   end On_Changed;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_Gtk_Adjustment_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "value-changed" & ASCII.NUL, Call, After);
+   end On_Value_Changed;
+
+   ----------------------
+   -- On_Value_Changed --
+   ----------------------
+
+   procedure On_Value_Changed
+      (Self  : not null access Gtk_Adjustment_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "value-changed" & ASCII.NUL, Call, After, Slot);
+   end On_Value_Changed;
 
 end Gtk.Adjustment;
