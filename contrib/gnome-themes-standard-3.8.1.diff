@@ -1,0 +1,27 @@
+2012-01-07	Nicolas Setton  <setton@adacore.com>
+
+	* (configure): Do not use a space in PACKAGE_STRING, not supported
+	by libtool on x86_64-linux.
+
+--- configure.orig	2013-01-07 17:10:42.725311288 +0100
++++ configure	2013-01-07 17:10:48.413446560 +0100
+@@ -572,7 +572,7 @@
+ PACKAGE_NAME='gnome-themes-standard'
+ PACKAGE_TARNAME='gnome-themes-standard'
+ PACKAGE_VERSION='3.8.1'
+-PACKAGE_STRING='gnome-themes-standard 3.8.1'
++PACKAGE_STRING='gnome-themes-standard_3.8.1'
+ PACKAGE_BUGREPORT='http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-themes-standard'
+ PACKAGE_URL=''
+ 
+--- themes/Makefile.in.orig	2013-05-15 15:34:14.000000000 +0200
++++ themes/Makefile.in	2013-05-15 15:34:25.000000000 +0200
+@@ -291,7 +291,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = Adwaita HighContrast
++SUBDIRS = Adwaita
+ all: all-recursive
+ 
+ .SUFFIXES:

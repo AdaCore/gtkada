@@ -1,0 +1,17 @@
+2013-06-18	Nicolas Setton  <setton@adacore.com>
+
+	* (configure): Do not build with -ansi, since this breaks when
+	including the GNAT-provided ../i686-pc-mingw32/include/io.h
+	which contains non-ansi "inline" keywords.
+
+--- builds/unix/configure.orig	2013-06-18 12:54:29.971912612 +0200
++++ builds/unix/configure	2013-06-18 12:54:48.976684460 +0200
+@@ -3619,7 +3619,7 @@
+ 
+ if test "x$GCC" = xyes; then
+   XX_CFLAGS="-Wall"
+-  XX_ANSIFLAGS="-pedantic -ansi"
++  XX_ANSIFLAGS="-pedantic"
+ else
+   case "$host" in
+   *-dec-osf*)

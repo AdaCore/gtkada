@@ -1,0 +1,16 @@
+2013-05-15	Nicolas Setton  <setton@adacore.com>
+
+	(pango/Makefile.in): Pass the FREETYPE_CFLAGS to PangoCairo_1_0_gir_CFLAGS
+	so that gobject-introspection finds our ft2build.h
+
+--- pango/Makefile.in.orig	2013-05-15 12:40:02.000000000 +0200
++++ pango/Makefile.in	2013-05-15 12:45:30.000000000 +0200
+@@ -977,7 +977,7 @@
+ PangoCairo_1_0_gir_INCLUDES = GObject-2.0 cairo-1.0
+ PangoCairo_1_0_gir_LIBS = $(Pango_1_0_gir_LIBS) libpangocairo-1.0.la \
+ 	$(am__append_30)
+-PangoCairo_1_0_gir_CFLAGS = -I$(top_builddir) -I$(top_srcdir) $(PANGO_CFLAGS)
++PangoCairo_1_0_gir_CFLAGS = -I$(top_builddir) -I$(top_srcdir) $(FREETYPE_CFLAGS) $(PANGO_CFLAGS)
+ PangoCairo_1_0_gir_SCANNERFLAGS =  \
+ 	--include-uninstalled=$(builddir)/Pango-1.0.gir --c-include \
+ 	"pango/pangocairo.h" $(am__append_29)

@@ -1,0 +1,51 @@
+2012-04-20	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkapplicationwindow.c: GDesktopApplication is not defined under
+	Windows, do not use it.
+
+	To be submitted.
+
+2011-11-17	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/win32/gdkdnd-win32.c (resolve_link): Deactivate resolving of
+	dnd links for now, since CLSID_ShellLink and IID_IShellLinkW are
+	not found at link time for an unknown reason.
+	To be investigated.
+
+--- gdk/win32/gdkdnd-win32.c.orig	2011-11-17 14:59:18.578125000 +0100
++++ gdk/win32/gdkdnd-win32.c	2011-11-17 15:42:47.875000000 +0100
+@@ -1342,6 +1342,7 @@ resolve_link (HWND     hWnd,
+    * assumed that CoInitialize has been called.
+    */
+ 
++#if 0
+   hr = CoCreateInstance (&CLSID_ShellLink,
+ 			 NULL,
+ 			 CLSCTX_INPROC_SERVER,
+@@ -1388,6 +1389,8 @@ resolve_link (HWND     hWnd,
+     pslW->lpVtbl->Release (pslW);
+ 
+   return SUCCEEDED (hr);
++#endif
++  return FALSE;
+ }
+ 
+ #if 0
+--- gtk/gtkapplicationwindow.c.orig	2012-04-20 15:26:50.203250000 +0200
++++ gtk/gtkapplicationwindow.c	2012-04-20 15:30:48.234500000 +0200
+@@ -273,6 +273,7 @@
+     }
+   else
+     {
++#ifdef HAVE_GIO_UNIX
+       /* the shell does not show it, so make sure we show it */
+       if (g_menu_model_get_n_items (G_MENU_MODEL (window->priv->app_menu_section)) == 0)
+         {
+@@ -311,6 +312,7 @@
+               g_clear_object (&app_info);
+             }
+         }
++#endif
+     }
+ }
+ 
