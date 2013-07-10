@@ -3621,13 +3621,15 @@ package body Gtkada.MDI is
             On_Tab_Orientation'Access, Note, Top_To_Bottom);
          Submenu.Append (Item);
 
-         Gtk_New (Sep);
-         Menu.Append (Sep);
+         if (C.Flags and Destroy_Button) /= 0 then
+            Gtk_New (Sep);
+            Menu.Append (Sep);
 
-         Gtk_New (Item, "Close");
-         Widget_Callback.Object_Connect
-           (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
-         Append (Menu, Item);
+            Gtk_New (Item, "Close");
+            Widget_Callback.Object_Connect
+              (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
+            Append (Menu, Item);
+         end if;
 
          if C.MDI.Tab_Factory /= null then
             C.MDI.Tab_Factory (C, Menu);
