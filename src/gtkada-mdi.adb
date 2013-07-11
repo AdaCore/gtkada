@@ -2088,6 +2088,12 @@ package body Gtkada.MDI is
             Print_Debug ("Button_Release, set_focus " & Get_Title (C2));
             Set_Focus_Child (C2);
 
+            --  For a focus manually, because Set_Focus_Child above might not
+            --  have had any effect (the selected window is still the same,
+            --  although in some cases gtk+ has transfered the keyboard focus
+            --  elsewhere).
+            Give_Focus_To_Child (C2);
+
          when No_Drag =>
             --  Let the even through, we have nothing to do here
             return False;
@@ -3621,10 +3627,10 @@ package body Gtkada.MDI is
             On_Tab_Orientation'Access, Note, Top_To_Bottom);
          Submenu.Append (Item);
 
-         if (C.Flags and Destroy_Button) /= 0 then
-            Gtk_New (Sep);
-            Menu.Append (Sep);
+         Gtk_New (Sep);
+         Menu.Append (Sep);
 
+         if (C.Flags and Destroy_Button) /= 0 then
             Gtk_New (Item, "Close");
             Widget_Callback.Object_Connect
               (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
