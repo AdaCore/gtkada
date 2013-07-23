@@ -87,7 +87,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkWindow",
 
            "GApplication",
-           "--GApplicationCommandLine", # Not tested yet, from Gio
+           "GApplicationCommandLine",
            "--GBytes",   # Function returning arrays
            "--GBufferedInputStream", # Not tested yet, from Gio
            "--GBufferedOutputStream", # Not tested yet, from Gio
@@ -155,6 +155,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GNetworkAddress", # Not tested yet, from Gio
            "--GNetworkService", # Not tested yet, from Gio
            "--GOutputStream", # Not tested yet, from Gio
+           "GOptionContext",
            "--GPermission", # Not tested yet, from Gio
            "--GProxyAddress", # Not tested yet, from Gio
            "--GProxyAddressEnumerator", # Not tested yet, from Gio
@@ -485,6 +486,8 @@ naming.girname_to_ctype = {
     "Gio.ActionGroup":     "ActionGroup",
     "Gio.ActionMap":       "ActionMap",
     "Gio.Application":     "GApplication",
+    "Gio.ApplicationCommandLine": "GApplicationCommandLine",
+    "ApplicationCommandLine": "GApplicationCommandLine",
     "Gio.Icon":            "GIcon*",
     "GLib.Variant":        "GVariant",
     "Gdk.Event":           "GdkEvent*",

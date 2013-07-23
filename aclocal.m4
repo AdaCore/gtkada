@@ -92,7 +92,8 @@ make them preselected in project files (static libraries are preselected by defa
       fi
       SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
       FPIC=-fPIC
-      #TARGET_LFLAGS="-Wl,-flat_namespace -Wl,-undefined,suppress"
+      LDFLAGS="-Wl,-framework,Carbon"
+      TARGET_LFLAGS="-Wl,-framework,Carbon"
       ;;
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This

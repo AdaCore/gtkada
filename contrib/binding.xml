@@ -2672,11 +2672,11 @@ __PRE__
    is
        procedure Internal (Klass : Ada_Gobject_Class;
                            Widget : System.Address;
-                           Allocation : access Gtk_Allocation);
+                           Allocation : Gtk_Allocation);
        pragma Import
           (C, Internal, "ada_inherited_WIDGET_CLASS_size_allocate");
    begin
-       Internal (Klass, Widget.Get_Object, Allocation'Unchecked_Access);
+       Internal (Klass, Widget.Get_Object, Allocation);
    end Inherited_Size_Allocate;
 
    procedure Set_Default_Draw_Handler
@@ -3097,8 +3097,8 @@ __PRE__
        <parameter name="modal" default="True"/>
      </method>
 
-     <method id="gtk_window_get_application" bind="False"/> <!-- Missing binding for Gtk.Application -->
-     <method id="gtk_window_set_application" bind="False"/> <!-- Missing binding for Gtk.Application -->
+     <method id="gtk_window_get_application" bind="False"/> <!-- Circular dependency -->
+     <method id="gtk_window_set_application" bind="False"/> <!-- Circular dependency -->
    </package>
 
    <package id="GtkWindowGroup" into="GtkWindow">
@@ -7335,9 +7335,156 @@ package body Generic_Set is
      <enum ctype="GApplicationFlags"/>
      <method id="g_application_get_dbus_connection" bind="False"/> <!-- requires DBus -->
      <method id="g_application_open" bind="False" /> <!-- requires GFile -->
-
      <method id="::open" bind="False"/>  <!--  requires GFile -->
-     <method id="::command-line" bind="False"/>  <!--  requires GApplicationCommandLine -->
+   </package>
+
+   <package id="GApplicationCommandLine" into="GApplication" ada="Glib.Application">
+     <method id="g_application_command_line_create_file_for_arg" bind="False" /> <!-- requires GFile -->
+     <method id="g_application_command_line_get_stdin" bind="False" /> <!-- requires GInputStream -->
+     <method id="g_application_command_line_get_type" ada="Get_Type_Command_Line" />
+     <method id="g_application_command_line_get_arguments">
+       <parameter name="argc" ada="" default="null"/>
+       <return-value transfer-ownership="full"/>
+     </method>
+     <extra>
+       <spec>
+   function Run
+      (Self : not null access Gapplication_Record) return Gint;
+   --  Same as above, but automatically sets argc argv from actual values.
+       </spec>
+       <body>
+   gnat_argc : Interfaces.C.int;
+   pragma Import (C, gnat_argc);
+
+   gnat_argv : System.Address;
+   pragma Import (C, gnat_argv);
+
+   function Run
+      (Self : not null access Gapplication_Record) return Gint
+   is
+      function Internal
+         (Self : System.Address;
+          Argc : Gint;
+          Argv : System.Address) return Gint;
+      pragma Import (C, Internal, "g_application_run");
+   begin
+      return Internal (Self.Get_Object, Gint (gnat_argc), gnat_argv);
+   end Run;
+       </body>
+     </extra>
+   </package>
+
+   <package id="GOptionContext" ada="Glib.Option">
+     <record ctype="GOptionGroup"/>
+     <record ctype="GOptionEntry">
+       <field name="flags" ctype="GOptionFlags"/>
+     </record>
+     <enum ctype="GOptionError"/>
+     <enum ctype="GOptionArg"/>
+     <enum ctype="GOptionFlags"/>
+     <method id="g_option_context_new" ada="G_New"/>
+     <method id="g_option_group_new" ada="G_New"/>
+     <method id="g_option_context_parse" bind="False"/> <!-- Invalid binding generated -->
+     <method id="g_option_context_add_main_entries">
+       <parameter name="entries" type="GOption_Entry_Array"/>
+     </method>
+     <extra>
+       <type ctype="array_of_GOptionEntry" ada="GOption_Entry_Array">
+         type GOption_Entry_Array is array (Natural range &lt;&gt;) of GOption_Entry;
+       </type>
+       <with_spec pkg="Glib.Application"/>
+       <with_spec pkg="Glib.Error"/>
+       <with_spec pkg="Interfaces.C.Strings"/>
+       <with_spec pkg="Gtkada.Bindings"/>
+       <spec>
+   Null_GOption_Entry : constant GOption_Entry;
+
+   type Parse_Filter is access function (Param : String) return Boolean;
+   --  Returns True if the parameter is to be passed from Command_Line to
+   --  Goption_Context
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Command_Line : not null access Glib.Application.Gapplication_Command_Line_Record'Class;
+      Filter       : Parse_Filter := null;
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError);
+   --  Parses the arguments given via Command_Line, removing from the arguments
+   --  list all parsed switches.
+       </spec>
+       <spec private="True">
+   Null_GOption_Entry : constant GOption_Entry :=
+                          (ICS.Null_Ptr, Gchar(ASCII.NUL),
+                           0, G_Option_Arg_None, System.Null_Address,
+                           ICS.Null_Ptr, ICS.Null_Ptr);
+       </spec>
+       <body>
+   -----------
+   -- Parse --
+   -----------
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Command_Line : not null access Glib.Application.Gapplication_Command_Line_Record'Class;
+      Filter       : Parse_Filter := null;
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError)
+   is
+      function Get_Args
+         (Self : System.Address;
+          Argc : access Glib.Gint) return chars_ptr_array_access;
+      pragma Import (C, Get_Args, "g_application_command_line_get_arguments");
+
+      function Internal
+         (Self  : System.Address;
+          Argc  : access Glib.Gint;
+          Argv  : System.Address;
+          Error : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_option_context_parse");
+
+      Argc : aliased Glib.Gint;
+      Argv : chars_ptr_array_access;
+      Err  : Glib.Error.GError;
+      Ret  : Glib.Gboolean;
+
+   begin
+      Argv := Get_Args (Command_Line.Get_Object, Argc'Access);
+
+      if Filter = null then
+         Ret := Internal
+           (Get_Object (Self),
+            Argc'Access,
+            Argv'Address,
+            Err'Address);
+      else
+         declare
+            Args : aliased ICS.chars_ptr_array := To_Chars_Ptr (Argv);
+            Args_Access : System.Address;
+            Idx  : aliased Glib.Gint := 1;
+         begin
+            --  Copy command name argument
+            Args (0) := Argv (0);
+            Idx := 1;
+
+            for J in 1 .. Argc - 1 loop
+               if Filter (ICS.Value (Argv (Interfaces.C.size_t (J)))) then
+                  Args (Interfaces.C.size_t (Idx)) :=
+                    Argv (Interfaces.C.size_t (J));
+                  Idx := Idx + 1;
+               end if;
+            end loop;
+
+            Args_Access := Args'Address;
+            Ret := Internal
+              (Get_Object (Self), Idx'Access, Args_Access'Address, Err'Address);
+         end;
+      end if;
+
+      Error := Err;
+      Success := Ret /= 0;
+   end Parse;
+       </body>
+     </extra>
    </package>
 
    <package id="GAction" ada="Glib.Action">

@@ -35,9 +35,31 @@ pragma Warnings(On);
 
 package body Glib.Application is
 
+   gnat_argc : Interfaces.C.int;
+   pragma Import (C, gnat_argc);
+
+   gnat_argv : System.Address;
+   pragma Import (C, gnat_argv);
+
+   function Run
+     (Self : not null access Gapplication_Record) return Gint
+   is
+      function Internal
+        (Self : System.Address;
+         Argc : Gint;
+         Argv : System.Address) return Gint;
+      pragma Import (C, Internal, "g_application_run");
+   begin
+      return Internal (Self.Get_Object, Gint (gnat_argc), gnat_argv);
+   end Run;
+
    package Type_Conversion_Gapplication is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gapplication_Record);
    pragma Unreferenced (Type_Conversion_Gapplication);
+
+   package Type_Conversion_Gapplication_Command_Line is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type_Command_Line'Access, Gapplication_Command_Line_Record);
+   pragma Unreferenced (Type_Conversion_Gapplication_Command_Line);
 
    -----------
    -- G_New --
@@ -120,6 +142,37 @@ package body Glib.Application is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Application_Id;
 
+   -------------------
+   -- Get_Arguments --
+   -------------------
+
+   function Get_Arguments
+      (Self : not null access Gapplication_Command_Line_Record)
+       return GNAT.Strings.String_List
+   is
+      function Internal
+         (Self : System.Address;
+          Argc : access Gint) return chars_ptr_array_access;
+      pragma Import (C, Internal, "g_application_command_line_get_arguments");
+   begin
+      return To_String_List_And_Free (Internal (Get_Object (Self), null));
+   end Get_Arguments;
+
+   -------------
+   -- Get_Cwd --
+   -------------
+
+   function Get_Cwd
+      (Self : not null access Gapplication_Command_Line_Record)
+       return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "g_application_command_line_get_cwd");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Cwd;
+
    --------------------------
    -- Get_Dbus_Object_Path --
    --------------------------
@@ -133,6 +186,34 @@ package body Glib.Application is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Dbus_Object_Path;
+
+   -----------------
+   -- Get_Environ --
+   -----------------
+
+   function Get_Environ
+      (Self : not null access Gapplication_Command_Line_Record)
+       return GNAT.Strings.String_List
+   is
+      function Internal
+         (Self : System.Address) return chars_ptr_array_access;
+      pragma Import (C, Internal, "g_application_command_line_get_environ");
+   begin
+      return To_String_List (Internal (Get_Object (Self)).all);
+   end Get_Environ;
+
+   ---------------------
+   -- Get_Exit_Status --
+   ---------------------
+
+   function Get_Exit_Status
+      (Self : not null access Gapplication_Command_Line_Record) return Gint
+   is
+      function Internal (Self : System.Address) return Gint;
+      pragma Import (C, Internal, "g_application_command_line_get_exit_status");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Exit_Status;
 
    ---------------
    -- Get_Flags --
@@ -185,6 +266,55 @@ package body Glib.Application is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Is_Remote;
+
+   -------------------
+   -- Get_Is_Remote --
+   -------------------
+
+   function Get_Is_Remote
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Boolean
+   is
+      function Internal (Self : System.Address) return Integer;
+      pragma Import (C, Internal, "g_application_command_line_get_is_remote");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Is_Remote;
+
+   -----------------------
+   -- Get_Platform_Data --
+   -----------------------
+
+   function Get_Platform_Data
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_application_command_line_get_platform_data");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Platform_Data;
+
+   ------------
+   -- Getenv --
+   ------------
+
+   function Getenv
+      (Self : not null access Gapplication_Command_Line_Record;
+       Name : UTF8_String) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address;
+          Name : Interfaces.C.Strings.chars_ptr)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "g_application_command_line_getenv");
+      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Name);
+      Free (Tmp_Name);
+      return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
+   end Getenv;
 
    ----------
    -- Hold --
@@ -307,6 +437,20 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self));
    end Set_Default;
+
+   ---------------------
+   -- Set_Exit_Status --
+   ---------------------
+
+   procedure Set_Exit_Status
+      (Self        : not null access Gapplication_Command_Line_Record;
+       Exit_Status : Gint)
+   is
+      procedure Internal (Self : System.Address; Exit_Status : Gint);
+      pragma Import (C, Internal, "g_application_command_line_set_exit_status");
+   begin
+      Internal (Get_Object (Self), Exit_Status);
+   end Set_Exit_Status;
 
    ---------------
    -- Set_Flags --
@@ -759,10 +903,26 @@ package body Glib.Application is
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_GObject_Void);
 
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gapplication_Gapplication_Command_Line_Gint, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gapplication_Gapplication_Command_Line_Gint);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gapplication_Command_Line_Gint, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gapplication_Command_Line_Gint);
+
    procedure Connect
       (Object  : access Gapplication_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gapplication_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gapplication_Gapplication_Command_Line_Gint;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -772,6 +932,22 @@ package body Glib.Application is
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
+   procedure Connect_Slot
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gapplication_Command_Line_Gint;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gapplication_Command_Line_Gint
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gapplication_Command_Line_Gint);
+
    procedure Marsh_GObject_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -780,6 +956,15 @@ package body Glib.Application is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gapplication_Gapplication_Command_Line_Gint
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gapplication_Gapplication_Command_Line_Gint);
 
    procedure Marsh_Gapplication_Void
       (Closure         : GClosure;
@@ -809,6 +994,25 @@ package body Glib.Application is
          After       => After);
    end Connect;
 
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gapplication_Gapplication_Command_Line_Gint;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gapplication_Gapplication_Command_Line_Gint'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
    ------------------
    -- Connect_Slot --
    ------------------
@@ -830,6 +1034,48 @@ package body Glib.Application is
          After       => After);
    end Connect_Slot;
 
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gapplication_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gapplication_Command_Line_Gint;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gapplication_Command_Line_Gint'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   --------------------------------------------------
+   -- Marsh_GObject_Gapplication_Command_Line_Gint --
+   --------------------------------------------------
+
+   procedure Marsh_GObject_Gapplication_Command_Line_Gint
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gapplication_Command_Line_Gint := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gapplication_Command_Line_Gint;
+
    ------------------------
    -- Marsh_GObject_Void --
    ------------------------
@@ -849,6 +1095,27 @@ package body Glib.Application is
       H (Obj);
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
+
+   -------------------------------------------------------
+   -- Marsh_Gapplication_Gapplication_Command_Line_Gint --
+   -------------------------------------------------------
+
+   procedure Marsh_Gapplication_Gapplication_Command_Line_Gint
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gapplication_Gapplication_Command_Line_Gint := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gapplication := Gapplication (Unchecked_To_Object (Params, 0));
+      V   : aliased Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gapplication_Gapplication_Command_Line_Gint;
 
    -----------------------------
    -- Marsh_Gapplication_Void --
@@ -896,6 +1163,33 @@ package body Glib.Application is
    begin
       Connect_Slot (Self, "activate" & ASCII.NUL, Call, After, Slot);
    end On_Activate;
+
+   ---------------------
+   -- On_Command_Line --
+   ---------------------
+
+   procedure On_Command_Line
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_Gapplication_Gapplication_Command_Line_Gint;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "command-line" & ASCII.NUL, Call, After);
+   end On_Command_Line;
+
+   ---------------------
+   -- On_Command_Line --
+   ---------------------
+
+   procedure On_Command_Line
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_GObject_Gapplication_Command_Line_Gint;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "command-line" & ASCII.NUL, Call, After, Slot);
+   end On_Command_Line;
 
    -----------------
    -- On_Shutdown --

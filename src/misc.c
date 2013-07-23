@@ -39,6 +39,15 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+#ifdef GDK_WINDOWING_QUARTZ
+#include <Carbon/Carbon.h>
+#endif
+
+#ifdef GDK_WINDOWING_WIN32
+#include <windows.h>
+#include <ddeml.h>
+#endif
+
 /********************************************************************
  *  Returns the major/minor/macro version number of Gtk+. This is
  *  needed as the windows version uses a different convention for the
@@ -1613,3 +1622,246 @@ int gtk_socket_get_type() {
    return 0;
 }
 #endif
+
+// Application handling for opening files from the explorer/finder
+
+typedef struct {
+  GtkApplication *app;    //  The app responsible for opening the file
+  GFile          **files; //  The array of files to open
+  gint           n_files; //  The size of the above array
+} ada_gtk_open_data;
+
+/*
+ * Idle callback responsible for actually calling g_application_open with the
+ * proper files to open.
+ */
+static gboolean
+idle_ada_gtk_application_open (gpointer ptr)
+{
+  int i;
+  ada_gtk_open_data *data = (ada_gtk_open_data*)ptr;
+
+  g_application_open (G_APPLICATION (data->app),
+		      data->files, data->n_files, NULL);
+
+  for (i = 0; i < data->n_files; i++)
+    g_object_unref (data->files[i]);
+  g_free (data->files);
+  g_free (data);
+
+  return G_SOURCE_REMOVE;
+}
+
+
+#ifdef GDK_WINDOWING_QUARTZ
+
+/*
+ * OSX-specific callback for system events for opening files
+ */
+static pascal OSErr
+ada_gtk_open_document_quartz
+  (const AppleEvent *aevt,
+   AppleEvent       *reply,
+   long              refcon)
+{
+  ada_gtk_open_data *data = malloc (sizeof (ada_gtk_open_data));
+  AEDescList docs;
+
+  /* The application object is passed as 'refcon' */
+  data->app = GSIZE_TO_POINTER ((gsize)refcon);
+
+  /* Retrieve the documents to open from aevt, place it in docs */
+  if (AEGetParamDesc (aevt, keyDirectObject, typeAEList, &docs) == noErr) {
+    long cnt = 0;
+    int i;
+    AECountItems (&docs, &cnt);
+    UInt8 *str_buffer = NULL;
+
+    data->n_files = cnt;
+    data->files   = (GFile **) malloc (cnt * sizeof(GFile*));
+
+    for (i = 0; i < cnt; i++) {
+      FSRef ref;
+
+      /* and not extract the Paths from the docs array */
+      if (AEGetNthPtr (&docs, i+1, typeFSRef, 0, 0, &ref, sizeof(ref), 0) != noErr)
+        {
+          continue;
+        }
+
+      if (!str_buffer)
+        {
+          str_buffer = (UInt8 *) malloc (1024);
+        }
+
+      FSRefMakePath (&ref, str_buffer, 1024);
+      /* Create a GFile from the path */
+      data->files[i] = g_file_new_for_path ((const char *)str_buffer);
+    }
+
+    if (str_buffer) free (str_buffer);
+  }
+
+  if (data->files != NULL) {
+    /* Do not open the files directly (we're in low-level os event handler, we
+       can't remain here forever), but rather do it in an idle callback */
+    g_idle_add_full
+      (G_PRIORITY_DEFAULT, idle_ada_gtk_application_open, data, NULL);
+  }
+
+  return noErr;
+}
+
+#endif /* QUARTZ */
+
+#ifdef GDK_WINDOWING_WIN32
+
+/* The DDE API do not support user data in the DDE callback. We thus need to
+   use the below global data to support the feature */
+GtkApplication *ada_gtk_win32_app;
+DWORD ada_gtk_win32_id_instance;
+
+HDDEDATA CALLBACK ada_gtk_open_document_win32
+  (UINT uType,
+   UINT uFmt,
+   HCONV hconv,
+   HSZ hsz1,
+   HSZ hsz2,
+   HDDEDATA hData,
+   ULONG_PTR dwData1,
+   ULONG_PTR dwData2)
+{
+  switch (uType) {
+    case XTYP_ADVDATA:
+      return (HDDEDATA) DDE_FACK;
+
+    case XTYP_CONNECT:
+      return (HDDEDATA) TRUE;
+
+    case XTYP_DISCONNECT:
+      return (HDDEDATA) NULL;
+
+    case XTYP_REGISTER:
+    case XTYP_UNREGISTER:
+      return (HDDEDATA) NULL;
+
+    case XTYP_EXECUTE:
+      {
+        DWORD dataLen;
+        PWSTR strData = (PWSTR) DdeAccessData (hData, &dataLen);
+        DWORD j;
+        PWSTR path = NULL;
+        LPCWSTR openCmd = L"FileOpen:";
+        DWORD utfSize;
+        PSTR utfPath;
+
+        for (j = 0; j < dataLen; j++) {
+          if (strData[j] == ':') {
+            path = &strData[j + 1];
+            break;
+          } else if (strData[j] != openCmd[j]) {
+            return (HDDEDATA) DDE_FNOTPROCESSED;
+          }
+        }
+
+        utfSize = WideCharToMultiByte
+          (CP_UTF8,
+           0,
+           path,
+           dataLen - 9,
+           NULL,
+           0, /* indicates that we want to get the size of the result */
+           NULL, NULL);
+
+        utfPath = (char*)malloc (utfSize + 1);
+
+        WideCharToMultiByte
+          (CP_UTF8,
+           0,
+           path,
+           dataLen - 9,
+           utfPath,
+           utfSize,
+           NULL, NULL);
+        utfPath[utfSize] = '\0';
+
+        ada_gtk_open_data *data = malloc (sizeof(ada_gtk_open_data));
+        data->app     = ada_gtk_win32_app;
+        data->files   = (GFile **) malloc (sizeof(GFile*));
+        data->n_files = 1;
+        data->files[0] = g_file_new_for_path ((const char *)utfPath);
+        free (utfPath);
+
+        g_idle_add_full
+          (G_PRIORITY_DEFAULT, idle_gtk_ada_application_open, data, NULL);
+
+        DdeUnaccessData (hData); /* Release the resource */
+      }
+
+      return (HDDEDATA) DDE_FACK;
+  };
+
+  return (HDDEDATA) DDE_FNOTPROCESSED;
+}
+
+#endif /* WIN32 */
+
+static void
+ada_gtk_application_startup (GtkApplication *application) {
+#if defined (GDK_WINDOWING_QUARTZ)
+
+  /* Install the event handler for the kAEOpenDocuments events */
+  AEInstallEventHandler (kCoreEventClass, kAEOpenDocuments,
+                         NewAEEventHandlerUPP (ada_gtk_open_document_quartz),
+                         (void*)application, false);
+
+#elif defined (GDK_WINDOWING_WIN32)
+
+  /* On Windows, we use a DDE server to handle events from the Shell */
+
+  HSZ hszAppName;
+  gchar* appName =
+    g_application_get_application_id (G_APPLICATION (application));
+  gchar* shortAppName = appName;
+
+  /* DDE server only supports a short application name. We extract the last
+     part of the full application name for that. So that for example:
+     com.adacore.GPS will use GPS as DDE server name */
+  for (; *appName != '\0'; appName++) {
+    if (*appName == '.') shortAppName = appName + 1;
+  }
+
+  ada_gtk_win32_app = application;
+
+  /* Initialize the DDE framework */
+  DdeInitializeW (&ada_gtk_win32_id_instance,
+                  (PFNCALLBACK) &ada_gtk_open_document_win32,
+                  APPCLASS_STANDARD |
+                  CBF_FAIL_ADVISES | CBF_FAIL_POKES | CBF_FAIL_SELFCONNECTIONS,
+                  0);
+
+  /* And register the DDE Service to the name server */
+  hszAppName = DdeCreateStringHandleA
+    (ada_gtk_win32_id_instance, shortAppName, CP_WINANSI);
+  DdeNameService
+    (ada_gtk_win32_id_instance,   /* instance identifier */
+     hszAppName, /*  handle to service name string */
+     0, /* reserved */
+     DNS_REGISTER | DNS_FILTERON);
+#endif
+}
+
+static void
+ada_gtk_application_shutdown (GtkApplication *application) {
+#ifdef GDK_WINDOWING_WIN32
+  DdeUninitialize (ada_gtk_win32_id_instance);
+#endif
+}
+
+/* Called by the GtkAda.Application instance during initialisation */
+void ada_gtk_setup_application(GtkApplication *app) {
+  g_signal_connect
+    (app, "startup", G_CALLBACK (ada_gtk_application_startup), NULL);
+  g_signal_connect
+    (app, "shutdown", G_CALLBACK (ada_gtk_application_shutdown), NULL);
+}

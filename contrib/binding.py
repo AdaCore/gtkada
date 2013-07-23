@@ -416,7 +416,7 @@ class SubprogramProfile(object):
             n = p.name
             is_temporary = False
 
-            if self.returns is not None and p.mode != "in":
+            if self.returns is not None and p.mode != "in" and p.ada_binding:
                 n = "Acc_%s" % p.name
                 var = Local_Var(
                     name=n,
@@ -1585,8 +1585,9 @@ See Glib.Properties for more information on properties)""")
                 adaprops.sort(lambda x,y: x["name"] <> y["name"])
 
                 for p in adaprops:
-                    section.add(
-                       '   %(name)s_Property : constant %(ptype)s;' % p)
+                    prop_str = '   %(name)s_Property : constant %(ptype)s;' % p
+                    if not section.add(prop_str):
+                        continue
 
                     # Only display the type if it isn't obvious from the actual
                     # type of the property.

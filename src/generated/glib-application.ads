@@ -108,11 +108,10 @@
 --  primary instance, in the form of a Glib.Variant.Gvariant dictionary mapping
 --  strings to variants. To use platform data, override the Before_Emit or
 --  After_Emit virtual functions in your Glib.Application.Gapplication
---  subclass. When dealing with
---  Gapplication.Command_Line.Gapplication_Command_Line objects, the platform
---  data is directly available via g_application_command_line_get_cwd,
---  g_application_command_line_get_environ and
---  g_application_command_line_get_platform_data.
+--  subclass. When dealing with Glib.Application.Gapplication_Command_Line
+--  objects, the platform data is directly available via
+--  Glib.Application.Get_Cwd, Glib.Application.Get_Environ and
+--  Glib.Application.Get_Platform_Data.
 --
 --  As the name indicates, the platform data may vary depending on the
 --  operating system, but it always includes the current directory (key "cwd"),
@@ -185,6 +184,9 @@ package Glib.Application is
    G_Application_Send_Environment : constant GApplication_Flags := 16;
    G_Application_Non_Unique : constant GApplication_Flags := 32;
 
+   type Gapplication_Command_Line_Record is new GObject_Record with null record;
+   type Gapplication_Command_Line is access all Gapplication_Command_Line_Record'Class;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -237,6 +239,9 @@ package Glib.Application is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "g_application_get_type");
+
+   function Get_Type_Command_Line return Glib.GType;
+   pragma Import (C, Get_Type_Command_Line, "g_application_command_line_get_type");
 
    -------------
    -- Methods --
@@ -335,6 +340,12 @@ package Glib.Application is
    --  Glib.Application.Get_Is_Registered.
    --  Since: gtk+ 2.28
 
+   function Get_Is_Remote
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Boolean;
+   --  Determines if Cmdline represents a remote invocation.
+   --  Since: gtk+ 2.28
+
    procedure Hold (Self : not null access Gapplication_Record);
    --  Increases the use count of Application.
    --  Use this function to indicate that the application has a reason to
@@ -402,7 +413,7 @@ package Glib.Application is
    --  a null-terminated copy of Argv and is expected to remove the arguments
    --  that it handled (shifting up remaining arguments). See <xref
    --  linkend="gapplication-example-cmdline2"/> for an example of parsing Argv
-   --  manually. Alternatively, you may use the Goption.Context.Goption_Context
+   --  manually. Alternatively, you may use the Glib.Option.Goption_Context
    --  API, after setting 'argc = g_strv_length (argv);'.
    --  The last argument to local_command_line is a pointer to the Status
    --  variable which can used to set the exit status that is returned from
@@ -413,10 +424,9 @@ package Glib.Application is
    --  If local_command_line returns False then the application is registered
    --  and the Glib.Application.Gapplication::command-line signal is emitted in
    --  the primary instance (which may or may not be this instance). The signal
-   --  handler gets passed a
-   --  Gapplication.Command_Line.Gapplication_Command_Line object that (among
-   --  other things) contains the remaining commandline arguments that have not
-   --  been handled by local_command_line.
+   --  handler gets passed a Glib.Application.Gapplication_Command_Line object
+   --  that (among other things) contains the remaining commandline arguments
+   --  that have not been handled by local_command_line.
    --  If the application has the
    --  Glib.Application.G_Application_Handles_Command_Line flag set then the
    --  default implementation of local_command_line always returns False
@@ -435,7 +445,7 @@ package Glib.Application is
    --  you should set Glib.Application.G_Application_Handles_Command_Line and
    --  process the commandline arguments in your
    --  Glib.Application.Gapplication::command-line signal handler, either
-   --  manually or using the Goption.Context.Goption_Context API.
+   --  manually or using the Glib.Option.Goption_Context API.
    --  If you are interested in doing more complicated local handling of the
    --  commandline then you should implement your own
    --  Glib.Application.Gapplication subclass and override local_command_line.
@@ -479,6 +489,106 @@ package Glib.Application is
    --  Application is destroyed then the default application will revert back
    --  to null.
    --  Since: gtk+ 2.32
+
+   function Get_Arguments
+      (Self : not null access Gapplication_Command_Line_Record)
+       return GNAT.Strings.String_List;
+   --  Gets the list of arguments that was passed on the command line.
+   --  The strings in the array may contain non-utf8 data.
+   --  The return value is null-terminated and should be freed using
+   --  g_strfreev.
+   --  Since: gtk+ 2.28
+
+   function Get_Cwd
+      (Self : not null access Gapplication_Command_Line_Record)
+       return UTF8_String;
+   --  Gets the working directory of the command line invocation. The string
+   --  may contain non-utf8 data.
+   --  It is possible that the remote application did not send a working
+   --  directory, so this may be null.
+   --  The return value should not be modified or freed and is valid for as
+   --  long as Cmdline exists.
+   --  Since: gtk+ 2.28
+
+   function Get_Environ
+      (Self : not null access Gapplication_Command_Line_Record)
+       return GNAT.Strings.String_List;
+   --  Gets the contents of the 'environ' variable of the command line
+   --  invocation, as would be returned by g_get_environ, ie as a
+   --  null-terminated list of strings in the form 'NAME=VALUE'. The strings
+   --  may contain non-utf8 data.
+   --  The remote application usually does not send an environment. Use
+   --  Glib.Application.G_Application_Send_Environment to affect that. Even
+   --  with this flag set it is possible that the environment is still not
+   --  available (due to invocation messages from other applications).
+   --  The return value should not be modified or freed and is valid for as
+   --  long as Cmdline exists.
+   --  See Glib.Application.Getenv if you are only interested in the value of
+   --  a single environment variable.
+   --  Since: gtk+ 2.28
+
+   function Get_Exit_Status
+      (Self : not null access Gapplication_Command_Line_Record) return Gint;
+   --  Gets the exit status of Cmdline. See Glib.Application.Set_Exit_Status
+   --  for more information.
+   --  Since: gtk+ 2.28
+
+   procedure Set_Exit_Status
+      (Self        : not null access Gapplication_Command_Line_Record;
+       Exit_Status : Gint);
+   --  Sets the exit status that will be used when the invoking process exits.
+   --  The return value of the Glib.Application.Gapplication::command-line
+   --  signal is passed to this function when the handler returns. This is the
+   --  usual way of setting the exit status.
+   --  In the event that you want the remote invocation to continue running
+   --  and want to decide on the exit status in the future, you can use this
+   --  call. For the case of a remote invocation, the remote process will
+   --  typically exit when the last reference is dropped on Cmdline. The exit
+   --  status of the remote process will be equal to the last value that was
+   --  set with this function.
+   --  In the case that the commandline invocation is local, the situation is
+   --  slightly more complicated. If the commandline invocation results in the
+   --  mainloop running (ie: because the use-count of the application increased
+   --  to a non-zero value) then the application is considered to have been
+   --  'successful' in a certain sense, and the exit status is always zero. If
+   --  the application use count is zero, though, the exit status of the local
+   --  Glib.Application.Gapplication_Command_Line is used.
+   --  Since: gtk+ 2.28
+   --  "exit_status": the exit status
+
+   function Get_Platform_Data
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Glib.Variant.Gvariant;
+   --  Gets the platform data associated with the invocation of Cmdline.
+   --  This is a Glib.Variant.Gvariant dictionary containing information about
+   --  the context in which the invocation occurred. It typically contains
+   --  information like the current working directory and the startup
+   --  notification ID.
+   --  For local invocation, it will be null.
+   --  Since: gtk+ 2.28
+
+   function Getenv
+      (Self : not null access Gapplication_Command_Line_Record;
+       Name : UTF8_String) return UTF8_String;
+   --  Gets the value of a particular environment variable of the command line
+   --  invocation, as would be returned by g_getenv. The strings may contain
+   --  non-utf8 data.
+   --  The remote application usually does not send an environment. Use
+   --  Glib.Application.G_Application_Send_Environment to affect that. Even
+   --  with this flag set it is possible that the environment is still not
+   --  available (due to invocation messages from other applications).
+   --  The return value should not be modified or freed and is valid for as
+   --  long as Cmdline exists.
+   --  Since: gtk+ 2.28
+   --  "name": the environment variable to get
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function Run
+     (Self : not null access Gapplication_Record) return Gint;
+   --  Same as above, but automatically sets argc argv from actual values.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -602,6 +712,8 @@ package Glib.Application is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
 
    Action_Group_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Action_Group.Gtk_Action_Group
@@ -617,6 +729,14 @@ package Glib.Application is
    Is_Registered_Property : constant Glib.Properties.Property_Boolean;
 
    Is_Remote_Property : constant Glib.Properties.Property_Boolean;
+
+   Arguments_Property : constant Glib.Properties.Property_Object;
+   --  Type: Glib.Variant.Gvariant
+   --  Flags: write
+
+   Platform_Data_Property : constant Glib.Properties.Property_Object;
+   --  Type: Glib.Variant.Gvariant
+   --  Flags: write
 
    -------------
    -- Signals --
@@ -640,19 +760,35 @@ package Glib.Application is
    --  The ::activate signal is emitted on the primary instance when an
    --  activation occurs. See Glib.Application.Activate.
 
+   type Cb_Gapplication_Gapplication_Command_Line_Gint is not null access function
+     (Self         : access Gapplication_Record'Class;
+      Command_Line : not null access Gapplication_Command_Line_Record'Class)
+   return Gint;
+
+   type Cb_GObject_Gapplication_Command_Line_Gint is not null access function
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Command_Line : not null access Gapplication_Command_Line_Record'Class)
+   return Gint;
+
    Signal_Command_Line : constant Glib.Signal_Name := "command-line";
+   procedure On_Command_Line
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_Gapplication_Gapplication_Command_Line_Gint;
+       After : Boolean := False);
+   procedure On_Command_Line
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_GObject_Gapplication_Command_Line_Gint;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  The ::command-line signal is emitted on the primary instance when a
    --  commandline is not handled locally. See Glib.Application.Run and the
-   --  Gapplication.Command_Line.Gapplication_Command_Line documentation for
-   --  more information.
-   --    function Handler
-   --       (Self         : access Gapplication_Record'Class;
-   --        Command_Line : Application_Command_Line) return Gint
+   --  Glib.Application.Gapplication_Command_Line documentation for more
+   --  information.
    -- 
    --  Callback parameters:
-   --    --  "command_line": a Gapplication.Command_Line.Gapplication_Command_Line
+   --    --  "command_line": a Glib.Application.Gapplication_Command_Line
    --    --  representing the passed commandline
-   --    --  Returns An integer that is set as the exit status for the calling process. See g_application_command_line_set_exit_status.
+   --    --  Returns An integer that is set as the exit status for the calling process. See Glib.Application.Set_Exit_Status.
 
    Signal_Open : constant Glib.Signal_Name := "open";
    --  The ::open signal is emitted on the primary instance when there are
@@ -726,6 +862,10 @@ package Glib.Application is
    renames Implements_Gaction_Map.To_Object;
 
 private
+   Platform_Data_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("platform-data");
+   Arguments_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("arguments");
    Is_Remote_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-remote");
    Is_Registered_Property : constant Glib.Properties.Property_Boolean :=

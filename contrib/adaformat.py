@@ -1806,13 +1806,26 @@ class Section(object):
            code and the following comment.
         """
 
+        iscode = False
+
         if isinstance(obj, str):
             obj = Code(obj)
+            iscode = True
         elif isinstance(obj, Package):
             obj.isnested = True
 
         obj.add_newline = add_newline
+
+        if iscode:
+            #  Take care of duplicated entries. May happen in case of
+            #  subpackages in GIR files
+            for o, s in self.__objects:
+                if s == in_spec and isinstance(o, Code):
+                    if o.content == obj.content:
+                        return False;
         self.__objects.append((obj, in_spec))
+
+        return True;
 
     def _group_objects(self):
         """Returns a list of subprograms for the specs. In each nested list,

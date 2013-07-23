@@ -55,6 +55,12 @@ echo_linker() {
 	    echo "        \"-L..\","
 	    echo -n "        \"-L../../include/gtkada/$subdir\""
             ;;
+         Darwin)
+            if [ x"$previous" != x"" ]; then
+              echo "        \"$previous\","
+            fi
+            echo "        \"-Wl,-framework,Carbon\""
+            ;;
          *)
             if [ x"$previous" != x"" ]; then
               echo "        \"$previous\""
