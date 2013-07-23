@@ -1793,7 +1793,7 @@ HDDEDATA CALLBACK ada_gtk_open_document_win32
         free (utfPath);
 
         g_idle_add_full
-          (G_PRIORITY_DEFAULT, idle_gtk_ada_application_open, data, NULL);
+          (G_PRIORITY_DEFAULT, idle_ada_gtk_application_open, data, NULL);
 
         DdeUnaccessData (hData); /* Release the resource */
       }
