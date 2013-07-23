@@ -6,6 +6,11 @@
 
         * gtk/gtkrange.c, gtk/gtkscrolledwindow.c: Better handle smooth scrolls.
 
+2013-07-23      Jerome Lambourg <lambourg@adacore.com>
+
+        * gdk/quartz/gdkscreen-quartz.c: Fix warning on obsolete
+          userSpaceScaleFactor
+
 --- ../gtk+-3.8.2-orig/gtk/gtkclipboard-quartz.c	2013-05-13 12:15:07.000000000 +0200
 +++ gtk/gtkclipboard-quartz.c	2013-05-23 14:40:04.819631640 +0200
 @@ -108,7 +108,7 @@
@@ -71,3 +76,33 @@
 
            new_value = CLAMP (gtk_adjustment_get_value (adj) + delta_y * scroll_unit,
                               gtk_adjustment_get_lower (adj),
+--- gdk/quartz/gdkscreen-quartz.c.old	2013-07-22 13:26:18.000000000 +0200
++++ gdk/quartz/gdkscreen-quartz.c	2013-07-22 14:18:21.000000000 +0200
+@@ -73,10 +73,12 @@
+ {
+   GdkScreen *screen = GDK_SCREEN (quartz_screen);
+   NSScreen *nsscreen;
++  NSRect windowRes = NSMakeRect (0, 0, 72, 72);
++  NSRect screenRes;
+
+   nsscreen = [[NSScreen screens] objectAtIndex:0];
+-  gdk_screen_set_resolution (screen,
+-                             72.0 * [nsscreen userSpaceScaleFactor]);
++  screenRes = [nsscreen convertRectToBacking:windowRes];
++  gdk_screen_set_resolution (screen, (gdouble)screenRes.size.width);
+
+   gdk_quartz_screen_calculate_layout (quartz_screen);
+
+@@ -331,7 +333,11 @@
+    * and 25.4 is the number of millimeters per inch.
+    */
+ #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_3
+-  float dpi = [screen userSpaceScaleFactor] * 72.0;
++  NSRect windowRes = NSMakeRect (0, 0, 72, 72);
++  NSRect screenRes;
++
++  screenRes = [screen convertRectToBacking:windowRes];
++  float dpi = (gdouble)screenRes.size.width;
+ #else
+   float dpi = 96.0 / 72.0;
+ #endif
