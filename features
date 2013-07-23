@@ -12,6 +12,14 @@ of the feature.
 New features in GtkAda 3.8.2
 ----------------------------
 
+M723-015 New bindings and Gtk Application enhancement (2013-07-23)
+
+  New bindings for GApplicationCommandLine, in Glib.Application.
+  New bindings for GOptionContext, GOptionGroup and GOptionEntry, in
+    Glib.Option.
+  New package GtkAda.Application, to support opening files from OS-specific
+    inter-process calls (DDE on Windows, System events on OSX).
+
 New features in GtkAda 3.4.1
 ----------------------------
 
