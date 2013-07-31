@@ -346,11 +346,13 @@ package body Gtkada.MDI is
    --  Setup a widget as either a source or a target for drag-and-drop ops.
 
    procedure Get_Dnd_Target
-     (MDI       : access MDI_Window_Record'Class;
-      Parent    : out Gtk_Widget;
-      Position  : out Child_Position;
+     (Child            : not null access MDI_Child_Record'Class;
+      Parent           : out Gtk_Widget;
+      Position         : out Child_Position;
       Parent_Rectangle : out Gdk_Rectangle;
-      Rectangle : out Gdk_Rectangle);
+      Rectangle        : out Gdk_Rectangle;
+      In_Central       : out Boolean;
+      Allowed          : out Boolean);
    --  Return the widget that is the current target for dnd
    --  Position indicated where in the parent the child would be dropped:
    --    Position_Bottom .. Position_Right: To one of the sides
@@ -359,6 +361,8 @@ package body Gtkada.MDI is
    --  top-left corner of the MDI. Parent_Rectangle is the area of the
    --  notebook on top of which the pointer is (so Rectangle is a subrectangle
    --  of it).
+   --  Allowed is set to False if the current target is invalid for the child.
+   --  In_Central is set to true if the Parent is inside the central area.
 
    procedure Draw_Dnd_Rectangle (Child : access MDI_Child_Record'Class);
    --  Draw the DND rectangle
@@ -1884,6 +1888,8 @@ package body Gtkada.MDI is
       Position             : Child_Position;
       Pane                 : Gtkada_Multi_Paned;
       Parent_Rect          : Gdk_Rectangle;
+      Allowed              : Boolean;
+      In_Central           : Boolean;
    begin
       Print_Debug
         ("Button release, drag=" & Drag_Status'Image (C.MDI.In_Drag));
@@ -1907,8 +1913,17 @@ package body Gtkada.MDI is
 
             Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
 
-            Get_Dnd_Target (C.MDI, Current, Position,
-                            Parent_Rect, C.MDI.Dnd_Rectangle);
+            Get_Dnd_Target
+              (C, Current, Position,
+               Parent_Rect, C.MDI.Dnd_Rectangle,
+               In_Central => In_Central,
+               Allowed    => Allowed);
+
+            if not Allowed then
+               Child_Drag_Finished (C);
+               C.MDI.In_Drag := No_Drag;
+               return True;
+            end if;
 
             if Current = null then --  outside of the main window ?
                Pane := null;
@@ -2281,10 +2296,11 @@ package body Gtkada.MDI is
       Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags        : Child_Flags := All_Buttons;
       Group        : Child_Group := Group_Default;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null) is
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
+      Areas        : Allowed_Areas := Both) is
    begin
       Child := new MDI_Child_Record;
-      Initialize (Child, Widget, Flags, Group, Focus_Widget);
+      Initialize (Child, Widget, Flags, Group, Focus_Widget, Areas);
    end Gtk_New;
 
    ----------------
@@ -2296,7 +2312,8 @@ package body Gtkada.MDI is
       Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags        : Child_Flags := All_Buttons;
       Group        : Child_Group := Group_Default;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null)
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
+      Areas        : Allowed_Areas := Both)
    is
       Event             : Gtk_Event_Box;
       Button            : Close_Button.Gtkada_MDI_Close_Button;
@@ -2316,6 +2333,7 @@ package body Gtkada.MDI is
       Child.Group        := Group;
       Child.Focus_Widget := Focus_Widget;
       Child.MDI          := null;
+      Child.Areas        := Areas;
 
       Add_Events
         (Child, Button_Press_Mask
@@ -4135,9 +4153,11 @@ package body Gtkada.MDI is
       if Notebook /= null then
          Note   := Notebook;
 
-      elsif Child.Group = Group_Default
-        and then not MDI.Independent_Perspectives
-        and then MDI.Central /= null
+      elsif Child.Areas = Central_Only
+        or else (Child.Group = Group_Default
+                 and then not MDI.Independent_Perspectives
+                 and then MDI.Central /= null
+                 and then Child.Areas /= Sides_Only)
       then
          Note := Find_Current_In_Central
            (MDI.Central, MDI, Child.Group, Initial_Position);
@@ -7331,6 +7351,7 @@ package body Gtkada.MDI is
       In_Central : Boolean;
       C3         : MDI_Child;
       Note       : Gtk_Notebook;
+      Allowed    : Boolean;
 
       procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean);
       procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean) is
@@ -7342,7 +7363,9 @@ package body Gtkada.MDI is
          W, H : Gdouble;
       begin
          if Draw then
-            if Current = null then
+            if not Allowed
+              or else Current = null
+            then
                --  A future floating child ? Nothing to draw for now, and there
                --  will be nothing to hide either.
                MDI.Dnd_Rectangle_Real.Width := 0;
@@ -7449,18 +7472,23 @@ package body Gtkada.MDI is
       end Do_Draw;
 
    begin
-      Get_Dnd_Target (MDI,
+      Get_Dnd_Target (Child,
                       Parent           => Current,
                       Position         => Position,
                       Parent_Rectangle => Parent_Rect,
-                      Rectangle        => New_Pos);
+                      Rectangle        => New_Pos,
+                      Allowed          => Allowed,
+                      In_Central       => In_Central);
 
-      if Current = null then
+      if not Allowed then
+         Current := null;
+         MDI.Dnd_Target := null;
+
+      elsif Current = null then
          MDI.Dnd_Target := null;
 
       elsif Current = Gtk_Widget (MDI) then
          MDI.Dnd_Target := Get_Window (MDI);
-         In_Central := False;
          case Position is
             when Position_Bottom =>
                Message := To_Unbounded_String ("Below all other windows");
@@ -7476,7 +7504,6 @@ package body Gtkada.MDI is
 
       elsif Current = Gtk_Widget (MDI.Central) then
          MDI.Dnd_Target := Get_Window (MDI.Central);
-         In_Central := False;
          case Position is
             when Position_Bottom =>
                Message := To_Unbounded_String ("Below central area");
@@ -7495,7 +7522,6 @@ package body Gtkada.MDI is
         and then Position = Position_Automatic
       then
          MDI.Dnd_Target := Get_Window (Child);
-         In_Central := In_Central_Area (MDI, Child);
          Message := To_Unbounded_String ("Leave at current position");
 
       else
@@ -7503,13 +7529,11 @@ package body Gtkada.MDI is
          C3  := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
 
          if C3 = null then
-            In_Central := True;
             Message := To_Unbounded_String ("In central area");
             MDI.Dnd_Target := Get_Window (MDI.Central);
 
          else
             MDI.Dnd_Target := Get_Window (C3);
-            In_Central := In_Central_Area (MDI, C3);
 
             case Position is
                when Position_Bottom =>
@@ -7530,6 +7554,9 @@ package body Gtkada.MDI is
             end case;
          end if;
       end if;
+
+      --  Always call this to hide the current highlight. We might, or not,
+      --  highlight the target depending whether it is allowed for Child.
 
       Gtkada.Style.Draw_Overlay (MDI, MDI.Dnd_Overlay, Do_Draw'Access);
    end Draw_Dnd_Rectangle;
@@ -7613,11 +7640,13 @@ package body Gtkada.MDI is
    --------------------
 
    procedure Get_Dnd_Target
-     (MDI       : access MDI_Window_Record'Class;
-      Parent    : out Gtk_Widget;
-      Position  : out Child_Position;
+     (Child            : not null access MDI_Child_Record'Class;
+      Parent           : out Gtk_Widget;
+      Position         : out Child_Position;
       Parent_Rectangle : out Gdk_Rectangle;
-      Rectangle : out Gdk_Rectangle)
+      Rectangle        : out Gdk_Rectangle;
+      In_Central       : out Boolean;
+      Allowed          : out Boolean)
    is
       Border_Width, Border_Height : Gint;
       Win                         : Gdk.Gdk_Window;
@@ -7627,24 +7656,25 @@ package body Gtkada.MDI is
       Alloc                       : Gtk_Allocation;
    begin
       Gdk.Display.Get_Window_At_Pointer
-         (Get_Display (Get_Window (MDI)), X, Y, Win);
+         (Get_Display (Get_Window (Child.MDI)), X, Y, Win);
 
       if Win = null then
          Position := Position_Automatic;
          Parent := null;
+         Allowed := True;   --  floating
 
       else
          Current := Gtk_Widget (Get_User_Data (Win));
 
          while Current /= null
-           and then Current /= Gtk_Widget (MDI)
+           and then Current /= Gtk_Widget (Child.MDI)
            and then Current.all not in Gtkada_Multi_Paned_Record'Class
            and then Get_Parent (Current) /= null
            and then
              (Current.all not in Gtk_Notebook_Record'Class
               or else Get_Parent (Current).all
                  not in Gtkada_Multi_Paned_Record'Class)
-           and then Get_Parent (Current) /= Gtk_Widget (MDI)
+           and then Get_Parent (Current) /= Gtk_Widget (Child.MDI)
          loop
             Current := Get_Parent (Current);
          end loop;
@@ -7652,20 +7682,24 @@ package body Gtkada.MDI is
          --  If the cursor was put in a floating window, we should make the
          --  new child floating as well.
          if Current = null or else Get_Parent (Current) = null then
-            Parent := null;
+            Parent   := null;
             Position := Position_Automatic;
+            Allowed  := True;
             return;
          end if;
 
-         if Current = Gtk_Widget (MDI) and then MDI.Central /= null then
-            Current := Gtk_Widget (MDI.Central);
+         if Current = Gtk_Widget (Child.MDI)
+           and then Child.MDI.Central /= null
+         then
+            Current := Gtk_Widget (Child.MDI.Central);
 
             --  Central area not empty ? We have therefore passed the mouse on
             --  one of the handles, and should not allow a drop there
 
-            if not At_End (Start (MDI.Central)) then
+            if not At_End (Start (Child.MDI.Central)) then
                Position := Position_Automatic;
-               Parent := null;
+               Parent   := null;
+               Allowed  := True;
                return;
             end if;
          end if;
@@ -7677,12 +7711,12 @@ package body Gtkada.MDI is
          Rectangle :=
            (X      => 0,
             Y      => 0,
-            Width  => Get_Allocated_Width (MDI),
-            Height => Get_Allocated_Height (MDI));
+            Width  => Get_Allocated_Width (Child.MDI),
+            Height => Get_Allocated_Height (Child.MDI));
          Parent_Rectangle := Rectangle;
 
          Gdk.Window.Get_Device_Position
-            (Self   => Get_Window (MDI),
+            (Self   => Get_Window (Child.MDI),
              Device => Gtk.Main.Get_Current_Event_Device,
              X      => X,
              Y      => Y,
@@ -7691,7 +7725,8 @@ package body Gtkada.MDI is
 
          if Y < Max_Drag_Border_Width / 2 then
             Position := Position_Top;
-            Parent := Gtk_Widget (MDI);
+            Parent := Gtk_Widget (Child.MDI);
+            In_Central := False;
             Rectangle :=
               (X      => 0,
                Y      => 0,
@@ -7700,7 +7735,8 @@ package body Gtkada.MDI is
 
          elsif Y > Rectangle.Height - Max_Drag_Border_Width / 2 then
             Position := Position_Bottom;
-            Parent := Gtk_Widget (MDI);
+            Parent := Gtk_Widget (Child.MDI);
+            In_Central := False;
             Rectangle :=
               (X      => 0,
                Y      => Rectangle.Height - Max_Drag_Border_Width / 2,
@@ -7709,7 +7745,8 @@ package body Gtkada.MDI is
 
          elsif X < Max_Drag_Border_Width / 2 then
             Position := Position_Left;
-            Parent := Gtk_Widget (MDI);
+            Parent := Gtk_Widget (Child.MDI);
+            In_Central := False;
             Rectangle :=
               (X      => 0,
                Y      => 0,
@@ -7718,7 +7755,8 @@ package body Gtkada.MDI is
 
          elsif X > Rectangle.Width - Max_Drag_Border_Width / 2 then
             Position := Position_Right;
-            Parent := Gtk_Widget (MDI);
+            Parent := Gtk_Widget (Child.MDI);
+            In_Central := False;
             Rectangle :=
               (X      => Rectangle.Width - Max_Drag_Border_Width / 2,
                Y      => 0,
@@ -7729,12 +7767,13 @@ package body Gtkada.MDI is
             --  Are we on the sides of the current MDI child ?
             --  Parent is likey a Gtk_Notebook
 
-            Gtkada.Style.Get_Offset (Parent, MDI, Rectangle.X, Rectangle.Y);
+            Gtkada.Style.Get_Offset
+              (Parent, Child.MDI, Rectangle.X, Rectangle.Y);
             Parent.Get_Allocation (Alloc);
 
             --  Compute device position relative to the MDI
             Gdk.Window.Get_Device_Position
-               (Self   => Get_Window (MDI),
+               (Self   => Get_Window (Child.MDI),
                 Device => Gtk.Main.Get_Current_Event_Device,
                 X      => X,
                 Y      => Y,
@@ -7747,6 +7786,8 @@ package body Gtkada.MDI is
                           Width  => Alloc.Width,
                           Height => Alloc.Height);
             Parent_Rectangle := Rectangle;
+
+            In_Central := In_Central_Area (Child.MDI, Parent);
 
             Border_Height := Gint'Min
               (Max_Drag_Border_Width, Rectangle.Height / 3);
@@ -7780,6 +7821,11 @@ package body Gtkada.MDI is
                   Height => Rectangle.Height - 2 * Border_Height);
             end if;
          end if;
+
+         Allowed :=
+           Child.Areas = Both
+           or else (Child.Areas = Central_Only and then In_Central)
+           or else (Child.Areas = Sides_Only and then not In_Central);
       end if;
    end Get_Dnd_Target;
 

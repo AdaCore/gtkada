@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 3.8.2
 ----------------------------
 
+M731-021 Gtkada.MDI limit possible positions of children (2013-07-31)
+
+  It is now possible, via a new parameter to Gtk_New, to limit whether
+  a child can be put in the central area, on the sides, or both.
+
 M723-015 New bindings and Gtk Application enhancement (2013-07-23)
 
   New bindings for GApplicationCommandLine, in Glib.Application.

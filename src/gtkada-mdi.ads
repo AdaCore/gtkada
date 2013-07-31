@@ -87,6 +87,9 @@ package Gtkada.MDI is
    --      but is no longer in the current perspective. We still keep it to
    --      reuse it when switching back to the previous perspective.
 
+   type Allowed_Areas is (Central_Only, Sides_Only, Both);
+   --  Where is a child allowed to be moved ?
+
    procedure Gtk_New
      (MDI   : out MDI_Window;
       Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
@@ -214,7 +217,8 @@ package Gtkada.MDI is
       Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags        : Child_Flags := All_Buttons;
       Group        : Child_Group := Group_Default;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null);
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
+      Areas        : Allowed_Areas := Both);
    --  Create a new MDI child that contains widget.
    --  Widget mustn't be of type Gtk_Window.
    --
@@ -222,9 +226,6 @@ package Gtkada.MDI is
    --  Child only. However, as a special exception, you can still pass Widget
    --  as a parameter to the subprograms in this package to manipulate it (e.g.
    --  in Raise_Child, ...)
-   --
-   --  Note: You might have to call Set_Size_Request on Widget to set its
-   --  initial size. This won't prevent it from being resized by the user.
    --
    --  If Focus_Widget is not null, this is the widget that gets the keyboard
    --  focus when the child is selected.
@@ -234,7 +235,8 @@ package Gtkada.MDI is
       Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags        : Child_Flags := All_Buttons;
       Group        : Child_Group := Group_Default;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null);
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
+      Areas        : Allowed_Areas := Both);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -970,8 +972,8 @@ private
       --  The main container.
 
       State         : State_Type := Normal;
-
       Group         : Child_Group := Group_Default;
+      Areas         : Allowed_Areas := Both;
 
       Title         : String_Access;
       Short_Title   : String_Access;
