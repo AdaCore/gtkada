@@ -2952,6 +2952,12 @@ package body Gtkada.MDI is
    begin
       Show (Child);  --  Make sure the child is visible
 
+      if Child.State = Invisible then
+         --  child was in another desktop, not visible in the current one
+
+         Put_In_Notebook (Child.MDI, Child);
+      end if;
+
       --  For a docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
