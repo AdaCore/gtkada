@@ -269,6 +269,20 @@ package Gtkada.MDI is
    --  Calling Put does not give the focus to the newly inserted widget.
    --  To do that, you should call Set_Focus_Child.
 
+   function Save_Desktop
+     (Self : not null access MDI_Child_Record) return Glib.Xml_Int.Node_Ptr;
+     --  A function used to save a child into the desktop.
+     --  This is similar to Save_Desktop_Function, but is specific to a child,
+     --  and thus more efficient.
+     --
+     --  If this function returns some data, that data is saved into the XML
+     --  for the desktop. If it returns null, however, the MDI will call each
+     --  of the registered Save_Desktop_Function, until one returns some data.
+     --
+     --  The resulting node must have a tag that is unique for this type of
+     --  widget, and this recognized by one of the Load_Desktop_Function so
+     --  that the child can be recreated when the desktop is loaded from XML.
+
    procedure Set_Size
      (MDI        : access MDI_Window_Record;
       Child      : access MDI_Child_Record'Class;
@@ -693,6 +707,9 @@ package Gtkada.MDI is
       --  saved. The MDI will call all the registered functions one after the
       --  other. Therefore, your function should return null if Widget is not
       --  of a type that is it can handle.
+      --
+      --  Before calling the registered save_desktop_function, the MDI will
+      --  first use the child's Save_Desktop primitive function.
 
       type Load_Desktop_Function is access function
         (MDI : MDI_Window; Node : Glib.Xml_Int.Node_Ptr; User : User_Data)
@@ -710,7 +727,7 @@ package Gtkada.MDI is
          Load : Load_Desktop_Function);
       --  Register a set of functions to save and load desktops for some
       --  specific widget types. This can be called multiple times.
-      --  Neither Save nor Load can be null.
+      --  Save might be null.
 
       function Restore_Desktop
         (MDI          : access MDI_Window_Record'Class;

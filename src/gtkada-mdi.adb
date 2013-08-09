@@ -2487,6 +2487,18 @@ package body Gtkada.MDI is
       end if;
    end Give_Focus_To_Previous_Child;
 
+   ------------------
+   -- Save_Desktop --
+   ------------------
+
+   function Save_Desktop
+     (Self : not null access MDI_Child_Record) return Glib.Xml_Int.Node_Ptr
+   is
+      pragma Unreferenced (Self);
+   begin
+      return null;
+   end Save_Desktop;
+
    ---------
    -- Put --
    ---------
@@ -6300,8 +6312,13 @@ package body Gtkada.MDI is
          Register    : Register_Node := Registers;
          Widget_Node : Node_Ptr;
       begin
+
+         Widget_Node := Child.Save_Desktop;  --  first, the primitif op.
+
          while Widget_Node = null and then Register /= null loop
-            Widget_Node := Register.Save (Child.Initial, User);
+            if Register.Save /= null then
+               Widget_Node := Register.Save (Child.Initial, User);
+            end if;
             Register := Register.Next;
          end loop;
 
