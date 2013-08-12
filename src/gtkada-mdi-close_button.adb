@@ -22,33 +22,11 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics;    use Ada.Numerics;
-with Cairo.Pattern;   use Cairo, Cairo.Pattern;
+with Cairo;           use Cairo;
 with Glib;            use Glib;
 
 separate (Gtkada.MDI)
 package body Close_Button is
-
-   type Color_HSV is record
-      Hue        : Gdouble;
-      Saturation : Gdouble;
-      Value      : Gdouble;
-      Alpha      : Gdouble;
-   end record;
-
-   function To_HSV (Color : Gdk_RGBA) return Color_HSV;
-   function To_RGB (Color : Color_HSV) return Gdk_RGBA;
-   --  Convertion between the Red-Green-Blue color space and
-   --  the Hue-Saturation-Value one.
-
-   procedure Clip_Luminance (Color : in out Gdk_RGBA);
-   --  Clips the color's luminance so that we can highligh/darken it.
-   --  This prevents too light or too dark colors as base color for the button.
-
-   function Shade
-     (Color       : Gdk_RGBA;
-      Delta_Value : Gdouble) return Gdk_RGBA;
-   --  Resulting color's luminance is old one + Delta_Value, cliped to the
-   --  range 0 - 100% (e.g. 0.0 - 1.0)
 
    function On_Draw
      (Widget  : access Gtk_Widget_Record'Class;
@@ -176,10 +154,7 @@ package body Close_Button is
       Height  : Gint;
       dW      : Gdouble;
       dX, dY  : Gdouble;
-      Cross_W : Gdouble;
       Base    : Gdk_RGBA;
-      Lo, Hi  : Gdk_RGBA;
-      Ptrn    : Cairo_Pattern;
       Alloc   : Gtk_Allocation;
       Ctx     : Gtk_Style_Context;
 
@@ -203,11 +178,8 @@ package body Close_Button is
             dW := Gdouble (Width);
          end if;
 
-         --  Height - 2 : we want 1px for the thin highlight effect at the
-         --  bottom of the button. We add another px to center the button
-         --  (compensate the hilight size).
-         if dW > Gdouble (Height - 2) then
-            dW := Gdouble (Height - 2);
+         if dW > Gdouble (Height) then
+            dW := Gdouble (Height);
          end if;
 
          Cairo.Save (Cr);
@@ -215,82 +187,44 @@ package body Close_Button is
          if Button.Horizontal then
             --  Align to right and center vertically
             dX := Gdouble (Width - Gint (dW));
-            dY := Gdouble ((Height - Gint (dW)) / 2);
+            dY := Gdouble ((Height - Gint (dW)) / 2) + 2.0;
          else
             --  Align to bottom and center horizontally
-            dX := Gdouble ((Width - Gint (dW)) / 2);
+            dX := Gdouble ((Width - Gint (dW)) / 2) + 2.0;
             dY := Gdouble (Height - Gint (dW));
          end if;
 
          Cairo.Translate (Cr, dX, dY);
 
          Cairo.Set_Line_Width (Cr, 1.0);
-         Cross_W := dW * 0.7;
 
          --  Retrieve the parent's actual background color for a nice
          --  transparency effect
          Ctx := Get_Style_Context (Button.Child);
          Ctx.Get_Color (Gtk_State_Flag_Normal, Base);
-         Clip_Luminance (Base);
 
          --  Shade the color according to the button's state
          if Button.Pressed
            or else Button.Over
          then
-            Base.Alpha := 0.8;
+            Base.Alpha := 1.0;
          else
             Base.Alpha := 0.4;
          end if;
-
-         Lo := Shade (Base, -0.3);
-         Hi := Shade (Base, 0.8);
-
-         --  Clip the cross
-         Cairo.Set_Fill_Rule (Cr, Cairo_Fill_Rule_Even_Odd);
-         Cairo.Rectangle
-           (Cr, -1.0, -1.0, dW + 2.0, dW + 2.0);
-         Cross (Cr, dW, Cross_W, dW / 5.0);
-         Cairo.Clip (Cr);
-         Cairo.Set_Fill_Rule (Cr, Cairo_Fill_Rule_Winding);
 
          --  Now actually draw the button
 
          --  Fill the base color
          Cairo.Set_Source_Rgba
            (Cr, Base.Red, Base.Green, Base.Blue, Base.Alpha);
-         --  And draw inside a rounded rectangle
-         Rounded_Rectangle (Cr, 0.0, 0.0, dW, dW, 2.5);
+
+         --  And draw the cross
+         Cross (Cr, dW, dW - 4.0, 1.0);
          Cairo.Fill (Cr);
 
-         --  Add some radial shadow to simulate shadow under the cross
-         Ptrn := Cairo.Pattern.Create_Radial
-           (dW * 0.5, dW * 0.5, 2.0, dW * 0.5, dW * 0.5, Cross_W / 2.0);
-         Cairo.Pattern.Add_Color_Stop_Rgba
-           (Ptrn, 0.0, Lo.Red, Lo.Green, Lo.Blue, Lo.Alpha);
-         Cairo.Pattern.Add_Color_Stop_Rgba
-           (Ptrn, 1.0, Lo.Red, Lo.Green, Lo.Blue, 0.0);
-         Rounded_Rectangle (Cr, 0.0, 0.0, dW, dW, 2.5);
-         Cairo.Set_Source (Cr, Ptrn);
-         Cairo.Pattern.Destroy (Ptrn);
-         Cairo.Fill (Cr);
-
-         --  Add a hilighted border with height bigger than shadowed border
-         --  to just display a thin hilighted border under the button
-         Cairo.Set_Source_Rgba (Cr, Hi.Red, Hi.Green, Hi.Blue, Hi.Alpha);
-
-         if Button.Pressed then
-            --  Keep the highlight under the button
-            Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW, 2.5);
-            --  Add a highlight inside the button, opposite direction as usual
-            Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW - 2.0, 2.5);
-         else
-            Rounded_Rectangle (Cr, 0.5, 1.5, dW - 1.0, dW - 1.0, 2.5);
-         end if;
-
-         Cairo.Stroke (Cr);
-
-         --  Now add the shadowed border
-         Cairo.Set_Source_Rgba (Cr, Lo.Red, Lo.Green, Lo.Blue, Lo.Alpha);
+         --  Draw a very thin border around the cross
+         Cairo.Set_Source_Rgba
+           (Cr, Base.Red, Base.Green, Base.Blue, 0.2);
          Rounded_Rectangle (Cr, 0.5, 0.5, dW - 1.0, dW - 1.0, 2.5);
          Cairo.Stroke (Cr);
 
@@ -299,165 +233,6 @@ package body Close_Button is
 
       return False;
    end On_Draw;
-
-   ------------
-   -- To_HSV --
-   ------------
-
-   function To_HSV (Color : Gdk_RGBA) return Color_HSV is
-      Ret            : Color_HSV;
-      Min, Max, Delt : Gdouble;
-   begin
-      Ret.Alpha := Color.Alpha;
-      Min := Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
-      Max := Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
-
-      Ret.Value := Max;
-      Delt := Max - Min;
-
-      if Max > 0.0 then
-         Ret.Saturation := Delt / Max;
-      else
-         Ret.Saturation := 0.0;
-         Ret.Hue := 0.0;
-
-         return Ret;
-      end if;
-
-      if Color.Red >= Max then
-         Ret.Hue := (Color.Green - Color.Blue) / Delt;
-      elsif Color.Green >= Max then
-         Ret.Hue := 2.0 + (Color.Blue - Color.Red) / Delt;
-      else
-         Ret.Hue := 4.0 + (Color.Red - Color.Green) / Delt;
-      end if;
-
-      Ret.Hue := Ret.Hue * 60.0;
-
-      if Ret.Hue < 0.0 then
-         Ret.Hue := Ret.Hue + 360.0;
-      end if;
-
-      return Ret;
-   end To_HSV;
-
-   ------------
-   -- To_RGB --
-   ------------
-
-   function To_RGB (Color : Color_HSV) return Gdk_RGBA
-   is
-      Hh, P, Q, T, Ff : Gdouble;
-      J               : Integer;
-      Ret             : Gdk_RGBA;
-   begin
-      if Color.Saturation <= 0.0 then
-         Ret := (Color.Value, Color.Value, Color.Value, Color.Alpha);
-
-         return Ret;
-      end if;
-
-      Hh := Color.Hue;
-
-      while Hh >= 360.0 loop
-         Hh := Hh - 360.0;
-      end loop;
-
-      while Hh < 0.0 loop
-         Hh := Hh + 360.0;
-      end loop;
-
-      Hh := Hh / 60.0;
-      J := Integer (Gdouble'Floor (Hh));
-      Ff := Hh - Gdouble (J);
-      P := Color.Value * (1.0 - Color.Saturation);
-      Q := Color.Value * (1.0 - (Color.Saturation * Ff));
-      T := Color.Value * (1.0 - (Color.Saturation * (1.0 - Ff)));
-
-      case J is
-         when 0 =>
-            Ret :=
-              (Red   => Color.Value,
-               Green => T,
-               Blue  => P,
-               Alpha => Color.Alpha);
-         when 1 =>
-            Ret :=
-              (Red   => Q,
-               Green => Color.Value,
-               Blue  => P,
-               Alpha => Color.Alpha);
-         when 2 =>
-            Ret :=
-              (Red   => P,
-               Green => Color.Value,
-               Blue  => T,
-               Alpha => Color.Alpha);
-         when 3 =>
-            Ret :=
-              (Red   => P,
-               Green => Q,
-               Blue  => Color.Value,
-               Alpha => Color.Alpha);
-         when 4 =>
-            Ret :=
-              (Red   => T,
-               Green => P,
-               Blue  => Color.Value,
-               Alpha => Color.Alpha);
-         when others =>
-            Ret :=
-              (Red   => Color.Value,
-               Green => P,
-               Blue  => Q,
-               Alpha => Color.Alpha);
-      end case;
-
-      return Ret;
-   end To_RGB;
-
-   --------------------
-   -- Clip_Luminance --
-   --------------------
-
-   procedure Clip_Luminance (Color : in out Gdk_RGBA)
-   is
-      HSV : Color_HSV;
-
-   begin
-      HSV := To_HSV (Color);
-
-      if HSV.Value > 0.85 then
-         HSV.Value := 0.85;
-      elsif HSV.Value < 0.15 then
-         HSV.Value := 0.15;
-      else
-         return;
-      end if;
-
-      Color := To_RGB (HSV);
-   end Clip_Luminance;
-
-   -----------
-   -- Shade --
-   -----------
-
-   function Shade
-     (Color       : Gdk_RGBA;
-      Delta_Value : Gdouble) return Gdk_RGBA
-   is
-      HSV : Color_HSV := To_HSV (Color);
-   begin
-      HSV.Value := HSV.Value + Delta_Value;
-
-      if HSV.Value > 1.0 then
-         HSV.Value := 1.0;
-      elsif HSV.Value < 0.0 then
-         HSV.Value := 0.0;
-      end if;
-
-      return To_RGB (HSV);
-   end Shade;
 
    -----------------------
    -- Rounded_Rectangle --

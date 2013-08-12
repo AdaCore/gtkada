@@ -1374,10 +1374,12 @@ package body Gtkada.MDI is
                      "            from(" & C & ")," & LF &
                      "            to(shade(" & C & ",1.1)));" & LF &
                      "}" & LF &
-                     ".mdi tab * {" & LF & --  Focused tab
+                     ".mdi tab GtkLabel," & LF &
+                     ".mdi tab GtkImage {" & LF & --  Focused tab
                      "  opacity: 0.8;" & LF &
                      "}" & LF &
-                     ".mdifocused tab * {" & LF & --  Focused tab
+                     ".mdifocused tab GtkLabel," & LF &
+                     ".mdifocused tab GtkImage {" & LF & --  Focused tab
                      "  opacity: 1.0;" & LF &
                      "}";
          begin
