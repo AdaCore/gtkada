@@ -75,7 +75,7 @@ package body Close_Button is
      (Button      : out Gtkada_MDI_Close_Button;
       Tab         : access Gtk_Widget_Record'Class;
       Child       : access MDI_Child_Record'Class;
-      Horizontal  : Boolean;
+      Position    : Gtk.Enums.Gtk_Position_Type;
       In_Titlebar : Boolean)
    is
    begin
@@ -89,7 +89,7 @@ package body Close_Button is
       Button.Over        := False;
       Button.Tab_Over    := False;
       Button.In_Titlebar := In_Titlebar;
-      Button.Horizontal  := Horizontal;
+      Button.Position    := Position;
 
       --  In the titlebar, we can go up to 16px as this is the size of the
       --  pixmaps, but we lower this size to 14px to be able to draw the extra
@@ -102,12 +102,7 @@ package body Close_Button is
          Button.Default_Size := 11;
       end if;
 
-      if Horizontal then
-         Button.Set_Size_Request
-           (Button.Default_Size, Button.Default_Size + 4);
-      else
-         Button.Set_Size_Request (Button.Default_Size, Button.Default_Size);
-      end if;
+      Button.Set_Size_Request (Button.Default_Size, Button.Default_Size);
 
       Set_Events
         (Button,
@@ -175,24 +170,33 @@ package body Close_Button is
 
          --  Make sure the button fits in the allocated space
          if dW > Gdouble (Width) then
-            dW := Gdouble (Width);
+            dW := Gdouble (Width) - 2.0;
          end if;
 
          if dW > Gdouble (Height) then
-            dW := Gdouble (Height);
+            dW := Gdouble (Height) - 2.0;
          end if;
 
          Cairo.Save (Cr);
 
-         if Button.Horizontal then
-            --  Align to right and center vertically
-            dX := Gdouble (Width - Gint (dW));
-            dY := Gdouble ((Height - Gint (dW)) / 2) + 2.0;
-         else
-            --  Align to bottom and center horizontally
-            dX := Gdouble ((Width - Gint (dW)) / 2) + 2.0;
-            dY := Gdouble (Height - Gint (dW));
-         end if;
+         case Button.Position is
+            when Pos_Top | Pos_Bottom =>
+               --  Align to right and center vertically + 1px offset to
+               --  align with text baseline
+               dX := Gdouble (Width - Gint (dW));
+               dY := Gdouble ((Height - Gint (dW)) / 2) + 1.0;
+
+            when Pos_Left =>
+               --  Align to top and center horizontally + 1px offset to
+               --  align with text baseline
+               dX := Gdouble ((Width - Gint (dW)) / 2) + 1.0;
+               dY := 0.0;
+            when Pos_Right =>
+               --  Align to bottom and center horizontally - 1px offset to
+               --  align with text baseline
+               dX := Gdouble ((Width - Gint (dW)) / 2) - 1.0;
+               dY := Gdouble (Height - Gint (dW));
+         end case;
 
          Cairo.Translate (Cr, dX, dY);
 

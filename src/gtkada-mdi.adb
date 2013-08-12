@@ -546,8 +546,8 @@ package body Gtkada.MDI is
          In_Titlebar  : Boolean;
          --  Whether the button is in the title bar or in the tab
 
-         Horizontal   : Boolean;
-         --  Whether the button is in a horizontal tab
+         Position     : Gtk_Position_Type;
+         --  The tab's position
 
          Default_Size : Glib.Gint;
          --  The button's default size. The actual drawing depends on the final
@@ -560,7 +560,7 @@ package body Gtkada.MDI is
         (Button      : out Gtkada_MDI_Close_Button;
          Tab         : access Gtk_Widget_Record'Class;
          Child       : access MDI_Child_Record'Class;
-         Horizontal  : Boolean;
+         Position    : Gtk.Enums.Gtk_Position_Type;
          In_Titlebar : Boolean);
       --  Tab: the button's container. This container shall have a Gdk_Window
       --   to allow mouse motion event retrieval.
@@ -2392,7 +2392,7 @@ package body Gtkada.MDI is
       if (Flags and Destroy_Button) /= 0 then
          Close_Button.Gtk_New
            (Button, Child, Child,
-            Horizontal  => True,
+            Position    => Pos_Top,
             In_Titlebar => True);
          Pack_End
            (Child.Title_Box,
@@ -4021,7 +4021,7 @@ package body Gtkada.MDI is
          if (Child.Flags and Destroy_Button) /= 0 then
             Close_Button.Gtk_New
               (Close, Event, Child,
-               Horizontal  => Orientation = Horizontal,
+               Position    => Note.Get_Tab_Pos,
                In_Titlebar => False);
             Box.Pack_Start (Close, Expand => False, Padding => 2);
          end if;
