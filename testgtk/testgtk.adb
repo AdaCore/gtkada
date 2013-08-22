@@ -23,6 +23,7 @@
 
 with Ada.Text_IO;        use Ada.Text_IO;
 with Gtkada.Style;       use Gtkada.Style;
+with Gtk.Enums;          use Gtk.Enums;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
 with Gtk.Main;
 with Main_Windows;
@@ -36,6 +37,7 @@ begin
       ("testgtk.css", Ada.Text_IO.Put_Line'Access, Priority_Application);
 
    Main_Windows.Gtk_New (Win);
+   Win.Set_Position (Win_Pos_Center);
    Main_Windows.Show_All (Win);
    Gtk.Main.Main;
 end Testgtk;
