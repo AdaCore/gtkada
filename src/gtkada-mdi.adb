@@ -2171,6 +2171,7 @@ package body Gtkada.MDI is
       Child : constant MDI_Child :=
         MDI_Child (Get_Nth_Page (N, Get_Current_Page (N)));
       Tmp : Boolean;
+      pragma Unreferenced (Tmp);
    begin
       if Child.MDI.In_Drag = In_Drag
         or else Child.MDI.In_Drag = In_Pre_Drag
