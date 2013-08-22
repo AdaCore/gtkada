@@ -212,7 +212,10 @@ package body Gtkada.MDI is
       --  is set to -1 if the tabs should use their natural size.
 
       Tab_Orientation : Tab_Orientation_Type := Automatic;
-      --  Orientation for the tabs
+      --  Orientation for the tabs, as requested by the user
+
+      Actual_Tab_Orientation : Tab_Orientation_Type := Horizontal;
+      --  The orientation after "Automatic" has been resolved.
    end record;
    type MDI_Notebook is access all MDI_Notebook_Record'Class;
    --  The type of notebooks used in the MDI.
@@ -242,40 +245,55 @@ package body Gtkada.MDI is
    --  Called when the user changes the position of tabs for a specific
    --  notebook.
 
+   function Button_Pressed
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
+   function Button_Release
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
+   function Button_Motion
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean;
+   --  Handle the various mouse events on a child (or the tab of a child)
+
+   function Button_Pressed_Forced
+     (Child : access GObject_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
+   function Button_Motion_Forced
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean;
+   function Button_Release_Forced
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button;
+      Allow_Move : Boolean := True) return Boolean;
+   --  Same as Button_Pressed, Button_Motion and Button_Release, but perform
+   --  an action even if the event is not related to the child's window.
+
+   function Button_Motion_Notebook
+     (Note : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean;
+   function Button_Release_Notebook
+     (Note : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
+   --  Same as Button_Motion and Button_Release, but monitor the events on the
+   --  notebook itself (which is where the event is sent during a reorder
+   --  operation).
+
    function Button_Pressed_On_Title_Icon
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
    --  The title icon of a child window was clicked (and if it was a
    --  double click, we want to close that child).
 
-   function Button_Pressed
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
-   --  Called when the user has pressed the mouse button in the canvas.
-   --  Test whether an item was selected.
-
-   function Button_Pressed_Forced
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
-   --  Same as above, except we also act even if the event wasn't started in
-   --  Child's window.
-
-   function Button_Release
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
-   --  Called when the user has released the mouse button.
-   --  If an item was selected, refresh the canvas.
-
-   function Button_Motion
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
-   --  Called when the user moves the mouse while a button is pressed.
-   --  If an item was selected, the item is moved.
-
    function On_Notebook_Button_Press
      (Child    : access Gtk_Widget_Record'Class;
       Event    : Gdk.Event.Gdk_Event) return Boolean;
    --  Manage the contextual menu on tabs
+
+   function Hover_Tabs
+     (N : MDI_Notebook; X_Root, Y_Root : Gdouble) return Boolean;
+   --  Returns True if the given root coordinates are on top of the tabs area
+   --  of the specified notebook.
 
    procedure Child_Widget_Shown
      (Widget : access Gtk_Widget_Record'Class);
@@ -364,7 +382,9 @@ package body Gtkada.MDI is
    --  Allowed is set to False if the current target is invalid for the child.
    --  In_Central is set to true if the Parent is inside the central area.
 
-   procedure Draw_Dnd_Rectangle (Child : access MDI_Child_Record'Class);
+   procedure Draw_Dnd_Rectangle
+     (Child : access MDI_Child_Record'Class;
+      Hide_Only : Boolean := False);
    --  Draw the DND rectangle
 
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class);
@@ -417,8 +437,8 @@ package body Gtkada.MDI is
    --  Same as Set_Focus_Child_MDI, but for floating windows
 
    function Set_Focus_Child_MDI_From_Tab
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
+     (Child : access GObject_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
    --  Gives the focus to Child when the notebook tab associated with it is
    --  pressed.
 
@@ -751,17 +771,17 @@ package body Gtkada.MDI is
    ----------------------------------
 
    function Set_Focus_Child_MDI_From_Tab
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
+     (Child : access GObject_Record'Class;
+      Event : Gdk_Event_Button) return Boolean
    is
       Tmp : Boolean;
       pragma Unreferenced (Tmp);
    begin
-      if Get_Event_Type (Event) = Button_Release then
-         Tmp := Button_Release (Child => Child, Event => Event);
+      if Event.The_Type = Button_Release then
+         Tmp := Button_Release (Child => Gtk_Widget (Child), Event => Event);
          return False;
 
-      elsif Get_Button (Event) = 1 then
+      elsif Event.Button = 1 then
          --  Let the event through if the child already has the focus. This way
          --  the notebook tab of the focus child can still be used for
          --  drag-and-drop
@@ -1829,13 +1849,13 @@ package body Gtkada.MDI is
 
    function Button_Pressed
      (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean is
+      Event : Gdk_Event_Button) return Boolean is
    begin
       --  It sometimes happens that widgets let events pass through (for
       --  instance scrollbars do that), and thus wouldn't be useable anymore
       --  if we do a grab.
 
-      if Get_Window (Child) /= Event.Button.Window then
+      if Get_Window (Child) /= Event.Window then
          return False;
       end if;
 
@@ -1847,15 +1867,15 @@ package body Gtkada.MDI is
    ---------------------------
 
    function Button_Pressed_Forced
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
+     (Child : access GObject_Record'Class;
+      Event : Gdk_Event_Button) return Boolean
    is
       C    : constant MDI_Child := MDI_Child (Child);
    begin
       C.MDI.In_Drag := No_Drag;
 
-      if Get_Event_Type (Event) /= Button_Press
-        or else Event.Button.Button /= 1
+      if Event.The_Type /= Button_Press
+        or else Event.Button /= 1
       then
          return False;
       end if;
@@ -1876,14 +1896,34 @@ package body Gtkada.MDI is
 
    function Button_Release
      (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
+      Event : Gdk_Event_Button) return Boolean
+   is
+      C : constant MDI_Child := MDI_Child (Child);
+   begin
+      if Get_Window (Child) /= Event.Window then
+         C.MDI.In_Drag := No_Drag;
+         Pointer_Ungrab (Time => 0);
+         return False;
+      end if;
+
+      return Button_Release_Forced (Child, Event);
+   end Button_Release;
+
+   ---------------------------
+   -- Button_Release_Forced --
+   ---------------------------
+
+   function Button_Release_Forced
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button;
+      Allow_Move : Boolean := True) return Boolean
    is
       C                    : constant MDI_Child := MDI_Child (Child);
       MDI                  : constant MDI_Window := C.MDI;
       Move_Whole_Notebook  : constant Boolean :=
-                               (Get_State (Event) and Control_Mask) /= 0;
+                               (Event.State and Control_Mask) /= 0;
       Copy_Instead_Of_Move : constant Boolean :=
-                               (Get_State (Event) and Shift_Mask) /= 0;
+                               (Event.State and Shift_Mask) /= 0;
       C2                   : MDI_Child;
       Current              : Gtk_Widget;
       Note                 : MDI_Notebook;
@@ -1898,11 +1938,6 @@ package body Gtkada.MDI is
 
       Pointer_Ungrab (Time => 0);
 
-      if Get_Window (Child) /= Event.Button.Window then
-         C.MDI.In_Drag := No_Drag;
-         return False;
-      end if;
-
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
             Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
@@ -1915,11 +1950,15 @@ package body Gtkada.MDI is
 
             Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
 
-            Get_Dnd_Target
-              (C, Current, Position,
-               Parent_Rect, C.MDI.Dnd_Rectangle,
-               In_Central => In_Central,
-               Allowed    => Allowed);
+            if Allow_Move then
+               Get_Dnd_Target
+                 (C, Current, Position,
+                  Parent_Rect, C.MDI.Dnd_Rectangle,
+                  In_Central => In_Central,
+                  Allowed    => Allowed);
+            else
+               Allowed := False;
+            end if;
 
             if not Allowed then
                Child_Drag_Finished (C);
@@ -2118,7 +2157,34 @@ package body Gtkada.MDI is
 
       C.MDI.In_Drag := No_Drag;
       return True;
-   end Button_Release;
+   end Button_Release_Forced;
+
+   -----------------------------
+   -- Button_Release_Notebook --
+   -----------------------------
+
+   function Button_Release_Notebook
+     (Note : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button) return Boolean
+   is
+      N : constant MDI_Notebook := MDI_Notebook (Note);
+      Child : constant MDI_Child :=
+        MDI_Child (Get_Nth_Page (N, Get_Current_Page (N)));
+      Tmp : Boolean;
+   begin
+      if Child.MDI.In_Drag = In_Drag
+        or else Child.MDI.In_Drag = In_Pre_Drag
+      then
+         Tmp := Button_Release_Forced
+           (Child, Event,
+            Allow_Move => not Hover_Tabs (N, Event.X_Root, Event.Y_Root));
+
+         --  Fallback to standard gtk+ handler, so that it terminates its
+         --  reorder operation if any
+      end if;
+
+      return False;
+   end Button_Release_Notebook;
 
    -------------------
    -- Button_Motion --
@@ -2126,19 +2192,35 @@ package body Gtkada.MDI is
 
    function Button_Motion
      (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
+      Event : Gdk_Event_Motion) return Boolean
+   is
+   begin
+      if Get_Window (Child) /= Event.Window then
+         return False;
+      end if;
+
+      return Button_Motion_Forced (Child, Event);
+   end Button_Motion;
+
+   --------------------------
+   -- Button_Motion_Forced --
+   --------------------------
+
+   function Button_Motion_Forced
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean
    is
       C        : constant MDI_Child := MDI_Child (Child);
       Note     : MDI_Notebook;
       Tmp      : Gdk_Grab_Status;
-      Xroot, Yroot : Gdouble;
       Delta_X, Delta_Y : Gint;
       pragma Unreferenced (Tmp);
 
    begin
-      if Get_Window (Child) /= Event.Button.Window then
-         return False;
-      end if;
+      --  This is no longer called once the GtkNotebook has started reordering
+      --  the tab, because it creates a transparent overlay window that grabs
+      --  all the events (so the motion is sent to the GtkNotebook, no longer
+      --  to the child).
 
       case C.MDI.In_Drag is
          when In_Drag =>
@@ -2149,10 +2231,8 @@ package body Gtkada.MDI is
             --  If we are still in the tabs area, do nothing so that tabs can
             --  be reordered graphically
 
-            Get_Root_Coords (Event, Xroot, Yroot);
-
-            Delta_X := abs (Gint (Xroot) - C.MDI.Drag_Start_X);
-            Delta_Y := abs (Gint (Yroot) - C.MDI.Drag_Start_Y);
+            Delta_X := abs (Gint (Event.X_Root) - C.MDI.Drag_Start_X);
+            Delta_Y := abs (Gint (Event.Y_Root) - C.MDI.Drag_Start_Y);
 
             Note := Get_Notebook (C);
             if Note /= null
@@ -2191,6 +2271,7 @@ package body Gtkada.MDI is
                end if;
 
                C.MDI.In_Drag := In_Drag;
+
                Pointer_Ungrab (Time => 0);
 
                if C.MDI.Cursor_Fleur = null then
@@ -2202,6 +2283,7 @@ package body Gtkada.MDI is
                   False, Button_Motion_Mask or Button_Release_Mask,
                   Cursor => C.MDI.Cursor_Fleur,
                   Time   => 0);
+
                return True;
             end if;
 
@@ -2209,7 +2291,98 @@ package body Gtkada.MDI is
             null;
       end case;
       return True;
-   end Button_Motion;
+   end Button_Motion_Forced;
+
+   ----------------
+   -- Hover_Tabs --
+   ----------------
+
+   function Hover_Tabs
+     (N : MDI_Notebook;
+      X_Root, Y_Root : Gdouble) return Boolean
+   is
+      In_Tabs_Area          : Boolean;
+      X_Win, Y_Win          : Gint;
+      W, H                  : Gint;
+      Mouse_X, Mouse_Y      : Gint;
+      Alloc                 : Gtk_Allocation;
+      Tab_Label             : Gtk_Widget;
+      Tab_Width, Tab_Height : Gint;
+   begin
+      Get_Origin (N.Get_Window, X_Win, Y_Win);
+      N.Get_Allocation (Alloc);
+      Mouse_X := Gint (X_Root) - X_Win - Alloc.X;
+      Mouse_Y := Gint (Y_Root) - Y_Win - Alloc.Y;
+
+      W := N.Get_Allocated_Width;
+      H := N.Get_Allocated_Height;
+      Tab_Label := N.Get_Tab_Label (N.Get_Nth_Page (0));
+
+      case N.Actual_Tab_Orientation is
+         when Horizontal | Automatic =>   --  'Automatic' is never set
+            Tab_Width  := Tab_Label.Get_Allocated_Width;
+            Tab_Height := 30;   --   ??? hard-coded
+         when Bottom_To_Top | Top_To_Bottom =>
+            Tab_Width := 30;    --    ??? hard-coded
+            Tab_Height := Tab_Label.Get_Allocated_Height;
+      end case;
+
+      case N.Get_Tab_Pos is
+         when Pos_Top =>
+            In_Tabs_Area :=
+              (Mouse_X >= 0 and then Mouse_X <= W
+               and then Mouse_Y >= 0 and then Mouse_Y <= Tab_Height);
+         when Pos_Bottom =>
+            In_Tabs_Area :=
+              (Mouse_X >= 0 and then Mouse_X <= W
+               and then Mouse_Y >= H - Tab_Height
+               and then Mouse_Y <= H);
+         when Pos_Left =>
+            In_Tabs_Area :=
+              (Mouse_X >= 0 and then Mouse_X <= Tab_Width
+               and then Mouse_Y >= 0 and then Mouse_Y <= H);
+         when Pos_Right =>
+            In_Tabs_Area :=
+              (Mouse_X >= W - Tab_Width and then Mouse_X <= W
+               and then Mouse_Y >= 0 and then Mouse_Y <= H);
+      end case;
+
+      return In_Tabs_Area;
+   end Hover_Tabs;
+
+   ----------------------------
+   -- Button_Motion_Notebook --
+   ----------------------------
+
+   function Button_Motion_Notebook
+     (Note : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean
+   is
+      N : constant MDI_Notebook := MDI_Notebook (Note);
+      Child : constant MDI_Child :=
+        MDI_Child (Get_Nth_Page (N, Get_Current_Page (N)));
+      In_Tabs_Area          : Boolean;
+   begin
+      if Child /= null
+        and then (Child.MDI.In_Drag = In_Drag
+                  or else Child.MDI.In_Drag = In_Pre_Drag)
+      then
+         In_Tabs_Area := Hover_Tabs (N, Event.X_Root, Event.Y_Root);
+
+         if not In_Tabs_Area then
+            Child.MDI.In_Drag := In_Drag;
+            return Button_Motion_Forced (Child, Event);
+         end if;
+
+         if Child.MDI.In_Drag = In_Drag then
+            --  Remove the previous highlighting, since we are back to
+            --  reordering tabs
+            Draw_Dnd_Rectangle (Child, Hide_Only => True);
+         end if;
+      end if;
+
+      return False;
+   end Button_Motion_Notebook;
 
    --------------
    -- Dnd_Data --
@@ -2343,15 +2516,9 @@ package body Gtkada.MDI is
            or Button_Release_Mask
            or Pointer_Motion_Mask);
 
-      Return_Callback.Connect
-        (Child, Signal_Button_Press_Event,
-         Return_Callback.To_Marshaller (Button_Pressed'Access));
-      Return_Callback.Connect
-        (Child, Signal_Button_Release_Event,
-         Return_Callback.To_Marshaller (Button_Release'Access));
-      Return_Callback.Connect
-        (Child, Signal_Motion_Notify_Event,
-         Return_Callback.To_Marshaller (Button_Motion'Access));
+      Child.On_Button_Press_Event (Button_Pressed'Access);
+      Child.On_Button_Release_Event (Button_Release'Access);
+      Child.On_Motion_Notify_Event (Button_Motion'Access);
       Widget_Callback.Connect
         (Child, Signal_Destroy,
          Widget_Callback.To_Marshaller (Destroy_Child'Access));
@@ -3728,6 +3895,9 @@ package body Gtkada.MDI is
         (Notebook, Signal_Switch_Page,
          Set_Focus_Child_Switch_Notebook_Page'Access);
 
+      Notebook.On_Motion_Notify_Event (Button_Motion_Notebook'Access);
+      Notebook.On_Button_Release_Event (Button_Release_Notebook'Access);
+
       On_Tab_Pos (Notebook, MDI.Tabs_Position);
       return Notebook;
    end Create_Notebook;
@@ -4036,7 +4206,7 @@ package body Gtkada.MDI is
             Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Middle);
          end if;
 
-         case Orientation is
+         case Note.Actual_Tab_Orientation is
             when Horizontal | Automatic =>
                Child.Tab_Label.Set_Angle (0.0);
             when Bottom_To_Top =>
@@ -4085,13 +4255,15 @@ package body Gtkada.MDI is
             end case;
          end if;
 
-         if Orientation = Horizontal then
+         Note.Actual_Tab_Orientation := Orientation;
+
+         if Note.Actual_Tab_Orientation = Horizontal then
             Gtk_New_Hbox (Box, Homogeneous => False);
          else
             Gtk_New_Vbox (Box, Homogeneous => False);
          end if;
 
-         if Orientation = Bottom_To_Top then
+         if Note.Actual_Tab_Orientation = Bottom_To_Top then
             Add_Close_Button;
             Add_Label;
             Add_Icon;
@@ -4103,26 +4275,20 @@ package body Gtkada.MDI is
 
          Event.Add (Box);
 
-         Note.Set_Tab_Detachable (Child, True);
+         Note.Set_Tab_Detachable (Child, False);
          Note.Set_Tab_Reorderable (Child, True);
          Note.Set_Tab_Label (Child, Event);
 
          Show_All (Event);
 
-         Return_Callback.Object_Connect
-           (Event, Signal_Button_Press_Event,
-            Return_Callback.To_Marshaller
-            (Set_Focus_Child_MDI_From_Tab'Access),
-            Child);
+         Event.On_Button_Press_Event
+           (Set_Focus_Child_MDI_From_Tab'Access, Slot => Child);
          Return_Callback.Object_Connect
            (Event, Signal_Button_Press_Event,
             Return_Callback.To_Marshaller (On_Notebook_Button_Press'Access),
             Child);
-         Return_Callback.Object_Connect
-           (Event, Signal_Button_Release_Event,
-            Return_Callback.To_Marshaller
-            (Set_Focus_Child_MDI_From_Tab'Access),
-            Child);
+         Event.On_Button_Release_Event
+           (Set_Focus_Child_MDI_From_Tab'Access, Slot => Child);
 
          --  Setup drag-and-drop, so that items can be moved from one location
          --  to another.
@@ -7349,17 +7515,17 @@ package body Gtkada.MDI is
       Child  : access Gtk_Widget_Record'Class) is
    begin
       Add_Events (Widget, Button_Press_Mask);
-      Return_Callback.Object_Connect
-        (Widget, Signal_Button_Press_Event,
-         Return_Callback.To_Marshaller (Button_Pressed_Forced'Access),
-         Child);
+      Widget.On_Button_Press_Event (Button_Pressed_Forced'Access, Child);
    end Set_Dnd_Source;
 
    ------------------------
    -- Draw_Dnd_Rectangle --
    ------------------------
 
-   procedure Draw_Dnd_Rectangle (Child : access MDI_Child_Record'Class) is
+   procedure Draw_Dnd_Rectangle
+     (Child : access MDI_Child_Record'Class;
+      Hide_Only : Boolean := False)
+   is
       MDI : constant MDI_Window := Child.MDI;
 
       Current    : Gtk_Widget;
@@ -7499,6 +7665,10 @@ package body Gtkada.MDI is
                       Allowed          => Allowed,
                       In_Central       => In_Central);
 
+      if Hide_Only then
+         Allowed := False;
+      end if;
+
       if not Allowed then
          Current := null;
          MDI.Dnd_Target := null;
@@ -7586,11 +7756,10 @@ package body Gtkada.MDI is
 
    procedure Child_Drag_Begin
      (Child : access MDI_Child_Record'Class;
-      Event : Gdk_Event)
+      Event : Gdk_Event_Button)
    is
-      Tmp : Gdk_Grab_Status;
-      Win : Gdk.Gdk_Window;
-      Xroot, Yroot : Gdouble;
+      Tmp  : Gdk_Grab_Status;
+      Win  : Gdk.Gdk_Window;
       pragma Unreferenced (Tmp);
    begin
       --  Focus and raise the child. Raise_Child must be called explicitly
@@ -7621,9 +7790,8 @@ package body Gtkada.MDI is
             Cursor => null,
             Time   => 0);
 
-         Get_Root_Coords (Event, Xroot, Yroot);
-         Child.MDI.Drag_Start_X := Gint (Xroot);
-         Child.MDI.Drag_Start_Y := Gint (Yroot);
+         Child.MDI.Drag_Start_X := Gint (Event.X_Root);
+         Child.MDI.Drag_Start_Y := Gint (Event.Y_Root);
          Child.MDI.In_Drag := In_Pre_Drag;
          Child.MDI.Dnd_Rectangle := (0, 0, 0, 0);
 

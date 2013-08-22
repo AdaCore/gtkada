@@ -387,7 +387,7 @@ package Gtkada.MDI is
 
    procedure Child_Drag_Begin
      (Child  : access MDI_Child_Record'Class;
-      Event  : Gdk.Event.Gdk_Event);
+      Event  : Gdk.Event.Gdk_Event_Button);
    --  Starts a drag-and-drop operation for the child, so that it can be put in
    --  some other place on the desktop. This should only be called when a
    --  handler for the "button_press_event" signal, passing the event itself in
