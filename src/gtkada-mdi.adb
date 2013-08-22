@@ -1854,10 +1854,9 @@ package body Gtkada.MDI is
       --  It sometimes happens that widgets let events pass through (for
       --  instance scrollbars do that), and thus wouldn't be useable anymore
       --  if we do a grab.
-
-      if Get_Window (Child) /= Event.Window then
-         return False;
-      end if;
+      --  ??? The comment above was kept for reference. We used to check that
+      --  Event.Window was Child.Get_Window, but this prevents dragging from
+      --  the title bar.
 
       return Button_Pressed_Forced (Child, Event);
    end Button_Pressed;
