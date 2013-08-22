@@ -341,6 +341,10 @@ package Gtkada.MDI is
    function Get_State (Child : access MDI_Child_Record) return State_Type;
    --  Return the current state of the child
 
+   function Get_Allowed_Areas
+     (Child : not null access MDI_Child_Record'Class) return Allowed_Areas;
+   --  What areas the child can be put int
+
    procedure Set_Icon
      (Child : access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf);
@@ -387,12 +391,16 @@ package Gtkada.MDI is
 
    procedure Child_Drag_Begin
      (Child  : access MDI_Child_Record'Class;
-      Event  : Gdk.Event.Gdk_Event_Button);
+      Event  : Gdk.Event.Gdk_Event_Button;
+      Areas  : Allowed_Areas);
    --  Starts a drag-and-drop operation for the child, so that it can be put in
    --  some other place on the desktop. This should only be called when a
    --  handler for the "button_press_event" signal, passing the event itself in
    --  parameter.
    --  The Child is immediately raised and gains the focus.
+   --  Areas indicates where the child can be dropped. This is in particular
+   --  useful if Dnd_Data was overridden and some other child will be dropped
+   --  instead.
 
    procedure Cancel_Child_Drag (Child : access MDI_Child_Record'Class);
    --  Cancel a drag operation started by Child_Drag_Begin.
@@ -1152,6 +1160,9 @@ private
       Dnd_Target        : Gdk.Gdk_Window;     --  The current target for DND
 
       Dnd_Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
+
+      Drag_Areas : Allowed_Areas;
+      --  The allowed areas during a drag
 
       --  Loaded perspectives
       Perspective_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item;

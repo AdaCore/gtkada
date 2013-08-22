@@ -364,7 +364,7 @@ package body Gtkada.MDI is
    --  Setup a widget as either a source or a target for drag-and-drop ops.
 
    procedure Get_Dnd_Target
-     (Child            : not null access MDI_Child_Record'Class;
+     (MDI              : not null access MDI_Window_Record'Class;
       Parent           : out Gtk_Widget;
       Position         : out Child_Position;
       Parent_Rectangle : out Gdk_Rectangle;
@@ -1825,6 +1825,16 @@ package body Gtkada.MDI is
       end if;
    end Set_Dnd_Message;
 
+   -----------------------
+   -- Get_Allowed_Areas --
+   -----------------------
+
+   function Get_Allowed_Areas
+     (Child : not null access MDI_Child_Record'Class) return Allowed_Areas is
+   begin
+      return Child.Areas;
+   end Get_Allowed_Areas;
+
    ----------------------------------
    -- Button_Pressed_On_Title_Icon --
    ----------------------------------
@@ -1883,7 +1893,7 @@ package body Gtkada.MDI is
       --  the user actually drags the mouse a while
 
       Print_Debug ("Button_Pressed_Forced");
-      Child_Drag_Begin (C, Event);
+      Child_Drag_Begin (C, Event, C.Areas);
 
       --  Let the event through, the drag hasn't started yet
       return False;
@@ -1951,7 +1961,7 @@ package body Gtkada.MDI is
 
             if Allow_Move then
                Get_Dnd_Target
-                 (C, Current, Position,
+                 (C.MDI, Current, Position,
                   Parent_Rect, C.MDI.Dnd_Rectangle,
                   In_Central => In_Central,
                   Allowed    => Allowed);
@@ -7657,7 +7667,7 @@ package body Gtkada.MDI is
       end Do_Draw;
 
    begin
-      Get_Dnd_Target (Child,
+      Get_Dnd_Target (MDI              => Child.MDI,
                       Parent           => Current,
                       Position         => Position,
                       Parent_Rectangle => Parent_Rect,
@@ -7756,7 +7766,8 @@ package body Gtkada.MDI is
 
    procedure Child_Drag_Begin
      (Child : access MDI_Child_Record'Class;
-      Event : Gdk_Event_Button)
+      Event : Gdk_Event_Button;
+      Areas : Allowed_Areas)
    is
       Tmp  : Gdk_Grab_Status;
       Win  : Gdk.Gdk_Window;
@@ -7794,6 +7805,7 @@ package body Gtkada.MDI is
          Child.MDI.Drag_Start_Y := Gint (Event.Y_Root);
          Child.MDI.In_Drag := In_Pre_Drag;
          Child.MDI.Dnd_Rectangle := (0, 0, 0, 0);
+         Child.MDI.Drag_Areas := Areas;
 
       else
          Print_Debug ("Child is floating, did not initiate DnD");
@@ -7827,7 +7839,7 @@ package body Gtkada.MDI is
    --------------------
 
    procedure Get_Dnd_Target
-     (Child            : not null access MDI_Child_Record'Class;
+     (MDI              : not null access MDI_Window_Record'Class;
       Parent           : out Gtk_Widget;
       Position         : out Child_Position;
       Parent_Rectangle : out Gdk_Rectangle;
@@ -7843,7 +7855,7 @@ package body Gtkada.MDI is
       Alloc                       : Gtk_Allocation;
    begin
       Gdk.Display.Get_Window_At_Pointer
-         (Get_Display (Get_Window (Child.MDI)), X, Y, Win);
+         (Get_Display (Get_Window (MDI)), X, Y, Win);
 
       if Win = null then
          Position := Position_Automatic;
@@ -7854,14 +7866,14 @@ package body Gtkada.MDI is
          Current := Gtk_Widget (Get_User_Data (Win));
 
          while Current /= null
-           and then Current /= Gtk_Widget (Child.MDI)
+           and then Current /= Gtk_Widget (MDI)
            and then Current.all not in Gtkada_Multi_Paned_Record'Class
            and then Get_Parent (Current) /= null
            and then
              (Current.all not in Gtk_Notebook_Record'Class
               or else Get_Parent (Current).all
                  not in Gtkada_Multi_Paned_Record'Class)
-           and then Get_Parent (Current) /= Gtk_Widget (Child.MDI)
+           and then Get_Parent (Current) /= Gtk_Widget (MDI)
          loop
             Current := Get_Parent (Current);
          end loop;
@@ -7875,15 +7887,15 @@ package body Gtkada.MDI is
             return;
          end if;
 
-         if Current = Gtk_Widget (Child.MDI)
-           and then Child.MDI.Central /= null
+         if Current = Gtk_Widget (MDI)
+           and then MDI.Central /= null
          then
-            Current := Gtk_Widget (Child.MDI.Central);
+            Current := Gtk_Widget (MDI.Central);
 
             --  Central area not empty ? We have therefore passed the mouse on
             --  one of the handles, and should not allow a drop there
 
-            if not At_End (Start (Child.MDI.Central)) then
+            if not At_End (Start (MDI.Central)) then
                Position := Position_Automatic;
                Parent   := null;
                Allowed  := True;
@@ -7898,12 +7910,12 @@ package body Gtkada.MDI is
          Rectangle :=
            (X      => 0,
             Y      => 0,
-            Width  => Get_Allocated_Width (Child.MDI),
-            Height => Get_Allocated_Height (Child.MDI));
+            Width  => Get_Allocated_Width (MDI),
+            Height => Get_Allocated_Height (MDI));
          Parent_Rectangle := Rectangle;
 
          Gdk.Window.Get_Device_Position
-            (Self   => Get_Window (Child.MDI),
+            (Self   => Get_Window (MDI),
              Device => Gtk.Main.Get_Current_Event_Device,
              X      => X,
              Y      => Y,
@@ -7912,7 +7924,7 @@ package body Gtkada.MDI is
 
          if Y < Max_Drag_Border_Width / 2 then
             Position := Position_Top;
-            Parent := Gtk_Widget (Child.MDI);
+            Parent := Gtk_Widget (MDI);
             In_Central := False;
             Rectangle :=
               (X      => 0,
@@ -7922,7 +7934,7 @@ package body Gtkada.MDI is
 
          elsif Y > Rectangle.Height - Max_Drag_Border_Width / 2 then
             Position := Position_Bottom;
-            Parent := Gtk_Widget (Child.MDI);
+            Parent := Gtk_Widget (MDI);
             In_Central := False;
             Rectangle :=
               (X      => 0,
@@ -7932,7 +7944,7 @@ package body Gtkada.MDI is
 
          elsif X < Max_Drag_Border_Width / 2 then
             Position := Position_Left;
-            Parent := Gtk_Widget (Child.MDI);
+            Parent := Gtk_Widget (MDI);
             In_Central := False;
             Rectangle :=
               (X      => 0,
@@ -7942,7 +7954,7 @@ package body Gtkada.MDI is
 
          elsif X > Rectangle.Width - Max_Drag_Border_Width / 2 then
             Position := Position_Right;
-            Parent := Gtk_Widget (Child.MDI);
+            Parent := Gtk_Widget (MDI);
             In_Central := False;
             Rectangle :=
               (X      => Rectangle.Width - Max_Drag_Border_Width / 2,
@@ -7955,12 +7967,12 @@ package body Gtkada.MDI is
             --  Parent is likey a Gtk_Notebook
 
             Gtkada.Style.Get_Offset
-              (Parent, Child.MDI, Rectangle.X, Rectangle.Y);
+              (Parent, MDI, Rectangle.X, Rectangle.Y);
             Parent.Get_Allocation (Alloc);
 
             --  Compute device position relative to the MDI
             Gdk.Window.Get_Device_Position
-               (Self   => Get_Window (Child.MDI),
+               (Self   => Get_Window (MDI),
                 Device => Gtk.Main.Get_Current_Event_Device,
                 X      => X,
                 Y      => Y,
@@ -7974,7 +7986,7 @@ package body Gtkada.MDI is
                           Height => Alloc.Height);
             Parent_Rectangle := Rectangle;
 
-            In_Central := In_Central_Area (Child.MDI, Parent);
+            In_Central := In_Central_Area (MDI, Parent);
 
             Border_Height := Gint'Min
               (Max_Drag_Border_Width, Rectangle.Height / 3);
@@ -8010,9 +8022,9 @@ package body Gtkada.MDI is
          end if;
 
          Allowed :=
-           Child.Areas = Both
-           or else (Child.Areas = Central_Only and then In_Central)
-           or else (Child.Areas = Sides_Only and then not In_Central);
+           MDI.Drag_Areas = Both
+           or else (MDI.Drag_Areas = Central_Only and then In_Central)
+           or else (MDI.Drag_Areas = Sides_Only and then not In_Central);
       end if;
    end Get_Dnd_Target;
 
