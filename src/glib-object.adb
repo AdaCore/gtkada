@@ -570,6 +570,20 @@ package body Glib.Object is
          Internal (D);
       end Free_Data;
 
+      ------------
+      -- Is_Set --
+      ------------
+
+      function Is_Set
+        (Object : access GObject_Record'Class;
+         Id     : String := "user_data") return Boolean
+      is
+         D : constant Cb_Record_Access :=
+           Convert (Get_Data_Internal (Get_Object (Object), Id & ASCII.NUL));
+      begin
+         return D /= null and then D.Ptr /= null;
+      end Is_Set;
+
       ---------
       -- Get --
       ---------

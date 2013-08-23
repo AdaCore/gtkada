@@ -105,7 +105,6 @@ with Gtk.Window;              use Gtk.Window;
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
 with Gtkada.Style;
-with Gtkada.Types;
 
 package body Gtkada.MDI is
 
@@ -3042,17 +3041,15 @@ package body Gtkada.MDI is
       --  windows do not keep track of the MDI child they belong to...
 
       Win := Gtk_Window (Get_Toplevel (Widget));
-      if Win /= null then
-         begin
-            C := Child_User_Data.Get (Win, "parent_mdi_child");
-            return Insert_Child_If_Needed (C.MDI, C);
-         exception
-            when Gtkada.Types.Data_Error =>
-               return null;
-         end;
-      else
-         return null;
+      if Win /= null
+         and then Child_User_Data.Is_Set (Win, "parent_mdi_child")
+      then
+         --  The call to Get will never raise a Data_Error exception
+         C := Child_User_Data.Get (Win, "parent_mdi_child");
+         return Insert_Child_If_Needed (C.MDI, C);
       end if;
+
+      return null;
    end Find_MDI_Child_From_Widget;
 
    ---------------------------

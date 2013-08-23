@@ -460,6 +460,11 @@ package Glib.Object is
       --  an other object with the same ID, or when the object itself is
       --  destroyed
 
+      function Is_Set
+        (Object : access GObject_Record'Class;
+         Id     : String := "user_data") return Boolean;
+      --  Whether the given user data was set on the object.
+
       function Get
         (Object : access GObject_Record'Class;
          Id     : String := "user_data") return Data_Type;
