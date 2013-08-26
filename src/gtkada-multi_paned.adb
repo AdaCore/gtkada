@@ -1847,15 +1847,14 @@ package body Gtkada.Multi_Paned is
         Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
    begin
       Print_Debug ("Get_Preferred_Width");
+      Minimum_Size := 10;
       if Split.Children /= null then
          Size_Request_Child (Split, Split.Children, Split.Handle_Width);
 
          --  ??? Should look at the number of handles and children with a
          --  fixed size
-         Minimum_Size := 0;
-         Natural_Size := Gint'Max (0, Gint (Split.Children.Width));
+         Natural_Size := Gint'Max (Minimum_Size, Gint (Split.Children.Width));
       else
-         Minimum_Size := 0;
          Natural_Size := 100;
       end if;
    end Get_Preferred_Width;
@@ -1871,15 +1870,14 @@ package body Gtkada.Multi_Paned is
         Gtkada_Multi_Paned (Gtk.Widget.Convert (Paned));
    begin
       Print_Debug ("Get_Preferred_Height");
+      Minimum_Size := 10;
       if Split.Children /= null then
          Size_Request_Child (Split, Split.Children, Split.Handle_Width);
 
          --  ??? Should look at the number of handles and children with a
          --  fixed size
-         Minimum_Size := 0;
-         Natural_Size := Gint'Max (0, Gint (Split.Children.Height));
+         Natural_Size := Gint'Max (Minimum_Size, Gint (Split.Children.Height));
       else
-         Minimum_Size := 0;
          Natural_Size := 100;
       end if;
    end Get_Preferred_Height;
