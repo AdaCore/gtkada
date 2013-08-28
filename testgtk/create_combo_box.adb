@@ -24,6 +24,7 @@
 with Gdk.Color;              use Gdk.Color;
 with Gdk.Pixbuf;             use Gdk.Pixbuf;
 with Glib;                   use Glib;
+with Glib.Object;            use Glib.Object;
 with Gtk.Box;                use Gtk.Box;
 with Gtk.Frame;              use Gtk.Frame;
 with Gtk.Cell_Renderer_Pixbuf; use Gtk.Cell_Renderer_Pixbuf;
@@ -32,7 +33,9 @@ with Gtk.Combo_Box_Text;     use Gtk.Combo_Box_Text;
 with Gtk.Combo_Box;          use Gtk.Combo_Box;
 with Gtk.Cell_Layout;        use Gtk.Cell_Layout;
 with Gtk.List_Store;         use Gtk.List_Store;
+with Gtk.Tooltip;            use Gtk.Tooltip;
 with Gtk.Tree_Model;         use Gtk.Tree_Model;
+with Gtk.Widget;             use Gtk.Widget;
 
 package body Create_Combo_Box is
 
@@ -53,6 +56,14 @@ package body Create_Combo_Box is
    procedure Set_Color_Pixbuf
      (Model : Gtk_List_Store; Iter : Gtk_Tree_Iter; Color : String);
    --  Add a pixbuf to the second column of Model
+
+   function On_Query_Tooltip
+      (Widget        : access Gtk_Widget_Record'Class;
+       X, Y          : Gint;
+       Keyboard_Mode : Boolean;
+       Tooltip       : not null access Glib.Object.GObject_Record'Class)
+      return Boolean;
+   --  Compute an item specific tooltip for the first combo box
 
    ----------
    -- Help --
@@ -123,6 +134,26 @@ package body Create_Combo_Box is
       Unref (Pix);
    end Set_Color_Pixbuf;
 
+   ----------------------
+   -- On_Query_Tooltip --
+   ----------------------
+
+   function On_Query_Tooltip
+      (Widget        : access Gtk_Widget_Record'Class;
+       X, Y          : Gint;
+       Keyboard_Mode : Boolean;
+       Tooltip       : not null access Glib.Object.GObject_Record'Class)
+      return Boolean
+   is
+      pragma Unreferenced (X, Y, Keyboard_Mode);
+      Combo : constant Gtk_Combo_Box := Gtk_Combo_Box (Widget);
+      Tip   : constant Gtk_Tooltip := Gtk_Tooltip (Tooltip);
+   begin
+      Tip.Set_Text ("This is the tooltip for the active item "
+                    & Gint'Image (Combo.Get_Active));
+      return True;  --  display the tooltip
+   end On_Query_Tooltip;
+
    ---------
    -- Run --
    ---------
@@ -149,6 +180,62 @@ package body Create_Combo_Box is
       Append_Text (TCombo, "Simple Text Combo 2");
       Append_Text (TCombo, "Simple Text Combo 3");
       Set_Active (TCombo, 0);
+
+      --  Let's make the text of the combo box tooltip depend on which item
+      --  is selected. Unfortunately, there doesn't seem to be a way to set
+      --  a tooltip on the popup window itself, since we do not have access
+      --  to that window.
+
+      TCombo.Set_Tooltip_Text ("A general tooltip");
+      TCombo.On_Query_Tooltip (On_Query_Tooltip'Access);
+
+      --  A combo box with an entry, and some additional columns in the
+      --  popup
+
+      Gtk_New (Model, (Column_0 => GType_String,   --  text for the entry
+                       Column_1 => GType_String)); --  text for the popup
+
+      for Choice in 1 .. 10 loop
+         Model.Append (Iter);
+         Set (Model, Iter, Column_0, "Choice" & Integer'Image (Choice));
+         Set (Model, Iter, Column_1,
+              "Some explanation on choice" & Integer'Image (Choice));
+      end loop;
+
+      Gtk_New_With_Model_And_Entry (Combo, +Model);
+      Box.Pack_Start (Combo, Expand => False);
+
+      Gtk_New (Render);
+      Pack_Start    (+Combo, Render, Expand => True);
+      Add_Attribute (+Combo, Render, "markup", Column_1);
+
+      Combo.Set_Entry_Text_Column (Column_0);  --  before Set_Active
+      Combo.Set_Active (0);
+
+      --  A slightly different combo box, where the items are on multiple
+      --  lines. This doesn't quite replace a tooltip, but might be useful
+      --  anyway
+
+      Gtk_New (Model, (Column_0 => GType_String,   --  text for the entry
+                       Column_1 => GType_String)); --  text for the popup
+
+      for Choice in 1 .. 10 loop
+         Model.Append (Iter);
+         Set (Model, Iter, Column_0, "Choice" & Integer'Image (Choice));
+         Set (Model, Iter, Column_1,
+              "Choice" & Integer'Image (Choice) & ASCII.LF &
+              "<small>Some explanation on choice" & Integer'Image (Choice)
+              & "</small>");
+      end loop;
+
+      Gtk_New_With_Model (Combo, +Model);
+      Box.Pack_Start (Combo, Expand => False);
+
+      Gtk_New (Render);
+      Pack_Start    (+Combo, Render, Expand => True);
+      Add_Attribute (+Combo, Render, "markup", Column_1);
+
+      Combo.Set_Active (0);
 
       --  Create a model. This is a set of rows, each with two columns in this
       --  specific case.

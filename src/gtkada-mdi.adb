@@ -279,8 +279,8 @@ package body Gtkada.MDI is
    --  operation).
 
    function Button_Pressed_On_Title_Icon
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean;
+     (Child : access GObject_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
    --  The title icon of a child window was clicked (and if it was a
    --  double click, we want to close that child).
 
@@ -1839,17 +1839,18 @@ package body Gtkada.MDI is
    ----------------------------------
 
    function Button_Pressed_On_Title_Icon
-     (Child : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
+     (Child : access GObject_Record'Class;
+      Event : Gdk_Event_Button) return Boolean
    is
    begin
-      if Get_Event_Type (Event) = Gdk_2button_Press
-        and then Event.Button.Button = 1
+      if Event.The_Type = Gdk_2button_Press
+        and then Event.Button = 1
       then
          Close_Child (MDI_Child (Child));
          return False;
       end if;
-      return True;
+
+      return Button_Pressed_Forced (Child, Event);
    end Button_Pressed_On_Title_Icon;
 
    --------------------
@@ -2547,16 +2548,15 @@ package body Gtkada.MDI is
         (Child.Main_Box, Event, Expand => False, Fill => False);
       Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
       Add (Event, Child.Title_Box);
+      Event.On_Button_Press_Event (Button_Pressed_Forced'Access, Child);
 
       Gtk_New (Event);
       Gtk_New (Child.Title_Icon);
       Ref (Child.Title_Icon);  --  floating a child should not destroy icon
       Event.Add (Child.Title_Icon);
       Child.Title_Box.Pack_Start (Event, Expand => False);
-      Return_Callback.Object_Connect
-        (Event, Signal_Button_Press_Event,
-         Return_Callback.To_Marshaller (Button_Pressed_On_Title_Icon'Access),
-         Child);
+      Event.On_Button_Press_Event
+        (Button_Pressed_On_Title_Icon'Access, Child);
 
       Gtk_New (Child.Title_Label);
       Child.Title_Box.Pack_Start
