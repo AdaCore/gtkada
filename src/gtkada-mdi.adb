@@ -1867,6 +1867,10 @@ package body Gtkada.MDI is
       --  Event.Window was Child.Get_Window, but this prevents dragging from
       --  the title bar.
 
+      if Event.Window /= Child.Get_Window then
+         return False;
+      end if;
+
       return Button_Pressed_Forced (Child, Event);
    end Button_Pressed;
 
