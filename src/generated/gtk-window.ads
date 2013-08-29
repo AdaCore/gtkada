@@ -1486,11 +1486,11 @@ package Gtk.Window is
 
    type Cb_Gtk_Window_Gtk_Widget_Void is not null access procedure
      (Self   : access Gtk_Window_Record'Class;
-      Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+      Object : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    type Cb_GObject_Gtk_Widget_Void is not null access procedure
      (Self   : access Glib.Object.GObject_Record'Class;
-      Object : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+      Object : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    Signal_Set_Focus : constant Glib.Signal_Name := "set-focus";
    procedure On_Set_Focus
