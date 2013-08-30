@@ -814,26 +814,17 @@ package body Gtkada.MDI is
      (MDI : access Gtk_Widget_Record'Class) return Boolean
    is
       M : constant MDI_Window := MDI_Window (MDI);
-      L : Widget_List.Glist;
-      C : MDI_Child;
+      Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
+      W : Gtk_Widget;
    begin
       Print_Debug ("Toplevel_Focus_In");
 
-      --  Find the last child that had focus in the MDI
-      L := M.Items;
-      while L /= Null_List loop
-         C := MDI_Child (Get_Data (L));
-         if C.State = Normal then
-            M.Set_Focus_Child (C);
-            return True;
-         end if;
+      W := Win.Get_Focus;
+      if W /= null then
+         Set_Focus_Child (M, W);
+      end if;
 
-         L := Next (L);
-      end loop;
-
-      Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
-
-      return True;
+      return False;
    end Toplevel_Focus_In;
 
    ---------------------------
