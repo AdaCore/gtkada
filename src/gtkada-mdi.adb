@@ -814,28 +814,26 @@ package body Gtkada.MDI is
      (MDI : access Gtk_Widget_Record'Class) return Boolean
    is
       M : constant MDI_Window := MDI_Window (MDI);
+      L : Widget_List.Glist;
+      C : MDI_Child;
    begin
       Print_Debug ("Toplevel_Focus_In");
 
-      --  If the current child was a floating window, make sure it keeps the
-      --  focus, and that no one gains the keyboard focus in the main window.
-      --  This avoids a situation where an TextView has the keyboard focus, but
-      --  isn't the MDI focus child.
+      --  Find the last child that had focus in the MDI
+      L := M.Items;
+      while L /= Null_List loop
+         C := MDI_Child (Get_Data (L));
+         if C.State = Normal then
+            M.Set_Focus_Child (C);
+            return True;
+         end if;
 
-      if M.Focus_Child = null then
-         Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
+         L := Next (L);
+      end loop;
 
-      elsif M.Focus_Child.State = Floating then
-         Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
+      Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
 
-      else
-         --  Make sure the keyboard focus is correctly restored, for instance
-         --  if we had open a temporary dialog and then closed it to go back
-         --  to GPS.
-         Give_Focus_To_Child (M.Focus_Child);
-      end if;
-
-      return False;
+      return True;
    end Toplevel_Focus_In;
 
    ---------------------------
