@@ -1,0 +1,422 @@
+2013-05-17  Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (extend_selection): Fix typo in documentation.
+	When extending the selection in SELECT_WORDS granularity past the
+	end of a line, select only the EOL character(s).
+	When extending the selection in SELECT_LINES granularity, include
+	the EOL character(s) in the selection.
+
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=630825
+
+2013-05-16	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/gdkwindow.c (send_crossing_event): Do not test whether the
+	source device is a touchscreen if there is no source device.
+
+2013-05-16	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
+	of characters validated at each call, this gives a better behavior
+	when loading big files.
+	Submitted at http://bugzilla.gnome.org/show_bug.cgi?id=332057
+
+2013-05-16	Nicolas Setton  <setton@adacore.com>
+
+	* gtktreeview.c (gtk_tree_view_enter_notify): Do not react to
+	crossing events.
+	(gtk_tree_view_leave_notify): Likewise.
+	Prevents unwanted side-effects of synth-crossing. (I106-018)
+
+	* gtk/gtktreeview.c (gtk_tree_view_enter_notify): Put kludge to
+	work around Gtk+ bug in handling of keyboard keys+focus events in
+	tree view (HC15-032).
+
+2013-05-16	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (gtk_text_view_check_cursor_blink): Do not
+	register a cursor blink if the text view if not realized.
+	This prevents a segmentation fault which can happen if the
+	text_view happens to get the focus before it has been realized.
+
+2013-05-16	Arnaud Charlet	<charlet@adacore.com>
+
+	* gtk/gtkentry.c (gtk_entry_set_buffer): Prevent crashing when
+	encountering a null buffer as reported on gtk+ list.
+
+2013-05-16	Nicolas Setton	<setton@adacore.com>
+
+	* gdk/x11/gdkmain-x11.c (gdk_x_error, gdk_x_io_error): Make
+	functions external, so it is possible to break on them in the
+	stripped version of the library.
+
+2013-05-15	Nicolas Setton  <setton@adacore.com>
+
+	(gtk/gtkdnd.c): Deactivate support for X11 GenericEvent,
+	which is not defined in old X11 versions (Suse10 for instance).
+	(gtk/a11y/gtkaccessibility.c): Deactivate initialization of
+	atk-bridge, not built.
+	(configure): We do not support atk-bridge, which requires dbus.
+
+2012-04-20	Nicolas Setton  <setton@adacore.com>
+
+	(gtk/gtkcellarea.c): Fix build error.
+
+	To be investigated further.
+
+2012-04-20	Nicolas Setton  <setton@adacore.com>
+
+	(configure, gdk/x11/gdkdevice-xi2.c, gdk/x11/gdkdevicemanager-xi2.c,
+	gdk/gdk.symbols, gtk/gtktypefuncs.c, gtk/Makefile.in): Deactivate
+	support for XINPUT_2, not available on old versions of Linux.
+	To be discussed on the gtk-devel mailing list.
+
+--- configure.orig	2012-04-19 16:02:25.000000000 +0200
++++ configure	2012-04-19 16:03:15.000000000 +0200
+@@ -23020,7 +23020,8 @@
+   fi
+ 
+   if test "x$have_xinput2" != "xyes"; then :
+-  as_fn_error $? "*** XInput2 extension not found. Check 'config.log' for more details." "$LINENO" 5
++$as_echo "#undef XINPUT_2" >>confdefs.h
++
+ fi
+ 
+   # Check for the RANDR extension
+--- gdk/x11/gdkdevice-xi2.c.orig	2012-04-19 16:38:12.000000000 +0200
++++ gdk/x11/gdkdevice-xi2.c	2012-04-19 16:38:35.000000000 +0200
+@@ -15,6 +15,8 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#ifdef XINPUT_2
++
+ #include "config.h"
+ 
+ #include "gdkx11device-xi2.h"
+@@ -866,3 +868,5 @@
+ 
+   return device->device_id;
+ }
++
++#endif
+--- gdk/x11/gdkdevicemanager-xi2.c.orig	2012-04-19 16:39:04.000000000 +0200
++++ gdk/x11/gdkdevicemanager-xi2.c	2012-04-19 16:39:25.000000000 +0200
+@@ -15,6 +15,8 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#ifdef XINPUT_2
++
+ #include "config.h"
+ 
+ #include "gdkx11devicemanager-xi2.h"
+@@ -1656,3 +1658,5 @@
+   return g_hash_table_lookup (device_manager_xi2->id_table,
+                               GINT_TO_POINTER (device_id));
+ }
++
++#endif
+--- gdk/gdk.symbols.orig	2012-04-19 16:54:28.000000000 +0200
++++ gdk/gdk.symbols	2012-04-19 16:54:30.000000000 +0200
+@@ -530,8 +530,6 @@
+ gdk_x11_device_get_id
+ gdk_x11_device_manager_core_get_type
+ gdk_x11_device_manager_lookup
+-gdk_x11_device_manager_xi2_get_type
+-gdk_x11_device_xi2_get_type
+ gdk_x11_display_broadcast_startup_message
+ gdk_x11_display_error_trap_pop
+ gdk_x11_display_error_trap_pop_ignored
+--- gtk/gtktypefuncs.c.orig	2012-04-19 16:59:59.000000000 +0200
++++ gtk/gtktypefuncs.c	2012-04-19 17:00:32.000000000 +0200
+@@ -73,12 +73,6 @@
+ *tp++ = gdk_x11_device_manager_core_get_type();
+ #endif
+ #ifdef GDK_WINDOWING_X11
+-*tp++ = gdk_x11_device_manager_xi2_get_type();
+-#endif
+-#ifdef GDK_WINDOWING_X11
+-*tp++ = gdk_x11_device_xi2_get_type();
+-#endif
+-#ifdef GDK_WINDOWING_X11
+ *tp++ = gdk_x11_display_get_type();
+ #endif
+ #ifdef GDK_WINDOWING_X11
+--- gtk/Makefile.in.orig	2012-04-19 17:06:22.000000000 +0200
++++ gtk/Makefile.in	2012-04-19 17:06:51.000000000 +0200
+@@ -5426,6 +5426,7 @@
+ 	$(AM_V_GEN) echo '#include <gtk/gtkx.h>' > xgen-gtfsrc.c && \
+ 	  ${CPP} $(DEFS) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) xgen-gtfsrc.c | \
+ 	  $(GREP) -o '\bg[td]k_[a-zA-Z0-9_]*_get_type\b' | \
++          grep -v _xi2 | \
+ 	  sort | uniq | \
+ 	  $(SED) '{ s/^/*tp++ = /; s/$$/();/; s/^.*\(gdk_x11\|gtk_plug_\|gtk_socket_\).*$$/#ifdef GDK_WINDOWING_X11\n&\n#endif/; }' > xgen-gtf \
+ 	&& cp xgen-gtf $@ && rm -f xgen-gtf
+--- gtk/gtkcellarea.c.orig	2012-04-19 16:51:11.000000000 +0200
++++ gtk/gtkcellarea.c	2012-04-19 16:51:25.000000000 +0200
+@@ -707,9 +707,9 @@
+                   GTK_TYPE_TREE_ITER,
+                   G_TYPE_BOOLEAN,
+                   G_TYPE_BOOLEAN);
+-  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
++/*  g_signal_set_va_marshaller (cell_area_signals[SIGNAL_APPLY_ATTRIBUTES], G_TYPE_FROM_CLASS (class),
+                               _gtk_marshal_VOID__OBJECT_BOXED_BOOLEAN_BOOLEANv);
+-
++*/
+   /**
+    * GtkCellArea::add-editable:
+    * @area: the #GtkCellArea where editing started
+--- configure.orig	2013-05-15 13:01:46.000000000 +0200
++++ configure	2013-05-15 13:01:57.000000000 +0200
+@@ -24086,7 +24086,7 @@
+ ########################################
+ 
+ if test x$enable_x11_backend = xyes; then
+-   ATK_PACKAGES="atk atk-bridge-2.0"
++   ATK_PACKAGES="atk"
+ else
+    ATK_PACKAGES="atk"
+ fi
+--- gtk/a11y/gtkaccessibility.c.orig	2013-05-15 13:04:27.000000000 +0200
++++ gtk/a11y/gtkaccessibility.c	2013-05-15 13:04:54.000000000 +0200
+@@ -38,7 +38,7 @@
+ #include <gtk/gtkaccessible.h>
+ 
+ #ifdef GDK_WINDOWING_X11
+-#include <atk-bridge.h>
++// #include <atk-bridge.h>
+ #endif
+ 
+ static gboolean gail_focus_watcher      (GSignalInvocationHint *ihint,
+@@ -990,7 +990,7 @@
+   g_clear_object (&atk_misc_instance);
+ 
+ #ifdef GDK_WINDOWING_X11
+-  atk_bridge_adaptor_cleanup ();
++//  atk_bridge_adaptor_cleanup ();
+ #endif
+ 
+   undo_window_event_initialization ();
+@@ -1012,7 +1012,7 @@
+   do_window_event_initialization ();
+ 
+ #ifdef GDK_WINDOWING_X11
+-  atk_bridge_adaptor_init (NULL, NULL);
++//  atk_bridge_adaptor_init (NULL, NULL);
+ #endif
+ 
+   atk_misc_instance = g_object_new (GTK_TYPE_MISC_IMPL, NULL);
+--- gtk/gtkdnd.c.orig	2013-05-15 13:49:59.000000000 +0200
++++ gtk/gtkdnd.c	2013-05-15 13:50:12.000000000 +0200
+@@ -411,7 +411,7 @@
+   if ((ev->type == KeyPress || ev->type == KeyRelease) &&
+       ev->xkey.root == ev->xkey.window)
+     ev->xkey.window = (Window)data;
+-  else if (ev->type == GenericEvent)
++  /* else if (ev->type == GenericEvent)
+     {
+       XGenericEventCookie *cookie;
+       XIDeviceEvent *dev;
+@@ -422,7 +422,7 @@
+       if (dev->evtype == XI_KeyPress ||
+           dev->evtype == XI_KeyRelease)
+         dev->event = (Window)data;
+-    }
++    } */
+ 
+   return GDK_FILTER_CONTINUE;
+ }
+--- ../gtk+-3.8.2-orig/gdk/x11/gdkmain-x11.c	2013-03-09 21:03:17.000000000 +0100
++++ gdk/x11/gdkmain-x11.c	2013-05-16 11:26:58.100354802 +0200
+@@ -98,9 +98,9 @@
+  * Private function declarations
+  */
+ 
+-static int	    gdk_x_error			 (Display     *display, 
+-						  XErrorEvent *error);
+-static int	    gdk_x_io_error		 (Display     *display);
++int	    gdk_x_error			 (Display     *display, 
++					  XErrorEvent *error);
++int	    gdk_x_io_error		 (Display     *display);
+ 
+ void
+ _gdk_x11_windowing_init (void)
+--- ../gtk+-3.8.2-orig/gdk/x11/gdkmain-x11.c	2013-05-16 13:07:19.397371139 +0200
++++ gdk/x11/gdkmain-x11.c	2013-05-16 13:10:06.480514882 +0200
+@@ -231,7 +231,7 @@
+  *--------------------------------------------------------------
+  */
+ 
+-static int
++int
+ gdk_x_io_error (Display *display)
+ {
+   /* This is basically modelled after the code in XLib. We need
+@@ -262,7 +262,7 @@
+ /* X error handler. Keep the name the same because people are used to
+  * breaking on it in the debugger.
+  */
+-static int
++int
+ gdk_x_error (Display	 *xdisplay,
+ 	     XErrorEvent *error)
+ {
+--- ../gtk+-3.8.2-orig/gtk/gtkentry.c	2013-05-13 12:15:07.000000000 +0200
++++ gtk/gtkentry.c	2013-05-16 11:34:41.228585436 +0200
+@@ -7220,8 +7220,11 @@
+   g_object_notify (obj, "invisible-char-set");
+   g_object_thaw_notify (obj);
+ 
+-  gtk_editable_set_position (GTK_EDITABLE (entry), 0);
+-  gtk_entry_recompute (entry);
++  if (priv->buffer)
++    {
++      gtk_editable_set_position (GTK_EDITABLE (entry), 0);
++      gtk_entry_recompute (entry);
++    }
+ }
+ 
+ /**
+--- ../gtk+-3.8.2-orig/gtk/gtktextview.c	2013-05-13 04:54:45.000000000 +0200
++++ gtk/gtktextview.c	2013-05-16 12:05:44.349701644 +0200
+@@ -5571,7 +5571,7 @@
+       priv->cursor_visible &&
+       gtk_widget_has_focus (GTK_WIDGET (text_view)))
+     {
+-      if (cursor_blinks (text_view))
++      if (cursor_blinks (text_view) && gtk_widget_get_realized (text_view))
+ 	{
+ 	  if (priv->blink_timeout == 0)
+ 	    {
+--- ../gtk+-3.8.2-orig/gtk/gtktreeview.c	2013-05-13 12:15:07.000000000 +0200
++++ gtk/gtktreeview.c	2013-05-16 12:30:25.226260345 +0200
+@@ -5897,11 +5897,15 @@
+     return FALSE;
+ 
+   if (event->mode == GDK_CROSSING_GRAB ||
++      event->mode == GDK_CROSSING_NORMAL ||
+       event->mode == GDK_CROSSING_GTK_GRAB ||
+       event->mode == GDK_CROSSING_GTK_UNGRAB ||
+       event->mode == GDK_CROSSING_STATE_CHANGED)
+     return TRUE;
+ 
++  if (event->y == 0)
++    return FALSE;
++
+   /* find the node internally */
+   new_y = TREE_WINDOW_Y_TO_RBTREE_Y(tree_view, event->y);
+   if (new_y < 0)
+@@ -5925,6 +5929,7 @@
+   GtkTreeView *tree_view;
+ 
+   if (event->mode == GDK_CROSSING_GRAB ||
++      event->mode == GDK_CROSSING_NORMAL ||
+       event->mode == GDK_CROSSING_GTK_GRAB ||
+       event->mode == GDK_CROSSING_GTK_UNGRAB)
+     return TRUE;
+--- ../gtk+-3.8.2-orig/gtk/gtktextview.c	2013-05-16 12:33:39.370669604 +0200
++++ gtk/gtktextview.c	2013-05-16 12:34:24.108600887 +0200
+@@ -3934,7 +3934,7 @@
+ 
+   DV(g_print(G_STRLOC"\n"));
+   
+-  gtk_text_layout_validate (text_view->priv->layout, 2000);
++  gtk_text_layout_validate (text_view->priv->layout, 20000);
+ 
+   gtk_text_view_update_adjustments (text_view);
+   
+--- gdk/gdkwindow.c.orig	2013-05-16 18:19:35.991123397 +0200
++++ gdk/gdkwindow.c	2013-05-16 18:21:29.972051184 +0200
+@@ -8515,7 +8515,8 @@
+ 
+   if (type == GDK_ENTER_NOTIFY &&
+       (pointer_info->need_touch_press_enter ||
+-       gdk_device_get_source (source_device) == GDK_SOURCE_TOUCHSCREEN) &&
++         ((source_device) && 
++          (gdk_device_get_source (source_device) == GDK_SOURCE_TOUCHSCREEN))) &&
+       mode != GDK_CROSSING_TOUCH_BEGIN &&
+       mode != GDK_CROSSING_TOUCH_END)
+     {
+--- ../orig/gtk+-3.8.2/gtk/gtktextview.c	2013-05-17 15:33:16.119348286 +0200
++++ gtk/gtktextview.c	2013-05-17 15:54:02.995192587 +0200
+@@ -6711,7 +6711,7 @@
+ /*
+  * Move @start and @end to the boundaries of the selection unit (indicated by 
+  * @granularity) which contained @start initially.
+- * If the selction unit is SELECT_WORDS and @start is not contained in a word
++ * If the selection unit is SELECT_WORDS and @start is not contained in a word
+  * the selection is extended to all the white spaces between the end of the 
+  * word preceding @start and the start of the one following.
+  */
+@@ -6739,27 +6739,37 @@
+       else
+ 	{
+ 	  GtkTextIter tmp;
+-
+-	  tmp = *start;
+-	  if (gtk_text_iter_backward_visible_word_start (&tmp))
+-	    gtk_text_iter_forward_visible_word_end (&tmp);
+-
+-	  if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (start))
+-	    *start = tmp;
+-	  else
+-	    gtk_text_iter_set_line_offset (start, 0);
+-
+-	  tmp = *end;
+-	  if (!gtk_text_iter_forward_visible_word_end (&tmp))
+-	    gtk_text_iter_forward_to_end (&tmp);
+-
+-	  if (gtk_text_iter_ends_word (&tmp))
+-	    gtk_text_iter_backward_visible_word_start (&tmp);
+-
+-	  if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (end))
+-	    *end = tmp;
+-	  else
+-	    gtk_text_iter_forward_to_line_end (end);
++          if (gtk_text_iter_ends_line (start))
++            {
++              /* start is at an end of line: simply extend the
++               * selection to include the end-of-line character(s).
++               */
++              if (!gtk_text_iter_forward_line (end))
++                gtk_text_iter_forward_to_end (end);
++            }
++           else
++            {
++	      tmp = *start;
++	      if (gtk_text_iter_backward_visible_word_start (&tmp))
++                gtk_text_iter_forward_visible_word_end (&tmp);
++
++	      if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (start))
++	        *start = tmp;
++	      else
++	        gtk_text_iter_set_line_offset (start, 0);
++
++	      tmp = *end;
++	      if (!gtk_text_iter_forward_visible_word_end (&tmp))
++	        gtk_text_iter_forward_to_end (&tmp);
++
++	      if (gtk_text_iter_ends_word (&tmp))
++	        gtk_text_iter_backward_visible_word_start (&tmp);
++
++	      if (gtk_text_iter_get_line (&tmp) == gtk_text_iter_get_line (end))
++	        *end = tmp;
++	      else
++	        gtk_text_iter_forward_to_line_end (end);
++            }
+ 	}
+     }
+   else if (granularity == SELECT_LINES) 
+@@ -6782,6 +6792,12 @@
+ 	  if (!gtk_text_view_starts_display_line (text_view, end))
+ 	    gtk_text_view_forward_display_line_end (text_view, end);
+ 	}
++
++       /* At this point end points at the end of a line:
++        * include the end-of-line character(s) in the selection.
++        */
++       if (!gtk_text_iter_forward_line (end))
++         gtk_text_iter_forward_to_end (end);
+     }
+ }
+  
