@@ -151,17 +151,6 @@ some examples of code that you might find interesting for your own application.
   This directory also contains the application `testcairo` which
   demonstrates the use of various Cairo functions in GtkAda.
 
-* :file:`examples/` directory:
-
-  This directory contains some small examples, unrelated to :file:`testgtk`.
-  For instance, this is where you will find new widgets created
-  directly in Ada, as examples of how to create your own callback
-  marshallers.
-
-  On the whole these examples are a little more complex than :file:`testgtk` but
-  since they focus on demonstrating a precise concept, they are still quite
-  easy to understand.
-
 * :file:`docs/` directory:
 
   It contains the html, info, text and @TeX{} versions of the documentation you
