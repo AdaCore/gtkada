@@ -1,3 +1,10 @@
+2013-09-05	Nicolas Setton  <setton@adacore.com>
+
+	* gdk/quartz/gdkkeys-quartz.c: Workaround against passing a null
+	pointer to g_signal_emit_by_name.
+
+	Status: probably will be fixed quickly in Gtk+.
+
 2013-07-23      Jerome Lambourg <lambourg@adacore.com>
 
         * gtk/gtkrange.c, gtk/gtkscrolledwindow.c: Better handle smooth scrolls.
@@ -91,3 +98,15 @@
  #else
    float dpi = 96.0 / 72.0;
  #endif
+--- gdk/quartz/gdkkeys-quartz.c.orig	2013-09-04 19:58:33.000000000 +0200
++++ gdk/quartz/gdkkeys-quartz.c	2013-09-04 20:10:21.000000000 +0200
+@@ -492,7 +492,8 @@
+         p[0] = known_numeric_keys[i].keypad_keyval;
+     }
+ 
+-  g_signal_emit_by_name (default_keymap, "keys-changed");
++  if (default_keymap)
++    g_signal_emit_by_name (default_keymap, "keys-changed");
+ }
+ 
+ static PangoDirection
