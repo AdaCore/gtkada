@@ -164,6 +164,29 @@ package Gtkada.MDI is
    --  bar (uses Title_Bar_Color for non-active title bar).
    --  This behavior can at any point be overriden by users by defining
    --  their own and load it at run-time.
+   --
+   --  Since the move to gtk3, the highlighting of the current tab is left to
+   --  the gtk+ theme, rather than overwritten in this package. This permits a
+   --  better integration with the user's theme. It is possible for
+   --  applications to provide their own CSS, though, using
+   --  Gtkada.Style.Load_Css_File. Here is an example of such a CSS, which
+   --  highlights the current tab in the notebook that currently has the focus:
+   --
+   --     @define-color mdi-tab-color  grey;
+   --     @define-color mdi-active-tab-color blue;
+   --     .mdititle {
+   --         border-width: 2px;
+   --         background-image: -gtk-gradient(
+   --             linear, left top, left bottom,
+   --             from(@mdi-tab-color), to(shade(@mdi-tab-color, 1.1)));
+   --     }
+   --     .mdifocused .mdititle {
+   --         background-image: -gtk-gradient(
+   --             linear, left top, left bottom,
+   --             from(@mdi-active-tab-color),
+   --             to(shade(@mdi-active-tab-color, 1.1)));
+   --     .mdi tab GtkLabel, .mdi tab GtkImage { opacity: 0.8 }
+   --     .mdifocused tab GtkLabel, .mdifocused tab GtkImage { opacity: 1.0}
 
    function Independent_Perspectives
      (MDI : access MDI_Window_Record) return Boolean;
@@ -1123,7 +1146,6 @@ private
       Title_Bar_Color     : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Focus_Title_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Default_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
-      Css_Provider        : Gtk.Css_Provider.Gtk_Css_Provider;
 
       Cursor_Cross        : Gdk.Gdk_Cursor;
       Cursor_Fleur        : Gdk.Gdk_Cursor;
