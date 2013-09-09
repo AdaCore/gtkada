@@ -7727,19 +7727,29 @@ package body Gtkada.MDI is
             case Position is
                when Position_Bottom =>
                   Message := To_Unbounded_String
-                    ("Below <b>" & Get_Short_Title (C3) & "</b>");
+                    ("Below <b>"
+                     & Glib.Convert.Escape_Text (Get_Short_Title (C3))
+                     & "</b>");
                when Position_Top =>
                   Message := To_Unbounded_String
-                    ("Above <b>" & Get_Short_Title (C3) & "</b>");
+                    ("Above <b>"
+                     & Glib.Convert.Escape_Text (Get_Short_Title (C3))
+                     & "</b>");
                when Position_Left =>
                   Message := To_Unbounded_String
-                    ("Left of <b>" & Get_Short_Title (C3) & "</b>");
+                    ("Left of <b>"
+                     & Glib.Convert.Escape_Text (Get_Short_Title (C3))
+                     & "</b>");
                when Position_Right =>
                   Message := To_Unbounded_String
-                    ("Right of <b>" & Get_Short_Title (C3) & "</b>");
+                    ("Right of <b>"
+                     & Glib.Convert.Escape_Text (Get_Short_Title (C3))
+                     & "</b>");
                when others =>
                   Message := To_Unbounded_String
-                    ("On top of <b>" & Get_Short_Title (C3) & "</b>");
+                    ("On top of <b>"
+                     & Glib.Convert.Escape_Text (Get_Short_Title (C3))
+                     & "</b>");
             end case;
          end if;
       end if;
