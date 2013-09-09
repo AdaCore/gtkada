@@ -46,7 +46,6 @@ with GNAT.IO;                 use GNAT.IO;
 with GNAT.Strings;            use GNAT.Strings;
 
 with Glib.Convert;            use Glib.Convert;
-with Glib.Error;              use Glib.Error;
 with Glib.Main;               use Glib.Main;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -81,7 +80,6 @@ with Gtk.Box;                 use Gtk.Box;
 with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
 with Gtk.Container;           use Gtk.Container;
-with Gtk.Css_Provider;        use Gtk.Css_Provider;
 with Gtk.Dialog;              use Gtk.Dialog;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
@@ -98,7 +96,6 @@ with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
 with Gtk.Stock;               use Gtk.Stock;
 with Gtk.Style_Context;       use Gtk.Style_Context;
-with Gtk.Style_Provider;      use Gtk.Style_Provider;
 with Gtk.Widget;              use Gtk.Widget;
 with Gtk.Window;              use Gtk.Window;
 

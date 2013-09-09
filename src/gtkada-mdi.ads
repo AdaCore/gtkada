@@ -40,7 +40,6 @@ with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
 with Gtk.Box;
-with Gtk.Css_Provider;
 with Gtk.Enums;
 with Gtk.Event_Box;
 with Gtk.Handlers;
