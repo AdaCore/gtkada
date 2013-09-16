@@ -787,7 +787,8 @@ package body Gtkada.Canvas is
       Arc_Link_Offset   : Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Gint := Default_Arrow_Angle;
       Arrow_Length      : Gint := Default_Arrow_Length;
-      Motion_Threshold  : Gdouble := Default_Motion_Threshold) is
+      Motion_Threshold  : Gdouble := Default_Motion_Threshold;
+      Background       : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.White_RGBA) is
    begin
       Canvas.Grid_Size := Grid_Size;
 
@@ -801,6 +802,7 @@ package body Gtkada.Canvas is
       Canvas.Arrow_Angle := Gdouble (Arrow_Angle) * Pi / 180.0;
       Canvas.Arrow_Length := Arrow_Length;
       Canvas.Motion_Threshold := Motion_Threshold;
+      Canvas.Background_Color := Background;
    end Configure;
 
    -------------------
@@ -2441,10 +2443,9 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Cr     : Cairo_Context)
    is
-      pragma Unreferenced (Canvas);
    begin
       Cairo.Save (Cr);
-      Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.0));
+      Set_Source_RGBA (Cr, Canvas.Background_Color);
       Paint (Cr);
       Cairo.Restore (Cr);
    end Draw_Background;

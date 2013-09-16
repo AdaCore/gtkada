@@ -101,6 +101,7 @@ with Cairo.Region;
 with Gdk.Color;
 with Gdk.Device;
 with Gdk.Event;
+with Gdk.RGBA;
 
 with Glib;
 with Glib.Graphs;
@@ -215,7 +216,8 @@ package Gtkada.Canvas is
       Arc_Link_Offset  : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle      : Glib.Gint := Default_Arrow_Angle;
       Arrow_Length     : Glib.Gint := Default_Arrow_Length;
-      Motion_Threshold : Glib.Gdouble := Default_Motion_Threshold);
+      Motion_Threshold : Glib.Gdouble := Default_Motion_Threshold;
+      Background       : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.White_RGBA);
    --  Change the parameters for the canvas.
    --  A Grid_Size of 0 means than no grid should be drawn in the background of
    --  canvas. Note that in that case you can never activate Align_On_Grid.
@@ -968,6 +970,8 @@ private
       Children          : Glib.Graphs.Graph;
       World_X, World_Y  : Glib.Gdouble;
       --  The World coordinates at canvas (0,0)
+
+      Background_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.White_RGBA;
 
       Layout            : Layout_Algorithm := Default_Layout_Algorithm'Access;
       Auto_Layout       : Boolean := True;
