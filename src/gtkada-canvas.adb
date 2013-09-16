@@ -59,6 +59,7 @@ with Gtk.Handlers;
 with Gtk.Main;
 with Gtk.Widget;                         use Gtk.Widget;
 
+with Gtkada.Bindings;                    use Gtkada.Bindings;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
 
 with Pango.Font;                         use Pango.Font;
@@ -168,18 +169,41 @@ package body Gtkada.Canvas is
    --  Handle key events, to provide scrolling through Page Up, Page Down, and
    --  arrow keys.
 
-   procedure To_World_Coordinates
-     (Canvas  : access Interactive_Canvas_Record'Class;
-      X       : Gint;
-      Y       : Gint;
-      X_World : out Gdouble;
-      Y_World : out Gdouble);
+   function Canvas_To_World_Length
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      Length_Canvas : Gdouble) return Gdouble;
+   function Canvas_To_World_X
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      X_Canvas : Gdouble) return Gdouble;
+   function Canvas_To_World_Y
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      Y_Canvas : Gdouble) return Gdouble;
+   --  Convert from canvas coordinates to world coordinates.
 
-   procedure To_World_Coordinates
+   function World_To_Canvas_X
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      X_World : Gdouble) return Gdouble;
+   function World_To_Canvas_Length
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Length_World : Gdouble) return Gdouble;
+   function World_To_Canvas_Y
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Y_World : Gdouble) return Gdouble;
+   --  Converts from world coordinates to canvas coordinates
+
+   procedure Mouse_To_World
      (Canvas  : access Interactive_Canvas_Record'Class;
       Event   : Gdk_Event;
       X_World : out Gdouble;
       Y_World : out Gdouble);
+   --  Convert from mouse coordinates to world coordinates.
+
+   function Get_Actual_Coordinates
+     (Self : not null access Interactive_Canvas_Record'Class;
+      Item : not null access Canvas_Item_Record'Class)
+      return Cairo_Rectangle_Int;
+   --  Return the actual world coordinate for an item (including an extra
+   --  offset to add when we are dragging that item).
 
    procedure Draw_Area
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -232,19 +256,21 @@ package body Gtkada.Canvas is
    --  list of items in it.
 
    procedure Draw_Arrow_Head
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Cr     : Cairo_Context;
-      X, Y   : Gint;
-      Angle  : Gdouble);
+     (Canvas   : access Interactive_Canvas_Record'Class;
+      Cr       : Cairo_Context;
+      X_Canvas : Gdouble;
+      Y_Canvas : Gdouble;
+      Angle    : Gdouble);
    --  Draw an arrow head at the position (X, Y) on the canvas. The position
    --  is given in pixels, and should include zoom processing.
    --  Angle is the angle of the main axis of the arrow.
 
    procedure Draw_Annotation
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Cr     : Cairo_Context;
-      X, Y   : Gint;
-      Link   : access Canvas_Link_Record'Class);
+     (Canvas   : access Interactive_Canvas_Record'Class;
+      Cr       : Cairo_Context;
+      X_Canvas : Gdouble;
+      Y_Canvas : Gdouble;
+      Link     : access Canvas_Link_Record'Class);
    --  Print an annotation on the canvas.
    --  The annotation is centered around (X, Y), in pixels. These coordinates
    --  should already include zoom processing.
@@ -266,7 +292,7 @@ package body Gtkada.Canvas is
 
    procedure Test_Scrolling_Box
      (Canvas : access Interactive_Canvas_Record'Class;
-      Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gint;
+      Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gdouble;
       X_Scroll                             : out Gdouble;
       Y_Scroll                             : out Gdouble);
    --  We keep moving the selection (and scrolling the canvas) as long as the
@@ -361,6 +387,115 @@ package body Gtkada.Canvas is
       X1, Y1, X2, Y2 : out Gdouble);
    --  Return the world area currently visible in the canvas
 
+   procedure Set_Transform
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Cr      : Cairo_Context;
+      X_World : Gdouble := Gdouble'First;
+      Y_World : Gdouble := Gdouble'First);
+   --  Set the transformation matrix for the current settings.
+   --  If x and y are specified, all drawing coordinates from now on become
+   --  relative to that position (convenient for drawing the same thing in
+   --  various locations for instance: pass the location to Set_Transform).
+
+   ----------------------------
+   -- World_To_Canvas_Length --
+   ----------------------------
+
+   function World_To_Canvas_Length
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Length_World : Gdouble) return Gdouble is
+   begin
+      return Length_World * Self.Zoom;
+   end World_To_Canvas_Length;
+
+   ----------------------------
+   -- Canvas_To_World_Length --
+   ----------------------------
+
+   function Canvas_To_World_Length
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      Length_Canvas : Gdouble) return Gdouble is
+   begin
+      return Length_Canvas / Self.Zoom;
+   end Canvas_To_World_Length;
+
+   -----------------------
+   -- World_To_Canvas_X --
+   -----------------------
+
+   function World_To_Canvas_X
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      X_World : Gdouble) return Gdouble is
+   begin
+      return (X_World - Self.World_X) * Self.Zoom;
+   end World_To_Canvas_X;
+
+   -----------------------
+   -- World_To_Canvas_Y --
+   -----------------------
+
+   function World_To_Canvas_Y
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Y_World : Gdouble) return Gdouble is
+   begin
+      return (Y_World - Self.World_Y) * Self.Zoom;
+   end World_To_Canvas_Y;
+
+   -----------------------
+   -- Canvas_To_World_X --
+   -----------------------
+
+   function Canvas_To_World_X
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      X_Canvas : Gdouble) return Gdouble is
+   begin
+      return X_Canvas / Self.Zoom + Self.World_X;
+   end Canvas_To_World_X;
+
+   -----------------------
+   -- Canvas_To_World_Y --
+   -----------------------
+
+   function Canvas_To_World_Y
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      Y_Canvas : Gdouble) return Gdouble is
+   begin
+      return Y_Canvas / Self.Zoom + Self.World_Y;
+   end Canvas_To_World_Y;
+
+   -------------------
+   -- Set_Transform --
+   -------------------
+
+   procedure Set_Transform
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Cr      : Cairo_Context;
+      X_World : Gdouble := Gdouble'First;
+      Y_World : Gdouble := Gdouble'First)
+   is
+      M : aliased  Cairo_Matrix;
+   begin
+      M.Xx := Self.Zoom;
+      M.Xy := 0.0;
+
+      if X_World /= Gdouble'First then
+         M.X0 := Self.World_To_Canvas_X (X_World);
+      else
+         M.X0 := -Self.Zoom * Self.World_X;
+      end if;
+
+      M.Yx := 0.0;
+      M.Yy := Self.Zoom;
+
+      if Y_World /= Gdouble'First then
+         M.Y0 := Self.World_To_Canvas_Y (Y_World);
+      else
+         M.Y0 := -Self.Zoom * Self.World_Y;
+      end if;
+
+      Set_Matrix (Cr, M'Access);
+   end Set_Transform;
+
    -----------------------
    -- Get_Visible_World --
    -----------------------
@@ -429,11 +564,7 @@ package body Gtkada.Canvas is
       Cr             : constant Cairo_Context := Create
         (Get_Bin_Window (Canvas));
    begin
-      Cairo.Translate (Cr, -Canvas.World_X, -Canvas.World_Y);
-
-      Cairo.Scale (Cr, Canvas.Zoom, Canvas.Zoom);
       Set_Line_Width (Cr, 1.0);
-
       return Cr;
    end Create;
 
@@ -455,29 +586,11 @@ package body Gtkada.Canvas is
       Internal (Object, Name, Param.all'Address);
    end Emit_By_Name_Item;
 
-   --------------------------
-   -- To_World_Coordinates --
-   --------------------------
+   --------------------
+   -- Mouse_To_World --
+   --------------------
 
-   procedure To_World_Coordinates
-     (Canvas  : access Interactive_Canvas_Record'Class;
-      X       : Gint;
-      Y       : Gint;
-      X_World : out Gdouble;
-      Y_World : out Gdouble)
-   is
-      X1W, Y1W, X2W, Y2W : Gdouble;
-   begin
-      Get_Visible_World (Canvas, X1W, Y1W, X2W, Y2W);
-      X_World := X1W + Gdouble (X) / Canvas.Zoom;
-      Y_World := Y1W + Gdouble (Y) / Canvas.Zoom;
-   end To_World_Coordinates;
-
-   --------------------------
-   -- To_World_Coordinates --
-   --------------------------
-
-   procedure To_World_Coordinates
+   procedure Mouse_To_World
      (Canvas  : access Interactive_Canvas_Record'Class;
       Event   : Gdk_Event;
       X_World : out Gdouble;
@@ -486,9 +599,9 @@ package body Gtkada.Canvas is
       X, Y : Gdouble;
    begin
       Get_Coords (Event, X, Y);
-      X_World := (Canvas.World_X + X) / Canvas.Zoom;
-      Y_World := (Canvas.World_Y + Y) / Canvas.Zoom;
-   end To_World_Coordinates;
+      X_World := Canvas_To_World_X (Canvas, X);
+      Y_World := Canvas_To_World_Y (Canvas, Y);
+   end Mouse_To_World;
 
    ---------------------------
    -- Get_World_Coordinates --
@@ -553,8 +666,8 @@ package body Gtkada.Canvas is
    begin
       G_New (Canvas, Gtkada.Canvas.Get_Type);
 
-      Canvas.Offset_X_World := 0;
-      Canvas.Offset_Y_World := 0;
+      Canvas.Offset_X_World := 0.0;
+      Canvas.Offset_Y_World := 0.0;
       Canvas.World_X := 0.0;
       Canvas.World_Y := 0.0;
       Set_Directed (Canvas.Children, True);
@@ -760,22 +873,20 @@ package body Gtkada.Canvas is
                --  If the item is selected, also include its new position in
                --  the computation (while we are moving items)
 
-               if (Canvas.Offset_X_World /= 0
-                   or else Canvas.Offset_Y_World /= 0)
+               if (Canvas.Offset_X_World /= 0.0
+                   or else Canvas.Offset_Y_World /= 0.0)
                  and then Item.Selected
                then
                   X_Min := Gdouble'Min
-                    (X_Min, Gdouble
-                       (Item.Coord.X + Item.Coord.Width +
-                          Canvas.Offset_X_World));
+                    (X_Min, Gdouble (Item.Coord.X + Item.Coord.Width) +
+                         Canvas.Offset_X_World);
                   X_Max := Gdouble'Max
-                    (X_Max, Gdouble (Item.Coord.X + Canvas.Offset_X_World));
+                    (X_Max, Gdouble (Item.Coord.X) + Canvas.Offset_X_World);
                   Y_Min := Gdouble'Min
-                    (Y_Min, Gdouble
-                       (Item.Coord.Y + Item.Coord.Height +
-                          Canvas.Offset_Y_World));
+                    (Y_Min, Gdouble (Item.Coord.Y + Item.Coord.Height) +
+                         Canvas.Offset_Y_World);
                   Y_Max := Gdouble'Max
-                    (Y_Max, Gdouble (Item.Coord.Y + Canvas.Offset_Y_World));
+                    (Y_Max, Gdouble (Item.Coord.Y) + Canvas.Offset_Y_World);
                end if;
             end if;
 
@@ -1307,6 +1418,37 @@ package body Gtkada.Canvas is
       end if;
    end Get;
 
+   ----------------------------
+   -- Get_Actual_Coordinates --
+   ----------------------------
+
+   function Get_Actual_Coordinates
+     (Self : not null access Interactive_Canvas_Record'Class;
+      Item : not null access Canvas_Item_Record'Class)
+      return Cairo_Rectangle_Int
+   is
+      C : Cairo_Rectangle_Int;
+   begin
+      --  During a move, the items that are moved must be moved by the extra
+      --  offset moved by the mouse. This extra offset is set to 0 when not
+      --  moving items, so it is safe to add.
+      if Item.Selected then
+         C := (Item.Coord.X + Gint (Self.Offset_X_World),
+               Item.Coord.Y + Gint (Self.Offset_Y_World),
+               Item.Coord.Width,
+               Item.Coord.Height);
+
+         if Self.Align_On_Grid then
+            C.X := C.X - C.X mod Gint (Self.Grid_Size);
+            C.Y := C.Y - C.Y mod Gint (Self.Grid_Size);
+         end if;
+
+         return C;
+      else
+         return Item.Coord;
+      end if;
+   end Get_Actual_Coordinates;
+
    ---------------
    -- Clip_Line --
    ---------------
@@ -1322,22 +1464,14 @@ package body Gtkada.Canvas is
       X_Out  : out Gint;
       Y_Out  : out Gint)
    is
-      Rect    : aliased Cairo_Rectangle_Int;
+      Rect    : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Src);
       Src_X   : Gint;
       Src_Y   : Gint;
       Delta_X : Gint;
       Delta_Y : Gint;
       Offset  : Gint;
    begin
-      if Src.Selected then
-         Rect := (Src.Coord.X + Canvas.Offset_X_World,
-                  Src.Coord.Y + Canvas.Offset_Y_World,
-                  Src.Coord.Width,
-                  Src.Coord.Height);
-      else
-         Rect := Src.Coord;
-      end if;
-
       Src_X    := Rect.X + Gint (Gfloat (Rect.Width) * X_Pos);
       Src_Y    := Rect.Y + Gint (Gfloat (Rect.Height) * Y_Pos);
       Delta_X  := To_X - Src_X;
@@ -1397,23 +1531,23 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure Draw_Arrow_Head
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Cr     : Cairo_Context;
-      X, Y   : Gint;
-      Angle  : Gdouble)
+     (Canvas   : access Interactive_Canvas_Record'Class;
+      Cr       : Cairo_Context;
+      X_Canvas : Gdouble;
+      Y_Canvas : Gdouble;
+      Angle    : Gdouble)
    is
       Length : constant Gdouble := Gdouble (Canvas.Arrow_Length);
-
    begin
-      Move_To (Cr, Gdouble (X), Gdouble (Y));
+      Move_To (Cr, X_Canvas, Y_Canvas);
       Line_To
         (Cr,
-         Gdouble (X) + Length * Cos (Angle + Canvas.Arrow_Angle),
-         Gdouble (Y) + Length * Sin (Angle + Canvas.Arrow_Angle));
+         X_Canvas + Length * Cos (Angle + Canvas.Arrow_Angle),
+         Y_Canvas + Length * Sin (Angle + Canvas.Arrow_Angle));
       Line_To
         (Cr,
-         Gdouble (X) + Length * Cos (Angle - Canvas.Arrow_Angle),
-         Gdouble (Y) + Length * Sin (Angle - Canvas.Arrow_Angle));
+         X_Canvas + Length * Cos (Angle - Canvas.Arrow_Angle),
+         Y_Canvas + Length * Sin (Angle - Canvas.Arrow_Angle));
       Close_Path (Cr);
       Cairo.Fill (Cr);
    end Draw_Arrow_Head;
@@ -1423,13 +1557,13 @@ package body Gtkada.Canvas is
    ---------------------
 
    procedure Draw_Annotation
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Cr     : Cairo_Context;
-      X, Y   : Gint;
-      Link   : access Canvas_Link_Record'Class)
+     (Canvas   : access Interactive_Canvas_Record'Class;
+      Cr       : Cairo_Context;
+      X_Canvas : Gdouble;
+      Y_Canvas : Gdouble;
+      Link     : access Canvas_Link_Record'Class)
    is
       W, H : Gint;
-
    begin
       if Link.Descr /= null
         and then Link.Descr.all /= ""
@@ -1443,16 +1577,15 @@ package body Gtkada.Canvas is
          Cairo.Set_Line_Width (Cr, 1.0);
          Cairo.Rectangle
            (Cr,
-            Gdouble (X) - 0.5,
-            Gdouble (Y) - 0.5,
+            X_Canvas - 0.5,
+            Y_Canvas - 0.5,
             Gdouble (W) + 1.0,
             Gdouble (H) + 1.0);
          Cairo.Fill (Cr);
          Cairo.Restore (Cr);
 
-         Cairo.Move_To (Cr, Gdouble (X), Gdouble (Y));
-         Pango.Cairo.Show_Layout  (Cr, Canvas.Annotation_Layout);
-
+         Cairo.Move_To (Cr, X_Canvas, Y_Canvas);
+         Pango.Cairo.Show_Layout (Cr, Canvas.Annotation_Layout);
       end if;
    end Draw_Annotation;
 
@@ -1549,7 +1682,8 @@ package body Gtkada.Canvas is
       Item               : access Canvas_Item_Record'Class;
       Canvas_X, Canvas_Y : Gdouble := 0.5)
    is
-      X1, Y1 : Gint;
+      World : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Item);
    begin
       --  If no size was allocated yet, memorize the item for later (see
       --  the callback for size_allocate)
@@ -1561,14 +1695,12 @@ package body Gtkada.Canvas is
          Canvas.Show_Canvas_X := Canvas_X;
          Canvas.Show_Canvas_Y := Canvas_Y;
       else
-         X1 := Item.Coord.X + Canvas.Offset_X_World;
-         Y1 := Item.Coord.Y + Canvas.Offset_Y_World;
          Scroll_Canvas_To_Area
            (Canvas,
-            Gdouble (X1),
-            Gdouble (Y1),
-            Gdouble (X1 + Item.Coord.Width),
-            Gdouble (Y1 + Item.Coord.Height));
+            Gdouble (World.X),
+            Gdouble (World.Y),
+            Gdouble (World.X + World.Width),
+            Gdouble (World.Y + World.Height));
       end if;
    end Scroll_Canvas_To_Item;
 
@@ -1653,35 +1785,33 @@ package body Gtkada.Canvas is
       Show_Annotation : Boolean)
    is
       X1, Y1, Xp1, Yp1, X2, Y2, Xp2, Yp2, X3, Y3 : Gint;
+      X1_Canvas, Xc1_Canvas, Xc2_Canvas : Gdouble;
+      X3_Canvas, Yp1_Canvas : Gdouble;
+      Xp1_Canvas, Y2_Canvas, Y3_Canvas, Y1_Canvas : Gdouble;
+      Yc1_Canvas, Yc2_Canvas, Yp2_Canvas : Gdouble;
+      X2_Canvas, Xp2_Canvas : Gdouble;
       Xc1, Xc2, Yc1, Yc2 : Gint;
-      Xarr_End, Yarr_End, Xarr_Start, Yarr_Start : Gint;
+      Xarr_End, Yarr_End, Xarr_Start, Yarr_Start : Gdouble;
       Angle_Arr_End, Angle_Arr_Start : Gdouble;
       Src      : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest     : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
       Line_Pos : constant Gint_Array := Compute_Line_Pos (Canvas);
 
+      Src_World : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Src);
+      Dest_World : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Dest);
+
    begin
-      if Src.Selected then
-         X1 := Src.Coord.X + Canvas.Offset_X_World;
-         Y1 := Src.Coord.Y + Canvas.Offset_Y_World;
-      else
-         X1 := Src.Coord.X;
-         Y1 := Src.Coord.Y;
-      end if;
+      X1 := Src_World.X;
+      Y1 := Src_World.Y;
+      X2 := Dest_World.X;
+      Y2 := Dest_World.Y;
 
       Xp1 := X1 + Src.Coord.Width;
       Yp1 := Y1 + Src.Coord.Height;
-
-      if Dest.Selected then
-         X2 := Dest.Coord.X + Canvas.Offset_X_World;
-         Y2 := Dest.Coord.Y + Canvas.Offset_Y_World;
-      else
-         X2 := Dest.Coord.X;
-         Y2 := Dest.Coord.Y;
-      end if;
-
-      Xp2 := X2 + Dest.Coord.Width;
-      Yp2 := Y2 + Dest.Coord.Height;
+      Xp2 := X2 + Dest_World.Width;
+      Yp2 := Y2 + Dest_World.Height;
 
       Xc1 := (X1 + Xp1) / 2;
 
@@ -1736,34 +1866,50 @@ package body Gtkada.Canvas is
       --     X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
       --  end if;
 
+      X1_Canvas := World_To_Canvas_X (Canvas, Gdouble (X1));
+      X2_Canvas := World_To_Canvas_X (Canvas, Gdouble (X2));
+      Xc1_Canvas := World_To_Canvas_X (Canvas, Gdouble (Xc1));
+      Xp1_Canvas := World_To_Canvas_X (Canvas, Gdouble (Xp1));
+      Xc2_Canvas := World_To_Canvas_X (Canvas, Gdouble (Xc2));
+      Xp2_Canvas := World_To_Canvas_X (Canvas, Gdouble (Xp2));
+
+      Y1_Canvas  := World_To_Canvas_Y (Canvas, Gdouble (Y1));
+      Y2_Canvas  := World_To_Canvas_Y (Canvas, Gdouble (Y2));
+      Yp1_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Yp1));
+      Yp2_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Yp2));
+      Yc1_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Yc1));
+      Yc2_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Yc2));
+
       if X3 /= Gint'First then
       --  if (X3 >= Xp1 and then X3 <= X2)
       --    or else (X3 <= X1 and then X3 >= Xp2)
       --  then
 
-         Yarr_Start := Yc1;
-         Yarr_End := Yc2;
+         Yarr_Start := Yc1_Canvas;
+         Yarr_End := Yc2_Canvas;
+
+         X3_Canvas := World_To_Canvas_X (Canvas, Gdouble (X3));
 
          if X3 >= Xp1 then
-            Cairo.Move_To (Cr, Gdouble (Xp1), Gdouble (Yc1) + 0.5);
-            Line_To (Cr, Gdouble (X3) + 0.5, Gdouble (Yc1) + 0.5);
-            Line_To (Cr, Gdouble (X3) + 0.5, Gdouble (Yc2) + 0.5);
-            Line_To (Cr, Gdouble (X2), Gdouble (Yc2) + 0.5);
+            Cairo.Move_To (Cr, Xp1_Canvas, Yc1_Canvas + 0.5);
+            Line_To (Cr, X3_Canvas + 0.5,  Yc1_Canvas + 0.5);
+            Line_To (Cr, X3_Canvas + 0.5,  Yc2_Canvas + 0.5);
+            Line_To (Cr, X2_Canvas,        Yc2_Canvas + 0.5);
             Cairo.Stroke (Cr);
 
-            Xarr_Start := Xp1;
-            Xarr_End := X2;
+            Xarr_Start := Xp1_Canvas;
+            Xarr_End := X2_Canvas;
             Angle_Arr_Start := 0.0;
             Angle_Arr_End := -Ada.Numerics.Pi;
          else
-            Move_To (Cr, Gdouble (X1), Gdouble (Yc1) + 0.5);
-            Line_To (Cr, Gdouble (X3) + 0.5, Gdouble (Yc1) + 0.5);
-            Line_To (Cr, Gdouble (X3) + 0.5, Gdouble (Yc2) + 0.5);
-            Line_To (Cr, Gdouble (Xp2), Gdouble (Yc2) + 0.5);
+            Move_To (Cr, X1_Canvas,       Yc1_Canvas + 0.5);
+            Line_To (Cr, X3_Canvas + 0.5, Yc1_Canvas + 0.5);
+            Line_To (Cr, X3_Canvas + 0.5, Yc2_Canvas + 0.5);
+            Line_To (Cr, Xp2_Canvas,      Yc2_Canvas + 0.5);
             Cairo.Stroke (Cr);
 
-            Xarr_Start := X1;
-            Xarr_End := Xp2;
+            Xarr_Start := X1_Canvas;
+            Xarr_End := Xp2_Canvas;
             Angle_Arr_Start := -Ada.Numerics.Pi;
             Angle_Arr_End := 0.0;
          end if;
@@ -1817,31 +1963,34 @@ package body Gtkada.Canvas is
          if Canvas.Grid_Size > 0 then
             Y3 := Y3 - Y3 mod Gint (Canvas.Grid_Size);
          end if;
-         Xarr_Start := Xc1;
-         Xarr_End := Xc2;
-         X3 := (Xc1 + Xc2) / 2;
+
+         Y3_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Y3));
+
+         Xarr_Start := Xc1_Canvas;
+         Xarr_End := Xc2_Canvas;
+         X3_Canvas := (Xc1_Canvas + Xc2_Canvas) / 2.0;
 
          if Y2 > Y3 then
-            Move_To (Cr, Gdouble (Xc1), Gdouble (Yp1));
-            Line_To (Cr, Gdouble (Xc1), Gdouble (Y3));
-            Line_To (Cr, Gdouble (Xc2), Gdouble (Y3));
-            Line_To (Cr, Gdouble (Xc2), Gdouble (Y2));
+            Move_To (Cr, Xc1_Canvas, Yp1_Canvas);
+            Line_To (Cr, Xc1_Canvas, Y3_Canvas);
+            Line_To (Cr, Xc2_Canvas, Y3_Canvas);
+            Line_To (Cr, Xc2_Canvas, Y2_Canvas);
             Cairo.Stroke (Cr);
 
-            Yarr_Start := Yp1;
-            Yarr_End := Y2;
+            Yarr_Start := Yp1_Canvas;
+            Yarr_End := Y2_Canvas;
             Angle_Arr_End := -Ada.Numerics.Pi / 2.0;
             Angle_Arr_Start := Ada.Numerics.Pi / 2.0;
 
          else
-            Move_To (Cr, Gdouble (Xc1), Gdouble (Y1));
-            Line_To (Cr, Gdouble (Xc1), Gdouble (Y3));
-            Line_To (Cr, Gdouble (Xc2), Gdouble (Y3));
-            Line_To (Cr, Gdouble (Xc2), Gdouble (Yp2));
+            Move_To (Cr, Xc1_Canvas, Y1_Canvas);
+            Line_To (Cr, Xc1_Canvas, Y3_Canvas);
+            Line_To (Cr, Xc2_Canvas, Y3_Canvas);
+            Line_To (Cr, Xc2_Canvas, Yp2_Canvas);
             Cairo.Stroke (Cr);
 
-            Yarr_Start := Y1;
-            Yarr_End := Yp2;
+            Yarr_Start := Y1_Canvas;
+            Yarr_End := Yp2_Canvas;
             Angle_Arr_End := Ada.Numerics.Pi / 2.0;
             Angle_Arr_Start := -Ada.Numerics.Pi / 2.0;
          end if;
@@ -1859,7 +2008,7 @@ package body Gtkada.Canvas is
 
       if Link.Descr /= null and then Show_Annotation then
          Draw_Annotation
-           (Canvas, Cr, X3, (Y1 + Y2) / 2, Link);
+           (Canvas, Cr, X3_Canvas, (Y1_Canvas + Y2_Canvas) / 2.0, Link);
       end if;
    end Draw_Orthogonal_Link;
 
@@ -1893,57 +2042,62 @@ package body Gtkada.Canvas is
       Show_Annotation : Boolean)
    is
       X1, Y1, X2, Y2, Xs, Ys, Xd, Yd : Gint;
+      X1_Canvas, Y1_Canvas, X2_Canvas, Y2_Canvas : Gdouble;
       Src   : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest  : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
       Src_Side, Dest_Side : Item_Side;
 
-   begin
-      if Src.Selected then
-         Xs := Src.Coord.X + Canvas.Offset_X_World;
-         Ys := Src.Coord.Y + Canvas.Offset_Y_World;
-      else
-         Xs := Src.Coord.X;
-         Ys := Src.Coord.Y;
-      end if;
+      Src_Coord : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Src);
+      Dest_Coord : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Dest);
 
-      if Dest.Selected then
-         Xd := Dest.Coord.X + Canvas.Offset_X_World;
-         Yd := Dest.Coord.Y + Canvas.Offset_Y_World;
-      else
-         Xd := Dest.Coord.X;
-         Yd := Dest.Coord.Y;
-      end if;
+   begin
+      Xs := Src_Coord.X;
+      Ys := Src_Coord.Y;
+      Xd := Dest_Coord.X;
+      Yd := Dest_Coord.Y;
 
       Clip_Line
         (Src, Canvas,
-         Xd + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos),
-         Yd + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos),
-         X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
-         Side => Src_Side, X_Out => X1, Y_Out => Y1);
+         Xd + Gint (Gfloat (Dest_Coord.Width) * Link.Dest_X_Pos),
+         Yd + Gint (Gfloat (Dest_Coord.Height) * Link.Dest_Y_Pos),
+         X_Pos => Link.Src_X_Pos,
+         Y_Pos => Link.Src_Y_Pos,
+         Side  => Src_Side,
+         X_Out => X1,
+         Y_Out => Y1);
       Clip_Line
         (Dest, Canvas,
-         Xs + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos),
-         Ys + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos),
+         Xs + Gint (Gfloat (Src_Coord.Width) * Link.Src_X_Pos),
+         Ys + Gint (Gfloat (Src_Coord.Height) * Link.Src_Y_Pos),
          X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
          Side => Dest_Side, X_Out => X2, Y_Out => Y2);
 
+      X1_Canvas := World_To_Canvas_X (Canvas, Gdouble (X1));
+      Y1_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Y1));
+      X2_Canvas := World_To_Canvas_X (Canvas, Gdouble (X2));
+      Y2_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Y2));
+
       Draw_Straight_Line
-        (Link, Cr, Src_Side, Gdouble (X1), Gdouble (Y1),
-         Dest_Side, Gdouble (X2), Gdouble (Y2));
+        (Link, Cr, Src_Side,
+         X1_Canvas, Y1_Canvas,
+         Dest_Side,
+         X2_Canvas, Y2_Canvas);
 
       --  Draw the end arrow head
 
       if Link.Arrow = End_Arrow or else Link.Arrow = Both_Arrow then
          if X1 /= X2 then
             Draw_Arrow_Head
-              (Canvas, Cr, X2, Y2,
-               Arctan (Gdouble (Y1 - Y2), Gdouble (X1 - X2)));
+              (Canvas, Cr, X2_Canvas, Y2_Canvas,
+               Arctan (Y1_Canvas - Y2_Canvas, X1_Canvas - X2_Canvas));
          elsif Y1 > Y2 then
             Draw_Arrow_Head
-              (Canvas, Cr, X2, Y2, Pi / 2.0);
+              (Canvas, Cr, X2_Canvas, Y2_Canvas, Pi / 2.0);
          else
             Draw_Arrow_Head
-              (Canvas, Cr, X2, Y2, -Pi / 2.0);
+              (Canvas, Cr, X2_Canvas, Y2_Canvas, -Pi / 2.0);
          end if;
       end if;
 
@@ -1952,19 +2106,22 @@ package body Gtkada.Canvas is
       if Link.Arrow = Start_Arrow or else Link.Arrow = Both_Arrow then
          if X1 /= X2 then
             Draw_Arrow_Head
-              (Canvas, Cr, X1, Y1,
-               Arctan (Gdouble (Y2 - Y1), Gdouble (X2 - X1)));
+              (Canvas, Cr, X1_Canvas, Y1_Canvas,
+               Arctan (Y2_Canvas - Y1_Canvas, X2_Canvas - X1_Canvas));
          elsif Y1 > Y2 then
-            Draw_Arrow_Head (Canvas, Cr, X1, Y1, -Pi / 2.0);
+            Draw_Arrow_Head (Canvas, Cr, X1_Canvas, Y1_Canvas, -Pi / 2.0);
          else
-            Draw_Arrow_Head (Canvas, Cr, X1, Y1, Pi / 2.0);
+            Draw_Arrow_Head (Canvas, Cr, X1_Canvas, Y1_Canvas, Pi / 2.0);
          end if;
       end if;
 
       --  Draw the text if any
 
       if Link.Descr /= null and then Show_Annotation then
-         Draw_Annotation (Canvas, Cr, (X1 + X2) / 2, (Y1 + Y2) / 2, Link);
+         Draw_Annotation
+           (Canvas, Cr,
+            (X1_Canvas + X2_Canvas) / 2.0,
+            (Y1_Canvas + Y2_Canvas) / 2.0, Link);
       end if;
    end Draw_Straight_Link;
 
@@ -1981,32 +2138,30 @@ package body Gtkada.Canvas is
    is
       Right_Angle : constant Gdouble := Pi / 2.0;
       Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
-      X1, Y1, X3, Y3, Xc, Yc, Radius : Gint;
+      Xc, Yc : Gdouble;
+      X1, Y1, X3, Y3, Xc_Canvas, Yc_Canvas, Radius : Gdouble;
+      Src_World : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Src);
 
    begin
       pragma Assert (Src = Canvas_Item (Get_Dest (Link)));
 
-      Xc := Src.Coord.X + Src.Coord.Width;
-      Yc := Src.Coord.Y;
+      Xc := Gdouble (Src_World.X + Src_World.Width);
+      Yc := Gdouble (Src_World.Y);
 
-      if Src.Selected then
-         Xc := Xc + Canvas.Offset_X_World;
-         Yc := Yc + Canvas.Offset_Y_World;
-      end if;
-
-      Radius := Canvas.Arc_Link_Offset / 2 * Offset;
+      Radius := World_To_Canvas_Length
+        (Canvas, Gdouble (Canvas.Arc_Link_Offset / 2 * Offset));
 
       --  Location of the arrow and the annotation
-      X3 := Xc - Radius;
-      Y3 := Yc;
-      X1 := Xc;
-      Y1 := Yc + Radius;
+      Xc_Canvas := World_To_Canvas_X (Canvas, Xc);
+      Yc_Canvas := World_To_Canvas_Y (Canvas, Yc);
+      X3 := Xc_Canvas - Radius;
+      Y3 := Yc_Canvas;
+      X1 := Xc_Canvas;
+      Y1 := Yc_Canvas + Radius;
 
-      Cairo.Move_To (Cr, Gdouble (X3), Gdouble (Y3));
-      Cairo.Arc
-        (Cr,
-         Gdouble (Xc), Gdouble (Yc),
-         Gdouble (Radius), Pi, Pi * 0.5);
+      Cairo.Move_To (Cr, X3, Y3);
+      Cairo.Arc (Cr, Xc_Canvas, Yc_Canvas, Radius, Pi, Pi * 0.5);
       Cairo.Stroke (Cr);
 
       --  Draw the arrows
@@ -2022,7 +2177,8 @@ package body Gtkada.Canvas is
       --  Draw the annotations
       if Link.Descr /= null and then Show_Annotation then
          Draw_Annotation
-           (Canvas, Cr, Xc + Radius / 2, Yc + Radius / 2, Link);
+           (Canvas, Cr,
+            Xc_Canvas + Radius / 2.0, Yc_Canvas + Radius / 2.0, Link);
       end if;
    end Draw_Self_Link;
 
@@ -2039,28 +2195,24 @@ package body Gtkada.Canvas is
    is
       Angle       : Gdouble;
       X1, Y1, X2, Y2, X3, Y3 : Gint;
+      X1_Canvas, Y1_Canvas, X2_Canvas, Y2_Canvas : Gdouble;
+      X3_Canvas, Y3_Canvas : Gdouble;
       Right_Angle : constant Gdouble := Pi / 2.0;
       Arc_Offset  : constant Gdouble := Gdouble (Canvas.Arc_Link_Offset);
       Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest        : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
       Src_Side, Dest_Side : Item_Side;
 
-   begin
-      if Src.Selected then
-         X1 := Src.Coord.X + Canvas.Offset_X_World;
-         Y1 := Src.Coord.Y + Canvas.Offset_Y_World;
-      else
-         X1 := Src.Coord.X;
-         Y1 := Src.Coord.Y;
-      end if;
+      Src_World : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Src);
+      Dest_World : constant Cairo_Rectangle_Int :=
+        Get_Actual_Coordinates (Canvas, Dest);
 
-      if Dest.Selected then
-         X3 := Dest.Coord.X + Canvas.Offset_X_World;
-         Y3 := Dest.Coord.Y + Canvas.Offset_Y_World;
-      else
-         X3 := Dest.Coord.X;
-         Y3 := Dest.Coord.Y;
-      end if;
+   begin
+      X1 := Src_World.X;
+      Y1 := Src_World.Y;
+      X3 := Dest_World.X;
+      Y3 := Dest_World.Y;
 
       --  We will first compute the extra intermediate point between the
       --  center of the two items. Once we have this intermediate point, we
@@ -2102,44 +2254,51 @@ package body Gtkada.Canvas is
         (Dest, Canvas, X2, Y2, Link.Dest_X_Pos, Link.Dest_Y_Pos,
          Dest_Side, X3, Y3);
 
-      Cairo.Move_To (Cr, Gdouble (X1), Gdouble (Y1));
+      X1_Canvas := World_To_Canvas_X (Canvas, Gdouble (X1));
+      Y1_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Y1));
+      X2_Canvas := World_To_Canvas_X (Canvas, Gdouble (X2));
+      Y2_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Y2));
+      X3_Canvas := World_To_Canvas_X (Canvas, Gdouble (X3));
+      Y3_Canvas := World_To_Canvas_Y (Canvas, Gdouble (Y3));
+
+      Cairo.Move_To (Cr, X1_Canvas, Y1_Canvas);
       Cairo.Curve_To
-        (Cr, Gdouble (X1), Gdouble (Y1),
-         Gdouble (X2), Gdouble (Y2),
-         Gdouble (X3), Gdouble (Y3));
+        (Cr, X1_Canvas, Y1_Canvas,
+         X2_Canvas, Y2_Canvas,
+         X3_Canvas, Y3_Canvas);
       Cairo.Stroke (Cr);
 
       --  Draw the arrows
 
       if Link.Arrow = End_Arrow or else Link.Arrow = Both_Arrow then
          if X3 /= X2 then
-            Angle := Arctan (Gdouble (Y2 - Y3), Gdouble (X2 - X3));
+            Angle := Arctan (Y2_Canvas - Y3_Canvas, X2_Canvas - X3_Canvas);
          elsif Y3 > Y2 then
             Angle := Right_Angle;
          else
             Angle := -Right_Angle;
          end if;
 
-         Draw_Arrow_Head (Canvas, Cr, X3, Y3, Angle);
+         Draw_Arrow_Head (Canvas, Cr, X3_Canvas, Y3_Canvas, Angle);
       end if;
 
       if Link.Arrow = Start_Arrow or else Link.Arrow = Both_Arrow then
          if X1 /= X2 then
-            Angle := Arctan (Gdouble (Y2 - Y1), Gdouble (X2 - X1));
+            Angle := Arctan (Y2_Canvas - Y1_Canvas, X2_Canvas - X1_Canvas);
          elsif Y2 > Y1 then
             Angle := Right_Angle;
          else
             Angle := -Right_Angle;
          end if;
 
-         Draw_Arrow_Head (Canvas,  Cr, X1, Y1, Angle);
+         Draw_Arrow_Head (Canvas,  Cr, X1_Canvas, Y1_Canvas, Angle);
       end if;
 
       --  Draw the annotations, if any, in the middle of the link
       if Link.Descr /= null and then Show_Annotation then
-         X2 := Gint (0.25 * Float (X1) + 0.5 * Float (X2) + 0.25 * Float (X3));
-         Y2 := Gint (0.25 * Float (Y1) + 0.5 * Float (Y2) + 0.25 * Float (Y3));
-         Draw_Annotation (Canvas, Cr, X2, Y2, Link);
+         X2_Canvas := 0.25 * X1_Canvas + 0.5 * X2_Canvas + 0.25 * X3_Canvas;
+         Y2_Canvas := 0.25 * Y1_Canvas + 0.5 * Y2_Canvas + 0.25 * Y3_Canvas;
+         Draw_Annotation (Canvas, Cr, X2_Canvas, Y2_Canvas, Link);
       end if;
    end Draw_Arc_Link;
 
@@ -2196,26 +2355,26 @@ package body Gtkada.Canvas is
    begin
       while not At_End (Current) loop
          L := Canvas_Link (Get (Current));
-         if Is_Visible (Canvas_Item (Get_Src (L)))
-           and then Is_Visible (Canvas_Item (Get_Dest (L)))
-         then
-            if not From_Selection
-              or else Canvas_Item (Get_Src (L)).Selected
-              or else Canvas_Item (Get_Dest (L)).Selected
-            then
-               Set_Line_Width (Cr, 1.0);
-               Draw_Link
-                 (Canvas, L, Cr,
-                  Gint (Repeat_Count (Current)),
-                  Show_Annotation => not Invert_Mode);
-            end if;
 
-            --  To save time, we limit the number of links that are drawn
-            --  while moving items.
-            Count := Count + 1;
-            exit when From_Selection
-              and then Count > Links_Threshold_While_Moving;
+         --  We need to draw all links, since they might traverse the visible
+         --  area, even though both end items are not visible in this area.
+
+         if not From_Selection
+           or else Canvas_Item (Get_Src (L)).Selected
+           or else Canvas_Item (Get_Dest (L)).Selected
+         then
+            Set_Line_Width (Cr, 1.0);
+            Draw_Link
+              (Canvas, L, Cr,
+               Gint (Repeat_Count (Current)),
+               Show_Annotation => not Invert_Mode);
          end if;
+
+         --  To save time, we limit the number of links that are drawn
+         --  while moving items.
+         Count := Count + 1;
+         exit when From_Selection
+           and then Count > Links_Threshold_While_Moving;
 
          Next (Current);
       end loop;
@@ -2229,25 +2388,22 @@ package body Gtkada.Canvas is
      (Canvas        : access Interactive_Canvas_Record;
       Cr            : Cairo_Context)
    is
-      Grid    : Gint := Gint (Canvas.Grid_Size);
+      Grid    : constant Gdouble :=
+        World_To_Canvas_Length (Canvas, Gdouble (Canvas.Grid_Size));
       Ptrn    : Cairo_Pattern;
       Surface : Cairo_Surface;
       Tmp_Cr  : Cairo_Context;
 
    begin
-      if Grid = 0 then
+      if Grid < 1.0 then
          return;
       end if;
-
-      while Gdouble (Grid) * Canvas.Zoom < 5.0 loop
-         Grid := Grid * 2;
-      end loop;
 
       --  First create a surface that will contain the pattern to duplicate
       Surface := Cairo.Surface.Create_Similar
         (Cairo.Get_Group_Target (Cr),
          Cairo_Content_Color_Alpha,
-         Grid, Grid);
+         Gint (Grid), Gint (Grid));
 
       --  We create a context from the surface
       Tmp_Cr := Cairo.Create (Surface);
@@ -2378,11 +2534,11 @@ package body Gtkada.Canvas is
       --  ??? Should redraw only the required links
 
       declare
-         OX : constant Gint := Canvas.Offset_X_World;
-         OY : constant Gint := Canvas.Offset_Y_World;
+         OX : constant Gdouble := Canvas.Offset_X_World;
+         OY : constant Gdouble := Canvas.Offset_Y_World;
       begin
-         Canvas.Offset_X_World := 0;
-         Canvas.Offset_Y_World := 0;
+         Canvas.Offset_X_World := 0.0;
+         Canvas.Offset_Y_World := 0.0;
 
          Update_Links
            (Canvas,
@@ -2407,22 +2563,30 @@ package body Gtkada.Canvas is
                if Inters then
                   Cairo.Save (Cr);
 
-                  --  Translate the coordinates to the item's coordinates
-                  Cairo.Translate
-                    (Cr, Gdouble (Item.Coord.X), Gdouble (Item.Coord.Y));
+                  begin
+                     Set_Transform
+                       (Canvas, Cr,
+                        Gdouble (Item.Coord.X),
+                        Gdouble (Item.Coord.Y));
 
-                  --  Clip to the item's area
-                  Cairo.Rectangle
-                    (Cr, 0.0, 0.0,
-                     Gdouble (Item.Coord.Width),
-                     Gdouble (Item.Coord.Height));
-                  Clip (Cr);
+                     --  Clip to the item's area
+                     Cairo.Rectangle
+                       (Cr,
+                        0.0, 0.0,
+                        Gdouble (Item.Coord.Width),
+                        Gdouble (Item.Coord.Height));
+                     Clip (Cr);
 
-                  if Item.Selected then
-                     Draw_Selected (Item, Cr);
-                  else
-                     Draw (Item, Cr);
-                  end if;
+                     if Item.Selected then
+                        Draw_Selected (Item, Cr);
+                     else
+                        Draw (Item, Cr);
+                     end if;
+
+                  exception
+                     when E : others =>
+                        Gtkada.Bindings.Process_Exception (E);
+                  end;
 
                   Cairo.Restore (Cr);
                end if;
@@ -2435,8 +2599,8 @@ package body Gtkada.Canvas is
          Canvas.Offset_Y_World := OY;
       end;
 
-      if Canvas.Offset_X_World /= 0
-        or else Canvas.Offset_Y_World /= 0
+      if Canvas.Offset_X_World /= 0.0
+        or else Canvas.Offset_Y_World /= 0.0
       then
          Draw_Dashed_Selection (Canvas, Cr);
       end if;
@@ -2684,14 +2848,15 @@ package body Gtkada.Canvas is
    -------------------------
 
    function Item_At_Coordinates
-     (Canvas : access Interactive_Canvas_Record; Event : Gdk_Event)
+     (Canvas : access Interactive_Canvas_Record;
+      Event  : Gdk_Event)
       return Canvas_Item
    is
       X_World, Y_World : Gdouble;
       Item             : Canvas_Item;
 
    begin
-      To_World_Coordinates (Canvas, Event, X_World, Y_World);
+      Mouse_To_World (Canvas, Event, X_World, Y_World);
       Item := Item_At_Coordinates (Canvas, Gint (X_World), Gint (Y_World));
       return Item;
    end Item_At_Coordinates;
@@ -2709,7 +2874,7 @@ package body Gtkada.Canvas is
       X_World, Y_World : Gdouble;
 
    begin
-      To_World_Coordinates (Canvas, Event, X_World, Y_World);
+      Mouse_To_World (Canvas, Event, X_World, Y_World);
       Item := Item_At_Coordinates (Canvas, Gint (X_World), Gint (Y_World));
       if Item /= null then
          X := Gint (X_World) - Item.Coord.X;
@@ -2737,7 +2902,7 @@ package body Gtkada.Canvas is
 
       Grab_Focus (Canvas);
 
-      To_World_Coordinates
+      Mouse_To_World
         (Canvas, Event, Canvas.World_X_At_Click, Canvas.World_Y_At_Click);
 
       --  Find the selected item.
@@ -2816,8 +2981,8 @@ package body Gtkada.Canvas is
 
       --  Initialize the move
 
-      Canvas.Offset_X_World      := 0;
-      Canvas.Offset_Y_World      := 0;
+      Canvas.Offset_X_World      := 0.0;
+      Canvas.Offset_Y_World      := 0.0;
       Canvas.Mouse_Has_Moved     := False;
       Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
 
@@ -2848,7 +3013,7 @@ package body Gtkada.Canvas is
       Dead               : Boolean;
       pragma Unreferenced (Dead);
 
-      Mouse_X_Canvas, Mouse_Y_Canvas : Gint;
+      Mouse_X_Canvas, Mouse_Y_Canvas : Gdouble;
    begin
       if Event.Button.Window /= Get_Bin_Window (Canvas) then
          return False;
@@ -2858,7 +3023,7 @@ package body Gtkada.Canvas is
          declare
             New_X, New_Y : Gdouble;
          begin
-            To_World_Coordinates (Canvas, Event, New_X, New_Y);
+            Mouse_To_World (Canvas, Event, New_X, New_Y);
             Event.Button.X := New_X - Gdouble (Canvas.Item_Press.Coord.X);
             Event.Button.Y := New_Y - Gdouble (Canvas.Item_Press.Coord.Y);
          end;
@@ -2871,8 +3036,8 @@ package body Gtkada.Canvas is
       --  of the scrolling
 
       Get_Coords (Event, X, Y);
-      Mouse_X_Canvas := Gint (X);
-      Mouse_Y_Canvas := Gint (Y);
+      Mouse_X_Canvas := X - Canvas.Get_Hadjustment.Get_Value;
+      Mouse_Y_Canvas := Y - Canvas.Get_Vadjustment.Get_Value;
 
       Test_Scrolling_Box
         (Canvas            => Canvas,
@@ -2906,8 +3071,7 @@ package body Gtkada.Canvas is
       --  Find the current mouse position in world coordinates, to find out
       --  where to draw the dashed outline.
 
-      To_World_Coordinates
-        (Canvas, Event, X_Scroll, Y_Scroll);
+      Mouse_To_World (Canvas, Event, X_Scroll, Y_Scroll);
 
       Dead := Move_Selection
         (Canvas,
@@ -2954,7 +3118,7 @@ package body Gtkada.Canvas is
          declare
             New_X, New_Y : Gdouble;
          begin
-            To_World_Coordinates (Canvas, Event, New_X, New_Y);
+            Mouse_To_World (Canvas, Event, New_X, New_Y);
             Event.Button.X := New_X - Gdouble (Canvas.Item_Press.Coord.X);
             Event.Button.Y := New_Y - Gdouble (Canvas.Item_Press.Coord.Y);
          end;
@@ -2989,8 +3153,8 @@ package body Gtkada.Canvas is
             Next (Iter);
          end loop;
 
-         Canvas.Offset_X_World := 0;
-         Canvas.Offset_Y_World := 0;
+         Canvas.Offset_X_World := 0.0;
+         Canvas.Offset_Y_World := 0.0;
 
          Queue_Draw (Canvas);
 
@@ -3002,15 +3166,7 @@ package body Gtkada.Canvas is
             Item := Get (Iter);
             exit when Item = null;
 
-            Item.Coord.X := Item.Coord.X + Canvas.Offset_X_World;
-            Item.Coord.Y := Item.Coord.Y + Canvas.Offset_Y_World;
-
-            if Canvas.Align_On_Grid then
-               Item.Coord.X := Item.Coord.X
-                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
-               Item.Coord.Y := Item.Coord.Y
-                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
-            end if;
+            Item.Coord := Get_Actual_Coordinates (Canvas, Item);
             Item.From_Auto_Layout := False;
 
             Emit_By_Name_Item
@@ -3019,8 +3175,8 @@ package body Gtkada.Canvas is
             Next (Iter);
          end loop;
 
-         Canvas.Offset_X_World := 0;
-         Canvas.Offset_Y_World := 0;
+         Canvas.Offset_X_World := 0.0;
+         Canvas.Offset_Y_World := 0.0;
 
          --  Scroll the canvas so as to show the first item from the selection
          Refresh_Canvas (Canvas);
@@ -3054,8 +3210,8 @@ package body Gtkada.Canvas is
    is
       X : Gint := Gint (Canvas.World_X_At_Click);
       Y : Gint := Gint (Canvas.World_Y_At_Click);
-      W : Gint := Canvas.Offset_X_World;
-      H : Gint := Canvas.Offset_Y_World;
+      W : Gint := Gint (Canvas.Offset_X_World);
+      H : Gint := Gint (Canvas.Offset_Y_World);
 
    begin
       if W < 0 then
@@ -3077,30 +3233,36 @@ package body Gtkada.Canvas is
 
    procedure Test_Scrolling_Box
      (Canvas   : access Interactive_Canvas_Record'Class;
-      Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gint;
+      Mouse_X_In_Canvas, Mouse_Y_In_Canvas : Gdouble;
       X_Scroll : out Gdouble;
       Y_Scroll : out Gdouble)
    is
       X_Ignored, Y_Ignored : Gint;
       Width, Height : Gint;
+      Margin : constant Gdouble :=
+        World_To_Canvas_Length (Canvas, Gdouble (Scrolling_Margin));
    begin
       Get_Geometry
         (Canvas.Get_Window,
          X_Ignored, Y_Ignored,
          Width, Height);
 
-      if Mouse_X_In_Canvas < Scrolling_Margin then
-         X_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
-      elsif Mouse_X_In_Canvas > Width - Scrolling_Margin then
-         X_Scroll := Canvas.Surround_Box_Scroll / Canvas.Zoom;
+      if Mouse_X_In_Canvas < Margin then
+         X_Scroll := Canvas_To_World_Length
+           (Canvas, -Canvas.Surround_Box_Scroll);
+      elsif Mouse_X_In_Canvas > Gdouble (Width) - Margin then
+         X_Scroll := Canvas_To_World_Length
+           (Canvas, Canvas.Surround_Box_Scroll);
       else
          X_Scroll := 0.0;
       end if;
 
-      if Mouse_Y_In_Canvas < Scrolling_Margin then
-         Y_Scroll := -Canvas.Surround_Box_Scroll / Canvas.Zoom;
-      elsif Mouse_Y_In_Canvas > Height - Scrolling_Margin then
-         Y_Scroll := Canvas.Surround_Box_Scroll / Canvas.Zoom;
+      if Mouse_Y_In_Canvas < Margin then
+         Y_Scroll := Canvas_To_World_Length
+           (Canvas, -Canvas.Surround_Box_Scroll);
+      elsif Mouse_Y_In_Canvas > Gdouble (Height) - Margin then
+         Y_Scroll := Canvas_To_World_Length
+           (Canvas, Canvas.Surround_Box_Scroll);
       else
          Y_Scroll := 0.0;
       end if;
@@ -3110,8 +3272,8 @@ package body Gtkada.Canvas is
                    & Gdouble'Image (X_Scroll) & " "
                    & Gdouble'Image (Y_Scroll)
                    & " mouse canvas="
-                   & Gint'Image (Mouse_X_In_Canvas)
-                   & Gint'Image (Mouse_Y_In_Canvas));
+                   & Gdouble'Image (Mouse_X_In_Canvas)
+                   & Gdouble'Image (Mouse_Y_In_Canvas));
       end if;
    end Test_Scrolling_Box;
 
@@ -3126,8 +3288,6 @@ package body Gtkada.Canvas is
       X_Scroll, Y_Scroll             : Gdouble;
       Cr                             : Cairo_Context;
 
-      Pointer_World_X, Pointer_World_Y : Gdouble;
-
    begin
       if Traces then
          Put_Line ("Scrolling timeout");
@@ -3140,17 +3300,14 @@ package body Gtkada.Canvas is
          Mouse_X_Canvas, Mouse_Y_Canvas, Mask, W);
 
       Test_Scrolling_Box
-        (Canvas, Mouse_X_Canvas, Mouse_Y_Canvas, X_Scroll, Y_Scroll);
-
-      To_World_Coordinates
-        (Canvas, Mouse_X_Canvas, Mouse_Y_Canvas,
-         Pointer_World_X, Pointer_World_Y);
+        (Canvas, Gdouble (Mouse_X_Canvas),
+         Gdouble (Mouse_Y_Canvas), X_Scroll, Y_Scroll);
 
       if (X_Scroll /= 0.0 or else Y_Scroll /= 0.0)
         and then Move_Selection
           (Canvas,
-           New_Offset_X_World => X_Scroll + Gdouble (Canvas.Offset_X_World),
-           New_Offset_Y_World => Y_Scroll + Gdouble (Canvas.Offset_Y_World),
+           New_Offset_X_World => X_Scroll + Canvas.Offset_X_World,
+           New_Offset_Y_World => Y_Scroll + Canvas.Offset_Y_World,
           Behavior => Clamp)
       then
          --  Keep increasing the speed
@@ -3184,7 +3341,6 @@ package body Gtkada.Canvas is
    is
       Iter  : Item_Iterator;
       Item  : Canvas_Item;
-      X, Y  : Gint;
       Rect  : Gdk_Rectangle;
       Sel   : Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
 
@@ -3193,10 +3349,8 @@ package body Gtkada.Canvas is
          Rect := Get_Background_Selection_Rectangle (Canvas);
 
          Cairo.Save (Cr);
-
-         Cairo.Translate
-           (Cr, Gdouble (Rect.X), Gdouble (Rect.Y));
-
+         Set_Transform
+           (Canvas, Cr, Gdouble (Rect.X), Gdouble (Rect.Y));
          Cairo.Rectangle
            (Cr,
             0.5,
@@ -3216,29 +3370,30 @@ package body Gtkada.Canvas is
 
       else
          Iter := Start (Canvas, Selected_Only => True);
-         Cairo.Set_Operator (Cr, Cairo_Operator_Xor);
-         Set_Source_RGBA (Cr, (1.0, 1.0, 1.0, 0.5));
+         Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.3));
 
          loop
             Item := Get (Iter);
             exit when Item = null;
 
             if Item.Visible then
-               X := Item.Coord.X + Canvas.Offset_X_World;
-               Y := Item.Coord.Y + Canvas.Offset_Y_World;
+               Cairo.Save (Cr);
 
-               if Canvas.Align_On_Grid then
-                  X := X - X mod Gint (Canvas.Grid_Size);
-                  Y := Y - Y mod Gint (Canvas.Grid_Size);
-               end if;
+               declare
+                  C : constant Cairo_Rectangle_Int :=
+                    Get_Actual_Coordinates (Canvas, Item);
+               begin
+                  Set_Transform (Canvas, Cr, Gdouble (C.X), Gdouble (C.Y));
+                  Cairo.Rectangle
+                    (Cr, 0.0, 0.0, Gdouble (C.Width), Gdouble (C.Height));
+                  Cairo.Fill (Cr);
 
-               Cairo.Rectangle
-                 (Cr,
-                  Gdouble (X) + 0.5,
-                  Gdouble (Y) + 0.5,
-                  Gdouble (Item.Coord.Width),
-                  Gdouble (Item.Coord.Height));
-               Cairo.Fill (Cr);
+               exception
+                  when E : others =>
+                     Gtkada.Bindings.Process_Exception (E);
+               end;
+
+               Cairo.Restore (Cr);
             end if;
             Next (Iter);
          end loop;
@@ -3253,7 +3408,7 @@ package body Gtkada.Canvas is
    --------------------
 
    function Move_Selection
-     (Canvas : access Interactive_Canvas_Record'Class;
+     (Canvas   : access Interactive_Canvas_Record'Class;
       New_Offset_X_World, New_Offset_Y_World : Gdouble;
       Behavior : Bounds_Modification_Mode) return Boolean
    is
@@ -3277,21 +3432,21 @@ package body Gtkada.Canvas is
                    & " " & Gdouble'Image (New_Offset_Y_World));
       end if;
 
-      Canvas.Offset_X_World := Gint (New_Offset_X_World);
-      Canvas.Offset_Y_World := Gint (New_Offset_Y_World);
+      Canvas.Offset_X_World := New_Offset_X_World;
+      Canvas.Offset_Y_World := New_Offset_Y_World;
 
       Update_Adjustments (Canvas, Behavior);
 
       Scroll_Canvas_To_Area
         (Canvas,
          Canvas.World_X_At_Click +
-           Gdouble (Canvas.Offset_X_World - Scrolling_Margin),
+           Canvas.Offset_X_World - Gdouble (Scrolling_Margin),
          Canvas.World_Y_At_Click +
-           Gdouble (Canvas.Offset_Y_World - Scrolling_Margin),
+           Canvas.Offset_Y_World - Gdouble (Scrolling_Margin),
          Canvas.World_X_At_Click +
-           Gdouble (Canvas.Offset_X_World + Scrolling_Margin),
+           Canvas.Offset_X_World + Gdouble (Scrolling_Margin),
          Canvas.World_Y_At_Click +
-           Gdouble (Canvas.Offset_Y_World + Scrolling_Margin));
+           Canvas.Offset_Y_World + Gdouble (Scrolling_Margin));
 
       Queue_Draw (Canvas);
 

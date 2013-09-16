@@ -983,8 +983,8 @@ private
       Selected_Count    : Natural := 0;
       --  Number of selected items
 
-      Offset_X_World    : Glib.Gint := 0;
-      Offset_Y_World    : Glib.Gint := 0;
+      Offset_X_World    : Glib.Gdouble := 0.0;
+      Offset_Y_World    : Glib.Gdouble := 0.0;
       --  How much world-coordinates have we moved the mouse since the last
       --  button press event ?
 
