@@ -293,17 +293,17 @@ package Gtkada.MDI is
 
    function Save_Desktop
      (Self : not null access MDI_Child_Record) return Glib.Xml_Int.Node_Ptr;
-     --  A function used to save a child into the desktop.
-     --  This is similar to Save_Desktop_Function, but is specific to a child,
-     --  and thus more efficient.
-     --
-     --  If this function returns some data, that data is saved into the XML
-     --  for the desktop. If it returns null, however, the MDI will call each
-     --  of the registered Save_Desktop_Function, until one returns some data.
-     --
-     --  The resulting node must have a tag that is unique for this type of
-     --  widget, and this recognized by one of the Load_Desktop_Function so
-     --  that the child can be recreated when the desktop is loaded from XML.
+   --  A function used to save a child into the desktop.
+   --  This is similar to Save_Desktop_Function, but is specific to a child,
+   --  and thus more efficient.
+   --
+   --  If this function returns some data, that data is saved into the XML
+   --  for the desktop. If it returns null, however, the MDI will call each
+   --  of the registered Save_Desktop_Function, until one returns some data.
+   --
+   --  The resulting node must have a tag that is unique for this type of
+   --  widget, and this recognized by one of the Load_Desktop_Function so
+   --  that the child can be recreated when the desktop is loaded from XML.
 
    procedure Set_Size
      (MDI        : access MDI_Window_Record;
