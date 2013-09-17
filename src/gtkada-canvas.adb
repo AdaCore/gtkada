@@ -2363,9 +2363,12 @@ package body Gtkada.Canvas is
          --  We need to draw all links, since they might traverse the visible
          --  area, even though both end items are not visible in this area.
 
-         if not From_Selection
-           or else Canvas_Item (Get_Src (L)).Selected
-           or else Canvas_Item (Get_Dest (L)).Selected
+         if Canvas_Item (Get_Src (L)).Visible
+            and then Canvas_Item (Get_Dest (L)).Visible
+            and then
+               (not From_Selection
+                or else Canvas_Item (Get_Src (L)).Selected
+                or else Canvas_Item (Get_Dest (L)).Selected)
          then
             Draw_Link
               (Canvas, L, Cr,
