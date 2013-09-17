@@ -366,6 +366,12 @@ package Gtkada.Canvas is
    procedure Refresh_Canvas (Canvas : access Interactive_Canvas_Record);
    --  Redraw the whole canvas (both in the double buffer and on the screen).
 
+   procedure Refresh
+     (Self : not null access Interactive_Canvas_Record;
+      Item : access Canvas_Item_Record'Class := null);
+   --  Refresh either the whole canvas, or just the area occupied by the item
+   --  if it is specified.
+
    procedure Raise_Item
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class);

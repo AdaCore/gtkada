@@ -2316,6 +2316,8 @@ package body Gtkada.Canvas is
       Show_Annotation : Boolean := True)
    is
    begin
+      Set_Line_Width (Cr, 1.0);
+
       --  Self-referencing links
       if Get_Src (Link) = Get_Dest (Link) then
          Draw_Self_Link
@@ -2365,7 +2367,6 @@ package body Gtkada.Canvas is
            or else Canvas_Item (Get_Src (L)).Selected
            or else Canvas_Item (Get_Dest (L)).Selected
          then
-            Set_Line_Width (Cr, 1.0);
             Draw_Link
               (Canvas, L, Cr,
                Gint (Repeat_Count (Current)),
@@ -2505,6 +2506,52 @@ package body Gtkada.Canvas is
       Destroy (Cr);
    end Draw_Area;
 
+   -------------
+   -- Refresh --
+   -------------
+
+   procedure Refresh
+     (Self : not null access Interactive_Canvas_Record;
+      Item : access Canvas_Item_Record'Class := null)
+   is
+      Cr : Cairo_Context;
+   begin
+      if Item = null then
+         Refresh_Canvas (Self);
+      else
+         if Item.Visible then
+            Cr := Create (Self);
+
+            begin
+               Set_Transform
+                 (Self, Cr,
+                  Gdouble (Item.Coord.X),
+                  Gdouble (Item.Coord.Y));
+
+               --  Clip to the item's area
+               Cairo.Rectangle
+                 (Cr,
+                  0.0, 0.0,
+                  Gdouble (Item.Coord.Width),
+                  Gdouble (Item.Coord.Height));
+               Clip (Cr);
+
+               if Item.Selected then
+                  Draw_Selected (Item, Cr);
+               else
+                  Draw (Item, Cr);
+               end if;
+
+            exception
+               when E : others =>
+                  Gtkada.Bindings.Process_Exception (E);
+            end;
+
+            Destroy (Cr);
+         end if;
+      end if;
+   end Refresh;
+
    ---------------
    -- Draw_Area --
    ---------------
@@ -2520,16 +2567,19 @@ package body Gtkada.Canvas is
       Inters : Boolean;
 
    begin
-      --  If the GC was not created, do not do anything
-
-      if not Get_Realized (Canvas) then
-         return;
-      end if;
-
       --  Clear the canvas
 
+      Cairo.Save (Cr);
+      Cairo.Rectangle
+        (Cr,
+         World_To_Canvas_X (Canvas, Gdouble (Rect.X)),
+         World_To_Canvas_Y (Canvas, Gdouble (Rect.Y)),
+         World_To_Canvas_Length (Canvas, Gdouble (Rect.Width)),
+         World_To_Canvas_Length (Canvas, Gdouble (Rect.Height)));
+      Clip (Cr);
       Draw_Background (Canvas, Cr);
       Draw_Grid (Canvas, Cr);
+      Cairo.Restore (Cr);
 
       --  Draw the links first, so that they appear to be below the items.
       --  ??? Should redraw only the required links
