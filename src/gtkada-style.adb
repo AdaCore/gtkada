@@ -104,14 +104,13 @@ package body Gtkada.Style is
    ------------
 
    function To_HSLA (Color : Gdk.RGBA.Gdk_RGBA) return HSLA_Color is
-      --  Algorithm from http://www.easyrgb.com/
+      --  Algorithm from www.rapidtables.com/convert/color/rgb-to-hsl.htm
       Min : constant Gdouble :=
         Gdouble'Min (Gdouble'Min (Color.Red, Color.Green), Color.Blue);
       Max : constant Gdouble :=
         Gdouble'Max (Gdouble'Max (Color.Red, Color.Green), Color.Blue);
       Del : constant Gdouble := Max - Min;
       Result : HSLA_Color;
-      Del_R, Del_G, Del_B : Gdouble;
    begin
       Result.Lightness := (Max + Min) / 2.0;
       Result.Alpha     := Color.Alpha;
@@ -127,23 +126,20 @@ package body Gtkada.Style is
             Result.Saturation := Del / (2.0 - Max - Min);
          end if;
 
-         Del_R := ((Max - Color.Red) / 6.0 + Del / 2.0) / Max;
-         Del_G := ((Max - Color.Green) / 6.0 + Del / 2.0) / Max;
-         Del_B := ((Max - Color.Blue) / 6.0 + Del / 2.0) / Max;
-
          if Color.Red = Max then
-            Result.Hue := Del_B - Del_G;
+            Result.Hue := ((Color.Green - Color.Blue) / Del) / 6.0;
          elsif Color.Green = Max then
-            Result.Hue := 1.0 / 3.0 + Del_R - Del_B;
+            Result.Hue := ((Color.Blue - Color.Red) / Del + 2.0) / 6.0;
          else
-            Result.Hue := 2.0 / 3.0 + Del_G - Del_R;
+            Result.Hue := ((Color.Red - Color.Green) / Del + 4.0) / 6.0;
          end if;
 
-         if Result.Hue < 0.0 then
+         while Result.Hue < 0.0 loop
             Result.Hue := Result.Hue + 1.0;
-         elsif Result.Hue > 1.0 then
+         end loop;
+         while Result.Hue > 1.0 loop
             Result.Hue := Result.Hue - 1.0;
-         end if;
+         end loop;
       end if;
 
       return Result;
