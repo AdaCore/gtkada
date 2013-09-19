@@ -1,3 +1,21 @@
+2013-09-19  Raphael Amiard  <amiard@adacore.com>
+
+   * gtk/gtkmenu.c (gtk_menu_position) : If a position func was supplied,
+     always re-get the monitor after it has been applied to the coordinates
+
+--- gtk/gtkmenu.c.orig	2013-09-19 17:49:38.172727600 +0200
++++ gtk/gtkmenu.c	2013-08-30 13:08:29.000000000 +0200
+@@ -4601,8 +4601,7 @@ gtk_menu_position (GtkMenu  *menu,
+       (* priv->position_func) (menu, &x, &y, &priv->initially_pushed_in,
+                                priv->position_func_data);
+ 
+-      if (priv->monitor_num < 0)
+-        priv->monitor_num = gdk_screen_get_monitor_at_point (screen, x, y);
++      priv->monitor_num = gdk_screen_get_monitor_at_point (screen, x, y);
+ 
+       gdk_screen_get_monitor_workarea (screen, priv->monitor_num, &monitor);
+     }
+
 2012-04-20	Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtkapplicationwindow.c: GDesktopApplication is not defined under
