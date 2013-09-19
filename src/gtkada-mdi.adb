@@ -7068,7 +7068,6 @@ package body Gtkada.MDI is
          end if;
 
          MDI.Desktop_Was_Loaded := True;
-         Queue_Resize (MDI);
 
          --  Raise all appropriate items at the end, so that even if some items
          --  are added temporarily to notebooks, they have no long-lasting
@@ -7118,6 +7117,7 @@ package body Gtkada.MDI is
 
          MDI.Loading_Desktop := False;
          Thaw (MDI);
+         Queue_Resize (MDI);
 
          --  Update to show which menu is active
          Create_Perspective_Menu (MDI, User);

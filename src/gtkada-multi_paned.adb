@@ -65,7 +65,7 @@ package body Gtkada.Multi_Paned is
    Paned_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
-   Traces_Indent : Natural := 0;
+   Traces_Indent : Integer := 0;
 
    type Resize_Handle is record
       Position : Gdk.Rectangle.Gdk_Rectangle;
@@ -121,6 +121,9 @@ package body Gtkada.Multi_Paned is
      (Paned : System.Address; Minimum_Size, Natural_Size : out Gint);
    pragma Convention (C, Get_Preferred_Height);
 
+   procedure On_Unrealize (Self : access Gtk_Widget_Record'Class);
+   --  Called when the window is unrealized.
+
    procedure Size_Allocate_Child
      (Split         : access Gtkada_Multi_Paned_Record'Class;
       Current       : Child_Description_Access;
@@ -173,7 +176,6 @@ package body Gtkada.Multi_Paned is
       Current : Child_Description_Access;
       Old_Pos : Gdk.Rectangle.Gdk_Rectangle);
    --  Move the window associated with a given handle to its position.
-   --  If Show is False, then the handle is hidden
 
    function Button_Pressed
      (Paned : access Gtk_Widget_Record'Class;
@@ -625,6 +627,7 @@ package body Gtkada.Multi_Paned is
       Widget_Callback.Connect
         (Win, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Paned'Access));
+      Win.On_Unrealize (On_Unrealize'Access);
 
       Ctx := Get_Style_Context (Win);
       Ctx.Add_Class ("pane-separator");
@@ -633,6 +636,34 @@ package body Gtkada.Multi_Paned is
       Flags := Flags or Gtk_State_Flag_Prelight;
       Ctx.Set_State (Flags);
    end Initialize;
+
+   ------------------
+   -- On_Unrealize --
+   ------------------
+
+   procedure On_Unrealize (Self : access Gtk_Widget_Record'Class) is
+      procedure Reset_Handles (Parent : Child_Description_Access);
+      procedure Reset_Handles (Parent : Child_Description_Access) is
+         Tmp   : Child_Description_Access := Parent;
+      begin
+         while Tmp /= null loop
+            if Tmp.Handle.Win /= null then
+               Destroy (Tmp.Handle.Win);
+               Tmp.Handle.Win := null;
+            end if;
+
+            if not Tmp.Is_Widget then
+               Reset_Handles (Tmp.First_Child);
+            end if;
+
+            Tmp := Tmp.Next;
+         end loop;
+      end Reset_Handles;
+
+      Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Self);
+   begin
+      Reset_Handles (Split.Children);
+   end On_Unrealize;
 
    ------------------------
    -- Destroy_Paned --
@@ -1803,7 +1834,9 @@ package body Gtkada.Multi_Paned is
         or else Alloc.Width <= 1 --  Uninitialized yet
         or else Split.Children = null
       then
-         Print_Debug ("size_allocate: nothing to do", Debug_Decrease);
+         if Traces then
+            Print_Debug ("size_allocate: nothing to do", Debug_Decrease);
+         end if;
          return;
       end if;
 
