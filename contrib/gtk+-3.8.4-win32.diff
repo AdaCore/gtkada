@@ -1,3 +1,20 @@
+2013-09-19	Nicolas Setton	<setton@adacore.com>
+
+	* gtk/gtkimcontextsimple.c (check_win32_special_cases): Fix handling
+	of special cases for dead acute and dead diaeresis under Win32. For
+	these characters followed by a space, emit an apostrophe and double
+	quotes respectively.
+	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=655357
+
+2013-09-19	Nicolas Setton	<setton@adacore.com>
+
+	* gtkimcontextsimple.c (gtk_im_context_simple_filter_keypress): Do not
+	discard key events with state CTRL + ALT, as some keyboards do use this
+	key combination for legitimate character input.
+	* gdkevents-win32.c(build_key_event_state): Detect CTRL + ALT as an
+	equivalent group to ALT_GR.
+	For K517-001.
+
 2013-09-19  Raphael Amiard  <amiard@adacore.com>
 
    * gdk/win32/gdkdevice-win32.c (gdk_device_win32_query_state) : Apply 
@@ -89,3 +106,46 @@
      }
  }
  
+--- gtk/gtkimcontextsimple.c.orig	2012-02-07 11:41:01.000000000 +0100
++++ gtk/gtkimcontextsimple.c	2012-02-07 11:43:28.000000000 +0100
+@@ -877,7 +877,11 @@ gtk_im_context_simple_filter_keypress (G
+ 	    event->keyval == GDK_ISO_Enter ||
+ 	    event->keyval == GDK_KP_Enter)))
+ 	{
+-	  return FALSE;
++	  if ((event->state & GDK_MOD1_MASK) &&
++	      (event->state & GDK_CONTROL_MASK))
++	    return no_sequence_matches (context_simple, n_compose, event);
++	  else
++	    return FALSE;
+ 	}
+     }
+   
+*** gdk/win32/gdkevents-win32.c.orig	2012-01-06 16:46:38.000000000 +0100
+--- gdk/win32/gdkevents-win32.c	2012-01-06 16:47:13.000000000 +0100
+***************
+*** 671,676 ****
+--- 671,679 ----
+  	event->key.state |= GDK_CONTROL_MASK;
+        if (key_state[VK_MENU] & 0x80)
+  	event->key.state |= GDK_MOD1_MASK;
++ 
++       if ((key_state[VK_CONTROL] & 0x80) && (key_state[VK_MENU] & 0x80))
++         event->key.group = 1;
+      }
+  }
+  
+--- gtk/gtkimcontextsimple.c.orig	2013-09-20 15:29:52.468750000 -0400
++++ gtk/gtkimcontextsimple.c	2013-09-20 15:30:27.703125000 -0400
+@@ -327,9 +327,9 @@ check_win32_special_cases (GtkIMContextS
+       switch (priv->compose_buffer[0])
+ 	{
+ 	case GDK_KEY_dead_acute:
+-	  value = 0x00B4; break;
++	  value = 0x0027; break;
+ 	case GDK_KEY_dead_diaeresis:
+-	  value = 0x00A8; break;
++	  value = 0x0022; break;
+ 	}
+       if (value > 0)
+ 	{

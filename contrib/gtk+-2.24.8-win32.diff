@@ -25,12 +25,16 @@
 	equivalent group to ALT_GR.
 	For K517-001.
 
+	Gtk3: needed, ported.
+
 2011-11-30	Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/win32/gdkpixmap-win32.c (_gdk_pixmap_new): Add fallback code
 	for 15/16bits depth display.
 	For KB10-052. Backport of Gtk+ trunk, see
 	https://bugzilla.gnome.org/show_bug.cgi?id=665013
+
+	Gtk3: already in.
 
 2011-07-26	Nicolas Setton  <setton@adacore.com>
 
@@ -40,10 +44,14 @@
 	quotes respectively.
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=655357
 
+	Gtk3: needed, ported.
+
 2011-07-22	Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/win32/gdkdisplay-win32.c (inner_clipboard_window_procedure): Fix
 	build with --disable-debug
+
+	Gtk3: not needed, --disable-debug works.
 
 2011-04-10      Arnaud Charlet  <charlet@adacore.com>
 
@@ -51,24 +59,34 @@
 	custom code to draw tab.
 	Submitted at https://bugzilla.gnome.org/show_bug.cgi?id=647461
 
+	Gtk3: not needed, drawing engine completely rewritten in gtk3.
+
 2010-02-01      Arnaud Charlet  <charlet@adacore.com>
 
 	* gdk/win32/gdkdrawable-win32.c	(draw_segments): Ignore LineTo
 	errors.
 
+	Gtk3: not needed, gdkdrawable has been removed altogether.
+
 2009-07-20	Arnaud Charlet	<charlet@adacore.com>
 
 	* configure: Work around ^M handling on cygwin with igncr
+
+	Gtk3: not needed, build works fine.
 
 2006-06-05	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/win32/gdkgc-win32.c (_gdk_win32_gdkregion_to_hrgn): Disable
 	harmless warning which is occurring often with Gtk+ >= 2.8.18
 
+	Gtk3: not needed, gdkgc has been removed altogether.
+
 2002-11-25	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/Makefile.in: Remove gdk-win32res.o dependency,
 	since we do not want to use the default Gtk+ icon.
+
+	Gtk3: not needed for now, icon not a problem in Gtk3.
 
 --- gdk/Makefile.in.orig	2010-09-23 16:27:22.000000000 +0200
 +++ gdk/Makefile.in	2010-10-08 11:06:41.724000000 +0200
