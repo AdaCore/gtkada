@@ -6,11 +6,15 @@
 
 	Backport of <http://git.gnome.org/browse/gtk+/commit/?id=62b505174f16743833467290f49c1ae09c25448e>
 
+	Gtk3: not needed, aleady there.
+
 2012-01-12	Arnaud Charlet  <charlet@adacore.com>
 
 	* modules/engines/ms-windows/msw_style.c (draw_themed_tab_button): Fix
 	memory leak.
 	For L109-030
+
+	Gtk3: not needed, drawing engine completely rewritten in gtk3.
 
 2012-01-06	Nicolas Setton	<setton@adacore.com>
 
