@@ -1,5 +1,27 @@
 2013-09-19  Raphael Amiard  <amiard@adacore.com>
 
+   * gdk/win32/gdkdevice-win32.c (gdk_device_win32_query_state) : Apply 
+   _gdk_offset_x/y offsets to the root_x/y variables so that they become
+   absolute relative to the origin in  the virtual desktop space rather than 
+   relative to the main monitor
+
+--- gdk/win32/gdkdevice-win32.orig.c	2013-09-20 14:38:56.083718500 +0200
++++ gdk/win32/gdkdevice-win32.c	2013-09-20 14:39:50.373823700 +0200
+@@ -187,10 +187,10 @@ gdk_device_win32_query_state (GdkDevice
+   GetCursorPos (&point);
+ 
+   if (root_x)
+-    *root_x = point.x;
++    *root_x = point.x + _gdk_offset_x;
+ 
+   if (root_y)
+-    *root_y = point.y;
++    *root_y = point.y + _gdk_offset_y;
+ 
+   ScreenToClient (hwnd, &point);
+
+2013-09-19  Raphael Amiard  <amiard@adacore.com>
+
    * gtk/gtkmenu.c (gtk_menu_position) : If a position func was supplied,
      always re-get the monitor after it has been applied to the coordinates
 
