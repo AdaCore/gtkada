@@ -810,15 +810,32 @@ package body Gtkada.MDI is
    function Toplevel_Focus_In
      (MDI : access Gtk_Widget_Record'Class) return Boolean
    is
-      M : constant MDI_Window := MDI_Window (MDI);
       Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
       W : Gtk_Widget;
+      C : MDI_Child;
    begin
       Print_Debug ("Toplevel_Focus_In");
 
       W := Win.Get_Focus;
       if W /= null then
-         Set_Focus_Child (M, W);
+         C := Find_MDI_Child_From_Widget (W);
+         if C /= null then
+            --  This will unfortunately prevent users from using /Windows menu
+            --  on floating windows. On mac, if you have the focus on a
+            --  floating window and then click in the menu bar in the main
+            --  window, the focus is given to the main window (and thus here
+            --  we change the current child), and then the focus is given
+            --  to the menu eventually (or maybe only when the user starts
+            --  using the arrow keys). But at this point the current child in
+            --  the /Windows menu is the one from the main window.
+            --
+            --  On the other hand this is needed since otherwise the keyboard
+            --  focus has been moved to a widget in the main window, but the
+            --  current MDI child would still be the floating window so the MDI
+            --  is out of sync.
+
+            Set_Focus_Child (C);
+         end if;
       end if;
 
       return False;
