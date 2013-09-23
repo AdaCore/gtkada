@@ -1,3 +1,9 @@
+2013-09-23	Arnaud Charlet	<charlet@adacore.com>
+
+	* gdk/win32/gdkevents-win32.c (handle_wm_paint): Force an update when
+	paint message is received, otherwise windows in background are not
+	immediately refreshed when moving a modal window on top of them.
+
 2013-09-19	Nicolas Setton	<setton@adacore.com>
 
 	* gtk/gtkimcontextsimple.c (check_win32_special_cases): Fix handling
@@ -149,3 +155,17 @@
  	}
        if (value > 0)
  	{
+--- gdk/win32/gdkevents-win32.c.old	2009-12-22 12:37:10.468370000 +0100
++++ gdk/win32/gdkevents-win32.c	2010-01-06 17:04:42.923000000 +0100
+@@ -1692,6 +1692,12 @@ handle_wm_paint (MSG        *msg,
+     _gdk_window_invalidate_for_expose (window, update_region);
+   gdk_region_destroy (update_region);
+ 
++  /* Force a process_updates to refresh visible windows
++   * when receiving a paint message. */
++
++  if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++    gdk_window_process_updates (window, FALSE);
++
+   DeleteObject (hrgn);
+ }
