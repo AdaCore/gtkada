@@ -445,7 +445,11 @@ package body Gtkada.MDI is
    --  displayed
 
    function Toplevel_Focus_In
-     (MDI : access Gtk_Widget_Record'Class) return Boolean;
+     (MDI   : access GObject_Record'Class;
+      Event : Gdk_Event_Focus) return Boolean;
+   function Toplevel_Focus_Out
+     (MDI   : access GObject_Record'Class;
+      Event : Gdk_Event_Focus) return Boolean;
    --  Called when the toplevel window that contains a the MDI gains the focus
    --  from the window manager
 
@@ -803,38 +807,117 @@ package body Gtkada.MDI is
       return False;
    end Set_Focus_Child_MDI_From_Tab;
 
+   ------------------------
+   -- Toplevel_Focus_Out --
+   ------------------------
+
+   function Toplevel_Focus_Out
+     (MDI   : access GObject_Record'Class;
+      Event : Gdk_Event_Focus) return Boolean
+   is
+      pragma Unreferenced (Event);
+      M   : constant MDI_Window := MDI_Window (MDI);
+      Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (M));
+   begin
+      --  This doesn't work, because the current MDI child remains valid,
+      --  but will no longer have the focus when the main window gains the
+      --  focus. This also does not work when using Next Tag with a floating
+      --  Locations window, since the latter temporarily gets the focus, and
+      --  the editor does not get it back.
+
+      if False then
+         Win.Set_Focus (null);
+      end if;
+
+      return False;
+   end Toplevel_Focus_Out;
+
    -----------------------
    -- Toplevel_Focus_In --
    -----------------------
 
    function Toplevel_Focus_In
-     (MDI : access Gtk_Widget_Record'Class) return Boolean
+     (MDI   : access GObject_Record'Class;
+      Event : Gdk_Event_Focus) return Boolean
    is
-      Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
+      pragma Unreferenced (Event);
+      M   : constant MDI_Window := MDI_Window (MDI);
+      Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (M));
       W : Gtk_Widget;
       C : MDI_Child;
    begin
       Print_Debug ("Toplevel_Focus_In");
 
-      W := Win.Get_Focus;
-      if W /= null then
-         C := Find_MDI_Child_From_Widget (W);
-         if C /= null then
-            --  This will unfortunately prevent users from using /Windows menu
-            --  on floating windows. On mac, if you have the focus on a
-            --  floating window and then click in the menu bar in the main
-            --  window, the focus is given to the main window (and thus here
-            --  we change the current child), and then the focus is given
-            --  to the menu eventually (or maybe only when the user starts
-            --  using the arrow keys). But at this point the current child in
-            --  the /Windows menu is the one from the main window.
-            --
-            --  On the other hand this is needed since otherwise the keyboard
-            --  focus has been moved to a widget in the main window, but the
-            --  current MDI child would still be the floating window so the MDI
-            --  is out of sync.
+      if False
+         and then M.Focus_Child /= null
+         and then M.Focus_Child.State = Floating
+      then
+         --  Keep the current child on the floating, so remove the
+         --  keyboard focus in toplevel window for consistency.
+         --
+         --  This does not work though since the omni-search never
+         --  gets the focus that way, and we need two clicks to give
+         --  the focus to an editor.
 
-            Set_Focus_Child (C);
+         Win.Set_Focus (null);
+
+      elsif False then
+         --  This will unfortunately prevent users from using /Windows
+         --  menu on floating windows. On mac, if you have the focus on a
+         --  floating window and then click in the menu bar in the main
+         --  window, the focus is given to the main window (and thus here
+         --  we change the current child), and then the focus is given to
+         --  the menu eventually (or maybe only when the user starts
+         --  using the arrow keys). But at this point the current child
+         --  in the /Windows menu is the one from the main window.
+         --
+         --  On the other hand this is needed since otherwise the
+         --  keyboard focus has been moved to a widget in the main
+         --  window, but the current MDI child would still be the
+         --  floating window so the MDI is out of sync.
+
+         W := Win.Get_Focus;
+         if W /= null then
+
+            C := Find_MDI_Child_From_Widget (W);
+            if C /= null then
+               Set_Focus_Child (C);
+            end if;
+         end if;
+
+      else
+         --  If the current child was a floating window, make sure it keeps the
+         --  focus, and that no one gains the keyboard focus in the main
+         --  window.  This avoids a situation where an TextView has the
+         --  keyboard focus, but isn't the MDI focus child.
+         --
+         --  This fails in the following scenario:
+         --  Open floating search window, press shift-F3; the omni-search does
+         --  not have the focus.
+         --  As a workaround, we therefore test whether the current focus
+         --  widget is inside a MDI_Child, and still pass it the focus if not.
+         --  We keep the current floating MDI_Child though, so that the menus
+         --  can apply to it.
+
+         if M.Focus_Child = null then
+            Win.Set_Focus (null);
+         elsif M.Focus_Child.State = Floating then
+            W := Win.Get_Focus;
+            if W /= null then
+               C := Find_MDI_Child_From_Widget (W);
+               if C = null then
+                  null;
+               else
+                  Win.Set_Focus (null);
+               end if;
+            else
+               Win.Set_Focus (null);
+            end if;
+         else
+            --  Make sure the keyboard focus is correctly restored, for
+            --  instance if we had open a temporary dialog and then closed it
+            --  to get back to the main window.
+            Give_Focus_To_Child (M.Focus_Child);
          end if;
       end if;
 
@@ -849,10 +932,8 @@ package body Gtkada.MDI is
      (MDI    : access MDI_Window_Record;
       Parent : access Gtk.Window.Gtk_Window_Record'Class) is
    begin
-      Return_Callback.Object_Connect
-        (Parent, Signal_Focus_In_Event,
-         Return_Callback.To_Marshaller (Toplevel_Focus_In'Access),
-         MDI);
+      Parent.On_Focus_In_Event (Toplevel_Focus_In'Access, MDI);
+      Parent.On_Focus_Out_Event (Toplevel_Focus_Out'Access, MDI);
    end Setup_Toplevel_Window;
 
    -------------
