@@ -77,6 +77,8 @@
 --  <screenshot>gtk-box</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_box.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

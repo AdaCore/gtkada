@@ -34,6 +34,8 @@
 --  <screenshot>gtk-button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_buttons.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;             use Gdk;

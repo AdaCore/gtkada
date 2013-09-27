@@ -31,6 +31,8 @@
 --  added in GTK+ 2.10.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;              use Gdk.Types;

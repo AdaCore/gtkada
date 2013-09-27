@@ -138,6 +138,8 @@
 --  <screenshot>gtk-dialog</screenshot>
 --  <group>Windows</group>
 --  <testgtk>create_dialog.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;    use Gdk.Screen;

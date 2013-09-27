@@ -68,6 +68,8 @@
 --  Glib.Action_Group.Query_Action.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings; use GNAT.Strings;

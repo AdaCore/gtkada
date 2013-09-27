@@ -62,6 +62,8 @@
 --  <screenshot>gtk-fixed</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_fixed.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;

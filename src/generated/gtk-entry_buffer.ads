@@ -35,6 +35,8 @@
 --  derived class could integrate with an application's concept of undo/redo.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

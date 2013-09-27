@@ -35,6 +35,8 @@
 --  using e.g. gtk_tree_view_column_add_attribute.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

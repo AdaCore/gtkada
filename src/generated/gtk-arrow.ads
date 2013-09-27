@@ -38,6 +38,8 @@
 --  </description>
 --  <screenshot>gtk-arrow</screenshot>
 --  <testgtk>create_arrow.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;

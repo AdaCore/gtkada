@@ -68,6 +68,8 @@
 --  <screenshot>gtk-gentry</screenshot>
 --  <group>Numeric/Text Data Entry</group>
 --  <testgtk>create_entry.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;

@@ -47,6 +47,8 @@
 --  <screenshot>gtk-calendar</screenshot>
 --  <group>Selectors</group>
 --  <testgtk>create_calendar.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;

@@ -39,6 +39,8 @@
 --  in your own code, please use Cairo directly.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                use Cairo;

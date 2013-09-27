@@ -72,6 +72,8 @@
 --  GTK_TOOL_PALETTE_DRAG_ITEMS, GDK_ACTION_COPY); ]|
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;

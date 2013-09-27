@@ -102,6 +102,8 @@
 --  the Gtk.Builder.Gtk_Builder must have been given the gettext domain to use.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;      use GNAT.Strings;

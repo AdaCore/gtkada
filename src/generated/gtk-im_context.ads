@@ -92,6 +92,8 @@
 --  for the new input method to become available to GTK+ applications.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;           use Gdk;

@@ -61,6 +61,8 @@
 --  been set or not. You should not set them independently.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;

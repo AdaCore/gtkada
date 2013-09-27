@@ -41,6 +41,8 @@
 --  property is set to a pixbuf, it renders that one.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

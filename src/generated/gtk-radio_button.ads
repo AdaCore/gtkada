@@ -86,6 +86,8 @@
 --  <screenshot>gtk-radio_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_radio_button.adb</testgtk>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

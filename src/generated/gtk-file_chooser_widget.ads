@@ -34,6 +34,8 @@
 --  a Gtk.File_Chooser.Gtk_File_Chooser.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

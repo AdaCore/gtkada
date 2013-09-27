@@ -41,6 +41,8 @@
 --  manager, which you can obtain using gdk_display_get_device_manager.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;         use Gdk;

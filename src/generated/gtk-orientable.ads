@@ -33,6 +33,8 @@
 --  Gtk.Orientable.Gtk_Orientable was introduced in GTK+ 2.16.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;       use Glib;

@@ -95,6 +95,8 @@
 --  <inlinemediaobject> <imageobject><imagedata fileref="right-end.png"
 --  format="PNG"/></imageobject> </inlinemediaobject>
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

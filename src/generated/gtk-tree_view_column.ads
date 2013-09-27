@@ -32,6 +32,8 @@
 --  to the tree widget and how they work together.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;           use Gdk.Rectangle;

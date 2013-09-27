@@ -27,6 +27,8 @@
 --  row). Create a new GtkTreeRowReference with gtk_tree_row_reference_new.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;

@@ -2091,6 +2091,7 @@ class Package(object):
             if self.doc:
                 result.append(format_doc(self.doc, indent=""))
 
+            result.append("pragma Ada_2005;\n")
             result.append("")
             result.append('pragma Warnings (Off, "*is already use-visible*");')
             result.append(self._output_withs(self.spec_withs))

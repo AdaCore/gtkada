@@ -37,6 +37,8 @@
 --  Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button containing a stock item.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                   use Glib;

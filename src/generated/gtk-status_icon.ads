@@ -47,6 +47,8 @@
 --  system tray on Win32 doesn't allow to embed arbitrary widgets.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;

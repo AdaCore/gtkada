@@ -43,6 +43,8 @@
 --  type system prior to calling Glib.G_Icon.New_For_String.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;       use Glib;

@@ -32,6 +32,8 @@
 --  exposes the buttons with the names "select_button" and "cancel_button.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

@@ -38,6 +38,8 @@
 --  object's Gtk.Style_Context.Gtk_Style_Context.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;        use Gdk.RGBA;

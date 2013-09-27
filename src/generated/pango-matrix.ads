@@ -29,6 +29,8 @@
 --    y_device = x_user * matrix->yx + y_user * matrix->yy + matrix->y0;
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib; use Glib;

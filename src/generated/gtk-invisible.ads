@@ -29,6 +29,8 @@
 --  for drag-and-drop.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;      use Gdk.Screen;

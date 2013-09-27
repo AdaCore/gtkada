@@ -72,6 +72,8 @@
 --  and the maximum value to 5 after changing the indicator mode to discrete.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

@@ -28,6 +28,8 @@
 --  </description>
 --  <group>Layout containers</group>
 
+pragma Ada_2005;
+
 with Ada.Tags;
 with Cairo;
 with GNAT.Strings;

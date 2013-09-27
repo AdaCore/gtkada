@@ -32,6 +32,8 @@
 --  To add a submenu, use Glib.Menu.Insert_Submenu.
 --
 --  </description>
+pragma Ada_2005;
+
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
