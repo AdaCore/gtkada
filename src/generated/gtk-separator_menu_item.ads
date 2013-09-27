@@ -30,7 +30,6 @@
 --  <group>Menus and Toolbars</group>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Types;      use Glib.Types;

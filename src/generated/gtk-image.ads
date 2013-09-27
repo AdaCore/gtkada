@@ -99,7 +99,6 @@
 --  <group>Display widgets</group>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;

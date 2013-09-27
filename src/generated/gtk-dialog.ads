@@ -140,7 +140,6 @@
 --  <testgtk>create_dialog.adb</testgtk>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;    use Gdk.Screen;
 with Glib;          use Glib;

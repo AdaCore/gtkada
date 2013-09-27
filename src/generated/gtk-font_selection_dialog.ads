@@ -31,7 +31,6 @@
 --  <testgtk>create_font_selection.adb</testgtk>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
 with Glib.Types;    use Glib.Types;

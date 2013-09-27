@@ -31,7 +31,6 @@
 --  <see>Gtk_Action</see>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
 with Glib.Object;       use Glib.Object;

@@ -33,7 +33,6 @@
 --  </description>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Glib;              use Glib;

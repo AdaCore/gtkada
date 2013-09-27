@@ -76,7 +76,6 @@
 --  </description>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device;      use Gdk.Device;
 with Gdk.Screen;      use Gdk.Screen;

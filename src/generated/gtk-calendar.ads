@@ -49,7 +49,6 @@
 --  <testgtk>create_calendar.adb</testgtk>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;

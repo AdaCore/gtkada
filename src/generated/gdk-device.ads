@@ -32,7 +32,6 @@
 --  </description>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                     use Gdk;
 with Gdk.Display;             use Gdk.Display;

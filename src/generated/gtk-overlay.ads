@@ -45,7 +45,6 @@
 --  </description>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo.Region;  use Cairo.Region;
 with Glib;          use Glib;

@@ -65,7 +65,6 @@
 --  </description>
 pragma Ada_2005;
 
-
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;   use Gdk.Display;
 with Gdk.Pixbuf;    use Gdk.Pixbuf;
