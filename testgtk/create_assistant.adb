@@ -78,7 +78,7 @@ package body Create_Assistant is
      (Gtk_Check_Button_Record, Page_Data);
    package Radio_Button_Char_Cb is new Handlers.User_Callback
      (Gtk_Radio_Button_Record, Character);
-   package Forward_Page_Functions is new Set_Forward_page_Func_User_Data
+   package Forward_Page_Functions is new Set_Forward_Page_Func_User_Data
      (Gtk_Assistant);
    use Forward_Page_Functions;
 

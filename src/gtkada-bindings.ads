@@ -74,7 +74,7 @@ package Gtkada.Bindings is
    pragma Convention (C, chars_ptr_array_access);
    --  Suitable for a C function that returns a gchar**
 
-   procedure g_strfreev (Str_Array : in out chars_ptr_array_access);
+   procedure g_strfreev (Str_Array : chars_ptr_array_access);
    --  Thin binding to C function of the same name.  Frees a null-terminated
    --  array of strings, and the array itself.  If called on a null value,
    --  simply return.

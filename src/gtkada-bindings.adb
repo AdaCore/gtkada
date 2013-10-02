@@ -73,9 +73,8 @@ package body Gtkada.Bindings is
      (C : chars_ptr_array_access) return String_List
    is
       Result : constant String_List := To_String_List (C.all);
-      C2 : chars_ptr_array_access := C;
    begin
-      g_strfreev (C2);
+      g_strfreev (C);
       return Result;
    end To_String_List_And_Free;
 

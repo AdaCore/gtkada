@@ -62,7 +62,6 @@ package body Glib.Key_File is
    function Convert_Then_Free
      (Item : chars_ptr_array_access) return GNAT.Strings.String_List
    is
-      I : chars_ptr_array_access := Item;
       No_List : constant GNAT.Strings.String_List (1 .. 0) := (others => null);
    begin
       if Item = null then
@@ -71,7 +70,7 @@ package body Glib.Key_File is
          declare
             G : constant GNAT.Strings.String_List := To_String_List (Item.all);
          begin
-            g_strfreev (I);
+            g_strfreev (Item);
             return G;
          end;
       end if;
