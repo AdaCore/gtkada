@@ -2227,6 +2227,12 @@ package body Gtkada.MDI is
 
          --  Fallback to standard gtk+ handler, so that it terminates its
          --  reorder operation if any
+         --  Unfortunately, the notebook might no longer exist at this point,
+         --  so it is dangerous to forward.
+
+         if Child.Get_State = Floating then
+            return True;  --  stop propagating
+         end if;
       end if;
 
       return False;
