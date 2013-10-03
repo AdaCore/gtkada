@@ -1,5 +1,14 @@
 Known problems fixed in GtkAda 3.8.2
 
+
+- MA02-035 Bad binding of glib's g_strfree_v
+
+- Problem:    The chars_ptr_array access was defined as "in out" which resulted 
+              in it being passed by reference by the GNAT compiler, and 
+              resulted in memory corruption (glib trying to free wrong memory 
+              adresses)
+  Workaround: Pass the parameter as in
+
 - M625-039 Redraw problems under Windows
   Problem:    Some items (like tree view expanders, buttons in toolbars)
               are not drawn or refreshed properly.
