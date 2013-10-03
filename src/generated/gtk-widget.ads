@@ -2765,6 +2765,16 @@ package Gtk.Widget is
    --  You will only need to override this computation if you are writting
    --  your own container widgets.
 
+   procedure Inherited_Get_Preferred_Width
+     (Klass      : Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Minimum_Size, Natural_Size : out Glib.Gint);
+   procedure Inherited_Get_Preferred_Height
+     (Klass      : Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Minimum_Size, Natural_Size : out Glib.Gint);
+   --  Call the default implementation
+
    procedure Inherited_Size_Allocate
      (Klass      : Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;

@@ -467,6 +467,24 @@ void ada_inherited_WIDGET_CLASS_size_allocate (
    GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, rect);
 }
 
+void ada_inherited_WIDGET_CLASS_get_preferred_width (
+      AdaGObjectClass* klass, GtkWidget* widget, gint* min, gint* natural)
+{
+   GObjectClass* objklass = g_type_class_ref(klass->type);
+   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
+   g_type_class_unref (objklass);
+   GTK_WIDGET_CLASS (parent_class)->get_preferred_width (widget, min, natural);
+}
+
+void ada_inherited_WIDGET_CLASS_get_preferred_height (
+      AdaGObjectClass* klass, GtkWidget* widget, gint* min, gint* natural)
+{
+   GObjectClass* objklass = g_type_class_ref(klass->type);
+   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
+   g_type_class_unref (objklass);
+   GTK_WIDGET_CLASS (parent_class)->get_preferred_height (widget, min, natural);
+}
+
 gboolean ada_inherited_WIDGET_CLASS_draw (
       AdaGObjectClass* klass, GtkWidget* widget, cairo_t *cr)
 {
