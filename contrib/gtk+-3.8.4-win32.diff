@@ -1,3 +1,12 @@
+2013-10-10	Raphael Amiard  <amiard@adacore.com>
+
+	* gtk/gtktextview.c (gtk_text_view_drag_end): Implement.
+
+2013-10-10	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtkdnd.c: Remove hard-coded draw of the drop rectangle, which
+	is not removed under Windows.
+
 2013-09-23	Arnaud Charlet	<charlet@adacore.com>
 
 	* gdk/win32/gdkevents-win32.c (handle_wm_paint): Force an update when
@@ -169,3 +178,44 @@
 +
    DeleteObject (hrgn);
  }
+--- gtk/gtktextview.c.orig	2013-10-10 10:13:42.390625000 -0400
++++ gtk/gtktextview.c	2013-10-10 10:14:38.000000000 -0400
+@@ -7366,6 +7366,21 @@ static void
+ gtk_text_view_drag_end (GtkWidget        *widget,
+                         GdkDragContext   *context)
+ {
++  GtkTextView *text_view;
++  GtkTextViewPrivate *priv;
++
++  text_view = GTK_TEXT_VIEW (widget);
++  priv = text_view->priv;
++
++  gtk_text_mark_set_visible (priv->dnd_mark, FALSE);
++
++  if (priv->dnd_device)
++    priv->dnd_device = NULL;
++
++  if (priv->scroll_timeout != 0)
++    g_source_remove (priv->scroll_timeout);
++
++  priv->scroll_timeout = 0;
+ }
+ 
+ static void
+--- gtk/gtkdnd.c.orig	2013-10-10 11:10:17.671875000 -0400
++++ gtk/gtkdnd.c	2013-10-10 11:11:40.234375000 -0400
+@@ -1255,14 +1255,6 @@ gtk_drag_highlight_draw (GtkWidget *widg
+   gtk_render_frame (context, cr, 0, 0, width, height);
+ 
+   gtk_style_context_restore (context);
+-
+-  cairo_set_source_rgb (cr, 0.0, 0.0, 0.0); /* black */
+-  cairo_set_line_width (cr, 1.0);
+-  cairo_rectangle (cr,
+-                   0.5, 0.5,
+-                   width - 1, height - 1);
+-  cairo_stroke (cr);
+-
+   return FALSE;
+ }
+ 
