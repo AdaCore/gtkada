@@ -1,3 +1,12 @@
+2013-10-11	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktreeview.c (gtk_tree_view_adjustment_changed): Invalidate
+	the whole bin window after scrolling, to avoid incomplete redraw
+	artifacts.
+
+	Not to be ported: this is already implemented (differently) in
+	the head version of Gtk+.
+
 2013-10-10	Raphael Amiard  <amiard@adacore.com>
 
 	* gtk/gtktextview.c (gtk_text_view_drag_end): Implement.
@@ -219,3 +228,22 @@
    return FALSE;
  }
  
+--- gtk/gtktreeview.c.orig	2013-10-11 14:26:33.203125000 -0400
++++ gtk/gtktreeview.c	2013-10-11 15:12:38.828125000 -0400
+@@ -11244,6 +11244,16 @@ gtk_tree_view_adjustment_changed (GtkAdj
+ 	}
+       gdk_window_scroll (tree_view->priv->bin_window, 0, dy);
+ 
++      {
++	GdkRectangle area;
++
++	area.x = 0;
++	area.y = 0;
++	area.width = gdk_window_get_width (tree_view->priv->bin_window);
++	area.height = gdk_window_get_height (tree_view->priv->bin_window);
++	gdk_window_invalidate_rect (tree_view->priv->bin_window, &area, FALSE);
++      }
++      
+       if (tree_view->priv->dy != (int) gtk_adjustment_get_value (tree_view->priv->vadjustment))
+         {
+           /* update our dy and top_row */
