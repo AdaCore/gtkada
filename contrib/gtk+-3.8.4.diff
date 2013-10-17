@@ -1,3 +1,9 @@
+2013-10-17  Raphael Amiard  <amiard@adacore.com>
+
+    * gtk/gtktextlayout.c (gtk_text_layout_set_screen_width): Only
+      invalidate the layout when the defautl wrapping mode is not
+      GTK_WRAP_NONE.
+
 2013-05-17  Nicolas Setton  <setton@adacore.com>
 
 	* gtk/gtktextview.c (extend_selection): Fix typo in documentation.
@@ -420,3 +426,15 @@
      }
  }
   
+--- gtk/gtktextlayout.c.orig	2013-10-17 12:16:06.406964707 +0200
++++ gtk/gtktextlayout.c	2013-10-17 12:09:51.106948430 +0200
+@@ -499,6 +499,9 @@ gtk_text_layout_set_screen_width (GtkTex
+   if (layout->screen_width == width)
+     return;
+
++  if (layout->default_style->wrap_mode == GTK_WRAP_NONE)
++    return;
++
+   layout->screen_width = width;
+
+   DV (g_print ("invalidating all due to new screen width (%s)\n", G_STRLOC));
