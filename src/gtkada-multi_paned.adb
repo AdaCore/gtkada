@@ -59,7 +59,7 @@ package body Gtkada.Multi_Paned is
    Traces : constant Boolean := False;
    --  Whether debug traces should be displayed on stdout
 
-   Minimum_Width : constant := 1;
+   Minimum_Width : constant := 50;
    --  Minimum width for a child
 
    Paned_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
