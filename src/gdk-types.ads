@@ -184,7 +184,7 @@ package Gdk.Types is
    Release_Mask  : constant Gdk_Modifier_Type;
    Modifier_Mask : constant Gdk_Modifier_Type;
 
-   Default_Modifier_Mask : constant Gdk_Modifier_Type;
+   function Primary_Mod_Mask return Gdk_Modifier_Type;
 
    type Gdk_Modifier_Intent is
       (Primary_Accelerator,
@@ -284,11 +284,7 @@ private
    Release_Mask  : constant Gdk_Modifier_Type := 2 ** 30;
    Modifier_Mask : constant Gdk_Modifier_Type := 16#5C001FFF#;
 
-   function Internal_Defaut_Modifier_Mask return Gdk_Modifier_Type;
-   pragma Import
-     (C, Internal_Defaut_Modifier_Mask, "ada_gdk_get_default_modifier");
-   Default_Modifier_Mask : constant Gdk_Modifier_Type :=
-                             Internal_Defaut_Modifier_Mask;
+   pragma Import (C, Primary_Mod_Mask, "ada_gdk_get_default_modifier");
 
    ------------------------------
    --  Representation clauses  --

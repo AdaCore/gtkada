@@ -1622,13 +1622,41 @@ ada_gtk_binding_entry_add_signal_bool
 GdkModifierType
 ada_gdk_get_default_modifier ()
 {
-#ifdef GDK_QUARTZ_BACKEND
-  return GDK_MOD1_MASK;
-#else
-  return GDK_CONTROL_MASK;
-#endif
-}
+  static GdkModifierType primary = 0;
 
+  if (!primary)
+    {
+      GdkDisplay      *display = gdk_display_get_default ();
+      GdkKeymap       *keymap = gdk_keymap_get_for_display (display);
+      GdkModifierType real;
+
+      g_return_val_if_fail (GDK_IS_KEYMAP (keymap), 0);
+
+      /* Retrieve the real modifier mask */
+      real = gdk_keymap_get_modifier_mask
+        (keymap,
+         GDK_MODIFIER_INTENT_PRIMARY_ACCELERATOR);
+
+      primary = real;
+
+      /* We need to translate the real modifiers into a virtual modifier
+         (like Super, Meta, etc.).
+         The following call adds the virtual modifiers for each real modifier
+         defined in primary.
+      */
+      gdk_keymap_add_virtual_modifiers (keymap, &primary);
+
+      if (primary != real) {
+        /* In case the virtual and real modifiers are different, we need to
+           remove the real modifier from the result, and keep only the
+           virtual one.
+        */
+        primary &= ~real;
+      }
+    }
+
+  return primary;
+}
 
 // GtkPlug is only build on X11 backends
 

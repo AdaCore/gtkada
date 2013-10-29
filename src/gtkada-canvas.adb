@@ -2985,7 +2985,7 @@ package body Gtkada.Canvas is
 
       --  Button press on the background: clear the selection
       if Canvas.Item_Press = null then
-         if (Get_State (Event) and Default_Modifier_Mask) = 0 then
+         if (Get_State (Event) and Primary_Mod_Mask) = 0 then
             Clear_Selection (Canvas);
          end if;
 
@@ -2995,7 +2995,7 @@ package body Gtkada.Canvas is
       else
          Canvas.Background_Press := False;
 
-         if (Get_State (Event) and Default_Modifier_Mask) /= 0 then
+         if (Get_State (Event) and Primary_Mod_Mask) /= 0 then
             if Is_Selected (Canvas, Canvas.Item_Press) then
                Remove_From_Selection (Canvas, Canvas.Item_Press);
             else
