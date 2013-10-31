@@ -65,10 +65,10 @@ package Gtkada.Style is
       Alpha      : Glib.Gdouble;
    end record;
    --  The Hue is the colour's position on the colour wheel, expressed in
-   --  degrees from 0° to 359°, representing the 360° of the wheel; 0°
-   --  being red, 180° being red's opposite colour cyan, and so on.
-   --  The mapping is:    0.0 => 0°
-   --                     1.0 => 360°
+   --  degrees from 0Â° to 359Â°, representing the 360Â° of the wheel; 0Â°
+   --  being red, 180Â° being red's opposite colour cyan, and so on.
+   --  The mapping is:    0.0 => 0Â°
+   --                     1.0 => 360Â°
    --
    --  Saturation is the intensity of the colour, how dull or bright it is.
    --  The lower the saturation, the duller (greyer) the colour looks. This is
