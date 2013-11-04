@@ -4325,13 +4325,7 @@ package body Gtkada.MDI is
          Event.Add (Box);
 
          Note.Set_Tab_Detachable (Child, False);
-
-         if Note.Get_N_Pages > 1 then
-            Note.Set_Tab_Reorderable (Child, True);
-         else
-            Note.Set_Tab_Reorderable (Child, False);
-         end if;
-
+         Note.Set_Tab_Reorderable (Child, Note.Get_N_Pages > 1);
          Note.Set_Tab_Label (Child, Event);
 
          Show_All (Event);
