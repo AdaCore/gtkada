@@ -4,6 +4,8 @@ all: dirs libs tools
 GTKEXTRA_SUPPORT=no
 GL_SUPPORT=no
 
+BUILD_OBJC=@BUILD_OBJC@
+
 ## This line restricts to the Gtk3 API. Comment it out to compile with Gtk2.
 RESTRICT_FLAGS = \
  -DGTK_DISABLE_DEPRECATED -DGSEAL_ENABLE -DGTK_DISABLE_SINGLE_INCLUDES \
@@ -35,7 +37,15 @@ endif
 c_objects = misc.o misc_generated.o
 c_objects_dir= ${c_objects:%=${OBJ_DIR}/%}
 
-SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects}
+ifeq ($(BUILD_OBJC),yes)
+objc_objects = misc_osx.o
+objc_objects_dir= ${objc_objects:%=${OBJ_DIR}/%}
+else
+objc_objects =
+objc_objects_dir =
+endif
+
+SRC_FILES=glib*.o gdk*.o gtk*.o pango*.o cairo*.o ${c_objects} ${objc_objects}
 GTKADA_LIBS=
 EXTERNAL_LIBS=
 include Makefile.common
@@ -49,7 +59,7 @@ INSTALL_SCRIPT  = @INSTALL_SCRIPT@
 
 ## General and public targets
 
-libs: ada ${c_objects_dir}
+libs: ada ${c_objects_dir} $(objc_objects_dir)
 ifeq ($(BUILD_SHARED),yes)
 libs: ${OBJ_DIR}/$(SONAME)
 endif
@@ -149,6 +159,9 @@ distclean: force
 
 $(c_objects_dir): $(OBJ_DIR)/%.o : %.c
 	$(CC) -o $@ -c $(CFLAGS) $<
+
+$(objc_objects_dir): $(OBJ_DIR)/%.o : %.m
+	$(CC) -x objective-c -o $@ -c $(CFLAGS) $(OBJC_EXTRA_FLAGS) $<
 
 force:
 

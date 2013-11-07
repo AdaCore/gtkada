@@ -49,17 +49,28 @@ package Gtkada.Application is
      with private;
    type Gtkada_Application is access all Gtkada_Application_Record'Class;
 
+   type Gtkada_Application_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtkada_Application_Flags);
+   --  Flags used to define the behaviour of a Glib.Application.Gapplication.
+
+   Gtkada_Application_Flags_None     : constant Gtkada_Application_Flags := 0;
+   Gtkada_Application_Handles_Open   : constant Gtkada_Application_Flags := 1;
+   Gtkada_Application_OSX_FullScreen : constant Gtkada_Application_Flags := 2;
+
    procedure Gtk_New
       (Self           : out Gtkada_Application;
        Application_Id : UTF8_String := "";
-       Flags          : Glib.Application.GApplication_Flags);
+       Flags          : Glib.Application.GApplication_Flags;
+       Gtkada_Flags   : Gtkada_Application_Flags);
    procedure Initialize
       (Self           : not null access Gtkada_Application_Record'Class;
        Application_Id : UTF8_String := "";
-       Flags          : Glib.Application.GApplication_Flags);
+       Flags          : Glib.Application.GApplication_Flags;
+       Gtkada_Flags   : Gtkada_Application_Flags);
    function Gtk_Application_New
       (Application_Id : UTF8_String := "";
-       Flags          : Glib.Application.GApplication_Flags)
+       Flags          : Glib.Application.GApplication_Flags;
+       Gtkada_Flags   : Gtkada_Application_Flags)
        return Gtkada_Application;
 
    type GFile is private;

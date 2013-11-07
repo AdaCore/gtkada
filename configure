@@ -621,6 +621,7 @@ TARGET_LFLAGS
 FPIC
 SO_OPTS
 SO_EXT
+BUILD_OBJC
 BUILD_SHARED
 BUILD_STATIC
 OS_SPECIFIC_LINK_OPTIONS
@@ -2116,10 +2117,11 @@ fi
       if test x$CAN_BUILD_SHARED = xyes ; then
          BUILD_SHARED=yes
       fi
+      BUILD_OBJC=yes
       SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
       FPIC=-fPIC
-      LDFLAGS="-Wl,-framework,Carbon"
-      TARGET_LFLAGS="-Wl,-framework,Carbon"
+      LDFLAGS="-Wl,-framework,Cocoa"
+      TARGET_LFLAGS="-Wl,-framework,Cocoa"
       ;;
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This

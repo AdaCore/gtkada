@@ -15,6 +15,10 @@ project Shared is
 
    for Source_Files use ();
 
+   package Naming is
+      for Body_Suffix ("Objective-C") use ".m";
+   end Naming;
+
    package Compiler is
       case Build is
          when "Debug" =>

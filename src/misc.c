@@ -40,7 +40,7 @@
 #include <gtk/gtk.h>
 
 #ifdef GDK_WINDOWING_QUARTZ
-#include <Carbon/Carbon.h>
+#include "misc_osx.h"
 #endif
 
 #ifdef GDK_WINDOWING_WIN32
@@ -1681,8 +1681,8 @@ typedef struct {
  * Idle callback responsible for actually calling g_application_open with the
  * proper files to open.
  */
-static gboolean
-idle_ada_gtk_application_open (gpointer ptr)
+gboolean
+ada_gtk_application_open_files (gpointer ptr)
 {
   int i;
   ada_gtk_open_data *data = (ada_gtk_open_data*)ptr;
@@ -1698,67 +1698,18 @@ idle_ada_gtk_application_open (gpointer ptr)
   return G_SOURCE_REMOVE;
 }
 
-
 #ifdef GDK_WINDOWING_QUARTZ
-
-/*
- * OSX-specific callback for system events for opening files
- */
-static pascal OSErr
-ada_gtk_open_document_quartz
-  (const AppleEvent *aevt,
-   AppleEvent       *reply,
-   long              refcon)
+void ada_gtk_quartz_application_open_files (GFile** files, gint n_files, gpointer user_data)
 {
   ada_gtk_open_data *data = malloc (sizeof (ada_gtk_open_data));
-  AEDescList docs;
 
-  /* The application object is passed as 'refcon' */
-  data->app = GSIZE_TO_POINTER ((gsize)refcon);
+  data->app     = (GtkApplication*)user_data;
+  data->files   = files;
+  data->n_files = n_files;
 
-  /* Retrieve the documents to open from aevt, place it in docs */
-  if (AEGetParamDesc (aevt, keyDirectObject, typeAEList, &docs) == noErr) {
-    long cnt = 0;
-    int i;
-    AECountItems (&docs, &cnt);
-    UInt8 *str_buffer = NULL;
-
-    data->n_files = cnt;
-    data->files   = (GFile **) malloc (cnt * sizeof(GFile*));
-
-    for (i = 0; i < cnt; i++) {
-      FSRef ref;
-
-      /* and not extract the Paths from the docs array */
-      if (AEGetNthPtr (&docs, i+1, typeFSRef, 0, 0, &ref, sizeof(ref), 0) != noErr)
-        {
-          continue;
-        }
-
-      if (!str_buffer)
-        {
-          str_buffer = (UInt8 *) malloc (1024);
-        }
-
-      FSRefMakePath (&ref, str_buffer, 1024);
-      /* Create a GFile from the path */
-      data->files[i] = g_file_new_for_path ((const char *)str_buffer);
-    }
-
-    if (str_buffer) free (str_buffer);
-  }
-
-  if (data->files != NULL) {
-    /* Do not open the files directly (we're in low-level os event handler, we
-       can't remain here forever), but rather do it in an idle callback */
-    g_idle_add_full
-      (G_PRIORITY_DEFAULT, idle_ada_gtk_application_open, data, NULL);
-  }
-
-  return noErr;
+  ada_gtk_application_open_files (data);
 }
-
-#endif /* QUARTZ */
+#endif
 
 #ifdef GDK_WINDOWING_WIN32
 
@@ -1838,8 +1789,7 @@ HDDEDATA CALLBACK ada_gtk_open_document_win32
         data->files[0] = g_file_new_for_path ((const char *)utfPath);
         free (utfPath);
 
-        g_idle_add_full
-          (G_PRIORITY_DEFAULT, idle_ada_gtk_application_open, data, NULL);
+        g_idle_add (ada_gtk_application_open_files, data);
 
         DdeUnaccessData (hData); /* Release the resource */
       }
@@ -1856,10 +1806,8 @@ static void
 ada_gtk_application_startup (GtkApplication *application) {
 #if defined (GDK_WINDOWING_QUARTZ)
 
-  /* Install the event handler for the kAEOpenDocuments events */
-  AEInstallEventHandler (kCoreEventClass, kAEOpenDocuments,
-                         NewAEEventHandlerUPP (ada_gtk_open_document_quartz),
-                         (void*)application, false);
+  init_osx_open_files_event_handler
+    (ada_gtk_quartz_application_open_files, (gpointer)application);
 
 #elif defined (GDK_WINDOWING_WIN32)
 
@@ -1904,10 +1852,41 @@ ada_gtk_application_shutdown (GtkApplication *application) {
 #endif
 }
 
+#ifdef GDK_WINDOWING_QUARTZ
+/* Enable the full-screen button on OSX for the main window */
+static void
+ada_gtk_quartz_window_added
+  (GtkApplication *application,
+   GtkWindow      *window,
+   gpointer       user_data)
+{
+  ada_gtk_osx_allow_fullscreen (window);
+}
+#endif /* QUARTZ */
+
+typedef enum
+  {
+    GTKADA_APPLICATION_FLAGS_NONE,
+    GTKADA_APPLICATION_HANDLES_OPEN =   (1 << 0),
+    GTKADA_APPLICATION_OSX_FULLSCREEN = (1 << 1)
+  } GtkadaApplicationFlags;
+
 /* Called by the GtkAda.Application instance during initialisation */
-void ada_gtk_setup_application(GtkApplication *app) {
-  g_signal_connect
-    (app, "startup", G_CALLBACK (ada_gtk_application_startup), NULL);
-  g_signal_connect
-    (app, "shutdown", G_CALLBACK (ada_gtk_application_shutdown), NULL);
+void
+ada_gtk_setup_application(GtkApplication *app, GtkadaApplicationFlags flags)
+{
+  if ((flags & GTKADA_APPLICATION_HANDLES_OPEN) != 0)
+    {
+      g_signal_connect
+	(app, "startup", G_CALLBACK (ada_gtk_application_startup), NULL);
+      g_signal_connect
+	(app, "shutdown", G_CALLBACK (ada_gtk_application_shutdown), NULL);
+    }
+#ifdef GDK_WINDOWING_QUARTZ
+  if ((flags & GTKADA_APPLICATION_OSX_FULLSCREEN) != 0)
+    {
+      g_signal_connect
+	(app, "window-added", G_CALLBACK (ada_gtk_quartz_window_added), NULL);
+    }
+#endif
 }

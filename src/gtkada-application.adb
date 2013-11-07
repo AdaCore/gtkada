@@ -52,11 +52,13 @@ package body Gtkada.Application is
    procedure Gtk_New
      (Self           : out Gtkada_Application;
       Application_Id : UTF8_String := "";
-      Flags          : Glib.Application.GApplication_Flags)
+      Flags          : Glib.Application.GApplication_Flags;
+      Gtkada_Flags   : Gtkada_Application_Flags)
    is
    begin
       Self := new Gtkada_Application_Record;
-      Gtkada.Application.Initialize (Self, Application_Id, Flags);
+      Gtkada.Application.Initialize
+        (Self, Application_Id, Flags, Gtkada_Flags);
    end Gtk_New;
 
    ----------------
@@ -66,13 +68,16 @@ package body Gtkada.Application is
    procedure Initialize
      (Self           : not null access Gtkada_Application_Record'Class;
       Application_Id : UTF8_String := "";
-      Flags          : Glib.Application.GApplication_Flags)
+      Flags          : Glib.Application.GApplication_Flags;
+      Gtkada_Flags   : Gtkada_Application_Flags)
    is
-      procedure C_Setup (Obj : System.Address);
+      procedure C_Setup
+        (Obj   : System.Address;
+         Flags : Gtkada_Application_Flags);
       pragma Import (C, C_Setup, "ada_gtk_setup_application");
    begin
       Gtk.Application.Initialize (Self, Application_Id, Flags);
-      C_Setup (Self.Get_Object);
+      C_Setup (Self.Get_Object, Gtkada_Flags);
    end Initialize;
 
    -------------------------
@@ -81,12 +86,14 @@ package body Gtkada.Application is
 
    function Gtk_Application_New
      (Application_Id : UTF8_String := "";
-      Flags          : Glib.Application.GApplication_Flags)
+      Flags          : Glib.Application.GApplication_Flags;
+      Gtkada_Flags   : Gtkada_Application_Flags)
       return Gtkada_Application
    is
       Ret : constant Gtkada_Application := new Gtkada_Application_Record;
    begin
-      Gtkada.Application.Initialize (Ret, Application_Id, Flags);
+      Gtkada.Application.Initialize
+        (Ret, Application_Id, Flags, Gtkada_Flags);
 
       return Ret;
    end Gtk_Application_New;

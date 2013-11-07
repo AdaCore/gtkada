@@ -59,7 +59,7 @@ echo_linker() {
             if [ x"$previous" != x"" ]; then
               echo "        \"$previous\","
             fi
-            echo "        \"-Wl,-framework,Carbon\""
+            echo "        \"-Wl,-framework,Cocoa\""
             ;;
          *)
             if [ x"$previous" != x"" ]; then

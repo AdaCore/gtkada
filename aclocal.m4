@@ -90,10 +90,11 @@ make them preselected in project files (static libraries are preselected by defa
       if test x$CAN_BUILD_SHARED = xyes ; then
          BUILD_SHARED=yes
       fi
+      BUILD_OBJC=yes
       SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
       FPIC=-fPIC
-      LDFLAGS="-Wl,-framework,Carbon"
-      TARGET_LFLAGS="-Wl,-framework,Carbon"
+      LDFLAGS="-Wl,-framework,Cocoa"
+      TARGET_LFLAGS="-Wl,-framework,Cocoa"
       ;;
    # ??? The following case has been introduced because of an elaboration
    # problem with the GtkAda dynamic library and GPS (see E511-010). This
@@ -116,6 +117,7 @@ make them preselected in project files (static libraries are preselected by defa
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
   AC_SUBST(BUILD_STATIC)
   AC_SUBST(BUILD_SHARED)
+  AC_SUBST(BUILD_OBJC)
   AC_SUBST(SO_EXT)
   AC_SUBST(SO_OPTS)
   AC_SUBST(FPIC)
@@ -146,7 +148,7 @@ AC_DEFUN(CHECK_BUILD_TYPE,
 conftest_ok="conftest.ok"
 
 AC_DEFUN(AM_PATH_GNAT,
-[   
+[
    AC_PATH_PROG(GNATMAKE, gnatmake, no)
 
    if test x$GNATMAKE = xno ; then
@@ -212,7 +214,7 @@ AC_DEFUN(AM_PATH_GNATPREP,
 AC_DEFUN(AM_PATH_PERL,
 [
    AC_PATH_PROGS(PERL, perl5 perl)
-   
+
    ### We don't really have any need for a specific version
    ### of perl for the moment, so we don't verify it.
 
@@ -229,7 +231,7 @@ dnl AM_PATH_GTK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for GTK, and define GTK_CFLAGS and GTK_LIBS
 dnl
 AC_DEFUN(AM_PATH_GTK,
-[dnl 
+[dnl
 dnl Get the cflags and libraries from the pkg-config script
 dnl
   AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
@@ -265,7 +267,7 @@ dnl
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-int 
+int
 main ()
 {
   int major, minor, micro;
@@ -284,7 +286,7 @@ main ()
       (gtk_minor_version != $gtk_config_minor_version) ||
       (gtk_micro_version != $gtk_config_micro_version))
     {
-      printf("\n*** 'pkg-config --modversion' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
+      printf("\n*** 'pkg-config --modversion' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n",
              $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
              gtk_major_version, gtk_minor_version, gtk_micro_version);
       printf ("*** was found! If pkg-config was correct, then it is best\n");
@@ -292,7 +294,7 @@ main ()
       printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
       printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
       printf("*** required on your system.\n");
-    } 
+    }
   else
     {
       if ((gtk_major_version > major) ||
@@ -321,7 +323,7 @@ main ()
 
   if test "x$no_gtk" = x ; then
      AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
+     ifelse([$2], , :, [$2])
   else
      AC_MSG_RESULT(no)
      if test "$GTK_CONFIG" = "no" ; then
@@ -379,12 +381,12 @@ main ()
 
 
 AC_DEFUN(AM_CHECK_OPENGL,
-[   
+[
 
    # checking for OpenGL libraries
    AC_ARG_WITH(GL,         [  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,GL32,MesaGL,,no)])
    AC_ARG_WITH(GL-prefix,  [  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed])
-   
+
    if test "x$with_GL_prefix" = "x" ; then
       GL_LDOPTS=""
       GL_CFLAGS=""
@@ -407,16 +409,16 @@ AC_DEFUN(AM_CHECK_OPENGL,
      LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL"
      AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
      AC_MSG_RESULT($have_GL)
-  
+
      AC_MSG_CHECKING([for GL32])
      LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
      AC_TRY_LINK([
 #include <GL/gl.h>
-#include <windows.h>], 
-[ glBegin(0); 
+#include <windows.h>],
+[ glBegin(0);
   CreateCompatibleDC(NULL); ], have_GL32=yes, have_GL32=no)
      AC_MSG_RESULT($have_GL32)
- 
+
      AC_MSG_CHECKING([for Mesa])
      LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
      AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
@@ -502,7 +504,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
 
 
 AC_DEFUN(AM_GNATPREP,
-[   
+[
    echo "creating $1"
    $GNATPREP $1.in $1 config.defs
 ])
