@@ -1,7 +1,7 @@
 SHELL=/bin/sh
 CC = @CC@
 FPIC = @FPIC@
-CLANG = clang
+OBJC = @OBJC@
 PWD = $(shell pwd)
 
 ifeq ($(PROCESSORS),)

@@ -161,7 +161,7 @@ $(c_objects_dir): $(OBJ_DIR)/%.o : %.c
 	$(CC) -o $@ -c $(CFLAGS) $<
 
 $(objc_objects_dir): $(OBJ_DIR)/%.o : %.m
-	$(CLANG) -x objective-c -o $@ -c $(CFLAGS) $(OBJC_EXTRA_FLAGS) $<
+	$(OBJC) -o $@ -c $(CFLAGS) $<
 
 force:
 

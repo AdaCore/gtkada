@@ -13,6 +13,7 @@ AM_ADD_OS_SPECIFIC_FLAGS
 
 # checking for local tools
 AC_PROG_CC
+AC_PROG_OBJC(clang gcc CC)
 AM_PATH_GNAT
 AM_PATH_PERL
 AC_PROG_MAKE_SET
@@ -27,7 +28,7 @@ AM_PATH_GTK(3.8.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for 
 
 # Gettext stuff
 ALL_LINGUAS="fr"
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 
 # Should we compile with gtkextra ?
 AC_MSG_CHECKING(for gtkextra)
