@@ -52,6 +52,7 @@ with Gtk.Menu_Item;
 with Gtk.Notebook;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
+with Gtk.Css_Provider;
 with Gtk.Widget;
 with Gtk.Window;
 with Gtkada.Handlers;
@@ -1150,6 +1151,7 @@ private
       Title_Bar_Color     : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Focus_Title_Color   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Default_Title_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Css_Provider        : Gtk.Css_Provider.Gtk_Css_Provider;
 
       Cursor_Cross        : Gdk.Gdk_Cursor;
       Cursor_Fleur        : Gdk.Gdk_Cursor;

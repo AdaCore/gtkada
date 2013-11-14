@@ -46,6 +46,7 @@ with GNAT.IO;                 use GNAT.IO;
 with GNAT.Strings;            use GNAT.Strings;
 
 with Glib.Convert;            use Glib.Convert;
+with Glib.Error;              use Glib.Error;
 with Glib.Main;               use Glib.Main;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -79,6 +80,7 @@ with Gtk.Arguments;           use Gtk.Arguments;
 with Gtk.Box;                 use Gtk.Box;
 with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
+with Gtk.Css_Provider;        use Gtk.Css_Provider;
 with Gtk.Container;           use Gtk.Container;
 with Gtk.Dialog;              use Gtk.Dialog;
 with Gtk.Enums;               use Gtk.Enums;
@@ -96,6 +98,7 @@ with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
 with Gtk.Stock;               use Gtk.Stock;
 with Gtk.Style_Context;       use Gtk.Style_Context;
+with Gtk.Style_Provider;      use Gtk.Style_Provider;
 with Gtk.Widget;              use Gtk.Widget;
 with Gtk.Window;              use Gtk.Window;
 
@@ -1010,6 +1013,11 @@ package body Gtkada.MDI is
       Parse (Title_Color, Default_Title_Bar_Color, Success);
       Parse (Focus_Color, Default_Title_Bar_Focus_Color, Success);
 
+      Gtk_New (MDI.Css_Provider);
+      Gtk.Style_Context.Add_Provider_For_Screen
+        (Get_Style_Context (MDI).Get_Screen, +MDI.Css_Provider,
+         Priority => Gtk.Style_Provider.Priority_Settings);
+
       Ctx := Get_Style_Context (MDI);
       Ctx.Get_Color (Gtk_State_Flag_Normal, MDI.Default_Title_Color);
 
@@ -1436,6 +1444,45 @@ package body Gtkada.MDI is
          Get_Style_Context (MDI).Get_Background_Color
            (Gtk.Enums.Gtk_State_Flag_Normal,
             Default_Bg);
+
+         declare
+            Err  : aliased GError;
+            C    : constant String :=
+                     Gdk.RGBA.To_String (MDI.Focus_Title_Color);
+            Bg   : constant String :=
+                     Gdk.RGBA.To_String (MDI.Title_Bar_Color);
+            LF   : Character renames ASCII.LF;
+
+            --  This will highlight the whole notebook in blue when not
+            --  using a proper theme. Otherwise, the theme will override
+            --  some of the settings, and only the current focused tab
+            --  will be highlighted with the title color.
+            --  The theme should define
+            --       .mdifocused {background-image: -gtk-gradient{...}}
+            --  or some such, to give a background to the tabs. We can't
+            --  do it here, since the following is loaded with a higher
+            --  priority than the theme, and thus it would override the
+            --  theme.
+
+            Css  : constant String :=
+                     ".mdititle {" & LF & --  Normal title
+                     "  border-width: 2px;" & LF &
+                     "  background-image: -gtk-gradient(" & LF &
+                     "            linear," & LF &
+                     "            left top, left bottom," & LF &
+                     "            from(" & Bg & ")," & LF &
+                     "            to(shade(" & Bg & ",1.1)));" & LF &
+                     "}" & LF &
+                     ".mdifocused .mdititle {" & LF & --  Focused title
+                     "  background-image: -gtk-gradient(" & LF &
+                     "            linear," & LF &
+                     "            left top, left bottom," & LF &
+                     "            from(" & C & ")," & LF &
+                     "            to(shade(" & C & ",1.1)));" & LF &
+                     "}";
+         begin
+            Success := MDI.Css_Provider.Load_From_Data (Css, Err'Access);
+         end;
       end if;
 
       --  Ignore changes in colors, unless the MDI is realized
