@@ -347,6 +347,9 @@ package Gtkada.MDI is
    --  Title and Short_Title should preferably be UTF8-encoded, although this
    --  procedure will attempt to guess the encoding if the string is not valid
    --  UTF8.
+   --
+   --  Child should already be in the MDI at this point (via a call to Put), so
+   --  that the "use_short_titles" preference is taken into account.
 
    function Get_MDI (Child : access MDI_Child_Record) return MDI_Window;
    --  Return the MDI to which Child is associated. In Child is a floating
@@ -1168,7 +1171,8 @@ private
       --  See documentation for Configure.
 
       Use_Short_Titles_For_Floats : Boolean := False;
-      --  Set to true if all floating children should use their short titles
+      --  Set to true if all floating children should use their short titles.
+      --  This also applies to docked windows.
 
       Homogeneous_Tabs : Boolean := True;
 

@@ -2980,9 +2980,15 @@ package body Gtkada.MDI is
       end if;
 
       if Title_Changed and then Child.State = Floating then
-         Set_Title
-           (Gtk_Window (Get_Toplevel (Child.Initial)),
-            Locale_From_UTF8 (Title));
+         if Child.MDI.Use_Short_Titles_For_Floats then
+            Set_Title
+              (Gtk_Window (Get_Toplevel (Child.Initial)),
+               Locale_From_UTF8 (Child.Short_Title.all));
+         else
+            Set_Title
+              (Gtk_Window (Get_Toplevel (Child.Initial)),
+               Locale_From_UTF8 (Child.Title.all));
+         end if;
       end if;
 
       if Short_Title_Changed then
@@ -4677,17 +4683,15 @@ package body Gtkada.MDI is
 
          while List /= Null_List loop
             Child := MDI_Child (Get_Data (List));
-            if Child.State = Floating then
-               if Short_Titles then
-                  Set_Title
-                    (Gtk_Window (Get_Toplevel (Child.Initial)),
-                     Locale_From_UTF8 (Child.Short_Title.all));
-               else
-                  Set_Title
-                    (Gtk_Window (Get_Toplevel (Child.Initial)),
-                     Locale_From_UTF8 (Child.Title.all));
-               end if;
-            end if;
+
+            declare
+               T : constant String := Child.Title.all;
+               S : constant String := Child.Short_Title.all;
+            begin
+               Free (Child.Title);  --  Force a refresh
+               Free (Child.Short_Title);
+               Child.Set_Title (T, S);
+            end;
 
             List := Next (List);
          end loop;
