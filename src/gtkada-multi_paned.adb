@@ -67,6 +67,8 @@ package body Gtkada.Multi_Paned is
 
    Traces_Indent : Integer := 0;
 
+   Handle_Prelit : Gdk.Gdk_Window := null;
+
    type Resize_Handle is record
       Position : Gdk.Rectangle.Gdk_Rectangle;
       Win      : Gdk.Gdk_Window;
@@ -186,6 +188,10 @@ package body Gtkada.Multi_Paned is
    function Button_Motion
      (Paned : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean;
+   function On_Enter_Or_Leave
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Crossing) return Boolean;
+   --  Process gtk+ events
 
    procedure Remove_Child
      (Paned : access Gtk_Widget_Record'Class;
@@ -580,6 +586,43 @@ package body Gtkada.Multi_Paned is
       return Paned_Class_Record.The_Type;
    end Get_Type;
 
+   -----------------------
+   -- On_Enter_Or_Leave --
+   -----------------------
+
+   function On_Enter_Or_Leave
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Crossing) return Boolean
+   is
+      Split   : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Self);
+      Iter    : Child_Iterator := Start (Split);
+      Current : Child_Description_Access;
+   begin
+      if Event.The_Type = Enter_Notify then
+         Handle_Prelit := Event.Window;
+      else
+         Handle_Prelit := null;
+      end if;
+
+      loop
+         Current := Get (Iter);
+         exit when Current = null;
+
+         if Current.Handle.Win = Event.Window then
+            Queue_Draw_Area
+              (Self,
+               X       => Current.Handle.Position.X,
+               Y       => Current.Handle.Position.Y,
+               Width   => Current.Handle.Position.Width,
+               Height  => Current.Handle.Position.Height);
+            exit;
+         end if;
+         Next (Iter);
+      end loop;
+
+      return True;
+   end On_Enter_Or_Leave;
+
    -------------
    -- Gtk_New --
    -------------
@@ -596,7 +639,6 @@ package body Gtkada.Multi_Paned is
 
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class) is
       Ctx   : Gtk_Style_Context;
-      Flags : Gtk_State_Flags;
       Val   : Glib.Values.GValue;
    begin
       G_New (Win, Gtkada.Multi_Paned.Get_Type);
@@ -606,8 +648,6 @@ package body Gtkada.Multi_Paned is
       --  Unfortunately, we can't access that information from another widget
       --  apparently, because Win.Style_Get_Property("handle-size", Val) does
       --  not work...
-
-      Get_Style_Context (Win).Add_Class ("multipaned");
 
       Init (Val, GType_Int);
       Win.Style_Get_Property ("handle-size", Val);
@@ -628,13 +668,11 @@ package body Gtkada.Multi_Paned is
         (Win, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Paned'Access));
       Win.On_Unrealize (On_Unrealize'Access);
+      Win.On_Enter_Notify_Event (On_Enter_Or_Leave'Access);
+      Win.On_Leave_Notify_Event (On_Enter_Or_Leave'Access);
 
       Ctx := Get_Style_Context (Win);
-      Ctx.Add_Class ("pane-separator");
-
-      Flags := Win.Get_State_Flags;
-      Flags := Flags or Gtk_State_Flag_Prelight;
-      Ctx.Set_State (Flags);
+      Ctx.Add_Class ("multipaned");
    end Initialize;
 
    ------------------
@@ -1311,6 +1349,7 @@ package body Gtkada.Multi_Paned is
       Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
       Ctx     : constant Gtk_Style_Context := Get_Style_Context (Split);
+      Flags : Gtk_State_Flags;
    begin
       loop
          Current := Get (Iter);
@@ -1319,41 +1358,44 @@ package body Gtkada.Multi_Paned is
          if not Is_Last_Visible (Current)
            and then Current.Visible
          then
-            Save (Cr);
+            Save (Ctx);
 
-            Transform_To_Window (Cr, Split, Current.Handle.Win);
-            Gtk.Style_Context.Render_Background
-              (Context => Ctx,
-               Cr      => Cr,
-               X       => 0.0,
-               Y       => 0.0,
-               Width   => Gdouble (Current.Handle.Position.Width),
-               Height  => Gdouble (Current.Handle.Position.Height));
+            Ctx.Add_Class ("pane-separator");
+            Flags := Split.Get_State_Flags;
+            if Handle_Prelit = Current.Handle.Win then
+               Flags := Flags or Gtk_State_Flag_Prelight;
+            end if;
+            Ctx.Set_State (Flags);
+
+            --  ??? The following seems wrong, and yet it works with Adwaita.
+            --  If we revert the condition, we only ever get a single dot in
+            --  the handle.
+
+            if Current.Handle.Position.Width  >
+              Current.Handle.Position.Height
+            then
+               Ctx.Add_Class ("vertical");
+               Ctx.Remove_Class ("horizontal");
+            else
+               Ctx.Add_Class ("horizontal");
+               Ctx.Remove_Class ("vertical");
+            end if;
+
             Gtk.Style_Context.Render_Handle
               (Context => Ctx,
                Cr      => Cr,
-               X       => 0.0,
-               Y       => 0.0,
+               X       => Gdouble (Current.Handle.Position.X),
+               Y       => Gdouble (Current.Handle.Position.Y),
                Width   => Gdouble (Current.Handle.Position.Width),
                Height  => Gdouble (Current.Handle.Position.Height));
 
-            --  Darken the handle a bit (in case the theme did not draw
-            --  anything on it).
-
-            Set_Source_Rgba (Cr, 0.8, 0.8, 0.8, 0.1);
-            Cairo.Rectangle
-              (Cr,
-               0.0, 0.0,
-               Width   => Gdouble (Current.Handle.Position.Width),
-               Height  => Gdouble (Current.Handle.Position.Height));
-            Cairo.Fill (Cr);
-
-            Restore (Cr);
+            Restore (Ctx);
          end if;
 
          Next (Iter);
       end loop;
 
+      --  Chain up to draw children
       return Boolean'Pos (Inherited_Draw (Paned_Class_Record, Split, Cr));
    end On_Draw;
 
