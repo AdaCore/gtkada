@@ -4753,7 +4753,11 @@ package body Gtkada.MDI is
 
    function Get_Widget (Child : access MDI_Child_Record) return Gtk_Widget is
    begin
-      return Child.Initial;
+      if Child = null then
+         return null;
+      else
+         return Child.Initial;
+      end if;
    end Get_Widget;
 
    ---------------------
