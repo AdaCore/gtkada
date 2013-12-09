@@ -492,11 +492,11 @@ gtk_plot_flux_get_legend_size(GtkPlotData *data, gint *width, gint *height)
     gtk_plot_axis_parse_label(data->gradient, flux->scale_max, flux->labels_precision, flux->labels_style, text);
     if(flux->labels_prefix){
       g_snprintf(aux_text, 100, "%s%s", flux->labels_prefix, text);
-      g_snprintf(text, 100, aux_text);
+      g_strlcpy(text, aux_text, 100);
     }
     if(flux->labels_suffix) {
       g_snprintf(aux_text, 100, "%s%s", text, flux->labels_suffix);
-      g_snprintf(text, 100, aux_text);
+      g_strlcpy(text, aux_text, 100);
     }
 
     g_snprintf(new_label, 100, "%s", text);
@@ -575,12 +575,12 @@ gtk_plot_flux_draw_legend(GtkPlotData *data, gint x, gint y)
     if(flux->labels_prefix){
       gchar aux_text[100];
       g_snprintf(aux_text, 100, "%s%s", flux->labels_prefix, text_max);
-      g_snprintf(text_max, 100, aux_text);
+      g_strlcpy(text, aux_text, 100);
     }
     if(flux->labels_suffix){
       gchar aux_text[100];
       g_snprintf(aux_text, 100, "%s%s", text_max, flux->labels_suffix);
-      g_snprintf(text_max, 100, aux_text);
+      g_strlcpy(text, aux_text, 100);
     }
     g_snprintf(new_label, 100, "%s", text_max);
 
