@@ -28,8 +28,8 @@ Building your interface
 In Glade-3 the interface is done by point-and-clicking. The first step is to
 create one or more toplevel window and then placing widgets in these windows.
 
-Detailed tutorials can be found at: `http://live.gnome.org/Glade/Tutorials
-<http://live.gnome.org/Glade/Tutorials>`_
+Detailed tutorials can be found at: `https://wiki.gnome.org/Apps/Glade/Tutorials
+<https://wiki.gnome.org/Apps/Glade/Tutorials>`_
 
 In the Preferences for your project (menu Edit->Preferences), make sure that
 the preference "Project file format" is set to "GtkBuilder".
