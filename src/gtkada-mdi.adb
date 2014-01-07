@@ -7762,7 +7762,7 @@ package body Gtkada.MDI is
          end if;
       end Do_Draw;
 
-      Old_Dnd_Target : Gdk.Gdk_Window := MDI.Dnd_Target;
+      Old_Dnd_Target : constant Gdk.Gdk_Window := MDI.Dnd_Target;
 
    begin
       Get_Dnd_Target (MDI              => Child.MDI,
