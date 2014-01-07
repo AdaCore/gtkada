@@ -52,7 +52,7 @@ This toolkit was tested on the following systems:
 * GNU Linux/x86
 * GNU Linux/x86-64
 * Solaris/sparc
-* Windows XP/Vista/2003
+* Windows XP/Vista/2003/7/2008
 
 with the latest version of the `GNAT` compiler, developed and supported by
 Ada Core Technologies (see `http://www.adacore.com <http://www.adacore.com>`_).
