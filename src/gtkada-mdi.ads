@@ -1182,6 +1182,7 @@ private
       Drag_Start_X, Drag_Start_Y : Gint;
       In_Drag           : Drag_Status := No_Drag;
       Dnd_Rectangle     : Gdk.Rectangle.Gdk_Rectangle;  --  Highlighted area
+      Old_Dnd_Position  : Child_Position;
 
       Dnd_Rectangle_Real : Gdk.Rectangle.Gdk_Rectangle;
       --  Area to redraw to delete the Dnd overlay window

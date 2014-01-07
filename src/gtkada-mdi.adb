@@ -2242,6 +2242,8 @@ package body Gtkada.MDI is
             --  elsewhere).
             Give_Focus_To_Child (C2);
 
+            MDI.Dnd_Target := null;
+
          when No_Drag =>
             --  Let the even through, we have nothing to do here
             return False;
@@ -7760,6 +7762,8 @@ package body Gtkada.MDI is
          end if;
       end Do_Draw;
 
+      Old_Dnd_Target : Gdk.Gdk_Window := MDI.Dnd_Target;
+
    begin
       Get_Dnd_Target (MDI              => Child.MDI,
                       Parent           => Current,
@@ -7858,10 +7862,20 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      --  Always call this to hide the current highlight. We might, or not,
-      --  highlight the target depending whether it is allowed for Child.
+      --  Call this if the state has changed to hide the current highlight. We
+      --  might, or not, highlight the target depending whether it is allowed
+      --  for Child.
 
-      Gtkada.Style.Draw_Overlay (MDI, MDI.Dnd_Overlay, Do_Draw'Access);
+      if not (Position = MDI.Old_Dnd_Position
+              and then MDI.Dnd_Target = Old_Dnd_Target)
+      then
+         Gtkada.Style.Draw_Overlay (MDI, MDI.Dnd_Overlay, Do_Draw'Access);
+      end if;
+
+      --  Update the drag state.
+
+      MDI.Old_Dnd_Position := Position;
+
    end Draw_Dnd_Rectangle;
 
    ----------------------
