@@ -56,7 +56,7 @@ exec_prefix   = @exec_prefix@
 bindir        = @bindir@
 libdir        = @libdir@
 incdir        = @includedir@/gtkada
-alidir        = @libdir@/gtkada
+alidir        = ${libdir}/gtkada
 
 #################################################################
 ## Generic targets
