@@ -6,6 +6,7 @@
 
 	(patch to be removed when upgrading to newer base version of
 	platforms)
+	For M701-036
 
 --- src/cairo-xlib-source.c.orig	2013-07-01 16:35:38.000000000 +0200
 +++ src/cairo-xlib-source.c	2013-07-01 16:39:02.000000000 +0200
