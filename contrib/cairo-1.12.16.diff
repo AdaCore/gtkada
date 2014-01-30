@@ -1,15 +1,15 @@
-2013-07-01	Nicolas Setton  <setton@adacore.com>
+2014-01-30	Raphael Amiard  <amiard@adacore.com>
 
-	* cairo-xlib-source: Use the core engine to render gradiants
-	and fill rectangles, since XRenderCreateSolidFill and
-	XRenderFillRectangles do not exist on older versions of UNIX
+    * cairo-xlib-source: XRenderCreateSolidFill is not available on RHES4, so
+      deactivate the path using it.
 
-	(patch to be removed when upgrading to newer base version of
-	platforms)
-	For M701-036
+	  (patch to be removed when upgrading to newer base version of
+	  platforms)
 
---- src/cairo-xlib-source.c.orig	2013-07-01 16:35:38.000000000 +0200
-+++ src/cairo-xlib-source.c	2013-07-01 16:39:02.000000000 +0200
+	  For M701-036
+
+--- src/cairo-xlib-source.c.orig	2014-01-30 12:20:38.000000000 +0200
++++ src/cairo-xlib-source.c	2014-01-30 12:20:02.000000000 +0200
 @@ -456,9 +456,9 @@
      xcolor.blue  = color->blue_short;
      xcolor.alpha = color->alpha_short;
@@ -21,17 +21,3 @@
 +    } else */ {
  	XRenderPictureAttributes pa;
  	int mask = 0;
- 
-@@ -470,10 +470,10 @@
- 					_cairo_xlib_display_get_xrender_format (dst->display, CAIRO_FORMAT_ARGB32),
- 					mask, &pa);
- 
--	if (CAIRO_RENDER_HAS_FILL_RECTANGLES(dst->display)) {
-+	/* if (CAIRO_RENDER_HAS_FILL_RECTANGLES(dst->display)) {
- 	    XRectangle r = { 0, 0, 1, 1};
- 	    XRenderFillRectangles (dpy, PictOpSrc, picture, &xcolor, &r, 1);
--	} else {
-+	} else */ {
- 	    XGCValues gcv;
- 	    GC gc;
- 
