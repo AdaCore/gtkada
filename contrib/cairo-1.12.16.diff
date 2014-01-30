@@ -1,10 +1,10 @@
 2014-01-30	Raphael Amiard  <amiard@adacore.com>
 
-	* cairo-xlib-source: XRenderCreateSolidFill is not available on RHES4, so
-	deactivate the path using it.
+	* cairo-xlib-source: XRenderCreateSolidFill is not available on RHES4,
+	so deactivate the path using it.
 
 	(patch to be removed when upgrading to newer base version of
-	 platforms)
+	platforms)
 
 	For M701-036, MC09-035
 
