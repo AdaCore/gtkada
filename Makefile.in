@@ -11,6 +11,7 @@ doc_dir     = docs
 example_dir = examples
 projects_dir = projects
 xml_dir      = xml
+PYTHON       = python
 
 all: src tests
 
@@ -42,7 +43,7 @@ docs:
 # Generate the binding automatically, through a python script
 generate: force
 	${RM} src/generated/*.ad?
-	python contrib/binding.py \
+	${PYTHON} contrib/binding.py \
 	   --gir-file=contrib/GLib-2.0.gir \
 	   --gir-file=contrib/GObject-2.0.gir \
 		--gir-file=contrib/Gtk-3.0.gir \
