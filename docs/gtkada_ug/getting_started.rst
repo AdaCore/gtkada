@@ -123,6 +123,28 @@ along with your application, and respect the original directory set up:
 * :file:`etc/`
 * :file:`lib/gtk-2.0`
 
+How to use GtkAda
+=================
+
+On Unix systems, to use GtkAda, you need to have you PATH and LD_LIBRARY_PATH
+environment variables set, as explained above::
+
+   PATH=$prefix/bin:$PATH
+   LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
+   export PATH LD_LIBRARY_PATH
+
+Set the following variables as well::
+
+   GDK_PIXBUF_MODULE_FILE=$prefix/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+   GDK_PIXBUF_MODULEDIR=$prefix/lib/gdk-pixbuf-2.0/2.10.0/loaders/
+   export GDK_PIXBUF_MODULEDIR GDK_PIXBUF_MODULE_FILE
+
+   FONTCONFIG_FILE=$prefix/etc/fonts/fonts.conf
+   export FONTCONFIG_FILE
+   
+   XDG_DATA_DIRS=$prefix/share
+   export XDG_DATA_DIRS
+
 Organization of the GtkAda package
 ==================================
 
