@@ -38,28 +38,28 @@ package body Create_Css_Editor is
 
    CSS : constant String :=
       "/* You can edit the text in this window to change the" & ASCII.LF
-     &" * appearance of this Window." & ASCII.LF
-     &" * Be careful, if you screw it up, nothing might be visible" & ASCII.LF
-     &" * anymore. :)" & ASCII.LF
-     &" */" & ASCII.LF & ASCII.LF
+     & " * appearance of this Window." & ASCII.LF
+     & " * Be careful, if you screw it up, nothing might be visible" & ASCII.LF
+     & " * anymore. :)" & ASCII.LF
+     & " */" & ASCII.LF & ASCII.LF
 
-     &"/* This CSS resets all properties to their defaults values" & ASCII.LF
-     &" * and overrides all user settings and the theme in use */" & ASCII.LF
+     & "/* This CSS resets all properties to their defaults values" & ASCII.LF
+     & " * and overrides all user settings and the theme in use */" & ASCII.LF
      & ASCII.LF
 
-     &"/* Set a very futuristic style by default */" & ASCII.LF & ASCII.LF
+     & "/* Set a very futuristic style by default */" & ASCII.LF & ASCII.LF
 
-     &"* {" & ASCII.LF
-     &"  color: green;" & ASCII.LF
-     &"  font-family: Monospace;" & ASCII.LF
-     &"  border: 1px solid;" & ASCII.LF
-     &"}" & ASCII.LF
+     & "* {" & ASCII.LF
+     & "  color: green;" & ASCII.LF
+     & "  font-family: Monospace;" & ASCII.LF
+     & "  border: 1px solid;" & ASCII.LF
+     & "}" & ASCII.LF
 
-     &"/* Make sure selections are visible */" & ASCII.LF
-     &":selected {" & ASCII.LF
-     &"  background-color: darkGreen;" & ASCII.LF
-     &"  color: black;" & ASCII.LF
-     &"}";
+     & "/* Make sure selections are visible */" & ASCII.LF
+     & ":selected {" & ASCII.LF
+     & "  background-color: darkGreen;" & ASCII.LF
+     & "  color: black;" & ASCII.LF
+     & "}";
 
    Last_Working_Css : Unbounded_String := To_Unbounded_String (CSS);
    Error : aliased Glib.Error.GError;
