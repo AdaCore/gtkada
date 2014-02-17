@@ -127,7 +127,7 @@ package body Create_Print is
       Close_Path (Cr);
 
       Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
-      Set_Line_Width (Cr, 1.0/16.0);
+      Set_Line_Width (Cr, 1.0 / 16.0);
       Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
       Set_Line_Join (Cr, Cairo_Line_Join_Round);
       Cairo.Stroke (Cr);
