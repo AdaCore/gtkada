@@ -1,8 +1,8 @@
 2013-10-17  Raphael Amiard  <amiard@adacore.com>
 
-    * gtk/gtktextlayout.c (gtk_text_layout_set_screen_width): Only
-      invalidate the layout when the defautl wrapping mode is not
-      GTK_WRAP_NONE.
+	* gtk/gtktextlayout.c (gtk_text_layout_set_screen_width): Only
+	invalidate the layout when the default wrapping mode is not
+	GTK_WRAP_NONE.
 
 2013-05-17  Nicolas Setton  <setton@adacore.com>
 
