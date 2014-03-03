@@ -148,7 +148,9 @@ package body Gtk.Builder is
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Filename, Acc_Error'Access);
       Free (Tmp_Filename);
-      Error.all := Acc_Error;
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Tmp_Return;
    end Add_From_File;
 
