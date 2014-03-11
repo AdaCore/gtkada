@@ -19,4 +19,5 @@ clean::
 
 distclean::
 	${MAKE} -C gtkada_rm distclean
-	${MAKE} -C gtkada_ug clean
+	${MAKE} -C gtkada_ug distclean
+	${RM} Makefile

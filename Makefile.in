@@ -70,6 +70,9 @@ clean: clean-generic
 distclean: mostlyclean-generic
 	-${RM} config.cache config.log config.status
 	-$(MAKE) -C $(testgtk_dir) distclean
+	-$(MAKE) -C $(doc_dir) distclean
+	-$(MAKE) -C $(projects_dir) distclean
+	-$(MAKE) -C po distclean
 	-$(MAKE) -C $(src_dir) distclean
 
 mostlyclean: mostlyclean-generic

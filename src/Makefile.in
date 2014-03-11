@@ -141,18 +141,19 @@ install: force
 
 clean:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core gtkada-intl.adb
+	-${RM} generated/tmp.ada
 	-$(RM) $(OBJ_DIR)/*
 	-${RM} .\#*
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
 	$(MAKE) -C tools clean
 
-distclean: force
+distclean: force clean
 	-${RM} Makefile
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
 	$(MAKE) -C tools distclean
-	-$(RM) Makefile.common
+	-$(RM) Makefile.common config.h
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
