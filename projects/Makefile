@@ -32,7 +32,6 @@ ifeq ($(OS),Windows_NT)
 endif
 
 clean: force
-	${RM} *.gpr 
 	$(RM) gtkada_install_dynamic_gl.gpr gtkada_install_dynamic.gpr gtkada.pc
 
 distclean: clean
