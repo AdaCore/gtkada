@@ -133,9 +133,11 @@ make them preselected in project files (static libraries are preselected by defa
 AC_DEFUN(CHECK_BUILD_TYPE,
 [
     AC_ARG_ENABLE(build,
-                  [--enable-build=<type>       Default build type for the library (Debug, Production)],
-                  BUILD_TYPE=$enableval,
-                  BUILD_TYPE=Production)
+       [AC_HELP_STRING(
+          [--enable-build=<type>],
+          [Default build type for the library (Debug, Production)])],
+       BUILD_TYPE=$enableval,
+       BUILD_TYPE=Production)
 ]
 )
 
