@@ -151,7 +151,7 @@ package body Gtkada.Application is
       Ptr   : constant System.Address := Unchecked_To_Address (Params, 1);
       Nb    : constant Glib.Gint := Unchecked_To_Gint (Params, 2);
       Files : GFile_Array (1 .. Natural (Nb));
-      pragma Import (C, Files);  --  suppress default initialization
+      pragma Import (Ada, Files);  --  suppress default initialization
       for Files'Address use Ptr;
 
    begin
