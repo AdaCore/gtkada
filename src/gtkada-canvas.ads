@@ -94,22 +94,17 @@
 --  <screenshot>gtkada-canvas</screenshot>
 
 with Ada.Calendar;
-
 with Cairo;
-with Cairo.Region;
-
 with Gdk.Color;
 with Gdk.Device;
 with Gdk.Event;
 with Gdk.RGBA;
-
 with Glib;
 with Glib.Graphs;
 with Glib.Main;
-
 with Gtk.Adjustment;
 with Gtk.Layout;
-
+with Gtkada.Style;
 with Pango.Font;
 with Pango.Layout;
 
@@ -171,25 +166,6 @@ package Gtkada.Canvas is
    --  only and is transfered to the item itself.
    --  This is in screen coordinates
 
-   ----------------
-   -- Enum types --
-   ----------------
-
-   type Arrow_Type is
-     (No_Arrow,
-      --  the link does not have an arrow
-
-      Start_Arrow,
-      --  the link has an arrow at its beginning
-
-      End_Arrow,
-      --  the link has an arrow at the end
-
-      Both_Arrow
-      --  the link has an arrow on both sides
-     );
-   --  Indicate whether the links have an arrow or not.
-
    -----------------------
    -- Creating a canvas --
    -----------------------
@@ -242,7 +218,7 @@ package Gtkada.Canvas is
 
    procedure Draw_Area
      (Canvas : access Interactive_Canvas_Record'Class;
-      Rect   : Cairo.Region.Cairo_Rectangle_Int);
+      Rect   : Cairo.Cairo_Rectangle);
    --  Draw in Canvas the specified area.
 
    procedure Draw_All
@@ -272,13 +248,13 @@ package Gtkada.Canvas is
    procedure Set_Orthogonal_Links
      (Canvas : access Interactive_Canvas_Record;
       Orthogonal : Boolean);
-   --  If Orthogonal is True, then all the links will be drawn only with
-   --  vertical and horizontal lines. This is not applied for the second or
-   --  more link between two items.
-
    function Get_Orthogonal_Links
      (Canvas : access Interactive_Canvas_Record) return Boolean;
-   --  Return True if the links are only drawn horizontally and vertically.
+   --  This function overrides the style of all the links to force the
+   --  use of Orthogonal or Straight links.
+   --  The previous values set in the link's style are lost.
+   --  The function Get_Orthogonal_Links returns False if any of the link is
+   --  not orthogonal
 
    procedure Align_On_Grid
      (Canvas : access Interactive_Canvas_Record;
@@ -294,7 +270,7 @@ package Gtkada.Canvas is
    procedure Move_To
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class;
-      X, Y   : Glib.Gint := Glib.Gint'First);
+      X, Y   : Glib.Gdouble := Glib.Gdouble'First);
    --  Move the item in the canvas, to world coordinates (X, Y).
    --  Item is assumed to be already in the canvas.
    --  If you leave both coordinates X and Y to their default value, then the
@@ -318,7 +294,7 @@ package Gtkada.Canvas is
    procedure Put
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class;
-      X, Y   : Glib.Gint := Glib.Gint'First);
+      X, Y   : Glib.Gdouble := Glib.Gdouble'First);
    --  Add a new item to the canvas, at world coordinates (X, Y).
    --  The item is added at a specific location.
    --  If you leave both X and Y to their default value, the item's location
@@ -328,7 +304,7 @@ package Gtkada.Canvas is
 
    function Item_At_Coordinates
      (Canvas : access Interactive_Canvas_Record;
-      X, Y : Glib.Gint) return Canvas_Item;
+      X, Y : Glib.Gdouble) return Canvas_Item;
    --  Return the item at world coordinates (X, Y) which is on top of all
    --  others.
    --  null is returned if there is no such item.
@@ -343,7 +319,7 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Event  : Gdk.Event.Gdk_Event;
       Item   : out Canvas_Item;
-      X, Y   : out Glib.Gint);
+      X, Y   : out Glib.Gdouble);
    --  Same as above, but also returns the coordinates (X, Y) within the item.
    --  The coordinates are not set if Item is null on exit.
 
@@ -487,6 +463,28 @@ package Gtkada.Canvas is
       Height : out Glib.Gdouble);
    --  Return the world coordinates of Canvas.
 
+   function Canvas_To_World_Length
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      Length_Canvas : Glib.Gdouble) return Glib.Gdouble;
+   function Canvas_To_World_X
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      X_Canvas : Glib.Gdouble) return Glib.Gdouble;
+   function Canvas_To_World_Y
+     (Self     : not null access Interactive_Canvas_Record'Class;
+      Y_Canvas : Glib.Gdouble) return Glib.Gdouble;
+   --  Convert from canvas coordinates to world coordinates.
+
+   function World_To_Canvas_X
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      X_World : Glib.Gdouble) return Glib.Gdouble;
+   function World_To_Canvas_Length
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Length_World : Glib.Gdouble) return Glib.Gdouble;
+   function World_To_Canvas_Y
+     (Self    : not null access Interactive_Canvas_Record'Class;
+      Y_World : Glib.Gdouble) return Glib.Gdouble;
+   --  Converts from world coordinates to canvas coordinates
+
    ---------------------
    -- Layout of items --
    ---------------------
@@ -557,15 +555,28 @@ package Gtkada.Canvas is
    -- Links --
    -----------
 
+   type Arrow_Type is (No_Arrow, Start_Arrow, End_Arrow, Both_Arrow);
+   --  This type is obsolescent, use a GtkAda.Style.Drawing_Style instead.
+   --  This type indicates whether an arrow head needs to be drawn on either
+   --  ends of a link.
+
    procedure Configure
      (Link  : access Canvas_Link_Record;
       Arrow : Arrow_Type := End_Arrow;
       Descr : Glib.UTF8_String := "");
+   pragma Obsolescent (Configure, "Use Configure with a Style parameter");
+   procedure Configure
+     (Link  : not null access Canvas_Link_Record;
+      Style : Gtkada.Style.Drawing_Style;
+      Descr : Glib.UTF8_String := "");
    --  Configure a link.
-   --  The link is an oriented bound between two items on the canvas.
+   --  The link is an oriented line between two items on the canvas.
    --  If Descr is not the empty string, it will be displayed in the middle
    --  of the link, and should indicate what the link means.
-   --  Arrow indicates whether some arrows should be printed as well.
+   --
+   --  Arrow indicates whether some arrows should be printed as well. However,
+   --  the second version of Configure, using a style, is preferred, since it
+   --  gives much more control over the rendering of the link.
 
    function Get_Descr
      (Link : access Canvas_Link_Record) return Glib.UTF8_String;
@@ -573,10 +584,11 @@ package Gtkada.Canvas is
 
    function Get_Arrow_Type
      (Link : access Canvas_Link_Record) return Arrow_Type;
+   pragma Obsolescent (Get_Arrow_Type);
    --  Return the location of the arrows on Link
 
    procedure Set_Src_Pos
-     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
+     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gdouble := 0.5);
    --  Set the position of the link's attachment in its source item.
    --  X_Pos and Y_Pos should be given between 0.0 and 1.0 (from left to right
    --  or top to bottom)..
@@ -586,15 +598,15 @@ package Gtkada.Canvas is
    --  start from the top of the item by setting Y_Pos to 0.0.
 
    procedure Set_Dest_Pos
-     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
+     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gdouble := 0.5);
    --  Same as Set_Src_Pos for the destination item
 
    procedure Get_Src_Pos
-     (Link : access Canvas_Link_Record; X, Y : out Glib.Gfloat);
+     (Link : access Canvas_Link_Record; X, Y : out Glib.Gdouble);
    --  Return the attachment position of the link along its source item
 
    procedure Get_Dest_Pos
-     (Link : access Canvas_Link_Record; X, Y : out Glib.Gfloat);
+     (Link : access Canvas_Link_Record; X, Y : out Glib.Gdouble);
    --  Return the attachment position of the link along its destination item
 
    function Has_Link
@@ -609,13 +621,11 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Link   : access Canvas_Link_Record'Class;
       Src    : access Canvas_Item_Record'Class;
-      Dest   : access Canvas_Item_Record'Class;
-      Arrow  : Arrow_Type := End_Arrow;
-      Descr  : Glib.UTF8_String := "");
+      Dest   : access Canvas_Item_Record'Class);
    --  Add Link in the canvas. This connects the two items Src and Dest.
-   --  Simpler procedure to add a standard link.
-   --  This takes care of memory allocation, as well as adding the link to
-   --  the canvas.
+   --  This function used to have additional parameters Arrow and Descr, but
+   --  these have been removed. You'll need to do a separate explict call to
+   --  Configure instead.
 
    procedure Remove_Link
      (Canvas : access Interactive_Canvas_Record;
@@ -642,7 +652,8 @@ package Gtkada.Canvas is
 
    procedure Destroy (Link : in out Canvas_Link_Record);
    --  Method called every time a link is destroyed. You should override this
-   --  if you define your own link types.
+   --  if you define your own link types. You still need to call the inherited
+   --  version of Destroy to avoid memory leaks.
    --  Note that the link might already have been removed from the canvas
    --  when this subprogram is called.
    --  This shouldn't free the link itself, only its fields.
@@ -689,9 +700,8 @@ package Gtkada.Canvas is
    --  invisible.
    --
    --  Cr is the Cairo_Context that is used to draw the link.
-   --  The link is drawn using the current cairo brush, so if you need to
-   --  specify some particular color, you can do it directly in the
-   --  Cairo_Context
+   --  Drawing needs to take into account scrolling and zooming of the canvas,
+   --  by using World_To_Canvas_X for instance.
    --
    --  Edge_Number indicates the index of link in the list of links that join
    --  the same source to the same destination. It should be used so that two
@@ -700,40 +710,6 @@ package Gtkada.Canvas is
 
    type Item_Side is (East, West, North, South);
    --  Each side of an item, along its rectangle bounding box
-
-   procedure Clip_Line
-     (Src   : access Canvas_Item_Record;
-      Canvas : access Interactive_Canvas_Record'Class;
-      To_X  : Glib.Gint;
-      To_Y  : Glib.Gint;
-      X_Pos : Glib.Gfloat;
-      Y_Pos : Glib.Gfloat;
-      Side  : out Item_Side;
-      X_Out : out Glib.Gint;
-      Y_Out : out Glib.Gint);
-   --  Clip the line that goes from Src at pos (X_Pos, Y_Pos) to (To_X, To_Y)
-   --  in world coordinates.
-   --  The intersection between that line and the border of Rect is returned
-   --  in (X_Out, Y_Out). The result should be in world coordinates.
-   --  X_Pos and Y_Pos have the same meaning as Src_X_Pos and Src_Y_Pos in the
-   --  link record.
-   --  This procedure is called when computing the position for the links
-   --  within the default Draw_Link procedure. The default implementation only
-   --  works with rectangular items. The computed coordinates are then passed
-   --  on directly to Draw_Straight_Line.
-
-   procedure Draw_Straight_Line
-     (Link      : access Canvas_Link_Record;
-      Cr        : Cairo.Cairo_Context;
-      Src_Side  : Item_Side;
-      X1, Y1    : Glib.Gdouble;
-      Dest_Side : Item_Side;
-      X2, Y2    : Glib.Gdouble);
-   --  Draw a straight link between two points. This could be overriden if you
-   --  need to draw an something along the link.
-   --  The links goes from (Src, X1, Y1) to (Dest, X2, Y2), in canvas
-   --  coordinates. The coordinates have already been clipped so that they do
-   --  not override the item.
 
    ---------------
    -- Selection --
@@ -786,7 +762,7 @@ package Gtkada.Canvas is
 
    function Point_In_Item
      (Item : access Canvas_Item_Record;
-      X, Y : Glib.Gint) return Boolean;
+      X, Y : Glib.Gdouble) return Boolean;
    --  This function should return True if (X, Y) is inside the item. X and Y
    --  are in world coordinates.
    --  This function is meant to be overriden for non-rectangular items, since
@@ -795,8 +771,8 @@ package Gtkada.Canvas is
 
    procedure Set_Screen_Size
      (Item   : access Canvas_Item_Record;
-      Width  : Glib.Gint;
-      Height : Glib.Gint);
+      Width  : Glib.Gdouble;
+      Height : Glib.Gdouble);
    --  Set the size of bounding box for the item in world coordinates.
    --  The item itself needn't occupy the whole area of this bounding box,
    --  see Point_In_Item.
@@ -814,9 +790,13 @@ package Gtkada.Canvas is
       Cr   : Cairo.Cairo_Context) is abstract;
    --  This subprogram, that must be overridden, should draw the item on
    --  Cr. The Item is drawn from coordinates (0,0), and does not need to take
-   --  care of the zoom level.
+   --  care of the zoom level (in other words, all display should be done
+   --  relative to the top-left corner of the item's box, and as if the zoom
+   --  level was 100%).
    --  If you need to change the contents of the item, you should call
    --  Item_Updated after having done the drawing.
+   --  See the use of Gtkada.Style.Drawing_Style for a convenient API to
+   --  draw various figures.
 
    procedure Destroy (Item : in out Canvas_Item_Record);
    --  Free the memory occupied by the item (not the item itself). You should
@@ -839,8 +819,7 @@ package Gtkada.Canvas is
    --  of Item.
 
    function Get_Coord
-     (Item : access Canvas_Item_Record)
-      return Cairo.Region.Cairo_Rectangle_Int;
+     (Item : access Canvas_Item_Record) return Cairo.Cairo_Rectangle;
    --  Return the coordinates and size of the bounding box for item, in world
    --  coordinates.
    --  If the item has never been resized, it initially has a width and height
@@ -961,12 +940,12 @@ private
 
    type Canvas_Link_Record is new Glib.Graphs.Edge with record
       Descr      : String_Access;
-      Arrow      : Arrow_Type := End_Arrow;
+      Style      : Gtkada.Style.Drawing_Style;
 
-      Src_X_Pos  : Glib.Gfloat := 0.5;
-      Src_Y_Pos  : Glib.Gfloat := 0.5;
-      Dest_X_Pos : Glib.Gfloat := 0.5;
-      Dest_Y_Pos : Glib.Gfloat := 0.5;
+      Src_X_Pos  : Glib.Gdouble := 0.5;
+      Src_Y_Pos  : Glib.Gdouble := 0.5;
+      Dest_X_Pos : Glib.Gdouble := 0.5;
+      Dest_Y_Pos : Glib.Gdouble := 0.5;
       --  Position of the link's attachment in each of the src and dest items.
    end record;
 
@@ -1018,6 +997,11 @@ private
       --  The current number of pixels between each dot of the grid. If this
       --  is strictly below 2, the grid is not drawn.
 
+      Snap_Margin       : Glib.Gint := 5;
+      --  If an object is moved less than this many pixels from a grid line or
+      --  smart guide, it will snap to that line. Set this to 0 to disable
+      --  snapping.
+
       Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Glib.Gdouble;
       Arrow_Length      : Glib.Gint := Default_Arrow_Length;
@@ -1032,9 +1016,6 @@ private
 
       Scrolling_Timeout_Id : Glib.Main.G_Source_Id := 0;
       Scrolling_Device     : Gdk.Device.Gdk_Device;
-
-      Orthogonal_Links : Boolean := False;
-      --  True if the links should be orthogonal
 
       Surround_Box_Scroll : Glib.Gdouble;
       --  Amount of scrolling for each step while the cursor is left in the
@@ -1056,8 +1037,8 @@ private
 
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
       Canvas           : Interactive_Canvas := null;
-      Coord            : aliased Cairo.Region.Cairo_Rectangle_Int :=
-        (0, 0, 0, 0);
+      Coord            : aliased Cairo.Cairo_Rectangle :=
+        (0.0, 0.0, 0.0, 0.0);
       --  This is the bounding box of the item
 
       Visible          : Boolean := True;
@@ -1072,18 +1053,25 @@ private
       Pixmap : Cairo.Cairo_Surface := Cairo.Null_Surface;
    end record;
 
-   procedure Set_Screen_Size
+   overriding procedure Set_Screen_Size
      (Item   : access Buffered_Item_Record;
-      Width, Height  : Glib.Gint);
+      Width, Height  : Glib.Gdouble);
    --  See documentation from inherited subprogram
 
-   procedure Draw
+   overriding procedure Draw
      (Item : access Buffered_Item_Record;
       Cr   : Cairo.Cairo_Context);
    --  Draw the item's double-buffer onto Dest.
 
-   procedure Destroy (Item : in out Buffered_Item_Record);
+   overriding procedure Destroy (Item : in out Buffered_Item_Record);
    --  Free the double-buffer allocated for the item
+
+   function Get_Actual_Coordinates
+     (Self : not null access Interactive_Canvas_Record'Class;
+      Item : not null access Canvas_Item_Record'Class)
+      return Cairo.Cairo_Rectangle;
+   --  Return the actual world coordinate for an item (including an extra
+   --  offset to add when we are dragging that item).
 
    type Item_Iterator is record
       Vertex            : Glib.Graphs.Vertex_Iterator;

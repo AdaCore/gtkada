@@ -22,11 +22,14 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics; use Ada.Numerics;
+with Ada.Numerics.Generic_Elementary_Functions;
+with Ada.Unchecked_Deallocation;
 
 with Glib;         use Glib;
 with Glib.Error;   use Glib.Error;
 
-with Cairo;        use Cairo;
+with Cairo;         use Cairo;
+with Cairo.Pattern; use Cairo.Pattern;
 with Pango.Cairo;  use Pango.Cairo;
 with Gdk.Cairo;    use Gdk.Cairo;
 with Gdk.Device;   use Gdk.Device;
@@ -50,6 +53,18 @@ package body Gtkada.Style is
      (0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',
       6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => 'A', 11 => 'B',
       12 => 'C', 13 => 'D', 14 => 'E', 15 => 'F');
+
+   package Gdouble_Functions is
+     new Ada.Numerics.Generic_Elementary_Functions (Gdouble);
+   use Gdouble_Functions;
+
+   procedure Draw_Arrow
+     (Self    : Arrow_Style;
+      Cr      : Cairo.Cairo_Context;
+      From    : Point;
+      To      : Point);
+   --  Draw an arrow at the end of the line from Start to To, with the given
+   --  style.
 
    ------------
    -- To_HSV --
@@ -372,6 +387,18 @@ package body Gtkada.Style is
         (Cr, Color.Red, Color.Green, Color.Blue, Color.Alpha);
    end Set_Source_Color;
 
+   -------------------------
+   -- Create_Rgba_Pattern --
+   -------------------------
+
+   function Create_Rgba_Pattern
+      (Color : Cairo_Color) return Cairo.Cairo_Pattern
+   is
+   begin
+      return Cairo.Pattern.Create_Rgba
+         (Color.Red, Color.Green, Color.Blue, Color.Alpha);
+   end Create_Rgba_Pattern;
+
    -----------------------
    -- Rounded_Rectangle --
    -----------------------
@@ -381,16 +408,16 @@ package body Gtkada.Style is
       X, Y, W, H : Glib.Gdouble;
       Radius     : Glib.Gdouble)
    is
+      X1 : constant Gdouble := X + Radius;
+      X2 : constant Gdouble := X + W - Radius;
+      Y1 : constant Gdouble := Y + Radius;
+      Y2 : constant Gdouble := Y + H - Radius;
    begin
       New_Sub_Path (Cr);
-      Cairo.Arc
-        (Cr, X + W - Radius, Y + Radius, Radius, -Pi / 2.0, 0.0);
-      Cairo.Arc
-        (Cr, X + W - Radius, Y + H - Radius, Radius, 0.0, Pi / 2.0);
-      Cairo.Arc
-        (Cr, X + Radius, Y + H - Radius, Radius, Pi / 2.0, Pi);
-      Cairo.Arc
-        (Cr, X + Radius, Y + Radius, Radius, Pi, 3.0 * Pi / 2.0);
+      Cairo.Arc (Cr, X2, Y1, Radius, -Pi / 2.0, 0.0);
+      Cairo.Arc (Cr, X2, Y2, Radius, 0.0, Pi / 2.0);
+      Cairo.Arc (Cr, X1, Y2, Radius, Pi / 2.0, Pi);
+      Cairo.Arc (Cr, X1, Y1, Radius, Pi, 3.0 * Pi / 2.0);
       Close_Path (Cr);
    end Rounded_Rectangle;
 
@@ -901,4 +928,537 @@ package body Gtkada.Style is
       return null;
    end Get_First_Device;
 
+   -------------
+   -- Gtk_New --
+   -------------
+
+   function Gtk_New
+      (Stroke           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+       Fill             : Cairo.Cairo_Pattern := Cairo.Null_Pattern;
+       Font             : Font_Style := Default_Font;
+       Line_Width       : Glib.Gdouble := 1.0;
+       Shadow           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+       Dashes           : Cairo.Dash_Array := Cairo.No_Dashes;
+       Arrow_From       : Arrow_Style := No_Arrow_Style;
+       Arrow_To         : Arrow_Style := No_Arrow_Style;
+       Symbol_From      : Symbol_Style := No_Symbol;
+       Symbol_To        : Symbol_Style := No_Symbol;
+       Routing          : Route_Style := Straight;
+       Sloppy           : Boolean := False)
+     return Drawing_Style
+   is
+      Data : constant Drawing_Style_Data_Access := new Drawing_Style_Data'
+        (Refcount    => 1,
+         Stroke      => Stroke,
+         Fill        => Null_Pattern,
+         Font        => Font,
+         Line_Width  => Line_Width,
+         Shadow      => Shadow,
+         Dashes      => null,
+         Arrow_From  => Arrow_From,
+         Arrow_To    => Arrow_To,
+         Symbol_From => Symbol_From,
+         Symbol_To   => Symbol_To,
+         Routing     => Routing,
+         Sloppy      => Sloppy);
+   begin
+      if Fill /= Null_Pattern then
+         Data.Fill := Reference (Fill);
+      end if;
+
+      if Dashes'Length > 0 then
+         Data.Dashes := new Dash_Array'(Dashes);
+      end if;
+
+      return (Ada.Finalization.Controlled with Data => Data);
+   end Gtk_New;
+
+   ------------
+   -- Adjust --
+   ------------
+
+   overriding procedure Adjust (Self : in out Drawing_Style) is
+   begin
+      if Self.Data /= null then
+         Self.Data.Refcount := Self.Data.Refcount + 1;
+      end if;
+   end Adjust;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   overriding procedure Finalize (Self : in out Drawing_Style) is
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+        (Dash_Array, Dash_Array_Access);
+      D : constant Drawing_Style_Data_Access := Self.Data;
+   begin
+      Self.Data := null;   --  make idempotent
+      if D /= null then
+         D.Refcount := D.Refcount - 1;
+         if D.Refcount = 0 then
+            Unchecked_Free (D.Dashes);
+
+            if D.Fill /= Null_Pattern then
+               Destroy (D.Fill);
+            end if;
+         end if;
+      end if;
+   end Finalize;
+
+   ---------------
+   -- Draw_Rect --
+   ---------------
+
+   procedure Draw_Rect
+      (Self          : Drawing_Style;
+       Cr            : Cairo.Cairo_Context;
+       Topleft       : Point;
+       Width, Height : Glib.Gdouble;
+       Radius        : Gdouble := 0.0)
+   is
+   begin
+      if Self.Data = null then
+         null;
+
+      elsif Radius <= 0.001 or else Self.Data.Sloppy then
+         if Self.Data.Sloppy then
+            Draw_Polyline
+               (Self,
+                Cr,
+                ((Topleft.X, Topleft.Y),
+                 (Topleft.X + Width, Topleft.Y),
+                 (Topleft.X + Width, Topleft.Y + Height),
+                 (Topleft.X, Topleft.Y + Height)),
+                Close       => True,
+                Show_Arrows => False);
+         else
+            New_Path (Cr);
+            Cairo.Rectangle (Cr, Topleft.X, Topleft.Y, Width, Height);
+            Finish_Path (Self, Cr);
+         end if;
+
+      else
+         Rounded_Rectangle (Cr, Topleft.X, Topleft.Y, Width, Height, Radius);
+         Finish_Path (Self, Cr);
+      end if;
+   end Draw_Rect;
+
+   -------------------
+   -- Draw_Polyline --
+   -------------------
+
+   procedure Draw_Polyline
+     (Self        : Drawing_Style;
+      Cr          : Cairo.Cairo_Context;
+      Points      : Point_Array;
+      Close       : Boolean := False;
+      Show_Arrows : Boolean := True)
+   is
+      Sloppy_Deviation : constant Gdouble := 0.3;
+      --  This variable controls the amount of deviation from a straight line
+      --  that a sloppy line uses. Using a random number instead of a constant
+      --  does not change the rendering much, is slower to draw, and makes it
+      --  hard to hide the line during a drag-and-drop operation
+
+      procedure Sloppy_Line (From, To : Natural);
+      --  Draw a sloppy line between the two points
+
+      procedure Sloppy_Line (From, To : Natural) is
+         Xc1, Xc2 : Gdouble;
+         Yc1, Yc2 : Gdouble;
+         Deltax, Deltay, Length, Offset : Gdouble;
+      begin
+         Deltax := Points (To).X - Points (From).X;
+         Deltay := Points (To).Y - Points (From).Y;
+         Length := Sqrt (Deltax * Deltax + Deltay * Deltay);
+         Offset := Gdouble'Min (Length / 40.0, 20.0);
+
+         Deltax := Sloppy_Deviation * Deltax + Offset;
+         Deltay := Sloppy_Deviation * Deltay + Offset;
+
+         Xc1 := Points (From).X + Deltax;
+         Yc1 := Points (From).Y + Deltay;
+         Xc2 := Points (To).X - Deltax;
+         Yc2 := Points (To).Y - Deltay;
+
+         Curve_To (Cr, Xc1, Yc1, Xc2, Yc2, Points (To).X, Points (To).Y);
+      end Sloppy_Line;
+
+   begin
+      if Self.Data = null or else Points'Length < 2 then
+         return;
+      end if;
+
+      New_Path (Cr);
+      Move_To (Cr, Points (Points'First).X, Points (Points'First).Y);
+
+      if Self.Data.Sloppy then
+         for P in Points'First + 1 .. Points'Last loop
+            Sloppy_Line (P - 1, P);
+         end loop;
+
+         if Close or else Self.Data.Fill /= Cairo.Null_Pattern then
+            Sloppy_Line (Points'Last, Points'First);
+            --  Manually draw line back to the first point
+
+            Close_Path (Cr);
+         end if;
+
+      else
+         for P in Points'First + 1 .. Points'Last loop
+            Line_To (Cr, Points (P).X, Points (P).Y);
+         end loop;
+
+         if Close or else Self.Data.Fill /= Cairo.Null_Pattern then
+            Close_Path (Cr);
+         end if;
+      end if;
+
+      Finish_Path (Self, Cr);
+
+      if Show_Arrows then
+         Self.Draw_Arrows_And_Symbols (Cr, Points);
+      end if;
+   end Draw_Polyline;
+
+   -----------------------------
+   -- Draw_Arrows_And_Symbols --
+   -----------------------------
+
+   procedure Draw_Arrows_And_Symbols
+     (Self     : Drawing_Style;
+      Cr       : Cairo.Cairo_Context;
+      Points   : Point_Array)
+   is
+      procedure Draw_Symbol (S : Symbol_Style; P : Point);
+      procedure Draw_Symbol (S : Symbol_Style; P : Point) is
+      begin
+         case S.Name is
+            when None =>
+               null;
+
+            when Cross =>
+               Save (Cr);
+               New_Path (Cr);
+               Move_To (Cr, P.X - 4.0, P.Y - 4.0);
+               Rel_Line_To (Cr, 8.0, 8.0);
+               Move_To (Cr, P.X - 4.0, P.Y + 4.0);
+               Rel_Line_To (Cr, 8.0, -8.0);
+
+               Set_Source_Color (Cr, S.Stroke);
+               Set_Line_Width (Cr, Self.Get_Line_Width);
+               Stroke (Cr);
+               Restore (Cr);
+
+            when Strike =>
+               Save (Cr);
+               New_Path (Cr);
+               Move_To (Cr, P.X - 4.0, P.Y + 4.0);
+               Rel_Line_To (Cr, 8.0, -8.0);
+
+               Set_Source_Color (Cr, S.Stroke);
+               Set_Line_Width (Cr, Self.Get_Line_Width);
+               Stroke (Cr);
+               Restore (Cr);
+         end case;
+      end Draw_Symbol;
+
+      X2, Y2, Angle : Gdouble;
+   begin
+      if Self.Data.Symbol_From /= No_Symbol then
+         Angle := Pi + Arctan
+           (Y => Points (Points'First).Y - Points (Points'First + 1).Y,
+            X => Points (Points'First).X - Points (Points'First + 1).X);
+         X2 := Points (Points'First).X
+           + Self.Data.Symbol_From.Distance * Cos (Angle);
+         Y2 := Points (Points'First).Y
+           + Self.Data.Symbol_From.Distance * Sin (Angle);
+         Draw_Symbol (Self.Data.Symbol_From, (X2, Y2));
+      end if;
+
+      if Self.Data.Arrow_From.Head /= None then
+         Draw_Arrow
+           (Self.Data.Arrow_From,
+            Cr, Points (Points'First + 1), Points (Points'First));
+      end if;
+
+      if Self.Data.Symbol_To /= No_Symbol then
+         Angle := Pi + Arctan
+           (Y => Points (Points'Last).Y - Points (Points'Last - 1).Y,
+            X => Points (Points'Last).X - Points (Points'Last - 1).X);
+         X2 := Points (Points'Last).X
+           + Self.Data.Symbol_To.Distance * Cos (Angle);
+         Y2 := Points (Points'Last).Y
+           + Self.Data.Symbol_To.Distance * Sin (Angle);
+         Draw_Symbol (Self.Data.Symbol_To, (X2, Y2));
+      end if;
+
+      if Self.Data.Arrow_To.Head /= None then
+         Draw_Arrow
+           (Self.Data.Arrow_To,
+            Cr, Points (Points'Last - 1), Points (Points'Last));
+      end  if;
+   end Draw_Arrows_And_Symbols;
+
+   ---------------
+   -- Draw_Text --
+   ---------------
+
+   procedure Draw_Text
+      (Self    : Drawing_Style;
+       Cr      : Cairo.Cairo_Context;
+       Topleft : Point;
+       Text    : String;
+       Width   : Gdouble := 0.0)
+   is
+      pragma Unreferenced (Self, Cr, Topleft, Text, Width);
+   begin
+      null;
+   end Draw_Text;
+
+   ----------------
+   -- Draw_Arrow --
+   ----------------
+
+   procedure Draw_Arrow
+      (Self    : Arrow_Style;
+       Cr      : Cairo.Cairo_Context;
+       From    : Point;
+       To      : Point)
+   is
+      Angle : constant Gdouble :=
+        Arctan (Y => To.Y - From.Y, X => To.X - From.X) + Pi;
+      X1 : constant Gdouble := To.X + Self.Length * Cos (Angle - Self.Angle);
+      Y1 : constant Gdouble := To.Y + Self.Length * Sin (Angle - Self.Angle);
+      X2 : constant Gdouble := To.X + Self.Length * Cos (Angle + Self.Angle);
+      Y2 : constant Gdouble := To.Y + Self.Length * Sin (Angle + Self.Angle);
+      X4, Y4 : Gdouble;
+   begin
+      case Self.Head is
+         when None =>
+            null;
+         when Open =>
+            Save (Cr);
+            New_Path (Cr);
+            Move_To (Cr, X1, Y1);
+            Line_To (Cr, To.X, To.Y);
+            Line_To (Cr, X2, Y2);
+
+            Set_Source_Color (Cr, Self.Stroke);
+            Stroke (Cr);
+            Restore (Cr);
+
+         when Solid =>
+            Save (Cr);
+            New_Path (Cr);
+            Move_To (Cr, X1, Y1);
+            Line_To (Cr, To.X, To.Y);
+            Line_To (Cr, X2, Y2);
+            Close_Path (Cr);
+
+            if Self.Stroke /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Stroke);
+               Stroke_Preserve (Cr);
+            end if;
+
+            if Self.Fill /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Fill);
+               Cairo.Fill (Cr);
+            end if;
+
+            Restore (Cr);
+
+         when Diamond =>
+            X4 := To.X + Self.Length * 2.0 * Cos (Angle);
+            Y4 := To.Y + Self.Length * 2.0 * Sin (Angle);
+
+            Save (Cr);
+            Move_To (Cr, X1, Y1);
+            Line_To (Cr, To.X, To.Y);
+            Line_To (Cr, X2, Y2);
+            Line_To (Cr, X4, Y4);
+            Close_Path (Cr);
+
+            if Self.Stroke /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Stroke);
+               Stroke_Preserve (Cr);
+            end if;
+
+            if Self.Fill /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Fill);
+               Cairo.Fill (Cr);
+            end if;
+
+            Restore (Cr);
+      end case;
+   end Draw_Arrow;
+
+   -----------------
+   -- Finish_Path --
+   -----------------
+
+   procedure Finish_Path
+      (Self    : Drawing_Style;
+       Cr      : Cairo.Cairo_Context)
+   is
+   begin
+      if Self.Data = null then
+         return;
+      end if;
+
+      Save (Cr);
+      Set_Line_Width (Cr, Self.Data.Line_Width);
+
+      if Self.Data.Fill /= Cairo.Null_Pattern then
+         if Self.Data.Shadow /= Null_RGBA then
+            --  When using Cairo 1.13, we should use cairo_set_shadow_*
+            --  instead.
+            --  For now, we can't draw shadows, because Translate does not
+            --  apply to an existing path, so the shadow would in effect be
+            --  displayed below the object, and thus be invisible.
+
+            null;
+         end if;
+
+         Set_Source (Cr, Self.Data.Fill);
+         Fill_Preserve (Cr);
+      end if;
+
+      if Self.Data.Stroke /= Gdk.RGBA.Null_RGBA then
+         if Self.Data.Dashes /= null then
+            Set_Dash (Cr, Self.Data.Dashes.all, 0.0);
+         end if;
+
+         Set_Source_Color (Cr, Self.Data.Stroke);
+         Stroke (Cr);
+      else
+         New_Path (Cr);  --  clear existing path
+      end if;
+
+      Restore (Cr);
+   end Finish_Path;
+
+   --------------------
+   -- Get_Arrow_From --
+   --------------------
+
+   function Get_Arrow_From (Self : Drawing_Style) return Arrow_Style is
+   begin
+      if Self.Data = null then
+         return Default_Style.Arrow_From;
+      else
+         return Self.Data.Arrow_From;
+      end if;
+   end Get_Arrow_From;
+
+   ------------------
+   -- Get_Arrow_To --
+   ------------------
+
+   function Get_Arrow_To (Self : Drawing_Style) return Arrow_Style is
+   begin
+      if Self.Data = null then
+         return Default_Style.Arrow_To;
+      else
+         return Self.Data.Arrow_To;
+      end if;
+   end Get_Arrow_To;
+
+   ----------------
+   -- Get_Stroke --
+   ----------------
+
+   function Get_Stroke (Self : Drawing_Style) return Gdk.RGBA.Gdk_RGBA is
+   begin
+      if Self.Data = null then
+         return Default_Style.Stroke;
+      else
+         return Self.Data.Stroke;
+      end if;
+   end Get_Stroke;
+
+   -----------------
+   -- Get_Routing --
+   -----------------
+
+   function Get_Routing (Self : Drawing_Style) return Route_Style is
+   begin
+      if Self.Data = null then
+         return Default_Style.Routing;
+      else
+         return Self.Data.Routing;
+      end if;
+   end Get_Routing;
+
+   --------------------
+   -- Get_Line_Width --
+   --------------------
+
+   function Get_Line_Width (Self : Drawing_Style) return Glib.Gdouble is
+   begin
+      if Self.Data = null then
+         return Default_Style.Line_Width;
+      else
+         return Self.Data.Line_Width;
+      end if;
+   end Get_Line_Width;
+
+   -----------------
+   -- Set_Routing --
+   -----------------
+
+   procedure Set_Routing
+     (Self : in out Drawing_Style; Routing : Route_Style) is
+   begin
+      if Self.Data /= null then
+         Self.Data.Routing := Routing;
+      end if;
+   end Set_Routing;
+
+   --------------
+   -- Get_Font --
+   --------------
+
+   function Get_Font (Self : Drawing_Style) return Font_Style is
+   begin
+      if Self.Data = null then
+         return Default_Style.Font;
+      else
+         return Self.Data.Font;
+      end if;
+   end Get_Font;
+
+   ----------------
+   -- Intersects --
+   ----------------
+
+   function Intersects (Rect1, Rect2 : Cairo.Cairo_Rectangle) return Boolean is
+   begin
+      return not
+        (Rect1.X > Rect2.X + Rect2.Width            --  R1 on the right of R2
+         or else Rect2.X > Rect1.X + Rect1.Width    --  R2 on the right of R1
+         or else Rect1.Y > Rect2.Y + Rect2.Height   --  R1 below R2
+         or else Rect2.Y > Rect1.Y + Rect1.Height); --  R1 above R2
+   end Intersects;
+
+   -----------
+   -- Union --
+   -----------
+
+   procedure Union
+     (Rect1 : in out Cairo.Cairo_Rectangle;
+      Rect2 : Cairo.Cairo_Rectangle)
+   is
+      Right : constant Gdouble :=
+        Gdouble'Max (Rect1.X + Rect1.Width, Rect2.X + Rect2.Width);
+      Bottom : constant Gdouble :=
+        Gdouble'Max (Rect1.Y + Rect1.Height, Rect2.Y + Rect2.Height);
+   begin
+      Rect1.X := Gdouble'Min (Rect1.X, Rect2.X);
+      Rect1.Width := Right - Rect1.X;
+
+      Rect1.Y := Gdouble'Min (Rect1.Y, Rect2.Y);
+      Rect1.Height := Bottom - Rect1.Y;
+   end Union;
 end Gtkada.Style;
