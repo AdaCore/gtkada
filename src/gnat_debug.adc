@@ -1,2 +1,2 @@
 pragma Restrictions (No_Implementation_Attributes);
-pragma Initialize_Scalars;
+--  pragma Initialize_Scalars;
