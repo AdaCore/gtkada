@@ -130,7 +130,8 @@ package body Create_Builder is
       Put_Line ("Connect_Signals callback invoked: ");
       Put_Line ("   object " & System.Address_Image (Object.Get_Object)
                 & " emitting " & Signal_Name);
-      Put_Line ("   to " & Handler_Name & ", with flags:" & Flags'Img);
+      Put_Line ("   to " & Handler_Name & ", with flags:"
+                & Glib.G_Connect_Flags'Image (Flags));
 
       if Connect_Object /= null then
          Put_Line ("   Warning: Connect_Object parameter will be ignored"

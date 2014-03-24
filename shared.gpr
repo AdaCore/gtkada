@@ -33,7 +33,13 @@ project Shared is
 
    package Builder is
       for Default_Switches ("Ada") use ("-m", "-j" & Processors);
-      for Global_Configuration_Pragmas use "src/gnat.adc";
+
+      case Build is
+         when "Debug" =>
+            for Global_Configuration_Pragmas use Shared'Project_Dir & "src/gnat_debug.adc";
+         when "Production" =>
+            for Global_Configuration_Pragmas use Shared'Project_Dir & "src/gnat.adc";
+      end case;
    end Builder;
 
    package Binder is

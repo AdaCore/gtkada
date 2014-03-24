@@ -212,7 +212,8 @@ package body View_Gl is
    begin
       if Event.Is_Hint /= 0 then
          Gdk.Window.Get_Device_Position
-           (Event.Window, Gtk.Main.Get_Current_Event_Device, X, Y, State, Win);
+           (Event.Window, Gtk.Main.Get_Current_Event_Device,
+            X, Y, State, Win);
       else
          X := Gint (Event.X);
          Y := Gint (Event.Y);

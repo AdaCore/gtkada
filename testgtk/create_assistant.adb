@@ -237,7 +237,7 @@ package body Create_Assistant is
          end;
 
       else
-         Put_Line ("prepare: " & Get_Current_Page (Assistant)'Img);
+         Put_Line ("prepare: " & Gint'Image (Get_Current_Page (Assistant)));
       end if;
    end Prepare_Callback;
 
