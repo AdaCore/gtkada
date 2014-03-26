@@ -463,6 +463,11 @@ package Gtkada.Style is
       Rect2 : Cairo.Cairo_Rectangle);
    --  Store in Rect1 the minimum rectangle that contains both Rect1 and Rect2.
 
+   function Point_In_Rect
+     (Rect  : Cairo.Cairo_Rectangle;
+      P     : Point) return Boolean;
+   --  Whether the point is in the rectangle
+
 private
 
    type Dash_Array_Access is access all Cairo.Dash_Array;

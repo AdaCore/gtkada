@@ -104,7 +104,7 @@ package body Create_Canvas_Links is
       Canvas       : Interactive_Canvas;
       Scrolled     : Gtk_Scrolled_Window;
       Object_Style : Drawing_Style;
-      Link_Style   : Drawing_Style;
+      Link_Styles  : array (Route_Style) of Drawing_Style;
       Link         : Canvas_Link;
       It           : Integer;
       Y, X         : Gdouble;
@@ -162,50 +162,58 @@ package body Create_Canvas_Links is
         (Stroke => Black_RGBA,
          Fill   => Create_Rgba_Pattern
            ((1.0, 1.0, 1.0, 0.8)));
-      Link_Style := Gtk_New (Stroke => Black_RGBA);
 
+      Link_Styles (Orthogonal) := Gtk_New (Stroke => Black_RGBA);
+      Link_Styles (Straight) := Gtk_New (Stroke => (1.0, 0.0, 0.0, 1.0));
+      Link_Styles (Curve) := Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0));
+      Link_Styles (Orthocurve) := Gtk_New (Stroke => (0.0, 0.0, 1.0, 1.0));
       Y := 0.0;
       X := 0.0;
 
-      for Route in Route_Style loop
-         for From_Side in Side_Attachment loop
-            for To_Side in Side_Attachment loop
-               for J in Items'Range loop
-                  Items (J) := new Demo_Item_Record;
-                  Items (J).Style := Object_Style;
+      for From_Side in Side_Attachment loop
+         for To_Side in Side_Attachment loop
+--        for Route in Orthocurve .. Orthocurve loop
+--           for From_Side in Auto .. Auto loop
+--              for To_Side in Auto .. Auto loop
 
-                  if J mod 2 = 0 then
-                     declare
-                        F : constant String :=
-                          Side_Attachment'Image (From_Side);
-                        T : constant String :=
-                          Side_Attachment'Image (To_Side);
-                     begin
-                        Items (J).Text := new String'
-                          (F (F'First) & T (T'First));
-                     end;
-                  end if;
+            for J in Items'Range loop
+               Items (J) := new Demo_Item_Record;
+               Items (J).Style := Object_Style;
 
-                  Items (J).Set_Screen_Size (Width, Height);
-                  Canvas.Put (Items (J), X + Pos (J).X, Y + Pos (J).Y);
-               end loop;
+               if J mod 2 = 0 then
+                  declare
+                     F : constant String :=
+                       Side_Attachment'Image (From_Side);
+                     T : constant String :=
+                       Side_Attachment'Image (To_Side);
+                  begin
+                     Items (J).Text := new String'
+                       (F (F'First) & T (T'First));
+                  end;
+               end if;
 
+               Items (J).Set_Screen_Size (Width, Height);
+               Canvas.Put (Items (J), X + Pos (J).X, Y + Pos (J).Y);
+            end loop;
+
+            for Route in Route_Style loop
                It := Items'First;
                while It < Items'Last loop
                   Link := new Canvas_Link_Record;
-                  Link.Configure (Link_Style, Routing => Route);
+                  Link.Configure (Link_Styles (Route), Routing => Route);
                   Link.Set_Src_Pos ((0.5, 0.5, From_Side));
                   Link.Set_Dest_Pos ((0.5, 0.5, To_Side));
                   Canvas.Add_Link (Link, Items (It), Items (It + 1));
                   It := It + 2;
                end loop;
 
-               X := X + PW + W * 3.0 + 20.0;
             end loop;
 
-            X := 0.0;
-            Y := Y + H * 4.0 + 60.0;
+            X := X + PW + W * 3.0 + 20.0;
          end loop;
+
+         X := 0.0;
+         Y := Y + H * 4.0 + 60.0;
       end loop;
 
       Frame.Show_All;

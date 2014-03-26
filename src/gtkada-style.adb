@@ -1478,6 +1478,19 @@ package body Gtkada.Style is
       Rect1.Height := Bottom - Rect1.Y;
    end Union;
 
+   -------------------
+   -- Point_In_Rect --
+   -------------------
+
+   function Point_In_Rect
+     (Rect  : Cairo.Cairo_Rectangle;
+      P     : Point) return Boolean
+   is
+   begin
+      return Rect.X <= P.X and then P.X <= Rect.X + Rect.Width
+        and then Rect.Y <= P.Y and then P.Y <= Rect.Y + Rect.Height;
+   end Point_In_Rect;
+
    ------------------------
    -- Circle_From_Bezier --
    ------------------------

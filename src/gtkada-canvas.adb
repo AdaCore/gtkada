@@ -1467,8 +1467,9 @@ package body Gtkada.Canvas is
       Edge_Number     : Gint;
       Show_Annotation : Boolean := True)
    is
+      pragma Unreferenced (Edge_Number);
    begin
-      if Edge_Number = 1 then
+--      if Edge_Number = 1 then
          --  The first link in the list is always straight
 
          case Link.Routing is
@@ -1482,13 +1483,13 @@ package body Gtkada.Canvas is
                Compute_Layout_For_Orthocurve_Link (Canvas, Link);
          end case;
 
-      elsif Edge_Number mod 2 = 1 then
-         Link.Routing := Curve;
-         Compute_Layout_For_Arc_Link (Canvas, Link, Edge_Number / 2);
-      else
-         Link.Routing := Curve;
-         Compute_Layout_For_Arc_Link (Canvas, Link, -Edge_Number / 2);
-      end if;
+--        elsif Edge_Number mod 2 = 1 then
+--           Link.Routing := Curve;
+--           Compute_Layout_For_Arc_Link (Canvas, Link, Edge_Number / 2);
+--        else
+--           Link.Routing := Curve;
+--           Compute_Layout_For_Arc_Link (Canvas, Link, -Edge_Number / 2);
+--        end if;
 
       Draw_Link (Canvas, Link, Cr, Show_Annotation);
    end Draw_Link;
