@@ -22,46 +22,21 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Various support utilities for the drawing of links in GtkAda.Canvas
+--  Various support utilities for the drawing of objects in GtkAda.Canvas
 
-with Cairo;   use Cairo;
-with Glib;    use Glib;
+with Gtkada.Style;       use Gtkada.Style;
 
-package Gtkada.Canvas.Links is
+package Gtkada.Canvas.Objects is
 
-   procedure Compute_Layout_For_Straight_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class);
-   --  Compute the layout for the link, with a straight line (although
-   --  additional waypoints could be added).
-   --  The layout is cached in the link itself, and will be used when drawing.
+   function Link_Anchor_Point
+     (Self   : not null access Canvas_Item_Record'Class;
+      Anchor : Anchor_Attachment)
+      return Point;
+   --  Return the anchor point for links to or from this object. In general,
+   --  this anchor point is in the middle of the object or depends on the
+   --  Anchor parameter, and the link will automatically be clipped to one
+   --  of the borders. The coordinates are absolute.
+   --  This anchor point can be in the middle of an object, the link itself
+   --  will be clipped to the border of the bounding box.
 
-   procedure Compute_Layout_For_Arc_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class;
-      Offset : Gint := 1);
-   --  Compute the layout for the link, with a curve link.
-   --  The offset can be used to make the link more or less curved, in
-   --  particular when there are multiple links between the same two objects,
-   --  so that they do not override.
-
-   procedure Compute_Layout_For_Orthogonal_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class);
-   --  Compute the layout for the link, when it is restricted to vertical and
-   --  horizontal lines only.
-
-   procedure Compute_Layout_For_Orthocurve_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class);
-   --  Compute the layout for the link
-
-   procedure Draw_Link
-     (Canvas           : access Interactive_Canvas_Record'Class;
-      Link             : access Canvas_Link_Record'Class;
-      Cr               : Cairo.Cairo_Context;
-      Show_Annotations : Boolean := True);
-   --  Draw the link, using the layout computed earlier via one of the
-   --  procedures above.
-
-end Gtkada.Canvas.Links;
+end Gtkada.Canvas.Objects;

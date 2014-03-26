@@ -94,6 +94,7 @@
 --  <screenshot>gtkada-canvas</screenshot>
 
 with Ada.Calendar;
+private with Ada.Unchecked_Deallocation;
 with Cairo;
 with Gdk.Color;
 with Gdk.Device;
@@ -390,6 +391,20 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
    --  Return the length of arrows in the canvas.
 
+   function Get_Toplevel
+     (Self : not null access Canvas_Item_Record) return Canvas_Item;
+   --  Handles nesting of items. An item might be contained in another (so that
+   --  they are both moved at the same time). This function should return the
+   --  topmost item, or Self itself.
+
+   function Clip_Line
+     (Self   : not null access Canvas_Item_Record;
+      P0, P1 : Gtkada.Style.Point)
+      return Gtkada.Style.Point;
+   --  Return the intersection of the line from P0 to P1 with the border
+   --  of Self. Drawing a line from this intersection point to P1 will not
+   --  intersect the object.
+
    --------------------------
    -- Iterating over items --
    --------------------------
@@ -560,15 +575,31 @@ package Gtkada.Canvas is
    --  This type indicates whether an arrow head needs to be drawn on either
    --  ends of a link.
 
+   type Side_Attachment is
+     (Auto,   --  default
+      Top,
+      Right,
+      Bottom,
+      Left);
+   --  Which side of an object a link is attached to. The default (Auto) means
+   --  the link will attach to any side of the object, to be as short as
+   --  possible.
+
+   type Route_Style is (Orthogonal, Straight, Curve, Orthocurve);
+   --  How should link be displayed
+   --  Orthocurve is similar to orthogonal (links restricted to horizontal and
+   --  vertical lines), but using a bezier curve.
+
    procedure Configure
      (Link  : access Canvas_Link_Record;
       Arrow : Arrow_Type := End_Arrow;
       Descr : Glib.UTF8_String := "");
    pragma Obsolescent (Configure, "Use Configure with a Style parameter");
    procedure Configure
-     (Link  : not null access Canvas_Link_Record;
-      Style : Gtkada.Style.Drawing_Style;
-      Descr : Glib.UTF8_String := "");
+     (Link    : not null access Canvas_Link_Record;
+      Style   : Gtkada.Style.Drawing_Style;
+      Descr   : Glib.UTF8_String := "";
+      Routing : Route_Style := Straight);
    --  Configure a link.
    --  The link is an oriented line between two items on the canvas.
    --  If Descr is not the empty string, it will be displayed in the middle
@@ -587,27 +618,24 @@ package Gtkada.Canvas is
    pragma Obsolescent (Get_Arrow_Type);
    --  Return the location of the arrows on Link
 
+   type Anchor_Attachment is record
+      X, Y : Glib.Gdouble := 0.5;
+      Side : Side_Attachment := Auto;
+   end record;
+   --  Where in the source or target object the link is attached (0.5 means
+   --  the middle, 0.0 means left or top, and 1.0 means right or bottom)
+
    procedure Set_Src_Pos
-     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gdouble := 0.5);
-   --  Set the position of the link's attachment in its source item.
-   --  X_Pos and Y_Pos should be given between 0.0 and 1.0 (from left to right
-   --  or top to bottom)..
-   --  By default, all links are considered to be attached to the center of
-   --  items. However, in some cases it is more convenient to attach it to a
-   --  specific part of the item. For instance, you can force a link to always
-   --  start from the top of the item by setting Y_Pos to 0.0.
-
+     (Link   : access Canvas_Link_Record;
+      Anchor : Anchor_Attachment);
    procedure Set_Dest_Pos
-     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gdouble := 0.5);
-   --  Same as Set_Src_Pos for the destination item
-
-   procedure Get_Src_Pos
-     (Link : access Canvas_Link_Record; X, Y : out Glib.Gdouble);
-   --  Return the attachment position of the link along its source item
-
-   procedure Get_Dest_Pos
-     (Link : access Canvas_Link_Record; X, Y : out Glib.Gdouble);
-   --  Return the attachment position of the link along its destination item
+     (Link   : access Canvas_Link_Record;
+      Anchor : Anchor_Attachment);
+   function Get_Src_Pos
+     (Link : access Canvas_Link_Record) return Anchor_Attachment;
+   function Get_Dest_Pos
+     (Link : access Canvas_Link_Record) return Anchor_Attachment;
+   --  Set the position of the link's attachment in its source item.
 
    function Has_Link
      (Canvas   : access Interactive_Canvas_Record;
@@ -938,15 +966,39 @@ private
 
    type String_Access is access Glib.UTF8_String;
 
+   procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+     (Gtkada.Style.Point_Array, Gtkada.Style.Point_Array_Access);
+
+   No_Waypoints : constant Gtkada.Style.Point_Array := (1 .. 0 => (0.0, 0.0));
+
    type Canvas_Link_Record is new Glib.Graphs.Edge with record
       Descr      : String_Access;
       Style      : Gtkada.Style.Drawing_Style;
+      Routing    : Route_Style := Straight;
 
-      Src_X_Pos  : Glib.Gdouble := 0.5;
-      Src_Y_Pos  : Glib.Gdouble := 0.5;
-      Dest_X_Pos : Glib.Gdouble := 0.5;
-      Dest_Y_Pos : Glib.Gdouble := 0.5;
-      --  Position of the link's attachment in each of the src and dest items.
+      Waypoints   : Gtkada.Style.Point_Array_Access;
+      --  The waypoints created by the user (as opposed to Points, which
+      --  contains the list of waypoints computed automatically, in addition
+      --  to the user's waypoints).
+      --  These are absolute coordinates.
+      --  For straight and orthogonal links, these are the points the link must
+      --  go through.
+      --  For curve and orthocurve links, these are the list of points and
+      --  control points for the bezier curve:
+      --      pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
+
+      Points   : Gtkada.Style.Point_Array_Access;
+      --  The cached computation of waypoints for this link.
+      --  These are recomputed every time the layout of the canvas changes, but
+      --  are cached so that redrawing the canvas is fast.
+      --  These are absolute coordinates.
+      --  See the documentation on Waypoints for more information on the format
+
+      Bounding_Box : Cairo.Cairo_Rectangle;
+      --  The bounding box for this link (set after computation of the layout)
+
+      Src_Anchor  : Anchor_Attachment := (0.5, 0.5, Auto);
+      Dest_Anchor : Anchor_Attachment := (0.5, 0.5, Auto);
    end record;
 
    type Interactive_Canvas_Record is new

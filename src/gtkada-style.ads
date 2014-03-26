@@ -236,9 +236,6 @@ package Gtkada.Style is
 
    No_Drawing_Style : constant Drawing_Style;
 
-   type Route_Style is (Straight, Orthogonal, Curve);
-   --  How should link be displayed
-
    type Arrow_Head is (None, Open, Solid, Diamond);
    --  The various styles of arrow heads (filled with Fill style)
 
@@ -278,6 +275,7 @@ package Gtkada.Style is
       X, Y : Glib.Gdouble;
    end record;
    type Point_Array is array (Natural range <>) of Point;
+   type Point_Array_Access is access all Point_Array;
 
    function Gtk_New
       (Stroke           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
@@ -290,7 +288,6 @@ package Gtkada.Style is
        Arrow_To         : Arrow_Style := No_Arrow_Style;
        Symbol_From      : Symbol_Style := No_Symbol;
        Symbol_To        : Symbol_Style := No_Symbol;
-       Routing          : Route_Style := Straight;
        Sloppy           : Boolean := False)
      return Drawing_Style;
    --  Creates a new instance of drawing style.
@@ -321,6 +318,15 @@ package Gtkada.Style is
    --  If Self defines arrows or symbols on either ends, they are also
    --  displayed if Show_Arrows is True.
 
+   procedure Draw_Polycurve
+     (Self        : Drawing_Style;
+      Cr          : Cairo.Cairo_Context;
+      Points      : Point_Array;
+      Show_Arrows : Boolean := True);
+   --  Same as Drawpolyline, but draws bezier curves.
+   --  Points is an array of both points and control points, as in:
+   --     pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
+
    procedure Draw_Text
       (Self    : Drawing_Style;
        Cr      : Cairo.Cairo_Context;
@@ -338,6 +344,12 @@ package Gtkada.Style is
    --  Draw arrow heads and symbols to both ends of the line, based on Self.
    --  This is similar to Polyline, but does not draw the line itself.
 
+   function Circle_From_Bezier
+     (Center   : Point;
+      Radius   : Glib.Gdouble) return Point_Array;
+   --  Return the waypoints needed to draw a circle via a bezier curve in
+   --  Draw_Polycurve.
+
    procedure Finish_Path
       (Self    : Drawing_Style;
        Cr      : Cairo.Cairo_Context);
@@ -347,14 +359,10 @@ package Gtkada.Style is
 
    function Get_Arrow_From (Self : Drawing_Style) return Arrow_Style;
    function Get_Arrow_To (Self : Drawing_Style) return Arrow_Style;
-   function Get_Routing (Self : Drawing_Style) return Route_Style;
    function Get_Stroke (Self : Drawing_Style) return Gdk.RGBA.Gdk_RGBA;
    function Get_Line_Width (Self : Drawing_Style) return Glib.Gdouble;
    function Get_Font (Self : Drawing_Style) return Font_Style;
    --  Access the various properties of the style
-
-   procedure Set_Routing (Self : in out Drawing_Style; Routing : Route_Style);
-   --  Override specific attributes of the style.
 
    ---------
    -- CSS --
@@ -471,7 +479,6 @@ private
       Arrow_To         : Arrow_Style := No_Arrow_Style;
       Symbol_From      : Symbol_Style := No_Symbol;
       Symbol_To        : Symbol_Style := No_Symbol;
-      Routing          : Route_Style := Straight;
       Sloppy           : Boolean := False;
    end record;
    type Drawing_Style_Data_Access is access all Drawing_Style_Data;

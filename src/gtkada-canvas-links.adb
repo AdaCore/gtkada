@@ -23,11 +23,9 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
-with Ada.Unchecked_Deallocation;
-with Cairo.Region;                  use Cairo.Region;
 with Gdk.Cairo;                     use Gdk.Cairo;
 with Glib.Graphs;                   use Glib.Graphs;
-with Gtkada.Canvas.Guides;          use Gtkada.Canvas.Guides;
+with Gtkada.Canvas.Objects;         use Gtkada.Canvas.Objects;
 with Gtkada.Style;                  use Gtkada.Style;
 with Pango.Cairo;                   use Pango.Cairo;
 with Pango.Layout;                  use Pango.Layout;
@@ -38,15 +36,43 @@ package body Gtkada.Canvas.Links is
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Gdouble_Elementary_Functions;
 
-   procedure Compute_Anchors
-     (Self  : not null access Canvas_Link_Record'Class);
+   type Anchors is record
+      From_Box          : Cairo_Rectangle;
+      --  The bounding box for the source element of the link
+
+      From_Toplevel_Box : Cairo_Rectangle;
+      --  The bounding box for the toplevel element that contains the source
+      --  element.
+
+      To_Box            : Cairo_Rectangle;
+      --  The bounding box for the target element of the link
+
+      To_Toplevel_Box   : Cairo_Rectangle;
+      --  The bounding box for the toplevel element that contains the target
+      --  element.
+
+      F, T              : Point;
+      --  Anchor points for each end of the link, on the toplevel boxes
+   end record;
+   --  Various dimensions computed for the layout of links.
+   --  It contains the start and end points for the link, as well as the
+   --  bounding boxes.
+
+   function Compute_Anchors
+     (Self : not null access Canvas_Link_Record'Class) return Anchors;
    --  Compute the start and end point of the link, depending on the two
    --  objects it links. This makes sure that the link does not start in the
    --  middle of the box.
 
-   function Compute_Line_Pos
-     (Canvas : access Interactive_Canvas_Record'Class) return Gdouble_Array;
-   --  ???
+   procedure Compute_Labels
+     (Self   : not null access Canvas_Link_Record'Class;
+      Canvas : not null access Interactive_Canvas_Record'Class;
+      Dim    : Anchors);
+   --  Compute the position for the end labels and middle label for the link
+
+   procedure Compute_Bounding_Box
+     (Self : not null access Canvas_Link_Record'Class);
+   --  Compute the bounding box for the link
 
    procedure Draw_Annotation
      (Canvas   : access Interactive_Canvas_Record'Class;
@@ -62,13 +88,84 @@ package body Gtkada.Canvas.Links is
    -- Compute_Anchors --
    ---------------------
 
-   procedure Compute_Anchors
-     (Self  : not null access Canvas_Link_Record'Class)
+   function Compute_Anchors
+     (Self : not null access Canvas_Link_Record'Class) return Anchors
    is
-      pragma Unreferenced (Self);
+      S : constant Canvas_Item := Canvas_Item (Self.Get_Src);
+      D : constant Canvas_Item := Canvas_Item (Self.Get_Dest);
+
+      Result : Anchors :=
+        (F                 => Link_Anchor_Point (S, Self.Src_Anchor),
+         From_Box          => S.Get_Coord,
+         From_Toplevel_Box => S.Get_Toplevel.Get_Coord,
+         T                 => Link_Anchor_Point (D, Self.Dest_Anchor),
+         To_Box            => D.Get_Coord,
+         To_Toplevel_Box   => D.Get_Toplevel.Get_Coord);
+
+      P : Point;
+   begin
+      --  Clip the line to the side of the toplevel boxes.
+
+      if Self.Src_Anchor.Side = Auto then
+         if Self.Waypoints = null then
+            P := Result.T;
+         else
+            P := Self.Waypoints (Self.Waypoints'First);
+         end if;
+         Result.F := S.Get_Toplevel.Clip_Line (Result.F, P);
+      end if;
+
+      if Self.Dest_Anchor.Side = Auto then
+         if Self.Waypoints = null then
+            P := Result.F;
+         else
+            P := Self.Waypoints (Self.Waypoints'Last);
+         end if;
+         Result.T := D.Get_Toplevel.Clip_Line (Result.T, P);
+      end if;
+
+      return Result;
+   end Compute_Anchors;
+
+   --------------------------
+   -- Compute_Bounding_Box --
+   --------------------------
+
+   procedure Compute_Bounding_Box
+     (Self : not null access Canvas_Link_Record'Class)
+   is
+      P     : constant Point_Array_Access := Self.Points;
+      Max_X : Gdouble := P (P'First).X;
+      Max_Y : Gdouble := P (P'First).Y;
+      X, Y  : Gdouble;
+   begin
+      X := Max_X;
+      Y := Max_Y;
+
+      for P1 in P'First + 1 .. P'Last loop
+         X := Gdouble'Min (X, P (P1).X);
+         Y := Gdouble'Min (Y, P (P1).Y);
+         Max_X := Gdouble'Max (Max_X, P (P1).X);
+         Max_Y := Gdouble'Max (Max_Y, P (P1).Y);
+      end loop;
+
+      Self.Bounding_Box :=
+        (X => X, Y => Y, Width => Max_X - X, Height => Max_Y - Y);
+   end Compute_Bounding_Box;
+
+   --------------------
+   -- Compute_Labels --
+   --------------------
+
+   procedure Compute_Labels
+     (Self   : not null access Canvas_Link_Record'Class;
+      Canvas : not null access Interactive_Canvas_Record'Class;
+      Dim    : Anchors)
+   is
+      pragma Unreferenced (Self, Canvas, Dim);
    begin
       null;
-   end Compute_Anchors;
+   end Compute_Labels;
 
    ---------------------
    -- Draw_Annotation --
@@ -107,545 +204,575 @@ package body Gtkada.Canvas.Links is
       end if;
    end Draw_Annotation;
 
-   ----------------------
-   -- Compute_Line_Pos --
-   ----------------------
+   ----------------------------------------
+   -- Compute_Layout_For_Orthogonal_Link --
+   ----------------------------------------
 
-   function Compute_Line_Pos
-     (Canvas : access Interactive_Canvas_Record'Class) return Gdouble_Array
+   procedure Compute_Layout_For_Orthogonal_Link
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Link   : access Canvas_Link_Record'Class)
    is
-      type Graph_Range is record
-         From, To : Gdouble;
-      end record;
+      procedure Compute_Sides
+        (Anchor : Anchor_Attachment;
+         F : Point;
+         Box, TBox : Cairo_Rectangle;
+         Effective_Side : out Side_Attachment;
+         P : out Point);
+      --  Compute whether a link should start horizontal or vertical, and
+      --  which side it should start on.
 
-      type Range_Array is array (Positive range <>) of Graph_Range;
-      type Range_Array_Access is access all Range_Array;
+      function Clamp (Value, Min, Max : Gdouble) return Gdouble;
+      --  Takes a number and clamps it to within the provided bounds.
 
-      procedure Free is new Ada.Unchecked_Deallocation
-        (Range_Array, Range_Array_Access);
+      -----------
+      -- Clamp --
+      -----------
 
-      Free_Ranges : Range_Array_Access := new Range_Array (1 .. 1000);
-      Tmp         : Range_Array_Access;
-      Last_Range  : Positive := Free_Ranges'First;
-      Iter        : Vertex_Iterator := First (Canvas.Children);
-      E           : Canvas_Item;
-      Right       : Gdouble;
-   begin
-      Free_Ranges (Free_Ranges'First) :=
-        (From => Gdouble'First, To => Gdouble'Last);
+      function Clamp (Value, Min, Max : Gdouble) return Gdouble is
+      begin
+         return Gdouble'Min (Gdouble'Max (Value, Min), Max);
+      end Clamp;
 
-      while not At_End (Iter) loop
-         E := Canvas_Item (Get (Iter));
-         Right := E.Coord.X + E.Coord.Width;
+      -------------------
+      -- Compute_Sides --
+      -------------------
 
-         for R in Free_Ranges'First .. Last_Range loop
-            if Free_Ranges (R).From <= E.Coord.X
-              and then Free_Ranges (R).To >= E.Coord.X
-              and then Free_Ranges (R).To <= Right
-            then
-               Free_Ranges (R) :=
-                 (From => Free_Ranges (R).From, To => E.Coord.X - 1.0);
-
-            elsif Free_Ranges (R).From <= E.Coord.X
-              and then Free_Ranges (R).To >= Right
-            then
-               if Last_Range >= Free_Ranges'Last then
-                  Tmp := new Range_Array (1 .. Free_Ranges'Last * 2);
-                  Tmp (1 .. Free_Ranges'Last) := Free_Ranges.all;
-                  Free (Free_Ranges);
-                  Free_Ranges := Tmp;
+      procedure Compute_Sides
+        (Anchor : Anchor_Attachment;
+         F : Point;
+         Box, TBox : Cairo_Rectangle;
+         Effective_Side : out Side_Attachment;
+         P : out Point)
+      is
+      begin
+         case Anchor.Side is
+            when Top | Bottom | Right | Left =>
+               Effective_Side := Anchor.Side;
+            when Auto =>
+               if F.X = TBox.X then
+                  Effective_Side := Left;
+               elsif F.Y = TBox.Y then
+                  Effective_Side := Top;
+               elsif F.X = TBox.X + TBox.Width then
+                  Effective_Side := Right;
+               else
+                  Effective_Side := Bottom;
                end if;
+         end case;
 
-               Free_Ranges (R + 1 .. Last_Range + 1) :=
-                 Free_Ranges (R .. Last_Range);
-               Free_Ranges (R + 1) :=
-                 (From => Right + 1.0, To => Free_Ranges (R).To);
-               Free_Ranges (R) :=
-                 (From => Free_Ranges (R).From, To => E.Coord.X - 1.0);
-               Last_Range := Last_Range + 1;
+         case Effective_Side is
+            when Top =>
+               P := (Box.X + Box.Width * Anchor.X, TBox.Y);
+            when Bottom =>
+               P := (Box.X + Box.Width * Anchor.X, TBox.Y + TBox.Height);
+            when Right =>
+               P := (TBox.X + TBox.Width, Box.Y + Box.Height * Anchor.Y);
+            when Left =>
+               P := (TBox.X, Box.Y + Box.Height * Anchor.Y);
+            when others =>
+               null;
+         end case;
+      end Compute_Sides;
 
-            elsif Free_Ranges (R).From >= E.Coord.X
-              and then Free_Ranges (R).From <= Right
-              and then Free_Ranges (R).To >= Right
-            then
-               Free_Ranges (R) :=
-                 (From => Right + 1.0, To => Free_Ranges (R).To);
+      B : constant Gdouble := 10.0;
+      --  Border around each box in which the links should not be displayed.
+
+      Dim : constant Anchors := Compute_Anchors (Link);
+
+      FTX1 : constant Gdouble := Dim.From_Toplevel_Box.X;  --  from-top-x1
+      FTX2 : constant Gdouble := FTX1 + Dim.From_Toplevel_Box.Width;
+      FTY1 : constant Gdouble := Dim.From_Toplevel_Box.Y;  --  from-top-y1
+      FTY2 : constant Gdouble := FTY1 + Dim.From_Toplevel_Box.Height;
+
+      TTX1 : constant Gdouble := Dim.To_Toplevel_Box.X;  --  from-top-x1
+      TTX2 : constant Gdouble := TTX1 + Dim.To_Toplevel_Box.Width;
+      TTY1 : constant Gdouble := Dim.To_Toplevel_Box.Y;  --  from-top-y1
+      TTY2 : constant Gdouble := TTY1 + Dim.To_Toplevel_Box.Height;
+
+      Min_Space : constant Gdouble := Link.Style.Get_Line_Width * 3.0;
+      --  Minimal space between two boxes to pass a link between them
+
+      From_Side, To_Side : Side_Attachment;
+      From, To : Point;
+      Middle : Point;
+      M, Tmp : Gdouble;
+      P1     : Point;   --  extending from the From box
+      P2     : Point;   --  extending from the To box
+   begin
+      Compute_Sides
+        (Link.Src_Anchor, Dim.F, Dim.From_Box, Dim.From_Toplevel_Box,
+         From_Side, From);
+      Compute_Sides
+        (Link.Dest_Anchor, Dim.T, Dim.To_Box, Dim.To_Toplevel_Box,
+         To_Side, To);
+
+      case
+
+
+
+      --  The position for the middle lines, when there is any. It is chosen
+      --  relative to the source, but so that it doesn't overlap the box if
+      --  possible. That ensures that all links existing from the source will
+      --  use the same middle line, and thus will nicely overlap.
+
+      if To.X > From.X then
+         Middle.X := Clamp (From.X + 30.0, FTX2 + B, TTX1 - B);
+      else
+         Middle.X := Clamp (From.X - 30.0, TTX2 + B, FTX1 - B);
+      end if;
+
+      if To.Y > From.Y then
+         Middle.Y := Clamp (From.Y + 30.0, FTY2 + B, TTY1 - B);
+      else
+         Middle.Y := Clamp (From.Y - 30.0, TTY2 + B, FTY1 - B);
+      end if;
+
+      Unchecked_Free (Link.Points);
+
+      case From_Side is
+         when Auto =>
+            null;
+
+         when Right =>
+            case To_Side is
+               when Auto =>
+                  null;
+               when Right =>
+                  --  3:  A --
+                  --          |
+                  --      B --
+
+                  M := Gdouble'Max (From.X + B, To.X + B);
+                  Link.Points := new Point_Array'
+                    ((From, (M, From.Y), (M, To.Y), To));
+
+               when Left =>
+                  --  1:  A --
+                  --          |
+                  --           --- B
+
+                  if abs (From.Y - To.Y) < 5.0 then
+                     --  can we straighten the link altogether ?
+                     Link.Points := new Point_Array'((From, To));
+                  else
+                     Link.Points := new Point_Array'
+                       ((From, (Middle.X, From.Y), (Middle.X, To.Y), To));
+                  end if;
+
+               when Top | Bottom =>
+                  --  7:       B
+                  --           |
+                  --       A___|
+
+                  Link.Points := new Point_Array'((From, (To.X, From.Y), To));
+
+            end case;
+
+         when Left =>
+            case To_Side is
+               when Auto =>
+                  null;
+               when Right =>
+                  --  2:       -- A
+                  --          |
+                  --      B --
+
+                  if abs (From.Y - To.Y) < 5.0 then
+                     --  can we straighten the link altogether ?
+                     Link.Points := new Point_Array'((From, To));
+                  else
+                     Link.Points := new Point_Array'
+                       ((From, (Middle.X, From.Y), (Middle.X, To.Y), To));
+                  end if;
+
+               when Left =>
+                  --  4:   -- A
+                  --      |
+                  --       -- B
+
+                  M := Gdouble'Min (From.X - B, To.X - B);
+                  Link.Points := new Point_Array'
+                    ((From, (M, From.Y), (M, To.Y), To));
+
+               when Top | Bottom =>
+                  --  9:  B
+                  --      |
+                  --      -- A
+
+                  Link.Points := new Point_Array'((From, (To.X, From.Y), To));
+
+            end case;
+
+         when Top =>
+            case To_Side is
+               when Auto =>
+                  null;
+
+               when Right =>
+                  --   1: B--    2: B__  3: __   4: ___
+                  --        |       __|    | |     |  |
+                  --        A      |       A |     |  A
+                  --               A       B_|   B_|
+
+                  if FTY2 <= TTY1 - Min_Space then
+                     Tmp := (FTY2 + TTY1) / 2.0;
+                  elsif TTY2 <= FTY1 - Min_Space then
+                     Tmp := (TTY2 + FTY1) / 2.0;
+                  else
+                     --  not enough space between the two
+                     Tmp := Gdouble'Min (From.Y - B, To.Y - B);
+                  end if;
+
+                  if From.X > To.X + B and then From.Y - B > To.Y then
+                     --  case 1
+                     Link.Points := new Point_Array'
+                       ((From, (From.X, To.Y), To));
+                  elsif To.X >= FTX1 - B and then To.X <= FTX2 + B then
+                     Link.Points := new Point_Array'
+                       ((From,
+                        (From.X, Tmp),
+                        (To.X + B, Tmp),
+                        (To.X + B, To.Y),
+                        To));
+                  else
+                     Link.Points := new Point_Array'
+                       ((From,
+                        (From.X, Tmp),
+                        (To.X + B, Tmp),
+                        (To.X + B, To.Y),
+                        To));
+                  end if;
+
+               when Left =>  --  Similar to Right
+                  if FTY2 <= TTY1 - Min_Space then
+                     Tmp := (FTY2 + TTY1) / 2.0;
+                  elsif TTY2 <= FTY1 - Min_Space then
+                     Tmp := (TTY2 + FTY1) / 2.0;
+                  else
+                     --  not enough space between the two
+                     Tmp := Gdouble'Min (From.Y - B, To.Y - B);
+                  end if;
+
+                  if From.X < To.X - B and then From.Y - B > To.Y then
+                     Link.Points := new Point_Array'
+                       ((From, (From.X, To.Y), To));
+                  elsif To.X - B >= FTX1 - B and then To.X - B <= FTX2 + B then
+                     Link.Points := new Point_Array'
+                       ((From,
+                        (From.X, FTY1 - B),
+                        (FTX1 - B, FTY1 - B),
+                        (FTX1 - B, To.Y),
+                        To));
+                  else
+                     Link.Points := new Point_Array'
+                       ((From,
+                        (From.X, FTY1 - B),
+                        (To.X - B, FTY1 - B),
+                        (To.X - B, To.Y),
+                        To));
+                  end if;
+
+               when Top =>
+                  --   18:   ---     ---       ---
+                  --        |  |     |  |     |  |
+                  --        A  B     A  |     B  |
+                  --                    |        |
+                  --                  --       --
+                  --                 |        |
+                  --                 B        A
+
+                  M := Gdouble'Min (From.Y - B, To.Y - B);
+
+                  if From.X < To.X then
+                     Tmp := FTX2 + B;
+                  else
+                     Tmp := TTX2 + B;
+                  end if;
+
+                  if To.X >= FTX1 and then To.X <= FTX2 then
+                     if From.Y < To.Y then
+                        Link.Points := new Point_Array'
+                          ((From,
+                           (From.X, M),
+                           (Tmp, M),
+                           (Tmp, Middle.Y),
+                           (To.X, Middle.Y),
+                           To));
+                     else
+                        Link.Points := new Point_Array'
+                          ((From,
+                           (From.X, Middle.Y),
+                           (Tmp, Middle.Y),
+                           (Tmp, M),
+                           (To.X, M),
+                           To));
+                     end if;
+                  else
+                     Link.Points := new Point_Array'
+                       ((From, (From.X, M), (To.X, M), To));
+                  end if;
+
+               when Bottom =>
+                  --  16:  B
+                  --       |_
+                  --         |
+                  --         A
+
+                  if abs (From.X - To.X) < 5.0 then
+                     --  can we straighten the link altogether ?
+                     Link.Points := new Point_Array'((From, To));
+                  else
+                     Link.Points := new Point_Array'
+                       ((From, (From.X, Middle.Y), (To.X, Middle.Y), To));
+                  end if;
+            end case;
+
+         when Bottom =>
+            case To_Side is
+               when Auto =>
+                  null;
+               when Left | Right =>
+                  --  11:  A
+                  --       |
+                  --       |__B
+
+                  Link.Points := new Point_Array'
+                    ((From, (From.X, To.Y), To));
+
+               when Top =>
+                  --  15:   A
+                  --       |_
+                  --         |
+                  --         B
+
+                  if abs (From.X - To.X) < 5.0 then
+                     --  can we straighten the link altogether ?
+                     Link.Points := new Point_Array'((From, To));
+                  else
+                     Link.Points := new Point_Array'
+                       ((From, (From.X, Middle.Y), (To.X, Middle.Y), To));
+                  end if;
+
+               when Bottom =>
+                  --  17:  A  B
+                  --       |  |
+                  --       ----
+
+                  M := Gdouble'Max (From.Y + B, To.Y + B);
+                  Link.Points := new Point_Array'
+                    ((From, (From.X, M), (To.X, M), To));
+            end case;
+      end case;
+
+      Compute_Bounding_Box (Link);
+      Compute_Labels (Link, Canvas, Dim);
+   end Compute_Layout_For_Orthogonal_Link;
+
+   --------------------------------------
+   -- Compute_Layout_For_Straight_Link --
+   --------------------------------------
+
+   procedure Compute_Layout_For_Straight_Link
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      Link            : access Canvas_Link_Record'Class)
+   is
+      P   : constant Point_Array_Access := Link.Points;
+      Dim : constant Anchors := Compute_Anchors (Link);
+
+      function Get_Wp return Point_Array;
+      --  Return the waypoints to use
+
+      function Get_Wp return Point_Array is
+      begin
+         --  Support for self-referencing straight links
+
+         if Get_Src (Link) = Get_Dest (Link) then
+            return No_Waypoints;
+         elsif Link.Waypoints /= null then
+            return Link.Waypoints.all;
+         else
+            return No_Waypoints;
+         end if;
+      end Get_Wp;
+
+      Waypoints : Point_Array := Get_Wp;
+      Tmp       : Point;
+   begin
+      if Get_Src (Link) = Get_Dest (Link) then
+         Tmp := (Dim.From_Toplevel_Box.X + Dim.From_Toplevel_Box.Width,
+                 Dim.From_Toplevel_Box.Y);
+         Unchecked_Free (Link.Points);
+         Link.Points := new Point_Array'
+           ((Tmp.X - 10.0, Tmp.Y),
+            (Tmp.X - 10.0, Tmp.Y - 10.0),
+            (Tmp.X + 10.0, Tmp.Y - 10.0),
+            (Tmp.X + 10.0, Tmp.Y + 10.0),
+            (Tmp.X, Tmp.Y + 10.0));
+
+      --  If a link had waypoints so that the first outbound segment from a
+      --  box is horizontal or vertical, we move the waypoint to keep the
+      --  segment that way. This provides a more natural feel.
+
+      elsif P /= null and then Waypoints'Length /= 0 then
+         --  Is the first segment horizontal or vertical ?
+         if abs (P (P'First).Y - Waypoints (Waypoints'First).Y) < 0.8 then
+            Waypoints (Waypoints'First).Y := Dim.F.Y;
+         elsif abs (P (P'First).X - Waypoints (Waypoints'First).Y) < 0.8 then
+            Waypoints (Waypoints'First).X := Dim.F.X;
+         end if;
+
+         --  Is the last segment horizontal or vertical ?
+
+         --  If this horizontal ?
+         if abs (P (P'Last).Y - Waypoints (Waypoints'Last).Y) < 0.8 then
+            Waypoints (Waypoints'Last).Y := Dim.T.Y;
+            --  is this vertical ?
+         elsif abs (P (P'Last).X - Waypoints (Waypoints'Last).Y) < 0.8 then
+            Waypoints (Waypoints'Last).X := Dim.T.X;
+         end if;
+
+         Unchecked_Free (Link.Points);
+         Link.Points := new Point_Array'(Dim.F & Waypoints & Dim.T);
+
+      else
+         Unchecked_Free (Link.Points);
+         Link.Points := new Point_Array'(Dim.F & Waypoints & Dim.T);
+      end if;
+
+      Compute_Bounding_Box (Link);
+      Compute_Labels (Link, Canvas, Dim);
+   end Compute_Layout_For_Straight_Link;
+
+   ---------------------------------
+   -- Compute_Layout_For_Arc_Link --
+   ---------------------------------
+
+   procedure Compute_Layout_For_Arc_Link
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Link   : access Canvas_Link_Record'Class;
+      Offset : Gint := 1)
+   is
+      Dim : constant Anchors := Compute_Anchors (Link);
+
+      function Get_Wp return Point_Array;
+      --  Return the waypoints to use
+
+      procedure Control_Points (From, To : Point; Ctrl1, Ctrl2 : out Point);
+      --  Compute the control points on the curve from From to To
+
+      function Get_Wp return Point_Array is
+      begin
+         if Get_Src (Link) = Get_Dest (Link) then
+            return No_Waypoints;
+         elsif Link.Waypoints /= null then
+            return Link.Waypoints.all;
+         else
+            return No_Waypoints;
+         end if;
+      end Get_Wp;
+
+      procedure Control_Points (From, To : Point; Ctrl1, Ctrl2 : out Point) is
+         Dx : Gdouble := To.X - From.X;
+         Dy : Gdouble := To.Y - From.Y;
+         D : constant Gdouble := Sqrt (Dx * Dx + Dy * Dy);
+
+         Pixels : constant Gdouble := 10.0;
+         --  Height of the rectangle, i.e. maximum distance between the arc
+         --  link and the straight link joining the same two ends.
+
+         E : constant Gdouble := Pixels * Gdouble (abs (Offset)) / D;
+
+      begin
+         Dx := Dx * E;
+         Dy := Dy * E;
+
+         if Offset > 0 then
+            Ctrl1 := (From.X - Dy, From.Y + Dx);
+            Ctrl2 := (To.X - Dy,   To.Y + Dx);
+         else
+            Ctrl1 := (From.X + Dy, From.Y - Dx);
+            Ctrl2 := (To.X + Dy,   To.Y - Dx);
+         end if;
+      end Control_Points;
+
+      Waypoints : constant Point_Array := Get_Wp;
+      P1, P2, P3, P4 : Point;
+   begin
+      Unchecked_Free (Link.Points);
+
+      --  Support for self-referencing links
+
+      if Get_Src (Link) = Get_Dest (Link) then
+         Link.Points := new Point_Array'
+           (Circle_From_Bezier
+              (Center =>
+                   (Dim.From_Toplevel_Box.X + Dim.From_Toplevel_Box.Width,
+                    Dim.From_Toplevel_Box.Y),
+               Radius => 10.0 + 4.0 * Gdouble (abs (Offset) - 1)));
+
+      elsif Waypoints'Length = 0 then
+         Control_Points (Dim.F, Dim.T, P1, P2);
+         Link.Points := new Point_Array'((Dim.F, P1, P2, Dim.T));
+
+      else
+         Control_Points (Dim.F, Waypoints (Waypoints'First), P1, P2);
+         Control_Points (Waypoints (Waypoints'Last), Dim.T, P3, P4);
+         Link.Points := new Point_Array'
+           (Point_Array'(Dim.F, P1, P2)
+            & Waypoints
+            & Point_Array'(P3, P4, Dim.T));
+      end if;
+
+      Compute_Bounding_Box (Link);
+      Compute_Labels (Link, Canvas, Dim);
+   end Compute_Layout_For_Arc_Link;
+
+   ----------------------------------------
+   -- Compute_Layout_For_Orthocurve_Link --
+   ----------------------------------------
+
+   procedure Compute_Layout_For_Orthocurve_Link
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Link   : access Canvas_Link_Record'Class)
+   is
+   begin
+      Compute_Layout_For_Orthogonal_Link (Canvas, Link);
+   end Compute_Layout_For_Orthocurve_Link;
+
+   ---------------
+   -- Draw_Link --
+   ---------------
+
+   procedure Draw_Link
+     (Canvas           : access Interactive_Canvas_Record'Class;
+      Link             : access Canvas_Link_Record'Class;
+      Cr               : Cairo.Cairo_Context;
+      Show_Annotations : Boolean := True)
+   is
+      P      : constant Point_Array_Access := Link.Points;
+   begin
+      pragma Assert (P /= null, "waypoints must be computed first");
+      pragma Assert (P'Length >= 2, "no enough waypoints");
+
+      case Link.Routing is
+         when Straight | Orthogonal =>
+            Link.Style.Draw_Polyline (Cr, P.all);
+
+         when Orthocurve =>
+            if P'Length = 2 then
+               Link.Style.Draw_Polyline (Cr, P.all);
+            else
+               Link.Style.Draw_Polycurve (Cr, P.all);
             end if;
 
-            exit when Free_Ranges (R).From > Right;
-         end loop;
+         when Curve =>
+            Link.Style.Draw_Polycurve (Cr, P.all);
+      end case;
 
-         Next (Iter);
-      end loop;
-
-      declare
-         Result : Gdouble_Array (1 .. Last_Range);
-      begin
-         for R in Result'Range loop
-            --  ??? Should handle vertical layout and horizontal layout
-            Result (R) :=
-              (Free_Ranges (R).From + Free_Ranges (R).To) / 2.0;
-         end loop;
-
-         Free (Free_Ranges);
-         return Result;
-      end;
-   end Compute_Line_Pos;
-
-   --------------------------
-   -- Draw_Orthogonal_Link --
-   --------------------------
-
-   procedure Draw_Orthogonal_Link
-     (Canvas          : access Interactive_Canvas_Record'Class;
-      Cr              : Cairo_Context;
-      Link            : access Canvas_Link_Record'Class;
-      Show_Annotation : Boolean)
-   is
-      X1, Y1, Xp1, Yp1, X2, Y2, Xp2, Yp2, X3, Y3 : Gdouble;
-      X1_Canvas, Xc1_Canvas, Xc2_Canvas : Gdouble;
-      X3_Canvas, Yp1_Canvas : Gdouble;
-      Xp1_Canvas, Y2_Canvas, Y3_Canvas, Y1_Canvas : Gdouble;
-      Yc1_Canvas, Yc2_Canvas, Yp2_Canvas : Gdouble;
-      X2_Canvas, Xp2_Canvas : Gdouble;
-      Xc1, Xc2, Yc1, Yc2 : Gdouble;
-      Src      : constant Canvas_Item := Canvas_Item (Get_Src (Link));
-      Dest     : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
-      Line_Pos : constant Gdouble_Array := Compute_Line_Pos (Canvas);
-
-      Src_World : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Src);
-      Dest_World : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Dest);
-
-   begin
-      X1 := Src_World.X;
-      Y1 := Src_World.Y;
-      X2 := Dest_World.X;
-      Y2 := Dest_World.Y;
-
-      Xp1 := X1 + Src.Coord.Width;
-      Yp1 := Y1 + Src.Coord.Height;
-      Xp2 := X2 + Dest_World.Width;
-      Yp2 := Y2 + Dest_World.Height;
-
-      Xc1 := (X1 + Xp1) / 2.0;
-
-      if Canvas.Grid_Size > 0 then
-         Xc1 := Do_Snap_Grid (Canvas, Xc1, 0.0);
-      end if;
-
-      Xc2 := (X2 + Xp2) / 2.0;
-      if Canvas.Grid_Size > 0 then
-         Xc2 := Do_Snap_Grid (Canvas, Xc2, 0.0);
-      end if;
-
-      Yc1 := (Y1 + Yp1) / 2.0;
-      Yc2 := (Y2 + Yp2) / 2.0;
-
-      --  The preferred case will be
-      --     A ---
-      --         |____ B
-      --  The separation line should be at equal distance of the center of A
-      --  and the center of B, so that multiple items lined up in a column
-      --  above B all have the vertical line at the same location.
-      --
-      --  If the vertical line can be drawn at exact distance of the centers,
-      --  then we try and display the vertical line at equal distance of the
-      --  adjacent edges of A and B
-
-      X3 := Gdouble'First;
-
-      for L in Line_Pos'Range loop
-         if Line_Pos (L) >= Xp1
-           and then Line_Pos (L) <= X2
-         then
-            X3 := Line_Pos (L);
-            exit;
-
-         elsif Line_Pos (L) >= Xp2
-           and then Line_Pos (L) <= X1
-         then
-            X3 := Line_Pos (L);
-            exit;
-         end if;
-      end loop;
-
-      X1_Canvas := World_To_Canvas_X (Canvas, X1);
-      X2_Canvas := World_To_Canvas_X (Canvas, X2);
-      Xc1_Canvas := World_To_Canvas_X (Canvas, Xc1);
-      Xp1_Canvas := World_To_Canvas_X (Canvas, Xp1);
-      Xc2_Canvas := World_To_Canvas_X (Canvas, Xc2);
-      Xp2_Canvas := World_To_Canvas_X (Canvas, Xp2);
-
-      Y1_Canvas  := World_To_Canvas_Y (Canvas, Y1);
-      Y2_Canvas  := World_To_Canvas_Y (Canvas, Y2);
-      Yp1_Canvas := World_To_Canvas_Y (Canvas, Yp1);
-      Yp2_Canvas := World_To_Canvas_Y (Canvas, Yp2);
-      Yc1_Canvas := World_To_Canvas_Y (Canvas, Yc1);
-      Yc2_Canvas := World_To_Canvas_Y (Canvas, Yc2);
-
-      if X3 /= Gdouble'First then
-         X3_Canvas := World_To_Canvas_X (Canvas, X3);
-
-         if X3 >= Xp1 then
-            Link.Style.Draw_Polyline
-              (Cr,
-               ((Xp1_Canvas, Yc1_Canvas + 0.5),
-                (X3_Canvas + 0.5,  Yc1_Canvas + 0.5),
-                (X3_Canvas + 0.5,  Yc2_Canvas + 0.5),
-                (X2_Canvas,        Yc2_Canvas + 0.5)));
-         else
-            Link.Style.Draw_Polyline
-              (Cr,
-               ((X1_Canvas,       Yc1_Canvas + 0.5),
-                (X3_Canvas + 0.5, Yc1_Canvas + 0.5),
-                (X3_Canvas + 0.5, Yc2_Canvas + 0.5),
-                (Xp2_Canvas,      Yc2_Canvas + 0.5)));
-         end if;
-
-      --  Third case is when we didn't have enough space to draw the
-      --  intermediate line. In that case, the layout is similar to
-      --      A ----
-      --           |
-      --           B
-      --  with the vertical line drawn at the same location as in the first
-      --  algorithm.
-
-      --  Second case is when one of the item is below the other one. In that
-      --  case, the layout should look like
-      --       AAA
-      --       |_
-      --         |
-      --        BB
-      --  ie the link connects the top side of one item and the bottom side of
-      --  the other item.
-
-      else
-         Y3 := (Y1 + Yp1 + Y2 + Yp2) / 4.0;
-         if Canvas.Grid_Size > 0 then
-            Y3 := Do_Snap_Grid (Canvas, Y3, 0.0);
-         end if;
-
-         Y3_Canvas := World_To_Canvas_Y (Canvas, Y3);
-         X3_Canvas := (Xc1_Canvas + Xc2_Canvas) / 2.0;
-
-         if Y2 > Y3 then
-            Link.Style.Draw_Polyline
-              (Cr,
-               ((Xc1_Canvas, Yp1_Canvas),
-                (Xc1_Canvas, Y3_Canvas),
-                (Xc2_Canvas, Y3_Canvas),
-                (Xc2_Canvas, Y2_Canvas)));
-         else
-            Link.Style.Draw_Polyline
-              (Cr,
-               ((Xc1_Canvas, Y1_Canvas),
-                (Xc1_Canvas, Y3_Canvas),
-                (Xc2_Canvas, Y3_Canvas),
-                (Xc2_Canvas, Yp2_Canvas)));
-         end if;
-      end if;
-
-      --  Draw the text if any
-
-      if Link.Descr /= null and then Show_Annotation then
-         Set_Source_Color (Cr, Link.Style.Get_Font.Color);
+      if False and then Show_Annotations then
          Draw_Annotation
-           (Canvas, Cr, X3_Canvas, (Y1_Canvas + Y2_Canvas) / 2.0, Link);
+           (Canvas, Cr, P (P'First).X, P (P'First).Y, Link);
       end if;
-   end Draw_Orthogonal_Link;
-
-   ------------------------
-   -- Draw_Straight_Link --
-   ------------------------
-
-   procedure Draw_Straight_Link
-     (Canvas          : access Interactive_Canvas_Record'Class;
-      Cr              : Cairo_Context;
-      Link            : access Canvas_Link_Record'Class;
-      Show_Annotation : Boolean)
-   is
-      X1, Y1, X2, Y2, Xs, Ys, Xd, Yd : Gdouble;
-      X1_Canvas, Y1_Canvas, X2_Canvas, Y2_Canvas : Gdouble;
-      Src   : constant Canvas_Item := Canvas_Item (Get_Src (Link));
-      Dest  : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
-      Src_Side, Dest_Side : Item_Side;
-
-      Src_Coord : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Src);
-      Dest_Coord : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Dest);
-
-   begin
-      Xs := Src_Coord.X;
-      Ys := Src_Coord.Y;
-      Xd := Dest_Coord.X;
-      Yd := Dest_Coord.Y;
-
-      Clip_Line
-        (Src, Canvas,
-         Xd + Dest_Coord.Width * Link.Dest_X_Pos,
-         Yd + Dest_Coord.Height * Link.Dest_Y_Pos,
-         X_Pos => Link.Src_X_Pos,
-         Y_Pos => Link.Src_Y_Pos,
-         Side  => Src_Side,
-         X_Out => X1,
-         Y_Out => Y1);
-      Clip_Line
-        (Dest, Canvas,
-         Xs + Src_Coord.Width * Link.Src_X_Pos,
-         Ys + Src_Coord.Height * Link.Src_Y_Pos,
-         X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
-         Side => Dest_Side, X_Out => X2, Y_Out => Y2);
-
-      X1_Canvas := World_To_Canvas_X (Canvas, X1);
-      Y1_Canvas := World_To_Canvas_Y (Canvas, Y1);
-      X2_Canvas := World_To_Canvas_X (Canvas, X2);
-      Y2_Canvas := World_To_Canvas_Y (Canvas, Y2);
-
-      Link.Style.Draw_Polyline
-        (Cr,
-         ((X1_Canvas, Y1_Canvas), (X2_Canvas, Y2_Canvas)),
-         Show_Arrows => True);
-
-      --  Draw the text if any
-
-      if Link.Descr /= null and then Show_Annotation then
-         Draw_Annotation
-           (Canvas, Cr,
-            (X1_Canvas + X2_Canvas) / 2.0,
-            (Y1_Canvas + Y2_Canvas) / 2.0, Link);
-      end if;
-   end Draw_Straight_Link;
-
-   --------------------
-   -- Draw_Self_Link --
-   --------------------
-
-   procedure Draw_Self_Link
-     (Canvas          : access Interactive_Canvas_Record'Class;
-      Cr              : Cairo_Context;
-      Link            : access Canvas_Link_Record'Class;
-      Offset          : Gint;
-      Show_Annotation : Boolean)
-   is
-      Src       : constant Canvas_Item := Canvas_Item (Get_Src (Link));
-      Xc, Yc    : Gdouble;
-      X1, Y1, X3, Y3, Xc_Canvas, Yc_Canvas, Radius : Gdouble;
-      Src_World : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Src);
-
-   begin
-      pragma Assert (Src = Canvas_Item (Get_Dest (Link)));
-
-      Xc := Src_World.X + Src_World.Width;
-      Yc := Src_World.Y;
-
-      Radius := World_To_Canvas_Length
-        (Canvas, Gdouble (Canvas.Arc_Link_Offset / 2 * Offset));
-
-      --  Location of the arrow and the annotation
-      Xc_Canvas := World_To_Canvas_X (Canvas, Xc);
-      Yc_Canvas := World_To_Canvas_Y (Canvas, Yc);
-      X3 := Xc_Canvas - Radius;
-      Y3 := Yc_Canvas;
-      X1 := Xc_Canvas;
-      Y1 := Yc_Canvas + Radius;
-
-      Set_Source_Color (Cr, Link.Style.Get_Stroke);
-      Cairo.Move_To (Cr, X3, Y3);
-      Cairo.Arc (Cr, Xc_Canvas, Yc_Canvas, Radius, Pi, Pi * 0.5);
-      Cairo.Stroke (Cr);
-
-      Link.Style.Draw_Arrows_And_Symbols
-        (Cr,
-         ((X3, Y3), (X3, Y3 - 20.0),
-          (X1 + 20.0, Y1), (X1, Y1)));
-
-      --  Draw the annotations
-      if Link.Descr /= null and then Show_Annotation then
-         Draw_Annotation
-           (Canvas, Cr,
-            Xc_Canvas + Radius / 2.0, Yc_Canvas + Radius / 2.0, Link);
-      end if;
-   end Draw_Self_Link;
-
-   -------------------
-   -- Draw_Arc_Link --
-   -------------------
-
-   procedure Draw_Arc_Link
-     (Canvas          : access Interactive_Canvas_Record'Class;
-      Cr              : Cairo_Context;
-      Link            : access Canvas_Link_Record'Class;
-      Offset          : Gdouble;
-      Show_Annotation : Boolean)
-   is
-      Angle       : Gdouble;
-      X1, Y1, X2, Y2, X3, Y3 : Gdouble;
-      X1_Canvas, Y1_Canvas, X2_Canvas, Y2_Canvas : Gdouble;
-      X3_Canvas, Y3_Canvas : Gdouble;
-      Right_Angle : constant Gdouble := Pi / 2.0;
-      Arc_Offset  : constant Gdouble := Gdouble (Canvas.Arc_Link_Offset);
-      Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
-      Dest        : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
-      Src_Side, Dest_Side : Item_Side;
-
-      Src_World : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Src);
-      Dest_World : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Dest);
-
-   begin
-      X1 := Src_World.X;
-      Y1 := Src_World.Y;
-      X3 := Dest_World.X;
-      Y3 := Dest_World.Y;
-
-      --  We will first compute the extra intermediate point between the
-      --  center of the two items. Once we have this intermediate point, we
-      --  will be able to use the intersection point between the two items
-      --  and the two lines from the centers to the middle point. This extra
-      --  point is used as a control point for the Bezier curve.
-
-      X1 := X1 + Src.Coord.Width * Link.Src_X_Pos;
-      Y1 := Y1 + Src.Coord.Height * Link.Src_Y_Pos;
-      X3 := X3 + Dest.Coord.Width * Link.Dest_X_Pos;
-      Y3 := Y3 + Dest.Coord.Height * Link.Dest_Y_Pos;
-
-      --  Compute the middle point for the arc, and create a dummy item for it
-      --  that the user can move.
-
-      if X1 /= X3 then
-         Angle := Arctan (Gdouble (Y3 - Y1), Gdouble (X3 - X1));
-      elsif Y3 > Y1 then
-         Angle := Right_Angle;
-      else
-         Angle := -Right_Angle;
-      end if;
-
-      if Offset < 0.0 then
-         Angle := Angle - Right_Angle;
-      else
-         Angle := Angle + Right_Angle;
-      end if;
-
-      X2 := (X1 + X3) / 2.0 + abs (Offset) * Arc_Offset * Cos (Angle);
-      Y2 := (Y1 + Y3) / 2.0 + abs (Offset) * Arc_Offset * Sin (Angle);
-
-      --  Clip to the border of the boxes
-
-      Clip_Line
-        (Src, Canvas,
-         X2, Y2, Link.Src_X_Pos, Link.Src_Y_Pos, Src_Side, X1, Y1);
-      Clip_Line
-        (Dest, Canvas, X2, Y2, Link.Dest_X_Pos, Link.Dest_Y_Pos,
-         Dest_Side, X3, Y3);
-
-      X1_Canvas := World_To_Canvas_X (Canvas, X1);
-      Y1_Canvas := World_To_Canvas_Y (Canvas, Y1);
-      X2_Canvas := World_To_Canvas_X (Canvas, X2);
-      Y2_Canvas := World_To_Canvas_Y (Canvas, Y2);
-      X3_Canvas := World_To_Canvas_X (Canvas, X3);
-      Y3_Canvas := World_To_Canvas_Y (Canvas, Y3);
-
-      Cairo.Move_To (Cr, X1_Canvas, Y1_Canvas);
-      Cairo.Curve_To
-        (Cr, X1_Canvas, Y1_Canvas,
-         X2_Canvas, Y2_Canvas,
-         X3_Canvas, Y3_Canvas);
-      Cairo.Stroke (Cr);
-
-      Link.Style.Draw_Arrows_And_Symbols
-        (Cr,
-         ((X1_Canvas, Y1_Canvas),
-          (X2_Canvas, Y2_Canvas),
-          (X3_Canvas, Y3_Canvas)));
-
-      --  Draw the annotations, if any, in the middle of the link
-      if Link.Descr /= null and then Show_Annotation then
-         X2_Canvas := 0.25 * X1_Canvas + 0.5 * X2_Canvas + 0.25 * X3_Canvas;
-         Y2_Canvas := 0.25 * Y1_Canvas + 0.5 * Y2_Canvas + 0.25 * Y3_Canvas;
-         Draw_Annotation (Canvas, Cr, X2_Canvas, Y2_Canvas, Link);
-      end if;
-   end Draw_Arc_Link;
-
-   ---------------
-   -- Clip_Line --
-   ---------------
-
-   procedure Clip_Line
-     (Src    : access Canvas_Item_Record'Class;
-      Canvas : access Interactive_Canvas_Record'Class;
-      To_X   : Gdouble;
-      To_Y   : Gdouble;
-      X_Pos  : Gdouble;
-      Y_Pos  : Gdouble;
-      Side   : out Item_Side;
-      X_Out  : out Gdouble;
-      Y_Out  : out Gdouble)
-   is
-      Rect    : constant Cairo_Rectangle :=
-        Get_Actual_Coordinates (Canvas, Src);
-      Src_X   : Gdouble;
-      Src_Y   : Gdouble;
-      Delta_X : Gdouble;
-      Delta_Y : Gdouble;
-      Offset  : Gdouble;
-   begin
-      Src_X    := Rect.X + Rect.Width * X_Pos;
-      Src_Y    := Rect.Y + Rect.Height * Y_Pos;
-      Delta_X  := To_X - Src_X;
-      Delta_Y  := To_Y - Src_Y;
-
-      --  Intersection with horizontal sides
-
-      if Delta_Y /= 0.0 then
-         Offset := (Src_X * To_Y - To_X * Src_Y);
-
-         if Delta_Y < 0.0 then
-            Side := North;
-            Y_Out := Rect.Y;
-         else
-            Side := South;
-            Y_Out := Rect.Y + Rect.Height;
-         end if;
-
-         X_Out := (Delta_X * Y_Out + Offset) / Delta_Y;
-
-         if Rect.X <= X_Out
-           and then X_Out <= Rect.X + Rect.Width
-         then
-            return;
-         end if;
-      end if;
-
-      --  Intersection with vertical sides
-
-      if Delta_X /= 0.0 then
-         Offset := (To_X * Src_Y - Src_X * To_Y);
-
-         if Delta_X < 0.0 then
-            Side := West;
-            X_Out := Rect.X;
-         else
-            Side := East;
-            X_Out := Rect.X + Rect.Width;
-         end if;
-
-         Y_Out := (Delta_Y * X_Out + Offset) / Delta_X;
-
-         if Rect.Y <= Y_Out
-           and then Y_Out <= Rect.Y + Rect.Height
-         then
-            return;
-         end if;
-      end if;
-
-      X_Out := 0.0;
-      Y_Out := 0.0;
-      Side := East;
-   end Clip_Line;
+   end Draw_Link;
 
 end Gtkada.Canvas.Links;

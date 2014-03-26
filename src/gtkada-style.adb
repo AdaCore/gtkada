@@ -943,7 +943,6 @@ package body Gtkada.Style is
        Arrow_To         : Arrow_Style := No_Arrow_Style;
        Symbol_From      : Symbol_Style := No_Symbol;
        Symbol_To        : Symbol_Style := No_Symbol;
-       Routing          : Route_Style := Straight;
        Sloppy           : Boolean := False)
      return Drawing_Style
    is
@@ -959,7 +958,6 @@ package body Gtkada.Style is
          Arrow_To    => Arrow_To,
          Symbol_From => Symbol_From,
          Symbol_To   => Symbol_To,
-         Routing     => Routing,
          Sloppy      => Sloppy);
    begin
       if Fill /= Null_Pattern then
@@ -1086,14 +1084,14 @@ package body Gtkada.Style is
       end Sloppy_Line;
 
    begin
-      if Self.Data = null or else Points'Length < 2 then
+      if Points'Length < 2 then
          return;
       end if;
 
       New_Path (Cr);
       Move_To (Cr, Points (Points'First).X, Points (Points'First).Y);
 
-      if Self.Data.Sloppy then
+      if Self.Data /= null and then Self.Data.Sloppy then
          for P in Points'First + 1 .. Points'Last loop
             Sloppy_Line (P - 1, P);
          end loop;
@@ -1110,17 +1108,56 @@ package body Gtkada.Style is
             Line_To (Cr, Points (P).X, Points (P).Y);
          end loop;
 
-         if Close or else Self.Data.Fill /= Cairo.Null_Pattern then
+         if Close
+           or else (Self.Data /= null
+                    and then Self.Data.Fill /= Cairo.Null_Pattern)
+         then
             Close_Path (Cr);
          end if;
       end if;
 
       Finish_Path (Self, Cr);
 
-      if Show_Arrows then
+      if Self.Data /= null and then Show_Arrows then
          Self.Draw_Arrows_And_Symbols (Cr, Points);
       end if;
    end Draw_Polyline;
+
+   --------------------
+   -- Draw_Polycurve --
+   --------------------
+
+   procedure Draw_Polycurve
+     (Self        : Drawing_Style;
+      Cr          : Cairo.Cairo_Context;
+      Points      : Point_Array;
+      Show_Arrows : Boolean := True)
+   is
+      P : Integer;
+   begin
+      if Self.Data = null or else Points'Length < 4 then
+         return;
+      end if;
+
+      New_Path (Cr);
+      Move_To (Cr, Points (Points'First).X, Points (Points'First).Y);
+
+      P := Points'First;
+      while P + 3 <= Points'Last loop
+         Curve_To
+           (Cr,
+            Points (P + 1).X, Points (P + 1).Y,
+            Points (P + 2).X, Points (P + 2).Y,
+            Points (P + 3).X, Points (P + 3).Y);
+         P := P + 3;
+      end loop;
+
+      Finish_Path (Self, Cr);
+
+      if Show_Arrows then
+         Self.Draw_Arrows_And_Symbols (Cr, Points);
+      end if;
+   end Draw_Polycurve;
 
    -----------------------------
    -- Draw_Arrows_And_Symbols --
@@ -1227,14 +1264,14 @@ package body Gtkada.Style is
        From    : Point;
        To      : Point)
    is
-      Angle : constant Gdouble :=
-        Arctan (Y => To.Y - From.Y, X => To.X - From.X) + Pi;
-      X1 : constant Gdouble := To.X + Self.Length * Cos (Angle - Self.Angle);
-      Y1 : constant Gdouble := To.Y + Self.Length * Sin (Angle - Self.Angle);
-      X2 : constant Gdouble := To.X + Self.Length * Cos (Angle + Self.Angle);
-      Y2 : constant Gdouble := To.Y + Self.Length * Sin (Angle + Self.Angle);
-      X4, Y4 : Gdouble;
+      Angle, X1, Y1, X2, Y2, X4, Y4 : Gdouble;
    begin
+      Angle := Arctan (Y => To.Y - From.Y, X => To.X - From.X) + Pi;
+      X1 := To.X + Self.Length * Cos (Angle - Self.Angle);
+      Y1 := To.Y + Self.Length * Sin (Angle - Self.Angle);
+      X2 := To.X + Self.Length * Cos (Angle + Self.Angle);
+      Y2 := To.Y + Self.Length * Sin (Angle + Self.Angle);
+
       case Self.Head is
          when None =>
             null;
@@ -1303,14 +1340,15 @@ package body Gtkada.Style is
        Cr      : Cairo.Cairo_Context)
    is
    begin
-      if Self.Data = null then
-         return;
+      Save (Cr);
+
+      if Self.Data /= null then
+         Set_Line_Width (Cr, Self.Data.Line_Width);
       end if;
 
-      Save (Cr);
-      Set_Line_Width (Cr, Self.Data.Line_Width);
-
-      if Self.Data.Fill /= Cairo.Null_Pattern then
+      if Self.Data /= null
+        and then Self.Data.Fill /= Cairo.Null_Pattern
+      then
          if Self.Data.Shadow /= Null_RGBA then
             --  When using Cairo 1.13, we should use cairo_set_shadow_*
             --  instead.
@@ -1325,7 +1363,10 @@ package body Gtkada.Style is
          Fill_Preserve (Cr);
       end if;
 
-      if Self.Data.Stroke /= Gdk.RGBA.Null_RGBA then
+      if Self.Data = null then
+         Set_Source_Color (Cr, Default_Style.Stroke);
+         Stroke (Cr);
+      elsif Self.Data.Stroke /= Gdk.RGBA.Null_RGBA then
          if Self.Data.Dashes /= null then
             Set_Dash (Cr, Self.Data.Dashes.all, 0.0);
          end if;
@@ -1378,19 +1419,6 @@ package body Gtkada.Style is
       end if;
    end Get_Stroke;
 
-   -----------------
-   -- Get_Routing --
-   -----------------
-
-   function Get_Routing (Self : Drawing_Style) return Route_Style is
-   begin
-      if Self.Data = null then
-         return Default_Style.Routing;
-      else
-         return Self.Data.Routing;
-      end if;
-   end Get_Routing;
-
    --------------------
    -- Get_Line_Width --
    --------------------
@@ -1403,18 +1431,6 @@ package body Gtkada.Style is
          return Self.Data.Line_Width;
       end if;
    end Get_Line_Width;
-
-   -----------------
-   -- Set_Routing --
-   -----------------
-
-   procedure Set_Routing
-     (Self : in out Drawing_Style; Routing : Route_Style) is
-   begin
-      if Self.Data /= null then
-         Self.Data.Routing := Routing;
-      end if;
-   end Set_Routing;
 
    --------------
    -- Get_Font --
@@ -1461,4 +1477,48 @@ package body Gtkada.Style is
       Rect1.Y := Gdouble'Min (Rect1.Y, Rect2.Y);
       Rect1.Height := Bottom - Rect1.Y;
    end Union;
+
+   ------------------------
+   -- Circle_From_Bezier --
+   ------------------------
+
+   function Circle_From_Bezier
+     (Center   : Point;
+      Radius   : Glib.Gdouble) return Point_Array
+   is
+      --  Magic number comes from several articles on the web, including
+      --    http://www.charlespetzold.com/blog/2012/12/
+      --       Bezier-Circles-and-Bezier-Ellipses.html
+
+      P : Point_Array (1 .. 13);
+      R : constant Gdouble := Radius * 0.55;
+   begin
+      P (P'First + 0)  := (Center.X,          Center.Y - Radius);
+
+      P (P'First + 1)  := (Center.X + R,      Center.Y - Radius);
+      P (P'First + 2)  := (Center.X + Radius, Center.Y - R);
+
+      P (P'First + 3)  := (Center.X + Radius, Center.Y);
+
+      P (P'First + 4)  := (Center.X + Radius, Center.Y + R);
+      P (P'First + 5)  := (Center.X + R,      Center.Y + Radius);
+
+      P (P'First + 6)  := (Center.X,          Center.Y + Radius);
+
+      P (P'First + 7)  := (Center.X - R,      Center.Y + Radius);
+      P (P'First + 8)  := (Center.X - Radius, Center.Y + R);
+
+      P (P'First + 9)  := (Center.X - Radius, Center.Y);
+
+      P (P'First + 10) := (Center.X - Radius, Center.Y - R);
+      P (P'First + 11) := (Center.X - R,      Center.Y - Radius);
+
+      P (P'First + 12) := (Center.X, Center.Y - Radius);
+
+      return P;
+
+      --  For quadratic bezier curves, we could have used:
+      --  See http://texdoc.net/texmf-dist/doc/latex/lapdf/rcircle.pdf
+   end Circle_From_Bezier;
+
 end Gtkada.Style;

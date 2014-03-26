@@ -713,7 +713,10 @@ package body Create_Canvas is
       No_Arrow := Gtk_New
         (Stroke     => (0.0, 1.0, 1.0, 1.0));
 
-      Add_Canvas_Link (Canvas, Item3, Item1, "From3->1");
+      Link := new Canvas_Link_Record;
+      Link.Configure (Gtk_New, Routing => Orthogonal);
+      Add_Link (Canvas, Link, Item3, Item1);
+
       Add_Canvas_Link (Canvas, Item1, Item4, "From1->4(1)");
       Add_Canvas_Link (Canvas, Item1, Item4, "From1->4(2)");
       Add_Canvas_Link (Canvas, Item2, Item4, "From2->4");
@@ -722,7 +725,7 @@ package body Create_Canvas is
       Link := new Canvas_Link_Record;
       Link.Configure
         (Gtk_New
-           (Routing    => Orthogonal,
+           (Sloppy     => True,
             Stroke     => (1.0, 0.0, 1.0, 1.0),
             Arrow_From => (Head   => Solid,
                            Fill   => Black_RGBA,
@@ -730,7 +733,8 @@ package body Create_Canvas is
             Arrow_To   => (Head   => Diamond,
                            Fill   => Black_RGBA,
                            others => <>)),
-         Descr => "From2->3");
+         Routing => Orthocurve,
+         Descr   => "From2->3");
       Add_Link (Canvas, Link, Item2, Item3);
 
       Link := new Canvas_Link_Record;
@@ -754,11 +758,11 @@ package body Create_Canvas is
       Add_Link (Canvas, Link, Item3, Item4);
 
       Link := new Canvas_Link_Record;
-      Link.Configure (No_Arrow, "Self 2->2(1)");
+      Link.Configure (No_Arrow, "Self 2->2(1)", Straight);
       Add_Link (Canvas, Link, Item2, Item2);
 
       Link := new Canvas_Link_Record;
-      Link.Configure (Start_Arrow, "Self 2->2(2)");
+      Link.Configure (Start_Arrow, "Self 2->2(2)", Curve);
       Add_Link (Canvas, Link, Item2, Item2);
 
       Last_Link := Last_Link + 7;
