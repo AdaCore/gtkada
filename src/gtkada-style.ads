@@ -28,6 +28,7 @@
 --  </description>
 --  <group>Configuration and Themes</group>
 
+with Ada.Finalization;
 with Glib;
 with Cairo;
 with Pango.Layout;
@@ -90,7 +91,9 @@ package Gtkada.Style is
    --  Translations between one color definition to another
 
    procedure Set_Source_Color
-     (Cr : Cairo.Cairo_Context; Color : Cairo_Color);
+      (Cr : Cairo.Cairo_Context; Color : Cairo_Color);
+   function Create_Rgba_Pattern
+      (Color : Cairo_Color) return Cairo.Cairo_Pattern;
 
    function To_Hex (Color : Gdk.RGBA.Gdk_RGBA) return String;
    --  Return a hexadecimal approximate representation of the color, of the
@@ -136,9 +139,11 @@ package Gtkada.Style is
    --  Amount is a modifier: 0.0 means the color is unchanged, 0.1 means the
    --  color is modified by 10%, and so on.
 
-   -----------------------------
-   -- Extra path manipulation --
-   -----------------------------
+   -------------------------
+   -- Drawing subprograms --
+   -------------------------
+   --  The following subprograms are better replaced by the use of the
+   --  Drawing_Style type below, which provides more configurability.
 
    procedure Rounded_Rectangle
      (Cr         : Cairo.Cairo_Context;
@@ -146,10 +151,6 @@ package Gtkada.Style is
       Radius     : Glib.Gdouble);
    --  Draws a rounded rectangle at coordinate X, Y with W and H size.
    --  If Radius > 0, then the corner will be rounded.
-
-   -------------------------
-   -- Drawing subprograms --
-   -------------------------
 
    procedure Draw_Shadow
      (Cr                  : Cairo.Cairo_Context;
@@ -219,6 +220,141 @@ package Gtkada.Style is
    --  are server-side images, so depend on a surface attached to a screen.
    --  As a result, those would not be drawn on a non-screen surface (such as
    --  an internal Image_Surface).
+
+   --------------------
+   -- Drawing styles --
+   --------------------
+
+   type Drawing_Style is tagged private;
+   --  This type provides a set of high-level subprograms to draw on a cairo
+   --  context (and thus they can be used when drawing Canvas_Item).
+   --
+   --  This type is reference-counted: it will be automatically freed when no
+   --  longer used in your application. If you store the same instance of
+   --  Drawing_Style in two contexts, modifying one will also modify the
+   --  other.
+
+   No_Drawing_Style : constant Drawing_Style;
+
+   type Route_Style is (Straight, Orthogonal, Curve);
+   --  How should link be displayed
+
+   type Arrow_Head is (None, Open, Solid, Diamond);
+   --  The various styles of arrow heads (filled with Fill style)
+
+   type Arrow_Style is record
+      Head   : Arrow_Head;
+      Length : Glib.Gdouble := 8.0;
+      Angle  : Glib.Gdouble := 0.4;
+      Stroke : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+      Fill   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+   end record;
+   No_Arrow_Style : constant Arrow_Style :=
+     (None, 0.0, 0.0, Gdk.RGBA.Black_RGBA, Gdk.RGBA.Null_RGBA);
+
+   type Symbol_Name is (None, Cross, Strike);
+   type Symbol_Style is record
+      Name     : Symbol_Name;
+      Stroke   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+      Distance : Glib.Gdouble := 16.0;
+   end record;
+   No_Symbol : constant Symbol_Style := (None, Gdk.RGBA.Black_RGBA, 16.0);
+   --  Distance is the distance from the end of the line to the symbol. It
+   --  should in general be greater than the length of the arrow (see
+   --  Arrow_Style above)
+
+   type Text_Decoration is (None, Underline, Overline);
+   type Font_Style is record
+       Size             : Positive := 14;
+       Decoration       : Text_Decoration := None;
+       Color            : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+       Horizontal_Align : Percent := 0.0;   --  (text) to the left
+       Vertical_Align   : Percent := 0.0;   --  (text) to the top
+   end record;
+   Default_Font : constant Font_Style :=
+      (14, None, Gdk.RGBA.Black_RGBA, 0.0, 0.0);
+
+   type Point is record
+      X, Y : Glib.Gdouble;
+   end record;
+   type Point_Array is array (Natural range <>) of Point;
+
+   function Gtk_New
+      (Stroke           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+       Fill             : Cairo.Cairo_Pattern := Cairo.Null_Pattern;
+       Font             : Font_Style := Default_Font;
+       Line_Width       : Glib.Gdouble := 1.0;
+       Shadow           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+       Dashes           : Cairo.Dash_Array := Cairo.No_Dashes;
+       Arrow_From       : Arrow_Style := No_Arrow_Style;
+       Arrow_To         : Arrow_Style := No_Arrow_Style;
+       Symbol_From      : Symbol_Style := No_Symbol;
+       Symbol_To        : Symbol_Style := No_Symbol;
+       Routing          : Route_Style := Straight;
+       Sloppy           : Boolean := False)
+     return Drawing_Style;
+   --  Creates a new instance of drawing style.
+   --
+   --  Shadow: The color to use for the shadow. If Null_RGBA, not shadow is
+   --     displayed. A fill color must also be specified, otherwise the shadow
+   --     is not rendered either.
+   --  Sloppy: if true, a sort of approximate drawing is done for lines and
+   --     text, so that it looks like the drawing was done by hand.
+
+   procedure Draw_Rect
+      (Self          : Drawing_Style;
+       Cr            : Cairo.Cairo_Context;
+       Topleft       : Point;
+       Width, Height : Glib.Gdouble;
+       Radius        : Glib.Gdouble := 0.0);
+   --  Draw a rectangle with the given style. If Radius is not null, this is
+   --  a rounded rectangle.
+
+   procedure Draw_Polyline
+      (Self        : Drawing_Style;
+       Cr          : Cairo.Cairo_Context;
+       Points      : Point_Array;
+       Close       : Boolean := False;
+       Show_Arrows : Boolean := True);
+   --  Draw a line joining all the points. If Close is true, the last point is
+   --  also linked to the first.
+   --  If Self defines arrows or symbols on either ends, they are also
+   --  displayed if Show_Arrows is True.
+
+   procedure Draw_Text
+      (Self    : Drawing_Style;
+       Cr      : Cairo.Cairo_Context;
+       Topleft : Point;
+       Text    : String;
+       Width   : Glib.Gdouble := 0.0);
+   --   Draw text at specific coordinates.
+   --   Topleft is the position of the top-left corner for the text, or the
+   --   middle line if the text's vertical_align is set to middle.
+
+   procedure Draw_Arrows_And_Symbols
+     (Self     : Drawing_Style;
+      Cr       : Cairo.Cairo_Context;
+      Points   : Point_Array);
+   --  Draw arrow heads and symbols to both ends of the line, based on Self.
+   --  This is similar to Polyline, but does not draw the line itself.
+
+   procedure Finish_Path
+      (Self    : Drawing_Style;
+       Cr      : Cairo.Cairo_Context);
+   --  This is for use when you are creating your own paths via standard cairo
+   --  calls. This will call Stroke and Fill with the appropriate parameters
+   --  found in Self.
+
+   function Get_Arrow_From (Self : Drawing_Style) return Arrow_Style;
+   function Get_Arrow_To (Self : Drawing_Style) return Arrow_Style;
+   function Get_Routing (Self : Drawing_Style) return Route_Style;
+   function Get_Stroke (Self : Drawing_Style) return Gdk.RGBA.Gdk_RGBA;
+   function Get_Line_Width (Self : Drawing_Style) return Glib.Gdouble;
+   function Get_Font (Self : Drawing_Style) return Font_Style;
+   --  Access the various properties of the style
+
+   procedure Set_Routing (Self : in out Drawing_Style; Routing : Route_Style);
+   --  Override specific attributes of the style.
 
    ---------
    -- CSS --
@@ -306,5 +442,50 @@ package Gtkada.Style is
    --  or mouse events (Source_Mouse) for instance.
    --  The returned value (if not null) must be Ref-ed before being assigned
    --  to an event for instance.
+
+   -----------
+   -- Utils --
+   -----------
+
+   function Intersects (Rect1, Rect2 : Cairo.Cairo_Rectangle) return Boolean;
+   --  Whether the two rectangles intersect
+
+   procedure Union
+     (Rect1 : in out Cairo.Cairo_Rectangle;
+      Rect2 : Cairo.Cairo_Rectangle);
+   --  Store in Rect1 the minimum rectangle that contains both Rect1 and Rect2.
+
+private
+
+   type Dash_Array_Access is access all Cairo.Dash_Array;
+
+   type Drawing_Style_Data is record
+      Refcount         : Natural := 1;
+      Stroke           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+      Fill             : Cairo.Cairo_Pattern := Cairo.Null_Pattern;
+      Font             : Font_Style := Default_Font;
+      Line_Width       : Glib.Gdouble := 1.0;
+      Shadow           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Dashes           : Dash_Array_Access := null;
+      Arrow_From       : Arrow_Style := No_Arrow_Style;
+      Arrow_To         : Arrow_Style := No_Arrow_Style;
+      Symbol_From      : Symbol_Style := No_Symbol;
+      Symbol_To        : Symbol_Style := No_Symbol;
+      Routing          : Route_Style := Straight;
+      Sloppy           : Boolean := False;
+   end record;
+   type Drawing_Style_Data_Access is access all Drawing_Style_Data;
+
+   Default_Style : constant Drawing_Style_Data := (others => <>);
+
+   type Drawing_Style is new Ada.Finalization.Controlled with record
+      Data : Drawing_Style_Data_Access;
+   end record;
+
+   overriding procedure Adjust (Self : in out Drawing_Style);
+   overriding procedure Finalize (Self : in out Drawing_Style);
+
+   No_Drawing_Style : constant Drawing_Style :=
+     (Ada.Finalization.Controlled with Data => null);
 
 end Gtkada.Style;
