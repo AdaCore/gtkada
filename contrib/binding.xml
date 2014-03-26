@@ -4159,6 +4159,13 @@ creating a tag.
          Double_Button_Press : constant Gdk_Event_Type := Gdk_2button_Press;
          Triple_Button_Press : constant Gdk_Event_Type := Gdk_3button_Press;
 
+         Button_Primary   : constant Gint := 1;
+         Button_Secondary : constant Gint := 3;
+         Button_Middle    : constant Gint := 2;
+         --  The primary button is typically the left mouse button, or the
+         --  right button in a left-handed setup. The secondary button is the
+         --  other one.
+
          function From_Address (C : System.Address) return Gdk_Event;
          --  Convert a C handler to the matching Event structure.
 
