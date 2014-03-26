@@ -1,9 +1,21 @@
 Known problems fixed in GtkAda 3.8.2
 
+- N326-016 Implementing an interface raises gtk+ warnings
+  Problem:    When you create custom widgets that implement an interface, for
+              instance GtkScrollable, and add properties, gtk+ complains that
+              you are modifying a class that has already been created.
+
+  Workaround: The fix involves making sure that when a new GType is created
+              for your custom widget (via Glib.Objects.Initialize_Class_Record)
+              then the class itself is not necessarily created immediately.
+              Unfortunately, this results in a backward incompatibility in the
+              profile of Gtk.Widget.Set_Default_*_Handler. If you are using
+              these function, you will need to pass a Class_Init parameter to
+              Initialize_Class_Record, and override the default handlers in
+              that function. See the example in glib-object.ads
 
 - MA02-035 Bad binding of glib's g_strfree_v
-
-- Problem:    The chars_ptr_array access was defined as "in out" which resulted 
+  Problem:    The chars_ptr_array access was defined as "in out" which resulted 
               in it being passed by reference by the GNAT compiler, and 
               resulted in memory corruption (glib trying to free wrong memory 
               adresses)
