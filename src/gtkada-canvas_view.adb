@@ -23,16 +23,17 @@
 ------------------------------------------------------------------------------
 
 with Ada.Unchecked_Conversion;
-with GNAT.IO; use GNAT.IO;
 with Interfaces.C.Strings;               use Interfaces.C.Strings;
 with System;
 with Cairo;                              use Cairo;
+with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
-with Gdk.RGBA;                           use Gdk.RGBA;
+with Gdk.Event;                          use Gdk.Event;
 with Gdk.Window;                         use Gdk.Window;
-with Gtk.Adjustment;                     use Gtk.Adjustment;
 with Gtk.Enums;                          use Gtk.Enums;
+with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
+with Gtk.Scrollable;                     use Gtk.Scrollable;
 with Gtk.Widget;                         use Gtk.Widget;
 with Gtkada.Bindings;                    use Gtkada.Bindings;
 with Gtkada.Canvas_View.Links;           use Gtkada.Canvas_View.Links;
@@ -49,10 +50,16 @@ package body Gtkada.Canvas_View is
    View_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
      (1 => New_String (String (Signal_Viewport_Changed)));
 
-   Model_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
+   Model_Class_Record : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
    View_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
+
+   H_Adj_Property    : constant Property_Id := 1;
+   V_Adj_Property    : constant Property_Id := 2;
+   H_Scroll_Property : constant Property_Id := 3;
+   V_Scroll_Property : constant Property_Id := 4;
+   --  The properties for the View
 
    function On_View_Draw
      (View : System.Address; Cr : Cairo_Context) return Gboolean;
@@ -72,6 +79,11 @@ package body Gtkada.Canvas_View is
      (Abstract_Item_To_Address);
    --  support for the "item_contents_changed" signal
 
+   procedure View_Class_Init (Self : GObject_Class);
+   pragma Convention (C, View_Class_Init);
+   --  Initialize the class record, in particular adding interfaces, for
+   --  the view class.
+
    procedure On_View_Destroy (Self : access Gtk_Widget_Record'Class);
    --  Called when the view is destroyed
 
@@ -88,13 +100,25 @@ package body Gtkada.Canvas_View is
       Item : Abstract_Item);
    --  Handles the model events for the view.
 
-   procedure On_Adjustments_Set
-     (Canvas : access Gtk_Widget_Record'Class);
-   --  Change the two adjustments used for the canvas (in a callback)
-
    procedure On_Adj_Value_Changed
      (View : access Glib.Object.GObject_Record'Class);
    --  Called when one of the scrollbars has changed value.
+
+   procedure View_Set_Property
+     (Object        : access Glib.Object.GObject_Record'Class;
+      Prop_Id       : Property_Id;
+      Value         : Glib.Values.GValue;
+      Property_Spec : Param_Spec);
+   procedure View_Get_Property
+     (Object        : access Glib.Object.GObject_Record'Class;
+      Prop_Id       : Property_Id;
+      Value         : out Glib.Values.GValue;
+      Property_Spec : Param_Spec);
+   --  Handlers for gtk+ properties
+
+   procedure Set_Adjustment_Values
+     (Self : not null access Canvas_View_Record'Class);
+   --  Update the values for both adjustments
 
    -----------------------------
    -- GValue_To_Abstract_Item --
@@ -201,16 +225,13 @@ package body Gtkada.Canvas_View is
 
    function Model_Get_Type return Glib.GType is
    begin
-      if Glib.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Ancestor     => GType_Object,
          Signals      => Model_Signals,
-         Class_Record => Model_Class_Record'Access,
+         Class_Record => Model_Class_Record,
          Type_Name    => "GtkadaCanvasModel",
          Parameters   => (1 => (1 => GType_Pointer),
-                          2 => (1 => GType_None)))
-      then
-         null;
-      end if;
+                          2 => (1 => GType_None)));
       return Model_Class_Record.The_Type;
    end Model_Get_Type;
 
@@ -219,8 +240,7 @@ package body Gtkada.Canvas_View is
    ----------------
 
    procedure Initialize
-     (Self : not null access Canvas_Model_Record'Class)
-   is
+     (Self : not null access Canvas_Model_Record'Class) is
    begin
       if not Self.Is_Created then
          G_New (Self, Model_Get_Type);
@@ -302,15 +322,12 @@ package body Gtkada.Canvas_View is
       Alloc : Gtk_Allocation;
    begin
       Self.Get_Allocation (Alloc);
-      Put_Line ("MANU alloc="
-                & Gint'Image (Alloc.Width) & " x"
-                & Gint'Image (Alloc.Height));
 
       --  On_Adjustments_Set will be called anyway when Size_Allocate is called
       --  so no need to call it now if the size is unknown yet.
 
       if Alloc.Width > 1 then
-         On_Adjustments_Set (Self);
+         Set_Adjustment_Values (Self);
 
          Gdk.Window.Invalidate_Rect
            (Self.Get_Window,
@@ -357,41 +374,61 @@ package body Gtkada.Canvas_View is
    is
    begin
       G_New (Self, View_Get_Type);
-      Self.Set_Has_Window (False);
 
       Self.Model := Canvas_Model (Model);
       Ref (Model);
+
+      Self.Add_Events (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask);
 
       Self.On_Destroy (On_View_Destroy'Access);
       Model.On_Layout_Changed (On_Layout_Changed_For_View'Access, Self);
       Model.On_Item_Contents_Changed
         (On_Item_Contents_Changed_For_View'Access, Self);
-
-      Widget_Callback.Connect
-        (Self, "notify::hadjustment", On_Adjustments_Set'Access);
-
-      --  Force an initial display and adjustement of the scrollbars
-      Put_Line ("MANU force layout changed");
-      On_Layout_Changed_For_View (Self);
    end Initialize;
+
+   ---------------------
+   -- View_Class_Init --
+   ---------------------
+
+   procedure View_Class_Init (Self : GObject_Class) is
+   begin
+      Set_Properties_Handlers
+        (Self, View_Set_Property'Access, View_Get_Property'Access);
+
+      Override_Property (Self, H_Adj_Property, "hadjustment");
+      Override_Property (Self, V_Adj_Property, "vadjustment");
+      Override_Property (Self, H_Scroll_Property, "hscroll-policy");
+      Override_Property (Self, V_Scroll_Property, "vscroll-policy");
+
+      Set_Default_Draw_Handler (Self, On_View_Draw'Access);
+      Set_Default_Size_Allocate_Handler (Self, On_Size_Allocate'Access);
+   end View_Class_Init;
 
    -------------------
    -- View_Get_Type --
    -------------------
 
    function View_Get_Type return Glib.GType is
+      Info : access GInterface_Info;
    begin
       if Glib.Object.Initialize_Class_Record
-        (Ancestor     => Gtk.Layout.Get_Type,
+        (Ancestor     => Gtk.Drawing_Area.Get_Type,
          Signals      => View_Signals,
          Class_Record => View_Class_Record'Access,
          Type_Name    => "GtkadaCanvasView",
-         Parameters   => (1 => (1 .. 0 => GType_None)))
+         Parameters   => (1 => (1 .. 0 => GType_None)),
+         Class_Init   => View_Class_Init'Access)
       then
-         Set_Default_Draw_Handler (View_Class_Record, On_View_Draw'Access);
-         Set_Default_Size_Allocate_Handler
-           (View_Class_Record, On_Size_Allocate'Access);
+         Info := new GInterface_Info'
+           (Interface_Init     => null,
+            Interface_Finalize => null,
+            Interface_Data     => System.Null_Address);
+         Glib.Object.Add_Interface
+           (View_Class_Record,
+            Iface => Gtk.Scrollable.Get_Type,
+            Info  => Info);
       end if;
+
       return View_Class_Record.The_Type;
    end View_Get_Type;
 
@@ -404,72 +441,125 @@ package body Gtkada.Canvas_View is
    is
       Self : constant Canvas_View := Canvas_View (View);
       Pos  : constant Model_Point :=
-        (X => Self.Get_Hadjustment.Get_Value,
-         Y => Self.Get_Vadjustment.Get_Value);
+        (X => Self.Hadj.Get_Value,
+         Y => Self.Vadj.Get_Value);
    begin
       if Pos /= Self.Topleft then
          Self.Topleft := Pos;
          Self.Viewport_Changed;
-         Put_Line ("MANU On_Adj_Value_Changed"
-                   & Gdouble'Image (Self.Topleft.X)
-                   & Gdouble'Image (Self.Topleft.Y));
          Queue_Draw (Self);
       end if;
    end On_Adj_Value_Changed;
 
-   ------------------------
-   -- On_Adjustments_Set --
-   ------------------------
+   ---------------------------
+   -- Set_Adjustment_Values --
+   ---------------------------
 
-   procedure On_Adjustments_Set
-     (Canvas : access Gtk_Widget_Record'Class)
+   procedure Set_Adjustment_Values
+     (Self : not null access Canvas_View_Record'Class)
    is
-      Self : constant Canvas_View := Canvas_View (Canvas);
-      Box   : constant Model_Rectangle := Self.Model.Bounding_Box;
-      Adj   : Gtk_Adjustment;
+      Box   : Model_Rectangle;
       Area  : constant Model_Rectangle := Self.Get_Visible_Area;
    begin
-      if Area.Width <= 1.0 then
+      if Self.Model = null or else Area.Width <= 1.0 then
          --  Not allocated yet
          return;
       end if;
 
-      Adj := Self.Get_Hadjustment;
-      if Adj /= null then
-         Put_Line ("MANU set hadjusment "
-                   & Gdouble'Image (Box.X)
-                   & Gdouble'Image (Area.X)
-                   & Gdouble'Image (Box.X + Box.Width)
-                   & " page=" & Gdouble'Image (Area.Width));
-         Adj.Configure
+      Box := Self.Model.Bounding_Box;
+
+      if Self.Hadj /= null then
+         Self.Hadj.Configure
            (Value          => Area.X,
             Lower          => Box.X,
             Upper          => Box.X + Box.Width,
             Step_Increment => 5.0,
             Page_Increment => 100.0,
             Page_Size      => Area.Width);
-
-         Adj.On_Value_Changed (On_Adj_Value_Changed'Access, Self);
       end if;
 
-      Adj := Self.Get_Vadjustment;
-      if Adj /= null then
-         Put_Line ("MANU set vadjusment "
-                   & Gdouble'Image (Box.Y)
-                   & Gdouble'Image (Area.Y)
-                   & Gdouble'Image (Box.Y + Box.Height)
-                   & " page=" & Gdouble'Image (Area.Height));
-         Adj.Configure
+      if Self.Vadj /= null then
+         Self.Vadj.Configure
            (Value          => Area.Y,
             Lower          => Box.Y,
             Upper          => Box.Y + Box.Height,
             Step_Increment => 5.0,
             Page_Increment => 100.0,
             Page_Size      => Area.Height);
-
-         Adj.On_Value_Changed (On_Adj_Value_Changed'Access, Self);
       end if;
-   end On_Adjustments_Set;
+   end Set_Adjustment_Values;
+
+   -----------------------
+   -- View_Set_Property --
+   -----------------------
+
+   procedure View_Set_Property
+     (Object        : access Glib.Object.GObject_Record'Class;
+      Prop_Id       : Property_Id;
+      Value         : Glib.Values.GValue;
+      Property_Spec : Param_Spec)
+   is
+      pragma Unreferenced (Property_Spec);
+      Self : constant Canvas_View := Canvas_View (Object);
+   begin
+      case Prop_Id is
+         when H_Adj_Property =>
+            Self.Hadj := Gtk_Adjustment (Get_Object (Value));
+            if Self.Hadj /= null then
+               Set_Adjustment_Values (Self);
+               Self.Hadj.On_Value_Changed (On_Adj_Value_Changed'Access, Self);
+               Self.Queue_Draw;
+            end if;
+
+         when V_Adj_Property =>
+            Self.Vadj := Gtk_Adjustment (Get_Object (Value));
+            if Self.Vadj /= null then
+               Set_Adjustment_Values (Self);
+               Self.Vadj.On_Value_Changed (On_Adj_Value_Changed'Access, Self);
+               Self.Queue_Draw;
+            end if;
+
+         when H_Scroll_Property =>
+            null;
+
+         when V_Scroll_Property =>
+            null;
+
+         when others =>
+            null;
+      end case;
+   end View_Set_Property;
+
+   -----------------------
+   -- View_Get_Property --
+   -----------------------
+
+   procedure View_Get_Property
+     (Object        : access Glib.Object.GObject_Record'Class;
+      Prop_Id       : Property_Id;
+      Value         : out Glib.Values.GValue;
+      Property_Spec : Param_Spec)
+   is
+      pragma Unreferenced (Property_Spec);
+      Self : constant Canvas_View := Canvas_View (Object);
+   begin
+      case Prop_Id is
+         when H_Adj_Property =>
+            Set_Object (Value, Self.Hadj);
+
+         when V_Adj_Property =>
+            Set_Object (Value, Self.Vadj);
+
+         when H_Scroll_Property =>
+            Set_Enum (Value, Gtk_Policy_Type'Pos (Policy_Automatic));
+
+         when V_Scroll_Property =>
+            Set_Enum (Value, Gtk_Policy_Type'Pos (Policy_Automatic));
+
+         when others =>
+            null;
+      end case;
+   end View_Get_Property;
 
    ---------------------
    -- On_View_Destroy --
@@ -497,39 +587,13 @@ package body Gtkada.Canvas_View is
       Clip_Extents (Cr, X1, Y1, X2, Y2);
 
       if X2 < X1 or else Y2 < Y1 then
-         Put_Line ("MANU On_View_Draw, no clip");
-         --  No clip
          Refresh (Self, Cr);
       else
-         declare
-            Matrix : aliased Cairo_Matrix;
-         begin
-            Get_Matrix (Cr, Matrix'Access);
-            Put_Line ("MANU Matrix="
-                      & Gdouble'Image (Matrix.Xx)
-                      & Gdouble'Image (Matrix.Xy)
-                      & Gdouble'Image (Matrix.X0));
-            Put_Line ("MANU Matrix="
-                      & Gdouble'Image (Matrix.Yx)
-                      & Gdouble'Image (Matrix.Yy)
-                      & Gdouble'Image (Matrix.Y0));
-
-            Put_Line ("MANU On_View_Draw, with clip "
-                      & Gdouble'Image (X1 + Matrix.X0)
-                      & Gdouble'Image (Y1 + Matrix.Y0)
-                      & Gdouble'Image (X2 - X1) & " x"
-                      & Gdouble'Image (Y2 - Y1));
-
-            Set_Source_Color (Cr, (0.0, 1.0, 0.0, 0.2));
-            Paint (Cr);
-
-            Refresh (Self, Cr, Self.View_To_Model
-                     ((X1 - Matrix.X0, Y1 - Matrix.Y0, X2 - X1, Y2 - Y1)));
-         end;
+         Refresh (Self, Cr, Self.View_To_Model ((X1, Y1, X2 - X1, Y2 - Y1)));
       end if;
 
-      --  Chain up to draw the children
-      return Boolean'Pos (Inherited_Draw (View_Class_Record, Self, Cr));
+      --  There are no children, so no need to chain up
+      return 1;
 
    exception
       when E : others =>
@@ -547,10 +611,7 @@ package body Gtkada.Canvas_View is
       Self : constant Canvas_View := Canvas_View (Glib.Object.Convert (View));
    begin
       Inherited_Size_Allocate (View_Class_Record, Self, Alloc);
-      Put_Line ("MANU On_Size_Allocate "
-                & Gint'Image (Alloc.Width) & " x"
-                & Gint'Image (Alloc.Height));
-      On_Adjustments_Set (Self);
+      Set_Adjustment_Values (Self);
    end On_Size_Allocate;
 
    ----------------------
@@ -716,18 +777,6 @@ package body Gtkada.Canvas_View is
       end if;
    end On_Viewport_Changed;
 
-   --------------------------
-   -- Set_Background_Style --
-   --------------------------
-
-   procedure Set_Background_Style
-     (Self : not null access Canvas_View_Record;
-      Style : Gtkada.Style.Drawing_Style)
-   is
-   begin
-      Self.Background_Style := Style;
-   end Set_Background_Style;
-
    -------------
    -- Refresh --
    -------------
@@ -738,8 +787,6 @@ package body Gtkada.Canvas_View is
       Area : Model_Rectangle := No_Rectangle)
    is
       A : Model_Rectangle;
-      A2 : View_Rectangle;
-
    begin
       if Area = No_Rectangle then
          A := Self.Get_Visible_Area;
@@ -747,34 +794,8 @@ package body Gtkada.Canvas_View is
          A := Area;
       end if;
 
-      Put_Line ("MANU Refresh "
-                & Gdouble'Image (A.X)
-                & Gdouble'Image (A.Y)
-                & Gdouble'Image (A.Width) & " x"
-                & Gdouble'Image (A.Height));
-
-      --  Clear the area.
       --  GDK already clears the exposed area to the background color, so
       --  we do not need to clear ourselves.
-
-      if False then
-         Save (Cr);
-         A2 := Self.Model_To_View (A);
-         Cairo.Rectangle (Cr, A2.X, A2.Y, A2.Width, A2.Height);
-         Put_Line ("MANU Clearing view coordinates="
-                   & Gdouble'Image (A2.X)
-                   & Gdouble'Image (A2.Y)
-                   & Gdouble'Image (A2.Width) & " x"
-                   & Gdouble'Image (A2.Height));
-         Clip (Cr);
-         if Self.Background_Style.Get_Fill /= Cairo.Null_Pattern then
-            Set_Source (Cr, Self.Background_Style.Get_Fill);
-         else
-            Set_Source_Color (Cr, White_RGBA);
-         end if;
-         Paint (Cr);
-         Restore (Cr);
-      end if;
 
       Self.Draw_Internal (Cr, A);
    end Refresh;
@@ -1189,9 +1210,6 @@ package body Gtkada.Canvas_View is
          else
             Union (Result, Box);
          end if;
---           Put_Line ("MANU Bounding_Box="
---                     & Gdouble'Image (Box.Width)
---                     & Gdouble'Image (Box.Height));
       end Do_Item;
    begin
       Canvas_Model_Record'Class (Self.all).For_Each_Item

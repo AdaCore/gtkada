@@ -102,7 +102,8 @@ private with Ada.Unchecked_Deallocation;
 with Cairo.Region;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
-with Gtk.Layout;
+with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Widget;
 with Gtkada.Style;
 
 package Gtkada.Canvas_View is
@@ -401,6 +402,7 @@ package Gtkada.Canvas_View is
    --  the model, which must then send the signal "layout_changed".
 
    function Model_Get_Type return Glib.GType;
+   pragma Convention (C, Model_Get_Type);
    --  Return the internal type
 
    procedure Initialize
@@ -482,7 +484,7 @@ package Gtkada.Canvas_View is
    -- Canvas_View --
    -----------------
 
-   type Canvas_View_Record is new Gtk.Layout.Gtk_Layout_Record with private;
+   type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Canvas_View is access all Canvas_View_Record'Class;
    --  A view is a display of one particular part of the model, or a subset of
    --  it. Multiple views can be associated with a specific model, and will
@@ -504,14 +506,8 @@ package Gtkada.Canvas_View is
    --       Unref (Model);  --  unless you need to keep a handle on it too
 
    function View_Get_Type return Glib.GType;
+   pragma Convention (C, View_Get_Type);
    --  Return the internal type
-
-   procedure Set_Background_Style
-     (Self : not null access Canvas_View_Record;
-      Style : Gtkada.Style.Drawing_Style);
-   --  Set the drawing style (fill pattern) used for the background of the
-   --  canvas. This is only significant if you do not override Draw_Internal
-   --  to do your own drawing.
 
    procedure Draw_Internal
      (Self : not null access Canvas_View_Record;
@@ -675,12 +671,12 @@ private
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
 
-   type Canvas_View_Record is new Gtk.Layout.Gtk_Layout_Record with record
+   type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
       Model   : Canvas_Model;
       Topleft : Model_Point := (0.0, 0.0);
       Scale   : Gdouble := 1.0;
 
-      Background_Style : Gtkada.Style.Drawing_Style;
+      Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record

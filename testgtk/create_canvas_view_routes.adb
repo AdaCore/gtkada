@@ -105,6 +105,7 @@ package body Create_Canvas_View_Routes is
 
       if Self.Text /= null then
          Layout.Set_Text (Self.Text.all);
+         Move_To (Cr, 1.0, 1.0);
          Pango.Cairo.Show_Layout (Cr, Layout);
       end if;
    end Draw;
@@ -252,8 +253,6 @@ package body Create_Canvas_View_Routes is
       Frame.Add (Scrolled);
 
       Gtk_New (Canvas, Model);
-      Canvas.Set_Background_Style
-        (Gtk_New (Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.3))));
       Unref (Model);
       Scrolled.Add (Canvas);
 
