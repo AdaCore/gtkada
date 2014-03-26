@@ -72,11 +72,11 @@ package body Gtk.Widget is
    end Proxy_Draw;
 
    function Inherited_Draw
-     (Klass  : Ada_GObject_Class;
+     (Klass  : Glib.Object.Ada_GObject_Class;
       Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo.Cairo_Context) return Boolean
    is
-      function Internal (Klass : Ada_Gobject_Class;
+      function Internal (Klass : Ada_GObject_Class;
          Widget : System.Address;
          Cr : Cairo.Cairo_Context) return Gboolean;
       pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_draw");
@@ -85,11 +85,11 @@ package body Gtk.Widget is
    end Inherited_Draw;
 
    procedure Inherited_Get_Preferred_Width
-     (Klass      : Ada_GObject_Class;
+     (Klass  : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Minimum_Size, Natural_Size : out Glib.Gint)
    is
-      procedure Internal (Klass : Ada_Gobject_Class;
+      procedure Internal (Klass : Ada_GObject_Class;
          Widget : System.Address;
          Min, Nat : out Glib.Gint);
       pragma Import
@@ -99,11 +99,11 @@ package body Gtk.Widget is
    end Inherited_Get_Preferred_Width;
 
    procedure Inherited_Get_Preferred_Height
-     (Klass      : Ada_GObject_Class;
+     (Klass  : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Minimum_Size, Natural_Size : out Glib.Gint)
    is
-      procedure Internal (Klass : Ada_Gobject_Class;
+      procedure Internal (Klass : Ada_GObject_Class;
          Widget : System.Address;
          Min, Nat : out Glib.Gint);
       pragma Import
@@ -113,11 +113,11 @@ package body Gtk.Widget is
    end Inherited_Get_Preferred_Height;
 
    procedure Inherited_Size_Allocate
-     (Klass      : Ada_GObject_Class;
+     (Klass      : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Allocation : Gtk_Allocation)
    is
-      procedure Internal (Klass : Ada_Gobject_Class;
+      procedure Internal (Klass : Ada_GObject_Class;
          Widget : System.Address;
          Allocation : Gtk_Allocation);
       pragma Import
@@ -127,9 +127,9 @@ package body Gtk.Widget is
    end Inherited_Size_Allocate;
 
    procedure Set_Default_Draw_Handler
-     (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler)
+     (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler)
    is
-      procedure Internal (K : Ada_GObject_Class; H : System.Address);
+      procedure Internal (K : GObject_Class; H : System.Address);
       pragma Import (C, Internal, "ada_WIDGET_CLASS_override_draw");
    begin
       Internal (Klass, Convert (Handler));

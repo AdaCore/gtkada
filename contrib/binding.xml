@@ -2558,7 +2558,7 @@ __PRE__
    --    end;
 
    procedure Set_Default_Size_Allocate_Handler
-     (Klass   : Glib.Object.Ada_GObject_Class;
+     (Klass   : Glib.Object.GObject_Class;
       Handler : Size_Allocate_Handler);
    pragma Import (C, Set_Default_Size_Allocate_Handler,
                   "ada_WIDGET_CLASS_override_size_allocate");
@@ -2581,10 +2581,10 @@ __PRE__
    pragma Convention (C, Preferred_Size_Handler);
 
    procedure Set_Default_Get_Preferred_Width_Handler
-      (Klass   : Glib.Object.Ada_GObject_Class;
+      (Klass   : Glib.Object.GObject_Class;
        Handler : Preferred_Size_Handler);
    procedure Set_Default_Get_Preferred_Height_Handler
-      (Klass   : Glib.Object.Ada_GObject_Class;
+      (Klass   : Glib.Object.GObject_Class;
        Handler : Preferred_Size_Handler);
    pragma Import (C, Set_Default_Get_Preferred_Width_Handler,
                   "ada_WIDGET_CLASS_override_get_preferred_width");
@@ -2595,17 +2595,17 @@ __PRE__
    --  your own container widgets.
 
    procedure Inherited_Get_Preferred_Width
-      (Klass      : Ada_GObject_Class;
+      (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
        Minimum_Size, Natural_Size : out Glib.Gint);
    procedure Inherited_Get_Preferred_Height
-      (Klass      : Ada_GObject_Class;
+      (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
        Minimum_Size, Natural_Size : out Glib.Gint);
    --  Call the default implementation
  
    procedure Inherited_Size_Allocate
-      (Klass      : Ada_GObject_Class;
+      (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
        Allocation : Gtk_Allocation);
    --  Call the inherited size_allocate. This is useful if you have overloaded it in
@@ -2630,14 +2630,14 @@ __PRE__
    --  A function responsible for drawing a widget.
 
    procedure Set_Default_Draw_Handler
-      (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler);
+      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler);
    --  Override the default drawing function. This in general gives more
    --  control than connection to Signal_Draw, however a widget is responsible
    --  for drawing its children.
    --  Use the generic Proxy_Draw to create a suitable callback.
 
    function Inherited_Draw
-      (Klass  : Ada_GObject_Class;
+      (Klass  : Glib.Object.Ada_GObject_Class;
        Widget : access Gtk_Widget_Record'Class;
        Cr     : Cairo.Cairo_Context) return Boolean;
    --  Call the inherited draw. This is useful if you have overloaded draw in
@@ -2663,11 +2663,11 @@ __PRE__
    end Proxy_Draw;
 
    function Inherited_Draw
-      (Klass  : Ada_GObject_Class;
+      (Klass  : Glib.Object.Ada_GObject_Class;
        Widget : access Gtk_Widget_Record'Class;
        Cr     : Cairo.Cairo_Context) return Boolean
    is
-       function Internal (Klass : Ada_Gobject_Class;
+       function Internal (Klass : Ada_GObject_Class;
                           Widget : System.Address;
                           Cr : Cairo.Cairo_Context) return Gboolean;
        pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_draw");
@@ -2676,11 +2676,11 @@ __PRE__
    end Inherited_Draw;
 
    procedure Inherited_Get_Preferred_Width
-      (Klass      : Ada_GObject_Class;
+      (Klass  : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
        Minimum_Size, Natural_Size : out Glib.Gint)
    is
-       procedure Internal (Klass : Ada_Gobject_Class;
+       procedure Internal (Klass : Ada_GObject_Class;
                            Widget : System.Address;
                            Min, Nat : out Glib.Gint);
        pragma Import
@@ -2690,11 +2690,11 @@ __PRE__
    end Inherited_Get_Preferred_Width;
 
    procedure Inherited_Get_Preferred_Height
-      (Klass      : Ada_GObject_Class;
+      (Klass  : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
        Minimum_Size, Natural_Size : out Glib.Gint)
    is
-       procedure Internal (Klass : Ada_Gobject_Class;
+       procedure Internal (Klass : Ada_GObject_Class;
                            Widget : System.Address;
                            Min, Nat : out Glib.Gint);
        pragma Import
@@ -2704,11 +2704,11 @@ __PRE__
    end Inherited_Get_Preferred_Height;
 
    procedure Inherited_Size_Allocate
-      (Klass      : Ada_GObject_Class;
+      (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
        Allocation : Gtk_Allocation)
    is
-       procedure Internal (Klass : Ada_Gobject_Class;
+       procedure Internal (Klass : Ada_GObject_Class;
                            Widget : System.Address;
                            Allocation : Gtk_Allocation);
        pragma Import
@@ -2718,9 +2718,9 @@ __PRE__
    end Inherited_Size_Allocate;
 
    procedure Set_Default_Draw_Handler
-      (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler)
+      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler)
    is
-      procedure Internal (K : Ada_GObject_Class; H : System.Address);
+      procedure Internal (K : GObject_Class; H : System.Address);
       pragma Import (C, Internal, "ada_WIDGET_CLASS_override_draw");
    begin
       Internal (Klass, Convert (Handler));

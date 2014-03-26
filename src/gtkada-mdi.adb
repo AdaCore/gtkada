@@ -187,6 +187,10 @@ package body Gtkada.MDI is
    MDI_Tab_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
+   procedure Tab_Class_Init (Self : GObject_Class);
+   pragma Convention (C, Tab_Class_Init);
+   --  Initialize the gtk+ class fields
+
    procedure Tab_Get_Preferred_Width
      (Label : System.Address; Minimum_Size, Natural_Size : out Gint);
    pragma Convention (C, Tab_Get_Preferred_Width);
@@ -4269,6 +4273,18 @@ package body Gtkada.MDI is
       end case;
    end Tab_Get_Preferred_Height;
 
+   --------------------
+   -- Tab_Class_Init --
+   --------------------
+
+   procedure Tab_Class_Init (Self : GObject_Class) is
+   begin
+      Set_Default_Get_Preferred_Width_Handler
+        (Self, Tab_Get_Preferred_Width'Access);
+      Set_Default_Get_Preferred_Height_Handler
+        (Self, Tab_Get_Preferred_Height'Access);
+   end Tab_Class_Init;
+
    ----------------------
    -- Update_Tab_Label --
    ----------------------
@@ -4326,18 +4342,13 @@ package body Gtkada.MDI is
             Event := new MDI_Tab_Record;
             MDI_Tab (Event).Timestamp := Note.Timestamp;
 
-            if Glib.Object.Initialize_Class_Record
+            Glib.Object.Initialize_Class_Record
               (Ancestor     => Gtk.Event_Box.Get_Type,
                Signals      => (1 .. 0 => Null_Ptr),
                Parameters   => (1 .. 0 => (1 => GType_None)),
-               Class_Record => MDI_Tab_Class_Record'Access,
-               Type_Name    => "MDITab")
-            then
-               Set_Default_Get_Preferred_Width_Handler
-                 (MDI_Tab_Class_Record, Tab_Get_Preferred_Width'Access);
-               Set_Default_Get_Preferred_Height_Handler
-                 (MDI_Tab_Class_Record, Tab_Get_Preferred_Height'Access);
-            end if;
+               Class_Record => MDI_Tab_Class_Record,
+               Type_Name    => "MDITab",
+               Class_Init   => Tab_Class_Init'Access);
 
             G_New (Event, MDI_Tab_Class_Record.The_Type);
          else

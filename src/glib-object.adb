@@ -24,6 +24,7 @@
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
+with System;          use System;
 
 with Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;  use Gtkada.Bindings;
@@ -48,14 +49,20 @@ package body Glib.Object is
    function To_Object is new Ada.Unchecked_Conversion
      (System.Address, GObject);
 
-   function Initialize_Class_Record
+   procedure Initialize_Class_Record
      (Ancestor     : GType;
-      Class_Record : System.Address;  --   Address of Ada_Gobject_Class
+      Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
-     return Boolean;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Class_Init   : Ada_Class_Init := null;
+      Created      : out Boolean);
    --  Internal version of Initialize_Class_Record
+
+   function Get_Qdata
+     (Object : System.Address;
+      Quark  : Glib.GQuark) return System.Address;
+   pragma Import (C, Get_Qdata, "g_object_get_qdata");
 
    ----------------
    -- Deallocate --
@@ -155,6 +162,19 @@ package body Glib.Object is
       return Internal (Get_Object (Object));
    end Get_Type;
 
+   ---------------------------
+   -- Get_User_Data_Or_Null --
+   ---------------------------
+
+   function Get_User_Data_Or_Null (Obj : System.Address) return GObject is
+   begin
+      if Obj = System.Null_Address then
+         return null;
+      end if;
+
+      return To_Object (Get_Qdata (Obj, GtkAda_String_Quark));
+   end Get_User_Data_Or_Null;
+
    -------------------
    -- Get_User_Data --
    -------------------
@@ -163,15 +183,7 @@ package body Glib.Object is
      (Obj  : System.Address;
       Stub : GObject_Record'Class) return GObject
    is
-      function Internal
-        (Object : System.Address;
-         Quark  : Glib.GQuark) return System.Address;
-      pragma Import (C, Internal, "g_object_get_qdata");
-
-      use type System.Address;
-
       R : GObject;
-
    begin
       if Obj = System.Null_Address then
          return null;
@@ -181,7 +193,7 @@ package body Glib.Object is
          GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
       end if;
 
-      R := To_Object (Internal (Obj, GtkAda_String_Quark));
+      R := To_Object (Get_Qdata (Obj, GtkAda_String_Quark));
 
       if R = null then
          R := Glib.Type_Conversion_Hooks.Conversion_Function (Obj, Stub);
@@ -204,16 +216,7 @@ package body Glib.Object is
       Stub : GObject_Record'Class) return GObject
    is
       pragma Suppress (All_Checks);
-
-      function Internal
-        (Object : System.Address;
-         Quark  : Glib.GQuark) return System.Address;
-      pragma Import (C, Internal, "g_object_get_qdata");
-
-      use type System.Address;
-
       R : GObject;
-
    begin
       if Obj = System.Null_Address then
          return null;
@@ -223,7 +226,7 @@ package body Glib.Object is
          GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
       end if;
 
-      R := To_Object (Internal (Obj, GtkAda_String_Quark));
+      R := To_Object (Get_Qdata (Obj, GtkAda_String_Quark));
 
       if R = null then
          R := new GObject_Record'Class'(Stub);
@@ -238,7 +241,6 @@ package body Glib.Object is
    ----------------
 
    function Is_Created (Object : GObject_Record'Class) return Boolean is
-      use type System.Address;
    begin
       return Object.Ptr /= System.Null_Address;
    end Is_Created;
@@ -249,10 +251,7 @@ package body Glib.Object is
 
    procedure Set_Object
      (Object : access GObject_Record'Class;
-      Value  : System.Address)
-   is
-      use type System.Address;
-
+      Value  : System.Address) is
    begin
       Object.Ptr := Value;
 
@@ -311,13 +310,15 @@ package body Glib.Object is
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Class_Init   : Ada_Class_Init := null)
    is
       Ignored : Boolean;
       pragma Unreferenced (Ignored);
    begin
-      Ignored := Initialize_Class_Record
-         (Ancestor, Class_Record'Address, Type_Name, Signals, Parameters);
+      Initialize_Class_Record
+        (Ancestor, Class_Record, Type_Name, Signals, Parameters,
+         Class_Init, Created => Ignored);
    end Initialize_Class_Record;
 
    -----------------------------
@@ -329,24 +330,30 @@ package body Glib.Object is
       Class_Record : not null access Ada_GObject_Class;
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
-     return Boolean is
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Class_Init   : Ada_Class_Init := null)
+      return Boolean
+   is
+      Created : Boolean;
    begin
-      return Initialize_Class_Record
-         (Ancestor, Class_Record.all'Address, Type_Name, Signals, Parameters);
+      Initialize_Class_Record
+        (Ancestor, Class_Record.all, Type_Name, Signals, Parameters,
+         Class_Init, Created => Created);
+      return Created;
    end Initialize_Class_Record;
 
    -----------------------------
    -- Initialize_Class_Record --
    -----------------------------
 
-   function Initialize_Class_Record
+   procedure Initialize_Class_Record
      (Ancestor     : GType;
-      Class_Record : System.Address;  --   Address of Ada_Gobject_Class
+      Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
-     return Boolean
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Class_Init   : Ada_Class_Init := null;
+      Created      : out Boolean)
    is
       function Internal
         (Ancestor       : GType;
@@ -354,7 +361,7 @@ package body Glib.Object is
          Signals        : System.Address;
          Parameters     : System.Address;
          Max_Parameters : Gint;
-         Class_Record   : System.Address;
+         Class_Record   : not null access Ada_GObject_Class_Record;
          Type_Name      : String) return Integer;
       pragma Import (C, Internal, "ada_initialize_class_record");
 
@@ -364,13 +371,21 @@ package body Glib.Object is
       Num : Gint := 0;
 
    begin
+      if Class_Record = null then
+         Class_Record := new Ada_GObject_Class_Record;
+         Class_Record.The_Type := 0;
+         Class_Record.Class_Init := null;
+      end if;
+
+      Class_Record.Class_Init := Class_Init;
+
       if Parameters /= Null_Parameter_Types then
          pragma Assert (Parameters'Length (1) = Signals'Length);
          Pa := Parameters'Address;
          Num := Parameters'Length (2);
       end if;
 
-      return Internal
+      Created := Internal
         (Ancestor,
          Signals'Length,
          Signals'Address,
@@ -378,6 +393,14 @@ package body Glib.Object is
          Num,
          Class_Record,
          Type_Name & ASCII.NUL) /= 0;
+
+      --  if Created then
+         --  Register a type conversion hook: if the user adds a customer
+         --  properties setter, the latter might be called as part of creating
+         --  the C instance, and thus before it has been associated with an
+         --  Ada object. Thus we would end up with the default conversion and
+         --  a Gtk_Widget is passed to the property setter.
+      --  end if;
    end Initialize_Class_Record;
 
    -------------------
@@ -544,11 +567,6 @@ package body Glib.Object is
          Key    : String) return System.Address;
       pragma Import (C, Get_Data_Internal, "g_object_get_data");
 
-      function Get_Data_Internal_Id
-        (Object : System.Address;
-         Key    : Glib.GQuark) return System.Address;
-      pragma Import (C, Get_Data_Internal_Id, "g_object_get_qdata");
-
       ----------
       -- Free --
       ----------
@@ -630,7 +648,7 @@ package body Glib.Object is
          Id     : Glib.GQuark) return Data_Type
       is
          D : constant Cb_Record_Access :=
-           Convert (Get_Data_Internal_Id (Get_Object (Object), Id));
+           Convert (Get_Qdata (Get_Object (Object), Id));
       begin
          if D = null or else D.Ptr = null then
             raise Gtkada.Types.Data_Error;
@@ -649,7 +667,7 @@ package body Glib.Object is
          Default : Data_Type) return Data_Type
       is
          D : constant Cb_Record_Access :=
-           Convert (Get_Data_Internal_Id (Get_Object (Object), Id));
+           Convert (Get_Qdata (Get_Object (Object), Id));
       begin
          if D = null or else D.Ptr = null then
             return Default;
@@ -890,5 +908,4 @@ package body Glib.Object is
 --      G_Free (Output);
       return Result;
    end Class_List_Properties;
-
 end Glib.Object;

@@ -313,7 +313,14 @@ ada_gsignal_query_return_type (GSignalQuery* query)
 typedef struct {
    GType type;            // The type. This also acts as a lock while
                           // initializing the class record.
-} AdaGObjectClass;
+
+   //  GObjectClass* c_klass;   // The C class
+
+   void (*class_init)(gpointer type);           // ada class init
+   GObjectSetPropertyFunc ada_property_setter;
+   GObjectGetPropertyFunc ada_property_getter;
+} AdaGObjectClassRecord;
+typedef AdaGObjectClassRecord* AdaGObjectClass;
 //  Type must be synchronized with Ada.
 
 GType
@@ -322,15 +329,36 @@ ada_type_from_class (GObjectClass* klass)
   return G_TYPE_FROM_CLASS (klass);
 }
 
-/** The class_init for the gobject types created in Ada **/
+AdaGObjectClass ada_gobject_class_from_object(GObject* object) {
+   GTypeQuery query;
+   g_type_query (G_TYPE_FROM_INSTANCE(object), &query);
+
+   return (AdaGObjectClass)((char*)(G_OBJECT_GET_CLASS (object))
+				  + query.class_size
+ 			     - sizeof (AdaGObjectClass));
+}
+AdaGObjectClass ada_gobject_class_from_class(GObjectClass* class) {
+   GTypeQuery query;
+   g_type_query (G_OBJECT_CLASS_TYPE(class), &query);
+   return (AdaGObjectClass)((char*)(class)
+				  + query.class_size
+ 			     - sizeof (AdaGObjectClass));
+}
+
+
+/** The class_init for the gobject types created in Ada
+ * The class_data is of type AdaGObjectClass, as set by
+ * ada_initialize_class_record
+ **/
 
 static void
-ada_class_record_init (GObjectClass* klass)
+ada_class_record_init (GObjectClass* klass, gpointer class_data)
 {
    GType type = G_TYPE_FROM_CLASS (klass);
    GType parent = g_type_parent (type);
    GTypeQuery query;
    GTypeQuery parent_query;
+   const AdaGObjectClass ada_klass = (AdaGObjectClass)class_data;
 
    g_type_query (type, &query);
    g_type_query (parent, &parent_query);
@@ -339,6 +367,17 @@ ada_class_record_init (GObjectClass* klass)
 
    memset ((char*)(klass) + parent_query.class_size, 0,
            query.class_size - parent_query.class_size);
+
+   /* Set a pointer to the AdaGObjectClass, so that we can retrieve it
+    * later from a type.
+    */
+   *(AdaGObjectClass*)((char*)(klass)
+       + query.class_size
+       - sizeof (AdaGObjectClass)) = ada_klass;
+
+   if (ada_klass->class_init) {
+      ada_klass->class_init (klass);
+   }
 }
 
 int
@@ -348,7 +387,7 @@ ada_initialize_class_record
    char*         signals[],
    GType         parameters[],
    gint          max_parameters,
-   AdaGObjectClass* klass,   /* in out AdaGObjectClass*/
+   AdaGObjectClass klass,
    gchar*        type_name)
 {
    // Make this function thread-safe and ensure we only initialize the class
@@ -357,21 +396,6 @@ ada_initialize_class_record
        /* Note: The memory allocated in this function is never freed. No need
           to worry, since this is only allocated once per user's widget type,
           and might be used until the end of the application */
-
-       /************************
-        * When this function is called, object has already been initialized
-        * by a call to parent_type_new(). So the C structure has been allocated
-        * enough space for instances of the parent type (which is good enough
-        * since any additional instance field will be in the Ada structure
-        * anyway.
-        * However, parent_type_new() has called g_object_new(), which does a
-        * number of additional setup for constructors and properties. These all
-        * seem to be C specific though, so we can simply replace the klass
-        * field at the bottom of this function.
-        * ??? This might not play correctly with interfaces though.
-        * g_object_new calls g_object_constructor, which calls
-        * g_type_create_instance.
-        ************************/
 
        GTypeQuery query;
        int j;
@@ -385,17 +409,25 @@ ada_initialize_class_record
         * created (whereas in C the GType is created at elaboration time.
         *************************/
 
-       GType new_type = g_type_register_static_simple
-          (ancestor /* parent_type */,
-           type_name /* type_name */,
-           query.class_size  /* class_size */
+       GTypeInfo info;
+       info.class_size = query.class_size
               + nsignals * sizeof (void*)
-              + sizeof (GObjectGetPropertyFunc)
-              + sizeof (GObjectSetPropertyFunc),
-           (GClassInitFunc)(&ada_class_record_init) /* class_init */,
-           query.instance_size  /* instance_size */,
-           NULL /* instance_init */,
-           0  /* GTypeFlags */);
+              + sizeof (AdaGObjectClass);
+       info.base_init = NULL;
+       info.base_finalize = NULL;
+       info.class_init = (GClassInitFunc)(&ada_class_record_init);
+       info.class_finalize = NULL;
+       info.class_data = (gconstpointer)klass;
+       info.instance_size = query.instance_size;
+       info.n_preallocs = 0;
+       info.instance_init = NULL;
+       info.value_table = NULL;
+
+       GType new_type = g_type_register_static (
+             ancestor  /* parent_type */,
+             type_name /* type_name */,
+             &info     /* info */,
+             0         /* flags */);
 
        /*************************
         * This code is generally called by g_object_new (which itself is called
@@ -445,12 +477,10 @@ ada_initialize_class_record
 #define ADA_GTK_OVERRIDE_METHOD(TypeName, method) \
    void \
    ada_##TypeName##_override_##method ( \
-         AdaGObjectClass* klass, gpointer handler) { \
-      GObjectClass* objklass = g_type_class_ref(klass->type); \
-      if (handler && GTK_IS_##TypeName (objklass)) { \
-          GTK_##TypeName (objklass)->method = handler; \
+         GObjectClass* klass, gpointer handler) { \
+      if (handler && GTK_IS_##TypeName (klass)) { \
+          GTK_##TypeName (klass)->method = handler; \
       } \
-     g_type_class_unref (objklass); \
    }
 
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, size_allocate)
@@ -459,36 +489,36 @@ ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height)
 
 void ada_inherited_WIDGET_CLASS_size_allocate (
-      AdaGObjectClass* klass, GtkWidget* widget, GtkAllocation* rect)
+      AdaGObjectClass klass, GtkWidget* widget, GtkAllocation* rect)
 {
-   GObjectClass* objklass = g_type_class_ref(klass->type);
+   GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   g_type_class_unref (objklass);
    GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, rect);
+   g_type_class_unref (objklass);
 }
 
 void ada_inherited_WIDGET_CLASS_get_preferred_width (
-      AdaGObjectClass* klass, GtkWidget* widget, gint* min, gint* natural)
+      AdaGObjectClass klass, GtkWidget* widget, gint* min, gint* natural)
 {
-   GObjectClass* objklass = g_type_class_ref(klass->type);
+   GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   g_type_class_unref (objklass);
    GTK_WIDGET_CLASS (parent_class)->get_preferred_width (widget, min, natural);
+   g_type_class_unref (objklass);
 }
 
 void ada_inherited_WIDGET_CLASS_get_preferred_height (
-      AdaGObjectClass* klass, GtkWidget* widget, gint* min, gint* natural)
+      AdaGObjectClass klass, GtkWidget* widget, gint* min, gint* natural)
 {
-   GObjectClass* objklass = g_type_class_ref(klass->type);
+   GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   g_type_class_unref (objklass);
    GTK_WIDGET_CLASS (parent_class)->get_preferred_height (widget, min, natural);
+   g_type_class_unref (objklass);
 }
 
 gboolean ada_inherited_WIDGET_CLASS_draw (
-      AdaGObjectClass* klass, GtkWidget* widget, cairo_t *cr)
+      AdaGObjectClass klass, GtkWidget* widget, cairo_t *cr)
 {
-   GObjectClass* objklass = g_type_class_ref(klass->type);
+   GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
    g_type_class_unref (objklass);
    return GTK_WIDGET_CLASS (parent_class)->draw (widget, cr);
@@ -1384,49 +1414,26 @@ ada_gparam_ensure_non_null_string (GParamSpecString* param)
 
 void
 ada_install_property_handlers
-   (AdaGObjectClass* klass,
+   (GObjectClass* klass,
     GObjectSetPropertyFunc c_set_handler,
     GObjectGetPropertyFunc c_get_handler,
     GObjectSetPropertyFunc ada_set_handler,
     GObjectGetPropertyFunc ada_get_handler)
 {
-  GTypeQuery query;
-  GObjectClass *objklass = g_type_class_ref (klass->type);
+  G_OBJECT_CLASS (klass)->set_property = c_set_handler;
+  G_OBJECT_CLASS (klass)->get_property = c_get_handler;
 
-  G_OBJECT_CLASS (objklass)->set_property = c_set_handler;
-  G_OBJECT_CLASS (objklass)->get_property = c_get_handler;
-
-  g_type_query (klass->type, &query);
-  *(GObjectGetPropertyFunc*)((char*)(objklass)
-      + query.class_size
-      - sizeof (GObjectGetPropertyFunc)
-      - sizeof (GObjectSetPropertyFunc)) = ada_get_handler;
-  *(GObjectSetPropertyFunc*)((char*)(objklass)
-      + query.class_size
-      - sizeof (GObjectSetPropertyFunc)) = ada_set_handler;
-
-  g_type_class_unref (objklass);
+  AdaGObjectClass adaklass = ada_gobject_class_from_class(klass);
+  adaklass->ada_property_getter = ada_get_handler;
+  adaklass->ada_property_setter = ada_set_handler;
 }
 
-GObjectGetPropertyFunc
-ada_real_get_property_handler (GObject* object)
-{
-  GTypeQuery query;
-  g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
-  return *(GObjectGetPropertyFunc*)((char*)(G_OBJECT_GET_CLASS (object))
-				  + query.class_size
- 			     - sizeof (GObjectGetPropertyFunc)
-				  - sizeof (GObjectSetPropertyFunc));
+GObjectGetPropertyFunc ada_real_get_property_handler (GObject* object) {
+   return ada_gobject_class_from_object(object)->ada_property_getter;
 }
 
-GObjectSetPropertyFunc
-ada_real_set_property_handler (GObject* object)
-{
-  GTypeQuery query;
-  g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
-  return *(GObjectSetPropertyFunc*)((char*)(G_OBJECT_GET_CLASS (object))
-				  + query.class_size
-				  - sizeof (GObjectSetPropertyFunc));
+GObjectSetPropertyFunc ada_real_set_property_handler (GObject* object) {
+   return ada_gobject_class_from_object(object)->ada_property_setter;
 }
 
 void

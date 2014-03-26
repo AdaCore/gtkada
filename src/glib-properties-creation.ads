@@ -372,18 +372,26 @@ package Glib.Properties.Creation is
    -----------------------------
    -- Creating new properties --
    -----------------------------
-   --  There are several things that need to be done when creating a property.
+   --  There are several things that need to be done when creating properties
+   --  for widgets.
    --  For one thing, you need to create the string that represents the
-   --  property. This is the only item that needs to go in the specifications
-   --  of your page.
+   --  property.
    --  You then need to describe the type of the property, and the values it
    --  allows. This is very simple for simple types, and a generic packages is
-   --  provided to handle the more complex enumeration-based properties.
+   --  provided to handle the more complex enumeration-based properties. See
+   --  the package Glib.Properties.Creation.
    --
    --  Your widget needs to define two handlers, Set_Property_Handler and
    --  Get_Property_Handler, that are called every time the user accesses the
    --  value of a property through a call to Glib.Object.Set_Property or
-   --  Glib.Object.Get_Property.
+   --  Glib.Object.Get_Property. These handlers are installed via
+   --  Set_Properties_Handlers below.
+   --
+   --  Once the handlers have been set, it is possible to install new
+   --  properties (and only after the handlers have been set). Adding the
+   --  handlers and properties should be done in the Class_Init callback
+   --  passed to Initialize_Class_Record, so that this is done only when the
+   --  class is actually created.
    --
    --  For efficiency reasons, a property is also associated with an integer
    --  value, that you must provide when creating the property. This value is
@@ -424,9 +432,9 @@ package Glib.Properties.Creation is
    --  of a property. You should set the value in Value
 
    procedure Set_Properties_Handlers
-     (Class_Record : Glib.Object.Ada_GObject_Class;
-      Set_Property : Set_Property_Handler;
-      Get_Property : Get_Property_Handler);
+     (Class_Record : Glib.Object.GObject_Class;
+      Set_Property : not null Set_Property_Handler;
+      Get_Property : not null Get_Property_Handler);
    --  Set the two functions used to set and retrieve properties. You
    --  should never call this function on the class record of the standard
    --  gtk+ widgets, since this will break their behavior. You should first
@@ -437,7 +445,7 @@ package Glib.Properties.Creation is
    --  be able to install new properties afterwards
 
    procedure Install_Property
-     (Class_Record  : Glib.Object.Ada_GObject_Class;
+     (Class_Record  : Glib.Object.GObject_Class;
       Prop_Id       : Property_Id;
       Property_Spec : Param_Spec);
    --  Adds a new property to Class_Record. You should use this function only
@@ -448,6 +456,16 @@ package Glib.Properties.Creation is
    --  and retrieve the value of a property.
    --  Property_Spec should be the result of one of the GNew_* subprograms for
    --  Param_Spec, and this defines the type of the property.
+   --
+   --  You must have called Set_Properties_Handler first.
+
+   procedure Override_Property
+     (Class_Record  : Glib.Object.GObject_Class;
+      Prop_Id       : Property_Id;
+      Name          : String);
+   --  Overrides an existing property (inherited from the parent type or from
+   --  one of the interfaces that are implemented).
+   --  You must have called Set_Properties_Handler first.
 
 private
    pragma Import (C, Flags, "ada_gparam_get_flags");
@@ -457,7 +475,6 @@ private
    pragma Import (C, Get_Value, "g_enum_get_value");
    pragma Import (C, Flags_Enumeration, "ada_gparam_get_flags_flags");
    pragma Import (C, Enumeration, "ada_gparam_get_enum_class_enum");
-   pragma Import (C, Install_Property, "g_object_class_install_property");
    pragma Import (C, Unref, "g_param_spec_unref");
    pragma Import (C, Get_Qdata, "g_param_spec_get_qdata");
    pragma Import (C, Set_Qdata, "g_param_spec_set_qdata_full");

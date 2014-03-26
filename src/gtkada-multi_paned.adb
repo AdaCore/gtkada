@@ -39,7 +39,6 @@ with Gdk.Window_Attr;      use Gdk.Window_Attr;
 
 with Glib.Object;          use Glib.Object;
 with Glib.Properties.Creation; use Glib.Properties.Creation;
-with Glib.Types;
 with Glib.Values;          use Glib.Values;
 
 with Gtk.Arguments;        use Gtk.Arguments;
@@ -125,6 +124,10 @@ package body Gtkada.Multi_Paned is
 
    procedure On_Unrealize (Self : access Gtk_Widget_Record'Class);
    --  Called when the window is unrealized.
+
+   procedure Multipaned_Class_Init (Self : GObject_Class);
+   pragma Convention (C, Multipaned_Class_Init);
+   --  Initialize the gtk+ class fields
 
    procedure Size_Allocate_Child
      (Split         : access Gtkada_Multi_Paned_Record'Class;
@@ -552,37 +555,44 @@ package body Gtkada.Multi_Paned is
       return Win.Handle_Width;
    end Handle_Size;
 
+   ---------------------------
+   -- Multipaned_Class_Init --
+   ---------------------------
+
+   procedure Multipaned_Class_Init (Self : GObject_Class) is
+   begin
+      Set_Default_Draw_Handler (Self, On_Draw'Access);
+      Set_Default_Size_Allocate_Handler
+        (Self, Size_Allocate_Paned'Access);
+      Set_Default_Get_Preferred_Width_Handler
+        (Self, Get_Preferred_Width'Access);
+      Set_Default_Get_Preferred_Height_Handler
+        (Self, Get_Preferred_Height'Access);
+
+      Install_Style_Property
+        (Self,
+         Gnew_Int
+           (Name    => "handle-size",
+            Nick    => "Handle Size",
+            Blurb   => "Width of handle",
+            Minimum => 1,
+            Maximum => 10,
+            Default => 4));
+   end Multipaned_Class_Init;
+
    --------------
    -- Get_Type --
    --------------
 
    function Get_Type return Glib.GType is
    begin
-      if Glib.Object.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtk.Fixed.Get_Type,
          Signals      => (1 .. 0 => Null_Ptr),
-         Class_Record => Paned_Class_Record'Access,
+         Class_Record => Paned_Class_Record,
          Type_Name    => "GtkAdaMultiPaned",
-         Parameters   => (1 .. 0 => (1 => GType_None)))
-      then
-         Set_Default_Draw_Handler (Paned_Class_Record, On_Draw'Access);
-         Set_Default_Size_Allocate_Handler
-           (Paned_Class_Record, Size_Allocate_Paned'Access);
-         Set_Default_Get_Preferred_Width_Handler
-           (Paned_Class_Record, Get_Preferred_Width'Access);
-         Set_Default_Get_Preferred_Height_Handler
-           (Paned_Class_Record, Get_Preferred_Height'Access);
-
-         Install_Style_Property
-           (Glib.Types.Class_Ref (Paned_Class_Record.The_Type),
-            Gnew_Int
-              (Name    => "handle-size",
-               Nick    => "Handle Size",
-               Blurb   => "Width of handle",
-               Minimum => 1,
-               Maximum => 10,
-               Default => 4));
-      end if;
+         Parameters   => (1 .. 0 => (1 => GType_None)),
+         Class_Init   => Multipaned_Class_Init'Access);
       return Paned_Class_Record.The_Type;
    end Get_Type;
 

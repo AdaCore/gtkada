@@ -33,16 +33,13 @@ package body Glib.Properties.Creation is
      (Get_Property_Handler, System.Address);
    function To_Address is new Ada.Unchecked_Conversion
      (Set_Property_Handler, System.Address);
-   function From_Address is new Ada.Unchecked_Conversion
-     (System.Address, Set_Property_Handler);
-   function From_Address is new Ada.Unchecked_Conversion
-     (System.Address, Get_Property_Handler);
 
    procedure Internal_Set_Property_Handler
      (Object        : System.Address;
       Prop_Id       : Property_Id;
       Value         : GValue;
       Property_Spec : Param_Spec);
+   pragma Convention (C, Internal_Set_Property_Handler);
    --  Internal handler for Set_Property. This is the one called directly by
    --  gtk+, and that, in turns, calls the one defined by the user, after
    --  converting Object to a valid Ada object.
@@ -52,6 +49,7 @@ package body Glib.Properties.Creation is
       Prop_Id       : Property_Id;
       Value         : out GValue;
       Property_Spec : Param_Spec);
+   pragma Convention (C, Internal_Get_Property_Handler);
    --  Same as above for the Get_Property handler.
 
    ----------------
@@ -927,15 +925,25 @@ package body Glib.Properties.Creation is
       Value         : GValue;
       Property_Spec : Param_Spec)
    is
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Set_Property_Handler);
       function Internl (Object : System.Address) return System.Address;
       pragma Import (C, Internl, "ada_real_set_property_handler");
-      Stub : GObject_Record;
-      Obj : constant GObject := Get_User_Data (Object, Stub);
 
+      --  This function might be called when the C object has been created
+      --  (g_new), but not assigned to the Ada object yet (this is done to
+      --  initialize the properties during the creation of objects).
+
+      Obj : constant GObject := Get_User_Data_Or_Null (Object);
       F : Set_Property_Handler;
    begin
-      F := From_Address (Internl (Object));
-      F (Obj, Prop_Id, Value, Property_Spec);
+      if Obj = null then
+         --  Not yet associated with an Ada type
+         null;
+      else
+         F := Convert (Internl (Object));
+         F (Obj, Prop_Id, Value, Property_Spec);
+      end if;
    end Internal_Set_Property_Handler;
 
    -----------------------------------
@@ -948,6 +956,8 @@ package body Glib.Properties.Creation is
       Value         : out GValue;
       Property_Spec : Param_Spec)
    is
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, Get_Property_Handler);
       function Internal (Object : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_real_get_property_handler");
       Stub : GObject_Record;
@@ -955,7 +965,7 @@ package body Glib.Properties.Creation is
 
       F : Get_Property_Handler;
    begin
-      F := From_Address (Internal (Object));
+      F := Convert (Internal (Object));
       F (Obj, Prop_Id, Value, Property_Spec);
    end Internal_Get_Property_Handler;
 
@@ -964,12 +974,12 @@ package body Glib.Properties.Creation is
    -----------------------------
 
    procedure Set_Properties_Handlers
-     (Class_Record : Ada_GObject_Class;
-      Set_Property : Set_Property_Handler;
-      Get_Property : Get_Property_Handler)
+     (Class_Record : GObject_Class;
+      Set_Property : not null Set_Property_Handler;
+      Get_Property : not null Get_Property_Handler)
    is
       procedure Internal
-         (Class_Record : Ada_GObject_Class;
+         (Class_Record : GObject_Class;
           C_Set_Prop   : System.Address;
           C_Get_Prop   : System.Address;
           Ada_Set_Prop  : System.Address;
@@ -1052,5 +1062,46 @@ package body Glib.Properties.Creation is
          Default   => Default,
          Flags     => Flags);
    end Gnew_Enum;
+
+   ----------------------
+   -- Install_Property --
+   ----------------------
+
+   procedure Install_Property
+     (Class_Record  : Glib.Object.GObject_Class;
+      Prop_Id       : Property_Id;
+      Property_Spec : Param_Spec)
+   is
+      procedure Internal
+         (CR   : Glib.Object.GObject_Class;
+          Id   : Property_Id;
+          Spec : Param_Spec);
+      pragma Import (C, Internal, "g_object_class_install_property");
+   begin
+      Internal (Class_Record, Prop_Id, Property_Spec);
+   end Install_Property;
+
+   -----------------------
+   -- Override_Property --
+   -----------------------
+
+   procedure Override_Property
+     (Class_Record  : Glib.Object.GObject_Class;
+      Prop_Id       : Property_Id;
+      Name          : String)
+   is
+      procedure Internal
+         (CR   : Glib.Object.GObject_Class;
+          Id   : Property_Id;
+          Name : chars_ptr);
+      pragma Import (C, Internal, "g_object_class_override_property");
+      N : constant chars_ptr := New_String (Name);
+   begin
+      Internal (Class_Record, Prop_Id, N);
+
+      --  Seems like we should not free N, although the spec in glib is
+      --  unclear. This is a minor memory leak in any case.
+
+   end Override_Property;
 
 end Glib.Properties.Creation;

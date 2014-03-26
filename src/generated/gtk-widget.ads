@@ -2729,7 +2729,7 @@ package Gtk.Widget is
    --    end;
 
    procedure Set_Default_Size_Allocate_Handler
-     (Klass   : Glib.Object.Ada_GObject_Class;
+     (Klass   : Glib.Object.GObject_Class;
       Handler : Size_Allocate_Handler);
    pragma Import (C, Set_Default_Size_Allocate_Handler,
       "ada_WIDGET_CLASS_override_size_allocate");
@@ -2752,10 +2752,10 @@ package Gtk.Widget is
    pragma Convention (C, Preferred_Size_Handler);
 
    procedure Set_Default_Get_Preferred_Width_Handler
-     (Klass   : Glib.Object.Ada_GObject_Class;
+     (Klass   : Glib.Object.GObject_Class;
       Handler : Preferred_Size_Handler);
    procedure Set_Default_Get_Preferred_Height_Handler
-     (Klass   : Glib.Object.Ada_GObject_Class;
+     (Klass   : Glib.Object.GObject_Class;
       Handler : Preferred_Size_Handler);
    pragma Import (C, Set_Default_Get_Preferred_Width_Handler,
       "ada_WIDGET_CLASS_override_get_preferred_width");
@@ -2766,17 +2766,17 @@ package Gtk.Widget is
    --  your own container widgets.
 
    procedure Inherited_Get_Preferred_Width
-     (Klass      : Ada_GObject_Class;
+     (Klass      : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Minimum_Size, Natural_Size : out Glib.Gint);
    procedure Inherited_Get_Preferred_Height
-     (Klass      : Ada_GObject_Class;
+     (Klass      : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Minimum_Size, Natural_Size : out Glib.Gint);
    --  Call the default implementation
 
    procedure Inherited_Size_Allocate
-     (Klass      : Ada_GObject_Class;
+     (Klass      : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Allocation : Gtk_Allocation);
    --  Call the inherited size_allocate. This is useful if you have overloaded it in
@@ -2801,14 +2801,14 @@ package Gtk.Widget is
    --  A function responsible for drawing a widget.
 
    procedure Set_Default_Draw_Handler
-     (Klass : Glib.Object.Ada_GObject_Class; Handler : Draw_Handler);
+     (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler);
    --  Override the default drawing function. This in general gives more
    --  control than connection to Signal_Draw, however a widget is responsible
    --  for drawing its children.
    --  Use the generic Proxy_Draw to create a suitable callback.
 
    function Inherited_Draw
-     (Klass  : Ada_GObject_Class;
+     (Klass  : Glib.Object.Ada_GObject_Class;
       Widget : access Gtk_Widget_Record'Class;
       Cr     : Cairo.Cairo_Context) return Boolean;
    --  Call the inherited draw. This is useful if you have overloaded draw in

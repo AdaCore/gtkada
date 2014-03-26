@@ -152,6 +152,10 @@ package Glib.Object is
    --  created implicitely by gtk+ (buttons in complex windows,...), a new Ada
    --  object of type Stub will be created.
 
+   function Get_User_Data_Or_Null (Obj : System.Address) return GObject;
+   --  Return the Ada object matching the Obj, if Obj was created explicitly
+   --  from Ada, or null otherwise.
+
    function Get_User_Data_Fast
      (Obj  : System.Address;
       Stub : GObject_Record'Class) return GObject;
@@ -228,19 +232,39 @@ package Glib.Object is
 
    type GObject_Class is new GType_Class;
    Null_GObject_Class : constant GObject_Class;
-
-   type Ada_GObject_Class is record
-      The_Type     : GType := 0;
-   end record;
-   pragma Convention (C, Ada_GObject_Class);
-   Uninitialized_Class : constant Ada_GObject_Class;
    --  This type encloses all the informations related to a specific type of
    --  object or widget. All instances of such an object have a pointer to this
    --  structure, that includes the definition of all the signals that exist
    --  for a given object, all its properties,...
    --
-   --  A GObject_Class can be retrieved from an Ada_GObject_Class by calling
-   --  Glib.Types.Class_Ref.
+   --  A GObject_Class can be retrieved from a GType by calling
+   --  Glib.Types.Class_Ref. This will however initialize the class record, so
+   --  is too late to add interfaces or properties to the class afterwards.
+
+   type Ada_GObject_Class_Record;
+   type Ada_GObject_Class is access all Ada_GObject_Class_Record;
+   pragma Convention (C, Ada_GObject_Class);
+   Uninitialized_Class : constant Ada_GObject_Class;
+   --  This type plays a role similar to GObject_Class, but encapsulates
+   --  information needed on the Ada side to implement proxies to Ada code
+   --  (since we need to convert from C type to Ada types).
+   --  This structure should be treated as opaque.
+
+   type Ada_Class_Init is access procedure (Self : GObject_Class);
+   pragma Convention (C, Ada_Class_Init);
+   --  Called the first time the class is initialized.
+   --  This procedure is meant to add new properties to the class, or
+   --  override the default handlers.
+
+   type Ada_GObject_Class_Record is record
+      The_Type     : GType := 0;
+
+      Class_Init      : Ada_Class_Init := null;
+      Property_Setter : System.Address := System.Null_Address;
+      Property_Getter : System.Address := System.Null_Address;
+      --  Do not call this function directly (or set it directly, these are
+      --  set through various other subprograms).
+   end record;
 
    type Signal_Parameter_Types is
      array (Natural range <>, Natural range <>) of GType;
@@ -269,14 +293,16 @@ package Glib.Object is
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Class_Init   : Ada_Class_Init := null);
    function Initialize_Class_Record
      (Ancestor     : GType;
       Class_Record : not null access Ada_GObject_Class;
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
-      return Boolean;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Class_Init   : Ada_Class_Init := null)
+   return Boolean;
    --  Create the class record for a new object type.
    --  It is associated with Signals new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
@@ -295,7 +321,16 @@ package Glib.Object is
    --
    --  The function returns True if the class record was just created (i.e.
    --  only the first time). This can be used to do further initialization
-   --  at that point, like calling Gtk.Widget.Set_Default_Draw_Handler.
+   --  at that point, like adding interfaces that the type implement. It used
+   --  to be where one would override the default signal handlers for draw,
+   --  for instance, but this now needs to be done in the Class_Init
+   --  callback (see below).
+   --
+   --  The function Class_Init can be used to add custom properties
+   --  to the class, or override default signal handlers. Such settings need
+   --  to be done in a separate callback (as opposed to in the function that
+   --  calls Initialize_Class_Record) because they need access to the gtk+
+   --  class record, which is only created when it is actually needed.
 
    function Type_From_Class (Class_Record : GObject_Class) return GType;
    --  Return the internal gtk+ type that describes the newly created
@@ -318,25 +353,46 @@ package Glib.Object is
    --  This procedure is meant to be used when you create your own object
    --  types with own signals, properties,... The code would thus be
    --
+   --   with Glib.Properties.Creation;  use Glib.Properties.Creation;
+   --   with Gtk.Scrollable;
+   --   with Gtk.Widget;                use Gtk.Widget;
+   --
    --   Klass : aliased Ada_GObject_Class := Uninitialized_Class;
    --
+   --   PROP_H_ADJ : constant Property_Id := 1;
+   --   PROP_V_ADJ : constant Property_Id := 2;
+   --   --  internal identifier for our widget properties
+   --
+   --   procedure Class_Init (Self : GObject_Class);
+   --   pragma Convention (C, Class_Init);
+   --
+   --   procedure Class_Init (Self : GObject_Class) is
+   --   begin
+   --      --  Set properties handler
+   --      Set_Properties_Handlers (Self, Prop_Set'Access, Prop_Get'Access);
+   --
+   --      --  Override inherited properties
+   --      Override_Property  (Self, PROP_H_ADJ, "hadjustment");
+   --      Override_Property  (Self, PROP_V_ADJ, "vadjustment");
+   --
+   --      --  Install some custom style properties
+   --      Install_Style_Property (Self, Gnew_Int (...));
+   --
+   --      --  Override some the inherited methods
+   --      Set_Default_Draw_Handler (Self, On_Draw'Access);
+   --   end Class_Init;
+   --
    --   function Get_Type return GType is
+   --      Info : access GInterface_Info;
    --   begin
    --      if Initialize_Class_Record
    --         (Ancestor     => Gtk.Button.Get_Type,
    --          Class_Record => Klass'Access,
-   --          Type_Name    => "My_Widget")
+   --          Type_Name    => "My_Widget",
+   --          Class_Init   => Class_Init'Access)
    --      begin
-   --         --  Add interfaces if needed
-   --         Add_Interface (Klass, ..., new GInterface_Info'(...));
-   --
-   --         --  Override the inherited methods
-   --         Gtk.Widget.Set_Default_Draw_Handler (...);
-   --
-   --         --  Install properties
-   --         Install_Style_Property
-   --            (Glib.Types.Class_Ref (Klass),
-   --             Gnew_Int (...));
+   --         Info := new GInterface_Info'(null, null, System.Null_Address);
+   --         Add_Interface (Klass, Gtk.Scrollable.Get_Type, Info);
    --      end if;
    --      return Klass.The_Type;
    --   end Get_Type;
@@ -582,7 +638,7 @@ private
 
    Null_GObject_Class : constant GObject_Class :=
       GObject_Class (System.Null_Address);
-   Uninitialized_Class : constant Ada_GObject_Class := (The_Type => 0);
+   Uninitialized_Class : constant Ada_GObject_Class := null;
 
    type Signal_Query is record
       Signal_Id    : Guint;
