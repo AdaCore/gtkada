@@ -188,33 +188,58 @@ its own signals, we need to do slightly more work. In particular, we need to
 provide a function ``Get_Type`` similar to what all the predefined widgets
 provide::
 
-   type My_Widget_Record is new Gtk_Button_Record with record
-       ...
-   end record;
-   type My_Widget is access all My_Widget_Record'Class;
+   with Glib.Properties.Creation;   use Glib.Properties.Creation;
+   with Glib.Objects;               use Glib.Objects;
+   with Gtk.Scrollable;
+   with System;
 
-   Klass : aliased Ada_GObject_Class := Uninitialized_Class;
-   
-   function Get_Type return GType is
-   begin
-      if Initialize_Class_Record
-         (Ancestor     => Gtk.Button.Get_Type,
-          Class_Record => Klass'Access,
-          Type_Name    => "My_Widget")
+   package body My_Widgets is
+      type My_Widget_Record is new Gtk_Button_Record with record
+          ...
+      end record;
+      type My_Widget is access all My_Widget_Record'Class;
+
+      Klass : aliased Ada_GObject_Class := Uninitialized_Class;
+
+      PROP_H_ADJ : constant Property_Id := 1;
+      PROP_V_ADJ : constant Property_Id := 2;
+      --  internal identifier for our widget properties
+
+      procedure Class_Init (Self : GObject_Class);
+      pragma Convention (C, Class_Init);
+
+      procedure Class_Init (Self : GObject_Class) is
       begin
-         --  Add interfaces if needed
-         Add_Interface (Klass, ..., new GInterface_Info'(...));
+         --  Set properties handler
+         Set_Properties_Handlers (Self, Prop_Set'Access, Prop_Get'Access);
    
-         --  Override the inherited methods
-         Gtk.Widget.Set_Default_Draw_Handler (...);
+         --  Override inherited properties
+         Override_Property  (Self, PROP_H_ADJ, "hadjustment");
+         Override_Property  (Self, PROP_V_ADJ, "vadjustment");
    
-         --  Install properties
-         Install_Style_Property
-            (Glib.Types.Class_Ref (Klass),
-             Gnew_Int (...));
-      end if;
-      return Klass.The_Type;
-   end Get_Type;
+         --  Install some custom style properties
+         Install_Style_Property (Self, Gnew_Int (...));
+   
+         --  Override some the inherited methods
+         Set_Default_Draw_Handler (Self, On_Draw'Access);
+      end Class_Init;
+      
+      function Get_Type return GType is
+         Info : access GInterface_Info;
+      begin
+         if Initialize_Class_Record
+            (Ancestor     => Gtk.Button.Get_Type,
+             Class_Record => Klass'Access,
+             Type_Name    => "My_Widget",
+             Class_Init   => Class_Init)
+         begin
+            --  Add interfaces if needed
+            Info := new GInterface_Info'(null, null, System.Address);
+            Add_Interface (Klass, Gtk.Scrollable.Get_Type, Info);
+         end if;
+         return Klass.The_Type;
+      end Get_Type;
+   end My_Widgets;
 
 You should also create the usual functions ``Gtk_New`` and
 ``Initialize``::
@@ -255,17 +280,38 @@ three or four arguments:
   arguments can be specified with the fourth parameter.
 
 * `Class_Record`
-  Every widget in C is associated with two records. The first one, which exists
-  only once per widget type, is the 'class record'. It contains the list of
-  signals that are known by this widget type, the list of default callbacks for
-  the signals, ...; the second record is an 'instance record', which contains
-  data specific to a particular instance.
+  Every widget in C is associated with three records:
 
-  In GtkAda, the 'instance record' is simply your tagged type and its fields.
-  The call to `Initialize_Class_Record` is provided to initialize the
-  'class record'. As we said, there should be only one such record per widget
-  type. This parameter 'Class_Record' will point to this records, once it is
-  created, and will be reused for every instanciation of the widget.
+  - An instance of `GType`, which is a unique identifier (integer) for all
+    the class of widgets defined in the framework. This description also
+    contains the name of the class, its parent type, the list of
+    interfaces it inherits, and all the signals is defines.
+
+    These `GType` are often created early on when an application is launched,
+    and provide the basic introspection capabilities in a gtk+ application.
+
+    In Ada, this type is created by the function `Get_Type` in the example
+    above (which is why we need to add the interface in that function).
+
+  - An instance of `GObject_Class`, which contains implementation details
+    for the class, defines the default signal handlers (how to draw a
+    widget of the class, how to handle size negociation,...), and defines
+    any number of properties that can be configured on the widget
+    (properties are a generic interface to access the components of a
+    composite widget, as well as some of its behavior -- they can be
+    modified through introspection for instance in a GUI builder).
+
+    Such a type is created automatically by gtk+ just before it creates
+    the first instance of that widget type. It will then immediately call
+    the `Class_Init` function that might have been passed to
+    `Glib.Object.Initialize_Class_Record`. At that point, you can add your
+    own new properties, or override the default signal handlers to redirect
+    them to your own implementation.
+
+   - A class instance record; there is one such record for each widget of
+     that type.
+     In GtkAda, the 'instance record' is simply your tagged type and its
+     fields. It is created when you call any of the `Gtk_New` functions.
 
 * `Parameters`
   This fourth argument is in fact optional, and is used to specify which
