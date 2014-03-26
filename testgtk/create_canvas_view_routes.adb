@@ -26,25 +26,27 @@ with Gdk.RGBA;            use Gdk.RGBA;
 with Glib;                use Glib;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtkada.Canvas;       use Gtkada.Canvas;
+with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
 with Gtkada.Style;        use Gtkada.Style;
 with GNAT.Strings;        use GNAT.Strings;
 with Pango.Cairo;         use Pango.Cairo;
 with Pango.Font;          use Pango.Font;
 with Pango.Layout;        use Pango.Layout;
 
-package body Create_Canvas_Links is
+package body Create_Canvas_View_Routes is
 
    Width  : constant Gdouble := 13.0;
    Height : constant Gdouble := 13.0;
 
    type Demo_Item_Record is new Canvas_Item_Record with record
-      Style : Drawing_Style;
-      Text  : String_Access;
+      Style         : Drawing_Style;
+      Text          : String_Access;
    end record;
    type Demo_Item is access all Demo_Item_Record'Class;
    overriding procedure Draw
      (Self : access Demo_Item_Record; Cr : Cairo_Context);
+   overriding function Bounding_Box
+     (Self : not null access Demo_Item_Record) return Item_Rectangle;
 
    Layout : Pango_Layout;
 
@@ -59,20 +61,37 @@ package body Create_Canvas_Links is
         & ASCII.LF
         & "The links can be attached to any side of the source and target"
         & " objects, or left to automatically chose the side to get a shorter"
-        & " link. The text in each pair of items indicates what sides the link"
-        & " is attached to: A=auto, R=right, L=left, T=top, B=bottom."
+        & " link."
         & ASCII.LF
-        & "On each line, the items are grouped by pair, where the second item"
-        & " occupies each of the height positions around the first item."
+        & "Each group of 8 pairs shows a diffent combination of forcing"
+        & " specific side attachments for the two boxes. The first letter"
+        & " indicates the attachment on the first box (the one that contains"
+        & " the text), the second letter indicates the attachment for the"
+        & " second box.    A=auto, R=right, L=left, T=top, B=bottom."
         & ASCII.LF
         & "The links can chose among several automatic routing algorithms,"
         & " using either straight lines or Bezier curves, and connecting the"
         & " source and target in the most direct way or limiting to horizontal"
         & " and vertical links."
         & ASCII.LF
-        & "Finally, links can use a variety of colors, dashed lins,"
+        & "Each pair includes multiple links, one for each of the routing"
+        & " algorithms."
+        & ASCII.LF
+        & "Finally, links can use a variety of colors, dash pattern,"
         & " widths,...";
    end Help;
+
+   ------------------
+   -- Bounding_Box --
+   ------------------
+
+   overriding function Bounding_Box
+     (Self : not null access Demo_Item_Record) return Item_Rectangle
+   is
+      pragma Unreferenced (Self);
+   begin
+      return (0.0, 0.0, Width, Height);
+   end Bounding_Box;
 
    ----------
    -- Draw --
@@ -101,7 +120,8 @@ package body Create_Canvas_Links is
 
       PW : constant Gdouble := W * 2.0;  --  space between groups of items
 
-      Canvas       : Interactive_Canvas;
+      Canvas       : Canvas_View;
+      Model        : List_Canvas_Model;
       Scrolled     : Gtk_Scrolled_Window;
       Object_Style : Drawing_Style;
       Link_Styles  : array (Route_Style) of Drawing_Style;
@@ -141,22 +161,20 @@ package body Create_Canvas_Links is
 
           --  Second item to the right and below
           (PW + W,        H * 3.0),
-          (PW + W * 2.0,  H * 3.0 + H)
+          (PW + W * 2.0,  H * 3.0 + H),
+
+          --   Middle item, self links
+          (PW,            H * 2.0)
          );
 
 
       Items        : array (Pos'Range) of Demo_Item;
 
    begin
-      Gtk_New (Scrolled);
-      Scrolled.Set_Policy (Policy_Automatic, Policy_Automatic);
-      Frame.Add (Scrolled);
-
       Layout := Frame.Create_Pango_Layout;
       Layout.Set_Font_Description (From_String ("sans 8px"));
 
-      Gtk_New (Canvas);
-      Scrolled.Add (Canvas);
+      Gtk_New (Model);
 
       Object_Style := Gtk_New
         (Stroke => Black_RGBA,
@@ -170,12 +188,10 @@ package body Create_Canvas_Links is
       Y := 0.0;
       X := 0.0;
 
+--        for From_Side in Auto .. Auto loop
+--           for To_Side in Auto .. Auto loop
       for From_Side in Side_Attachment loop
          for To_Side in Side_Attachment loop
---        for Route in Orthocurve .. Orthocurve loop
---           for From_Side in Auto .. Auto loop
---              for To_Side in Auto .. Auto loop
-
             for J in Items'Range loop
                Items (J) := new Demo_Item_Record;
                Items (J).Style := Object_Style;
@@ -192,21 +208,33 @@ package body Create_Canvas_Links is
                   end;
                end if;
 
-               Items (J).Set_Screen_Size (Width, Height);
-               Canvas.Put (Items (J), X + Pos (J).X, Y + Pos (J).Y);
+               Items (J).Set_Position ((X + Pos (J).X, Y + Pos (J).Y));
+               Model.Add (Items (J));
             end loop;
 
+--            for Route in Straight .. Straight loop
             for Route in Route_Style loop
                It := Items'First;
                while It < Items'Last loop
-                  Link := new Canvas_Link_Record;
-                  Link.Configure (Link_Styles (Route), Routing => Route);
-                  Link.Set_Src_Pos ((0.5, 0.5, From_Side));
-                  Link.Set_Dest_Pos ((0.5, 0.5, To_Side));
-                  Canvas.Add_Link (Link, Items (It), Items (It + 1));
+                  Link := Gtk_New
+                    (From        => Items (It),
+                     To          => Items (It + 1),
+                     Style       => Link_Styles (Route),
+                     Routing     => Route,
+                     Anchor_From => (0.5, 0.5, From_Side),
+                     Anchor_To   => (0.5, 0.5, To_Side));
+                  Model.Add (Link);
                   It := It + 2;
                end loop;
 
+               Link := Gtk_New
+                 (From        => Items (Items'Last),
+                  To          => Items (Items'Last),
+                  Style       => Link_Styles (Route),
+                  Routing     => Route,
+                  Anchor_From => (0.5, 0.5, From_Side),
+                  Anchor_To   => (0.5, 0.5, To_Side));
+               Model.Add (Link);
             end loop;
 
             X := X + PW + W * 3.0 + 20.0;
@@ -216,7 +244,20 @@ package body Create_Canvas_Links is
          Y := Y + H * 4.0 + 60.0;
       end loop;
 
+      --  Create the view once the model is populated, to avoid a refresh
+      --  every time a new item is added.
+
+      Gtk_New (Scrolled);
+      Scrolled.Set_Policy (Policy_Always, Policy_Always);
+      Frame.Add (Scrolled);
+
+      Gtk_New (Canvas, Model);
+      Canvas.Set_Background_Style
+        (Gtk_New (Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.3))));
+      Unref (Model);
+      Scrolled.Add (Canvas);
+
       Frame.Show_All;
    end Run;
 
-end Create_Canvas_Links;
+end Create_Canvas_View_Routes;

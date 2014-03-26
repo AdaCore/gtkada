@@ -23,29 +23,26 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
-with Gdk.Cairo;                     use Gdk.Cairo;
-with Glib.Graphs;                   use Glib.Graphs;
-with Gtkada.Canvas.Astar;           use Gtkada.Canvas.Astar;
-with Gtkada.Canvas.Objects;         use Gtkada.Canvas.Objects;
+with Ada.Unchecked_Deallocation;
+with Gtkada.Canvas_View.Astar;      use Gtkada.Canvas_View.Astar;
+with Gtkada.Canvas_View.Objects;    use Gtkada.Canvas_View.Objects;
 with Gtkada.Style;                  use Gtkada.Style;
-with Pango.Cairo;                   use Pango.Cairo;
-with Pango.Layout;                  use Pango.Layout;
 
-package body Gtkada.Canvas.Links is
+package body Gtkada.Canvas_View.Links is
 
    package Gdouble_Elementary_Functions is new
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Gdouble_Elementary_Functions;
 
    type End_Info is record
-      Box      : Cairo_Rectangle;
+      Box      : Model_Rectangle;
       --  The bounding box for the end element of the link
 
-      Toplevel : Cairo_Rectangle;
+      Toplevel : Model_Rectangle;
       --  The bounding box for the toplevel element that contains the source
       --  element.
 
-      P        : Point;
+      P        : Model_Point;
       --  Anchor points for each end of the link, on the toplevel box
    end record;
 
@@ -55,6 +52,9 @@ package body Gtkada.Canvas.Links is
    --  Various dimensions computed for the layout of links.
    --  It contains the start and end points for the link, as well as the
    --  bounding boxes.
+
+   procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+     (Item_Point_Array, Item_Point_Array_Access);
 
    procedure Sort (Arr : in out Gdouble_Array);
    --  Sort the array
@@ -67,23 +67,12 @@ package body Gtkada.Canvas.Links is
 
    procedure Compute_Labels
      (Self   : not null access Canvas_Link_Record'Class;
-      Canvas : not null access Interactive_Canvas_Record'Class;
       Dim    : Anchors);
    --  Compute the position for the end labels and middle label for the link
 
    procedure Compute_Bounding_Box
      (Self : not null access Canvas_Link_Record'Class);
    --  Compute the bounding box for the link
-
-   procedure Draw_Annotation
-     (Canvas   : access Interactive_Canvas_Record'Class;
-      Cr       : Cairo_Context;
-      X_Canvas : Gdouble;
-      Y_Canvas : Gdouble;
-      Link     : access Canvas_Link_Record'Class);
-   --  Print an annotation on the canvas.
-   --  The annotation is centered around (X, Y), in pixels. These coordinates
-   --  should already include zoom processing.
 
    type Layout_Matrix is record
       X, Y : Gdouble_Array (1 .. 7);
@@ -125,12 +114,15 @@ package body Gtkada.Canvas.Links is
         --  If the target is not a valid destination
         or else abs (Self.X (To.X) - Gdouble'Last) < 0.01
         or else abs (Self.Y (To.Y) - Gdouble'Last) < 0.01
-        or else Point_In_Rect
+      then
+         return Not_Traversable;
+
+      elsif Point_In_Rect
           (Self.Dim.From.Toplevel, (Self.X (To.X), Self.Y (To.Y)))
         or else Point_In_Rect
           (Self.Dim.To.Toplevel, (Self.X (To.X), Self.Y (To.Y)))
       then
-         return Not_Traversable;
+         return 10_000;   --  very expensive, but not impossible if we have to
 
       else
          --  A bend is costly
@@ -160,37 +152,55 @@ package body Gtkada.Canvas.Links is
    function Compute_Anchors
      (Self : not null access Canvas_Link_Record'Class) return Anchors
    is
-      S : constant Canvas_Item := Canvas_Item (Self.Get_Src);
-      D : constant Canvas_Item := Canvas_Item (Self.Get_Dest);
-      P : Point;
-      Result : Anchors :=
-        (From  =>
-           (P        => Link_Anchor_Point (S, Self.Src_Anchor),
-            Box      => S.Get_Coord,
-            Toplevel => S.Get_Toplevel.Get_Coord),
-         To    =>
-           (P        => Link_Anchor_Point (D, Self.Dest_Anchor),
-            Box      => D.Get_Coord,
-            Toplevel => D.Get_Toplevel.Get_Coord));
+      S  : constant Abstract_Item := Self.From;
+      ST : Abstract_Item := Gtkada.Canvas_View.Objects.Toplevel (S);
+      D  : constant Abstract_Item := Self.To;
+      DT : Abstract_Item := Gtkada.Canvas_View.Objects.Toplevel (D);
+      P  : Model_Point;
+      Result : Anchors;
    begin
+      if ST = null then
+         ST := S;
+      end if;
+
+      if DT = null then
+         DT := D;
+      end if;
+
+      Result :=
+        (From  =>
+           (P        => S.Item_To_Model
+              (S.Link_Anchor_Point (Self.Anchor_From)),
+            Box      => S.Model_Bounding_Box,
+            Toplevel => ST.Model_Bounding_Box),
+         To    =>
+           (P        => D.Item_To_Model
+              (D.Link_Anchor_Point (Self.Anchor_To)),
+            Box      => D.Model_Bounding_Box,
+            Toplevel => DT.Model_Bounding_Box));
+
       --  Clip the line to the side of the toplevel boxes.
 
-      if Self.Src_Anchor.Side = Auto then
+      if Self.Anchor_From.Toplevel_Side = Auto then
          if Self.Waypoints = null then
             P := Result.To.P;
          else
-            P := Self.Waypoints (Self.Waypoints'First);
+            P := Self.Item_To_Model (Self.Waypoints (Self.Waypoints'First));
          end if;
-         Result.From.P := S.Get_Toplevel.Clip_Line (Result.From.P, P);
+         Result.From.P := ST.Item_To_Model
+           (ST.Clip_Line
+              (ST.Model_To_Item (Result.From.P), ST.Model_To_Item (P)));
       end if;
 
-      if Self.Dest_Anchor.Side = Auto then
+      if Self.Anchor_To.Toplevel_Side = Auto then
          if Self.Waypoints = null then
             P := Result.From.P;
          else
-            P := Self.Waypoints (Self.Waypoints'Last);
+            P := Self.Item_To_Model (Self.Waypoints (Self.Waypoints'Last));
          end if;
-         Result.To.P := D.Get_Toplevel.Clip_Line (Result.To.P, P);
+         Result.To.P := DT.Item_To_Model
+           (DT.Clip_Line
+              (DT.Model_To_Item (Result.To.P), DT.Model_To_Item (P)));
       end if;
 
       return Result;
@@ -206,11 +216,9 @@ package body Gtkada.Canvas.Links is
       P     : constant Point_Array_Access := Self.Points;
       Max_X : Gdouble := P (P'First).X;
       Max_Y : Gdouble := P (P'First).Y;
-      X, Y  : Gdouble;
+      X     : Gdouble := Max_X;
+      Y     : Gdouble := Max_Y;
    begin
-      X := Max_X;
-      Y := Max_Y;
-
       for P1 in P'First + 1 .. P'Last loop
          X := Gdouble'Min (X, P (P1).X);
          Y := Gdouble'Min (Y, P (P1).Y);
@@ -228,50 +236,12 @@ package body Gtkada.Canvas.Links is
 
    procedure Compute_Labels
      (Self   : not null access Canvas_Link_Record'Class;
-      Canvas : not null access Interactive_Canvas_Record'Class;
       Dim    : Anchors)
    is
-      pragma Unreferenced (Self, Canvas, Dim);
+      pragma Unreferenced (Self, Dim);
    begin
       null;
    end Compute_Labels;
-
-   ---------------------
-   -- Draw_Annotation --
-   ---------------------
-
-   procedure Draw_Annotation
-     (Canvas   : access Interactive_Canvas_Record'Class;
-      Cr       : Cairo_Context;
-      X_Canvas : Gdouble;
-      Y_Canvas : Gdouble;
-      Link     : access Canvas_Link_Record'Class)
-   is
-      W, H : Gint;
-   begin
-      if Link.Descr /= null
-        and then Link.Descr.all /= ""
-        and then Canvas.Annotation_Layout /= null
-      then
-         Set_Text (Canvas.Annotation_Layout, Link.Descr.all);
-         Get_Pixel_Size (Canvas.Annotation_Layout, W, H);
-
-         Cairo.Save (Cr);
-         Gdk.Cairo.Set_Source_RGBA (Cr, (0.0, 0.0, 0.0, 0.0));
-         Cairo.Set_Line_Width (Cr, 1.0);
-         Cairo.Rectangle
-           (Cr,
-            X_Canvas - 0.5,
-            Y_Canvas - 0.5,
-            Gdouble (W) + 1.0,
-            Gdouble (H) + 1.0);
-         Cairo.Fill (Cr);
-         Cairo.Restore (Cr);
-
-         Cairo.Move_To (Cr, X_Canvas, Y_Canvas);
-         Pango.Cairo.Show_Layout (Cr, Canvas.Annotation_Layout);
-      end if;
-   end Draw_Annotation;
 
    ----------
    -- Sort --
@@ -303,8 +273,7 @@ package body Gtkada.Canvas.Links is
    ----------------------------------------
 
    procedure Compute_Layout_For_Orthogonal_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class)
+     (Link   : not null access Canvas_Link_Record'Class)
    is
       B : constant Gdouble := 4.0;
       --  Border around each box in which the links should not be displayed.
@@ -327,7 +296,7 @@ package body Gtkada.Canvas.Links is
       procedure Compute_Sides
         (Anchor : Anchor_Attachment;
          Info   : End_Info;
-         P, P2  : out Point);
+         P, P2  : out Item_Point);
       --  Compute whether a link should start horizontal or vertical, and
       --  which side it should start on.
       --  (P, P2) is the first segment of an orthogonal link exiting from the
@@ -340,13 +309,13 @@ package body Gtkada.Canvas.Links is
       procedure Compute_Sides
         (Anchor : Anchor_Attachment;
          Info   : End_Info;
-         P, P2  : out Point)
+         P, P2  : out Item_Point)
       is
          Effective_Side : Side_Attachment;
       begin
-         case Anchor.Side is
+         case Anchor.Toplevel_Side is
             when Top | Bottom | Right | Left =>
-               Effective_Side := Anchor.Side;
+               Effective_Side := Anchor.Toplevel_Side;
             when Auto =>
                if Info.P.X = Info.Toplevel.X then
                   Effective_Side := Left;
@@ -379,16 +348,16 @@ package body Gtkada.Canvas.Links is
          end case;
       end Compute_Sides;
 
-      From, To : Point;
-      M      : Point;
-      P_From : Point;   --  extending from the From box
-      P_To   : Point;   --  extending from the To box
+      From, To : Item_Point;
+      M      : Item_Point;
+      P_From : Item_Point;   --  extending from the From box
+      P_To   : Item_Point;   --  extending from the To box
       C1, C2 : Coordinate;
       Matrix : Layout_Matrix;
 
    begin
-      Compute_Sides (Link.Src_Anchor, Dim.From, From, P_From);
-      Compute_Sides (Link.Dest_Anchor, Dim.To, To, P_To);
+      Compute_Sides (Link.Anchor_From, Dim.From, From, P_From);
+      Compute_Sides (Link.Anchor_To, Dim.To, To, P_To);
 
       Unchecked_Free (Link.Points);
 
@@ -450,15 +419,15 @@ package body Gtkada.Canvas.Links is
 
       declare
          Path   : constant Coordinate_Array := Astar_Find (Matrix, C1, C2);
-         Points : Point_Array (1 .. 4 + Path'Length);
+         Points : Item_Point_Array (1 .. 4 + Path'Length);
          P      : Integer;
          Along_X : Boolean;
 
-         procedure Add_Point (New_P : Point);
+         procedure Add_Point (New_P : Item_Point);
          --  Add a new point to the final path, or merge with the previous
          --  point if possible
 
-         procedure Add_Point (New_P : Point) is
+         procedure Add_Point (New_P : Item_Point) is
             Tmp : Boolean;
          begin
             Tmp := abs (New_P.X - Points (P - 1).X) < 0.01;
@@ -487,11 +456,11 @@ package body Gtkada.Canvas.Links is
 
          Add_Point (To);
 
-         Link.Points := new Point_Array'(Points (Points'First .. P - 1));
+         Link.Points := new Item_Point_Array'(Points (Points'First .. P - 1));
       end;
 
       Compute_Bounding_Box (Link);
-      Compute_Labels (Link, Canvas, Dim);
+      Compute_Labels (Link, Dim);
    end Compute_Layout_For_Orthogonal_Link;
 
    --------------------------------------
@@ -499,20 +468,19 @@ package body Gtkada.Canvas.Links is
    --------------------------------------
 
    procedure Compute_Layout_For_Straight_Link
-     (Canvas          : access Interactive_Canvas_Record'Class;
-      Link            : access Canvas_Link_Record'Class)
+     (Link : not null access Canvas_Link_Record'Class)
    is
-      P   : constant Point_Array_Access := Link.Points;
+      P   : constant Item_Point_Array_Access := Link.Points;
       Dim : constant Anchors := Compute_Anchors (Link);
 
-      function Get_Wp return Point_Array;
+      function Get_Wp return Item_Point_Array;
       --  Return the waypoints to use
 
-      function Get_Wp return Point_Array is
+      function Get_Wp return Item_Point_Array is
       begin
          --  Support for self-referencing straight links
 
-         if Get_Src (Link) = Get_Dest (Link) then
+         if Link.From = Link.To then
             return No_Waypoints;
          elsif Link.Waypoints /= null then
             return Link.Waypoints.all;
@@ -521,14 +489,14 @@ package body Gtkada.Canvas.Links is
          end if;
       end Get_Wp;
 
-      Waypoints : Point_Array := Get_Wp;
-      Tmp       : Point;
+      Waypoints : Item_Point_Array := Get_Wp;
+      Tmp       : Item_Point;
    begin
-      if Get_Src (Link) = Get_Dest (Link) then
+      if Link.From = Link.To then
          Tmp := (Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
                  Dim.From.Toplevel.Y);
          Unchecked_Free (Link.Points);
-         Link.Points := new Point_Array'
+         Link.Points := new Item_Point_Array'
            ((Tmp.X - 10.0, Tmp.Y),
             (Tmp.X - 10.0, Tmp.Y - 10.0),
             (Tmp.X + 10.0, Tmp.Y - 10.0),
@@ -558,15 +526,21 @@ package body Gtkada.Canvas.Links is
          end if;
 
          Unchecked_Free (Link.Points);
-         Link.Points := new Point_Array'(Dim.From.P & Waypoints & Dim.To.P);
+         Link.Points := new Item_Point_Array'
+           (Link.Model_To_Item (Dim.From.P)
+            & Waypoints
+            & Link.Model_To_Item (Dim.To.P));
 
       else
          Unchecked_Free (Link.Points);
-         Link.Points := new Point_Array'(Dim.From.P & Waypoints & Dim.To.P);
+         Link.Points := new Item_Point_Array'
+           (Link.Model_To_Item (Dim.From.P)
+            & Waypoints
+            & Link.Model_To_Item (Dim.To.P));
       end if;
 
       Compute_Bounding_Box (Link);
-      Compute_Labels (Link, Canvas, Dim);
+      Compute_Labels (Link, Dim);
    end Compute_Layout_For_Straight_Link;
 
    ---------------------------------
@@ -574,21 +548,21 @@ package body Gtkada.Canvas.Links is
    ---------------------------------
 
    procedure Compute_Layout_For_Arc_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class;
+     (Link   : not null access Canvas_Link_Record'Class;
       Offset : Gint := 1)
    is
       Dim : constant Anchors := Compute_Anchors (Link);
 
-      function Get_Wp return Point_Array;
+      function Get_Wp return Item_Point_Array;
       --  Return the waypoints to use
 
-      procedure Control_Points (From, To : Point; Ctrl1, Ctrl2 : out Point);
+      procedure Control_Points
+        (From, To : Item_Point; Ctrl1, Ctrl2 : out Item_Point);
       --  Compute the control points on the curve from From to To
 
-      function Get_Wp return Point_Array is
+      function Get_Wp return Item_Point_Array is
       begin
-         if Get_Src (Link) = Get_Dest (Link) then
+         if Link.From = Link.To then
             return No_Waypoints;
          elsif Link.Waypoints /= null then
             return Link.Waypoints.all;
@@ -597,7 +571,9 @@ package body Gtkada.Canvas.Links is
          end if;
       end Get_Wp;
 
-      procedure Control_Points (From, To : Point; Ctrl1, Ctrl2 : out Point) is
+      procedure Control_Points
+        (From, To : Item_Point; Ctrl1, Ctrl2 : out Item_Point)
+      is
          Dx : Gdouble := To.X - From.X;
          Dy : Gdouble := To.Y - From.Y;
          D : constant Gdouble := Sqrt (Dx * Dx + Dy * Dy);
@@ -621,34 +597,41 @@ package body Gtkada.Canvas.Links is
          end if;
       end Control_Points;
 
-      Waypoints : constant Point_Array := Get_Wp;
-      P1, P2, P3, P4 : Point;
+      Waypoints : constant Item_Point_Array := Get_Wp;
+      P1, P2, P3, P4 : Item_Point;
+      FP, TP : Item_Point;
    begin
       Unchecked_Free (Link.Points);
 
-      if Get_Src (Link) = Get_Dest (Link) then
-         Link.Points := new Point_Array'
+      if Link.From = Link.To then
+         Link.Points := new Item_Point_Array'
            (Circle_From_Bezier
-              (Center =>
-                   (Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
-                    Dim.From.Toplevel.Y),
+              (Center => Link.Model_To_Item
+                   ((Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
+                    Dim.From.Toplevel.Y)),
                Radius => 10.0 + 4.0 * Gdouble (abs (Offset) - 1)));
 
       elsif Waypoints'Length = 0 then
-         Control_Points (Dim.From.P, Dim.To.P, P1, P2);
-         Link.Points := new Point_Array'((Dim.From.P, P1, P2, Dim.To.P));
+         FP := Link.Model_To_Item (Dim.From.P);
+         TP := Link.Model_To_Item (Dim.To.P);
+
+         Control_Points (FP, TP, P1, P2);
+         Link.Points := new Item_Point_Array'((FP, P1, P2, TP));
 
       else
-         Control_Points (Dim.From.P, Waypoints (Waypoints'First), P1, P2);
-         Control_Points (Waypoints (Waypoints'Last), Dim.To.P, P3, P4);
-         Link.Points := new Point_Array'
-           (Point_Array'(Dim.From.P, P1, P2)
+         FP := Link.Model_To_Item (Dim.From.P);
+         TP := Link.Model_To_Item (Dim.To.P);
+
+         Control_Points (FP, Waypoints (Waypoints'First), P1, P2);
+         Control_Points (Waypoints (Waypoints'Last), TP, P3, P4);
+         Link.Points := new Item_Point_Array'
+           (Item_Point_Array'(FP, P1, P2)
             & Waypoints
-            & Point_Array'(P3, P4, Dim.To.P));
+            & Item_Point_Array'(P3, P4, TP));
       end if;
 
       Compute_Bounding_Box (Link);
-      Compute_Labels (Link, Canvas, Dim);
+      Compute_Labels (Link, Dim);
    end Compute_Layout_For_Arc_Link;
 
    ----------------------------------------
@@ -656,19 +639,18 @@ package body Gtkada.Canvas.Links is
    ----------------------------------------
 
    procedure Compute_Layout_For_Orthocurve_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class)
+     (Link   : not null access Canvas_Link_Record'Class)
    is
-      P : Point_Array_Access;
+      P : Item_Point_Array_Access;
       L : Integer;
    begin
-      Compute_Layout_For_Orthogonal_Link (Canvas, Link);
+      Compute_Layout_For_Orthogonal_Link (Link);
       P := Link.Points;
 
       if P'Length <= 2 then
          null;  --  degenerate case, handled in Draw_Link
       elsif P'Length = 3 then
-         Link.Points := new Point_Array'
+         Link.Points := new Item_Point_Array'
            ((P (P'First), P (P'First + 1), P (P'First + 1), P (P'Last)));
          Unchecked_Free (P);
       elsif P'Length = 4 then
@@ -676,7 +658,7 @@ package body Gtkada.Canvas.Links is
       else
          --  Create intermediate points in the middle of segments
 
-         Link.Points := new Point_Array (1 .. 3 * P'Length - 5);
+         Link.Points := new Item_Point_Array (1 .. 3 * P'Length - 5);
          Link.Points (Link.Points'First) := P (P'First);
          L := Link.Points'First + 1;
 
@@ -710,12 +692,10 @@ package body Gtkada.Canvas.Links is
    ---------------
 
    procedure Draw_Link
-     (Canvas           : access Interactive_Canvas_Record'Class;
-      Link             : access Canvas_Link_Record'Class;
-      Cr               : Cairo.Cairo_Context;
-      Show_Annotations : Boolean := True)
+     (Link : not null access Canvas_Link_Record'Class;
+      Cr   : Cairo.Cairo_Context)
    is
-      P      : constant Point_Array_Access := Link.Points;
+      P      : constant Item_Point_Array_Access := Link.Points;
    begin
       pragma Assert (P /= null, "waypoints must be computed first");
       pragma Assert (P'Length >= 2, "no enough waypoints");
@@ -734,11 +714,49 @@ package body Gtkada.Canvas.Links is
          when Curve =>
             Link.Style.Draw_Polycurve (Cr, P.all);
       end case;
-
-      if False and then Show_Annotations then
-         Draw_Annotation
-           (Canvas, Cr, P (P'First).X, P (P'First).Y, Link);
-      end if;
    end Draw_Link;
 
-end Gtkada.Canvas.Links;
+   ------------------------
+   -- Circle_From_Bezier --
+   ------------------------
+
+   function Circle_From_Bezier
+     (Center   : Item_Point;
+      Radius   : Glib.Gdouble) return Item_Point_Array
+   is
+      --  Magic number comes from several articles on the web, including
+      --    http://www.charlespetzold.com/blog/2012/12/
+      --       Bezier-Circles-and-Bezier-Ellipses.html
+
+      P : Item_Point_Array (1 .. 13);
+      R : constant Gdouble := Radius * 0.55;
+   begin
+      P (P'First + 0)  := (Center.X,          Center.Y - Radius);
+
+      P (P'First + 1)  := (Center.X + R,      Center.Y - Radius);
+      P (P'First + 2)  := (Center.X + Radius, Center.Y - R);
+
+      P (P'First + 3)  := (Center.X + Radius, Center.Y);
+
+      P (P'First + 4)  := (Center.X + Radius, Center.Y + R);
+      P (P'First + 5)  := (Center.X + R,      Center.Y + Radius);
+
+      P (P'First + 6)  := (Center.X,          Center.Y + Radius);
+
+      P (P'First + 7)  := (Center.X - R,      Center.Y + Radius);
+      P (P'First + 8)  := (Center.X - Radius, Center.Y + R);
+
+      P (P'First + 9)  := (Center.X - Radius, Center.Y);
+
+      P (P'First + 10) := (Center.X - Radius, Center.Y - R);
+      P (P'First + 11) := (Center.X - R,      Center.Y - Radius);
+
+      P (P'First + 12) := (Center.X, Center.Y - Radius);
+
+      return P;
+
+      --  For quadratic bezier curves, we could have used:
+      --  See http://texdoc.net/texmf-dist/doc/latex/lapdf/rcircle.pdf
+   end Circle_From_Bezier;
+
+end Gtkada.Canvas_View.Links;

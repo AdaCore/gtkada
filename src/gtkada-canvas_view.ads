@@ -1,0 +1,720 @@
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 1998-2014, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
+
+--  <description>
+--  This package is a rewrite of Gtkada.Canvas, with hopefully more
+--  capabilities and a cleaner API.
+--
+--  It provides a drawing area (canvas) on which items can be displayed and
+--  linked together. It also supports interactive manipulation of those
+--  items.
+--
+--  This package is organized around the concept of Model-View-Controller:
+--    - The model is an item that gives access to all the items contained
+--      in the canvas, although it need not necessarily own them. A default
+--      model implementation is provided which indeed stores the items
+--      internally, but it is possible to create a model which is a simple
+--      wrapper around an application-specific API that would already have the
+--      list of items.
+--
+--    - The view is in charge of representing the model, or a subset of it. It
+--      is possible to have multiple views for a single model, each displaying
+--      a different subset or a different part of the whole canvas.
+--
+--    - The controller provides the user interaction in the canvas, and will
+--      change the view and model properties when the user performs actions.
+--
+--  Differences with Gtkada.Canvas
+--  ==============================
+--
+--  This package is organized around the concept of Model-View-Controller,
+--  which provides a much more flexible approach. There is for instance no
+--  need to duplicate the items in memory if you already have them available
+--  somewhere else in your application.
+--  Various settings that were set on an Interactive_Canvas (like the font for
+--  annotations, arrow sizes,...) are now configured on each item or link
+--  separately, which provides much more flexibility in what this canvas can
+--  display.
+
+--
+--
+--
+--  It also supports scrolling if put in a Gtk_Scrolled_Window.
+--  The canvas will be scrolled (and the selected items moved) if an item is
+--  selected and the mouse is dragged on a small area on the side of the canvas
+--  or even directly outside of the canvas. Scrolling will continue until the
+--  mouse is either released or moved back inside the canvas.
+--
+--  The scrolling speed will slightly increase over time if the mouse is kept
+--  outside of the canvas. This makes the canvas much more comfortable to use
+--  for the user.
+--
+--  All items put in this canvas must implement the interface
+--  Abstract_Item_Record..
+--  However, it is your responsability, as a programmer, to provide drawing
+--  routines. In fact, all these items should draw in a pixmap, which is then
+--  copied automatically to the screen whenever the canvas needs to redraw
+--  itself.
+--
+--  The items can also react to mouse events: mouse clicks are transmitted to
+--  the item if the mouse did not move more than a given amount of pixels.
+--  To decide what their reaction should be, you should override the
+--  On_Button_Click subprogram.
+--
+--  Items are selected automatically when they are clicked. If Control is
+--  pressed at the same time, multiple items can be selected.
+--  If the background is clicked (and control is not pressed), then all items
+--  are unselected.
+--  Pressing and dragging the mouse in the backgroudn draws a virtual box on
+--  the screen. All the items fully included in this box when it is released
+--  will be selected (this will replace the current selection if Control was
+--  not pressed).
+--
+--  </description>
+--  <group>Drawing</group>
+--  <testgtk>create_canvas_view.adb</testgtk>
+
+pragma Ada_2012;
+
+private with Ada.Containers.Doubly_Linked_Lists;
+private with Ada.Unchecked_Deallocation;
+with Cairo.Region;
+with Glib;             use Glib;
+with Glib.Object;      use Glib.Object;
+with Gtk.Layout;
+with Gtkada.Style;
+
+package Gtkada.Canvas_View is
+
+   -----------------
+   -- Coordinates --
+   -----------------
+   --  There are multiple coordinate systems used in this API. Here is a full
+   --  description:
+   --
+   --  - Model coordinates: these are the coordinates of items without
+   --    considering canvas scrolling or zooming. These do not change when the
+   --    view is zoomed or scrolled, and these are therefore the coordinates
+   --    that are stored in the model.
+   --    The drawing of links is done within this system.
+   --    These coordinates are in general oriented so that x increases towards
+   --    the right, and y increases towards the bottom of the screen. This
+   --    can be changed by overriding Set_Transform below.
+   --
+   --  - View coordinates: these are the coordinates of items in the widget
+   --    representing the view. They change when the view is scrolled or
+   --    zoomed. These coordinates are mostly an implementation detail.
+   --
+   --  - Item coordinates: these are the coordinates relative to the
+   --    top-left corner of an item as if it was displayed at a zoom level of
+   --    100%. All drawing of items is done with this system, so that the
+   --    same item can be displayed at different positions in the view
+   --    without changing the drawing instructions.
+   --    The drawing coordinates are automatically converted to the view
+   --    coordinates by the use of a transformation matrix, which is done very
+   --    efficiently on modern systems.
+   --
+   --  - Window coordinates
+   --    These are rarely used, only when interfacing with gtk+ events. These
+   --    are the coordinates relative to the Gdk_Window of the view.
+
+   subtype Model_Coordinate  is Gdouble;
+   subtype View_Coordinate   is Gdouble;
+   subtype Item_Coordinate   is Gdouble;
+   subtype Window_Coordinate is Gint;
+   --  We use subtypes for convenience in your applications to avoid casts.
+
+   type Model_Rectangle  is record
+     X, Y, Width, Height : Model_Coordinate;
+   end record;
+   type View_Rectangle   is record
+      X, Y, Width, Height : View_Coordinate;
+   end record;
+   type Item_Rectangle   is record
+      X, Y, Width, Height : Item_Coordinate;
+   end record;
+   subtype Window_Rectangle is Cairo.Region.Cairo_Rectangle_Int;
+   --  A rectangle in various coordinates
+
+   type Model_Point is record
+      X, Y : Model_Coordinate;
+   end record;
+   type View_Point  is record
+      X, Y : View_Coordinate;
+   end record;
+   subtype Item_Point  is Gtkada.Style.Point;
+   --  A point in various coordinates
+
+   type Model_Point_Array is array (Natural range <>) of Model_Point;
+   type Model_Point_Array_Access is access Model_Point_Array;
+
+   subtype Item_Point_Array is Gtkada.Style.Point_Array;
+   subtype Item_Point_Array_Access is Gtkada.Style.Point_Array_Access;
+
+   No_Rectangle : constant Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
+   No_Point     : constant Model_Point := (Gdouble'First, Gdouble'First);
+
+   function Point_In_Rect
+     (Rect : Model_Rectangle; P : Model_Point) return Boolean;
+   function Point_In_Rect
+     (Rect : Item_Rectangle; P : Item_Point) return Boolean;
+   --  Whether the point is in the rectangle
+
+   function Intersects (Rect1, Rect2 : Model_Rectangle) return Boolean;
+   --  Whether the two rectangles intersect.
+
+   procedure Union
+     (Rect1 : in out Model_Rectangle;
+      Rect2 : Model_Rectangle);
+   --  Store in Rect1 the minimum rectangle that contains both Rect1 and Rect2.
+
+   ------------------
+   -- Enumerations --
+   ------------------
+
+   type Side_Attachment is (Auto, Top, Right, Bottom, Left);
+   --  Which side of the toplevel item the link is attached to.
+   --  For toplevel items, this can be controlled by using the
+   --  Anchor_Attachment's X and Y properties.
+   --  But for nested item, this forces the link to start from the
+   --  toplevel item's border. Here is an example:
+   --        +----------+
+   --        | +-+      |
+   --        | |A|      |\
+   --        | +-+      | \1
+   --        |     B    |\ \
+   --        +----------+ \ \
+   --                     2\ +----------------+
+   --                       \|       C        |
+   --                        +----------------+
+   --
+   --  The link 1 is attached to the nested item A, and the side_attachment
+   --  is set to Right. As a result, it always starts at the same height as A
+   --  itself.
+   --  The link 2 is also attached to A, but the side is set to Auto. So the
+   --  canvas draws the shortest path from A to C (and clips the line to the
+   --  border of B). So it is not as visible that 2 is linked to A.
+
+   type Anchor_Attachment is record
+      X, Y          : Glib.Gdouble := 0.5;
+      Toplevel_Side : Side_Attachment;
+   end record;
+   Middle_Attachment : constant Anchor_Attachment := (0.5, 0.5, Auto);
+   --  Where in the item the link is attached (0.5 means the middle, 0.0
+   --  means left or top, and 1.0 means right or bottom).
+   --  You can therefore force a link to always emerge from the right side of
+   --  an item by setting X to 1.0 and Y to any value, for instance.
+   --  See the description of Side_Attachment for an example on how to use
+   --  Toplevel_Side.
+
+   type Route_Style is (Orthogonal, Straight, Curve, Orthocurve);
+   --  This defines how a link is routed between its two ends.
+   --  Orthocurve is similar to orthogonal (links restricted to horizontal and
+   --  vertical lines), but using a bezier curve.
+
+   --------------------
+   -- Abstract Items --
+   --------------------
+
+   type Abstract_Item_Record is interface;
+   type Abstract_Item is access all Abstract_Item_Record'Class;
+   --  These are all the elements that can be displayed on a canvas, including
+   --  the boxes, the links between the boxes, any annotations on those links,
+   --  and so on.
+   --  Items can be grouped, so that toplevel items contain one or more
+   --  other items. The toplevel items are the ones that are moved
+   --  interactively by the user, and their contained items will be moved
+   --  along.
+   --  All primitive operations on items, except its position, are done in the
+   --  Item's own coordinate systems so that it is easy to create new types of
+   --  items without paying attention to any of its parents rotation or
+   --  scaling, or the rotation and scaling of the view itself).
+   --
+   --  This interface is meant for use when you already have ways to store
+   --  coordinates and sizes in your own data types, at which point you can
+   --  implement a simpler wrapper for your data type that implements this
+   --  interface. In general, though, it is better to extend the type
+   --  Abstract_Item_Record which provides its own non-abstract handling for a
+   --  number of subprograms below.
+
+   function Position
+     (Self : not null access Abstract_Item_Record)
+      return Gtkada.Style.Point is abstract;
+   --  The coordinates of the item within its parent.
+   --  If the item has no parent, the coordinates should be returned in model
+   --  coordinates. These coordinates describe the origin (0,0) point of
+   --  the item's coordinate system.
+
+   function Bounding_Box
+     (Self : not null access Abstract_Item_Record)
+      return Item_Rectangle is abstract;
+   --  Returns the area occupied by the item.
+   --  Any drawing for the item, including shadows for instance, must be
+   --  within this area.
+   --  This bounding box is always returned in the item's own coordinate
+   --  system, so that it is not necessary to pay attention to the current
+   --  scaling factor or rotation for the item, its parents or the canvas view.
+
+   --
+   --  The coordinates of the item are always the top-left corner of their
+   --  bounding box. These coordinates are either relative to the item's
+   --  toplevel container, or model coordinates for toplevel items.
+   --
+   --  The bounding box is also used for fast detection on whether the item
+   --  might be clicked on by the user.
+
+   procedure Draw
+     (Self : not null access Abstract_Item_Record;
+      Cr   : Cairo.Cairo_Context) is abstract;
+   --  Draw the item on the given cairo context.
+   --  A transformation matrix has already been applied to Cr, so that all
+   --  drawing should be done in item-coordinates for Self, so that (0,0) is
+   --  the top-left corner of Self's bounding box.
+   --  Cr has already been set up so that any drawing outside of Self's
+   --  bounding box is clipped.
+
+   function Contains
+     (Self : not null access Abstract_Item_Record;
+      P    : Item_Point) return Boolean is abstract;
+   --  Should test whether P is within the painted region for Self (i.e.
+   --  whether Self should be selected when the user clicks on the point).
+   --  For an item with holes, this function should return False when the
+   --  point is inside one of the holes, for instance.
+
+   procedure Destroy
+     (Self : not null access Abstract_Item_Record) is null;
+   --  Called when Self is no longer needed.
+
+   function Parent
+     (Self : not null access Abstract_Item_Record)
+      return Abstract_Item is (null);
+   --  Return the item inside which Self is contained.
+   --  null is returned for toplevel items, in which case the coordinates of
+   --  the bounding box are model coordinats. Otherwise, the coordinates are
+   --  relative to the returned item.
+
+--     procedure For_Each_Child
+--       (Self     : not null access Abstract_Item_Record;
+--        Callback : not null access procedure
+--          (Child : not null access Abstract_Item_Record'Class)) is null;
+   --  Traverse all children of Self recursively, and calls Callback for each.
+
+   function Link_Anchor_Point
+     (Self   : not null access Abstract_Item_Record;
+      Anchor : Anchor_Attachment)
+      return Item_Point is abstract;
+   --  Return the anchor point for links to or from this item. In general,
+   --  this anchor point is in the middle of the item or depends on the
+   --  Anchor parameter, and the link will automatically be clipped to one
+   --  of the borders. The coordinates are absolute.
+   --  This anchor point can be in the middle of an item, the link itself
+   --  will be clipped with a call to Clip_Line_On_Top_Level
+
+   function Clip_Line
+     (Self   : not null access Abstract_Item_Record;
+      P1, P2 : Item_Point) return Item_Point is abstract;
+   --  Returns the intersection of the line from P1 to P2 with the border of
+   --  the item. Drawing a line from this intersection point to P2 will not
+   --  intersect the item.
+
+   function Model_Bounding_Box
+     (Self     : not null access Abstract_Item_Record'Class)
+      return Model_Rectangle;
+   --  Return the bounding box of Self always in model coordinates.
+   --  As opposed to Bounding_Box, model coordinates are also returned
+   --  for nested items.
+
+   -----------
+   -- Items --
+   -----------
+
+   type Canvas_Item_Record is abstract new Abstract_Item_Record with private;
+   type Canvas_Item is access all Canvas_Item_Record'Class;
+   --  An implementation of the Abstract_Item interface, which handles a
+   --  number of the operations automatically. For instance, it will store the
+   --  position of the item and its bounding box.
+   --  It is easier to derive from this type when you want to create your own
+   --  items, unless you want complete control of the data storage.
+
+   overriding function Position
+     (Self : not null access Canvas_Item_Record) return Gtkada.Style.Point;
+   overriding function Contains
+     (Self : not null access Canvas_Item_Record;
+      P    : Item_Point) return Boolean;
+   overriding function Link_Anchor_Point
+     (Self   : not null access Canvas_Item_Record;
+      Anchor : Anchor_Attachment)
+      return Item_Point;
+   overriding function Clip_Line
+     (Self   : not null access Canvas_Item_Record;
+      P1, P2 : Item_Point) return Item_Point;
+      --  Provide a default implementation for a number of primitives.
+   --  Contains only checks whether the point is within the bounding box, so
+   --  only works for rectangular items.
+
+   procedure Set_Position
+     (Self  : not null access Canvas_Item_Record;
+      Pos   : Gtkada.Style.Point);
+   --  Sets the position of the item within its parent (or within the canvas
+   --  view if Self has no parent).
+
+   ------------------
+   -- Canvas_Model --
+   ------------------
+
+   type Canvas_Model_Record
+      is abstract new Glib.Object.GObject_Record with private;
+   type Canvas_Model is access all Canvas_Model_Record'Class;
+   --  A model is a common interface to query the list of items that should
+   --  be displayed in the canvas. It does not assume anything regarding the
+   --  actual storage of the items, so it is possible to create your own
+   --  model implementation that simply query the rest of your application
+   --  (or a database, or some other source of data) as needed, without
+   --  duplicating the items.
+   --
+   --  This type is not an Ada interface because it needs to inherit from
+   --  GObject so that it can send signals.
+   --
+   --  The interface does not provide support for adding items to the model:
+   --  instead, this is expected to be done by the concrete implementations of
+   --  the model, which must then send the signal "layout_changed".
+
+   function Model_Get_Type return Glib.GType;
+   --  Return the internal type
+
+   procedure Initialize
+     (Self : not null access Canvas_Model_Record'Class);
+   --  Initialize the internal data so that signals can be sent.
+   --  This procedure must always be called when you create a new model.
+
+   procedure For_Each_Item
+     (Self     : not null access Canvas_Model_Record;
+      Callback : not null access procedure
+        (Item : not null access Abstract_Item_Record'Class);
+      In_Area  : Model_Rectangle := No_Rectangle) is abstract;
+   --  Calls Callback for each item in the model, not including the links
+   --  which are handled specially.
+   --  Only the items that intersect In_Area should be returned for
+   --  efficiency, although it is valid to return all items otherwise.
+
+   function Bounding_Box
+     (Self : not null access Canvas_Model_Record)
+      return Model_Rectangle;
+   --  Returns the rectangle that encompasses all the items in the model.
+   --  This is used by views to compute the maximum area that should be made
+   --  visible.
+   --  The default implementation is not efficient, since it will iterate all
+   --  items one by one to compute the rectangle. No caching is done.
+
+   procedure Layout_Changed
+     (Self : not null access Canvas_Model_Record'Class);
+   procedure On_Layout_Changed
+     (Self : not null access Canvas_Model_Record'Class;
+      Call : not null access procedure
+        (Self : not null access GObject_Record'Class);
+      Slot : access GObject_Record'Class := null);
+   Signal_Layout_Changed : constant Glib.Signal_Name := "layout_changed";
+   --  Emits or handles the "layout_changed" signal.
+   --  This signal must be emitted by models whenever new items are added,
+   --  existing items are resized or removed, or any other event that impacts
+   --  coordinates of any item in the model.
+   --  It is recommended to emit this signal only once per batch of changes,
+
+   procedure Item_Contents_Changed
+     (Self   : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class);
+   procedure On_Item_Contents_Changed
+     (Self : not null access Canvas_Model_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class; Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null);
+   Signal_Item_Contents_Changed : constant Glib.Signal_Name :=
+     "item_contents_changed";
+   --  This signal should be emitted instead of layout_changed when only the
+   --  contents of an item (but not its size) has changed). This will only
+   --  trigger the refresh of that specific item.
+
+   ----------------
+   -- List Model --
+   ----------------
+
+   type List_Canvas_Model_Record is new Canvas_Model_Record with private;
+   type List_Canvas_Model is access all List_Canvas_Model_Record'Class;
+   --  A very simple-minded concrete implementation for a model.
+   --  Not efficient, do not use in your code.
+
+   procedure Gtk_New (Self : out List_Canvas_Model);
+   --  Create a new model
+
+   procedure Add
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   --  Add a new item to the model
+
+   overriding procedure For_Each_Item
+     (Self     : not null access List_Canvas_Model_Record;
+      Callback : not null access procedure
+        (Item : not null access Abstract_Item_Record'Class);
+      In_Area  : Model_Rectangle := No_Rectangle);
+
+   -----------------
+   -- Canvas_View --
+   -----------------
+
+   type Canvas_View_Record is new Gtk.Layout.Gtk_Layout_Record with private;
+   type Canvas_View is access all Canvas_View_Record'Class;
+   --  A view is a display of one particular part of the model, or a subset of
+   --  it. Multiple views can be associated with a specific model, and will
+   --  monitor changes to it view signals.
+   --  The view automatically refreshes its display when its model changes.
+
+   procedure Gtk_New
+     (Self  : out Canvas_View;
+      Model : not null access Canvas_Model_Record'Class);
+   procedure Initialize
+     (Self  : not null access Canvas_View_Record'Class;
+      Model : not null access Canvas_Model_Record'Class);
+   --  Create a new view which displays the model.
+   --  A new reference to the model is created (and released when the view is
+   --  destroyed), so that in general the code will look like:
+   --       Model := new ....;
+   --       Initialize (Model);
+   --       Gtk_New (View, Model);
+   --       Unref (Model);  --  unless you need to keep a handle on it too
+
+   function View_Get_Type return Glib.GType;
+   --  Return the internal type
+
+   procedure Set_Background_Style
+     (Self : not null access Canvas_View_Record;
+      Style : Gtkada.Style.Drawing_Style);
+   --  Set the drawing style (fill pattern) used for the background of the
+   --  canvas. This is only significant if you do not override Draw_Internal
+   --  to do your own drawing.
+
+   procedure Draw_Internal
+     (Self : not null access Canvas_View_Record;
+      Cr   : Cairo.Cairo_Context;
+      Area : Model_Rectangle);
+   --  Redraw either the whole view, or a specific part of it only.
+   --  The transformation matrix has already been set on the context.
+   --  This procedure can be overridden if you need to perform special
+   --  operations, like drawing a grid for instance.
+
+   function Get_Visible_Area
+     (Self : not null access Canvas_View_Record)
+      return Model_Rectangle;
+   --  Return the area of the model that is currently displayed in the view.
+   --  This is in model coordinates (since the canvas coordinates are always
+   --  from (0,0) to (Self.Get_Allocation_Width, Self.Get_Allocation_Height).
+
+   procedure Set_Transform
+     (Self   : not null access Canvas_View_Record;
+      Cr     : Cairo.Cairo_Context;
+      Item : access Abstract_Item_Record'Class := null);
+   --  Set the transformation matrix for the current settings (scrolling and
+   --  zooming).
+   --
+   --  The effect is that any drawing on this context should now be done using
+   --  the model coordinates, which will automatically be converted to the
+   --  canvas_coordinates internally.
+   --
+   --  If Item is specified, all drawing becomes relative to that item
+   --  instead of the position of the top-left corner of the view. All drawing
+   --  to this context must then be done in item_coordinates, which will
+   --  automatically be converted to canvas_coordinates internally.
+   --
+   --  This procedure does not need to be call directly in general, since the
+   --  context passed to the Draw primitive of the item has already been set
+   --  up appropriately.
+   --
+   --  The default coordinates follow the industry standard of having y
+   --  increase downwards. This is sometimes unusual for mathematically-
+   --  oriented people. One solution is to override this procedure in your
+   --  own view, and call Cairo.Set_Scale as in:
+   --      procedure Set_Transform (Self, Cr) is
+   --          Set_Transform (Canvas_View_Record (Self.all)'Access, Cr);
+   --          Cairo.Set_Scale (Cr, 1.0, -1.0);
+   --  which will make y increase upwards instead.
+
+   function View_To_Model
+     (Self   : not null access Canvas_View_Record;
+      Rect   : View_Rectangle) return Model_Rectangle;
+   function Model_To_View
+     (Self   : not null access Canvas_View_Record;
+      Rect   : Model_Rectangle) return View_Rectangle;
+   function Model_To_View
+     (Self   : not null access Canvas_View_Record;
+      P      : Model_Point) return View_Point;
+   function Model_To_Window
+     (Self   : not null access Canvas_View_Record;
+      Rect   : Model_Rectangle) return Window_Rectangle;
+   function Item_To_Model
+     (Item   : not null access Abstract_Item_Record'Class;
+      Rect   : Item_Rectangle) return Model_Rectangle;
+   function Item_To_Model
+     (Item   : not null access Abstract_Item_Record'Class;
+      P      : Item_Point) return Model_Point;
+   function Model_To_Item
+     (Item   : not null access Abstract_Item_Record'Class;
+      P      : Model_Point) return Item_Point;
+   --  Conversion between the various coordinate systems.
+   --  Calling these should seldom be needed, as Cairo uses a transformation
+   --  matrix to automatically (and efficiently) do the transformation on
+   --  your behalf. See the documentation for Set_Transform.
+
+   procedure Set_Scale
+     (Self      : not null access Canvas_View_Record;
+      Scale     : Gdouble := 1.0;
+      Center_On : Model_Point := No_Point);
+   --  Changes the scaling factor for Self.
+   --  This also scrols the view so that either Center_On or the current center
+   --  of the view remains at the same location in the widget, as if the user
+   --  was zooming towards that specific point.
+
+   procedure Viewport_Changed
+     (Self   : not null access Canvas_View_Record'Class);
+   procedure On_Viewport_Changed
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self : not null access GObject_Record'Class);
+      Slot : access GObject_Record'Class := null);
+   Signal_Viewport_Changed : constant Glib.Signal_Name := "viewport_changed";
+   --  This signal is emitted whenever the view is zoomed or scrolled.
+   --  This can be used for instance to synchronize multiple views, or display
+   --  a "mini-map" of the whole view.
+
+   ------------------
+   -- Canvas links --
+   ------------------
+
+   type Canvas_Link_Record is new Abstract_Item_Record with private;
+   type Canvas_Link is access all Canvas_Link_Record'Class;
+   --  Special support is provided for links.
+   --  These are a special kind of item, which provides automatic routing
+   --  algorithms. They always join two items (including possibly two lines)
+
+   function Gtk_New
+     (From, To    : not null access Abstract_Item_Record'Class;
+      Style       : Gtkada.Style.Drawing_Style;
+      Routing     : Route_Style := Straight;
+      Anchor_From : Anchor_Attachment := Middle_Attachment;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment)
+     return Canvas_Link;
+   procedure Initialize
+     (Link        : not null access Canvas_Link_Record'Class;
+      From, To    : not null access Abstract_Item_Record'Class;
+      Style       : Gtkada.Style.Drawing_Style;
+      Routing     : Route_Style := Straight;
+      Anchor_From : Anchor_Attachment := Middle_Attachment;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment);
+   --  Create a new link between the two items.
+   --  This link is not automatically added to the model.
+   --  Both items must belong to the same model.
+
+   procedure Layout (Self : not null access Canvas_Link_Record);
+   --  Recompute the layout/routing for the link.
+   --  This procedure should be called whenever any of the end objects changes
+   --  side or position. The view will do this automatically the first time,
+   --  but will not update links later on.
+
+   overriding procedure Destroy
+     (Self : not null access Canvas_Link_Record);
+   overriding function Bounding_Box
+     (Self : not null access Canvas_Link_Record)
+      return Item_Rectangle;
+   overriding function Position
+     (Self : not null access Canvas_Link_Record)
+      return Gtkada.Style.Point;
+   overriding procedure Draw
+     (Self : not null access Canvas_Link_Record;
+      Cr   : Cairo.Cairo_Context);
+   overriding function Contains
+     (Self : not null access Canvas_Link_Record;
+      P    : Item_Point) return Boolean;
+   overriding function Clip_Line
+     (Self   : not null access Canvas_Link_Record;
+      P1, P2 : Item_Point) return Item_Point;
+   overriding function Link_Anchor_Point
+     (Self   : not null access Canvas_Link_Record;
+      Anchor : Anchor_Attachment)
+      return Item_Point;
+
+private
+   procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+     (Gtkada.Style.Point_Array, Gtkada.Style.Point_Array_Access);
+
+   type Canvas_Model_Record is abstract new Glib.Object.GObject_Record
+   with null record;
+
+   type Canvas_Item_Record is abstract new Abstract_Item_Record with record
+      Position : Gtkada.Style.Point := (0.0, 0.0);
+      --  Position within its parent or the canvas view.
+   end record;
+
+   No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
+
+   type Canvas_View_Record is new Gtk.Layout.Gtk_Layout_Record with record
+      Model   : Canvas_Model;
+      Topleft : Model_Point := (0.0, 0.0);
+      Scale   : Gdouble := 1.0;
+
+      Background_Style : Gtkada.Style.Drawing_Style;
+   end record;
+
+   type Canvas_Link_Record is new Abstract_Item_Record with record
+      From, To : Abstract_Item;
+      Style    : Gtkada.Style.Drawing_Style;
+      Routing  : Route_Style;
+      Bounding_Box : Item_Rectangle;
+
+      Waypoints   : Item_Point_Array_Access;
+      --  The waypoints created by the user (as opposed to Points, which
+      --  contains the list of waypoints computed automatically, in addition
+      --  to the user's waypoints).
+      --  These are absolute coordinates.
+      --  For straight and orthogonal links, these are the points the link must
+      --  go through.
+      --  For curve and orthocurve links, these are the list of points and
+      --  control points for the bezier curve:
+      --      pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
+
+      Points   : Item_Point_Array_Access;
+      --  The cached computation of waypoints for this link.
+      --  These are recomputed every time the layout of the canvas changes, but
+      --  are cached so that redrawing the canvas is fast.
+      --  These are absolute coordinates.
+      --  See the documentation on Waypoints for more information on the format
+
+      Anchor_From : Anchor_Attachment := Middle_Attachment;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment;
+   end record;
+
+   package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
+     (Abstract_Item);
+   type List_Canvas_Model_Record is new Canvas_Model_Record with record
+      Items : Items_Lists.List;
+   end record;
+
+end Gtkada.Canvas_View;

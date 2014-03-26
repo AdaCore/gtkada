@@ -24,7 +24,7 @@
 
 --  This package implements the A* algorithm for optimal path finding
 
-package Gtkada.Canvas.Astar is
+package Gtkada.Canvas_View.Astar is
 
    type Coordinate is record
       X, Y : Integer;
@@ -90,4 +90,4 @@ package Gtkada.Canvas.Astar is
 private
    No_Coordinate : constant Coordinate := (Integer'First, Integer'First);
    Not_Traversable : constant Integer := Integer'First;
-end Gtkada.Canvas.Astar;
+end Gtkada.Canvas_View.Astar;

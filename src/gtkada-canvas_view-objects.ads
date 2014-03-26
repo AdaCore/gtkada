@@ -22,18 +22,22 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Various support utilities for the grid and smart guides in the canvas
+--  Various support utilities for the drawing of objects in GtkAda.Canvas
 
-with Glib; use Glib;
+package Gtkada.Canvas_View.Objects is
 
-package Gtkada.Canvas.Guides is
+   function Toplevel
+     (Self : not null access Abstract_Item_Record'Class)
+      return Abstract_Item;
+   --  Return the top-most container for Self, or null
 
-   function Do_Snap_Grid
-     (Canvas : not null access Interactive_Canvas_Record'Class;
-      Pos    : Gdouble;
-      Size   : Gdouble) return Gdouble;
-   --  Snap the Pos coordinate to the canvas grid.
-   --  Size is the size of the item along that coordinate, since the item
-   --  could be snap either on its left (resp. top) or right (resp. bottom)
+   function Link_Anchor_Point
+     (Self   : not null access Abstract_Item_Record'Class;
+      Anchor : Anchor_Attachment)
+      return Item_Point;
+   --  Implementation helper for an object's Link_Anchor_Point primitive.
+   --  This uses the bounding-box of the object to compute the middle point,
+   --  which works fine on most cases, except for objects where link
+   --  attachment is constrained to a small section of the object.
 
-end Gtkada.Canvas.Guides;
+end Gtkada.Canvas_View.Objects;

@@ -28,7 +28,6 @@ with Glib;                use Glib;
 with Cairo;               use Cairo;
 with Cairo.Pattern;       use Cairo.Pattern;
 with Cairo.Png;           use Cairo.Png;
-with Cairo.Region;        use Cairo.Region;
 with Cairo.Surface;       use Cairo.Surface;
 
 with Pango.Cairo;         use Pango.Cairo;
@@ -46,19 +45,20 @@ with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Widget;          use Gtk.Widget;
-with Gtkada.Canvas;       use Gtkada.Canvas;
+with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
+with Gtkada.Style;        use Gtkada.Style;
 with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Adjustment;      use Gtk.Adjustment;
 with Pango.Layout;        use Pango.Layout;
 
-package body Create_Canvas is
+package body Create_Canvas_View is
 
    Max_Size : constant := 400;
    --  Size of the canvas;
 
-   Item_Width  : constant Gint := 50;
-   Item_Height : constant Gint := 40;
+   Item_Width  : constant Gdouble := 50.0;
+   Item_Height : constant Gdouble := 40.0;
 
    ----------------------------------------------------------------
    --  Redefine our own item type, since we want to provide our own
@@ -66,24 +66,21 @@ package body Create_Canvas is
    ----------------------------------------------------------------
 
    type Display_Item_Record is new Canvas_Item_Record with record
-      Canvas : Interactive_Canvas;
-      Color  : Gdk.RGBA.Gdk_RGBA;
-      Title  : Gdk.RGBA.Gdk_RGBA;
-      W, H   : Gint;
+      Style  : Drawing_Style;
+      W, H   : Gdouble;
       Num    : Positive;
    end record;
    type Display_Item is access all Display_Item_Record'Class;
 
-   procedure Initialize
-     (Item   : access Display_Item_Record'Class;
-      Canvas : access Interactive_Canvas_Record'Class);
+   procedure Initialize (Item   : access Display_Item_Record'Class);
    --  Initialize Item with a random size and color.
-   --  Canvas must have been realized
 
-   procedure Draw
+   overriding procedure Draw
      (Item   : access Display_Item_Record;
       Cr     : Cairo_Context);
-   --  Draw the item to the double-buffer
+   overriding function Bounding_Box
+     (Self : not null access Display_Item_Record)
+      return Item_Rectangle;
 
    -----------------------------------------------------------
    -- A new non-rectangular item, with a hole in the middle --
@@ -91,62 +88,16 @@ package body Create_Canvas is
 
    type Hole_Item_Record is new Display_Item_Record with null record;
 
-   procedure Draw
+   overriding procedure Draw
      (Item   : access Hole_Item_Record;
       Cr     : Cairo_Context);
-   function Point_In_Item
+   overriding function Contains
      (Item   : access Hole_Item_Record;
-      X, Y   : Glib.Gint) return Boolean;
-   --  Override the inherited subprograms
-
-   ----------------------
-   -- A resizable item --
-   ----------------------
-
-   type Resizable_Item_Record is new Display_Item_Record with null record;
-   type Resizable_Item is access all Resizable_Item_Record'Class;
-
-   procedure Draw
-     (Item   : access Resizable_Item_Record;
-      Cr     : Cairo.Cairo_Context);
-   function On_Button_Click
-     (Item   : access Resizable_Item_Record;
-      Event  : Gdk.Event.Gdk_Event_Button) return Boolean;
-   --  Override the inherited subprograms
-
-   ----------------------------------------------------
-   -- Our own canvas, with optional background image --
-   ----------------------------------------------------
-
-   type Image_Canvas_Record is new Interactive_Canvas_Record with record
-      Background : Cairo_Pattern := Null_Pattern;
-      Draw_Grid  : Boolean := True;
-   end record;
-   type Image_Canvas is access all Image_Canvas_Record'Class;
-
-   procedure Draw_Background
-     (Canvas : access Image_Canvas_Record;
-      Cr     : Cairo.Cairo_Context);
-   --  Draw the background image
-
-   procedure Draw_Grid
-     (Canvas : access Image_Canvas_Record;
-      Cr     : Cairo.Cairo_Context);
-   --  Draw the background grid
+      P      : Item_Point) return Boolean;
 
    -----------------------------
    --  Misc. types and variables
    -----------------------------
-
-   package Canvas_Cb is new Gtk.Handlers.Callback
-     (Interactive_Canvas_Record);
-   package Canvas_User_Cb is new Gtk.Handlers.User_Callback
-     (Gtk_Widget_Record, Image_Canvas);
-
-   procedure Add_Canvas_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item1, Item2 : access Canvas_Item_Record'Class; Text : String := "");
-   --  Add a link between Item1 and Item2
 
    Max_Colors : constant := 20;
 
@@ -163,7 +114,7 @@ package body Create_Canvas is
    package Items_Random is new Ada.Numerics.Discrete_Random (Positive);
    use Items_Random;
 
-   subtype Coordinate_Type is Gint range Default_Grid_Size + 1 .. Max_Size;
+   subtype Coordinate_Type is Model_Coordinate range 0.0 .. 800.0;
    package Coordinate_Random is new
      Ada.Numerics.Discrete_Random (Coordinate_Type);
    use Coordinate_Random;
@@ -214,7 +165,7 @@ package body Create_Canvas is
 
    function Help return String is
    begin
-      return "An @bInteractive_Canvas@B is an interactive widgets, on which"
+      return "An @bCanvas_View@B is an interactive widgets, on which"
         & " you can put items that the user will be able to manipulate"
         & " dynamically with the mouse."
         & ASCII.LF
@@ -244,24 +195,28 @@ package body Create_Canvas is
         & " on either end.";
    end Help;
 
-   ---------------------------
-   -- Draw_To_Double_Buffer --
-   ---------------------------
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw
      (Item   : access Display_Item_Record;
       Cr     : Cairo_Context)
    is
+      Radius : Gdouble;
    begin
-      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Color);
-      Cairo.Rectangle
-        (Cr, 0.5, 0.5, Gdouble (Item.W) - 1.0, Gdouble (Item.H) - 1.0);
-      Cairo.Fill (Cr);
+      if Item.Num mod 2 = 0 then
+         Radius := 0.0;
+      else
+         Radius := 10.0;
+      end if;
 
-      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
-      Rectangle
-        (Cr, 0.5, 0.5, Gdouble (Item.W) - 1.0, Gdouble (Item.H) - 1.0);
-      Cairo.Stroke (Cr);
+      Item.Style.Draw_Rect
+         (Cr,
+          (0.5, 0.5),
+          Item.W - 1.0,
+          Item.H - 1.0,
+          Radius => Radius);
 
       Set_Text (Layout, "Item" & Positive'Image (Display_Item (Item).Num));
       Cairo.Move_To (Cr, 10.0, 10.0);
@@ -273,236 +228,97 @@ package body Create_Canvas is
    ----------
 
    procedure Draw
-     (Item   : access Resizable_Item_Record;
-      Cr     : Cairo_Context)
-   is
-      Rect : constant Cairo_Rectangle_Int := Get_Coord (Item);
-      W    : constant Gdouble := Gdouble (Rect.Width);
-      H    : constant Gdouble := Gdouble (Rect.Height);
-      Arrow : constant Gdouble := 4.0;
-   begin
-      Cairo.Save (Cr);
-
-      Set_Source_RGBA (Cr, Item.Color);
-      Rectangle
-        (Cr, 0.5, 0.5,
-         W - 2.0 * Arrow - 1.0,
-         H - 1.0);
-      Cairo.Fill (Cr);
-
-      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
-      Rectangle
-        (Cr, 0.5, 0.5,
-         W - 2.0 * Arrow - 1.0,
-         H - 1.0);
-      Cairo.Stroke (Cr);
-
-      Cairo.Restore (Cr);
-
-      Cairo.Translate (Cr, W - Arrow - 0.5, 0.0);
-
-      Cairo.Move_To (Cr, -Arrow / 2.0, Arrow + 0.5);
-      Cairo.Line_To (Cr, 0.0, 0.5);
-      Cairo.Line_To (Cr, Arrow / 2.0, Arrow + 0.5);
-      Cairo.Stroke (Cr);
-
-      Cairo.Move_To (Cr, -Arrow / 2.0, H - Arrow  - 0.5);
-      Cairo.Line_To (Cr, 0.0, H - 1.0);
-      Cairo.Line_To (Cr, Arrow / 2.0, H - Arrow - 0.5);
-      Cairo.Stroke (Cr);
-
-      Cairo.Move_To (Cr, 0.0, 0.5);
-      Cairo.Line_To (Cr, 0.0, H - 0.5);
-      Cairo.Stroke (Cr);
-
-      Cairo.Move_To (Cr, -Arrow, 0.5);
-      Cairo.Line_To (Cr, Arrow, 0.5);
-      Cairo.Stroke (Cr);
-      Cairo.Move_To (Cr, -Arrow, H - 0.5);
-      Cairo.Line_To (Cr, Arrow, H - 0.5);
-      Cairo.Stroke (Cr);
-   end Draw;
-
-   ----------
-   -- Draw --
-   ----------
-
-   procedure Draw
      (Item   : access Hole_Item_Record;
       Cr     : Cairo_Context)
    is
-      Item_Width : constant Gdouble := Gdouble (Get_Coord (Item).Width);
-      Item_Height : constant Gdouble := Gdouble (Get_Coord (Item).Height);
-      Item_Width_10 : constant Gdouble := Item_Width / 2.0 - 10.0;
-      Item_Height_10 : constant Gdouble := Item_Height / 2.0 - 10.0;
+      X : constant Gdouble := Item.W / 2.0 - 10.0;
+      Y : constant Gdouble := Item.H / 2.0 - 10.0;
    begin
       --  The trick to drawing non-rectangular items is to change the clip mask
       --  of the graphic context before calling the inherited subprogram.
 
       Cairo.Set_Fill_Rule (Cr, Cairo_Fill_Rule_Even_Odd);
-      Cairo.Rectangle (Cr, 0.0, 0.0, Item_Width, Item_Height);
-      Cairo.Rectangle (Cr, Item_Width_10, Item_Height_10, 20.0, 20.0);
+      Cairo.Rectangle (Cr, 0.0, 0.0, Item.W, Item.H);
+      Cairo.Rectangle (Cr, X, Y, 20.0, 20.0);
       Clip (Cr);
       Cairo.Set_Fill_Rule (Cr, Cairo_Fill_Rule_Winding);
+      Item.Style.Finish_Path (Cr);
 
-      Draw (Display_Item_Record (Item.all)'Access, Cr);
-
-      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Title);
-      Cairo.Rectangle
-        (Cr, Item_Width_10 - 0.5, Item_Height_10 - 0.5, 21.0, 21.0);
+      Gdk.Cairo.Set_Source_RGBA (Cr, Item.Style.Get_Stroke);
+      Cairo.Rectangle (Cr, X, Y, 20.0, 20.0);
       Cairo.Stroke (Cr);
    end Draw;
 
-   ---------------------
-   -- On_Button_Click --
-   ---------------------
+   --------------
+   -- Contains --
+   --------------
 
-   function On_Button_Click
-     (Item   : access Resizable_Item_Record;
-      Event  : Gdk.Event.Gdk_Event_Button) return Boolean
-   is
-      Rect : constant Cairo_Rectangle_Int := Get_Coord (Item);
-   begin
-      if Event.The_Type = Button_Press
-        and then Event.Button = 1
-      then
-         if Gint (Event.Y) > Rect.Height - 4 then
-            return True;
-         end if;
-
-      elsif Event.The_Type = Motion_Notify then
-         if Event.Y > 4.0 then
-            Set_Screen_Size
-              (Item, Get_Coord (Item).Width,
-               Gint (Event.Y));
-         end if;
-
-         return True;
-      end if;
-
-      return False;
-   end On_Button_Click;
-
-   ---------------------
-   -- Draw_Background --
-   ---------------------
-
-   procedure Draw_Background
-     (Canvas : access Image_Canvas_Record;
-      Cr     : Cairo.Cairo_Context)
-   is
-   begin
-      if Canvas.Background /= Null_Pattern then
-         Cairo.Save (Cr);
-         Cairo.Set_Source (Cr, Canvas.Background);
-         Cairo.Paint (Cr);
-         Cairo.Restore (Cr);
-      else
-         Cairo.Save (Cr);
-         Gdk.Cairo.Set_Source_RGBA (Cr, (0.8, 0.8, 0.8, 1.0));
-         Cairo.Paint (Cr);
-         Cairo.Restore (Cr);
-      end if;
-   end Draw_Background;
-
-   ---------------
-   -- Draw_Grid --
-   ---------------
-
-   procedure Draw_Grid
-     (Canvas : access Image_Canvas_Record;
-      Cr     : Cairo.Cairo_Context) is
-   begin
-      if Canvas.Draw_Grid then
-         Draw_Grid (Interactive_Canvas_Record (Canvas.all)'Access, Cr);
-      end if;
-   end Draw_Grid;
-
-   -------------------
-   -- Point_In_Item --
-   -------------------
-
-   function Point_In_Item
+   function Contains
      (Item   : access Hole_Item_Record;
-      X, Y   : Glib.Gint) return Boolean
+      P      : Item_Point) return Boolean
    is
-      W : constant Gint := Get_Coord (Item).Width / 2;
-      H : constant Gint := Get_Coord (Item).Height / 2;
-      X2 : constant Gint := X - Get_Coord (Item).X;
-      Y2 : constant Gint := Y - Get_Coord (Item).Y;
+      X : constant Gdouble := Item.W / 2.0 - 10.0;
+      Y : constant Gdouble := Item.H / 2.0 - 10.0;
    begin
-      if X2 >= W - 10
-        and then X2 <= W + 10
-        and then Y2 >= H - 10
-        and then Y2 <= H + 10
-      then
-         return False;
-      else
-         return Point_In_Item (Display_Item_Record (Item.all)'Access, X, Y);
-      end if;
-   end Point_In_Item;
+      return Point_In_Rect (Item.Bounding_Box, P)
+        and then not Point_In_Rect (Item_Rectangle'(X, Y, 20.0, 20.0), P);
+   end Contains;
 
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize
-     (Item   : access Display_Item_Record'Class;
-      Canvas : access Interactive_Canvas_Record'Class)
+     (Item   : access Display_Item_Record'Class)
    is
+      function Get_Dashes return Dash_Array;
+      function Get_Dashes return Dash_Array is
+      begin
+         if Item.Num / 8 /= 1 then
+            return No_Dashes;
+         else
+            return (4.0,   --  ink
+                    2.0,   --  no ink
+                    8.0,   --  ink
+                    2.0);  --  no ink
+         end if;
+      end Get_Dashes;
+
+      Shadow : Gdk_RGBA := Null_RGBA;
    begin
-      Item.Canvas := Interactive_Canvas (Canvas);
-      Item.Color := Colors (Color_Random.Random (Color_Gen));
-      Item.Title := (0.0, 0.0, 0.0, 1.0);
-      Item.W := Item_Width * Random (Zoom_Gen);
-      Item.H := Item_Height * Random (Zoom_Gen);
+      Item.W := Item_Width * Gdouble (Random (Zoom_Gen));
+      Item.H := Item_Height * Gdouble (Random (Zoom_Gen));
       Item.Num := Last_Item;
+
+      if Item.Num mod 3 /= 0 then
+         Shadow         := (0.0, 0.0, 0.0, 0.4);
+      end if;
+
+      Item.Style := Gtk_New
+        (Line_Width => 1.0,
+         Dashes     => Get_Dashes,
+         Sloppy     => Item.Num mod 4 = 0,
+         Stroke     => (0.0, 0.0, 0.0, 1.0),
+         Shadow     => Shadow,
+         Fill       => Create_Rgba_Pattern
+           (Colors (Color_Random.Random (Color_Gen))),
+         Arrow_From => (Head   => Open,
+                        Stroke => (0.5, 0.5, 0.5, 1.0),
+                        Length => 4.0,
+                        others => <>),
+         Arrow_To => (Head   => Solid,
+                      Length => 4.0,
+                      Stroke => (0.5, 0.5, 0.5, 1.0),
+                      Fill   => White_RGBA,
+                      others => <>));
+
       if Last_Item <= Items_List'Last then
          Items_List (Item.Num) := Canvas_Item (Item);
       end if;
+
       Last_Item := Last_Item + 1;
-      Set_Screen_Size (Item, Item.W, Item.H);
       Set_Text (Num_Items_Label, Positive'Image (Last_Item - 1) & " items");
    end Initialize;
-
-   ---------------------
-   -- Add_Random_Item --
-   ---------------------
-
-   procedure Add_Random_Item
-     (Canvas : access Interactive_Canvas_Record'Class)
-   is
-      Item : constant Display_Item := new Display_Item_Record;
-   begin
-      Initialize (Item, Canvas);
-      Put (Canvas, Item, Random (Gen), Random (Gen));
-      Refresh_Canvas (Canvas);
-      Show_Item (Canvas, Item);
-   end Add_Random_Item;
-
-   -----------
-   -- Clear --
-   -----------
-
-   procedure Clear
-      (Canvas : access Interactive_Canvas_Record'Class)
-   is
-      function Remove_Internal
-        (Canvas : access Interactive_Canvas_Record'Class;
-         Item   : access Canvas_Item_Record'Class) return Boolean is
-      begin
-         Remove (Canvas, Item);
-         return True;
-      end Remove_Internal;
-
-   begin
-      For_Each_Item (Canvas, Remove_Internal'Unrestricted_Access);
-      Refresh_Canvas (Canvas);
-      Last_Item := 1;
-      Last_Link := 1;
-      Set_Text (Num_Items_Label, Positive'Image (Last_Item - 1) & " items");
-      Set_Text (Num_Links_Label, Positive'Image (Last_Link - 1) & " links");
-   end Clear;
 
    ---------------
    -- Add_Items --
@@ -578,7 +394,21 @@ package body Create_Canvas is
    is
       Link : constant Canvas_Link := new Canvas_Link_Record;
    begin
-      Add_Link (Canvas, Link, Item1, Item2, Both_Arrow, Text);
+      Link.Configure
+        (Gtk_New
+           (Dashes     => (4.0, 4.0),
+            Arrow_From => (Head   => Solid,
+                           Fill   => Black_RGBA,
+                           others => <>),
+            Arrow_To   => (Head   => Diamond,
+                           Fill   => Black_RGBA,
+                           others => <>),
+            Symbol_From => (Name => Cross, others => <>),
+            Symbol_To   => (Name => Strike, others => <>)
+           ),
+         Descr => Text);
+
+      Add_Link (Canvas, Link, Item1, Item2);
       Last_Link := Last_Link + 1;
       Set_Text (Num_Links_Label, Positive'Image (Last_Link - 1) & " links");
    end Add_Canvas_Link;
@@ -659,52 +489,104 @@ package body Create_Canvas is
       Item1, Item2, Item3, Item4    : Display_Item;
       Item5 : Resizable_Item;
       Link  : Canvas_Link;
+      Start_Arrow, End_Arrow, Both_Arrows, No_Arrow : Drawing_Style;
    begin
       Color_Random.Reset (Color_Gen);
 
       Item1 := new Display_Item_Record;
       Initialize (Item1, Canvas);
-      Put (Canvas, Item1, 10, 10);
+      Put (Canvas, Item1, 390.0, 10.0);
 
       Item2 := new Hole_Item_Record;
       Initialize (Item2, Canvas);
-      Put (Canvas, Item2, 70, 240);
+      Put (Canvas, Item2, 70.0, 130.0);
 
       Item3 := new Display_Item_Record;
       Initialize (Item3, Canvas);
-      Put (Canvas, Item3, 200, 10);
+      Put (Canvas, Item3, 200.0, 10.0);
 
       Item4 := new Hole_Item_Record;
       Initialize (Item4, Canvas);
-      Put (Canvas, Item4, 280, 170);
+      Put (Canvas, Item4, 280.0, 170.0);
 
       Item5 := new Resizable_Item_Record;
       Initialize (Item5, Canvas);
-      Set_Screen_Size (Item5, 30, 30);
-      Put (Canvas, Item5, 200, 170);
+      Set_Screen_Size (Item5, 30.0, 30.0);
+      Put (Canvas, Item5, 200.0, 170.0);
 
-      Add_Canvas_Link (Canvas, Item1, Item1, "Self 1->1");
-      Add_Canvas_Link (Canvas, Item3, Item1, "From3->1");
+      Start_Arrow := Gtk_New
+        (Stroke     => (1.0, 1.0, 0.0, 1.0),
+         Arrow_From => (Head   => Solid,
+                        Fill   => (0.9, 0.9, 0.0, 1.0),
+                        others => <>));
+      End_Arrow := Gtk_New
+        (Stroke     => (0.9, 0.2, 0.2, 1.0),
+         Arrow_To   => (Head   => Solid,
+                        Fill   => White_RGBA,
+                        others => <>));
+      Both_Arrows := Gtk_New
+        (Arrow_From => (Head   => Open,
+                        Fill   => Black_RGBA,
+                        others => <>),
+         Arrow_To   => (Head   => Diamond,
+                        Fill   => White_RGBA,
+                        others => <>));
+
+      No_Arrow := Gtk_New
+        (Stroke     => (0.0, 1.0, 1.0, 1.0));
+
+      Link := new Canvas_Link_Record;
+      Link.Configure (Gtk_New, Routing => Orthogonal);
+      Add_Link (Canvas, Link, Item3, Item1);
+
       Add_Canvas_Link (Canvas, Item1, Item4, "From1->4(1)");
       Add_Canvas_Link (Canvas, Item1, Item4, "From1->4(2)");
-      Add_Canvas_Link (Canvas, Item2, Item3, "From2->3");
       Add_Canvas_Link (Canvas, Item2, Item4, "From2->4");
       Add_Canvas_Link (Canvas, Item3, Item4, "From3->4(1)");
 
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item3, Item4, Start_Arrow, "From3->4(2)");
+      Link.Configure
+        (Gtk_New
+           (Sloppy     => True,
+            Stroke     => (1.0, 0.0, 1.0, 1.0),
+            Arrow_From => (Head   => Solid,
+                           Fill   => Black_RGBA,
+                           others => <>),
+            Arrow_To   => (Head   => Diamond,
+                           Fill   => Black_RGBA,
+                           others => <>)),
+         Routing => Orthocurve,
+         Descr   => "From2->3");
+      Add_Link (Canvas, Link, Item2, Item3);
+
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item4, Item3, End_Arrow, "From3->4(3)");
+      Link.Configure (Start_Arrow, "From3->4(2)");
+      Add_Link (Canvas, Link, Item3, Item4);
+
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->4(4)");
+      Link.Configure (End_Arrow, "From3->4(3)");
+      Add_Link (Canvas, Link, Item4, Item3);
+
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item4, Item3, Both_Arrow, "From3->4(5)");
+      Link.Configure (Both_Arrows, "From3->4(4)");
+      Add_Link (Canvas, Link, Item3, Item4);
+
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item3, Item4, Both_Arrow, "From3->4(6)");
+      Link.Configure (Both_Arrows, "From3->4(5)");
+      Add_Link (Canvas, Link, Item4, Item3);
+
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item2, Item2, No_Arrow, "Self 2->2 (1)");
+      Link.Configure (Both_Arrows, "From3->4(6)");
+      Add_Link (Canvas, Link, Item3, Item4);
+
       Link := new Canvas_Link_Record;
-      Add_Link (Canvas, Link, Item2, Item2, Start_Arrow, "Self 2->2 (2)");
+      Link.Configure (No_Arrow, "Self 2->2(1)", Straight);
+      Add_Link (Canvas, Link, Item2, Item2);
+
+      Link := new Canvas_Link_Record;
+      Link.Configure (Start_Arrow, "Self 2->2(2)", Curve);
+      Add_Link (Canvas, Link, Item2, Item2);
+
       Last_Link := Last_Link + 7;
 
       Set_Text (Num_Links_Label, Positive'Image (Last_Link - 1) & " links");
@@ -944,4 +826,4 @@ package body Create_Canvas is
       Initial_Setup (Canvas);
       Show_All (Frame);
    end Run;
-end Create_Canvas;
+end Create_Canvas_View;

@@ -27,18 +27,22 @@
 with Cairo;   use Cairo;
 with Glib;    use Glib;
 
-package Gtkada.Canvas.Links is
+package Gtkada.Canvas_View.Links is
+
+   function Circle_From_Bezier
+     (Center   : Item_Point;
+      Radius   : Glib.Gdouble) return Item_Point_Array;
+   --  Return the waypoints needed to draw a circle via a bezier curve in
+   --  Draw_Polycurve.
 
    procedure Compute_Layout_For_Straight_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class);
+     (Link  : not null access Canvas_Link_Record'Class);
    --  Compute the layout for the link, with a straight line (although
    --  additional waypoints could be added).
    --  The layout is cached in the link itself, and will be used when drawing.
 
    procedure Compute_Layout_For_Arc_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class;
+     (Link   : not null access Canvas_Link_Record'Class;
       Offset : Gint := 1);
    --  Compute the layout for the link, with a curve link.
    --  The offset can be used to make the link more or less curved, in
@@ -46,22 +50,19 @@ package Gtkada.Canvas.Links is
    --  so that they do not override.
 
    procedure Compute_Layout_For_Orthogonal_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class);
+     (Link   : not null access Canvas_Link_Record'Class);
    --  Compute the layout for the link, when it is restricted to vertical and
    --  horizontal lines only.
 
    procedure Compute_Layout_For_Orthocurve_Link
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class);
+     (Link   : not null access Canvas_Link_Record'Class);
    --  Compute the layout for the link
 
    procedure Draw_Link
-     (Canvas           : access Interactive_Canvas_Record'Class;
-      Link             : access Canvas_Link_Record'Class;
-      Cr               : Cairo.Cairo_Context;
-      Show_Annotations : Boolean := True);
+     (Link             : not null access Canvas_Link_Record'Class;
+      Cr               : Cairo.Cairo_Context);
    --  Draw the link, using the layout computed earlier via one of the
-   --  procedures above.
+   --  procedures above. This is a help method for the Draw primitive
+   --  operation on the link, which should be used preferrably.
 
-end Gtkada.Canvas.Links;
+end Gtkada.Canvas_View.Links;

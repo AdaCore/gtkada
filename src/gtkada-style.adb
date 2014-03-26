@@ -1445,93 +1445,17 @@ package body Gtkada.Style is
       end if;
    end Get_Font;
 
-   ----------------
-   -- Intersects --
-   ----------------
+   --------------
+   -- Get_Fill --
+   --------------
 
-   function Intersects (Rect1, Rect2 : Cairo.Cairo_Rectangle) return Boolean is
+   function Get_Fill (Self : Drawing_Style) return Cairo.Cairo_Pattern is
    begin
-      return not
-        (Rect1.X > Rect2.X + Rect2.Width            --  R1 on the right of R2
-         or else Rect2.X > Rect1.X + Rect1.Width    --  R2 on the right of R1
-         or else Rect1.Y > Rect2.Y + Rect2.Height   --  R1 below R2
-         or else Rect2.Y > Rect1.Y + Rect1.Height); --  R1 above R2
-   end Intersects;
-
-   -----------
-   -- Union --
-   -----------
-
-   procedure Union
-     (Rect1 : in out Cairo.Cairo_Rectangle;
-      Rect2 : Cairo.Cairo_Rectangle)
-   is
-      Right : constant Gdouble :=
-        Gdouble'Max (Rect1.X + Rect1.Width, Rect2.X + Rect2.Width);
-      Bottom : constant Gdouble :=
-        Gdouble'Max (Rect1.Y + Rect1.Height, Rect2.Y + Rect2.Height);
-   begin
-      Rect1.X := Gdouble'Min (Rect1.X, Rect2.X);
-      Rect1.Width := Right - Rect1.X;
-
-      Rect1.Y := Gdouble'Min (Rect1.Y, Rect2.Y);
-      Rect1.Height := Bottom - Rect1.Y;
-   end Union;
-
-   -------------------
-   -- Point_In_Rect --
-   -------------------
-
-   function Point_In_Rect
-     (Rect  : Cairo.Cairo_Rectangle;
-      P     : Point) return Boolean
-   is
-   begin
-      return Rect.X <= P.X and then P.X <= Rect.X + Rect.Width
-        and then Rect.Y <= P.Y and then P.Y <= Rect.Y + Rect.Height;
-   end Point_In_Rect;
-
-   ------------------------
-   -- Circle_From_Bezier --
-   ------------------------
-
-   function Circle_From_Bezier
-     (Center   : Point;
-      Radius   : Glib.Gdouble) return Point_Array
-   is
-      --  Magic number comes from several articles on the web, including
-      --    http://www.charlespetzold.com/blog/2012/12/
-      --       Bezier-Circles-and-Bezier-Ellipses.html
-
-      P : Point_Array (1 .. 13);
-      R : constant Gdouble := Radius * 0.55;
-   begin
-      P (P'First + 0)  := (Center.X,          Center.Y - Radius);
-
-      P (P'First + 1)  := (Center.X + R,      Center.Y - Radius);
-      P (P'First + 2)  := (Center.X + Radius, Center.Y - R);
-
-      P (P'First + 3)  := (Center.X + Radius, Center.Y);
-
-      P (P'First + 4)  := (Center.X + Radius, Center.Y + R);
-      P (P'First + 5)  := (Center.X + R,      Center.Y + Radius);
-
-      P (P'First + 6)  := (Center.X,          Center.Y + Radius);
-
-      P (P'First + 7)  := (Center.X - R,      Center.Y + Radius);
-      P (P'First + 8)  := (Center.X - Radius, Center.Y + R);
-
-      P (P'First + 9)  := (Center.X - Radius, Center.Y);
-
-      P (P'First + 10) := (Center.X - Radius, Center.Y - R);
-      P (P'First + 11) := (Center.X - R,      Center.Y - Radius);
-
-      P (P'First + 12) := (Center.X, Center.Y - Radius);
-
-      return P;
-
-      --  For quadratic bezier curves, we could have used:
-      --  See http://texdoc.net/texmf-dist/doc/latex/lapdf/rcircle.pdf
-   end Circle_From_Bezier;
+      if Self.Data = null then
+         return Default_Style.Fill;
+      else
+         return Self.Data.Fill;
+      end if;
+   end Get_Fill;
 
 end Gtkada.Style;

@@ -22,32 +22,17 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-package body Gtkada.Canvas.Guides is
+--  Various support utilities for the grid and smart guides in the canvas
 
-   ------------------
-   -- Do_Snap_Grid --
-   ------------------
+package Gtkada.Canvas_View.Guides is
 
    function Do_Snap_Grid
-     (Canvas : not null access Interactive_Canvas_Record'Class;
-      Pos    : Gdouble;
-      Size   : Gdouble) return Gdouble
-   is
-      G : constant Gint := Gint (Canvas.Grid_Size);
-      X : constant Gint := Gint (Pos);
-   begin
-      if Canvas.Snap_Margin = 0 then
-         return Pos;
-      elsif X mod G < Canvas.Snap_Margin then
-         return Gdouble (Gint (X / G) * G);
-      elsif X mod G > G - Canvas.Snap_Margin then
-         return Gdouble (G + Gint (X / G) * G);
-      elsif (X + Gint (Size)) mod G < Canvas.Snap_Margin then
-         return Gdouble (Gint ((X + Gint (Size)) / G) * G - Gint (Size));
-      elsif (X + Gint (Size)) mod G > G - Canvas.Snap_Margin then
-         return Gdouble (G + Gint ((X + Gint (Size)) / G) * G - Gint (Size));
-      end if;
-      return Gdouble (X);
-   end Do_Snap_Grid;
+     (Grid_Size   : Model_Coordinate;
+      Snap_Margin : Glib.Gint;
+      Pos         : Model_Coordinate;
+      Size        : Model_Coordinate) return Model_Coordinate;
+   --  Snap the Pos coordinate to the canvas grid.
+   --  Size is the size of the item along that coordinate, since the item
+   --  could be snap either on its left (resp. top) or right (resp. bottom)
 
-end Gtkada.Canvas.Guides;
+end Gtkada.Canvas_View.Guides;

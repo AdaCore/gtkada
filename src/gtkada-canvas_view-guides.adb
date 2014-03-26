@@ -22,21 +22,35 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Various support utilities for the drawing of objects in GtkAda.Canvas
+with Glib;    use Glib;
 
-with Gtkada.Style;       use Gtkada.Style;
+package body Gtkada.Canvas_View.Guides is
 
-package Gtkada.Canvas.Objects is
+   ------------------
+   -- Do_Snap_Grid --
+   ------------------
 
-   function Link_Anchor_Point
-     (Self   : not null access Canvas_Item_Record'Class;
-      Anchor : Anchor_Attachment)
-      return Point;
-   --  Return the anchor point for links to or from this object. In general,
-   --  this anchor point is in the middle of the object or depends on the
-   --  Anchor parameter, and the link will automatically be clipped to one
-   --  of the borders. The coordinates are absolute.
-   --  This anchor point can be in the middle of an object, the link itself
-   --  will be clipped to the border of the bounding box.
+   function Do_Snap_Grid
+     (Grid_Size   : Model_Coordinate;
+      Snap_Margin : Glib.Gint;
+      Pos         : Model_Coordinate;
+      Size        : Model_Coordinate) return Model_Coordinate
+   is
+      G : constant Gint := Gint (Grid_Size);
+      X : constant Gint := Gint (Pos);
+   begin
+      if Snap_Margin = 0 then
+         return Pos;
+      elsif X mod G < Snap_Margin then
+         return Gdouble (Gint (X / G) * G);
+      elsif X mod G > G - Snap_Margin then
+         return Gdouble (G + Gint (X / G) * G);
+      elsif (X + Gint (Size)) mod G < Snap_Margin then
+         return Gdouble (Gint ((X + Gint (Size)) / G) * G - Gint (Size));
+      elsif (X + Gint (Size)) mod G > G - Snap_Margin then
+         return Gdouble (G + Gint ((X + Gint (Size)) / G) * G - Gint (Size));
+      end if;
+      return Gdouble (X);
+   end Do_Snap_Grid;
 
-end Gtkada.Canvas.Objects;
+end Gtkada.Canvas_View.Guides;

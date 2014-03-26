@@ -344,12 +344,6 @@ package Gtkada.Style is
    --  Draw arrow heads and symbols to both ends of the line, based on Self.
    --  This is similar to Polyline, but does not draw the line itself.
 
-   function Circle_From_Bezier
-     (Center   : Point;
-      Radius   : Glib.Gdouble) return Point_Array;
-   --  Return the waypoints needed to draw a circle via a bezier curve in
-   --  Draw_Polycurve.
-
    procedure Finish_Path
       (Self    : Drawing_Style;
        Cr      : Cairo.Cairo_Context);
@@ -362,6 +356,7 @@ package Gtkada.Style is
    function Get_Stroke (Self : Drawing_Style) return Gdk.RGBA.Gdk_RGBA;
    function Get_Line_Width (Self : Drawing_Style) return Glib.Gdouble;
    function Get_Font (Self : Drawing_Style) return Font_Style;
+   function Get_Fill (Self : Drawing_Style) return Cairo.Cairo_Pattern;
    --  Access the various properties of the style
 
    ---------
@@ -450,23 +445,6 @@ package Gtkada.Style is
    --  or mouse events (Source_Mouse) for instance.
    --  The returned value (if not null) must be Ref-ed before being assigned
    --  to an event for instance.
-
-   -----------
-   -- Utils --
-   -----------
-
-   function Intersects (Rect1, Rect2 : Cairo.Cairo_Rectangle) return Boolean;
-   --  Whether the two rectangles intersect
-
-   procedure Union
-     (Rect1 : in out Cairo.Cairo_Rectangle;
-      Rect2 : Cairo.Cairo_Rectangle);
-   --  Store in Rect1 the minimum rectangle that contains both Rect1 and Rect2.
-
-   function Point_In_Rect
-     (Rect  : Cairo.Cairo_Rectangle;
-      P     : Point) return Boolean;
-   --  Whether the point is in the rectangle
 
 private
 

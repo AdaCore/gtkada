@@ -25,7 +25,7 @@
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Ordered_Multisets;
 
-package body Gtkada.Canvas.Astar is
+package body Gtkada.Canvas_View.Astar is
 
    Abort_Path : constant := 200;
    --  Maximum number of Coordinates to examine before an abort.
@@ -241,4 +241,4 @@ package body Gtkada.Canvas.Astar is
       end case;
    end Manhattan_Next_Point;
 
-end Gtkada.Canvas.Astar;
+end Gtkada.Canvas_View.Astar;

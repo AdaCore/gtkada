@@ -22,43 +22,55 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo;       use Cairo;
 with Glib;        use Glib;
 
-package body Gtkada.Canvas.Objects is
+package body Gtkada.Canvas_View.Objects is
 
    -----------------------
    -- Link_Anchor_Point --
    -----------------------
 
    function Link_Anchor_Point
-     (Self   : not null access Canvas_Item_Record'Class;
+     (Self   : not null access Abstract_Item_Record'Class;
       Anchor : Anchor_Attachment)
-      return Point
+      return Item_Point
    is
-      Abs_Coord : constant Cairo_Rectangle := Self.Get_Coord;
+      C : constant Item_Rectangle := Self.Bounding_Box;
    begin
-      case Anchor.Side is
+      case Anchor.Toplevel_Side is
          when Auto =>
-            return (Abs_Coord.X + Abs_Coord.Width * Anchor.X,
-                    Abs_Coord.Y + Abs_Coord.Height * Anchor.Y);
+            return (C.Width * Anchor.X, C.Height * Anchor.Y);
 
          when Top =>
-            return (Abs_Coord.X + Abs_Coord.Width * Anchor.X,
-                    Abs_Coord.Y);
+            return (C.Width * Anchor.X, 0.0);
 
          when Right =>
-            return (Abs_Coord.X + Abs_Coord.Width,
-                    Abs_Coord.Y + Abs_Coord.Height * Anchor.Y);
+            return (C.Width, C.Height * Anchor.Y);
 
          when Bottom =>
-            return (Abs_Coord.X + Abs_Coord.Width * Anchor.X,
-                    Abs_Coord.Y + Abs_Coord.Height);
+            return (C.Width * Anchor.X, C.Height);
 
          when Left =>
-            return (Abs_Coord.X,
-                    Abs_Coord.Y + Abs_Coord.Height * Anchor.Y);
+            return (0.0, C.Height * Anchor.Y);
       end case;
    end Link_Anchor_Point;
 
-end Gtkada.Canvas.Objects;
+   --------------
+   -- Toplevel --
+   --------------
+
+   function Toplevel
+     (Self : not null access Abstract_Item_Record'Class)
+      return Abstract_Item
+   is
+      Result : Abstract_Item := Abstract_Item (Self);
+      P : Abstract_Item := Result.Parent;
+   begin
+      while P /= null loop
+         Result := P;
+         P := Result.Parent;
+      end loop;
+      return Result;
+   end Toplevel;
+
+end Gtkada.Canvas_View.Objects;
