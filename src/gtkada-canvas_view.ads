@@ -200,8 +200,9 @@ package Gtkada.Canvas_View is
    -- Enumerations --
    ------------------
 
-   type Side_Attachment is (Auto, Top, Right, Bottom, Left);
+   type Side_Attachment is (Auto, Top, Right, Bottom, Left, No_Clipping);
    --  Which side of the toplevel item the link is attached to.
+   --
    --  For toplevel items, this can be controlled by using the
    --  Anchor_Attachment's X and Y properties.
    --  But for nested item, this forces the link to start from the
@@ -222,6 +223,9 @@ package Gtkada.Canvas_View is
    --  The link 2 is also attached to A, but the side is set to Auto. So the
    --  canvas draws the shortest path from A to C (and clips the line to the
    --  border of B). So it is not as visible that 2 is linked to A.
+   --
+   --  The "No_Clipping" side should be used when a link is connected to
+   --  another link, since in that case there is no notion of link.
 
    type Anchor_Attachment is record
       X, Y          : Glib.Gdouble := 0.5;

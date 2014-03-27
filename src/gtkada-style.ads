@@ -249,7 +249,7 @@ package Gtkada.Style is
    No_Arrow_Style : constant Arrow_Style :=
      (None, 0.0, 0.0, Gdk.RGBA.Black_RGBA, Gdk.RGBA.Null_RGBA);
 
-   type Symbol_Name is (None, Cross, Strike);
+   type Symbol_Name is (None, Cross, Strike, Double_Strike);
    type Symbol_Style is record
       Name     : Symbol_Name;
       Stroke   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;

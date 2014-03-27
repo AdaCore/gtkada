@@ -950,9 +950,20 @@ package body Gtkada.Canvas_View is
       return Item_Point
    is
       pragma Unreferenced (Anchor);
+      Index : Integer;
    begin
-      --  ??? incorrect
-      return (Self.Bounding_Box.X, Self.Bounding_Box.Y);
+      if Self.Points = null then
+         Self.Refresh_Layout;
+      end if;
+
+      --  We connect to the middle of the middle segment.
+      --  ??? We could instead look for the closest segment or some other
+      --  algorithm.
+
+      Index := Self.Points'First + Self.Points'Length / 2 - 1;
+
+      return ((Self.Points (Index).X + Self.Points (Index + 1).X) / 2.0,
+              (Self.Points (Index).Y + Self.Points (Index + 1).Y) / 2.0);
    end Link_Anchor_Point;
 
    -------------

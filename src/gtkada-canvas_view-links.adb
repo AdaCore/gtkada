@@ -314,6 +314,9 @@ package body Gtkada.Canvas_View.Links is
          Effective_Side : Side_Attachment;
       begin
          case Anchor.Toplevel_Side is
+            when No_Clipping =>
+               P := Link.Model_To_Item (Info.P);
+               return;
             when Top | Bottom | Right | Left =>
                Effective_Side := Anchor.Toplevel_Side;
             when Auto =>

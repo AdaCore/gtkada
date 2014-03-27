@@ -38,7 +38,7 @@ package body Gtkada.Canvas_View.Objects is
       C : constant Item_Rectangle := Self.Bounding_Box;
    begin
       case Anchor.Toplevel_Side is
-         when Auto =>
+         when Auto | No_Clipping =>
             return (C.Width * Anchor.X, C.Height * Anchor.Y);
 
          when Top =>

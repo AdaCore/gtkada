@@ -21,34 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo;               use Cairo;
 with Gdk.RGBA;            use Gdk.RGBA;
 with Glib;                use Glib;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
 with Gtkada.Style;        use Gtkada.Style;
-with GNAT.Strings;        use GNAT.Strings;
-with Pango.Cairo;         use Pango.Cairo;
-with Pango.Font;          use Pango.Font;
-with Pango.Layout;        use Pango.Layout;
 
 package body Create_Canvas_View_Links is
-
-   Width  : constant Gdouble := 13.0;
-   Height : constant Gdouble := 13.0;
-
-   type Demo_Item_Record is new Canvas_Item_Record with record
-      Style         : Drawing_Style;
-      Text          : String_Access;
-   end record;
-   type Demo_Item is access all Demo_Item_Record'Class;
-   overriding procedure Draw
-     (Self : access Demo_Item_Record; Cr : Cairo_Context);
-   overriding function Bounding_Box
-     (Self : not null access Demo_Item_Record) return Item_Rectangle;
-
-   Layout : Pango_Layout;
 
    ----------
    -- Help --
@@ -60,171 +40,134 @@ package body Create_Canvas_View_Links is
         & " in the canvas view widget."
         & ASCII.LF
         & "Links can be attached to any other items (boxes, but also other"
-        & " links and texts)";
+        & " links and texts)."
+        & ASCII.LF
+        & "Links can also have arrows and annotations, as illustrated by"
+        & " the examples here.";
    end Help;
-
-   ------------------
-   -- Bounding_Box --
-   ------------------
-
-   overriding function Bounding_Box
-     (Self : not null access Demo_Item_Record) return Item_Rectangle
-   is
-      pragma Unreferenced (Self);
-   begin
-      return (0.0, 0.0, Width, Height);
-   end Bounding_Box;
-
-   ----------
-   -- Draw --
-   ----------
-
-   overriding procedure Draw
-     (Self : access Demo_Item_Record; Cr : Cairo_Context)
-   is
-   begin
-      Self.Style.Draw_Rect (Cr, (0.0, 0.0), Width, Height);
-
-      if Self.Text /= null then
-         Layout.Set_Text (Self.Text.all);
-         Move_To (Cr, 1.0, 1.0);
-         Pango.Cairo.Show_Layout (Cr, Layout);
-      end if;
-   end Draw;
 
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      M : constant Gdouble := 22.0;  --  margin between items
-      W : constant Gdouble := Width + M;
-      H : constant Gdouble := Height + M;
+      Canvas        : Canvas_View;
+      Model         : List_Canvas_Model;
+      Scrolled      : Gtk_Scrolled_Window;
+      Black, Red    : Drawing_Style;
 
-      PW : constant Gdouble := W * 2.0;  --  space between groups of items
+      procedure Do_Example (Routing : Route_Style; X, Y : Model_Coordinate);
+      procedure Do_Example (Routing : Route_Style; X, Y : Model_Coordinate) is
+         L1, L2        : Canvas_Link;
+         It1, It2, It3 : Rect_Item;
+      begin
+         It1 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It1.Set_Position ((X, Y));
+         Model.Add (It1);
 
-      Canvas       : Canvas_View;
-      Model        : List_Canvas_Model;
-      Scrolled     : Gtk_Scrolled_Window;
-      Object_Style : Drawing_Style;
-      Link_Styles  : array (Route_Style) of Drawing_Style;
-      Link         : Canvas_Link;
-      It           : Integer;
-      Y, X         : Gdouble;
+         It2 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It2.Set_Position ((X + 100.0, Y + 100.0));
+         Model.Add (It2);
 
-      Pos          : constant Point_Array :=
-        (
-          --  Second item to the left and above
-          (W,     H),
-          (0.0,   0.0),
+         It3 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It3.Set_Position ((X + 100.0, Y + 0.0));
+         Model.Add (It3);
 
-          --  Second item exactly above
-          (PW,     H),
-          (PW,     0.0),
+         L1 := Gtk_New
+           (From => It1, To => It2, Style => Black,
+            Routing => Routing,
+            Anchor_From => (1.0, 0.5, Auto),
+            Anchor_To   => (0.0, 0.9, Auto));
+         Model.Add (L1);
 
-          --  Second item to the right and above
-          (PW + W,      H),
-          (PW + W * 2.0,  0.0),
+         L2 := Gtk_New
+           (From => L1, To => It3, Style => Red, Routing => Routing,
+            Anchor_From => (0.5, 0.5, No_Clipping));
+         Model.Add (L2);
+      end Do_Example;
 
-          --  Second item to the left and same y
-          (W,     H * 2.0),
-          (0.0,   H * 2.0),
+      procedure Link_Example (X, Y : Model_Coordinate; Style : Drawing_Style);
+      procedure Link_Example (X, Y : Model_Coordinate; Style : Drawing_Style)
+      is
+         It1, It2 : Rect_Item;
+         L        : Canvas_Link;
+      begin
+         It1 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It1.Set_Position ((X, Y));
+         Model.Add (It1);
 
-          --  Second item to the right and same y
-          (PW + W,        H * 2.0),
-          (PW + W * 2.0,  H * 2.0),
+         It2 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It2.Set_Position ((X + 200.0, Y));
+         Model.Add (It2);
 
-          --  Second item to the left and below
-          (W,     H * 3.0),
-          (0.0,   H * 3.0 + H),
-
-          --  Second item exactly below
-          (PW,     H * 3.0),
-          (PW,     H * 3.0 + H),
-
-          --  Second item to the right and below
-          (PW + W,        H * 3.0),
-          (PW + W * 2.0,  H * 3.0 + H),
-
-          --   Middle item, self links
-          (PW,            H * 2.0)
-         );
-
-      Items        : array (Pos'Range) of Demo_Item;
+         L := Gtk_New
+           (From => It1, To => It2, Style => Style, Routing => Straight);
+         Model.Add (L);
+      end Link_Example;
 
    begin
-      Layout := Frame.Create_Pango_Layout;
-      Layout.Set_Font_Description (From_String ("sans 8px"));
-
       Gtk_New (Model);
 
-      Object_Style := Gtk_New
-        (Stroke => Black_RGBA,
-         Fill   => Create_Rgba_Pattern
-           ((1.0, 1.0, 1.0, 0.8)));
+      Black := Gtk_New;
+      Red   := Gtk_New (Stroke => (1.0, 0.0, 0.0, 1.0));
 
-      Link_Styles (Orthogonal) := Gtk_New (Stroke => Black_RGBA);
-      Link_Styles (Straight) := Gtk_New (Stroke => (1.0, 0.0, 0.0, 1.0));
-      Link_Styles (Curve) := Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0));
-      Link_Styles (Orthocurve) := Gtk_New (Stroke => (0.0, 0.0, 1.0, 1.0));
-      Y := 0.0;
-      X := 0.0;
+      Do_Example (Straight,   0.0, 0.0);
+      Do_Example (Orthogonal, 150.0, 0.0);
 
---        for From_Side in Auto .. Auto loop
---           for To_Side in Auto .. Auto loop
-      for From_Side in Side_Attachment loop
-         for To_Side in Side_Attachment loop
-            for J in Items'Range loop
-               Items (J) := new Demo_Item_Record;
-               Items (J).Style := Object_Style;
+      Link_Example (0.0, 180.0,
+                    Gtk_New (Line_Width => 2.0,
+                             Arrow_To   => (Head   => Open,
+                                            Length => 8.0,
+                                            Angle  => 0.4,
+                                            Stroke => Black_RGBA,
+                                            Fill   => Black_RGBA),
+                             Arrow_From => (Head   => Open,
+                                            Length => 16.0,
+                                            Angle  => 0.8,
+                                            Stroke => (1.0, 0.0, 0.0, 1.0),
+                                            Fill   => (1.0, 0.0, 0.0, 1.0))));
 
-               if J mod 2 = 0 then
-                  declare
-                     F : constant String :=
-                       Side_Attachment'Image (From_Side);
-                     T : constant String :=
-                       Side_Attachment'Image (To_Side);
-                  begin
-                     Items (J).Text := new String'
-                       (F (F'First) & T (T'First));
-                  end;
-               end if;
+      Link_Example (0.0, 220.0,
+                    Gtk_New (Line_Width => 4.0,
+                             Dashes     => (2.0, 2.0),
+                             Arrow_To   => (Head   => Solid,
+                                            Length => 8.0,
+                                            Angle  => 0.4,
+                                            Stroke => Black_RGBA,
+                                            Fill   => Black_RGBA),
+                             Arrow_From => (Head   => Solid,
+                                            Length => 16.0,
+                                            Angle  => 0.8,
+                                            Stroke => (1.0, 0.0, 0.0, 1.0),
+                                            Fill   => (1.0, 0.0, 0.0, 1.0))));
 
-               Items (J).Set_Position ((X + Pos (J).X, Y + Pos (J).Y));
-               Model.Add (Items (J));
-            end loop;
+      Link_Example (0.0, 260.0,
+                    Gtk_New (Line_Width => 6.0,
+                             Dashes     => (2.0, 4.0, 4.0, 6.0),
+                             Arrow_To   => (Head   => Diamond,
+                                            Length => 8.0,
+                                            Angle  => 0.4,
+                                            Stroke => Black_RGBA,
+                                            Fill   => Black_RGBA),
+                             Arrow_From => (Head   => Diamond,
+                                            Length => 16.0,
+                                            Angle  => 0.8,
+                                            Stroke => (1.0, 0.0, 0.0, 1.0),
+                                            Fill   => (1.0, 0.0, 0.0, 1.0))));
 
---            for Route in Straight .. Straight loop
-            for Route in Route_Style loop
-               It := Items'First;
-               while It < Items'Last loop
-                  Link := Gtk_New
-                    (From        => Items (It),
-                     To          => Items (It + 1),
-                     Style       => Link_Styles (Route),
-                     Routing     => Route,
-                     Anchor_From => (0.5, 0.5, From_Side),
-                     Anchor_To   => (0.5, 0.5, To_Side));
-                  Model.Add (Link);
-                  It := It + 2;
-               end loop;
+      Link_Example (0.0, 300.0,
+                    Gtk_New (Line_Width => 2.0,
+                             Symbol_To  => (Name   => Cross,
+                                            others => <>),
+                             Symbol_From => (Name => Strike,
+                                             others => <>)));
 
-               Link := Gtk_New
-                 (From        => Items (Items'Last),
-                  To          => Items (Items'Last),
-                  Style       => Link_Styles (Route),
-                  Routing     => Route,
-                  Anchor_From => (0.5, 0.5, From_Side),
-                  Anchor_To   => (0.5, 0.5, To_Side));
-               Model.Add (Link);
-            end loop;
+      Link_Example (0.0, 340.0,
+                    Gtk_New (Line_Width => 2.0,
+                             Symbol_To  => (Name   => Double_Strike,
+                                            others => <>)));
 
-            X := X + PW + W * 3.0 + 20.0;
-         end loop;
-
-         X := 0.0;
-         Y := Y + H * 4.0 + 60.0;
-      end loop;
+      Model.Refresh_Layout;
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.

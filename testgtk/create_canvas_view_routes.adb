@@ -188,10 +188,8 @@ package body Create_Canvas_View_Routes is
       Y := 0.0;
       X := 0.0;
 
---        for From_Side in Auto .. Auto loop
---           for To_Side in Auto .. Auto loop
-      for From_Side in Side_Attachment loop
-         for To_Side in Side_Attachment loop
+      for From_Side in Auto .. Left loop
+         for To_Side in Auto .. Left loop
             for J in Items'Range loop
                Items (J) := new Demo_Item_Record;
                Items (J).Style := Object_Style;

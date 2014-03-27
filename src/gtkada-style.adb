@@ -1191,13 +1191,27 @@ package body Gtkada.Style is
             when Strike =>
                Save (Cr);
                New_Path (Cr);
-               Move_To (Cr, P.X - 4.0, P.Y + 4.0);
-               Rel_Line_To (Cr, 8.0, -8.0);
+               Move_To (Cr, P.X - 6.0, P.Y + 6.0);
+               Rel_Line_To (Cr, 12.0, -12.0);
 
                Set_Source_Color (Cr, S.Stroke);
                Set_Line_Width (Cr, Self.Get_Line_Width);
                Stroke (Cr);
                Restore (Cr);
+
+            when Double_Strike =>
+               Save (Cr);
+               New_Path (Cr);
+               Move_To (Cr, P.X - 6.0, P.Y + 6.0);
+               Rel_Line_To (Cr, 12.0, -12.0);
+               Move_To (Cr, P.X - 4.0 + Self.Get_Line_Width, P.Y + 6.0);
+               Rel_Line_To (Cr, 12.0, -12.0);
+
+               Set_Source_Color (Cr, S.Stroke);
+               Set_Line_Width (Cr, Self.Get_Line_Width);
+               Stroke (Cr);
+               Restore (Cr);
+
          end case;
       end Draw_Symbol;
 
