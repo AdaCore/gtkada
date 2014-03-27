@@ -359,6 +359,14 @@ package Gtkada.Style is
    function Get_Fill (Self : Drawing_Style) return Cairo.Cairo_Pattern;
    --  Access the various properties of the style
 
+   procedure Set_Fill
+     (Self   : Drawing_Style;
+      Fill   : Cairo.Cairo_Pattern := Cairo.Null_Pattern);
+   procedure Set_Stroke
+     (Self   : Drawing_Style;
+      Stroke : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA);
+   --  Overriding specific attributes of the style
+
    ---------
    -- CSS --
    ---------

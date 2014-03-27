@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2000-2014, AdaCore                     --
+--                     Copyright (C) 2014, AdaCore                          --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,9 +23,9 @@
 
 with Gtk.Frame;
 
-package Create_Canvas_View is
+package Create_Canvas_View_Links is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
    function Help return String;
 
-end Create_Canvas_View;
+end Create_Canvas_View_Links;

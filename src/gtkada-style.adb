@@ -1458,4 +1458,30 @@ package body Gtkada.Style is
       end if;
    end Get_Fill;
 
+   --------------
+   -- Set_Fill --
+   --------------
+
+   procedure Set_Fill
+     (Self   : Drawing_Style;
+      Fill   : Cairo.Cairo_Pattern := Cairo.Null_Pattern) is
+   begin
+      if Self.Data /= null then
+         Self.Data.Fill := Fill;
+      end if;
+   end Set_Fill;
+
+   ----------------
+   -- Set_Stroke --
+   ----------------
+
+   procedure Set_Stroke
+     (Self   : Drawing_Style;
+      Stroke : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA) is
+   begin
+      if Self.Data /= null then
+         Self.Data.Stroke := Stroke;
+      end if;
+   end Set_Stroke;
+
 end Gtkada.Style;

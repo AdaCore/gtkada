@@ -41,6 +41,9 @@
 --    - The view is in charge of representing the model, or a subset of it. It
 --      is possible to have multiple views for a single model, each displaying
 --      a different subset or a different part of the whole canvas.
+--      When a view is put inside a Gtk_Scrolled_Window, it automatically
+--      supports scrolling either via the scrollbars, or directly with the
+--      mouse wheel or touchpad.
 --
 --    - The controller provides the user interaction in the canvas, and will
 --      change the view and model properties when the user performs actions.
@@ -52,14 +55,24 @@
 --  which provides a much more flexible approach. There is for instance no
 --  need to duplicate the items in memory if you already have them available
 --  somewhere else in your application.
+--
 --  Various settings that were set on an Interactive_Canvas (like the font for
 --  annotations, arrow sizes,...) are now configured on each item or link
 --  separately, which provides much more flexibility in what this canvas can
 --  display.
-
+--
+--  The support for items is much richer: via a number of new primitive
+--  operations, it is possible to control with more details the behavior of
+--  items and where links should be attached to them.
+--  More importantly, this package provides a ready-to-use set of predefined
+--  items (rectangles, circles, text, polygons,...) which can be composited
+--  and have automatic size computation. This makes it easier than before to
+--  have an item that contains, for instance, a list of text fields, since
+--  there is no need any more to compute the size of the text explicitly.
 --
 --
---
+--  The following has not been backported yet:
+--  ==========================================
 --  It also supports scrolling if put in a Gtk_Scrolled_Window.
 --  The canvas will be scrolled (and the selected items moved) if an item is
 --  selected and the mouse is dragged on a small area on the side of the canvas
@@ -69,13 +82,6 @@
 --  The scrolling speed will slightly increase over time if the mouse is kept
 --  outside of the canvas. This makes the canvas much more comfortable to use
 --  for the user.
---
---  All items put in this canvas must implement the interface
---  Abstract_Item_Record..
---  However, it is your responsability, as a programmer, to provide drawing
---  routines. In fact, all these items should draw in a pixmap, which is then
---  copied automatically to the screen whenever the canvas needs to redraw
---  itself.
 --
 --  The items can also react to mouse events: mouse clicks are transmitted to
 --  the item if the mouse did not move more than a given amount of pixels.
@@ -306,6 +312,7 @@ package Gtkada.Canvas_View is
    procedure Destroy
      (Self : not null access Abstract_Item_Record) is null;
    --  Called when Self is no longer needed.
+   --  Do not call directly.
 
    function Parent
      (Self : not null access Abstract_Item_Record)
@@ -314,12 +321,6 @@ package Gtkada.Canvas_View is
    --  null is returned for toplevel items, in which case the coordinates of
    --  the bounding box are model coordinats. Otherwise, the coordinates are
    --  relative to the returned item.
-
---     procedure For_Each_Child
---       (Self     : not null access Abstract_Item_Record;
---        Callback : not null access procedure
---          (Child : not null access Abstract_Item_Record'Class)) is null;
-   --  Traverse all children of Self recursively, and calls Callback for each.
 
    function Link_Anchor_Point
      (Self   : not null access Abstract_Item_Record;
@@ -428,6 +429,17 @@ package Gtkada.Canvas_View is
    --  visible.
    --  The default implementation is not efficient, since it will iterate all
    --  items one by one to compute the rectangle. No caching is done.
+
+   procedure Refresh_Layout (Self : not null access Canvas_Model_Record);
+   --  Refresh the layout of Self.
+   --  This procedure should be called every time items are moved (because
+   --  this impacts links to or from these items), or when they are added or
+   --  removed (it could also impact the layout of links if they displays to
+   --  avoid going underneath items).
+   --  This procedure is also used to compute the size of items (see
+   --  Container_Item below).
+   --  The default implementation will simply iterate over all items, but it
+   --  could be implemented more efficiently.
 
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
@@ -601,6 +613,148 @@ package Gtkada.Canvas_View is
    --  This can be used for instance to synchronize multiple views, or display
    --  a "mini-map" of the whole view.
 
+   ------------------------
+   -- Object hierarchies --
+   ------------------------
+   --  The above declarations for Abstract_Item and Canvas_Item will let you
+   --  create your own custom items. However, they will require the overriding
+   --  of a number of subprograms to be useful.
+   --  Instead, some predefined types of items are defined below, which can
+   --  be combined into a hierarchy of items: toplevel items act as
+   --  containers for one or more other objets. The size of items can be
+   --  computed automatically, or forced when the item is created.
+   --
+   --  Children can be put at specific coordinates in their parents, or
+   --  stacked vertically or horizontally.
+
+   type Container_Item_Record is abstract new Canvas_Item_Record with private;
+   type Container_Item is access all Container_Item_Record'Class;
+
+   type Child_Layout_Strategy is (Horizontal_Stack, Vertical_Stack);
+   procedure Set_Child_Layout
+     (Self   : not null access Container_Item_Record'Class;
+      Layout : Child_Layout_Strategy);
+   --  How should the children of a container be organized: either one on top
+   --  of another, or one next to another.
+
+   type Margins is record
+      Left, Right, Top, Bottom : Model_Coordinate;
+   end record;
+   No_Margins : constant Margins := (0.0, 0.0, 0.0, 0.0);
+
+   type Float_Style is (Float_None, Float_Start, Float_End);
+   --  A floating child does not participate in the stacking: it will still be
+   --  displayed below or to the right of the previous child, but the next
+   --  item will then be displayed on top of the floating child.
+   --  Float_End can be used to force the child to be right-aligned (resp.
+   --  bottom-aligned) in its container.
+
+   type Alignment_Style is (Align_Start, Align_Center, Align_End);
+   --  How an item should be aligned within its parent.
+   --  When the parent stacks its children vertically, alignment is taken into
+   --  account horizontally; and similarly when the parent orgranizes its
+   --  children horizontally, the alignment is vertical.
+   --
+   --  When an item does not request a specific size along the alignment axis,
+   --  it always uses the full width or height of its parent, so the alignment
+   --  does not play a role.
+   --
+   --  However, when the item requests a size smaller than its parent's along
+   --  the alignment axis, extra margin needs to be added, and they are added
+   --  either to its left/top (when Align_Start), to both sides (when
+   --  Align_Center), or to its right/bottom (when Align_End)..
+   --
+   --  Alignment does not apply to floating children.
+
+   type Overflow_Style is (Overflow_Prevent, Overflow_Hide);
+   --  An overflow situation occurs when an item's contents is larger than its
+   --  contents.
+   --  If Overflow_Prevent is true, an item will always request enough size to
+   --  fit all its contents. There might still be cases where the parent item
+   --  was set to a small size, though, and the overflow is hidden nonetheless.
+   --  If Overflow_Hide is true, an item will request a minimal size, and
+   --  simply hide the part of its contents that does not fit.
+
+   procedure Add_Child
+     (Self     : not null access Container_Item_Record'Class;
+      Child    : not null access Container_Item_Record'Class;
+      Align    : Alignment_Style := Align_Start;
+      Margin   : Margins := No_Margins;
+      Float    : Float_Style := Float_None;
+      Overflow : Overflow_Style := Overflow_Prevent);
+   --  Add a new child to the container.
+   --  If the child's position is set, it is then interpreted as relative to
+   --  Self. If the position is not specified, it will be computed
+   --  automatically based on the container's policy (either below the previous
+   --  child, or to its right).
+   --  Margins are added to each size of the child.
+
+   procedure Size_Request
+     (Self  : not null access Container_Item_Record);
+   --  Compute the ideal size for Self.
+   --  It might be either a size specifically forced by the user, or computed
+   --  from Self's children's own size_request.
+   --  The size is stored internally in the object.
+   --  The requested size must not include the margins that were defined in
+   --  Add_Child.
+
+   procedure Size_Allocate
+     (Self  : not null access Container_Item_Record);
+   --  Called once the size of the parent object has been decided (i.e. after
+   --  all the calls to Size_Request).
+   --  The parent must set its child's position and size, and then call
+   --  Size_Allocate to let it know about the final size and position.
+   --  This can be used to compute attributes that need the actual size of the
+   --  item (gradients, centering or right-aligning objects,...)
+   --  Alignments and margins are automatically handled by the parent.
+
+   procedure Refresh_Layout (Self : not null access Container_Item_Record);
+   --  Recompute the layout for Self and its children, i.e. do the full size
+   --  negocitation
+
+   procedure For_Each_Child
+     (Self     : not null access Container_Item_Record'Class;
+      Callback : not null access procedure
+        (Child : not null access Container_Item_Record'Class));
+   --  Traverse all children of Self recursively, and calls Callback for each.
+
+   procedure Draw_Children
+     (Self : not null access Container_Item_Record'Class;
+      Cr   : Cairo.Cairo_Context);
+   --  Display all the children of Self
+
+   overriding function Position
+     (Self : not null access Container_Item_Record) return Gtkada.Style.Point;
+   overriding function Parent
+     (Self : not null access Container_Item_Record)
+      return Abstract_Item;
+   overriding function Bounding_Box
+     (Self : not null access Container_Item_Record)
+      return Item_Rectangle;
+
+   ----------------
+   -- Rectangles --
+   ----------------
+
+   type Rect_Item_Record is new Container_Item_Record with private;
+   type Rect_Item is access all Rect_Item_Record'Class;
+   --  A predefined type object which displays itself as a rectangle or a
+   --  rectangle with rounded corners.
+
+   function Gtk_New_Rect
+     (Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0;
+      Radius        : Model_Coordinate := 0.0)
+      return Rect_Item;
+   --  Create a new rectangle item.
+   --  If either Width or Height are negative, they will be computed based on
+   --  the children's requested size (if there are no children, a default size
+   --  is used).
+
+   overriding procedure Draw
+     (Self : not null access Rect_Item_Record;
+      Cr   : Cairo.Cairo_Context);
+
    ------------------
    -- Canvas links --
    ------------------
@@ -629,7 +783,7 @@ package Gtkada.Canvas_View is
    --  This link is not automatically added to the model.
    --  Both items must belong to the same model.
 
-   procedure Layout (Self : not null access Canvas_Link_Record);
+   procedure Refresh_Layout (Self : not null access Canvas_Link_Record);
    --  Recompute the layout/routing for the link.
    --  This procedure should be called whenever any of the end objects changes
    --  side or position. The view will do this automatically the first time,
@@ -665,8 +819,43 @@ private
    with null record;
 
    type Canvas_Item_Record is abstract new Abstract_Item_Record with record
-      Position : Gtkada.Style.Point := (0.0, 0.0);
+      Position : Gtkada.Style.Point :=
+        (Gdouble'First, Gdouble'First);
       --  Position within its parent or the canvas view.
+   end record;
+
+   package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
+     (Abstract_Item);
+
+   type Container_Item_Record is abstract new Canvas_Item_Record with record
+      Width, Height : Model_Coordinate;
+      --  Computed by Size_Request
+
+      Computed_Position : Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
+      --  The position within the parent, as computed in Size_Allocate.
+      --  The field Position is used for the position specifically requested by
+      --  the user.
+
+      Forced_Width, Forced_Height : Model_Coordinate := -1.0;
+      --  Whether the user requested a specific size
+
+      Margin : Margins := No_Margins;
+      --  Margins around the child
+
+      Parent : Container_Item;
+      --  The parent item
+
+      Layout   : Child_Layout_Strategy := Vertical_Stack;
+      Align    : Alignment_Style := Align_Start;
+      Float    : Float_Style := Float_None;
+      Overflow : Overflow_Style := Overflow_Prevent;
+
+      Children : Items_Lists.List;
+   end record;
+
+   type Rect_Item_Record is new Container_Item_Record with record
+      Style         : Gtkada.Style.Drawing_Style;
+      Radius        : Model_Coordinate;
    end record;
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
@@ -707,8 +896,6 @@ private
       Anchor_To   : Anchor_Attachment := Middle_Attachment;
    end record;
 
-   package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
-     (Abstract_Item);
    type List_Canvas_Model_Record is new Canvas_Model_Record with record
       Items : Items_Lists.List;
    end record;

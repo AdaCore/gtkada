@@ -61,6 +61,10 @@ package body Gtkada.Canvas_View is
    V_Scroll_Property : constant Property_Id := 4;
    --  The properties for the View
 
+   View_Margin : constant View_Coordinate := 20.0;
+   --  The number of pixels on each sides of the view. This avoids having
+   --  items displays exactly next to the border of the view.
+
    function On_View_Draw
      (View : System.Address; Cr : Cairo_Context) return Gboolean;
    pragma Convention (C, On_View_Draw);
@@ -460,6 +464,7 @@ package body Gtkada.Canvas_View is
    is
       Box   : Model_Rectangle;
       Area  : constant Model_Rectangle := Self.Get_Visible_Area;
+      M     : Model_Coordinate;
    begin
       if Self.Model = null or else Area.Width <= 1.0 then
          --  Not allocated yet
@@ -467,12 +472,13 @@ package body Gtkada.Canvas_View is
       end if;
 
       Box := Self.Model.Bounding_Box;
+      M := View_Margin * Self.Scale;
 
       if Self.Hadj /= null then
          Self.Hadj.Configure
            (Value          => Area.X,
-            Lower          => Box.X,
-            Upper          => Box.X + Box.Width,
+            Lower          => Box.X - M,
+            Upper          => Box.X + Box.Width + M,
             Step_Increment => 5.0,
             Page_Increment => 100.0,
             Page_Size      => Area.Width);
@@ -481,8 +487,8 @@ package body Gtkada.Canvas_View is
       if Self.Vadj /= null then
          Self.Vadj.Configure
            (Value          => Area.Y,
-            Lower          => Box.Y,
-            Upper          => Box.Y + Box.Height,
+            Lower          => Box.Y - M,
+            Upper          => Box.Y + Box.Height + M,
             Step_Increment => 5.0,
             Page_Increment => 100.0,
             Page_Size      => Area.Height);
@@ -869,8 +875,6 @@ package body Gtkada.Canvas_View is
       Link.Routing     := Routing;
       Link.Anchor_From := Anchor_From;
       Link.Anchor_To   := Anchor_To;
-
-      Link.Layout;
    end Initialize;
 
    --------------
@@ -1151,11 +1155,11 @@ package body Gtkada.Canvas_View is
       end loop;
    end For_Each_Item;
 
-   ------------
-   -- Layout --
-   ------------
+   --------------------
+   -- Refresh_Layout --
+   --------------------
 
-   procedure Layout (Self : not null access Canvas_Link_Record) is
+   procedure Refresh_Layout (Self : not null access Canvas_Link_Record) is
    begin
       case Self.Routing is
          when Orthogonal =>
@@ -1167,7 +1171,43 @@ package body Gtkada.Canvas_View is
          when Orthocurve =>
             Compute_Layout_For_Orthocurve_Link (Self);
       end case;
-   end Layout;
+   end Refresh_Layout;
+
+   --------------------
+   -- Refresh_Layout --
+   --------------------
+
+   procedure Refresh_Layout (Self : not null access Canvas_Model_Record) is
+      procedure Do_Link_Layout
+        (Item : not null access Abstract_Item_Record'Class);
+      procedure Do_Link_Layout
+        (Item : not null access Abstract_Item_Record'Class)
+      is
+      begin
+         if Item.all in Canvas_Link_Record'Class then
+            Canvas_Link_Record'Class (Item.all).Refresh_Layout;
+         end if;
+      end Do_Link_Layout;
+
+      procedure Do_Container_Layout
+        (Item : not null access Abstract_Item_Record'Class);
+      procedure Do_Container_Layout
+        (Item : not null access Abstract_Item_Record'Class)
+      is
+      begin
+         if Item.all in Container_Item_Record'Class then
+            Container_Item_Record'Class (Item.all).Refresh_Layout;
+         end if;
+      end Do_Container_Layout;
+
+   begin
+      Canvas_Model_Record'Class (Self.all).For_Each_Item
+        (Do_Container_Layout'Access);
+      Canvas_Model_Record'Class (Self.all).For_Each_Item
+        (Do_Link_Layout'Access);
+
+      Self.Layout_Changed;
+   end Refresh_Layout;
 
    -----------
    -- Union --
@@ -1221,5 +1261,370 @@ package body Gtkada.Canvas_View is
          return Result;
       end if;
    end Bounding_Box;
+
+   ---------------
+   -- Add_Child --
+   ---------------
+
+   procedure Add_Child
+     (Self     : not null access Container_Item_Record'Class;
+      Child    : not null access Container_Item_Record'Class;
+      Align    : Alignment_Style := Align_Start;
+      Margin   : Margins := No_Margins;
+      Float    : Float_Style := Float_None;
+      Overflow : Overflow_Style := Overflow_Prevent)
+   is
+   begin
+      Child.Margin   := Margin;
+      Child.Parent   := Container_Item (Self);
+      Child.Float    := Float;
+      Child.Overflow := Overflow;
+      Child.Align    := Align;
+      Self.Children.Append (Abstract_Item (Child));
+   end Add_Child;
+
+   ------------
+   -- Parent --
+   ------------
+
+   overriding function Parent
+     (Self : not null access Container_Item_Record)
+      return Abstract_Item
+   is
+   begin
+      return Abstract_Item (Self.Parent);
+   end Parent;
+
+   ------------------
+   -- Bounding_Box --
+   ------------------
+
+   function Bounding_Box
+     (Self : not null access Container_Item_Record)
+      return Item_Rectangle is
+   begin
+      --  assumes size_request has been called already
+      return (0.0, 0.0, Self.Width, Self.Height);
+   end Bounding_Box;
+
+   --------------------
+   -- For_Each_Child --
+   --------------------
+
+   procedure For_Each_Child
+     (Self     : not null access Container_Item_Record'Class;
+      Callback : not null access procedure
+        (Child : not null access Container_Item_Record'Class))
+   is
+      use Items_Lists;
+      C : Items_Lists.Cursor := Self.Children.First;
+   begin
+      while Has_Element (C) loop
+         Callback (Container_Item (Element (C)));
+         Next (C);
+      end loop;
+   end For_Each_Child;
+
+   ----------------------
+   -- Set_Child_Layout --
+   ----------------------
+
+   procedure Set_Child_Layout
+     (Self   : not null access Container_Item_Record'Class;
+      Layout : Child_Layout_Strategy)
+   is
+   begin
+      Self.Layout := Layout;
+   end Set_Child_Layout;
+
+   --------------
+   -- Position --
+   --------------
+
+   overriding function Position
+     (Self : not null access Container_Item_Record) return Gtkada.Style.Point
+   is
+   begin
+      return Self.Computed_Position;
+   end Position;
+
+   ------------------
+   -- Size_Request --
+   ------------------
+
+   procedure Size_Request
+     (Self  : not null access Container_Item_Record)
+   is
+      use Items_Lists;
+      C     : Items_Lists.Cursor := Self.Children.First;
+      Child : Container_Item;
+      Tmp, Tmp2 : Model_Coordinate;
+   begin
+      Self.Width  := 0.0;
+      Self.Height := 0.0;
+
+      Tmp := 0.0; --  Current coordinate (X or Y) for the child
+
+      while Has_Element (C) loop
+         Child := Container_Item (Element (C));
+         Child.Size_Request;
+
+         case Self.Layout is
+            when Vertical_Stack =>
+               case Child.Overflow is
+                  when Overflow_Prevent =>
+                     Self.Width := Model_Coordinate'Max
+                       (Child.Width + Child.Margin.Left + Child.Margin.Right,
+                        Self.Width);
+                  when Overflow_Hide =>
+                     null;
+               end case;
+
+               if Child.Position.Y /= Gdouble'First then
+                  Tmp2 := Child.Position.Y + Child.Height;
+               else
+                  Tmp2 := Tmp + Child.Height;
+               end if;
+
+               Tmp2 := Tmp2 + Child.Margin.Top + Child.Margin.Bottom;
+
+               Self.Height := Model_Coordinate'Max (Self.Height, Tmp2);
+
+               if Child.Float = Float_None then
+                  --  The lowest point so far
+                  Tmp := Self.Height; --  Model_Coordinate'Max (Tmp, Tmp2);
+               end if;
+
+            when Horizontal_Stack =>
+               case Child.Overflow is
+                  when Overflow_Prevent =>
+                     Self.Height := Model_Coordinate'Max
+                       (Child.Height + Child.Margin.Top + Child.Margin.Bottom,
+                        Self.Height);
+                  when Overflow_Hide =>
+                     null;
+               end case;
+
+               if Child.Position.X /= Gdouble'First then
+                  Tmp2 := Child.Position.X + Child.Width;
+               else
+                  Tmp2 := Tmp + Child.Width;
+               end if;
+
+               Tmp2 := Tmp2 + Child.Margin.Left + Child.Margin.Right;
+
+               Self.Width := Model_Coordinate'Max (Self.Width, Tmp2);
+
+               if Child.Float = Float_None then
+                  Tmp := Self.Width;
+               end if;
+         end case;
+
+         Next (C);
+      end loop;
+
+      --  Ignore the previous computation when a size is forced. It was
+      --  still needed to make sure all children have a size.
+
+      if Self.Forced_Width > 0.0 then
+         Self.Width := Self.Forced_Width;
+      end if;
+
+      if Self.Forced_Height > 0.0 then
+         Self.Height := Self.Forced_Height;
+      end if;
+
+      --  Ensure a minimal size so that the object is visible.
+      Self.Width := Model_Coordinate'Max (Self.Width, 1.0);
+      Self.Height := Model_Coordinate'Max (Self.Height, 1.0);
+   end Size_Request;
+
+   -------------------
+   -- Size_Allocate --
+   -------------------
+
+   procedure Size_Allocate
+     (Self  : not null access Container_Item_Record)
+   is
+      use Items_Lists;
+      C     : Items_Lists.Cursor := Self.Children.First;
+      Child : Container_Item;
+      Tmp   : Model_Coordinate := 0.0;
+   begin
+      while Has_Element (C) loop
+         Child := Container_Item (Element (C));
+
+         case Self.Layout is
+            when Vertical_Stack =>
+               if Child.Position.Y /= Gdouble'First then
+                  Child.Computed_Position.Y := Child.Position.Y;
+               else
+                  Child.Computed_Position.Y := Tmp + Child.Margin.Top;
+               end if;
+
+               if Child.Position.X /= Gdouble'First then
+                  Child.Computed_Position.X := Child.Position.X;
+               else
+                  Child.Computed_Position.X := Child.Margin.Left;
+               end if;
+
+               case Child.Float is
+                  when Float_None =>
+                     if Child.Forced_Width <= 0.0 then
+                        Child.Width := Self.Width
+                          - Child.Margin.Right - Child.Margin.Left;
+                     end if;
+
+                     case Child.Align is
+                        when Align_Start =>
+                           null;
+
+                        when Align_Center =>
+                           Child.Computed_Position.X :=
+                             Child.Computed_Position.X +
+                               (Self.Width - Child.Computed_Position.X
+                                - Child.Width - Child.Margin.Right) / 2.0;
+
+                        when Align_End =>
+                           Child.Computed_Position.X :=
+                             Self.Width - Child.Width - Child.Margin.Right;
+                     end case;
+
+                  when Float_Start =>
+                     null; --  use the requested size and position
+
+                  when Float_End =>
+                     --  We ignore the X position imposed by the user, if any
+                     Child.Computed_Position.X :=
+                       Self.Width - Child.Width - Child.Margin.Right;
+               end case;
+
+               Child.Size_Allocate;
+
+               if Child.Float = Float_None then
+                  Tmp := Tmp + Child.Height + Child.Margin.Bottom;
+               end if;
+
+            when Horizontal_Stack =>
+               if Child.Position.X /= Gdouble'First then
+                  Child.Computed_Position.X := Child.Position.X;
+               else
+                  Child.Computed_Position.X := Tmp + Child.Margin.Left;
+               end if;
+
+               if Child.Position.Y /= Gdouble'First then
+                  Child.Computed_Position.Y := Child.Position.Y;
+               else
+                  Child.Computed_Position.Y := Child.Margin.Top;
+               end if;
+
+               case Child.Float is
+                  when Float_None =>
+                     if Child.Forced_Height <= 0.0 then
+                        Child.Height := Self.Height
+                          - Child.Margin.Top - Child.Margin.Bottom;
+                     end if;
+
+                     case Child.Align is
+                        when Align_Start =>
+                           null;
+
+                        when Align_Center =>
+                           Child.Computed_Position.Y :=
+                             Child.Computed_Position.Y +
+                               (Self.Height - Child.Computed_Position.Y
+                                - Child.Height - Child.Margin.Bottom) / 2.0;
+
+                        when Align_End =>
+                           Child.Computed_Position.Y :=
+                             Self.Height - Child.Height - Child.Margin.Bottom;
+                     end case;
+
+                  when Float_Start =>
+                     null; --  use the requested size and position
+
+                  when Float_End =>
+                     Child.Computed_Position.Y :=
+                       Self.Height - Child.Height - Child.Margin.Bottom;
+               end case;
+
+               Child.Size_Allocate;
+
+               if Child.Float = Float_None then
+                  Tmp := Tmp + Child.Width + Child.Margin.Right;
+               end if;
+         end case;
+
+         Next (C);
+      end loop;
+   end Size_Allocate;
+
+   --------------------
+   -- Refresh_Layout --
+   --------------------
+
+   procedure Refresh_Layout (Self : not null access Container_Item_Record) is
+   begin
+      Self.Computed_Position := Self.Position;
+      Container_Item_Record'Class (Self.all).Size_Request;
+      Container_Item_Record'Class (Self.all).Size_Allocate;
+   end Refresh_Layout;
+
+   -------------------
+   -- Draw_Children --
+   -------------------
+
+   procedure Draw_Children
+     (Self : not null access Container_Item_Record'Class;
+      Cr   : Cairo.Cairo_Context)
+   is
+      use Items_Lists;
+      C     : Items_Lists.Cursor := Self.Children.First;
+      Child : Container_Item;
+   begin
+      while Has_Element (C) loop
+         Child := Container_Item (Element (C));
+
+         Save (Cr);
+         Translate (Cr, Child.Computed_Position.X, Child.Computed_Position.Y);
+         Child.Draw (Cr);
+         Restore (Cr);
+
+         Next (C);
+      end loop;
+   end Draw_Children;
+
+   ------------------
+   -- Gtk_New_Rect --
+   ------------------
+
+   function Gtk_New_Rect
+     (Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0;
+      Radius        : Model_Coordinate := 0.0)
+      return Rect_Item
+   is
+      R : constant Rect_Item := new Rect_Item_Record;
+   begin
+      R.Style         := Style;
+      R.Forced_Width  := Width;
+      R.Forced_Height := Height;
+      R.Radius        := Radius;
+      return R;
+   end Gtk_New_Rect;
+
+   ----------
+   -- Draw --
+   ----------
+
+   overriding procedure Draw
+     (Self : not null access Rect_Item_Record;
+      Cr   : Cairo.Cairo_Context) is
+   begin
+      Self.Style.Draw_Rect
+        (Cr, (0.0, 0.0), Self.Width, Self.Height,
+         Radius => Self.Radius);
+      Self.Draw_Children (Cr);
+   end Draw;
 
 end Gtkada.Canvas_View;

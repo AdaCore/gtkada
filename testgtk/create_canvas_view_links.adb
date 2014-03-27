@@ -33,7 +33,7 @@ with Pango.Cairo;         use Pango.Cairo;
 with Pango.Font;          use Pango.Font;
 with Pango.Layout;        use Pango.Layout;
 
-package body Create_Canvas_View_Routes is
+package body Create_Canvas_View_Links is
 
    Width  : constant Gdouble := 13.0;
    Height : constant Gdouble := 13.0;
@@ -56,29 +56,11 @@ package body Create_Canvas_View_Routes is
 
    function Help return String is
    begin
-      return "This demo shows the various types of routing algorithms for"
-        & " links in a @bGtkAda.Canvas@B."
+      return "This demo illustrates various capabilities for links"
+        & " in the canvas view widget."
         & ASCII.LF
-        & "The links can be attached to any side of the source and target"
-        & " objects, or left to automatically chose the side to get a shorter"
-        & " link."
-        & ASCII.LF
-        & "Each group of 8 pairs shows a diffent combination of forcing"
-        & " specific side attachments for the two boxes. The first letter"
-        & " indicates the attachment on the first box (the one that contains"
-        & " the text), the second letter indicates the attachment for the"
-        & " second box.    A=auto, R=right, L=left, T=top, B=bottom."
-        & ASCII.LF
-        & "The links can chose among several automatic routing algorithms,"
-        & " using either straight lines or Bezier curves, and connecting the"
-        & " source and target in the most direct way or limiting to horizontal"
-        & " and vertical links."
-        & ASCII.LF
-        & "Each pair includes multiple links, one for each of the routing"
-        & " algorithms."
-        & ASCII.LF
-        & "Finally, links can use a variety of colors, dash pattern,"
-        & " widths,...";
+        & "Links can be attached to any other items (boxes, but also other"
+        & " links and texts)";
    end Help;
 
    ------------------
@@ -244,13 +226,11 @@ package body Create_Canvas_View_Routes is
          Y := Y + H * 4.0 + 60.0;
       end loop;
 
-      Model.Refresh_Layout;
-
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
 
       Gtk_New (Scrolled);
-      Scrolled.Set_Policy (Policy_Automatic, Policy_Automatic);
+      Scrolled.Set_Policy (Policy_Always, Policy_Always);
       Frame.Add (Scrolled);
 
       Gtk_New (Canvas, Model);
@@ -260,4 +240,4 @@ package body Create_Canvas_View_Routes is
       Frame.Show_All;
    end Run;
 
-end Create_Canvas_View_Routes;
+end Create_Canvas_View_Links;
