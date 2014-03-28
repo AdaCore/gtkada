@@ -701,6 +701,8 @@ package Gtkada.Canvas_View is
    --  The size is stored internally in the object.
    --  The requested size must not include the margins that were defined in
    --  Add_Child.
+   --  Self can modify its computed position (i.e. the position within its
+   --  parent) as part of the size computation in this procedure.
 
    procedure Size_Allocate
      (Self  : not null access Container_Item_Record);
@@ -758,6 +760,30 @@ package Gtkada.Canvas_View is
    overriding procedure Draw
      (Self : not null access Rect_Item_Record;
       Cr   : Cairo.Cairo_Context);
+
+   ---------------------
+   -- Polyline object --
+   ---------------------
+
+   type Polyline_Item_Record is new Container_Item_Record with private;
+   type Polyline_Item is access all Polyline_Item_Record'Class;
+   --  A predefine object that displays itself as a set of joined lines.
+   --  This object can optionally contain children, and the polyline can thus
+   --  be used to draw a polygon around those items
+
+   function Gtk_New_Polyline
+     (Style    : Gtkada.Style.Drawing_Style;
+      Points   : Item_Point_Array;
+      Close    : Boolean := False)
+      return Polyline_Item;
+   --  Create a new polyline item.
+
+   overriding procedure Draw
+     (Self : not null access Polyline_Item_Record;
+      Cr   : Cairo.Cairo_Context);
+   overriding procedure Destroy (Self : not null access Polyline_Item_Record);
+   overriding procedure Size_Request
+     (Self  : not null access Polyline_Item_Record);
 
    ------------------
    -- Canvas links --
@@ -854,12 +880,18 @@ private
       Float    : Float_Style := Float_None;
       Overflow : Overflow_Style := Overflow_Prevent;
 
+      Style    : Gtkada.Style.Drawing_Style;
+
       Children : Items_Lists.List;
    end record;
 
    type Rect_Item_Record is new Container_Item_Record with record
-      Style         : Gtkada.Style.Drawing_Style;
-      Radius        : Model_Coordinate;
+      Radius   : Model_Coordinate;
+   end record;
+
+   type Polyline_Item_Record is new Container_Item_Record with record
+      Points   : Item_Point_Array_Access;
+      Close    : Boolean;
    end record;
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));

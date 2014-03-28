@@ -1315,7 +1315,10 @@ package body Gtkada.Canvas_View is
       return Item_Rectangle is
    begin
       --  assumes size_request has been called already
-      return (0.0, 0.0, Self.Width, Self.Height);
+      return (0.0,
+              0.0,
+              Self.Width,
+              Self.Height);
    end Bounding_Box;
 
    --------------------
@@ -1378,6 +1381,8 @@ package body Gtkada.Canvas_View is
 
       while Has_Element (C) loop
          Child := Container_Item (Element (C));
+
+         Child.Computed_Position := (0.0, 0.0);
          Child.Size_Request;
 
          case Self.Layout is
@@ -1397,13 +1402,14 @@ package body Gtkada.Canvas_View is
                   Tmp2 := Tmp + Child.Height;
                end if;
 
-               Tmp2 := Tmp2 + Child.Margin.Top + Child.Margin.Bottom;
+               Tmp2 := Tmp2 + Child.Computed_Position.Y
+                 + Child.Margin.Top + Child.Margin.Bottom;
 
                Self.Height := Model_Coordinate'Max (Self.Height, Tmp2);
 
                if Child.Float = Float_None then
                   --  The lowest point so far
-                  Tmp := Self.Height; --  Model_Coordinate'Max (Tmp, Tmp2);
+                  Tmp := Self.Height;
                end if;
 
             when Horizontal_Stack =>
@@ -1422,7 +1428,8 @@ package body Gtkada.Canvas_View is
                   Tmp2 := Tmp + Child.Width;
                end if;
 
-               Tmp2 := Tmp2 + Child.Margin.Left + Child.Margin.Right;
+               Tmp2 := Tmp2 + Child.Computed_Position.X
+                 + Child.Margin.Left + Child.Margin.Right;
 
                Self.Width := Model_Coordinate'Max (Self.Width, Tmp2);
 
@@ -1637,5 +1644,64 @@ package body Gtkada.Canvas_View is
          Radius => Self.Radius);
       Self.Draw_Children (Cr);
    end Draw;
+
+   ----------------------
+   -- Gtk_New_Polyline --
+   ----------------------
+
+   function Gtk_New_Polyline
+     (Style    : Gtkada.Style.Drawing_Style;
+      Points   : Item_Point_Array;
+      Close    : Boolean := False)
+      return Polyline_Item
+   is
+      R   : constant Polyline_Item := new Polyline_Item_Record;
+   begin
+      R.Style := Style;
+      R.Close  := Close;
+      R.Points := new Item_Point_Array'(Points);
+      return R;
+   end Gtk_New_Polyline;
+
+   ------------------
+   -- Size_Request --
+   ------------------
+
+   overriding procedure Size_Request
+     (Self  : not null access Polyline_Item_Record)
+   is
+      B : constant Item_Rectangle := Compute_Bounding_Box (Self.Points.all);
+   begin
+      Self.Width := B.Width;
+      Self.Height := B.Height;
+      Self.Computed_Position.X := B.X;
+      Self.Computed_Position.Y := B.Y;
+   end Size_Request;
+
+   ----------
+   -- Draw --
+   ----------
+
+   overriding procedure Draw
+     (Self : not null access Polyline_Item_Record;
+      Cr   : Cairo.Cairo_Context)
+   is
+   begin
+      Self.Style.Draw_Polyline (Cr, Self.Points.all, Close => Self.Close);
+      Draw_Children (Self, Cr);
+   end Draw;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   overriding procedure Destroy
+     (Self : not null access Polyline_Item_Record)
+   is
+   begin
+      Unchecked_Free (Self.Points);
+      Container_Item_Record (Self.all).Destroy;  --  inherited
+   end Destroy;
+
 
 end Gtkada.Canvas_View;

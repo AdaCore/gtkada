@@ -70,10 +70,6 @@ package body Gtkada.Canvas_View.Links is
       Dim    : Anchors);
    --  Compute the position for the end labels and middle label for the link
 
-   procedure Compute_Bounding_Box
-     (Self : not null access Canvas_Link_Record'Class);
-   --  Compute the bounding box for the link
-
    type Layout_Matrix is record
       X, Y : Gdouble_Array (1 .. 7);
       Dim  : Anchors;
@@ -210,24 +206,22 @@ package body Gtkada.Canvas_View.Links is
    -- Compute_Bounding_Box --
    --------------------------
 
-   procedure Compute_Bounding_Box
-     (Self : not null access Canvas_Link_Record'Class)
+   function Compute_Bounding_Box
+     (Points : Item_Point_Array) return Item_Rectangle
    is
-      P     : constant Point_Array_Access := Self.Points;
-      Max_X : Gdouble := P (P'First).X;
-      Max_Y : Gdouble := P (P'First).Y;
+      Max_X : Gdouble := Points (Points'First).X;
+      Max_Y : Gdouble := Points (Points'First).Y;
       X     : Gdouble := Max_X;
       Y     : Gdouble := Max_Y;
    begin
-      for P1 in P'First + 1 .. P'Last loop
-         X := Gdouble'Min (X, P (P1).X);
-         Y := Gdouble'Min (Y, P (P1).Y);
-         Max_X := Gdouble'Max (Max_X, P (P1).X);
-         Max_Y := Gdouble'Max (Max_Y, P (P1).Y);
+      for P1 in Points'First + 1 .. Points'Last loop
+         X := Gdouble'Min (X, Points (P1).X);
+         Y := Gdouble'Min (Y, Points (P1).Y);
+         Max_X := Gdouble'Max (Max_X, Points (P1).X);
+         Max_Y := Gdouble'Max (Max_Y, Points (P1).Y);
       end loop;
 
-      Self.Bounding_Box :=
-        (X => X, Y => Y, Width => Max_X - X, Height => Max_Y - Y);
+      return (X => X, Y => Y, Width => Max_X - X, Height => Max_Y - Y);
    end Compute_Bounding_Box;
 
    --------------------
@@ -462,7 +456,7 @@ package body Gtkada.Canvas_View.Links is
          Link.Points := new Item_Point_Array'(Points (Points'First .. P - 1));
       end;
 
-      Compute_Bounding_Box (Link);
+      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
       Compute_Labels (Link, Dim);
    end Compute_Layout_For_Orthogonal_Link;
 
@@ -542,7 +536,7 @@ package body Gtkada.Canvas_View.Links is
             & Link.Model_To_Item (Dim.To.P));
       end if;
 
-      Compute_Bounding_Box (Link);
+      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
       Compute_Labels (Link, Dim);
    end Compute_Layout_For_Straight_Link;
 
@@ -633,7 +627,7 @@ package body Gtkada.Canvas_View.Links is
             & Item_Point_Array'(P3, P4, TP));
       end if;
 
-      Compute_Bounding_Box (Link);
+      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
       Compute_Labels (Link, Dim);
    end Compute_Layout_For_Arc_Link;
 
