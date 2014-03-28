@@ -105,12 +105,14 @@ pragma Ada_2012;
 
 private with Ada.Containers.Doubly_Linked_Lists;
 private with Ada.Unchecked_Deallocation;
+private with GNAT.Strings;
 with Cairo.Region;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Widget;
-with Gtkada.Style;
+with Gtkada.Style;     use Gtkada.Style;
+with Pango.Layout;     use Pango.Layout;
 
 package Gtkada.Canvas_View is
 
@@ -244,6 +246,16 @@ package Gtkada.Canvas_View is
    --  Orthocurve is similar to orthogonal (links restricted to horizontal and
    --  vertical lines), but using a bezier curve.
 
+   ------------------
+   -- Draw context --
+   ------------------
+
+   type Draw_Context is record
+      Cr     : Cairo.Cairo_Context;
+      Layout : Pango.Layout.Pango_Layout := null;
+   end record;
+   --  Context to perform the actual drawing
+
    --------------------
    -- Abstract Items --
    --------------------
@@ -296,8 +308,8 @@ package Gtkada.Canvas_View is
    --  might be clicked on by the user.
 
    procedure Draw
-     (Self : not null access Abstract_Item_Record;
-      Cr   : Cairo.Cairo_Context) is abstract;
+     (Self    : not null access Abstract_Item_Record;
+      Context : Draw_Context) is abstract;
    --  Draw the item on the given cairo context.
    --  A transformation matrix has already been applied to Cr, so that all
    --  drawing should be done in item-coordinates for Self, so that (0,0) is
@@ -444,6 +456,12 @@ package Gtkada.Canvas_View is
    --  Container_Item below).
    --  The default implementation will simply iterate over all items, but it
    --  could be implemented more efficiently.
+   --
+   --  WARNING: this procedure must be called only once at least one view has
+   --  been created for the model. This ensures that the necessary information
+   --  for the layout of text has been retrieved from the view layer. If you
+   --  do not have at least one view, all text will be hidden or displayed as
+   --  ellipsis.
 
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
@@ -526,9 +544,9 @@ package Gtkada.Canvas_View is
    --  Return the internal type
 
    procedure Draw_Internal
-     (Self : not null access Canvas_View_Record;
-      Cr   : Cairo.Cairo_Context;
-      Area : Model_Rectangle);
+     (Self    : not null access Canvas_View_Record;
+      Context : Draw_Context;
+      Area    : Model_Rectangle);
    --  Redraw either the whole view, or a specific part of it only.
    --  The transformation matrix has already been set on the context.
    --  This procedure can be overridden if you need to perform special
@@ -544,7 +562,7 @@ package Gtkada.Canvas_View is
    procedure Set_Transform
      (Self   : not null access Canvas_View_Record;
       Cr     : Cairo.Cairo_Context;
-      Item : access Abstract_Item_Record'Class := null);
+      Item   : access Abstract_Item_Record'Class := null);
    --  Set the transformation matrix for the current settings (scrolling and
    --  zooming).
    --
@@ -694,7 +712,8 @@ package Gtkada.Canvas_View is
    --  Margins are added to each size of the child.
 
    procedure Size_Request
-     (Self  : not null access Container_Item_Record);
+     (Self    : not null access Container_Item_Record;
+      Context : Draw_Context);
    --  Compute the ideal size for Self.
    --  It might be either a size specifically forced by the user, or computed
    --  from Self's children's own size_request.
@@ -714,7 +733,9 @@ package Gtkada.Canvas_View is
    --  item (gradients, centering or right-aligning objects,...)
    --  Alignments and margins are automatically handled by the parent.
 
-   procedure Refresh_Layout (Self : not null access Container_Item_Record);
+   procedure Refresh_Layout
+     (Self    : not null access Container_Item_Record;
+      Context : Draw_Context);
    --  Recompute the layout for Self and its children, i.e. do the full size
    --  negocitation
 
@@ -725,8 +746,8 @@ package Gtkada.Canvas_View is
    --  Traverse all children of Self recursively, and calls Callback for each.
 
    procedure Draw_Children
-     (Self : not null access Container_Item_Record'Class;
-      Cr   : Cairo.Cairo_Context);
+     (Self    : not null access Container_Item_Record'Class;
+      Context : Draw_Context);
    --  Display all the children of Self
 
    overriding function Position
@@ -758,12 +779,12 @@ package Gtkada.Canvas_View is
    --  is used).
 
    overriding procedure Draw
-     (Self : not null access Rect_Item_Record;
-      Cr   : Cairo.Cairo_Context);
+     (Self    : not null access Rect_Item_Record;
+      Context : Draw_Context);
 
-   --------------------
-   -- Ellipse Object --
-   --------------------
+   --------------
+   -- Ellipses --
+   --------------
 
    type Ellipse_Item_Record is new Container_Item_Record with private;
    type Ellipse_Item is access all Ellipse_Item_Record'Class;
@@ -782,12 +803,12 @@ package Gtkada.Canvas_View is
    --  and the size passed in argument to this function.
 
    overriding procedure Draw
-     (Self : not null access Ellipse_Item_Record;
-      Cr   : Cairo.Cairo_Context);
+     (Self    : not null access Ellipse_Item_Record;
+      Context : Draw_Context);
 
-   ---------------------
-   -- Polyline Object --
-   ---------------------
+   ---------------
+   -- Polylines --
+   ---------------
 
    type Polyline_Item_Record is new Container_Item_Record with private;
    type Polyline_Item is access all Polyline_Item_Record'Class;
@@ -803,11 +824,55 @@ package Gtkada.Canvas_View is
    --  Create a new polyline item.
 
    overriding procedure Draw
-     (Self : not null access Polyline_Item_Record;
-      Cr   : Cairo.Cairo_Context);
+     (Self    : not null access Polyline_Item_Record;
+      Context : Draw_Context);
    overriding procedure Destroy (Self : not null access Polyline_Item_Record);
    overriding procedure Size_Request
-     (Self  : not null access Polyline_Item_Record);
+     (Self    : not null access Polyline_Item_Record;
+      Context : Draw_Context);
+
+   -----------
+   -- Texts --
+   -----------
+
+   type Text_Item_Record is new Container_Item_Record with private;
+   type Text_Item is access all Text_Item_Record'Class;
+   --  A predefined object that displays itself as text.
+
+   type Text_Arrow_Direction is
+     (No_Text_Arrow,
+      Up_Text_Arrow,
+      Down_Text_Arrow,
+      Left_Text_Arrow,
+      Right_Text_Arrow);
+
+   function Gtk_New_Text
+     (Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow)
+      return Text_Item;
+   --  Create a new text item
+   --
+   --  Directed indicates whether the text should be followed (or preceded)
+   --  by a directional arrow. This is used when displaying text along links,
+   --  to help users read the meaning of the label.
+
+   procedure Set_Directed
+     (Self     : not null access Text_Item_Record;
+      Directed : Text_Arrow_Direction := No_Text_Arrow);
+   --  Change the direction of the arrow.
+   --  In particular, this is done automatically when the text is used on a
+   --  link.
+
+   overriding procedure Draw
+     (Self    : not null access Text_Item_Record;
+      Context : Draw_Context);
+   overriding procedure Destroy (Self : not null access Text_Item_Record);
+   overriding procedure Size_Request
+     (Self    : not null access Text_Item_Record;
+      Context : Draw_Context);
+   overriding procedure Size_Allocate
+     (Self    : not null access Text_Item_Record);
 
    ------------------
    -- Canvas links --
@@ -852,8 +917,8 @@ package Gtkada.Canvas_View is
      (Self : not null access Canvas_Link_Record)
       return Gtkada.Style.Point;
    overriding procedure Draw
-     (Self : not null access Canvas_Link_Record;
-      Cr   : Cairo.Cairo_Context);
+     (Self    : not null access Canvas_Link_Record;
+      Context : Draw_Context);
    overriding function Contains
      (Self : not null access Canvas_Link_Record;
       P    : Item_Point) return Boolean;
@@ -870,7 +935,9 @@ private
      (Gtkada.Style.Point_Array, Gtkada.Style.Point_Array_Access);
 
    type Canvas_Model_Record is abstract new Glib.Object.GObject_Record
-   with null record;
+   with record
+      Layout : Pango.Layout.Pango_Layout;
+   end record;
 
    type Canvas_Item_Record is abstract new Abstract_Item_Record with record
       Position : Gtkada.Style.Point :=
@@ -920,6 +987,12 @@ private
 
    type Ellipse_Item_Record is new Container_Item_Record with null record;
 
+   type Text_Item_Record is new Container_Item_Record with record
+      Text     : GNAT.Strings.String_Access;
+      Directed : Text_Arrow_Direction;
+      Requested_Width, Requested_Height : Model_Coordinate;
+   end record;
+
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
 
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
@@ -927,6 +1000,7 @@ private
       Topleft : Model_Point := (0.0, 0.0);
       Scale   : Gdouble := 1.0;
 
+      Layout     : Pango.Layout.Pango_Layout;
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
    end record;
 

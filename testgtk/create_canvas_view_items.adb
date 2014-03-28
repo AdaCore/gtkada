@@ -27,8 +27,21 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
 with Gtkada.Style;        use Gtkada.Style;
+with Pango.Enums;         use Pango.Enums;
+with Pango.Font;          use Pango.Font;
 
 package body Create_Canvas_View_Items is
+
+   Left_Pointing_Double_Angle_Quotation_Mark : constant String :=
+     Character'Val (16#C2#) & Character'Val (16#AB#);  --  unicode \u00ab
+
+   Right_Pointing_Double_Angle_Quotation_Mark : constant String :=
+     Character'Val (16#C2#) & Character'Val (16#BB#);  --  unicode \u00bb
+
+   N_Ary_Summation : constant String :=
+     Character'Val (16#E2#)   --  unicode \u2211
+     & Character'Val (16#88#)
+     & Character'Val (16#91#);
 
    ----------
    -- Help --
@@ -50,18 +63,30 @@ package body Create_Canvas_View_Items is
       Canvas        : Canvas_View;
       Model         : List_Canvas_Model;
       Scrolled      : Gtk_Scrolled_Window;
-      Black, Filled, Invisible : Drawing_Style;
+      Black, Filled, Invisible, Font, Black_Filled : Drawing_Style;
       It            : Polyline_Item;
       Hexa          : Polyline_Item;
       Rect          : Rect_Item;
       Ellipse       : Ellipse_Item;
+      Text          : Text_Item;
+      Title_Font    : Drawing_Style;
+      M             : Margins;
 
    begin
       Black := Gtk_New (Stroke => Black_RGBA);
+      Font := Gtk_New
+        (Stroke => Null_RGBA,
+         Font   => (Font   => From_String ("sans 10"),
+                    Color  => Black_RGBA,
+                    Underline => Pango_Underline_Double,
+                    others => <>));
       Invisible := Gtk_New (Stroke => Null_RGBA);
       Filled := Gtk_New
         (Stroke => Black_RGBA,
          Fill => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.2)));
+      Black_Filled := Gtk_New
+        (Stroke => Black_RGBA,
+         Fill => Create_Rgba_Pattern (Black_RGBA));
 
       Gtk_New (Model);
 
@@ -80,6 +105,10 @@ package body Create_Canvas_View_Items is
       Hexa.Set_Position ((0.0, 0.0));
       Model.Add (Hexa);
 
+      Text := Gtk_New_Text (Font, "Hexa");
+      Text.Set_Position ((12.0, 15.0));
+      Hexa.Add_Child (Text);
+
       --  A simple ellipe
 
       Ellipse := Gtk_New_Ellipse (Filled, 60.0, 30.0);
@@ -95,13 +124,6 @@ package body Create_Canvas_View_Items is
       Ellipse := Gtk_New_Ellipse (Filled, 20.0, 20.0);
       Ellipse.Set_Position ((15.0, 1.0));
       Rect.Add_Child (Ellipse);
---        It := Gtk_New_Polyline
---          (Black,
---           ((15.0, 1.0), (35.0, 1.0),
---            (35.0, 21.0), (15.0, 21.0)),
---           Close => True);
---        It.Set_Position ((0.0, 1.0));
---        Rect.Add_Child (It);
 
       It := Gtk_New_Polyline (Black, ((0.0, 31.0), (50.0, 31.0)));
       It.Set_Position ((0.0, 1.0));
@@ -119,9 +141,80 @@ package body Create_Canvas_View_Items is
       It.Set_Position ((0.0, 1.0));
       Rect.Add_Child (It);
 
-      --  Need to compute all coordinates
+      --  A UML class
 
-      Model.Refresh_Layout;
+      Title_Font := Gtk_New
+        (Stroke => Null_RGBA,
+         Font   => (Font => From_String ("sans 16"), others => <>));
+      Font := Gtk_New
+        (Stroke => Null_RGBA,
+         Font   => (Font => From_String ("sans 10"), others => <>));
+      M := (Left | Right => 5.0, others => 0.0);
+
+      Rect := Gtk_New_Rect (Black);
+      Rect.Set_Position ((0.0, 200.0));
+      Model.Add (Rect);
+
+      Text := Gtk_New_Text (Title_Font, "MyClass");
+      Rect.Add_Child (Text, Margin => M);
+
+      Text := Gtk_New_Text
+        (Font,
+         Left_Pointing_Double_Angle_Quotation_Mark & "custom"
+         & Right_Pointing_Double_Angle_Quotation_Mark);
+      Rect.Add_Child (Text, Margin => M);
+
+      --  hr with text "attributes"
+
+      Text := Gtk_New_Text (Font, "-id {readOnly}");
+      Rect.Add_Child (Text, Margin => M);
+
+      Text := Gtk_New_Text (Font, "-/name: string = 'foo'");
+      Rect.Add_Child (Text, Margin => M);
+
+      Text := Gtk_New_Text (Font, "overflowed_very_long_name");
+      Rect.Add_Child (Text, Overflow => Overflow_Hide, Margin => M);
+
+      --  A simulink Sum block
+
+      It := Gtk_New_Polyline (Filled, ((3.0, 0.0), (80.0, 40.0), (3.0, 80.0)));
+      It.Set_Position ((200.0, 200.0));
+      Model.Add (It);
+
+      Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
+      Rect.Set_Position ((0.0, 17.0));
+      It.Add_Child (Rect);
+
+      Text := Gtk_New_Text
+        (Gtk_New (Stroke => Null_RGBA,
+                  Font   => (Font   => From_String ("sans 8"),
+                             Valign => 0.5,
+                             others => <>)),
+         "+");
+      Text.Set_Position ((9.0, 20.0));
+      It.Add_Child (Text, Float => Float_Start);
+
+      Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
+      Rect.Set_Position ((0.0, 57.0));
+      It.Add_Child (Rect);
+
+      Text := Gtk_New_Text
+        (Gtk_New (Stroke => Null_RGBA,
+                  Font   => (Font => From_String ("sans 8"),
+                             Valign => 0.5,
+                             others => <>)),
+         "-");
+      Text.Set_Position ((9.0, 60.0));
+      It.Add_Child (Text, Float => Float_Start);
+
+      Text := Gtk_New_Text
+        (Gtk_New (Stroke => Null_RGBA,
+                  Font   => (Font   => From_String ("sans 30"),
+                             Valign => 0.5,
+                             others => <>)),
+         N_Ary_Summation);
+      Text.Set_Position ((15.0, 40.0));
+      It.Add_Child (Text, Float => Float_Start);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
@@ -133,6 +226,10 @@ package body Create_Canvas_View_Items is
       Gtk_New (Canvas, Model);
       Unref (Model);
       Scrolled.Add (Canvas);
+
+      --  Need to compute all coordinates once a view has been createdcre
+
+      Model.Refresh_Layout;
 
       Frame.Show_All;
    end Run;

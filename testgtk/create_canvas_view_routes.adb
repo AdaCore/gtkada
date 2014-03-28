@@ -44,7 +44,7 @@ package body Create_Canvas_View_Routes is
    end record;
    type Demo_Item is access all Demo_Item_Record'Class;
    overriding procedure Draw
-     (Self : access Demo_Item_Record; Cr : Cairo_Context);
+     (Self : access Demo_Item_Record; Context : Draw_Context);
    overriding function Bounding_Box
      (Self : not null access Demo_Item_Record) return Item_Rectangle;
 
@@ -98,15 +98,15 @@ package body Create_Canvas_View_Routes is
    ----------
 
    overriding procedure Draw
-     (Self : access Demo_Item_Record; Cr : Cairo_Context)
+     (Self : access Demo_Item_Record; Context : Draw_Context)
    is
    begin
-      Self.Style.Draw_Rect (Cr, (0.0, 0.0), Width, Height);
+      Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Width, Height);
 
       if Self.Text /= null then
          Layout.Set_Text (Self.Text.all);
-         Move_To (Cr, 1.0, 1.0);
-         Pango.Cairo.Show_Layout (Cr, Layout);
+         Move_To (Context.Cr, 1.0, 1.0);
+         Pango.Cairo.Show_Layout (Context.Cr, Layout);
       end if;
    end Draw;
 
@@ -242,8 +242,6 @@ package body Create_Canvas_View_Routes is
          Y := Y + H * 4.0 + 60.0;
       end loop;
 
-      Model.Refresh_Layout;
-
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
 
@@ -254,6 +252,7 @@ package body Create_Canvas_View_Routes is
       Gtk_New (Canvas, Model);
       Unref (Model);
       Scrolled.Add (Canvas);
+      Model.Refresh_Layout;
 
       Frame.Show_All;
    end Run;

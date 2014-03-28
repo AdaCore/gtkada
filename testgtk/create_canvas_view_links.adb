@@ -196,8 +196,6 @@ package body Create_Canvas_View_Links is
       Link_Example (300.0, 400.0,
                     Gtk_New (Line_Width => 6.0));
 
-      Model.Refresh_Layout;
-
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
 
@@ -208,6 +206,7 @@ package body Create_Canvas_View_Links is
       Gtk_New (Canvas, Model);
       Unref (Model);
       Scrolled.Add (Canvas);
+      Model.Refresh_Layout;
 
       Frame.Show_All;
    end Run;

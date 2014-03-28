@@ -40,6 +40,8 @@ with Gdk.Types;
 with Gtk.Enums;
 with Gtk.Style_Provider;
 with Gtk.Widget;
+with Pango.Enums;
+with Pango.Font;
 
 package Gtkada.Style is
 
@@ -262,16 +264,20 @@ package Gtkada.Style is
    --  should in general be greater than the length of the arrow (see
    --  Arrow_Style above)
 
-   type Text_Decoration is (None, Underline, Overline);
    type Font_Style is record
-       Size             : Positive := 14;
-       Decoration       : Text_Decoration := None;
-       Color            : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
-       Horizontal_Align : Percent := 0.0;   --  (text) to the left
-       Vertical_Align   : Percent := 0.0;   --  (text) to the top
+      Font       : Pango.Font.Pango_Font_Description := null;
+      Underline  : Pango.Enums.Underline := Pango.Enums.Pango_Underline_None;
+      Strikethrough : Boolean := False;
+      Color      : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+      Halign     : Pango.Enums.Alignment := Pango.Enums.Pango_Align_Left;
+      Valign     : Percent := 0.0;   --  (text) to the top
    end record;
-   Default_Font : constant Font_Style :=
-      (14, None, Gdk.RGBA.Black_RGBA, 0.0, 0.0);
+   Default_Font : constant Font_Style := (others => <>);
+   --  Some of the attributes like Valign are only taken into account when
+   --  using Gtkada.Canvas_View.Text_Item.
+   --  Valign will modify the interpretation of the item's position. For
+   --  instance, if Valign is 0.5, then the Y position given by the call to
+   --  Set_Position is the position of the middle of the box.
 
    type Point is record
       X, Y : Glib.Gdouble;
@@ -329,15 +335,25 @@ package Gtkada.Style is
    --  Points is an array of both points and control points, as in:
    --     pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
 
+   procedure Draw_Ellipse
+     (Self          : Drawing_Style;
+      Cr            : Cairo.Cairo_Context;
+      Topleft       : Point;
+      Width, Height : Glib.Gdouble);
+   --  Draw an ellipse inscribed in the specified rectangle
+
    procedure Draw_Text
-      (Self    : Drawing_Style;
-       Cr      : Cairo.Cairo_Context;
-       Topleft : Point;
-       Text    : String;
-       Width   : Glib.Gdouble := 0.0);
-   --   Draw text at specific coordinates.
-   --   Topleft is the position of the top-left corner for the text, or the
-   --   middle line if the text's vertical_align is set to middle.
+     (Self       : Drawing_Style;
+      Cr         : Cairo.Cairo_Context;
+      Layout     : not null access Pango.Layout.Pango_Layout_Record'Class;
+      Topleft    : Point;
+      Text       : String;
+      Max_Width  : Glib.Gdouble := Glib.Gdouble'First;
+      Max_Height : Glib.Gdouble := Glib.Gdouble'First);
+   --  Draw text at specific coordinates.
+   --  Topleft is the position of the top-left corner for the text, or the
+   --  middle line if the text's vertical_align is set to middle.
+   --  Max_Width is optional, but is used to resolve alignment.
 
    procedure Draw_Arrows_And_Symbols
      (Self     : Drawing_Style;
@@ -352,6 +368,14 @@ package Gtkada.Style is
    --  This is for use when you are creating your own paths via standard cairo
    --  calls. This will call Stroke and Fill with the appropriate parameters
    --  found in Self.
+
+   procedure Measure_Text
+     (Self     : Drawing_Style;
+      Layout   : not null access Pango.Layout.Pango_Layout_Record'Class;
+      Text     : String;
+      Width    : out Glib.Gdouble;
+      Height   : out Glib.Gdouble);
+   --  Measure the size the text would take on the screen
 
    function Get_Arrow_From (Self : Drawing_Style) return Arrow_Style;
    function Get_Arrow_To (Self : Drawing_Style) return Arrow_Style;

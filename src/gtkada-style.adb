@@ -21,31 +21,36 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Numerics; use Ada.Numerics;
+with Ada.Numerics;       use Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Unchecked_Deallocation;
 
-with Glib;         use Glib;
-with Glib.Error;   use Glib.Error;
+with Glib;               use Glib;
+with Glib.Error;         use Glib.Error;
 
-with Cairo;         use Cairo;
-with Cairo.Pattern; use Cairo.Pattern;
-with Pango.Cairo;  use Pango.Cairo;
-with Gdk.Cairo;    use Gdk.Cairo;
-with Gdk.Device;   use Gdk.Device;
+with Cairo;              use Cairo;
+with Cairo.Pattern;      use Cairo.Pattern;
+with Pango.Cairo;        use Pango.Cairo;
+with Gdk.Cairo;          use Gdk.Cairo;
+with Gdk.Device;         use Gdk.Device;
 with Gdk.Device_Manager; use Gdk.Device_Manager;
-with Gdk.Display;  use Gdk.Display;
-with Gdk.RGBA;     use Gdk.RGBA;
-with Gdk.Screen;   use Gdk.Screen;
-with Gdk.Types;    use Gdk.Types;
-with Gdk.Window;   use Gdk;
+with Gdk.Display;        use Gdk.Display;
+with Gdk.RGBA;           use Gdk.RGBA;
+with Gdk.Screen;         use Gdk.Screen;
+with Gdk.Types;          use Gdk.Types;
+with Gdk.Window;         use Gdk;
 
-with Gtk.Enums;         use Gtk.Enums;
-with Gtk.Style_Context; use Gtk.Style_Context;
-with Gtk.Style;         use Gtk.Style;
-with Gtk.Widget;        use Gtk.Widget;
+with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Style_Context;  use Gtk.Style_Context;
+with Gtk.Style;          use Gtk.Style;
+with Gtk.Widget;         use Gtk.Widget;
 with Gtk.Css_Provider;   use Gtk.Css_Provider;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
+with Pango;              use Pango;
+with Pango.Attributes;   use Pango.Attributes;
+with Pango.Enums;        use Pango.Enums;
+with Pango.Font;         use Pango.Font;
+with Pango.Layout;       use Pango.Layout;
 
 package body Gtkada.Style is
 
@@ -65,6 +70,12 @@ package body Gtkada.Style is
       To      : Point);
    --  Draw an arrow at the end of the line from Start to To, with the given
    --  style.
+
+   procedure Setup_Layout
+     (Self     : Font_Style;
+      Layout   : not null access Pango.Layout.Pango_Layout_Record'Class;
+      Max_Width, Max_Height : Glib.Gdouble := -1.0);
+   --  Setup the layout for the drawing style
 
    ------------
    -- To_HSV --
@@ -968,6 +979,10 @@ package body Gtkada.Style is
          Data.Dashes := new Dash_Array'(Dashes);
       end if;
 
+      if Font.Font = null then
+         Data.Font.Font := From_String ("sans 14");
+      end if;
+
       return (Ada.Finalization.Controlled with Data => Data);
    end Gtk_New;
 
@@ -1000,6 +1015,10 @@ package body Gtkada.Style is
             if D.Fill /= Null_Pattern then
                Destroy (D.Fill);
             end if;
+
+            if D.Font.Font /= null then
+               Free (D.Font.Font);
+            end if;
          end if;
       end if;
    end Finalize;
@@ -1016,7 +1035,9 @@ package body Gtkada.Style is
        Radius        : Gdouble := 0.0)
    is
    begin
-      if Self.Data = null then
+      if Self.Data = null
+        or else (Width = 0.0 and then Height = 0.0)
+      then
          null;
 
       elsif Radius <= 0.001 or else Self.Data.Sloppy then
@@ -1041,6 +1062,26 @@ package body Gtkada.Style is
          Finish_Path (Self, Cr);
       end if;
    end Draw_Rect;
+
+   ------------------
+   -- Draw_Ellipse --
+   ------------------
+
+   procedure Draw_Ellipse
+     (Self          : Drawing_Style;
+      Cr            : Cairo.Cairo_Context;
+      Topleft       : Point;
+      Width, Height : Glib.Gdouble) is
+   begin
+      if Self.Data /= null then
+         Save (Cr);
+         Translate (Cr, Topleft.X + Width / 2.0, Topleft.Y + Height / 2.0);
+         Scale (Cr, Width / 2.0, Height / 2.0);
+         Arc (Cr, 0.0, 0.0, 1.0, 0.0, 2.0 * Ada.Numerics.Pi);
+         Restore (Cr);   --  before we do the stroke, or line is too large
+         Self.Finish_Path (Cr);
+      end if;
+   end Draw_Ellipse;
 
    -------------------
    -- Draw_Polyline --
@@ -1252,20 +1293,91 @@ package body Gtkada.Style is
       end  if;
    end Draw_Arrows_And_Symbols;
 
+   ------------------
+   -- Setup_Layout --
+   ------------------
+
+   procedure Setup_Layout
+     (Self     : Font_Style;
+      Layout   : not null access Pango.Layout.Pango_Layout_Record'Class;
+      Max_Width, Max_Height : Glib.Gdouble := -1.0)
+   is
+      Attr   : Pango_Attr_List;
+   begin
+      Gdk_New (Attr);
+      Attr.Insert (Attr_Underline_New (Self.Underline));
+      Attr.Insert
+        (Attr_Foreground_New
+           (Guint16 (Gdouble (Guint16'Last) * Self.Color.Red),
+            Guint16 (Gdouble (Guint16'Last) * Self.Color.Green),
+            Guint16 (Gdouble (Guint16'Last) * Self.Color.Blue)));
+      Attr.Insert (Attr_Strikethrough_New (Self.Strikethrough));
+
+      Layout.Set_Attributes (Attr);
+      Layout.Set_Alignment (Self.Halign);
+      Layout.Set_Font_Description (Self.Font);
+
+      if Max_Height > 0.0 then
+         Layout.Set_Height (Gint (Max_Height + 1.0) * Pango_Scale);
+      end if;
+
+      if Max_Width > 0.0 then
+         Layout.Set_Width (Gint (Max_Width + 1.0) * Pango_Scale);
+      end if;
+
+      --  Layout.Set_Justify (False);
+      --  Layout.Set_Spacing (0);   --  spacing between lines
+      --  Layout.Set_Wrap (Pango_Wrap_Word);
+
+      Unref (Attr);
+   end Setup_Layout;
+
+   ------------------
+   -- Measure_Text --
+   ------------------
+
+   procedure Measure_Text
+     (Self     : Drawing_Style;
+      Layout   : not null access Pango.Layout.Pango_Layout_Record'Class;
+      Text     : String;
+      Width    : out Glib.Gdouble;
+      Height   : out Glib.Gdouble)
+   is
+      Ink_Rect, Logical_Rect : Pango_Rectangle;
+   begin
+      if Self.Data /= null then
+         Setup_Layout (Self.Data.Font, Layout);
+         Layout.Set_Text (Text);
+         Layout.Get_Extents (Ink_Rect, Logical_Rect);
+         Width  := Gdouble (Logical_Rect.Width) / Gdouble (Pango_Scale);
+         Height := Gdouble (Logical_Rect.Height) / Gdouble (Pango_Scale);
+      else
+         Width := 0.0;
+         Height := 0.0;
+      end if;
+   end Measure_Text;
+
    ---------------
    -- Draw_Text --
    ---------------
 
    procedure Draw_Text
-      (Self    : Drawing_Style;
-       Cr      : Cairo.Cairo_Context;
-       Topleft : Point;
-       Text    : String;
-       Width   : Gdouble := 0.0)
+     (Self       : Drawing_Style;
+      Cr         : Cairo.Cairo_Context;
+      Layout     : not null access Pango.Layout.Pango_Layout_Record'Class;
+      Topleft    : Point;
+      Text       : String;
+      Max_Width  : Glib.Gdouble := Glib.Gdouble'First;
+      Max_Height : Glib.Gdouble := Glib.Gdouble'First)
    is
-      pragma Unreferenced (Self, Cr, Topleft, Text, Width);
    begin
-      null;
+      Setup_Layout (Self.Data.Font, Layout, Max_Width, Max_Height);
+      Layout.Set_Ellipsize (Ellipsize_End);
+      Layout.Set_Text (Text);
+
+      Move_To (Cr, Topleft.X, Topleft.Y);
+      Show_Layout (Cr, Pango_Layout (Layout));
+      New_Path (Cr);
    end Draw_Text;
 
    ----------------

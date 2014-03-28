@@ -28,6 +28,7 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
 with Gtkada.Style;        use Gtkada.Style;
+with Pango.Font;          use Pango.Font;
 
 package body Create_Canvas_View_Composite is
 
@@ -67,8 +68,7 @@ package body Create_Canvas_View_Composite is
       Canvas       : Canvas_View;
       Model        : List_Canvas_Model;
       Scrolled     : Gtk_Scrolled_Window;
-      Rect, Rect2  : Rect_Item;
-      Red, Green, Blue : Drawing_Style;
+      Red, Green, Blue, Font : Drawing_Style;
 
       procedure Do_Example
         (Layout : Child_Layout_Strategy; X, Y : Model_Coordinate);
@@ -78,6 +78,8 @@ package body Create_Canvas_View_Composite is
       is
          M : Margins;
          W, H, W2, H2 : Model_Coordinate;
+         Rect, Rect2  : Rect_Item;
+         Text         : Text_Item;
       begin
          --  rectangle 1
 
@@ -115,6 +117,9 @@ package body Create_Canvas_View_Composite is
 
          Rect2 := Gtk_New_Rect (Blue, Width => 60.0, Height => 60.0);
          Rect.Add_Child (Rect2, Margin => (others => 5.0));
+
+         Text := Gtk_New_Text (Font, "float");
+         Rect.Add_Child (Text);
 
          --  rectangle 3: testing alignments
 
@@ -167,15 +172,14 @@ package body Create_Canvas_View_Composite is
       Blue := Gtk_New
         (Stroke => Black_RGBA,
          Fill   => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.6)));
+      Font := Gtk_New
+        (Stroke => Null_RGBA,
+         Font   => (Font => From_String ("sans 9"), others => <>));
 
       Gtk_New (Model);
 
       Do_Example (Vertical_Stack, 0.0, 0.0);
       Do_Example (Horizontal_Stack, 0.0, 250.0);
-
-      --  Need to compute all coordinates
-
-      Model.Refresh_Layout;
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
@@ -187,6 +191,10 @@ package body Create_Canvas_View_Composite is
       Gtk_New (Canvas, Model);
       Unref (Model);
       Scrolled.Add (Canvas);
+
+      --  Need to compute all coordinates once associated with a view
+
+      Model.Refresh_Layout;
 
       Frame.Show_All;
    end Run;
