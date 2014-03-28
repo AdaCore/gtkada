@@ -236,8 +236,10 @@ package Gtkada.Style is
 
    No_Drawing_Style : constant Drawing_Style;
 
-   type Arrow_Head is (None, Open, Solid, Diamond);
-   --  The various styles of arrow heads (filled with Fill style)
+   type Arrow_Head is (None, Open, Solid, Diamond, Circle);
+   --  The various styles of arrow heads (filled with Fill style).
+   --  When displaying a circle, the Length of the arrow style is the radius of
+   --  the circle.
 
    type Arrow_Style is record
       Head   : Arrow_Head;

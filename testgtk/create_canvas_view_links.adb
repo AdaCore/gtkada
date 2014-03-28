@@ -54,12 +54,13 @@ package body Create_Canvas_View_Links is
       Canvas        : Canvas_View;
       Model         : List_Canvas_Model;
       Scrolled      : Gtk_Scrolled_Window;
-      Black, Red    : Drawing_Style;
+      Black         : Drawing_Style;
 
       procedure Do_Example (Routing : Route_Style; X, Y : Model_Coordinate);
       procedure Do_Example (Routing : Route_Style; X, Y : Model_Coordinate) is
          L1, L2        : Canvas_Link;
          It1, It2, It3 : Rect_Item;
+         S             : Drawing_Style;
       begin
          It1 := Gtk_New_Rect (Black, 20.0, 20.0);
          It1.Set_Position ((X, Y));
@@ -77,11 +78,17 @@ package body Create_Canvas_View_Links is
            (From => It1, To => It2, Style => Black,
             Routing => Routing,
             Anchor_From => (1.0, 0.5, Auto),
-            Anchor_To   => (0.0, 0.9, Auto));
+            Anchor_To   => (0.0, 0.5, Auto));
          Model.Add (L1);
 
+         S := Gtk_New
+           (Stroke => (1.0, 0.0, 0.0, 1.0),
+            Fill   => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 1.0)),
+            Arrow_From => (Head => Circle, Length => 2.0,
+                           Fill => Black_RGBA, others => <>));
+
          L2 := Gtk_New
-           (From => L1, To => It3, Style => Red, Routing => Routing,
+           (From => L1, To => It3, Style => S, Routing => Routing,
             Anchor_From => (0.5, 0.5, No_Clipping));
          Model.Add (L2);
       end Do_Example;
@@ -109,14 +116,14 @@ package body Create_Canvas_View_Links is
       Gtk_New (Model);
 
       Black := Gtk_New;
-      Red   := Gtk_New (Stroke => (1.0, 0.0, 0.0, 1.0));
 
       Do_Example (Straight,   0.0, 0.0);
       Do_Example (Orthogonal, 150.0, 0.0);
+      Do_Example (Curve,      300.0, 0.0);
+      Do_Example (Orthocurve, 450.0, 0.0);
 
       Link_Example (0.0, 180.0,
-                    Gtk_New (Line_Width => 2.0,
-                             Arrow_To   => (Head   => Open,
+                    Gtk_New (Arrow_To   => (Head   => Open,
                                             Length => 8.0,
                                             Angle  => 0.4,
                                             Stroke => Black_RGBA,
@@ -128,9 +135,7 @@ package body Create_Canvas_View_Links is
                                             Fill   => (1.0, 0.0, 0.0, 1.0))));
 
       Link_Example (0.0, 220.0,
-                    Gtk_New (Line_Width => 4.0,
-                             Dashes     => (2.0, 2.0),
-                             Arrow_To   => (Head   => Solid,
+                    Gtk_New (Arrow_To   => (Head   => Solid,
                                             Length => 8.0,
                                             Angle  => 0.4,
                                             Stroke => Black_RGBA,
@@ -142,30 +147,54 @@ package body Create_Canvas_View_Links is
                                             Fill   => (1.0, 0.0, 0.0, 1.0))));
 
       Link_Example (0.0, 260.0,
-                    Gtk_New (Line_Width => 6.0,
-                             Dashes     => (2.0, 4.0, 4.0, 6.0),
-                             Arrow_To   => (Head   => Diamond,
+                    Gtk_New (Arrow_To   => (Head   => Diamond,
                                             Length => 8.0,
                                             Angle  => 0.4,
                                             Stroke => Black_RGBA,
                                             Fill   => Black_RGBA),
                              Arrow_From => (Head   => Diamond,
                                             Length => 16.0,
-                                            Angle  => 0.8,
+                                            Angle  => 0.5,
                                             Stroke => (1.0, 0.0, 0.0, 1.0),
                                             Fill   => (1.0, 0.0, 0.0, 1.0))));
 
       Link_Example (0.0, 300.0,
+                    Gtk_New (Arrow_To   => (Head   => Circle,
+                                            Length => 1.0,
+                                            Stroke => Black_RGBA,
+                                            Fill   => Black_RGBA,
+                                            others => <>),
+                             Arrow_From => (Head   => Circle,
+                                            Length => 2.0,
+                                            Stroke => (1.0, 0.0, 0.0, 1.0),
+                                            Fill   => (1.0, 0.0, 0.0, 1.0),
+                                            others => <>)));
+
+      Link_Example (0.0, 360.0,
                     Gtk_New (Line_Width => 2.0,
                              Symbol_To  => (Name   => Cross,
                                             others => <>),
                              Symbol_From => (Name => Strike,
                                              others => <>)));
 
-      Link_Example (0.0, 340.0,
+      Link_Example (0.0, 400.0,
                     Gtk_New (Line_Width => 2.0,
                              Symbol_To  => (Name   => Double_Strike,
                                             others => <>)));
+
+      Link_Example (300.0, 180.0,
+                    Gtk_New (Dashes     => (2.0, 2.0)));
+      Link_Example (300.0, 220.0,
+                    Gtk_New (Dashes     => (2.0, 4.0, 4.0, 6.0)));
+      Link_Example (300.0, 260.0,
+                    Gtk_New (Dashes     => (2.0, 4.0, 6.0, 4.0)));
+
+      Link_Example (300.0, 320.0,
+                    Gtk_New (Line_Width => 2.0));
+      Link_Example (300.0, 360.0,
+                    Gtk_New (Line_Width => 4.0));
+      Link_Example (300.0, 400.0,
+                    Gtk_New (Line_Width => 6.0));
 
       Model.Refresh_Layout;
 

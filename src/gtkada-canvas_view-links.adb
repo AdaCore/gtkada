@@ -269,8 +269,12 @@ package body Gtkada.Canvas_View.Links is
    procedure Compute_Layout_For_Orthogonal_Link
      (Link   : not null access Canvas_Link_Record'Class)
    is
-      B : constant Gdouble := 4.0;
+      B : constant Gdouble := 6.0;
       --  Border around each box in which the links should not be displayed.
+      --  ??? We should not have a uniform border: on the outside, it should
+      --  be smaller (to avoid the line going too much outside), but larger
+      --  between the two boces, which results in a nicer display especially
+      --  for orthocurve links.
 
       Min_Space : constant Gdouble := Link.Style.Get_Line_Width * 3.0;
       --  Minimal space between two boxes to pass a link between them
@@ -692,10 +696,14 @@ package body Gtkada.Canvas_View.Links is
      (Link : not null access Canvas_Link_Record'Class;
       Cr   : Cairo.Cairo_Context)
    is
-      P      : constant Item_Point_Array_Access := Link.Points;
+      P    : constant Item_Point_Array_Access := Link.Points;
+      Fill : constant Cairo_Pattern := Link.Style.Get_Fill;
    begin
       pragma Assert (P /= null, "waypoints must be computed first");
       pragma Assert (P'Length >= 2, "no enough waypoints");
+
+      --  never fill a link
+      Link.Style.Set_Fill (Null_Pattern);
 
       case Link.Routing is
          when Straight | Orthogonal =>
@@ -711,6 +719,8 @@ package body Gtkada.Canvas_View.Links is
          when Curve =>
             Link.Style.Draw_Polycurve (Cr, P.all);
       end case;
+
+      Link.Style.Set_Fill (Fill);
    end Draw_Link;
 
    ------------------------

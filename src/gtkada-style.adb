@@ -1278,9 +1278,11 @@ package body Gtkada.Style is
        From    : Point;
        To      : Point)
    is
-      Angle, X1, Y1, X2, Y2, X4, Y4 : Gdouble;
+      Angle, X1, Y1, X2, Y2, X4, Y4, TX, TY : Gdouble;
    begin
       Angle := Arctan (Y => To.Y - From.Y, X => To.X - From.X) + Pi;
+      TX := To.X + (Get_Line_Width (Cr) - 0.5) * Cos (Angle);
+      TY := To.Y + (Get_Line_Width (Cr) - 0.5) * Sin (Angle);
       X1 := To.X + Self.Length * Cos (Angle - Self.Angle);
       Y1 := To.Y + Self.Length * Sin (Angle - Self.Angle);
       X2 := To.X + Self.Length * Cos (Angle + Self.Angle);
@@ -1293,7 +1295,7 @@ package body Gtkada.Style is
             Save (Cr);
             New_Path (Cr);
             Move_To (Cr, X1, Y1);
-            Line_To (Cr, To.X, To.Y);
+            Line_To (Cr, TX, TY);
             Line_To (Cr, X2, Y2);
 
             Set_Source_Color (Cr, Self.Stroke);
@@ -1304,7 +1306,7 @@ package body Gtkada.Style is
             Save (Cr);
             New_Path (Cr);
             Move_To (Cr, X1, Y1);
-            Line_To (Cr, To.X, To.Y);
+            Line_To (Cr, TX, TY);
             Line_To (Cr, X2, Y2);
             Close_Path (Cr);
 
@@ -1321,15 +1323,37 @@ package body Gtkada.Style is
             Restore (Cr);
 
          when Diamond =>
-            X4 := To.X + Self.Length * 2.0 * Cos (Angle);
-            Y4 := To.Y + Self.Length * 2.0 * Sin (Angle);
+            X4 := X1 + Self.Length * Cos (Angle + Self.Angle);
+            Y4 := Y1 + Self.Length * Sin (Angle + Self.Angle);
 
             Save (Cr);
             Move_To (Cr, X1, Y1);
-            Line_To (Cr, To.X, To.Y);
+            Line_To (Cr, TX, TY);
             Line_To (Cr, X2, Y2);
             Line_To (Cr, X4, Y4);
             Close_Path (Cr);
+
+            if Self.Stroke /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Stroke);
+               Stroke_Preserve (Cr);
+            end if;
+
+            if Self.Fill /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Fill);
+               Cairo.Fill (Cr);
+            end if;
+
+            Restore (Cr);
+
+         when Circle =>
+            Save (Cr);
+            Arc
+              (Cr,
+               Xc     => To.X,
+               Yc     => To.Y,
+               Radius => Self.Length,
+               Angle1 => 0.0,
+               Angle2 => 2.0 * Pi);
 
             if Self.Stroke /= Null_RGBA then
                Set_Source_Color (Cr, Self.Stroke);
