@@ -623,8 +623,19 @@ package body Gtkada.Canvas_View is
      (View : System.Address; Alloc : Gtk_Allocation)
    is
       Self : constant Canvas_View := Canvas_View (Glib.Object.Convert (View));
+      SAlloc : Gtk_Allocation := Alloc;
    begin
-      Inherited_Size_Allocate (View_Class_Record, Self, Alloc);
+      --  For some reason, when we maximize the toplevel window in testgtk, or
+      --  at least enlarge it horizontally, we are starting to see an alloc
+      --  with X < 0 (likely related to the GtkPaned). The drawing area then
+      --  moves the GdkWindow, which would introduce an extra ofset in the
+      --  display (and influence the clipping done automatically by gtk+
+      --  before it emits "draw"). So we prevent the automatic offseting done
+      --  by GtkDrawingArea.
+
+      SAlloc.X := 0;
+      SAlloc.Y := 0;
+      Inherited_Size_Allocate (View_Class_Record, Self, SAlloc);
       Set_Adjustment_Values (Self);
    end On_Size_Allocate;
 
@@ -710,10 +721,11 @@ package body Gtkada.Canvas_View is
 
    function Model_To_View
      (Self   : not null access Canvas_View_Record;
-      P      : Model_Point) return View_Point is
+      P      : Model_Point) return View_Point
+   is
    begin
-      return (X      => (P.X - Self.Topleft.X) * Self.Scale,
-              Y      => (P.Y - Self.Topleft.Y) * Self.Scale);
+      return (X => (P.X - Self.Topleft.X) * Self.Scale,
+              Y => (P.Y - Self.Topleft.Y) * Self.Scale);
    end Model_To_View;
 
    ---------------------
@@ -863,7 +875,10 @@ package body Gtkada.Canvas_View is
          Translate_And_Draw_Item (Item, Cr);
       end Draw_Item;
    begin
+      Save (Cr);
+      Self.Set_Transform (Cr);
       Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
+      Restore (Cr);
    end Draw_Internal;
 
    -------------
