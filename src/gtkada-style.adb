@@ -948,7 +948,6 @@ package body Gtkada.Style is
        Fill             : Cairo.Cairo_Pattern := Cairo.Null_Pattern;
        Font             : Font_Style := Default_Font;
        Line_Width       : Glib.Gdouble := 1.0;
-       Shadow           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
        Dashes           : Cairo.Dash_Array := Cairo.No_Dashes;
        Arrow_From       : Arrow_Style := No_Arrow_Style;
        Arrow_To         : Arrow_Style := No_Arrow_Style;
@@ -963,7 +962,6 @@ package body Gtkada.Style is
          Fill        => Null_Pattern,
          Font        => Font,
          Line_Width  => Line_Width,
-         Shadow      => Shadow,
          Dashes      => null,
          Arrow_From  => Arrow_From,
          Arrow_To    => Arrow_To,
@@ -980,7 +978,11 @@ package body Gtkada.Style is
       end if;
 
       if Font.Font = null then
-         Data.Font.Font := From_String ("sans 14");
+         if Sloppy then
+            Data.Font.Font := From_String ("Comic Sans MS 14");
+         else
+            Data.Font.Font := From_String ("sans 14");
+         end if;
       end if;
 
       return (Ada.Finalization.Controlled with Data => Data);
@@ -1499,15 +1501,13 @@ package body Gtkada.Style is
       if Self.Data /= null
         and then Self.Data.Fill /= Cairo.Null_Pattern
       then
-         if Self.Data.Shadow /= Null_RGBA then
-            --  When using Cairo 1.13, we should use cairo_set_shadow_*
-            --  instead.
-            --  For now, we can't draw shadows, because Translate does not
-            --  apply to an existing path, so the shadow would in effect be
-            --  displayed below the object, and thus be invisible.
+         --  for shadows:
 
-            null;
-         end if;
+         --  When using Cairo 1.13, we should use cairo_set_shadow_*
+         --  instead.
+         --  For now, we can't draw shadows, because Translate does not
+         --  apply to an existing path, so the shadow would in effect be
+         --  displayed below the object, and thus be invisible.
 
          Set_Source (Cr, Self.Data.Fill);
          Fill_Preserve (Cr);

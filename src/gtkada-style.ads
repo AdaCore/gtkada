@@ -294,7 +294,6 @@ package Gtkada.Style is
        Fill             : Cairo.Cairo_Pattern := Cairo.Null_Pattern;
        Font             : Font_Style := Default_Font;
        Line_Width       : Glib.Gdouble := 1.0;
-       Shadow           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
        Dashes           : Cairo.Dash_Array := Cairo.No_Dashes;
        Arrow_From       : Arrow_Style := No_Arrow_Style;
        Arrow_To         : Arrow_Style := No_Arrow_Style;
@@ -304,9 +303,6 @@ package Gtkada.Style is
      return Drawing_Style;
    --  Creates a new instance of drawing style.
    --
-   --  Shadow: The color to use for the shadow. If Null_RGBA, not shadow is
-   --     displayed. A fill color must also be specified, otherwise the shadow
-   --     is not rendered either.
    --  Sloppy: if true, a sort of approximate drawing is done for lines and
    --     text, so that it looks like the drawing was done by hand.
 
@@ -494,7 +490,6 @@ private
       Fill             : Cairo.Cairo_Pattern := Cairo.Null_Pattern;
       Font             : Font_Style := Default_Font;
       Line_Width       : Glib.Gdouble := 1.0;
-      Shadow           : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       Dashes           : Dash_Array_Access := null;
       Arrow_From       : Arrow_Style := No_Arrow_Style;
       Arrow_To         : Arrow_Style := No_Arrow_Style;

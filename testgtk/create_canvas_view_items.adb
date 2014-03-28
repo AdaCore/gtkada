@@ -49,7 +49,13 @@ package body Create_Canvas_View_Items is
 
    function Help return String is
    begin
-      return "This demo uses the various types of predefined item types";
+      return "This demo uses the various types of predefined item types."
+        & ASCII.LF
+        & "It shows how they can be combined to create complex items."
+        & ASCII.LF
+        & "It also shows an example of using @bsloppy@B drawing. In this case"
+        & " GtkAda does not draw straight lines, but displays them as if they"
+        & " had been drawn manually.";
    end Help;
 
    ---------
@@ -59,35 +65,190 @@ package body Create_Canvas_View_Items is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       S : constant Gdouble := 0.86602540378443864676;  --  sqrt(3) / 2
       L : Gdouble;
-
       Canvas        : Canvas_View;
       Model         : List_Canvas_Model;
+
+      procedure Add_Sum_Block
+        (Sloppy : Boolean := False; X, Y : Model_Coordinate);
+      procedure Add_UML_Block
+        (Sloppy : Boolean := False; X, Y : Model_Coordinate);
+      procedure Add_UML_Actor
+        (Sloppy : Boolean := False; X, Y : Model_Coordinate);
+      --  Add various blocks
+
+      function Font_Name (Sloppy : Boolean) return String;
+      --  Return the font to use
+
+      function Font_Name (Sloppy : Boolean) return String is
+      begin
+         if Sloppy then
+            return "Comic Sans MS";
+         else
+            return "Sans";
+         end if;
+      end Font_Name;
+
+      procedure Add_Sum_Block
+        (Sloppy : Boolean := False; X, Y : Model_Coordinate)
+      is
+         Filled, Black_Filled : Drawing_Style;
+         Small_Font, Large_Font : Drawing_Style;
+         It   : Polyline_Item;
+         Rect : Rect_Item;
+         Text : Text_Item;
+      begin
+         Filled := Gtk_New
+           (Stroke => Black_RGBA,
+            Sloppy => Sloppy,
+            Fill   => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.2)));
+         Black_Filled := Gtk_New
+           (Stroke => Black_RGBA,
+            Sloppy => Sloppy,
+            Fill   => Create_Rgba_Pattern (Black_RGBA));
+         Small_Font := Gtk_New
+           (Stroke => Null_RGBA,
+            Sloppy => Sloppy,
+            Font   => (Font => From_String (Font_Name (Sloppy) & " 8"),
+                       Valign => 0.5,
+                       others => <>));
+         Large_Font := Gtk_New
+           (Stroke => Null_RGBA,
+            Sloppy => Sloppy,
+            Font   => (Font   => From_String (Font_Name (Sloppy) & " 25"),
+                       Valign => 0.5,
+                       others => <>));
+
+         It := Gtk_New_Polyline
+           (Filled, ((3.0, 0.0), (80.0, 40.0), (3.0, 80.0)));
+         It.Set_Position ((X, Y));
+         Model.Add (It);
+
+         Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
+         Rect.Set_Position ((0.0, 17.0));
+         It.Add_Child (Rect);
+
+         Text := Gtk_New_Text (Small_Font, "+");
+         Text.Set_Position ((9.0, 20.0));
+         It.Add_Child (Text, Float => Float_Start);
+
+         Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
+         Rect.Set_Position ((0.0, 57.0));
+         It.Add_Child (Rect);
+
+         Text := Gtk_New_Text (Small_Font, "-");
+         Text.Set_Position ((9.0, 60.0));
+         It.Add_Child (Text, Float => Float_Start);
+
+         Text := Gtk_New_Text (Large_Font, N_Ary_Summation);
+         Text.Set_Position ((15.0, 40.0));
+         It.Add_Child (Text, Float => Float_Start);
+      end Add_Sum_Block;
+
+      procedure Add_UML_Block
+        (Sloppy : Boolean := False; X, Y : Model_Coordinate)
+      is
+         Title_Font, Font, Black : Drawing_Style;
+         M    : Margins;
+         Rect : Rect_Item;
+         Text : Text_Item;
+         Hr   : Hr_Item;
+      begin
+         Black := Gtk_New (Stroke => Black_RGBA, Sloppy => Sloppy);
+         Title_Font := Gtk_New
+           (Stroke => Null_RGBA,
+            Sloppy => Sloppy,
+            Font   => (Font => From_String (Font_Name (Sloppy) & " 16"),
+                       others => <>));
+         Font := Gtk_New
+           (Stroke => Null_RGBA,
+            Sloppy => Sloppy,
+            Font   => (Font => From_String (Font_Name (Sloppy) & " 10"),
+                       others => <>));
+
+         M := (Left | Right => 5.0, Top => 0.0, Bottom => 2.0);
+
+         Rect := Gtk_New_Rect (Black);
+         Rect.Set_Position ((X, Y));
+         Model.Add (Rect);
+
+         Text := Gtk_New_Text (Title_Font, "MyClass");
+         Rect.Add_Child (Text, Margin => M);
+
+         Text := Gtk_New_Text
+           (Font,
+            Left_Pointing_Double_Angle_Quotation_Mark & "custom"
+            & Right_Pointing_Double_Angle_Quotation_Mark);
+         Rect.Add_Child (Text, Margin => M);
+
+         Hr := Gtk_New_Hr (Black, "attributes");
+         Rect.Add_Child (Hr);
+
+         Text := Gtk_New_Text (Font, "-id {readOnly}");
+         Rect.Add_Child (Text, Margin => M);
+
+         Text := Gtk_New_Text (Font, "-/name: string = 'foo'");
+         Rect.Add_Child (Text, Margin => M);
+
+         Text := Gtk_New_Text (Font, "overflowed_very_long_name");
+         Rect.Add_Child (Text, Overflow => Overflow_Hide, Margin => M);
+      end Add_UML_Block;
+
+      procedure Add_UML_Actor
+        (Sloppy : Boolean := False; X, Y : Model_Coordinate)
+      is
+         Invisible, Filled, Black : Drawing_Style;
+         Ellipse : Ellipse_Item;
+         Rect    : Rect_Item;
+         It      : Polyline_Item;
+      begin
+         Black := Gtk_New (Stroke => Black_RGBA, Sloppy => Sloppy);
+         Invisible := Gtk_New (Stroke => Null_RGBA, Sloppy => Sloppy);
+         Filled := Gtk_New
+           (Stroke => Black_RGBA,
+            Sloppy => Sloppy,
+            Fill   => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.2)));
+
+         Rect := Gtk_New_Rect (Invisible);
+         Rect.Set_Position ((X, Y));
+         Model.Add (Rect);
+
+         Ellipse := Gtk_New_Ellipse (Filled, 20.0, 20.0);
+         Ellipse.Set_Position ((15.0, 1.0));
+         Rect.Add_Child (Ellipse);
+
+         It := Gtk_New_Polyline (Black, ((0.0, 31.0), (50.0, 31.0)));
+         It.Set_Position ((0.0, 1.0));
+         Rect.Add_Child (It);
+
+         It := Gtk_New_Polyline (Black, ((25.0, 21.0), (25.0, 41.0)));
+         It.Set_Position ((0.0, 1.0));
+         Rect.Add_Child (It);
+
+         It := Gtk_New_Polyline (Black, ((25.0, 41.0), (0.0, 61.0)));
+         It.Set_Position ((0.0, 1.0));
+         Rect.Add_Child (It);
+
+         It := Gtk_New_Polyline (Black, ((25.0, 41.0), (50.0, 61.0)));
+         It.Set_Position ((0.0, 1.0));
+         Rect.Add_Child (It);
+      end Add_UML_Actor;
+
       Scrolled      : Gtk_Scrolled_Window;
-      Black, Filled, Invisible, Font, Black_Filled : Drawing_Style;
-      It            : Polyline_Item;
+      Filled, Font  : Drawing_Style;
       Hexa          : Polyline_Item;
-      Rect          : Rect_Item;
       Ellipse       : Ellipse_Item;
       Text          : Text_Item;
-      Hr            : Hr_Item;
-      Title_Font    : Drawing_Style;
-      M             : Margins;
 
    begin
-      Black := Gtk_New (Stroke => Black_RGBA);
       Font := Gtk_New
         (Stroke => Null_RGBA,
          Font   => (Font   => From_String ("sans 10"),
                     Color  => Black_RGBA,
                     Underline => Pango_Underline_Double,
                     others => <>));
-      Invisible := Gtk_New (Stroke => Null_RGBA);
       Filled := Gtk_New
         (Stroke => Black_RGBA,
          Fill => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.2)));
-      Black_Filled := Gtk_New
-        (Stroke => Black_RGBA,
-         Fill => Create_Rgba_Pattern (Black_RGBA));
 
       Gtk_New (Model);
 
@@ -116,107 +277,13 @@ package body Create_Canvas_View_Items is
       Ellipse.Set_Position ((200.0, 0.0));
       Model.Add (Ellipse);
 
-      --  A drawing of a UML actor
+      Add_UML_Actor (False, 0.0,   100.0);
+      Add_UML_Block (False, 100.0, 100.0);
+      Add_Sum_Block (False, 280.0, 100.0);
 
-      Rect := Gtk_New_Rect (Invisible);
-      Rect.Set_Position ((100.0, 0.0));
-      Model.Add (Rect);
-
-      Ellipse := Gtk_New_Ellipse (Filled, 20.0, 20.0);
-      Ellipse.Set_Position ((15.0, 1.0));
-      Rect.Add_Child (Ellipse);
-
-      It := Gtk_New_Polyline (Black, ((0.0, 31.0), (50.0, 31.0)));
-      It.Set_Position ((0.0, 1.0));
-      Rect.Add_Child (It);
-
-      It := Gtk_New_Polyline (Black, ((25.0, 21.0), (25.0, 41.0)));
-      It.Set_Position ((0.0, 1.0));
-      Rect.Add_Child (It);
-
-      It := Gtk_New_Polyline (Black, ((25.0, 41.0), (0.0, 61.0)));
-      It.Set_Position ((0.0, 1.0));
-      Rect.Add_Child (It);
-
-      It := Gtk_New_Polyline (Black, ((25.0, 41.0), (50.0, 61.0)));
-      It.Set_Position ((0.0, 1.0));
-      Rect.Add_Child (It);
-
-      --  A UML class
-
-      Title_Font := Gtk_New
-        (Stroke => Null_RGBA,
-         Font   => (Font => From_String ("sans 16"), others => <>));
-      Font := Gtk_New
-        (Stroke => Null_RGBA,
-         Font   => (Font => From_String ("sans 10"), others => <>));
-      M := (Left | Right => 5.0, Top => 0.0, Bottom => 2.0);
-
-      Rect := Gtk_New_Rect (Black);
-      Rect.Set_Position ((0.0, 200.0));
-      Model.Add (Rect);
-
-      Text := Gtk_New_Text (Title_Font, "MyClass");
-      Rect.Add_Child (Text, Margin => M);
-
-      Text := Gtk_New_Text
-        (Font,
-         Left_Pointing_Double_Angle_Quotation_Mark & "custom"
-         & Right_Pointing_Double_Angle_Quotation_Mark);
-      Rect.Add_Child (Text, Margin => M);
-
-      Hr := Gtk_New_Hr (Black, "attributes");
-      Rect.Add_Child (Hr);
-
-      Text := Gtk_New_Text (Font, "-id {readOnly}");
-      Rect.Add_Child (Text, Margin => M);
-
-      Text := Gtk_New_Text (Font, "-/name: string = 'foo'");
-      Rect.Add_Child (Text, Margin => M);
-
-      Text := Gtk_New_Text (Font, "overflowed_very_long_name");
-      Rect.Add_Child (Text, Overflow => Overflow_Hide, Margin => M);
-
-      --  A simulink Sum block
-
-      It := Gtk_New_Polyline (Filled, ((3.0, 0.0), (80.0, 40.0), (3.0, 80.0)));
-      It.Set_Position ((200.0, 200.0));
-      Model.Add (It);
-
-      Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
-      Rect.Set_Position ((0.0, 17.0));
-      It.Add_Child (Rect);
-
-      Text := Gtk_New_Text
-        (Gtk_New (Stroke => Null_RGBA,
-                  Font   => (Font   => From_String ("sans 8"),
-                             Valign => 0.5,
-                             others => <>)),
-         "+");
-      Text.Set_Position ((9.0, 20.0));
-      It.Add_Child (Text, Float => Float_Start);
-
-      Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
-      Rect.Set_Position ((0.0, 57.0));
-      It.Add_Child (Rect);
-
-      Text := Gtk_New_Text
-        (Gtk_New (Stroke => Null_RGBA,
-                  Font   => (Font => From_String ("sans 8"),
-                             Valign => 0.5,
-                             others => <>)),
-         "-");
-      Text.Set_Position ((9.0, 60.0));
-      It.Add_Child (Text, Float => Float_Start);
-
-      Text := Gtk_New_Text
-        (Gtk_New (Stroke => Null_RGBA,
-                  Font   => (Font   => From_String ("sans 30"),
-                             Valign => 0.5,
-                             others => <>)),
-         N_Ary_Summation);
-      Text.Set_Position ((15.0, 40.0));
-      It.Add_Child (Text, Float => Float_Start);
+      Add_UML_Actor (True,  0.0,   250.0);
+      Add_UML_Block (True,  100.0, 250.0);
+      Add_Sum_Block (True,  280.0, 250.0);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
