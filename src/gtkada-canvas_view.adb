@@ -1962,4 +1962,89 @@ package body Gtkada.Canvas_View is
       Align_Text (Self);
    end Size_Allocate;
 
+   ----------------
+   -- Gtk_New_Hr --
+   ----------------
+
+   function Gtk_New_Hr
+     (Style   : Gtkada.Style.Drawing_Style;
+      Text    : String := "")
+     return Hr_Item
+   is
+      Res : constant Hr_Item := new Hr_Item_Record;
+   begin
+      Res.Style := Style;
+      Res.Text := new String'(Text);
+      return Res;
+   end Gtk_New_Hr;
+
+   ----------
+   -- Draw --
+   ----------
+
+   overriding procedure Draw
+     (Self    : not null access Hr_Item_Record;
+      Context : Draw_Context)
+   is
+      H : constant Model_Coordinate := Self.Height / 2.0;
+      W : Model_Coordinate;
+   begin
+      if Self.Text.all = "" then
+         Self.Style.Draw_Polyline (Context.Cr, ((0.0, H), (Self.Width, H)));
+      else
+         W := (Self.Width - Self.Requested_Width) / 2.0;
+         Self.Style.Draw_Polyline (Context.Cr, ((0.0, H), (W, H)));
+
+         W := W + Self.Space;
+         if Context.Layout /= null then
+            Self.Style.Draw_Text
+              (Context.Cr, Context.Layout,
+               (W, (Self.Height - Self.Requested_Height) / 2.0),
+               Self.Text.all,
+               Max_Width  => Self.Width,
+               Max_Height => Self.Height);
+         end if;
+
+         W := W + Self.Requested_Width + Self.Space;
+         Self.Style.Draw_Polyline (Context.Cr, ((W, H), (Self.Width, H)));
+      end if;
+   end Draw;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   overriding procedure Destroy (Self : not null access Hr_Item_Record) is
+   begin
+      Free (Self.Text);
+      Container_Item_Record (Self.all).Destroy;
+   end Destroy;
+
+   ------------------
+   -- Size_Request --
+   ------------------
+
+   overriding procedure Size_Request
+     (Self    : not null access Hr_Item_Record;
+      Context : Draw_Context)
+   is
+   begin
+      if Context.Layout /= null and then Self.Text.all /= "" then
+         Self.Style.Measure_Text
+           (Context.Layout,
+            Self.Text.all,
+            Width  => Self.Requested_Width,
+            Height => Self.Requested_Height);
+
+         --  Some space to show the lines
+         Self.Width  := Self.Requested_Width
+             + 2.0 * Self.Space
+             + 8.0;   --  lines should be at least 4 pixels each side
+         Self.Height := Self.Requested_Height;
+      else
+         Self.Width  := 8.0;
+         Self.Height := 1.0;
+      end if;
+   end Size_Request;
+
 end Gtkada.Canvas_View;

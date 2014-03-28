@@ -1326,7 +1326,7 @@ package body Gtkada.Style is
       end if;
 
       --  Layout.Set_Justify (False);
-      --  Layout.Set_Spacing (0);   --  spacing between lines
+      Layout.Set_Spacing (Self.Line_Spacing);   --  spacing between lines
       --  Layout.Set_Wrap (Pango_Wrap_Word);
 
       Unref (Attr);

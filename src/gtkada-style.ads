@@ -269,6 +269,10 @@ package Gtkada.Style is
       Underline  : Pango.Enums.Underline := Pango.Enums.Pango_Underline_None;
       Strikethrough : Boolean := False;
       Color      : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+
+      Line_Spacing : Glib.Gint := 1;
+      --  Space between two lines
+
       Halign     : Pango.Enums.Alignment := Pango.Enums.Pango_Align_Left;
       Valign     : Percent := 0.0;   --  (text) to the top
    end record;

@@ -874,6 +874,30 @@ package Gtkada.Canvas_View is
    overriding procedure Size_Allocate
      (Self    : not null access Text_Item_Record);
 
+   ----------------------
+   -- Horizontal lines --
+   ----------------------
+
+   type Hr_Item_Record is new Container_Item_Record with private;
+   type Hr_Item is access all Hr_Item_Record'Class;
+   --  A predefined object that displays itself as a horizontal line with
+   --  optional text in the middle. This thus looks like:
+   --              ---- text ----
+
+   function Gtk_New_Hr
+     (Style   : Gtkada.Style.Drawing_Style;
+      Text    : String := "")
+      return Hr_Item;
+   --  Create a new horizontal rule
+
+   overriding procedure Draw
+     (Self    : not null access Hr_Item_Record;
+      Context : Draw_Context);
+   overriding procedure Destroy (Self : not null access Hr_Item_Record);
+   overriding procedure Size_Request
+     (Self    : not null access Hr_Item_Record;
+      Context : Draw_Context);
+
    ------------------
    -- Canvas links --
    ------------------
@@ -991,6 +1015,14 @@ private
       Text     : GNAT.Strings.String_Access;
       Directed : Text_Arrow_Direction;
       Requested_Width, Requested_Height : Model_Coordinate;
+   end record;
+
+   type Hr_Item_Record is new Container_Item_Record with record
+      Text     : GNAT.Strings.String_Access;
+      Requested_Width, Requested_Height : Model_Coordinate;
+
+      Space    : Model_Coordinate := 4.0;
+      --  Space between text and lines
    end record;
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));

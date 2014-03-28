@@ -69,6 +69,7 @@ package body Create_Canvas_View_Items is
       Rect          : Rect_Item;
       Ellipse       : Ellipse_Item;
       Text          : Text_Item;
+      Hr            : Hr_Item;
       Title_Font    : Drawing_Style;
       M             : Margins;
 
@@ -149,7 +150,7 @@ package body Create_Canvas_View_Items is
       Font := Gtk_New
         (Stroke => Null_RGBA,
          Font   => (Font => From_String ("sans 10"), others => <>));
-      M := (Left | Right => 5.0, others => 0.0);
+      M := (Left | Right => 5.0, Top => 0.0, Bottom => 2.0);
 
       Rect := Gtk_New_Rect (Black);
       Rect.Set_Position ((0.0, 200.0));
@@ -164,7 +165,8 @@ package body Create_Canvas_View_Items is
          & Right_Pointing_Double_Angle_Quotation_Mark);
       Rect.Add_Child (Text, Margin => M);
 
-      --  hr with text "attributes"
+      Hr := Gtk_New_Hr (Black, "attributes");
+      Rect.Add_Child (Hr);
 
       Text := Gtk_New_Text (Font, "-id {readOnly}");
       Rect.Add_Child (Text, Margin => M);
