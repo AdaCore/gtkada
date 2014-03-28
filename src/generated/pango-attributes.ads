@@ -29,7 +29,7 @@ with Pango.Enums; use Pango.Enums;
 
 package Pango.Attributes is
 
-   type Pango_Attribute is private;
+   type Pango_Attribute is new Glib.C_Proxy;
    function From_Object_Free (B : access Pango_Attribute) return Pango_Attribute;
    pragma Inline (From_Object_Free);
 
@@ -253,13 +253,6 @@ package Pango.Attributes is
    --  Pango.Enums.Pango_Gravity_Auto.
 
 private
-type Pango_Attribute is record
-   Klass : access Pango_Attr_Class;
-   Start_Index : Guint;
-   End_Index : Guint;
-end record;
-pragma Convention (C, Pango_Attribute);
-
 
    Null_Pango_Attr_List : constant Pango_Attr_List := (Glib.C_Boxed with null record);
 

@@ -74,7 +74,7 @@ package body Pango.Attributes is
      (Pango_Attr_Filter_Func, System.Address);
 
    function Internal_Pango_Attr_Filter_Func
-      (Attribute : access Pango.Attributes.Pango_Attribute;
+      (Attribute : Pango.Attributes.Pango_Attribute;
        User_Data : System.Address) return Integer;
    pragma Convention (C, Internal_Pango_Attr_Filter_Func);
    --  "attribute": a Pango attribute
@@ -85,12 +85,12 @@ package body Pango.Attributes is
    -------------------------------------
 
    function Internal_Pango_Attr_Filter_Func
-      (Attribute : access Pango.Attributes.Pango_Attribute;
+      (Attribute : Pango.Attributes.Pango_Attribute;
        User_Data : System.Address) return Integer
    is
       Func : constant Pango_Attr_Filter_Func := To_Pango_Attr_Filter_Func (User_Data);
    begin
-      return Boolean'Pos (Func (Attribute.all));
+      return Boolean'Pos (Func (Attribute));
    end Internal_Pango_Attr_Filter_Func;
 
    -------------
@@ -183,7 +183,7 @@ package body Pango.Attributes is
         (Pango_Attr_Filter_Func, System.Address);
 
       function Internal_Cb
-         (Attribute : access Pango.Attributes.Pango_Attribute;
+         (Attribute : Pango.Attributes.Pango_Attribute;
           User_Data : System.Address) return Integer;
       pragma Convention (C, Internal_Cb);
       --  Type of a function filtering a list of attributes.
@@ -212,12 +212,12 @@ package body Pango.Attributes is
       -----------------
 
       function Internal_Cb
-         (Attribute : access Pango.Attributes.Pango_Attribute;
+         (Attribute : Pango.Attributes.Pango_Attribute;
           User_Data : System.Address) return Integer
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
-         return Boolean'Pos (To_Pango_Attr_Filter_Func (D.Func) (Attribute.all, D.Data.all));
+         return Boolean'Pos (To_Pango_Attr_Filter_Func (D.Func) (Attribute, D.Data.all));
       end Internal_Cb;
 
    end Filter_User_Data;
@@ -292,15 +292,14 @@ package body Pango.Attributes is
 
    function Attr_Family_New (Family : UTF8_String) return Pango_Attribute is
       function Internal
-         (Family : Interfaces.C.Strings.chars_ptr)
-          return access Pango_Attribute;
+         (Family : Interfaces.C.Strings.chars_ptr) return Pango_Attribute;
       pragma Import (C, Internal, "pango_attr_family_new");
       Tmp_Family : Interfaces.C.Strings.chars_ptr := New_String (Family);
-      Tmp_Return : access Pango_Attribute;
+      Tmp_Return : Pango_Attribute;
    begin
       Tmp_Return := Internal (Tmp_Family);
       Free (Tmp_Family);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return;
    end Attr_Family_New;
 
    ----------------------------
@@ -310,11 +309,10 @@ package body Pango.Attributes is
    function Attr_Strikethrough_New
       (Strikethrough : Boolean) return Pango_Attribute
    is
-      function Internal
-         (Strikethrough : Integer) return access Pango_Attribute;
+      function Internal (Strikethrough : Integer) return Pango_Attribute;
       pragma Import (C, Internal, "pango_attr_strikethrough_new");
    begin
-      return From_Object_Free (Internal (Boolean'Pos (Strikethrough)));
+      return Internal (Boolean'Pos (Strikethrough));
    end Attr_Strikethrough_New;
 
 end Pango.Attributes;

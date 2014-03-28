@@ -6028,7 +6028,6 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoAttribute" ada="Pango.Attributes">
-     <record ctype="PangoAttribute" private="True"/>
      <method id="pango_attribute_init" bind="False"/> <!--  low-level -->
      <function id="pango_attr_underline_new"/>
      <function id="pango_attr_background_new"/>

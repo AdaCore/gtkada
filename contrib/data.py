@@ -613,6 +613,8 @@ naming.type_exceptions = {
                               val_or_null="Iter_Or_Null"),
     "GtkTextIter*":    Record("Gtk.Text_Iter.Gtk_Text_Iter",
                               val_or_null="Iter_Or_Null"),
+    "PangoAttribute": Proxy("Pango.Attributes.Pango_Attribute"),
+    "PangoAttribute*": Proxy("Pango.Attributes.Pango_Attribute"),
 
     "GError*":           Proxy("Glib.Error.GError"),
     "GObject*":          GObject("Glib.Object.GObject"),
