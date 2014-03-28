@@ -55,6 +55,9 @@ package body Gtkada.Canvas_View is
    View_Class_Record : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
+   Debug_Show_Bounding_Boxes : constant Boolean := False;
+   --  Set to True to visualize the bounding boxes of items
+
    H_Adj_Property    : constant Property_Id := 1;
    V_Adj_Property    : constant Property_Id := 2;
    H_Scroll_Property : constant Property_Id := 3;
@@ -123,6 +126,11 @@ package body Gtkada.Canvas_View is
    procedure Set_Adjustment_Values
      (Self : not null access Canvas_View_Record'Class);
    --  Update the values for both adjustments
+
+   procedure Translate_And_Draw_Item
+     (Self : not null access Abstract_Item_Record'Class;
+      Cr   : Cairo.Cairo_Context);
+   --  Translate the transformation matrix and draw the item
 
    -----------------------------
    -- GValue_To_Abstract_Item --
@@ -806,6 +814,38 @@ package body Gtkada.Canvas_View is
       Self.Draw_Internal (Cr, A);
    end Refresh;
 
+   -----------------------------
+   -- Translate_And_Draw_Item --
+   -----------------------------
+
+   procedure Translate_And_Draw_Item
+     (Self : not null access Abstract_Item_Record'Class;
+      Cr   : Cairo.Cairo_Context)
+   is
+      Pos : Gtkada.Style.Point;
+   begin
+      Save (Cr);
+      Pos := Self.Position;
+      Translate (Cr, Pos.X, Pos.Y);
+      Self.Draw (Cr);
+
+      if Debug_Show_Bounding_Boxes then
+         declare
+            Box : constant Item_Rectangle := Self.Bounding_Box;
+         begin
+            Gtk_New (Stroke => (1.0, 0.0, 0.0, 0.8),
+                     Dashes => (2.0, 2.0))
+              .Draw_Rect (Cr, (Box.X, Box.Y), Box.Width, Box.Height);
+         end;
+      end if;
+
+      Restore (Cr);
+   exception
+      when E : others =>
+         Restore (Cr);
+         Process_Exception (E);
+   end Translate_And_Draw_Item;
+
    -------------------
    -- Draw_Internal --
    -------------------
@@ -818,22 +858,10 @@ package body Gtkada.Canvas_View is
       procedure Draw_Item
         (Item : not null access Abstract_Item_Record'Class);
       procedure Draw_Item
-        (Item : not null access Abstract_Item_Record'Class)
-      is
+        (Item : not null access Abstract_Item_Record'Class) is
       begin
-         pragma Assert (Item.Parent = null, "Item must be a toplevel item");
-
-         Save (Cr);
-         Self.Set_Transform (Cr, Item);
-         Item.Draw (Cr);
-         Restore (Cr);
-
-      exception
-         when E : others =>
-            Restore (Cr);
-            Process_Exception (E);
+         Translate_And_Draw_Item (Item, Cr);
       end Draw_Item;
-
    begin
       Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
    end Draw_Internal;
@@ -1598,16 +1626,9 @@ package body Gtkada.Canvas_View is
    is
       use Items_Lists;
       C     : Items_Lists.Cursor := Self.Children.First;
-      Child : Container_Item;
    begin
       while Has_Element (C) loop
-         Child := Container_Item (Element (C));
-
-         Save (Cr);
-         Translate (Cr, Child.Computed_Position.X, Child.Computed_Position.Y);
-         Child.Draw (Cr);
-         Restore (Cr);
-
+         Translate_And_Draw_Item (Element (C), Cr);
          Next (C);
       end loop;
    end Draw_Children;
