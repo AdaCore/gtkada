@@ -761,8 +761,32 @@ package Gtkada.Canvas_View is
      (Self : not null access Rect_Item_Record;
       Cr   : Cairo.Cairo_Context);
 
+   --------------------
+   -- Ellipse Object --
+   --------------------
+
+   type Ellipse_Item_Record is new Container_Item_Record with private;
+   type Ellipse_Item is access all Ellipse_Item_Record'Class;
+   --  A predefined object that displays itself as a circle or an ellipse
+   --  inscribed in a given rectangle.
+
+   function Gtk_New_Ellipse
+     (Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0)
+      return Ellipse_Item;
+   --  Create a new ellipse item.
+   --  If either Width or Height are negative, they will be computed based on
+   --  the children's requested size (if there are no children, a default size
+   --  is used).
+   --  The ellipse is inscribed in the rectangle given by the item's position
+   --  and the size passed in argument to this function.
+
+   overriding procedure Draw
+     (Self : not null access Ellipse_Item_Record;
+      Cr   : Cairo.Cairo_Context);
+
    ---------------------
-   -- Polyline object --
+   -- Polyline Object --
    ---------------------
 
    type Polyline_Item_Record is new Container_Item_Record with private;
@@ -893,6 +917,8 @@ private
       Points   : Item_Point_Array_Access;
       Close    : Boolean;
    end record;
+
+   type Ellipse_Item_Record is new Container_Item_Record with null record;
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
 

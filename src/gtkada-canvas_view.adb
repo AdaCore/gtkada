@@ -22,6 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Numerics;
 with Ada.Unchecked_Conversion;
 with Interfaces.C.Strings;               use Interfaces.C.Strings;
 with System;
@@ -1739,5 +1740,40 @@ package body Gtkada.Canvas_View is
       Container_Item_Record (Self.all).Destroy;  --  inherited
    end Destroy;
 
+   ---------------------
+   -- Gtk_New_Ellipse --
+   ---------------------
+
+   function Gtk_New_Ellipse
+     (Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0)
+      return Ellipse_Item
+   is
+      R : constant Ellipse_Item := new Ellipse_Item_Record;
+   begin
+      R.Style := Style;
+      R.Forced_Width := Width;
+      R.Forced_Height := Height;
+      return R;
+   end Gtk_New_Ellipse;
+
+   ----------
+   -- Draw --
+   ----------
+
+   overriding procedure Draw
+     (Self : not null access Ellipse_Item_Record;
+      Cr   : Cairo.Cairo_Context)
+   is
+   begin
+      Save (Cr);
+      Translate (Cr, Self.Width / 2.0, Self.Height / 2.0);
+      Scale (Cr, Self.Width / 2.0, Self.Height / 2.0);
+      Arc (Cr, 0.0, 0.0, 1.0, 0.0, 2.0 * Ada.Numerics.Pi);
+      Restore (Cr);   --  before we do the stroke
+      Self.Style.Finish_Path (Cr);
+
+      Self.Draw_Children (Cr);
+   end Draw;
 
 end Gtkada.Canvas_View;

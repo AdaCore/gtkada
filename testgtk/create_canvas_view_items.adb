@@ -47,16 +47,21 @@ package body Create_Canvas_View_Items is
       S : constant Gdouble := 0.86602540378443864676;  --  sqrt(3) / 2
       L : Gdouble;
 
-      Canvas       : Canvas_View;
-      Model        : List_Canvas_Model;
-      Scrolled     : Gtk_Scrolled_Window;
-      Black        : Drawing_Style;
-      It           : Polyline_Item;
-      Hexa         : Polyline_Item;
-      Rect         : Rect_Item;
+      Canvas        : Canvas_View;
+      Model         : List_Canvas_Model;
+      Scrolled      : Gtk_Scrolled_Window;
+      Black, Filled, Invisible : Drawing_Style;
+      It            : Polyline_Item;
+      Hexa          : Polyline_Item;
+      Rect          : Rect_Item;
+      Ellipse       : Ellipse_Item;
 
    begin
       Black := Gtk_New (Stroke => Black_RGBA);
+      Invisible := Gtk_New (Stroke => Null_RGBA);
+      Filled := Gtk_New
+        (Stroke => Black_RGBA,
+         Fill => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.2)));
 
       Gtk_New (Model);
 
@@ -64,7 +69,7 @@ package body Create_Canvas_View_Items is
 
       L := 30.0;
       Hexa := Gtk_New_Polyline
-        (Black,
+        (Filled,
          ((2.0 * L, L * S),
           (1.5 * L, L * S * 2.0),
           (0.5 * L, L * S * 2.0),
@@ -75,19 +80,28 @@ package body Create_Canvas_View_Items is
       Hexa.Set_Position ((0.0, 0.0));
       Model.Add (Hexa);
 
+      --  A simple ellipe
+
+      Ellipse := Gtk_New_Ellipse (Filled, 60.0, 30.0);
+      Ellipse.Set_Position ((200.0, 0.0));
+      Model.Add (Ellipse);
+
       --  A drawing of a UML actor
 
-      Rect := Gtk_New_Rect (Black);
+      Rect := Gtk_New_Rect (Invisible);
       Rect.Set_Position ((100.0, 0.0));
       Model.Add (Rect);
 
-      It := Gtk_New_Polyline
-        (Black,
-         ((15.0, 1.0), (35.0, 1.0),
-          (35.0, 21.0), (15.0, 21.0)),
-         Close => True);
-      It.Set_Position ((0.0, 1.0));
-      Rect.Add_Child (It);
+      Ellipse := Gtk_New_Ellipse (Filled, 20.0, 20.0);
+      Ellipse.Set_Position ((15.0, 1.0));
+      Rect.Add_Child (Ellipse);
+--        It := Gtk_New_Polyline
+--          (Black,
+--           ((15.0, 1.0), (35.0, 1.0),
+--            (35.0, 21.0), (15.0, 21.0)),
+--           Close => True);
+--        It.Set_Position ((0.0, 1.0));
+--        Rect.Add_Child (It);
 
       It := Gtk_New_Polyline (Black, ((0.0, 31.0), (50.0, 31.0)));
       It.Set_Position ((0.0, 1.0));
