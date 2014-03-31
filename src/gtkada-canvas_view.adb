@@ -1234,6 +1234,29 @@ package body Gtkada.Canvas_View is
       end loop;
    end For_Each_Item;
 
+   ---------------
+   -- Get_Style --
+   ---------------
+
+   function Get_Style
+     (Self : not null access Canvas_Link_Record) return Drawing_Style
+   is
+   begin
+      return Self.Style;
+   end Get_Style;
+
+   ----------------
+   -- Get_Points --
+   ----------------
+
+   function Get_Points
+     (Self : not null access Canvas_Link_Record)
+      return Item_Point_Array_Access
+   is
+   begin
+      return Self.Points;
+   end Get_Points;
+
    --------------------
    -- Refresh_Layout --
    --------------------

@@ -932,6 +932,16 @@ package Gtkada.Canvas_View is
    --  side or position. The view will do this automatically the first time,
    --  but will not update links later on.
 
+   function Get_Style
+     (Self : not null access Canvas_Link_Record) return Drawing_Style;
+   --  Return the style used for the drawingo of this link
+
+   function Get_Points
+     (Self : not null access Canvas_Link_Record)
+      return Item_Point_Array_Access;
+   --  Return the computed points for the link.
+   --  Do not free or store the result
+
    overriding procedure Destroy
      (Self : not null access Canvas_Link_Record);
    overriding function Bounding_Box
