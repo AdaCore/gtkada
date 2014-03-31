@@ -407,7 +407,11 @@ package body Gtkada.Canvas_View is
       Ref (Model);
 
       Self.Layout := Self.Create_Pango_Layout;
-      Self.Model.Layout := Self.Layout;  --  needed for layout
+
+      if Self.Model.Layout = null then
+         Self.Model.Layout := Self.Layout;  --  needed for layout
+         Self.Model.Refresh_Layout;
+      end if;
 
       Self.Add_Events (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask);
 
@@ -1256,6 +1260,23 @@ package body Gtkada.Canvas_View is
    begin
       return Self.Points;
    end Get_Points;
+
+   -------------------
+   -- Set_Waypoints --
+   -------------------
+
+   procedure Set_Waypoints
+     (Self     : not null access Canvas_Link_Record;
+      Points   : Item_Point_Array;
+      Relative : Boolean := False)
+   is
+   begin
+      Unchecked_Free (Self.Waypoints);
+      if Points'Length /= 0 then
+         Self.Waypoints := new Item_Point_Array'(Points);
+      end if;
+      Self.Relative_Waypoints := Relative;
+   end Set_Waypoints;
 
    --------------------
    -- Refresh_Layout --

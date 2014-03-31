@@ -192,10 +192,6 @@ package body Create_Canvas_View_Composite is
       Unref (Model);
       Scrolled.Add (Canvas);
 
-      --  Need to compute all coordinates once associated with a view
-
-      Model.Refresh_Layout;
-
       Frame.Show_All;
    end Run;
 

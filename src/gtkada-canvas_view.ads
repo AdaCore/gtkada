@@ -462,6 +462,8 @@ package Gtkada.Canvas_View is
    --  for the layout of text has been retrieved from the view layer. If you
    --  do not have at least one view, all text will be hidden or displayed as
    --  ellipsis.
+   --  In fact, this procedure is called automatically on the model the first
+   --  time it is associated with a view.
 
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
@@ -932,6 +934,14 @@ package Gtkada.Canvas_View is
    --  side or position. The view will do this automatically the first time,
    --  but will not update links later on.
 
+   procedure Set_Waypoints
+     (Self     : not null access Canvas_Link_Record;
+      Points   : Item_Point_Array;
+      Relative : Boolean := False);
+   --  Set explicit waypoints for the link, which forces the link to go through
+   --  the given points.
+   --  Relative should be true if all
+
    function Get_Style
      (Self : not null access Canvas_Link_Record) return Drawing_Style;
    --  Return the style used for the drawingo of this link
@@ -1063,12 +1073,16 @@ private
       --  control points for the bezier curve:
       --      pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
 
+      Relative_Waypoints : Boolean := False;
+      --  Whether the waypoints are given in relative coordinates
+
       Points   : Item_Point_Array_Access;
       --  The cached computation of waypoints for this link.
       --  These are recomputed every time the layout of the canvas changes, but
       --  are cached so that redrawing the canvas is fast.
       --  These are absolute coordinates.
       --  See the documentation on Waypoints for more information on the format
+      --  These points are relative if Relative_Waypoints are relative.
 
       Anchor_From : Anchor_Attachment := Middle_Attachment;
       Anchor_To   : Anchor_Attachment := Middle_Attachment;

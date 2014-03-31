@@ -316,10 +316,6 @@ package body Create_Canvas_View_Items is
       Unref (Model);
       Scrolled.Add (Canvas);
 
-      --  Need to compute all coordinates once a view has been createdcre
-
-      Model.Refresh_Layout;
-
       Frame.Show_All;
    end Run;
 

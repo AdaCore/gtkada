@@ -85,6 +85,13 @@ package body Gtkada.Canvas_View.Links is
    function Next_Point is new Manhattan_Next_Point (Layout_Matrix);
    --  Functions for the A* algorithm.
 
+   function Relative_To_Item
+     (From : Item_Point; Wp : Item_Point_Array) return Item_Point;
+   function Relative_To_Item
+     (From : Model_Point; Wp : Item_Point_Array) return Model_Point;
+   --  Compute the last point after applying all the relative coordinates
+   --  from Wp
+
    --------------------
    -- Manhattan_Dist --
    --------------------
@@ -141,6 +148,36 @@ package body Gtkada.Canvas_View.Links is
    --  while avoiding overlapping with two boxes specified in the
    --  Layout_Matrix.
 
+   ----------------------
+   -- Relative_To_Item --
+   ----------------------
+
+   function Relative_To_Item
+     (From : Item_Point; Wp : Item_Point_Array) return Item_Point
+   is
+      C : Item_Point := From;
+   begin
+      for W in Wp'Range loop
+         C := (C.X + Wp (W).X, C.Y + Wp (W).Y);
+      end loop;
+      return C;
+   end Relative_To_Item;
+
+   ----------------------
+   -- Relative_To_Item --
+   ----------------------
+
+   function Relative_To_Item
+     (From : Model_Point; Wp : Item_Point_Array) return Model_Point
+   is
+      C : Model_Point := From;
+   begin
+      for W in Wp'Range loop
+         C := (C.X + Wp (W).X, C.Y + Wp (W).Y);
+      end loop;
+      return C;
+   end Relative_To_Item;
+
    ---------------------
    -- Compute_Anchors --
    ---------------------
@@ -180,6 +217,11 @@ package body Gtkada.Canvas_View.Links is
       if Self.Anchor_From.Toplevel_Side = Auto then
          if Self.Waypoints = null then
             P := Result.To.P;
+         elsif Self.Relative_Waypoints then
+            P := Result.To.P;
+            P := Self.Item_To_Model
+              ((P.X + Self.Waypoints (Self.Waypoints'First).X,
+                P.Y + Self.Waypoints (Self.Waypoints'First).Y));
          else
             P := Self.Item_To_Model (Self.Waypoints (Self.Waypoints'First));
          end if;
@@ -191,6 +233,8 @@ package body Gtkada.Canvas_View.Links is
       if Self.Anchor_To.Toplevel_Side = Auto then
          if Self.Waypoints = null then
             P := Result.From.P;
+         elsif Self.Relative_Waypoints then
+            P := Relative_To_Item (Result.From.P, Self.Waypoints.all);
          else
             P := Self.Item_To_Model (Self.Waypoints (Self.Waypoints'Last));
          end if;
@@ -362,6 +406,20 @@ package body Gtkada.Canvas_View.Links is
 
       Unchecked_Free (Link.Points);
 
+      if Link.Waypoints /= null then
+         if Link.Relative_Waypoints then
+            Link.Points := new Item_Point_Array'
+              (From & Link.Waypoints.all
+               & Item_Point'
+                 (To.X - Link.Waypoints (Link.Waypoints'Last).X,
+                  To.Y - Link.Waypoints (Link.Waypoints'Last).Y));
+         else
+            Link.Points := new Item_Point_Array'
+              (From & Link.Waypoints.all & To);
+         end if;
+         return;
+      end if;
+
       --  We want to find a line that joins P_From to P_To, with the minimum
       --  number of bends. For this, there are in fact three possible X
       --  coordinates for each box (and same for Y):
@@ -473,25 +531,8 @@ package body Gtkada.Canvas_View.Links is
    is
       P   : constant Item_Point_Array_Access := Link.Points;
       Dim : constant Anchors := Compute_Anchors (Link);
-
-      function Get_Wp return Item_Point_Array;
-      --  Return the waypoints to use
-
-      function Get_Wp return Item_Point_Array is
-      begin
-         --  Support for self-referencing straight links
-
-         if Link.From = Link.To then
-            return No_Waypoints;
-         elsif Link.Waypoints /= null then
-            return Link.Waypoints.all;
-         else
-            return No_Waypoints;
-         end if;
-      end Get_Wp;
-
-      Waypoints : Item_Point_Array := Get_Wp;
-      Tmp       : Item_Point;
+      Tmp, Tmp2 : Item_Point;
+      C   : Item_Point;
    begin
       if Link.From = Link.To then
          Tmp := (Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
@@ -508,35 +549,64 @@ package body Gtkada.Canvas_View.Links is
       --  box is horizontal or vertical, we move the waypoint to keep the
       --  segment that way. This provides a more natural feel.
 
-      elsif P /= null and then Waypoints'Length /= 0 then
-         --  Is the first segment horizontal or vertical ?
-         if abs (P (P'First).Y - Waypoints (Waypoints'First).Y) < 0.8 then
-            Waypoints (Waypoints'First).Y := Dim.From.P.Y;
-         elsif abs (P (P'First).X - Waypoints (Waypoints'First).Y) < 0.8 then
-            Waypoints (Waypoints'First).X := Dim.From.P.X;
-         end if;
+      elsif P /= null and then Link.Waypoints /= null then
+         declare
+            Wp : Item_Point_Array := Link.Waypoints.all;
+         begin
+            --  Is the first segment horizontal or vertical ?
+            if abs (P (P'First).Y - Wp (Wp'First).Y) < 0.8 then
+               Wp (Wp'First).Y := Dim.From.P.Y;
+            elsif abs (P (P'First).X - Wp (Wp'First).Y) < 0.8 then
+               Wp (Wp'First).X := Dim.From.P.X;
+            end if;
 
-         --  Is the last segment horizontal or vertical ?
+            --  Is the last segment horizontal or vertical ?
 
-         --  If this horizontal ?
-         if abs (P (P'Last).Y - Waypoints (Waypoints'Last).Y) < 0.8 then
-            Waypoints (Waypoints'Last).Y := Dim.To.P.Y;
-            --  is this vertical ?
-         elsif abs (P (P'Last).X - Waypoints (Waypoints'Last).Y) < 0.8 then
-            Waypoints (Waypoints'Last).X := Dim.To.P.X;
-         end if;
+            --  If this horizontal ?
+            if abs (P (P'Last).Y - Wp (Wp'Last).Y) < 0.8 then
+               Wp (Wp'Last).Y := Dim.To.P.Y;
+               --  is this vertical ?
+            elsif abs (P (P'Last).X - Wp (Wp'Last).Y) < 0.8 then
+               Wp (Wp'Last).X := Dim.To.P.X;
+            end if;
 
+            Unchecked_Free (Link.Points);
+            Tmp := Link.Model_To_Item (Dim.To.P);
+
+            if Link.Relative_Waypoints then
+               Link.Points := new Item_Point_Array'
+                 (Link.Model_To_Item (Dim.From.P)
+                  & Wp
+                  & Item_Point'
+                    (Tmp.X - Wp (Wp'Last).X, Tmp.Y - Wp (Wp'Last).Y));
+            else
+               Link.Points := new Item_Point_Array'
+                 (Link.Model_To_Item (Dim.From.P) & Wp & Tmp);
+            end if;
+         end;
+
+      elsif Link.Waypoints /= null then
          Unchecked_Free (Link.Points);
-         Link.Points := new Item_Point_Array'
-           (Link.Model_To_Item (Dim.From.P)
-            & Waypoints
-            & Link.Model_To_Item (Dim.To.P));
+         Tmp := Link.Model_To_Item (Dim.To.P);
+
+         if Link.Relative_Waypoints then
+            Tmp2 := Link.Model_To_Item (Dim.From.P);
+            C := Relative_To_Item (Tmp2, Link.Waypoints.all);
+            Link.Points := new Item_Point_Array'
+              (Tmp2
+               & Link.Waypoints.all
+               & Item_Point'(Tmp.X - C.X, Tmp.Y - C.Y));
+         else
+            Link.Points := new Item_Point_Array'
+              (Link.Model_To_Item (Dim.From.P)
+               & Link.Waypoints.all
+               & Tmp);
+         end if;
 
       else
          Unchecked_Free (Link.Points);
          Link.Points := new Item_Point_Array'
            (Link.Model_To_Item (Dim.From.P)
-            & Waypoints
             & Link.Model_To_Item (Dim.To.P));
       end if;
 
@@ -707,17 +777,21 @@ package body Gtkada.Canvas_View.Links is
 
       case Link.Routing is
          when Straight | Orthogonal =>
-            Link.Style.Draw_Polyline (Cr, P.all);
+            Link.Style.Draw_Polyline
+              (Cr, P.all, Relative => Link.Relative_Waypoints);
 
          when Orthocurve =>
             if P'Length = 2 then
-               Link.Style.Draw_Polyline (Cr, P.all);
+               Link.Style.Draw_Polyline
+                 (Cr, P.all, Relative => Link.Relative_Waypoints);
             else
-               Link.Style.Draw_Polycurve (Cr, P.all);
+               Link.Style.Draw_Polycurve
+                 (Cr, P.all, Relative => Link.Relative_Waypoints);
             end if;
 
          when Curve =>
-            Link.Style.Draw_Polycurve (Cr, P.all);
+            Link.Style.Draw_Polycurve
+              (Cr, P.all, Relative => Link.Relative_Waypoints);
       end case;
 
       Link.Style.Set_Fill (Fill);

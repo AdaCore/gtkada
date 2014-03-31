@@ -252,7 +252,6 @@ package body Create_Canvas_View_Routes is
       Gtk_New (Canvas, Model);
       Unref (Model);
       Scrolled.Add (Canvas);
-      Model.Refresh_Layout;
 
       Frame.Show_All;
    end Run;

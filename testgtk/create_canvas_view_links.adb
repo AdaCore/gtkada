@@ -29,6 +29,7 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
 with Gtkada.Style;        use Gtkada.Style;
+with Pango.Font;          use Pango.Font;
 
 package body Create_Canvas_View_Links is
 
@@ -66,7 +67,9 @@ package body Create_Canvas_View_Links is
         & " the examples here."
         & ASCII.LF
         & "Custom links can be implemented relatively easily. This demo shows"
-        & " for instance that displays a @bspring@B instead of a line.";
+        & " for instance that displays a @bspring@B instead of a line."
+        & ASCII.LF
+        & "It is also possible to force specific @bwaypoints@B for links";
    end Help;
 
    --------------------
@@ -94,6 +97,10 @@ package body Create_Canvas_View_Links is
      (Self    : not null access Spring_Link_Record;
       Context : Draw_Context)
    is
+      L : constant Gdouble := 12.0;    --  length of single segment
+      N : constant Integer := 20;      --  number of segments
+      Pad : constant Gdouble := 15.0;  --  each ends of the link
+
       Style  : constant Drawing_Style := Self.Get_Style;
       Fill   : constant Cairo_Pattern := Style.Get_Fill;
       Points : constant Item_Point_Array_Access := Self.Get_Points;
@@ -103,7 +110,10 @@ package body Create_Canvas_View_Links is
       Deltay : constant Item_Coordinate := P2.Y - P1.Y;
       Angle  : constant Gdouble := Arctan (Y => Deltay, X => Deltax);
       Length : constant Gdouble := Sqrt (Deltax * Deltax + Deltay * Deltay);
-      Pad    : Gdouble;
+      P      : Item_Point_Array (1 .. N + 4);
+      X_Inc  : Gdouble;
+      Y_Inc  : Gdouble;
+      DY     : Gdouble;
 
    begin
       --  never fill a link
@@ -112,20 +122,26 @@ package body Create_Canvas_View_Links is
       Translate (Context.Cr, Points (Points'First).X, Points (Points'First).Y);
       Rotate (Context.Cr, Angle);
 
-      if Length <= 25.0 then
-         Style.Draw_Polyline (Context.Cr, (P1, P2));
+      if Length <= L * Gdouble (N) then
+         X_Inc := (Length - 2.0 * Pad) / Gdouble (N);
+         Y_Inc := Sqrt (L * L + X_Inc * X_Inc);
+
+         P (P'First)     := (0.0, 0.0);
+         P (P'First + 1) := (Pad, 0.0);
+         P (P'First + 2) := (X_Inc / 2.0, Y_Inc / 2.0);
+         DY := -Y_Inc;
+
+         for J in 3 .. N + 1 loop
+            P (P'First + J) := (X_Inc, DY);
+            DY := -DY;
+         end loop;
+
+         P (P'Last - 1) := (X_Inc / 2.0, DY / 2.0);
+         P (P'Last) := (Pad, 0.0);
+
+         Style.Draw_Polyline (Context.Cr, P, Relative => True);
       else
-         Pad := (Length - 25.0) / 2.0;
-         Style.Draw_Polyline
-           (Context.Cr,
-            ((0.0, 0.0),
-             (Pad, 0.0),
-             (Pad + 5.0, -5.0),
-             (Pad + 10.0, 5.0),
-             (Pad + 15.0, -5.0),
-             (Pad + 20.0, 5.0),
-             (Pad + 25.0, 0.0),
-             (Length, 0.0)));
+         Style.Draw_Polyline (Context.Cr, Points.all);
       end if;
 
       Style.Set_Fill (Fill);
@@ -139,7 +155,7 @@ package body Create_Canvas_View_Links is
       Canvas        : Canvas_View;
       Model         : List_Canvas_Model;
       Scrolled      : Gtk_Scrolled_Window;
-      Black         : Drawing_Style;
+      Black, Font   : Drawing_Style;
 
       procedure Do_Example (Routing : Route_Style; X, Y : Model_Coordinate);
       procedure Do_Example (Routing : Route_Style; X, Y : Model_Coordinate) is
@@ -210,29 +226,68 @@ package body Create_Canvas_View_Links is
          Model.Add (It1);
 
          It2 := Gtk_New_Rect (Black, 20.0, 20.0);
-         It2.Set_Position ((X + 200.0, Y + 50.0));
+         It2.Set_Position ((X + 100.0, Y + 50.0));
          Model.Add (It2);
 
          L := Gtk_New_Spring (From => It1, To => It2, Style => Style);
          Model.Add (L);
 
          It1 := Gtk_New_Rect (Black, 20.0, 20.0);
-         It1.Set_Position ((X + 400.0, Y));
+         It1.Set_Position ((X + 300.0, Y));
          Model.Add (It1);
 
          L := Gtk_New_Spring (From => It2, To => It1, Style => Style);
          Model.Add (L);
       end Spring_Example;
 
+      procedure Waypoints_Example
+        (X, Y      : Model_Coordinate;
+         Style     : Drawing_Style;
+         Waypoints : Item_Point_Array;
+         Relative_Waypoints : Boolean);
+      procedure Waypoints_Example
+        (X, Y      : Model_Coordinate;
+         Style     : Drawing_Style;
+         Waypoints : Item_Point_Array;
+         Relative_Waypoints : Boolean)
+      is
+         It1, It2 : Rect_Item;
+         L        : Canvas_Link;
+      begin
+         It1 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It1.Set_Position ((X, Y));
+         Model.Add (It1);
+
+         It2 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It2.Set_Position ((X + 200.0, Y + 50.0));
+         Model.Add (It2);
+
+         L := Gtk_New (It1, It2, Style, Straight);
+         L.Set_Waypoints (Waypoints, Relative_Waypoints);
+         Model.Add (L);
+      end Waypoints_Example;
+
+      Text : Text_Item;
    begin
       Gtk_New (Model);
 
       Black := Gtk_New;
+      Font := Gtk_New (Stroke => Null_RGBA,
+                       Font   => (Font => From_String ("sans 8"),
+                                  others => <>));
+
+      Text := Gtk_New_Text (Font, "Links attached to other links");
+      Text.Set_Position ((0.0, -20.0));
+      Model.Add (Text);
 
       Do_Example (Straight,   0.0, 0.0);
       Do_Example (Orthogonal, 150.0, 0.0);
       Do_Example (Curve,      300.0, 0.0);
       Do_Example (Orthocurve, 450.0, 0.0);
+
+      Text := Gtk_New_Text (Font, "Link arrows and symbols");
+      Text.Set_Position ((0.0, 160.0));
+      Model.Add (Text);
 
       Link_Example (0.0, 180.0,
                     Gtk_New (Arrow_To   => (Head   => Open,
@@ -308,7 +363,21 @@ package body Create_Canvas_View_Links is
       Link_Example (300.0, 400.0,
                     Gtk_New (Line_Width => 6.0));
 
-      Spring_Example (0.0, 450.0, Gtk_New (Stroke => Black_RGBA));
+      Text := Gtk_New_Text (Font, "Custom drawing for links");
+      Text.Set_Position ((0.0, 450.0));
+      Model.Add (Text);
+
+      Spring_Example (0.0, 470.0, Gtk_New (Stroke => Black_RGBA));
+
+      Text := Gtk_New_Text (Font, "Custom waypoints for links");
+      Text.Set_Position ((0.0, 580.0));
+      Model.Add (Text);
+
+      Waypoints_Example
+        (0.0, 600.0,
+         Gtk_New (Stroke => Black_RGBA),
+         Waypoints          => ((80.0, 30.0), (0.0, 20.0)),
+         Relative_Waypoints => True);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
@@ -320,7 +389,6 @@ package body Create_Canvas_View_Links is
       Gtk_New (Canvas, Model);
       Unref (Model);
       Scrolled.Add (Canvas);
-      Model.Refresh_Layout;
 
       Frame.Show_All;
    end Run;

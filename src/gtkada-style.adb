@@ -1094,7 +1094,8 @@ package body Gtkada.Style is
       Cr          : Cairo.Cairo_Context;
       Points      : Point_Array;
       Close       : Boolean := False;
-      Show_Arrows : Boolean := True)
+      Show_Arrows : Boolean := True;
+      Relative    : Boolean := False)
    is
       Sloppy_Deviation : constant Gdouble := 0.3;
       --  This variable controls the amount of deviation from a straight line
@@ -1148,7 +1149,11 @@ package body Gtkada.Style is
 
       else
          for P in Points'First + 1 .. Points'Last loop
-            Line_To (Cr, Points (P).X, Points (P).Y);
+            if Relative then
+               Rel_Line_To (Cr, Points (P).X, Points (P).Y);
+            else
+               Line_To (Cr, Points (P).X, Points (P).Y);
+            end if;
          end loop;
 
          if Close
@@ -1174,7 +1179,8 @@ package body Gtkada.Style is
      (Self        : Drawing_Style;
       Cr          : Cairo.Cairo_Context;
       Points      : Point_Array;
-      Show_Arrows : Boolean := True)
+      Show_Arrows : Boolean := True;
+      Relative    : Boolean := False)
    is
       P : Integer;
    begin
@@ -1187,11 +1193,19 @@ package body Gtkada.Style is
 
       P := Points'First;
       while P + 3 <= Points'Last loop
-         Curve_To
-           (Cr,
-            Points (P + 1).X, Points (P + 1).Y,
-            Points (P + 2).X, Points (P + 2).Y,
-            Points (P + 3).X, Points (P + 3).Y);
+         if Relative then
+            Rel_Curve_To
+              (Cr,
+               Points (P + 1).X, Points (P + 1).Y,
+               Points (P + 2).X, Points (P + 2).Y,
+               Points (P + 3).X, Points (P + 3).Y);
+         else
+            Curve_To
+              (Cr,
+               Points (P + 1).X, Points (P + 1).Y,
+               Points (P + 2).X, Points (P + 2).Y,
+               Points (P + 3).X, Points (P + 3).Y);
+         end if;
          P := P + 3;
       end loop;
 
