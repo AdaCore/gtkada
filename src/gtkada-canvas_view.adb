@@ -1607,7 +1607,7 @@ package body Gtkada.Canvas_View is
                   when Float_None =>
                      if Child.Forced_Width <= 0.0 then
                         Child.Width := Self.Width
-                          - Child.Margin.Right - Child.Margin.Left
+                          - Child.Margin.Right
                           - Child.Computed_Position.X;
                      end if;
 
@@ -1658,7 +1658,7 @@ package body Gtkada.Canvas_View is
                   when Float_None =>
                      if Child.Forced_Height <= 0.0 then
                         Child.Height := Self.Height
-                          - Child.Margin.Top - Child.Margin.Bottom
+                          - Child.Margin.Bottom
                           - Child.Computed_Position.Y;
                      end if;
 

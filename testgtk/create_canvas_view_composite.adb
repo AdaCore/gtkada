@@ -141,7 +141,7 @@ package body Create_Canvas_View_Composite is
          Rect := Gtk_New_Rect (Blue, Width => W2, Height => H2);
          Model.Add (Rect);
          Rect.Set_Child_Layout (Layout);
-         Rect.Set_Position ((X + 180.0, Y + 0.0));
+         Rect.Set_Position ((X + 220.0, Y + 0.0));
 
          Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
          Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
