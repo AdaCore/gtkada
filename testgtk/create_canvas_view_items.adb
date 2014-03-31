@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Cairo.Pattern;       use Cairo, Cairo.Pattern;
 with Gdk.RGBA;            use Gdk.RGBA;
 with Glib;                use Glib;
 with Gtk.Enums;           use Gtk.Enums;
@@ -147,12 +148,21 @@ package body Create_Canvas_View_Items is
       procedure Add_UML_Block
         (Sloppy : Boolean := False; X, Y : Model_Coordinate)
       is
-         Title_Font, Font, Black : Drawing_Style;
+         Title_Font, Font, Black, Filled : Drawing_Style;
          M    : Margins;
          Rect : Rect_Item;
          Text : Text_Item;
          Hr   : Hr_Item;
+         Pattern : Cairo_Pattern;
       begin
+         Pattern := Create_Linear (0.0, 0.0, 0.0, 1.0);
+         Add_Color_Stop_Rgb (Pattern, 0.0, 1.0, 206.0 / 255.0, 154.0 / 255.0);
+         Add_Color_Stop_Rgb (Pattern, 1.0, 1.0, 1.0, 216.0 / 255.0);
+
+         Filled := Gtk_New
+           (Stroke => Black_RGBA,
+            Fill   => Pattern);
+
          Black := Gtk_New (Stroke => Black_RGBA, Sloppy => Sloppy);
          Title_Font := Gtk_New
            (Stroke => Null_RGBA,
@@ -167,7 +177,7 @@ package body Create_Canvas_View_Items is
 
          M := (Left | Right => 5.0, Top => 0.0, Bottom => 2.0);
 
-         Rect := Gtk_New_Rect (Black);
+         Rect := Gtk_New_Rect (Filled);
          Rect.Set_Position ((X, Y));
          Model.Add (Rect);
 
@@ -238,6 +248,7 @@ package body Create_Canvas_View_Items is
       Hexa          : Polyline_Item;
       Ellipse       : Ellipse_Item;
       Text          : Text_Item;
+      Pattern       : Cairo_Pattern;
 
    begin
       Font := Gtk_New
@@ -273,6 +284,15 @@ package body Create_Canvas_View_Items is
 
       --  A simple ellipe
 
+      Pattern := Create_Radial
+        (Cx0 => 0.5, Cy0 => 0.5, Radius0 => 0.0,
+         Cx1 => 0.5, Cy1 => 0.5, Radius1 => 1.0);
+      Add_Color_Stop_Rgb (Pattern, 0.0, 1.0, 206.0 / 255.0, 154.0 / 255.0);
+      Add_Color_Stop_Rgb (Pattern, 1.0, 1.0, 1.0, 216.0 / 255.0);
+
+      Filled := Gtk_New
+        (Stroke => Black_RGBA,
+         Fill   => Pattern);
       Ellipse := Gtk_New_Ellipse (Filled, 60.0, 30.0);
       Ellipse.Set_Position ((200.0, 0.0));
       Model.Add (Ellipse);

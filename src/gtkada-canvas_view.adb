@@ -27,6 +27,8 @@ with GNAT.Strings;                       use GNAT.Strings;
 with Interfaces.C.Strings;               use Interfaces.C.Strings;
 with System;
 with Cairo;                              use Cairo;
+with Cairo.Matrix;                       use Cairo.Matrix;
+with Cairo.Pattern;                      use Cairo.Pattern;
 with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
@@ -140,6 +142,11 @@ package body Gtkada.Canvas_View is
    procedure Align_Text (Self : not null access Text_Item_Record);
    --  Adjust the computed position for the text to match the alignment
    --  requested by the user.
+
+   procedure Resize_Fill_Pattern
+     (Self : not null access Container_Item_Record'Class);
+   --  Resize the fill pattern so that it extends to the whole item, instead of
+   --  just the 0.0 .. 1.0 pattern space.
 
    -----------------------------
    -- GValue_To_Abstract_Item --
@@ -1694,6 +1701,30 @@ package body Gtkada.Canvas_View is
       return R;
    end Gtk_New_Rect;
 
+   -------------------------
+   -- Resize_Fill_Pattern --
+   -------------------------
+
+   procedure Resize_Fill_Pattern
+     (Self : not null access Container_Item_Record'Class)
+   is
+      Matrix  : aliased Cairo_Matrix;
+      Fill    : constant Cairo_Pattern := Self.Style.Get_Fill;
+   begin
+      if Fill /= Null_Pattern then
+         case Get_Type (Fill) is
+            when Cairo_Pattern_Type_Linear
+               | Cairo_Pattern_Type_Radial =>
+
+               Init_Scale (Matrix'Access, 1.0 / Self.Width, 1.0 / Self.Height);
+               Set_Matrix (Fill, Matrix'Access);
+
+            when others =>
+               null;
+         end case;
+      end if;
+   end Resize_Fill_Pattern;
+
    ----------
    -- Draw --
    ----------
@@ -1702,6 +1733,7 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Rect_Item_Record;
       Context : Draw_Context) is
    begin
+      Resize_Fill_Pattern (Self);
       Self.Style.Draw_Rect
         (Context.Cr, (0.0, 0.0), Self.Width, Self.Height,
          Radius => Self.Radius);
@@ -1750,6 +1782,7 @@ package body Gtkada.Canvas_View is
       Context : Draw_Context)
    is
    begin
+      Resize_Fill_Pattern (Self);
       Self.Style.Draw_Polyline
         (Context.Cr, Self.Points.all, Close => Self.Close);
       Draw_Children (Self, Context);
@@ -1793,6 +1826,7 @@ package body Gtkada.Canvas_View is
       Context : Draw_Context)
    is
    begin
+      Resize_Fill_Pattern (Self);
       Self.Style.Draw_Ellipse
         (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
       Self.Draw_Children (Context);
@@ -1879,6 +1913,7 @@ package body Gtkada.Canvas_View is
       Text : constant String := Compute_Text (Self);
       Y    : Glib.Gdouble := 0.0;
    begin
+      Resize_Fill_Pattern (Self);
       Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
 
       if F.Valign /= 0.0

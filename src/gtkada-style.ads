@@ -304,7 +304,16 @@ package Gtkada.Style is
    --  Creates a new instance of drawing style.
    --
    --  Sloppy: if true, a sort of approximate drawing is done for lines and
-   --     text, so that it looks like the drawing was done by hand.
+   --   text, so that it looks like the drawing was done by hand.
+   --
+   --  Fill: this is generated created through the functions in Cairo.Pattern.
+   --   The pattern is adopted by the style, which will unreferenced it when
+   --   not needed. As such, if the pattern is shared between multiple
+   --   styles you need to Ref it.
+   --   When the style is used with a Gtkada.Canvas_View.Container_Item or one
+   --   of its children, and pattern is a gradient, it should be defined in
+   --   the 0.0 .. 1.0 pattern space, and will be resized automatically based
+   --   on the computed size of the item.
 
    procedure Draw_Rect
       (Self          : Drawing_Style;
