@@ -109,13 +109,13 @@ package body Create_Canvas_View_Items is
          Small_Font := Gtk_New
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
-            Font   => (Font => From_String (Font_Name (Sloppy) & " 8"),
+            Font   => (Name   => From_String (Font_Name (Sloppy) & " 8"),
                        Valign => 0.5,
                        others => <>));
          Large_Font := Gtk_New
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
-            Font   => (Font   => From_String (Font_Name (Sloppy) & " 25"),
+            Font   => (Name   => From_String (Font_Name (Sloppy) & " 25"),
                        Valign => 0.5,
                        others => <>));
 
@@ -167,12 +167,12 @@ package body Create_Canvas_View_Items is
          Title_Font := Gtk_New
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
-            Font   => (Font => From_String (Font_Name (Sloppy) & " 16"),
+            Font   => (Name   => From_String (Font_Name (Sloppy) & " 16"),
                        others => <>));
          Font := Gtk_New
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
-            Font   => (Font => From_String (Font_Name (Sloppy) & " 10"),
+            Font   => (Name   => From_String (Font_Name (Sloppy) & " 10"),
                        others => <>));
 
          M := (Left | Right => 5.0, Top => 0.0, Bottom => 2.0);
@@ -253,7 +253,7 @@ package body Create_Canvas_View_Items is
    begin
       Font := Gtk_New
         (Stroke => Null_RGBA,
-         Font   => (Font   => From_String ("sans 10"),
+         Font   => (Name   => From_String ("sans 10"),
                     Color  => Black_RGBA,
                     Underline => Pango_Underline_Double,
                     others => <>));

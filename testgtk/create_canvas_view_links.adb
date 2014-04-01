@@ -273,7 +273,7 @@ package body Create_Canvas_View_Links is
 
       Black := Gtk_New;
       Font := Gtk_New (Stroke => Null_RGBA,
-                       Font   => (Font => From_String ("sans 8"),
+                       Font   => (Name => From_String ("sans 8"),
                                   others => <>));
 
       Text := Gtk_New_Text (Font, "Links attached to other links");

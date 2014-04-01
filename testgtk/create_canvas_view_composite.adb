@@ -174,7 +174,7 @@ package body Create_Canvas_View_Composite is
          Fill   => Create_Rgba_Pattern ((0.0, 0.0, 1.0, 0.6)));
       Font := Gtk_New
         (Stroke => Null_RGBA,
-         Font   => (Font => From_String ("sans 9"), others => <>));
+         Font   => (Name => From_String ("sans 9"), others => <>));
 
       Gtk_New (Model);
 

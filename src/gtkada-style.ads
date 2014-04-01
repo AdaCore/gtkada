@@ -265,7 +265,7 @@ package Gtkada.Style is
    --  Arrow_Style above)
 
    type Font_Style is record
-      Font       : Pango.Font.Pango_Font_Description := null;
+      Name       : Pango.Font.Pango_Font_Description := null;
       Underline  : Pango.Enums.Underline := Pango.Enums.Pango_Underline_None;
       Strikethrough : Boolean := False;
       Color      : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;

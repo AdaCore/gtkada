@@ -977,11 +977,11 @@ package body Gtkada.Style is
          Data.Dashes := new Dash_Array'(Dashes);
       end if;
 
-      if Font.Font = null then
+      if Font.Name = null then
          if Sloppy then
-            Data.Font.Font := From_String ("Comic Sans MS 14");
+            Data.Font.Name := From_String ("Comic Sans MS 14");
          else
-            Data.Font.Font := From_String ("sans 14");
+            Data.Font.Name := From_String ("sans 14");
          end if;
       end if;
 
@@ -1018,8 +1018,8 @@ package body Gtkada.Style is
                Destroy (D.Fill);
             end if;
 
-            if D.Font.Font /= null then
-               Free (D.Font.Font);
+            if D.Font.Name /= null then
+               Free (D.Font.Name);
             end if;
          end if;
       end if;
@@ -1331,7 +1331,7 @@ package body Gtkada.Style is
 
       Layout.Set_Attributes (Attr);
       Layout.Set_Alignment (Self.Halign);
-      Layout.Set_Font_Description (Self.Font);
+      Layout.Set_Font_Description (Self.Name);
 
       if Max_Height > 0.0 then
          Layout.Set_Height (Gint (Max_Height + 1.0) * Pango_Scale);
