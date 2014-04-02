@@ -282,8 +282,8 @@ package body Create_Canvas_View_Links is
 
       Do_Example (Straight,   0.0, 0.0);
       Do_Example (Orthogonal, 150.0, 0.0);
-      Do_Example (Curve,      300.0, 0.0);
-      Do_Example (Orthocurve, 450.0, 0.0);
+      Do_Example (Arc,        300.0, 0.0);
+      Do_Example (Curve,      450.0, 0.0);
 
       Text := Gtk_New_Text (Font, "Link arrows and symbols");
       Text.Set_Position ((0.0, 160.0));

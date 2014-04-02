@@ -1337,10 +1337,10 @@ package body Gtkada.Canvas_View is
             Compute_Layout_For_Orthogonal_Link (Self);
          when Straight =>
             Compute_Layout_For_Straight_Link (Self);
-         when Curve =>
+         when Arc =>
             Compute_Layout_For_Arc_Link (Self);
-         when Orthocurve =>
-            Compute_Layout_For_Orthocurve_Link (Self);
+         when Curve =>
+            Compute_Layout_For_Curve_Link (Self);
       end case;
    end Refresh_Layout;
 

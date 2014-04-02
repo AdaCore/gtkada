@@ -54,7 +54,7 @@ package Gtkada.Canvas_View.Links is
    --  Compute the layout for the link, when it is restricted to vertical and
    --  horizontal lines only.
 
-   procedure Compute_Layout_For_Orthocurve_Link
+   procedure Compute_Layout_For_Curve_Link
      (Link   : not null access Canvas_Link_Record'Class);
    --  Compute the layout for the link
 

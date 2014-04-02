@@ -242,9 +242,9 @@ package Gtkada.Canvas_View is
    --  See the description of Side_Attachment for an example on how to use
    --  Toplevel_Side.
 
-   type Route_Style is (Orthogonal, Straight, Curve, Orthocurve);
+   type Route_Style is (Orthogonal, Straight, Arc, Curve);
    --  This defines how a link is routed between its two ends.
-   --  Orthocurve is similar to orthogonal (links restricted to horizontal and
+   --  Curve is similar to orthogonal (links restricted to horizontal and
    --  vertical lines), but using a bezier curve.
 
    ------------------
@@ -1081,7 +1081,7 @@ private
       --  These are absolute coordinates.
       --  For straight and orthogonal links, these are the points the link must
       --  go through.
-      --  For curve and orthocurve links, these are the list of points and
+      --  For curve and arc links, these are the list of points and
       --  control points for the bezier curve:
       --      pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
 

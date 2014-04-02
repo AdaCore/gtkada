@@ -318,7 +318,7 @@ package body Gtkada.Canvas_View.Links is
       --  ??? We should not have a uniform border: on the outside, it should
       --  be smaller (to avoid the line going too much outside), but larger
       --  between the two boces, which results in a nicer display especially
-      --  for orthocurve links.
+      --  for curve links.
 
       Min_Space : constant Gdouble := Link.Style.Get_Line_Width * 3.0;
       --  Minimal space between two boxes to pass a link between them
@@ -705,11 +705,11 @@ package body Gtkada.Canvas_View.Links is
       Compute_Labels (Link, Dim);
    end Compute_Layout_For_Arc_Link;
 
-   ----------------------------------------
-   -- Compute_Layout_For_Orthocurve_Link --
-   ----------------------------------------
+   -----------------------------------
+   -- Compute_Layout_For_Curve_Link --
+   -----------------------------------
 
-   procedure Compute_Layout_For_Orthocurve_Link
+   procedure Compute_Layout_For_Curve_Link
      (Link   : not null access Canvas_Link_Record'Class)
    is
       P : Item_Point_Array_Access;
@@ -756,7 +756,7 @@ package body Gtkada.Canvas_View.Links is
 
          Unchecked_Free (P);
       end if;
-   end Compute_Layout_For_Orthocurve_Link;
+   end Compute_Layout_For_Curve_Link;
 
    ---------------
    -- Draw_Link --
@@ -780,7 +780,7 @@ package body Gtkada.Canvas_View.Links is
             Link.Style.Draw_Polyline
               (Cr, P.all, Relative => Link.Relative_Waypoints);
 
-         when Orthocurve =>
+         when Curve =>
             if P'Length = 2 then
                Link.Style.Draw_Polyline
                  (Cr, P.all, Relative => Link.Relative_Waypoints);
@@ -789,7 +789,7 @@ package body Gtkada.Canvas_View.Links is
                  (Cr, P.all, Relative => Link.Relative_Waypoints);
             end if;
 
-         when Curve =>
+         when Arc =>
             Link.Style.Draw_Polycurve
               (Cr, P.all, Relative => Link.Relative_Waypoints);
       end case;

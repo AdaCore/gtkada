@@ -183,8 +183,8 @@ package body Create_Canvas_View_Routes is
 
       Link_Styles (Orthogonal) := Gtk_New (Stroke => Black_RGBA);
       Link_Styles (Straight) := Gtk_New (Stroke => (1.0, 0.0, 0.0, 1.0));
-      Link_Styles (Curve) := Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0));
-      Link_Styles (Orthocurve) := Gtk_New (Stroke => (0.0, 0.0, 1.0, 1.0));
+      Link_Styles (Arc) := Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0));
+      Link_Styles (Curve) := Gtk_New (Stroke => (0.0, 0.0, 1.0, 1.0));
       Y := 0.0;
       X := 0.0;
 
