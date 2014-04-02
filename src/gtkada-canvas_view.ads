@@ -110,6 +110,7 @@ with Cairo.Region;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Handlers;
 with Gtk.Widget;
 with Gtkada.Style;     use Gtkada.Style;
 with Pango.Layout;     use Pango.Layout;
@@ -467,11 +468,12 @@ package Gtkada.Canvas_View is
 
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
-   procedure On_Layout_Changed
+   function On_Layout_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
         (Self : not null access GObject_Record'Class);
-      Slot : access GObject_Record'Class := null);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
    Signal_Layout_Changed : constant Glib.Signal_Name := "layout_changed";
    --  Emits or handles the "layout_changed" signal.
    --  This signal must be emitted by models whenever new items are added,
@@ -480,13 +482,14 @@ package Gtkada.Canvas_View is
    --  It is recommended to emit this signal only once per batch of changes,
 
    procedure Item_Contents_Changed
-     (Self   : not null access Canvas_Model_Record'Class;
+     (Self : not null access Canvas_Model_Record'Class;
       Item : not null access Abstract_Item_Record'Class);
-   procedure On_Item_Contents_Changed
+   function On_Item_Contents_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
         (Self : access GObject_Record'Class; Item : Abstract_Item);
-      Slot : access GObject_Record'Class := null);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
    Signal_Item_Contents_Changed : constant Glib.Signal_Name :=
      "item_contents_changed";
    --  This signal should be emitted instead of layout_changed when only the
@@ -529,10 +532,10 @@ package Gtkada.Canvas_View is
 
    procedure Gtk_New
      (Self  : out Canvas_View;
-      Model : not null access Canvas_Model_Record'Class);
+      Model : access Canvas_Model_Record'Class := null);
    procedure Initialize
      (Self  : not null access Canvas_View_Record'Class;
-      Model : not null access Canvas_Model_Record'Class);
+      Model : access Canvas_Model_Record'Class := null);
    --  Create a new view which displays the model.
    --  A new reference to the model is created (and released when the view is
    --  destroyed), so that in general the code will look like:
@@ -540,6 +543,11 @@ package Gtkada.Canvas_View is
    --       Initialize (Model);
    --       Gtk_New (View, Model);
    --       Unref (Model);  --  unless you need to keep a handle on it too
+
+   procedure Set_Model
+      (Self  : not null access Canvas_View_Record'Class;
+       Model : access Canvas_Model_Record'Class);
+   --  Change the model, and redraw the whole draw.
 
    function View_Get_Type return Glib.GType;
    pragma Convention (C, View_Get_Type);
@@ -1051,6 +1059,10 @@ private
       Model   : Canvas_Model;
       Topleft : Model_Point := (0.0, 0.0);
       Scale   : Gdouble := 1.0;
+
+      Id_Layout_Changed,
+      Id_Item_Contents_Changed : Gtk.Handlers.Handler_Id;
+      --  Connections to model signals
 
       Layout     : Pango.Layout.Pango_Layout;
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;

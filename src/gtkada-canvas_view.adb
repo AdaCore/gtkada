@@ -36,6 +36,7 @@ with Gdk.Event;                          use Gdk.Event;
 with Gdk.Window;                         use Gdk.Window;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
+with Gtk.Handlers;                       use Gtk.Handlers;
 with Gtk.Scrollable;                     use Gtk.Scrollable;
 with Gtk.Widget;                         use Gtk.Widget;
 with Gtkada.Bindings;                    use Gtkada.Bindings;
@@ -273,6 +274,8 @@ package body Gtkada.Canvas_View is
       if not Self.Is_Created then
          G_New (Self, Model_Get_Type);
       end if;
+
+      --  ??? When destroyed, should unreferenced Self.Layout
    end Initialize;
 
    --------------------
@@ -289,18 +292,28 @@ package body Gtkada.Canvas_View is
    -- On_Layout_Changed --
    -----------------------
 
-   procedure On_Layout_Changed
+   function On_Layout_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
         (Self : not null access GObject_Record'Class);
-      Slot : access GObject_Record'Class := null) is
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id
+   is
+      Id : Handler_Id;
    begin
       if Slot = null then
-         Object_Callback.Connect (Self, Signal_Layout_Changed, Call);
+         Id := Object_Callback.Connect
+            (Self,
+             Signal_Layout_Changed,
+             Object_Callback.To_Marshaller (Call));
       else
-         Object_Callback.Object_Connect
-           (Self, Signal_Layout_Changed, Call, Slot);
+         Id := Object_Callback.Object_Connect
+            (Self,
+             Signal_Layout_Changed,
+             Object_Callback.To_Marshaller (Call),
+             Slot);
       end if;
+      return Id;
    end On_Layout_Changed;
 
    -----------------------------
@@ -321,22 +334,25 @@ package body Gtkada.Canvas_View is
    -- On_Item_Contents_Changed --
    --------------------------------
 
-   procedure On_Item_Contents_Changed
+   function On_Item_Contents_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
         (Self : access GObject_Record'Class; Item : Abstract_Item);
       Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id
    is
+      Id : Handler_Id;
    begin
       if Slot = null then
-         Object_Callback.Connect
+         Id := Object_Callback.Connect
            (Self, Signal_Item_Contents_Changed,
             Abstract_Item_Marshallers.To_Marshaller (Call));
       else
-         Object_Callback.Object_Connect
+         Id := Object_Callback.Object_Connect
            (Self, Signal_Item_Contents_Changed,
             Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
       end if;
+      return Id;
    end On_Item_Contents_Changed;
 
    --------------------------------
@@ -386,7 +402,7 @@ package body Gtkada.Canvas_View is
 
    procedure Gtk_New
      (Self  : out Canvas_View;
-      Model : not null access Canvas_Model_Record'Class) is
+      Model : access Canvas_Model_Record'Class := null) is
    begin
       Self := new Canvas_View_Record;
       Initialize (Self, Model);
@@ -398,28 +414,58 @@ package body Gtkada.Canvas_View is
 
    procedure Initialize
      (Self  : not null access Canvas_View_Record'Class;
-      Model : not null access Canvas_Model_Record'Class)
+      Model : access Canvas_Model_Record'Class := null)
    is
    begin
       G_New (Self, View_Get_Type);
 
-      Self.Model := Canvas_Model (Model);
-      Ref (Model);
-
       Self.Layout := Self.Create_Pango_Layout;
-
-      if Self.Model.Layout = null then
-         Self.Model.Layout := Self.Layout;  --  needed for layout
-         Self.Model.Refresh_Layout;
-      end if;
 
       Self.Add_Events (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask);
 
       Self.On_Destroy (On_View_Destroy'Access);
-      Model.On_Layout_Changed (On_Layout_Changed_For_View'Access, Self);
-      Model.On_Item_Contents_Changed
-        (On_Item_Contents_Changed_For_View'Access, Self);
+
+      Self.Set_Model (Model);
    end Initialize;
+
+   ---------------
+   -- Set_Model --
+   ---------------
+
+   procedure Set_Model
+      (Self  : not null access Canvas_View_Record'Class;
+       Model : access Canvas_Model_Record'Class)
+   is
+   begin
+      if Self.Model = Canvas_Model (Model) then
+         return;
+      end if;
+
+      if Self.Model /= null then
+         Disconnect (Self.Model, Self.Id_Layout_Changed);
+         Disconnect (Self.Model, Self.Id_Item_Contents_Changed);
+         Unref (Self.Model);
+      end if;
+
+      Self.Model := Canvas_Model (Model);
+      Ref (Self.Model);
+
+      if Self.Model /= null then
+         Self.Id_Layout_Changed := Model.On_Layout_Changed
+            (On_Layout_Changed_For_View'Access, Self);
+         Self.Id_Item_Contents_Changed := Model.On_Item_Contents_Changed
+            (On_Item_Contents_Changed_For_View'Access, Self);
+      end if;
+
+      if Self.Model /= null and then Self.Model.Layout = null then
+         Self.Model.Layout := Self.Layout;  --  needed for layout
+         Ref (Self.Model.Layout);
+         Self.Model.Refresh_Layout;
+      else
+         Set_Adjustment_Values (Self);
+         Self.Queue_Draw;
+      end if;
+   end Set_Model;
 
    ---------------------
    -- View_Class_Init --
@@ -905,10 +951,12 @@ package body Gtkada.Canvas_View is
          Translate_And_Draw_Item (Item, Context);
       end Draw_Item;
    begin
-      Save (Context.Cr);
-      Self.Set_Transform (Context.Cr);
-      Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
-      Restore (Context.Cr);
+      if Self.Model /= null then
+         Save (Context.Cr);
+         Self.Set_Transform (Context.Cr);
+         Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
+         Restore (Context.Cr);
+      end if;
    end Draw_Internal;
 
    -------------
