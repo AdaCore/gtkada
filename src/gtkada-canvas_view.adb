@@ -1446,7 +1446,7 @@ package body Gtkada.Canvas_View is
       Child    : not null access Container_Item_Record'Class;
       Align    : Alignment_Style := Align_Start;
       Margin   : Margins := No_Margins;
-      Float    : Float_Style := Float_None;
+      Float    : Boolean := False;
       Overflow : Overflow_Style := Overflow_Prevent)
    is
    begin
@@ -1572,7 +1572,7 @@ package body Gtkada.Canvas_View is
 
                Self.Height := Model_Coordinate'Max (Self.Height, Tmp2);
 
-               if Child.Float = Float_None then
+               if not Child.Float then
                   --  The lowest point so far
                   Tmp := Self.Height;
                end if;
@@ -1598,7 +1598,7 @@ package body Gtkada.Canvas_View is
 
                Self.Width := Model_Coordinate'Max (Self.Width, Tmp2);
 
-               if Child.Float = Float_None then
+               if not Child.Float then
                   Tmp := Self.Width;
                end if;
          end case;
@@ -1651,41 +1651,30 @@ package body Gtkada.Canvas_View is
                   Child.Computed_Position.X := Child.Margin.Left;
                end if;
 
-               case Child.Float is
-                  when Float_None =>
-                     if Child.Forced_Width <= 0.0 then
-                        Child.Width := Self.Width
-                          - Child.Margin.Right
-                          - Child.Computed_Position.X;
-                     end if;
+               if not Child.Float and then Child.Forced_Width <= 0.0 then
+                  Child.Width := Self.Width
+                    - Child.Margin.Right
+                    - Child.Computed_Position.X;
+               end if;
 
-                     case Child.Align is
-                        when Align_Start =>
-                           null;
+               case Child.Align is
+                  when Align_Start =>
+                     null;
 
-                        when Align_Center =>
-                           Child.Computed_Position.X :=
-                             Child.Computed_Position.X +
-                               (Self.Width - Child.Computed_Position.X
-                                - Child.Width - Child.Margin.Right) / 2.0;
+                  when Align_Center =>
+                     Child.Computed_Position.X :=
+                       Child.Computed_Position.X +
+                         (Self.Width - Child.Computed_Position.X
+                          - Child.Width - Child.Margin.Right) / 2.0;
 
-                        when Align_End =>
-                           Child.Computed_Position.X :=
-                             Self.Width - Child.Width - Child.Margin.Right;
-                     end case;
-
-                  when Float_Start =>
-                     null; --  use the requested size and position
-
-                  when Float_End =>
-                     --  We ignore the X position imposed by the user, if any
+                  when Align_End =>
                      Child.Computed_Position.X :=
                        Self.Width - Child.Width - Child.Margin.Right;
                end case;
 
                Child.Size_Allocate;
 
-               if Child.Float = Float_None then
+               if not Child.Float then
                   Tmp := Tmp + Child.Height + Child.Margin.Bottom;
                end if;
 
@@ -1702,40 +1691,30 @@ package body Gtkada.Canvas_View is
                   Child.Computed_Position.Y := Child.Margin.Top;
                end if;
 
-               case Child.Float is
-                  when Float_None =>
-                     if Child.Forced_Height <= 0.0 then
-                        Child.Height := Self.Height
-                          - Child.Margin.Bottom
-                          - Child.Computed_Position.Y;
-                     end if;
+               if not Child.Float and then Child.Forced_Height <= 0.0 then
+                  Child.Height := Self.Height
+                    - Child.Margin.Bottom
+                    - Child.Computed_Position.Y;
+               end if;
 
-                     case Child.Align is
-                        when Align_Start =>
-                           null;
+               case Child.Align is
+                  when Align_Start =>
+                     null;
 
-                        when Align_Center =>
-                           Child.Computed_Position.Y :=
-                             Child.Computed_Position.Y +
-                               (Self.Height - Child.Computed_Position.Y
-                                - Child.Height - Child.Margin.Bottom) / 2.0;
+                  when Align_Center =>
+                     Child.Computed_Position.Y :=
+                       Child.Computed_Position.Y +
+                         (Self.Height - Child.Computed_Position.Y
+                          - Child.Height - Child.Margin.Bottom) / 2.0;
 
-                        when Align_End =>
-                           Child.Computed_Position.Y :=
-                             Self.Height - Child.Height - Child.Margin.Bottom;
-                     end case;
-
-                  when Float_Start =>
-                     null; --  use the requested size and position
-
-                  when Float_End =>
+                  when Align_End =>
                      Child.Computed_Position.Y :=
                        Self.Height - Child.Height - Child.Margin.Bottom;
                end case;
 
                Child.Size_Allocate;
 
-               if Child.Float = Float_None then
+               if not Child.Float then
                   Tmp := Tmp + Child.Width + Child.Margin.Right;
                end if;
          end case;

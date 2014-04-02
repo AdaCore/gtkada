@@ -674,13 +674,6 @@ package Gtkada.Canvas_View is
    end record;
    No_Margins : constant Margins := (0.0, 0.0, 0.0, 0.0);
 
-   type Float_Style is (Float_None, Float_Start, Float_End);
-   --  A floating child does not participate in the stacking: it will still be
-   --  displayed below or to the right of the previous child, but the next
-   --  item will then be displayed on top of the floating child.
-   --  Float_End can be used to force the child to be right-aligned (resp.
-   --  bottom-aligned) in its container.
-
    type Alignment_Style is (Align_Start, Align_Center, Align_End);
    --  How an item should be aligned within its parent.
    --  When the parent stacks its children vertically, alignment is taken into
@@ -712,7 +705,7 @@ package Gtkada.Canvas_View is
       Child    : not null access Container_Item_Record'Class;
       Align    : Alignment_Style := Align_Start;
       Margin   : Margins := No_Margins;
-      Float    : Float_Style := Float_None;
+      Float    : Boolean := False;
       Overflow : Overflow_Style := Overflow_Prevent);
    --  Add a new child to the container.
    --  If the child's position is set, it is then interpreted as relative to
@@ -720,6 +713,11 @@ package Gtkada.Canvas_View is
    --  automatically based on the container's policy (either below the previous
    --  child, or to its right).
    --  Margins are added to each size of the child.
+   --
+   --  A floating child does not participate in the stacking: it will still be
+   --  displayed below or to the right of the previous child, but the next
+   --  item will then be displayed at the same coordinate as the floating
+   --  child.
 
    procedure Size_Request
      (Self    : not null access Container_Item_Record;
@@ -1020,7 +1018,7 @@ private
 
       Layout   : Child_Layout_Strategy := Vertical_Stack;
       Align    : Alignment_Style := Align_Start;
-      Float    : Float_Style := Float_None;
+      Float    : Boolean := False;
       Overflow : Overflow_Style := Overflow_Prevent;
 
       Style    : Gtkada.Style.Drawing_Style;

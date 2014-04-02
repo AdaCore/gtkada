@@ -48,8 +48,7 @@ package body Create_Canvas_View_Composite is
         & "The second item shows a toplevel item with three children."
         & " The first two of these children are @bfloating@B, so that the"
         & " third is laid out at the same vertical position, and thus on top"
-        & " of them. In addition, the floating child are floated to the"
-        & " left and to the right, and have margins."
+        & " of them."
         & ASCII.LF
         & "The third item illustrates @balignment@B. The first three children"
         & " specify an explicit width, and therefore the alignment property"
@@ -108,11 +107,11 @@ package body Create_Canvas_View_Composite is
          Rect.Set_Position ((X + 90.0, Y));
 
          Rect2 := Gtk_New_Rect (Red, 20.0, 20.0);
-         Rect.Add_Child (Rect2, Float => Float_End,
+         Rect.Add_Child (Rect2, Align => Align_End, Float => True,
                          Margin => (others => 10.0));
 
          Rect2 := Gtk_New_Rect (Red, 20.0, 20.0);
-         Rect.Add_Child (Rect2, Float => Float_Start,
+         Rect.Add_Child (Rect2, Float => True,
                          Margin => (others => 10.0));
 
          Rect2 := Gtk_New_Rect (Blue, Width => 60.0, Height => 60.0);

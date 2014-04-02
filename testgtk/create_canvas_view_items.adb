@@ -130,7 +130,7 @@ package body Create_Canvas_View_Items is
 
          Text := Gtk_New_Text (Small_Font, "+");
          Text.Set_Position ((9.0, 20.0));
-         It.Add_Child (Text, Float => Float_Start);
+         It.Add_Child (Text, Float => True);
 
          Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
          Rect.Set_Position ((0.0, 57.0));
@@ -138,11 +138,11 @@ package body Create_Canvas_View_Items is
 
          Text := Gtk_New_Text (Small_Font, "-");
          Text.Set_Position ((9.0, 60.0));
-         It.Add_Child (Text, Float => Float_Start);
+         It.Add_Child (Text, Float => True);
 
          Text := Gtk_New_Text (Large_Font, N_Ary_Summation);
          Text.Set_Position ((15.0, 40.0));
-         It.Add_Child (Text, Float => Float_Start);
+         It.Add_Child (Text, Float => True);
       end Add_Sum_Block;
 
       procedure Add_UML_Block
