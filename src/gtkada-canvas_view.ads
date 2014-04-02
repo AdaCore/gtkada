@@ -662,7 +662,7 @@ package Gtkada.Canvas_View is
    --  of another, or one next to another.
 
    type Margins is record
-      Left, Right, Top, Bottom : Model_Coordinate;
+      Top, Right, Bottom, Left : Model_Coordinate;
    end record;
    No_Margins : constant Margins := (0.0, 0.0, 0.0, 0.0);
 
