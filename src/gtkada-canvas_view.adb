@@ -1984,6 +1984,9 @@ package body Gtkada.Canvas_View is
       Text : constant String := Compute_Text (Self);
       Y    : Glib.Gdouble := 0.0;
    begin
+      Resize_Fill_Pattern (Self);
+      Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
+
       if F.Valign /= 0.0
         and then Self.Height > Self.Requested_Height
       then

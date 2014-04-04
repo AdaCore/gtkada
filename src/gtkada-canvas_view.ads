@@ -845,8 +845,7 @@ package Gtkada.Canvas_View is
 
    type Text_Item_Record is new Container_Item_Record with private;
    type Text_Item is access all Text_Item_Record'Class;
-   --  A predefined object that displays itself as text. All style
-   --  properties for the stroke or fill are ignored.
+   --  A predefined object that displays itself as text.
 
    type Text_Arrow_Direction is
      (No_Text_Arrow,
