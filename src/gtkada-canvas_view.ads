@@ -719,6 +719,12 @@ package Gtkada.Canvas_View is
    --  item will then be displayed at the same coordinate as the floating
    --  child.
 
+   procedure Set_Min_Size
+     (Self       : not null access Container_Item_Record;
+      Min_Width  : Gdouble := 1.0;
+      Min_Height : Gdouble := 1.0);
+   --  Specify a minimal size for the item, along both axis.
+
    procedure Size_Request
      (Self    : not null access Container_Item_Record;
       Context : Draw_Context);
@@ -1015,6 +1021,8 @@ private
 
       Parent : Container_Item;
       --  The parent item
+
+      Min_Width, Min_Height : Gdouble := 1.0;
 
       Layout   : Child_Layout_Strategy := Vertical_Stack;
       Align    : Alignment_Style := Align_Start;

@@ -244,22 +244,24 @@ package Gtkada.Style is
    --  the circle.
 
    type Arrow_Style is record
-      Head   : Arrow_Head;
-      Length : Glib.Gdouble := 8.0;
-      Angle  : Glib.Gdouble := 0.4;
-      Stroke : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
-      Fill   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Head       : Arrow_Head;
+      Length     : Glib.Gdouble := 8.0;
+      Angle      : Glib.Gdouble := 0.4;
+      Stroke     : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+      Fill       : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      Line_Width : Glib.Gdouble := 1.0;
    end record;
    No_Arrow_Style : constant Arrow_Style :=
-     (None, 0.0, 0.0, Gdk.RGBA.Black_RGBA, Gdk.RGBA.Null_RGBA);
+     (None, 0.0, 0.0, Gdk.RGBA.Black_RGBA, Gdk.RGBA.Null_RGBA, 1.0);
 
    type Symbol_Name is (None, Cross, Strike, Double_Strike);
    type Symbol_Style is record
-      Name     : Symbol_Name;
-      Stroke   : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
-      Distance : Glib.Gdouble := 16.0;
+      Name       : Symbol_Name;
+      Stroke     : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Black_RGBA;
+      Distance   : Glib.Gdouble := 16.0;
+      Line_Width : Glib.Gdouble := 1.0;
    end record;
-   No_Symbol : constant Symbol_Style := (None, Gdk.RGBA.Black_RGBA, 16.0);
+   No_Symbol : constant Symbol_Style := (None, Gdk.RGBA.Black_RGBA, 16.0, 1.0);
    --  Distance is the distance from the end of the line to the symbol. It
    --  should in general be greater than the length of the arrow (see
    --  Arrow_Style above)

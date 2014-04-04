@@ -291,44 +291,40 @@ package body Create_Canvas_View_Links is
 
       Link_Example (0.0, 180.0,
                     Gtk_New (Arrow_To   => (Head   => Open,
-                                            Length => 8.0,
-                                            Angle  => 0.4,
-                                            Stroke => Black_RGBA,
-                                            Fill   => Black_RGBA),
+                                            Fill   => Black_RGBA,
+                                            others => <>),
                              Arrow_From => (Head   => Open,
                                             Length => 16.0,
                                             Angle  => 0.8,
                                             Stroke => (1.0, 0.0, 0.0, 1.0),
-                                            Fill   => (1.0, 0.0, 0.0, 1.0))));
+                                            Fill   => (1.0, 0.0, 0.0, 1.0),
+                                            others => <>)));
 
       Link_Example (0.0, 220.0,
                     Gtk_New (Arrow_To   => (Head   => Solid,
-                                            Length => 8.0,
-                                            Angle  => 0.4,
-                                            Stroke => Black_RGBA,
-                                            Fill   => Black_RGBA),
+                                            Fill   => Black_RGBA,
+                                            others => <>),
                              Arrow_From => (Head   => Solid,
                                             Length => 16.0,
                                             Angle  => 0.8,
                                             Stroke => (1.0, 0.0, 0.0, 1.0),
-                                            Fill   => (1.0, 0.0, 0.0, 1.0))));
+                                            Fill   => (1.0, 0.0, 0.0, 1.0),
+                                            others => <>)));
 
       Link_Example (0.0, 260.0,
                     Gtk_New (Arrow_To   => (Head   => Diamond,
-                                            Length => 8.0,
-                                            Angle  => 0.4,
-                                            Stroke => Black_RGBA,
-                                            Fill   => Black_RGBA),
+                                            Fill   => Black_RGBA,
+                                            others => <>),
                              Arrow_From => (Head   => Diamond,
                                             Length => 16.0,
                                             Angle  => 0.5,
                                             Stroke => (1.0, 0.0, 0.0, 1.0),
-                                            Fill   => (1.0, 0.0, 0.0, 1.0))));
+                                            Fill   => (1.0, 0.0, 0.0, 1.0),
+                                            others => <>)));
 
       Link_Example (0.0, 300.0,
                     Gtk_New (Arrow_To   => (Head   => Circle,
                                             Length => 1.0,
-                                            Stroke => Black_RGBA,
                                             Fill   => Black_RGBA,
                                             others => <>),
                              Arrow_From => (Head   => Circle,

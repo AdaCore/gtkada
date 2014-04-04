@@ -1241,23 +1241,25 @@ package body Gtkada.Style is
                Rel_Line_To (Cr, 8.0, -8.0);
 
                Set_Source_Color (Cr, S.Stroke);
-               Set_Line_Width (Cr, Self.Get_Line_Width);
+               Set_Line_Width (Cr, S.Line_Width);
                Stroke (Cr);
                Restore (Cr);
 
             when Strike =>
                Save (Cr);
+               Set_Line_Width (Cr, S.Line_Width);
                New_Path (Cr);
                Move_To (Cr, P.X - 6.0, P.Y + 6.0);
                Rel_Line_To (Cr, 12.0, -12.0);
 
                Set_Source_Color (Cr, S.Stroke);
-               Set_Line_Width (Cr, Self.Get_Line_Width);
+               Set_Line_Width (Cr, S.Line_Width);
                Stroke (Cr);
                Restore (Cr);
 
             when Double_Strike =>
                Save (Cr);
+               Set_Line_Width (Cr, S.Line_Width);
                New_Path (Cr);
                Move_To (Cr, P.X - 6.0, P.Y + 6.0);
                Rel_Line_To (Cr, 12.0, -12.0);
@@ -1265,7 +1267,7 @@ package body Gtkada.Style is
                Rel_Line_To (Cr, 12.0, -12.0);
 
                Set_Source_Color (Cr, S.Stroke);
-               Set_Line_Width (Cr, Self.Get_Line_Width);
+               Set_Line_Width (Cr, S.Line_Width);
                Stroke (Cr);
                Restore (Cr);
 
@@ -1387,13 +1389,15 @@ package body Gtkada.Style is
       Max_Height : Glib.Gdouble := Glib.Gdouble'First)
    is
    begin
-      Setup_Layout (Self.Data.Font, Layout, Max_Width, Max_Height);
-      Layout.Set_Ellipsize (Ellipsize_End);
-      Layout.Set_Text (Text);
+      if Self.Data /= null then
+         Setup_Layout (Self.Data.Font, Layout, Max_Width, Max_Height);
+         Layout.Set_Ellipsize (Ellipsize_End);
+         Layout.Set_Text (Text);
 
-      Move_To (Cr, Topleft.X, Topleft.Y);
-      Show_Layout (Cr, Pango_Layout (Layout));
-      New_Path (Cr);
+         Move_To (Cr, Topleft.X, Topleft.Y);
+         Show_Layout (Cr, Pango_Layout (Layout));
+         New_Path (Cr);
+      end if;
    end Draw_Text;
 
    ----------------
@@ -1408,6 +1412,12 @@ package body Gtkada.Style is
    is
       Angle, X1, Y1, X2, Y2, X4, Y4, TX, TY : Gdouble;
    begin
+      if Self.Head = None then
+         return;
+      end if;
+
+      Set_Line_Width (Cr, Self.Line_Width);
+
       Angle := Arctan (Y => To.Y - From.Y, X => To.X - From.X) + Pi;
       TX := To.X + (Get_Line_Width (Cr) - 0.5) * Cos (Angle);
       TY := To.Y + (Get_Line_Width (Cr) - 0.5) * Sin (Angle);

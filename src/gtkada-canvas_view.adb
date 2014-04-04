@@ -192,7 +192,7 @@ package body Gtkada.Canvas_View is
       while Parent /= null loop
          --  ??? Should take item rotation into account when we implement it.
 
-         Pos := Parent.Position;
+         Pos := Position (Parent);
          Result.X := Result.X + Pos.X;
          Result.Y := Result.Y + Pos.Y;
 
@@ -972,8 +972,18 @@ package body Gtkada.Canvas_View is
       return Canvas_Link
    is
       L : constant Canvas_Link := new Canvas_Link_Record;
+      F : Anchor_Attachment := Anchor_From;
+      T : Anchor_Attachment := Anchor_To;
    begin
-      Initialize (L, From, To, Style, Routing, Anchor_From, Anchor_To);
+      if From.all in Canvas_Link_Record'Class then
+         F.Toplevel_Side := No_Clipping;
+      end if;
+
+      if To.all in Canvas_Link_Record'Class then
+         T.Toplevel_Side := No_Clipping;
+      end if;
+
+      Initialize (L, From, To, Style, Routing, F, T);
       return L;
    end Gtk_New;
 
@@ -1332,6 +1342,20 @@ package body Gtkada.Canvas_View is
 
    procedure Refresh_Layout (Self : not null access Canvas_Link_Record) is
    begin
+      --  Target links must already have their own layout
+
+      if Self.From.all in Canvas_Link_Record'Class
+         and then Canvas_Link (Self.From).Points = null
+      then
+         Canvas_Link (Self.From).Refresh_Layout;
+      end if;
+
+      if Self.To.all in Canvas_Link_Record'Class
+         and then Canvas_Link (Self.To).Points = null
+      then
+         Canvas_Link (Self.To).Refresh_Layout;
+      end if;
+
       case Self.Routing is
          when Orthogonal =>
             Compute_Layout_For_Orthogonal_Link (Self);
@@ -1351,14 +1375,28 @@ package body Gtkada.Canvas_View is
    procedure Refresh_Layout (Self : not null access Canvas_Model_Record) is
       Context : Draw_Context;
 
+      procedure Reset_Link_Layout
+        (Item : not null access Abstract_Item_Record'Class);
+      procedure Reset_Link_Layout
+        (Item : not null access Abstract_Item_Record'Class) is
+      begin
+         if Item.all in Canvas_Link_Record'Class then
+            Unchecked_Free (Canvas_Link_Record'Class (Item.all).Points);
+         end if;
+      end Reset_Link_Layout;
+
       procedure Do_Link_Layout
         (Item : not null access Abstract_Item_Record'Class);
       procedure Do_Link_Layout
         (Item : not null access Abstract_Item_Record'Class)
       is
+         Link : Canvas_Link;
       begin
          if Item.all in Canvas_Link_Record'Class then
-            Canvas_Link_Record'Class (Item.all).Refresh_Layout;
+            Link := Canvas_Link (Item);
+            if Link.Points = null then
+               Link.Refresh_Layout;
+            end if;
          end if;
       end Do_Link_Layout;
 
@@ -1376,6 +1414,14 @@ package body Gtkada.Canvas_View is
    begin
       Context.Layout := Self.Layout;
 
+      --  To properly do the layout of links, we must first compute the layout
+      --  of any item they are linked to, including other links. So we do the
+      --  following:
+      --     reset all previous layout computation
+      --     when we layout a link, we first layout its end
+
+      Canvas_Model_Record'Class (Self.all).For_Each_Item
+        (Reset_Link_Layout'Access);
       Canvas_Model_Record'Class (Self.all).For_Each_Item
         (Do_Container_Layout'Access);
       Canvas_Model_Record'Class (Self.all).For_Each_Item
@@ -1527,6 +1573,20 @@ package body Gtkada.Canvas_View is
    end Position;
 
    ------------------
+   -- Set_Min_Size --
+   ------------------
+
+   procedure Set_Min_Size
+     (Self       : not null access Container_Item_Record;
+      Min_Width  : Gdouble := 1.0;
+      Min_Height : Gdouble := 1.0)
+   is
+   begin
+      Self.Min_Width := Min_Width;
+      Self.Min_Height := Min_Height;
+   end Set_Min_Size;
+
+   ------------------
    -- Size_Request --
    ------------------
 
@@ -1618,8 +1678,8 @@ package body Gtkada.Canvas_View is
       end if;
 
       --  Ensure a minimal size so that the object is visible.
-      Self.Width := Model_Coordinate'Max (Self.Width, 1.0);
-      Self.Height := Model_Coordinate'Max (Self.Height, 1.0);
+      Self.Width := Model_Coordinate'Max (Self.Width, Self.Min_Width);
+      Self.Height := Model_Coordinate'Max (Self.Height, Self.Min_Height);
    end Size_Request;
 
    -------------------
@@ -1675,7 +1735,8 @@ package body Gtkada.Canvas_View is
                Child.Size_Allocate;
 
                if not Child.Float then
-                  Tmp := Tmp + Child.Height + Child.Margin.Bottom;
+                  Tmp := Child.Computed_Position.Y
+                    + Child.Height + Child.Margin.Bottom;
                end if;
 
             when Horizontal_Stack =>
@@ -1715,7 +1776,8 @@ package body Gtkada.Canvas_View is
                Child.Size_Allocate;
 
                if not Child.Float then
-                  Tmp := Tmp + Child.Width + Child.Margin.Right;
+                  Tmp := Child.Computed_Position.X
+                    + Child.Width + Child.Margin.Right;
                end if;
          end case;
 
