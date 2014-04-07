@@ -323,8 +323,16 @@ package Gtkada.Style is
        Topleft       : Point;
        Width, Height : Glib.Gdouble;
        Radius        : Glib.Gdouble := 0.0);
+   function Path_Rect
+      (Self          : Drawing_Style;
+       Cr            : Cairo.Cairo_Context;
+       Topleft       : Point;
+       Width, Height : Glib.Gdouble;
+       Radius        : Glib.Gdouble := 0.0) return Boolean;
    --  Draw a rectangle with the given style. If Radius is not null, this is
-   --  a rounded rectangle.
+   --  a rounded rectangle. Draw_Rect will automatically call Finish path
+   --  to display te path, but Path_Rect will only prepare it (it returns False
+   --  if no path was prepared)
 
    procedure Draw_Polyline
       (Self        : Drawing_Style;
@@ -333,6 +341,12 @@ package Gtkada.Style is
        Close       : Boolean := False;
        Show_Arrows : Boolean := True;
        Relative    : Boolean := False);
+   function Path_Polyline
+      (Self        : Drawing_Style;
+       Cr          : Cairo.Cairo_Context;
+       Points      : Point_Array;
+       Close       : Boolean := False;
+       Relative    : Boolean := False) return Boolean;
    --  Draw a line joining all the points. If Close is true, the last point is
    --  also linked to the first.
    --  If Self defines arrows or symbols on either ends, they are also
@@ -379,8 +393,9 @@ package Gtkada.Style is
    --  This is similar to Polyline, but does not draw the line itself.
 
    procedure Finish_Path
-      (Self    : Drawing_Style;
-       Cr      : Cairo.Cairo_Context);
+      (Self       : Drawing_Style;
+       Cr         : Cairo.Cairo_Context;
+       Clear_Path : Boolean := True);
    --  This is for use when you are creating your own paths via standard cairo
    --  calls. This will call Stroke and Fill with the appropriate parameters
    --  found in Self.

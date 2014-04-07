@@ -33,6 +33,7 @@ with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
 with Gdk.Event;                          use Gdk.Event;
+with Gdk.RGBA;                           use Gdk.RGBA;
 with Gdk.Window;                         use Gdk.Window;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
@@ -1864,13 +1865,43 @@ package body Gtkada.Canvas_View is
 
    overriding procedure Draw
      (Self    : not null access Rect_Item_Record;
-      Context : Draw_Context) is
+      Context : Draw_Context)
+   is
+      Stroke : constant Gdk_RGBA := Self.Style.Get_Stroke;
+      Fill   : constant Cairo_Pattern := Self.Style.Get_Fill;
    begin
       Resize_Fill_Pattern (Self);
-      Self.Style.Draw_Rect
+
+      --  We need to clip the contents of the rectangle. Also, we
+      --  stroke only after drawing the children so that they do
+      --  no hide the stroke.
+
+      if Self.Style.Path_Rect
         (Context.Cr, (0.0, 0.0), Self.Width, Self.Height,
-         Radius => Self.Radius);
+         Radius => Self.Radius)
+      then
+         Clip_Preserve (Context.Cr);
+
+         if not Self.Children.Is_Empty then
+            Self.Style.Set_Stroke (Null_RGBA);
+         end if;
+
+         Self.Style.Finish_Path (Context.Cr);
+         Self.Style.Set_Stroke (Stroke);
+      end if;
+
       Self.Draw_Children (Context);
+
+      if not Self.Children.Is_Empty
+        and then Stroke /= Null_RGBA
+        and then Self.Style.Path_Rect
+        (Context.Cr, (0.0, 0.0), Self.Width, Self.Height,
+         Radius => Self.Radius)
+      then
+         Self.Style.Set_Fill (Null_Pattern);
+         Self.Style.Finish_Path (Context.Cr);
+         Self.Style.Set_Fill (Fill);
+      end if;
    end Draw;
 
    ----------------------

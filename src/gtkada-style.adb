@@ -1026,6 +1026,44 @@ package body Gtkada.Style is
    end Finalize;
 
    ---------------
+   -- Path_Rect --
+   ---------------
+
+   function Path_Rect
+      (Self          : Drawing_Style;
+       Cr            : Cairo.Cairo_Context;
+       Topleft       : Point;
+       Width, Height : Glib.Gdouble;
+       Radius        : Glib.Gdouble := 0.0) return Boolean
+   is
+   begin
+      if Self.Data = null
+        or else (Width = 0.0 and then Height = 0.0)
+      then
+         return False;
+
+      elsif Radius <= 0.001 or else Self.Data.Sloppy then
+         if Self.Data.Sloppy then
+            return Path_Polyline
+               (Self,
+                Cr,
+                ((Topleft.X, Topleft.Y),
+                 (Topleft.X + Width, Topleft.Y),
+                 (Topleft.X + Width, Topleft.Y + Height),
+                 (Topleft.X, Topleft.Y + Height)),
+                Close       => True);
+         else
+            New_Path (Cr);
+            Cairo.Rectangle (Cr, Topleft.X, Topleft.Y, Width, Height);
+         end if;
+
+      else
+         Rounded_Rectangle (Cr, Topleft.X, Topleft.Y, Width, Height, Radius);
+      end if;
+      return True;
+   end Path_Rect;
+
+   ---------------
    -- Draw_Rect --
    ---------------
 
@@ -1037,30 +1075,7 @@ package body Gtkada.Style is
        Radius        : Gdouble := 0.0)
    is
    begin
-      if Self.Data = null
-        or else (Width = 0.0 and then Height = 0.0)
-      then
-         null;
-
-      elsif Radius <= 0.001 or else Self.Data.Sloppy then
-         if Self.Data.Sloppy then
-            Draw_Polyline
-               (Self,
-                Cr,
-                ((Topleft.X, Topleft.Y),
-                 (Topleft.X + Width, Topleft.Y),
-                 (Topleft.X + Width, Topleft.Y + Height),
-                 (Topleft.X, Topleft.Y + Height)),
-                Close       => True,
-                Show_Arrows => False);
-         else
-            New_Path (Cr);
-            Cairo.Rectangle (Cr, Topleft.X, Topleft.Y, Width, Height);
-            Finish_Path (Self, Cr);
-         end if;
-
-      else
-         Rounded_Rectangle (Cr, Topleft.X, Topleft.Y, Width, Height, Radius);
+      if Path_Rect (Self, Cr, Topleft, Width, Height, Radius) then
          Finish_Path (Self, Cr);
       end if;
    end Draw_Rect;
@@ -1086,16 +1101,15 @@ package body Gtkada.Style is
    end Draw_Ellipse;
 
    -------------------
-   -- Draw_Polyline --
+   -- Path_Polyline --
    -------------------
 
-   procedure Draw_Polyline
-     (Self        : Drawing_Style;
-      Cr          : Cairo.Cairo_Context;
-      Points      : Point_Array;
-      Close       : Boolean := False;
-      Show_Arrows : Boolean := True;
-      Relative    : Boolean := False)
+   function Path_Polyline
+      (Self        : Drawing_Style;
+       Cr          : Cairo.Cairo_Context;
+       Points      : Point_Array;
+       Close       : Boolean := False;
+       Relative    : Boolean := False) return Boolean
    is
       Sloppy_Deviation : constant Gdouble := 0.3;
       --  This variable controls the amount of deviation from a straight line
@@ -1129,7 +1143,7 @@ package body Gtkada.Style is
 
    begin
       if Points'Length < 2 then
-         return;
+         return False;
       end if;
 
       New_Path (Cr);
@@ -1164,10 +1178,28 @@ package body Gtkada.Style is
          end if;
       end if;
 
-      Finish_Path (Self, Cr);
+      return True;
+   end Path_Polyline;
 
-      if Self.Data /= null and then Show_Arrows then
-         Self.Draw_Arrows_And_Symbols (Cr, Points);
+   -------------------
+   -- Draw_Polyline --
+   -------------------
+
+   procedure Draw_Polyline
+     (Self        : Drawing_Style;
+      Cr          : Cairo.Cairo_Context;
+      Points      : Point_Array;
+      Close       : Boolean := False;
+      Show_Arrows : Boolean := True;
+      Relative    : Boolean := False)
+   is
+   begin
+      if Path_Polyline (Self, Cr, Points, Close, Relative) then
+         Finish_Path (Self, Cr);
+
+         if Self.Data /= null and then Show_Arrows then
+            Self.Draw_Arrows_And_Symbols (Cr, Points);
+         end if;
       end if;
    end Draw_Polyline;
 
@@ -1513,7 +1545,8 @@ package body Gtkada.Style is
 
    procedure Finish_Path
       (Self    : Drawing_Style;
-       Cr      : Cairo.Cairo_Context)
+       Cr      : Cairo.Cairo_Context;
+       Clear_Path : Boolean := True)
    is
    begin
       Save (Cr);
@@ -1539,15 +1572,27 @@ package body Gtkada.Style is
 
       if Self.Data = null then
          Set_Source_Color (Cr, Default_Style.Stroke);
-         Stroke (Cr);
+
+         if Clear_Path then
+            Stroke (Cr);
+         else
+            Stroke_Preserve (Cr);
+         end if;
+
       elsif Self.Data.Stroke /= Gdk.RGBA.Null_RGBA then
          if Self.Data.Dashes /= null then
             Set_Dash (Cr, Self.Data.Dashes.all, 0.0);
          end if;
 
          Set_Source_Color (Cr, Self.Data.Stroke);
-         Stroke (Cr);
-      else
+
+         if Clear_Path then
+            Stroke (Cr);
+         else
+            Stroke_Preserve (Cr);
+         end if;
+
+      elsif Clear_Path then
          New_Path (Cr);  --  clear existing path
       end if;
 
