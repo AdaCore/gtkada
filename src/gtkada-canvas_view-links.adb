@@ -24,6 +24,7 @@
 
 with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
 with Ada.Unchecked_Deallocation;
+with Cairo;                         use Cairo;
 with Gtkada.Canvas_View.Astar;      use Gtkada.Canvas_View.Astar;
 with Gtkada.Canvas_View.Objects;    use Gtkada.Canvas_View.Objects;
 with Gtkada.Style;                  use Gtkada.Style;
@@ -66,8 +67,9 @@ package body Gtkada.Canvas_View.Links is
    --  middle of the box.
 
    procedure Compute_Labels
-     (Self   : not null access Canvas_Link_Record'Class;
-      Dim    : Anchors);
+     (Self    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context;
+      Dim     : Anchors);
    --  Compute the position for the end labels and middle label for the link
 
    type Layout_Matrix is record
@@ -273,12 +275,146 @@ package body Gtkada.Canvas_View.Links is
    --------------------
 
    procedure Compute_Labels
-     (Self   : not null access Canvas_Link_Record'Class;
-      Dim    : Anchors)
+     (Self    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context;
+      Dim     : Anchors)
    is
-      pragma Unreferenced (Self, Dim);
+      P : constant Item_Point_Array_Access := Self.Points;
+
+      procedure Place_End_Label
+        (Label    : Container_Item;
+         P1, P2   : Item_Point;
+         Toplevel : Model_Rectangle);
+      procedure Place_End_Label
+        (Label    : Container_Item;
+         P1, P2   : Item_Point;
+         Toplevel : Model_Rectangle)
+      is
+         Margin : constant Gdouble := 3.0;   --  extra margin around the box
+         Deltax : constant Gdouble := P2.X - P1.X;
+         Deltay : constant Gdouble := P2.Y - P1.Y;
+         D      : Gdouble := 1.0;
+         X1, X2, Y1, Y2, Tmp : Gdouble;
+      begin
+         Label.Size_Request (Context);
+
+         X1 := (Toplevel.X + Margin + Toplevel.Width - P1.X) / Deltax;
+         X2 := (Toplevel.X - Margin - P1.X - Label.Width) / Deltax;
+         Y1 := (Toplevel.Y + Margin + Toplevel.Height - P1.Y) / Deltay;
+         Y2 := (Toplevel.Y - Margin - P1.Y - Label.Height) / Deltay;
+
+         if Deltax < 0.0 then
+            Tmp := X1;
+            X1 := X2;
+            X2 := Tmp;
+         end if;
+
+         if Deltay < 0.0 then
+            Tmp := Y1;
+            Y1 := Y2;
+            Y2 := Y1;
+         end if;
+
+         if 0.0 <= X1 and then X1 <= 1.0 then
+            D := X1;
+         end if;
+
+         if 0.0 <= X2 and then X2 <= 1.0 then
+            D := Gdouble'Min (X2, D);
+         end if;
+
+         if 0.0 <= Y1 and then Y1 <= 1.0 then
+            D := Gdouble'Min (Y1, D);
+         end if;
+
+         if 0.0 <= Y2 and then Y2 <= 1.0 then
+            D := Gdouble'Min (Y2, D);
+         end if;
+
+         Label.Computed_Position :=
+           (X => P1.X + D * Deltax, Y => P1.Y + D * Deltay);
+
+         --  A small additional offset: the text is now outside of the box, we
+         --  also want it outside of the link.
+
+         if abs (Deltax) < abs (Deltay) then
+            --  link is mostly vertical, so offset is horizontal
+            Label.Computed_Position.X := Label.Computed_Position.X + 4.0;
+         else
+            Label.Computed_Position.Y := Label.Computed_Position.Y + 4.0;
+         end if;
+
+         Label.Size_Allocate;
+      end Place_End_Label;
+
+      Deltax, Deltay : Gdouble;
+      Idx : Integer;
    begin
-      null;
+      --  Sets text.x and text.y to a position appropriate to show the label
+      --  so that it doesn't intersect the from and to boxes. We are moving
+      --  the text box along the line deltax, deltay. Basically, we are looking
+      --  for d such that the two bounding boxes for the text and "from" do no
+      --  intersect.
+      --
+      --     0 <= d <= 1    (position along the line)
+      --     x + d * deltax > from.x + from.w
+      --     || from.x > x + d * deltax + label.w
+      --     || y + d * deltay > from.y + from.h
+      --     || from.y > y + d * deltay + label.h
+      --
+      --  Which provides:
+      --     0 <= d <= 1
+      --     && (d * deltax < from.x - x - w
+      --         || d * deltax > from.x + from.w - x
+      --         || d * deltay < from.y - y -h
+      --         || d * deltay > from.y + from.h - y)
+      --
+      --  We take the lowest d that satisfies any of the criteria, to keep the
+      --  text closer to the box.
+
+      if Self.Label_From /= null then
+         Place_End_Label
+           (Self.Label_From, P (P'First), P (P'First + 1), Dim.From.Toplevel);
+      end if;
+
+      if Self.Label_To /= null then
+         Place_End_Label
+           (Self.Label_To, P (P'Last), P (P'Last - 1), Dim.To.Toplevel);
+      end if;
+
+      if Self.Label /= null then
+         if Self.Label.all in Text_Item_Record'Class
+           and then Text_Item (Self.Label).Directed /= No_Text_Arrow
+         then
+            Deltax := P (P'First).X - P (P'Last).X;
+            Deltay := P (P'First).Y - P (P'Last).Y;
+
+            if abs (Deltax) > abs (Deltay) then
+               if Deltax > 0.0 then
+                  Text_Item (Self.Label).Directed := Left_Text_Arrow;
+               else
+                  Text_Item (Self.Label).Directed := Right_Text_Arrow;
+               end if;
+
+            else
+               if Deltax > 0.0 then
+                  Text_Item (Self.Label).Directed := Up_Text_Arrow;
+               else
+                  Text_Item (Self.Label).Directed := Down_Text_Arrow;
+               end if;
+            end if;
+         end if;
+
+         Self.Label.Size_Request (Context);
+
+         --  Place the label in the middle of the middle segment.
+
+         Idx := P'First + P'Length / 2 - 1;
+         Self.Label.Computed_Position :=
+           (X => (P (Idx).X + P (Idx + 1).X) / 2.0 - Self.Label.Width / 2.0,
+            Y => (P (Idx).Y + P (Idx + 1).Y) / 2.0 - Self.Label.Height / 2.0);
+         Self.Label.Size_Allocate;
+      end if;
    end Compute_Labels;
 
    ----------
@@ -311,7 +447,8 @@ package body Gtkada.Canvas_View.Links is
    ----------------------------------------
 
    procedure Compute_Layout_For_Orthogonal_Link
-     (Link   : not null access Canvas_Link_Record'Class)
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context)
    is
       B : constant Gdouble := 6.0;
       --  Border around each box in which the links should not be displayed.
@@ -519,7 +656,7 @@ package body Gtkada.Canvas_View.Links is
       end;
 
       Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
-      Compute_Labels (Link, Dim);
+      Compute_Labels (Link, Context, Dim);
    end Compute_Layout_For_Orthogonal_Link;
 
    --------------------------------------
@@ -527,7 +664,8 @@ package body Gtkada.Canvas_View.Links is
    --------------------------------------
 
    procedure Compute_Layout_For_Straight_Link
-     (Link : not null access Canvas_Link_Record'Class)
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context)
    is
       P   : constant Item_Point_Array_Access := Link.Points;
       Dim : constant Anchors := Compute_Anchors (Link);
@@ -611,7 +749,7 @@ package body Gtkada.Canvas_View.Links is
       end if;
 
       Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
-      Compute_Labels (Link, Dim);
+      Compute_Labels (Link, Context, Dim);
    end Compute_Layout_For_Straight_Link;
 
    ---------------------------------
@@ -619,8 +757,9 @@ package body Gtkada.Canvas_View.Links is
    ---------------------------------
 
    procedure Compute_Layout_For_Arc_Link
-     (Link   : not null access Canvas_Link_Record'Class;
-      Offset : Gint := 1)
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context;
+      Offset  : Gint := 1)
    is
       Dim : constant Anchors := Compute_Anchors (Link);
 
@@ -702,7 +841,7 @@ package body Gtkada.Canvas_View.Links is
       end if;
 
       Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
-      Compute_Labels (Link, Dim);
+      Compute_Labels (Link, Context, Dim);
    end Compute_Layout_For_Arc_Link;
 
    -----------------------------------
@@ -710,12 +849,13 @@ package body Gtkada.Canvas_View.Links is
    -----------------------------------
 
    procedure Compute_Layout_For_Curve_Link
-     (Link   : not null access Canvas_Link_Record'Class)
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context)
    is
       P : Item_Point_Array_Access;
       L : Integer;
    begin
-      Compute_Layout_For_Orthogonal_Link (Link);
+      Compute_Layout_For_Orthogonal_Link (Link, Context);
       P := Link.Points;
 
       if P'Length <= 2 then
@@ -763,8 +903,8 @@ package body Gtkada.Canvas_View.Links is
    ---------------
 
    procedure Draw_Link
-     (Link : not null access Canvas_Link_Record'Class;
-      Cr   : Cairo.Cairo_Context)
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context)
    is
       P    : constant Item_Point_Array_Access := Link.Points;
       Fill : constant Cairo_Pattern := Link.Style.Get_Fill;
@@ -778,23 +918,35 @@ package body Gtkada.Canvas_View.Links is
       case Link.Routing is
          when Straight | Orthogonal =>
             Link.Style.Draw_Polyline
-              (Cr, P.all, Relative => Link.Relative_Waypoints);
+              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
 
          when Curve =>
             if P'Length = 2 then
                Link.Style.Draw_Polyline
-                 (Cr, P.all, Relative => Link.Relative_Waypoints);
+                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
             else
                Link.Style.Draw_Polycurve
-                 (Cr, P.all, Relative => Link.Relative_Waypoints);
+                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
             end if;
 
          when Arc =>
             Link.Style.Draw_Polycurve
-              (Cr, P.all, Relative => Link.Relative_Waypoints);
+              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
       end case;
 
       Link.Style.Set_Fill (Fill);
+
+      if Link.Label /= null then
+         Link.Label.Translate_And_Draw_Item (Context);
+      end if;
+
+      if Link.Label_From /= null then
+         Link.Label_From.Translate_And_Draw_Item (Context);
+      end if;
+
+      if Link.Label_To /= null then
+         Link.Label_To.Translate_And_Draw_Item (Context);
+      end if;
    end Draw_Link;
 
    ------------------------

@@ -131,11 +131,6 @@ package body Gtkada.Canvas_View is
      (Self : not null access Canvas_View_Record'Class);
    --  Update the values for both adjustments
 
-   procedure Translate_And_Draw_Item
-     (Self    : not null access Abstract_Item_Record'Class;
-      Context : Draw_Context);
-   --  Translate the transformation matrix and draw the item
-
    function Compute_Text
      (Self : not null access Text_Item_Record'Class)
       return String;
@@ -149,6 +144,23 @@ package body Gtkada.Canvas_View is
      (Self : not null access Container_Item_Record'Class);
    --  Resize the fill pattern so that it extends to the whole item, instead of
    --  just the 0.0 .. 1.0 pattern space.
+
+   procedure Free (Self : in out Abstract_Item);
+   --  Free the memory used by Self
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Self : in out Abstract_Item) is
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+        (Abstract_Item_Record'Class, Abstract_Item);
+   begin
+      if Self /= null then
+         Destroy (Self);
+         Unchecked_Free (Self);
+      end if;
+   end Free;
 
    -----------------------------
    -- GValue_To_Abstract_Item --
@@ -968,8 +980,11 @@ package body Gtkada.Canvas_View is
      (From, To    : not null access Abstract_Item_Record'Class;
       Style       : Gtkada.Style.Drawing_Style;
       Routing     : Route_Style := Straight;
+      Label       : access Container_Item_Record'Class := null;
       Anchor_From : Anchor_Attachment := Middle_Attachment;
-      Anchor_To   : Anchor_Attachment := Middle_Attachment)
+      Label_From  : access Container_Item_Record'Class := null;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment;
+      Label_To    : access Container_Item_Record'Class := null)
       return Canvas_Link
    is
       L : constant Canvas_Link := new Canvas_Link_Record;
@@ -984,7 +999,8 @@ package body Gtkada.Canvas_View is
          T.Toplevel_Side := No_Clipping;
       end if;
 
-      Initialize (L, From, To, Style, Routing, F, T);
+      Initialize
+        (L, From, To, Style, Routing, Label, F, Label_From, T, Label_To);
       return L;
    end Gtk_New;
 
@@ -997,8 +1013,11 @@ package body Gtkada.Canvas_View is
       From, To    : not null access Abstract_Item_Record'Class;
       Style       : Gtkada.Style.Drawing_Style;
       Routing     : Route_Style := Straight;
+      Label       : access Container_Item_Record'Class := null;
       Anchor_From : Anchor_Attachment := Middle_Attachment;
-      Anchor_To   : Anchor_Attachment := Middle_Attachment)
+      Label_From  : access Container_Item_Record'Class := null;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment;
+      Label_To    : access Container_Item_Record'Class := null)
    is
    begin
       Link.From        := Abstract_Item (From);
@@ -1007,6 +1026,9 @@ package body Gtkada.Canvas_View is
       Link.Routing     := Routing;
       Link.Anchor_From := Anchor_From;
       Link.Anchor_To   := Anchor_To;
+      Link.Label       := Container_Item (Label);
+      Link.Label_From  := Container_Item (Label_From);
+      Link.Label_To    := Container_Item (Label_To);
    end Initialize;
 
    --------------
@@ -1042,7 +1064,7 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Canvas_Link_Record;
       Context : Draw_Context) is
    begin
-      Gtkada.Canvas_View.Links.Draw_Link (Self, Context.Cr);
+      Gtkada.Canvas_View.Links.Draw_Link (Self, Context);
    end Draw;
 
    --------------
@@ -1083,10 +1105,6 @@ package body Gtkada.Canvas_View is
       pragma Unreferenced (Anchor);
       Index : Integer;
    begin
-      if Self.Points = null then
-         Self.Refresh_Layout;
-      end if;
-
       --  We connect to the middle of the middle segment.
       --  ??? We could instead look for the closest segment or some other
       --  algorithm.
@@ -1108,6 +1126,9 @@ package body Gtkada.Canvas_View is
       Destroy (Abstract_Item_Record (Self.all)'Access);
       Unchecked_Free (Self.Points);
       Unchecked_Free (Self.Waypoints);
+      Free (Abstract_Item (Self.Label));
+      Free (Abstract_Item (Self.Label_From));
+      Free (Abstract_Item (Self.Label_To));
    end Destroy;
 
    -------------------
@@ -1341,31 +1362,33 @@ package body Gtkada.Canvas_View is
    -- Refresh_Layout --
    --------------------
 
-   procedure Refresh_Layout (Self : not null access Canvas_Link_Record) is
+   procedure Refresh_Layout
+     (Self    : not null access Canvas_Link_Record;
+      Context : Draw_Context) is
    begin
       --  Target links must already have their own layout
 
       if Self.From.all in Canvas_Link_Record'Class
          and then Canvas_Link (Self.From).Points = null
       then
-         Canvas_Link (Self.From).Refresh_Layout;
+         Canvas_Link (Self.From).Refresh_Layout (Context);
       end if;
 
       if Self.To.all in Canvas_Link_Record'Class
          and then Canvas_Link (Self.To).Points = null
       then
-         Canvas_Link (Self.To).Refresh_Layout;
+         Canvas_Link (Self.To).Refresh_Layout (Context);
       end if;
 
       case Self.Routing is
          when Orthogonal =>
-            Compute_Layout_For_Orthogonal_Link (Self);
+            Compute_Layout_For_Orthogonal_Link (Self, Context);
          when Straight =>
-            Compute_Layout_For_Straight_Link (Self);
+            Compute_Layout_For_Straight_Link (Self, Context);
          when Arc =>
-            Compute_Layout_For_Arc_Link (Self);
+            Compute_Layout_For_Arc_Link (Self, Context);
          when Curve =>
-            Compute_Layout_For_Curve_Link (Self);
+            Compute_Layout_For_Curve_Link (Self, Context);
       end case;
    end Refresh_Layout;
 
@@ -1396,7 +1419,7 @@ package body Gtkada.Canvas_View is
          if Item.all in Canvas_Link_Record'Class then
             Link := Canvas_Link (Item);
             if Link.Points = null then
-               Link.Refresh_Layout;
+               Link.Refresh_Layout (Context);
             end if;
          end if;
       end Do_Link_Layout;

@@ -315,8 +315,14 @@ package Gtkada.Canvas_View is
    --  A transformation matrix has already been applied to Cr, so that all
    --  drawing should be done in item-coordinates for Self, so that (0,0) is
    --  the top-left corner of Self's bounding box.
-   --  Cr has already been set up so that any drawing outside of Self's
-   --  bounding box is clipped.
+   --  Do not call this procedure directly. Instead, call
+   --  Translate_And_Draw_Item below.
+
+   procedure Translate_And_Draw_Item
+     (Self    : not null access Abstract_Item_Record'Class;
+      Context : Draw_Context);
+   --  Translate the transformation matrix and draw the item.
+   --  This procedure should be used instead of calling Draw directly.
 
    function Contains
      (Self : not null access Abstract_Item_Record;
@@ -926,21 +932,39 @@ package Gtkada.Canvas_View is
      (From, To    : not null access Abstract_Item_Record'Class;
       Style       : Gtkada.Style.Drawing_Style;
       Routing     : Route_Style := Straight;
+      Label       : access Container_Item_Record'Class := null;
       Anchor_From : Anchor_Attachment := Middle_Attachment;
-      Anchor_To   : Anchor_Attachment := Middle_Attachment)
+      Label_From  : access Container_Item_Record'Class := null;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment;
+      Label_To    : access Container_Item_Record'Class := null)
      return Canvas_Link;
    procedure Initialize
      (Link        : not null access Canvas_Link_Record'Class;
       From, To    : not null access Abstract_Item_Record'Class;
       Style       : Gtkada.Style.Drawing_Style;
       Routing     : Route_Style := Straight;
+      Label       : access Container_Item_Record'Class := null;
       Anchor_From : Anchor_Attachment := Middle_Attachment;
-      Anchor_To   : Anchor_Attachment := Middle_Attachment);
+      Label_From  : access Container_Item_Record'Class := null;
+      Anchor_To   : Anchor_Attachment := Middle_Attachment;
+      Label_To    : access Container_Item_Record'Class := null);
    --  Create a new link between the two items.
    --  This link is not automatically added to the model.
    --  Both items must belong to the same model.
+   --
+   --  The label is displayed approximately in the middle of the link.
+   --  The Label_From is displayed next to the origin of the link, whereas
+   --  Label_To is displayed next to the target of the link.
+   --  These labels will generally be some Text_Item, but it might make sense
+   --  to use more complex labels, for instance to draw something with a
+   --  polyline item, or using an image.
+   --
+   --  If the Label is directed, the direction of the arrow will be changed
+   --  automatically to match the layout of the link.
 
-   procedure Refresh_Layout (Self : not null access Canvas_Link_Record);
+   procedure Refresh_Layout
+     (Self    : not null access Canvas_Link_Record;
+      Context : Draw_Context);
    --  Recompute the layout/routing for the link.
    --  This procedure should be called whenever any of the end objects changes
    --  side or position. The view will do this automatically the first time,
@@ -1075,10 +1099,13 @@ private
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record
-      From, To : Abstract_Item;
-      Style    : Gtkada.Style.Drawing_Style;
-      Routing  : Route_Style;
+      From, To     : Abstract_Item;
+      Style        : Gtkada.Style.Drawing_Style;
+      Routing      : Route_Style;
       Bounding_Box : Item_Rectangle;
+      Label        : Container_Item;
+      Label_From   : Container_Item;
+      Label_To     : Container_Item;
 
       Waypoints   : Item_Point_Array_Access;
       --  The waypoints created by the user (as opposed to Points, which

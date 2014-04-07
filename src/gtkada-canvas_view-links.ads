@@ -24,7 +24,6 @@
 
 --  Various support utilities for the drawing of links in GtkAda.Canvas
 
-with Cairo;   use Cairo;
 with Glib;    use Glib;
 
 package Gtkada.Canvas_View.Links is
@@ -36,31 +35,35 @@ package Gtkada.Canvas_View.Links is
    --  Draw_Polycurve.
 
    procedure Compute_Layout_For_Straight_Link
-     (Link  : not null access Canvas_Link_Record'Class);
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context);
    --  Compute the layout for the link, with a straight line (although
    --  additional waypoints could be added).
    --  The layout is cached in the link itself, and will be used when drawing.
 
    procedure Compute_Layout_For_Arc_Link
-     (Link   : not null access Canvas_Link_Record'Class;
-      Offset : Gint := 1);
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context;
+      Offset  : Gint := 1);
    --  Compute the layout for the link, with a curve link.
    --  The offset can be used to make the link more or less curved, in
    --  particular when there are multiple links between the same two objects,
    --  so that they do not override.
 
    procedure Compute_Layout_For_Orthogonal_Link
-     (Link   : not null access Canvas_Link_Record'Class);
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context);
    --  Compute the layout for the link, when it is restricted to vertical and
    --  horizontal lines only.
 
    procedure Compute_Layout_For_Curve_Link
-     (Link   : not null access Canvas_Link_Record'Class);
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context);
    --  Compute the layout for the link
 
    procedure Draw_Link
-     (Link             : not null access Canvas_Link_Record'Class;
-      Cr               : Cairo.Cairo_Context);
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context);
    --  Draw the link, using the layout computed earlier via one of the
    --  procedures above. This is a help method for the Draw primitive
    --  operation on the link, which should be used preferrably.

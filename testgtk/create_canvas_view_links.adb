@@ -85,7 +85,8 @@ package body Create_Canvas_View_Links is
    is
       L : constant Spring_Link := new Spring_Link_Record;
    begin
-      L.Initialize (From, To, Style, Straight, Anchor_From, Anchor_To);
+      L.Initialize
+        (From, To, Style, Straight, null, Anchor_From, null, Anchor_To, null);
       return L;
    end Gtk_New_Spring;
 
@@ -267,6 +268,31 @@ package body Create_Canvas_View_Links is
          Model.Add (L);
       end Waypoints_Example;
 
+      procedure Label_Example
+        (X, Y : Model_Coordinate; Style : Drawing_Style;
+         Directed : Text_Arrow_Direction := No_Text_Arrow);
+      procedure Label_Example
+        (X, Y : Model_Coordinate; Style : Drawing_Style;
+         Directed : Text_Arrow_Direction := No_Text_Arrow)
+      is
+         It1, It2 : Rect_Item;
+         L        : Canvas_Link;
+      begin
+         It1 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It1.Set_Position ((X, Y));
+         Model.Add (It1);
+
+         It2 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It2.Set_Position ((X + 200.0, Y + 50.0));
+         Model.Add (It2);
+
+         L := Gtk_New (It1, It2, Black, Straight,
+                       Label      => Gtk_New_Text (Style, "label", Directed),
+                       Label_From => Gtk_New_Text (Style, "labelFrom"),
+                       Label_To   => Gtk_New_Text (Style, "labelTo"));
+         Model.Add (L);
+      end Label_Example;
+
       Text : Text_Item;
    begin
       Gtk_New (Model);
@@ -374,6 +400,29 @@ package body Create_Canvas_View_Links is
          Gtk_New (Stroke => Black_RGBA),
          Waypoints          => ((80.0, 30.0), (0.0, 20.0)),
          Relative_Waypoints => True);
+
+      Text := Gtk_New_Text (Font, "Labels on links");
+      Text.Set_Position ((0.0, 680.0));
+      Model.Add (Text);
+
+      Label_Example (0.0, 700.0, Gtk_New
+                     (Font => (Name   => From_String ("sans 7"),
+                               Color  => Black_RGBA,
+                               others => <>),
+                      Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.2))));
+      Label_Example (300.0, 700.0, Gtk_New
+                     (Stroke => Null_RGBA,
+                      Fill => Create_Rgba_Pattern ((1.0, 1.0, 1.0, 0.7)),
+                      Font   => (Name   => From_String ("sans 8"),
+                                 Color  => (1.0, 0.0, 0.0, 1.0),
+                                 others => <>)));
+      Label_Example (0.0, 800.0, Gtk_New
+                     (Stroke => Null_RGBA,
+                      Fill => Create_Rgba_Pattern ((1.0, 1.0, 1.0, 0.7)),
+                      Font   => (Name   => From_String ("sans 8"),
+                                 Color  => (1.0, 0.0, 0.0, 1.0),
+                                 others => <>)),
+                     Directed => Left_Text_Arrow);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
