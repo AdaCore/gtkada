@@ -398,9 +398,9 @@ package body Gtkada.Canvas_View.Links is
 
             else
                if Deltax > 0.0 then
-                  Text_Item (Self.Label).Directed := Up_Text_Arrow;
-               else
                   Text_Item (Self.Label).Directed := Down_Text_Arrow;
+               else
+                  Text_Item (Self.Label).Directed := Up_Text_Arrow;
                end if;
             end if;
          end if;

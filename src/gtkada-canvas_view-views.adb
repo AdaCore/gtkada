@@ -22,9 +22,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Cairo;   use Cairo;
 with Glib;    use Glib;
 
-package body Gtkada.Canvas_View.Guides is
+package body Gtkada.Canvas_View.Views is
 
    ------------------
    -- Do_Snap_Grid --
@@ -53,4 +54,63 @@ package body Gtkada.Canvas_View.Guides is
       return Gdouble (X);
    end Do_Snap_Grid;
 
-end Gtkada.Canvas_View.Guides;
+   ---------------------
+   -- Draw_Grid_Lines --
+   ---------------------
+
+   procedure Draw_Grid_Lines
+     (Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context;
+      Area    : Model_Rectangle;
+      Size    : Model_Coordinate)
+   is
+      Tmp  : Gdouble;
+   begin
+      New_Path (Context.Cr);
+
+      Tmp := Gdouble (Gint (Area.X / Size)) * Size;
+      while Tmp < Area.X + Area.Width loop
+         Move_To (Context.Cr, Tmp, Area.Y);
+         Rel_Line_To (Context.Cr, 0.0, Area.Height);
+         Tmp := Tmp + Size;
+      end loop;
+
+      Tmp := Gdouble (Gint (Area.Y / Size)) * Size;
+      while Tmp < Area.Y + Area.Height loop
+         Move_To (Context.Cr, Area.X, Tmp);
+         Rel_Line_To (Context.Cr, Area.Width, 0.0);
+         Tmp := Tmp + Size;
+      end loop;
+
+      Style.Finish_Path (Context.Cr);
+   end Draw_Grid_Lines;
+
+   --------------------
+   -- Draw_Grid_Dots --
+   --------------------
+
+   procedure Draw_Grid_Dots
+     (Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context;
+      Area    : Model_Rectangle;
+      Size    : Model_Coordinate)
+   is
+      TmpX, TmpY  : Gdouble;
+   begin
+      New_Path (Context.Cr);
+
+      TmpX := Gdouble (Gint (Area.X / Size)) * Size;
+      while TmpX < Area.X + Area.Width loop
+         TmpY := Gdouble (Gint (Area.Y / Size)) * Size;
+         while TmpY < Area.Y + Area.Height loop
+            Rectangle (Context.Cr, TmpX - 0.5, TmpY - 0.5, 1.0, 1.0);
+            TmpY := TmpY + Size;
+         end loop;
+
+         TmpX := TmpX + Size;
+      end loop;
+
+      Style.Finish_Path (Context.Cr);
+   end Draw_Grid_Dots;
+
+end Gtkada.Canvas_View.Views;

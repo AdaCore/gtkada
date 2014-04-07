@@ -385,11 +385,7 @@ package body Gtkada.Canvas_View is
 
       if Alloc.Width > 1 then
          Set_Adjustment_Values (Self);
-
-         Gdk.Window.Invalidate_Rect
-           (Self.Get_Window,
-            Rect                => Alloc,
-            Invalidate_Children => True);
+         Self.Queue_Draw;
       end if;
    end On_Layout_Changed_For_View;
 
@@ -555,6 +551,7 @@ package body Gtkada.Canvas_View is
       Box   : Model_Rectangle;
       Area  : constant Model_Rectangle := Self.Get_Visible_Area;
       M     : Model_Coordinate;
+      Min, Max : Gdouble;
    begin
       if Self.Model = null or else Area.Width <= 1.0 then
          --  Not allocated yet
@@ -564,21 +561,47 @@ package body Gtkada.Canvas_View is
       Box := Self.Model.Bounding_Box;
       M := View_Margin * Self.Scale;
 
+      --  We want a small margin around the minimal box for the model, since it
+      --  looks better.
+      Box.X := Box.X - M;
+      Box.Y := Box.Y - M;
+      Box.Width := Box.Width + 2.0 * M;
+      Box.Height := Box.Height + 2.0 * M;
+
+      --  We set the adjustments to include the model area, but also at least
+      --  the current visible area (if we don't, then part of the display will
+      --  not be properly refreshed).
+
       if Self.Hadj /= null then
+         Min := Gdouble'Min (Area.X, Box.X);
+         Max := Gdouble'Max (Area.X + Area.Width, Box.X + Box.Width);
+
+         if Area.Width >= Box.Width then
+            --  screen is large enough to accomodate whole model
+            Max := Gdouble'Max (Box.X + Box.Width, Min + Area.Width);
+         end if;
+
          Self.Hadj.Configure
            (Value          => Area.X,
-            Lower          => Box.X - M,
-            Upper          => Box.X + Box.Width + M,
+            Lower          => Min,
+            Upper          => Max,
             Step_Increment => 5.0,
             Page_Increment => 100.0,
             Page_Size      => Area.Width);
       end if;
 
       if Self.Vadj /= null then
+         Min := Gdouble'Min (Area.Y, Box.Y);
+         Max := Gdouble'Max (Area.Y + Area.Height, Box.Y + Box.Height);
+
+         if Area.Height >= Box.Height then
+            Max := Gdouble'Max (Box.Y + Box.Height, Min + Area.Height);
+         end if;
+
          Self.Vadj.Configure
            (Value          => Area.Y,
-            Lower          => Box.Y - M,
-            Upper          => Box.Y + Box.Height + M,
+            Lower          => Min,
+            Upper          => Max,
             Step_Increment => 5.0,
             Page_Increment => 100.0,
             Page_Size      => Area.Height);
@@ -912,7 +935,11 @@ package body Gtkada.Canvas_View is
       --  we do not need to clear ourselves.
 
       C := (Cr => Cr, Layout => Self.Layout);
+
+      Save (Cr);
+      Self.Set_Transform (Cr);
       Self.Draw_Internal (C, A);
+      Restore (Cr);
    end Refresh;
 
    -----------------------------
@@ -965,10 +992,7 @@ package body Gtkada.Canvas_View is
       end Draw_Item;
    begin
       if Self.Model /= null then
-         Save (Context.Cr);
-         Self.Set_Transform (Context.Cr);
          Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
-         Restore (Context.Cr);
       end if;
    end Draw_Internal;
 

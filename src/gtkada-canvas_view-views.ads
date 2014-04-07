@@ -24,7 +24,50 @@
 
 --  Various support utilities for the grid and smart guides in the canvas
 
-package Gtkada.Canvas_View.Guides is
+package Gtkada.Canvas_View.Views is
+
+   ----------------------------
+   -- Drawing the background --
+   ----------------------------
+   --  Various subprograms that draw the background of a view.
+   --  By default, a view only displays a white background, but you can
+   --  override the Draw_Internal primitive and call one of the following
+   --  subprograms if you want to draw alternate backgrounds.
+   --
+   --  You could also use an image as the background, by creating a
+   --  cairo pattern:
+   --     Surf    : Cairo_Surface := Cairo.Png.Create_From_Png ("file.png");
+   --     Pattern : Cairo_Pattern := Cairo.Pattern.Create_For_Surface (Surf);
+   --     Cairo.Pattern.Set_Extend (Pattern, Cairo_Extend_Repeat);
+   --     Destroy (Surf);
+   --  and then drawing that pattern.
+   --     Set_Source (Context.Cr, Pattern);
+   --     Paint (Context.Cr);
+   --  With that code, the image will be scrolled when the canvas is scrolled.
+   --  If you do not want to scroll it, you need to set the identity matrix as
+   --  the transformation matrix.
+   --
+   --  Using a custom background color can be done with:
+   --     Set_Source_Rgb (Context.Cr, Red, Green, Blue);
+   --     Paint (Context.Cr);
+
+   procedure Draw_Grid_Lines
+     (Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context;
+      Area    : Model_Rectangle;
+      Size    : Model_Coordinate);
+   --  Draw a grid with lines in the background
+
+   procedure Draw_Grid_Dots
+     (Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context;
+      Area    : Model_Rectangle;
+      Size    : Model_Coordinate);
+   --  Draw a grid with dots in the background
+
+   --------------
+   -- Snapping --
+   --------------
 
    function Do_Snap_Grid
      (Grid_Size   : Model_Coordinate;
@@ -35,4 +78,4 @@ package Gtkada.Canvas_View.Guides is
    --  Size is the size of the item along that coordinate, since the item
    --  could be snap either on its left (resp. top) or right (resp. bottom)
 
-end Gtkada.Canvas_View.Guides;
+end Gtkada.Canvas_View.Views;

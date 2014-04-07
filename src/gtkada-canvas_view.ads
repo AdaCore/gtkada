@@ -566,7 +566,8 @@ package Gtkada.Canvas_View is
    --  Redraw either the whole view, or a specific part of it only.
    --  The transformation matrix has already been set on the context.
    --  This procedure can be overridden if you need to perform special
-   --  operations, like drawing a grid for instance.
+   --  operations, like drawing a grid for instance. See the various helper
+   --  subprograms in Gtkada.Canvas_View.Views to do so.
 
    function Get_Visible_Area
      (Self : not null access Canvas_View_Record)
