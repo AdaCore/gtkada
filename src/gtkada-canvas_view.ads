@@ -48,6 +48,20 @@
 --    - The controller provides the user interaction in the canvas, and will
 --      change the view and model properties when the user performs actions.
 --
+--  A view does not draw any background (image, grid,...). This is because
+--  there are simply too many ways application want to take advantage of the
+--  background. Instead, you should override the Draw_Internal primitive and
+--  take advantage (optionally) of some of the helps in
+--  Gtkada.Canvas_View.Views, which among other things provide ways to draw
+--  grids.
+--
+--  Likewise, a view does not handle events by default (except for scrolling
+--  when it is put in a Gtk_Scrolled_Window). This is also because applications
+--  want to do widely different things (for some, clicking in the background
+--  should open a menu, whereas others will want to let the user scroll by
+--  dragging the mouse in the background -- likewise when clicking on items
+--  for instance).
+--
 --  Differences with Gtkada.Canvas
 --  ==============================
 --
@@ -69,6 +83,18 @@
 --  and have automatic size computation. This makes it easier than before to
 --  have an item that contains, for instance, a list of text fields, since
 --  there is no need any more to compute the size of the text explicitly.
+--
+--  This package systematically use a Gdouble for coordinates (in any of the
+--  coordinate systems), instead of the mix of Gint, Gdouble and Gfloat that
+--  the Gtkada.Canvas is using. In fact, most of the time applications will
+--  only have to deal with the item coordinate system (see below), and never
+--  with the view coordinate system.
+--
+--  The behavior of snap-to-grid is different: whereas in Gtkada.Canvas it
+--  forces items to always be aligned with the grid (with no way to have items
+--  not aligned), the Canvas_View's effect is more subtle: basically, when an
+--  item is moved closed enough to the grid, it will be aligned to the grid.
+--  But if it is far from any grid line, you can drop it anywhere.
 --
 --
 --  The following has not been backported yet:

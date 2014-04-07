@@ -94,6 +94,13 @@ package body Gtkada.Canvas_View.Links is
    --  Compute the last point after applying all the relative coordinates
    --  from Wp
 
+   procedure Margins_Between_Items
+     (Item1, Item2     : Model_Rectangle;
+      Margin1, Margin2 : out Margins);
+   --  When computing the layout for orthogonal links, we add some borders
+   --  around the items, through which the link might go. These borders are
+   --  larger between the two items.
+
    --------------------
    -- Manhattan_Dist --
    --------------------
@@ -442,6 +449,84 @@ package body Gtkada.Canvas_View.Links is
       end loop;
    end Sort;
 
+   ---------------------------
+   -- Margins_Between_Items --
+   ---------------------------
+
+   procedure Margins_Between_Items
+     (Item1, Item2     : Model_Rectangle;
+      Margin1, Margin2 : out Margins)
+   is
+      Min_Margin : constant Gdouble := 6.0;
+      --  We do not want lines to be displayed too close to an item, this is
+      --  the minimal distance.
+
+      Max_Margin : constant Gdouble := 25.0;
+      --  On the other hand, we do not want the link to be too far either, so
+      --  that for instance if Item1 is linked to both Item2 and Item3, the two
+      --  link will share the middle line even when the items are not aligned:
+      --
+      --           Item1
+      --             |
+      --       ------+--------
+      --       |             |
+      --      Item2          |
+      --                   Item3
+      --
+      --  If the position of the horizontal line only depends on the distance
+      --  between Item1 and either Item2 or Item3, it would only be shared
+      --  if Item2 and Item3 are at the same y coordinate.
+
+      Dist : Gdouble;
+
+   begin
+      if Item1.X + Item1.Width < Item2.X then
+         Dist := Item2.X - Item1.X - Item1.Width;
+         Margin1.Left := Min_Margin;
+         Margin1.Right := Gdouble'Min
+           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+         Margin2.Left := Dist - Margin1.Right;
+         Margin2.Right := Min_Margin;
+
+      elsif Item2.X + Item2.Width < Item1.X then
+         Dist := Item1.X - Item2.X - Item2.Width;
+         Margin1.Right := Min_Margin;
+         Margin1.Left := Gdouble'Min
+           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+         Margin2.Right := Dist - Margin1.Left;
+         Margin2.Left := Min_Margin;
+
+      else
+         Margin1.Left := Min_Margin;
+         Margin1.Right := Min_Margin;
+         Margin2.Left := Min_Margin;
+         Margin2.Right := Min_Margin;
+      end if;
+
+      if Item1.Y + Item1.Height < Item2.Y then
+         Dist := Item2.Y - Item1.Y - Item1.Height;
+         Margin1.Top := Min_Margin;
+         Margin1.Bottom := Gdouble'Min
+           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+         Margin2.Top := Dist - Margin1.Bottom;
+         Margin2.Bottom := Min_Margin;
+
+      elsif Item2.Y + Item2.Height < Item1.Y then
+         Dist := Item1.Y - Item2.Y - Item2.Height;
+         Margin1.Bottom := Min_Margin;
+         Margin1.Top := Gdouble'Min
+           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+         Margin2.Bottom := Dist - Margin1.Top;
+         Margin2.Top := Min_Margin;
+
+      else
+         Margin1.Top := Min_Margin;
+         Margin1.Bottom := Min_Margin;
+         Margin2.Top := Min_Margin;
+         Margin2.Bottom := Min_Margin;
+      end if;
+   end Margins_Between_Items;
+
    ----------------------------------------
    -- Compute_Layout_For_Orthogonal_Link --
    ----------------------------------------
@@ -450,13 +535,6 @@ package body Gtkada.Canvas_View.Links is
      (Link    : not null access Canvas_Link_Record'Class;
       Context : Draw_Context)
    is
-      B : constant Gdouble := 6.0;
-      --  Border around each box in which the links should not be displayed.
-      --  ??? We should not have a uniform border: on the outside, it should
-      --  be smaller (to avoid the line going too much outside), but larger
-      --  between the two boces, which results in a nicer display especially
-      --  for curve links.
-
       Min_Space : constant Gdouble := Link.Style.Get_Line_Width * 3.0;
       --  Minimal space between two boxes to pass a link between them
 
@@ -475,6 +553,7 @@ package body Gtkada.Canvas_View.Links is
       procedure Compute_Sides
         (Anchor : Anchor_Attachment;
          Info   : End_Info;
+         Margin : Margins;
          P, P2  : out Item_Point);
       --  Compute whether a link should start horizontal or vertical, and
       --  which side it should start on.
@@ -488,6 +567,7 @@ package body Gtkada.Canvas_View.Links is
       procedure Compute_Sides
         (Anchor : Anchor_Attachment;
          Info   : End_Info;
+         Margin : Margins;
          P, P2  : out Item_Point)
       is
          Effective_Side : Side_Attachment;
@@ -513,18 +593,18 @@ package body Gtkada.Canvas_View.Links is
          case Effective_Side is
             when Top =>
                P := (Info.Box.X + Info.Box.Width * Anchor.X, Info.Toplevel.Y);
-               P2 := (P.X, P.Y - B);
+               P2 := (P.X, P.Y - Margin.Top);
             when Bottom =>
                P := (Info.Box.X + Info.Box.Width * Anchor.X,
                      Info.Toplevel.Y + Info.Toplevel.Height);
-               P2 := (P.X, P.Y + B);
+               P2 := (P.X, P.Y + Margin.Bottom);
             when Right =>
                P := (Info.Toplevel.X + Info.Toplevel.Width,
                      Info.Box.Y + Info.Box.Height * Anchor.Y);
-               P2 := (P.X + B, P.Y);
+               P2 := (P.X + Margin.Right, P.Y);
             when Left =>
                P := (Info.Toplevel.X, Info.Box.Y + Info.Box.Height * Anchor.Y);
-               P2 := (P.X - B, P.Y);
+               P2 := (P.X - Margin.Left, P.Y);
             when others =>
                null;
          end case;
@@ -536,10 +616,13 @@ package body Gtkada.Canvas_View.Links is
       P_To   : Item_Point;   --  extending from the To box
       C1, C2 : Coordinate;
       Matrix : Layout_Matrix;
+      Margin_From, Margin_To : Margins;
 
    begin
-      Compute_Sides (Link.Anchor_From, Dim.From, From, P_From);
-      Compute_Sides (Link.Anchor_To, Dim.To, To, P_To);
+      Margins_Between_Items
+        (Dim.From.Toplevel, Dim.To.Toplevel, Margin_From, Margin_To);
+      Compute_Sides (Link.Anchor_From, Dim.From, Margin_From, From, P_From);
+      Compute_Sides (Link.Anchor_To, Dim.To, Margin_To, To, P_To);
 
       Unchecked_Free (Link.Points);
 
@@ -589,8 +672,18 @@ package body Gtkada.Canvas_View.Links is
 
       Matrix :=
         (Dim => Dim,
-         X => ((FTX1 - B, From.X, FTX2 + B, TTX1 - B, To.X, TTX2 + B, M.X)),
-         Y => ((FTY1 - B, From.Y, FTY2 + B, TTY1 - B, To.Y, TTY2 + B, M.Y)));
+         X => ((FTX1 - Margin_From.Left,
+                From.X,
+                FTX2 + Margin_From.Right,
+                TTX1 - Margin_To.Left, To.X, TTX2 + Margin_To.Right,
+                M.X)),
+         Y => ((FTY1 - Margin_From.Top,
+                From.Y,
+                FTY2 + Margin_From.Bottom,
+                TTY1 - Margin_To.Top,
+                To.Y,
+                TTY2 + Margin_To.Bottom,
+                M.Y)));
       Sort (Matrix.X);
       Sort (Matrix.Y);
 
