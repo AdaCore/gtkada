@@ -284,7 +284,7 @@ package body Gtkada.Canvas_View.Links is
       Max_Y : Gdouble := Points (Points'First).Y;
       X     : Gdouble := Max_X;
       Y     : Gdouble := Max_Y;
-      Current : Item_Point := (0.0, 0.0);
+      Current : Item_Point := Points (Points'First);
    begin
       for P1 in Points'First + 1 .. Points'Last loop
          if Relative then
@@ -775,7 +775,8 @@ package body Gtkada.Canvas_View.Links is
          Link.Points := new Item_Point_Array'(Points (Points'First .. P - 1));
       end;
 
-      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
+      Link.Bounding_Box := Compute_Bounding_Box
+        (Link.Points.all, Relative => Link.Relative_Waypoints);
       Compute_Labels (Link, Context, Dim);
    end Orthogonal_Waypoints;
 
@@ -868,7 +869,8 @@ package body Gtkada.Canvas_View.Links is
             & Link.Model_To_Item (Dim.To.P));
       end if;
 
-      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
+      Link.Bounding_Box := Compute_Bounding_Box
+        (Link.Points.all, Relative => Link.Relative_Waypoints);
       Compute_Labels (Link, Context, Dim);
    end Compute_Layout_For_Straight_Link;
 
@@ -959,7 +961,8 @@ package body Gtkada.Canvas_View.Links is
             & Item_Point_Array'(P3, P4, TP));
       end if;
 
-      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
+      Link.Bounding_Box := Compute_Bounding_Box
+        (Link.Points.all, Relative => False);
       Compute_Labels (Link, Context, Dim);
    end Compute_Layout_For_Arc_Link;
 

@@ -1435,6 +1435,7 @@ package body Gtkada.Style is
       end Draw_Arrow;
 
       X2, Y2, Angle : Gdouble;
+      To : Point;
    begin
       if Self.Data.Symbol_From /= No_Symbol
         or else Self.Data.Arrow_From.Head /= None
@@ -1470,20 +1471,24 @@ package body Gtkada.Style is
         or else Self.Data.Arrow_To.Head /= None
       then
          if Relative then
+            To := Points (Points'First);
+            for W in Points'First + 1 .. Points'Last loop
+               To := (To.X + Points (W).X, To.Y + Points (W).Y);
+            end loop;
+
             Angle := Pi + Arctan
               (Y => Points (Points'Last).Y,
                X => Points (Points'Last).X);
          else
+            To := Points (Points'Last);
             Angle := Pi + Arctan
-              (Y => Points (Points'Last).Y - Points (Points'Last - 1).Y,
-               X => Points (Points'Last).X - Points (Points'Last - 1).X);
+              (Y => To.Y - Points (Points'Last - 1).Y,
+               X => To.X - Points (Points'Last - 1).X);
          end if;
 
          if Self.Data.Symbol_To /= No_Symbol then
-            X2 := Points (Points'Last).X
-              + Self.Data.Symbol_To.Distance * Cos (Angle);
-            Y2 := Points (Points'Last).Y
-              + Self.Data.Symbol_To.Distance * Sin (Angle);
+            X2 := To.X + Self.Data.Symbol_To.Distance * Cos (Angle);
+            Y2 := To.Y + Self.Data.Symbol_To.Distance * Sin (Angle);
             Draw_Symbol (Self.Data.Symbol_To, (X2, Y2));
          end if;
 
@@ -1491,7 +1496,7 @@ package body Gtkada.Style is
             Draw_Arrow
               (Self.Data.Arrow_To,
                Cr,
-               To     => Points (Points'Last),
+               To     => To,
                Angle  => Angle);
          end if;
       end if;
