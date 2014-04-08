@@ -69,7 +69,8 @@ package Gtkada.Canvas_View.Links is
    --  operation on the link, which should be used preferrably.
 
    function Compute_Bounding_Box
-     (Points : Item_Point_Array) return Item_Rectangle;
+     (Points   : Item_Point_Array;
+      Relative : Boolean := False) return Item_Rectangle;
    --  Compute the minimum rectangle that encloses all points
 
 end Gtkada.Canvas_View.Links;

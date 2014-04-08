@@ -277,18 +277,27 @@ package body Gtkada.Canvas_View.Links is
    --------------------------
 
    function Compute_Bounding_Box
-     (Points : Item_Point_Array) return Item_Rectangle
+     (Points   : Item_Point_Array;
+      Relative : Boolean := False) return Item_Rectangle
    is
       Max_X : Gdouble := Points (Points'First).X;
       Max_Y : Gdouble := Points (Points'First).Y;
       X     : Gdouble := Max_X;
       Y     : Gdouble := Max_Y;
+      Current : Item_Point := (0.0, 0.0);
    begin
       for P1 in Points'First + 1 .. Points'Last loop
-         X := Gdouble'Min (X, Points (P1).X);
-         Y := Gdouble'Min (Y, Points (P1).Y);
-         Max_X := Gdouble'Max (Max_X, Points (P1).X);
-         Max_Y := Gdouble'Max (Max_Y, Points (P1).Y);
+         if Relative then
+            Current := (Current.X + Points (P1).X,
+                        Current.Y + Points (P1).Y);
+         else
+            Current := Points (P1);
+         end if;
+
+         X := Gdouble'Min (X, Current.X);
+         Y := Gdouble'Min (Y, Current.Y);
+         Max_X := Gdouble'Max (Max_X, Current.X);
+         Max_Y := Gdouble'Max (Max_Y, Current.Y);
       end loop;
 
       return (X => X, Y => Y, Width => Max_X - X, Height => Max_Y - Y);
@@ -915,16 +924,21 @@ package body Gtkada.Canvas_View.Links is
       Waypoints : constant Item_Point_Array := Get_Wp;
       P1, P2, P3, P4 : Item_Point;
       FP, TP : Item_Point;
+      Radius : Gdouble;
    begin
       Unchecked_Free (Link.Points);
 
       if Link.From = Link.To then
+         Radius := Gdouble'Min
+           (Gdouble'Min (abs (Offset), Dim.From.Toplevel.Width / 2.0),
+            Dim.From.Toplevel.Height / 2.0);
+
          Link.Points := new Item_Point_Array'
            (Circle_From_Bezier
               (Center => Link.Model_To_Item
                    ((Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
                     Dim.From.Toplevel.Y)),
-               Radius => 10.0 + abs (Offset)));
+               Radius => Radius));
 
       elsif Waypoints'Length = 0 then
          FP := Link.Model_To_Item (Dim.From.P);

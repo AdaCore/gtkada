@@ -226,7 +226,8 @@ package body Create_Canvas_View_Items is
          Ellipse.Set_Position ((15.0, 1.0));
          Rect.Add_Child (Ellipse);
 
-         It := Gtk_New_Polyline (Black, ((0.0, 31.0), (50.0, 31.0)));
+         It := Gtk_New_Polyline
+           (Black, ((0.0, 31.0), (50.0, 0.0)), Relative => True);
          It.Set_Position ((0.0, 1.0));
          Rect.Add_Child (It);
 
@@ -234,7 +235,8 @@ package body Create_Canvas_View_Items is
          It.Set_Position ((0.0, 1.0));
          Rect.Add_Child (It);
 
-         It := Gtk_New_Polyline (Black, ((25.0, 41.0), (0.0, 61.0)));
+         It := Gtk_New_Polyline
+           (Black, ((25.0, 41.0), (-25.0, 20.0)), Relative => True);
          It.Set_Position ((0.0, 1.0));
          Rect.Add_Child (It);
 

@@ -63,14 +63,6 @@ package body Gtkada.Style is
      new Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Gdouble_Functions;
 
-   procedure Draw_Arrow
-     (Self    : Arrow_Style;
-      Cr      : Cairo.Cairo_Context;
-      From    : Point;
-      To      : Point);
-   --  Draw an arrow at the end of the line from Start to To, with the given
-   --  style.
-
    procedure Setup_Layout
      (Self     : Font_Style;
       Layout   : not null access Pango.Layout.Pango_Layout_Record'Class;
@@ -1117,30 +1109,31 @@ package body Gtkada.Style is
       --  does not change the rendering much, is slower to draw, and makes it
       --  hard to hide the line during a drag-and-drop operation
 
-      procedure Sloppy_Line (From, To : Natural);
+      procedure Sloppy_Line (From, To : Point);
       --  Draw a sloppy line between the two points
 
-      procedure Sloppy_Line (From, To : Natural) is
+      procedure Sloppy_Line (From, To : Point) is
          Xc1, Xc2 : Gdouble;
          Yc1, Yc2 : Gdouble;
          Deltax, Deltay, Length, Offset : Gdouble;
       begin
-         Deltax := Points (To).X - Points (From).X;
-         Deltay := Points (To).Y - Points (From).Y;
+         Deltax := To.X - From.X;
+         Deltay := To.Y - From.Y;
          Length := Sqrt (Deltax * Deltax + Deltay * Deltay);
          Offset := Gdouble'Min (Length / 40.0, 20.0);
 
          Deltax := Sloppy_Deviation * Deltax + Offset;
          Deltay := Sloppy_Deviation * Deltay + Offset;
 
-         Xc1 := Points (From).X + Deltax;
-         Yc1 := Points (From).Y + Deltay;
-         Xc2 := Points (To).X - Deltax;
-         Yc2 := Points (To).Y - Deltay;
+         Xc1 := From.X + Deltax;
+         Yc1 := From.Y + Deltay;
+         Xc2 := To.X - Deltax;
+         Yc2 := To.Y - Deltay;
 
-         Curve_To (Cr, Xc1, Yc1, Xc2, Yc2, Points (To).X, Points (To).Y);
+         Curve_To (Cr, Xc1, Yc1, Xc2, Yc2, To.X, To.Y);
       end Sloppy_Line;
 
+      Current, Next : Point;
    begin
       if Points'Length < 2 then
          return False;
@@ -1150,15 +1143,34 @@ package body Gtkada.Style is
       Move_To (Cr, Points (Points'First).X, Points (Points'First).Y);
 
       if Self.Data /= null and then Self.Data.Sloppy then
-         for P in Points'First + 1 .. Points'Last loop
-            Sloppy_Line (P - 1, P);
-         end loop;
 
-         if Close or else Self.Data.Fill /= Cairo.Null_Pattern then
-            Sloppy_Line (Points'Last, Points'First);
-            --  Manually draw line back to the first point
+         if Relative then
+            Current := Points (Points'First);
 
-            Close_Path (Cr);
+            for P in Points'First + 1 .. Points'Last loop
+               Next := (Current.X + Points (P).X, Current.Y + Points (P).Y);
+               Sloppy_Line (Current, Next);
+               Current := Next;
+            end loop;
+
+            if Close or else Self.Data.Fill /= Cairo.Null_Pattern then
+               Sloppy_Line (Current, Points (Points'First));
+               --  Manually draw line back to the first point
+
+               Close_Path (Cr);
+            end if;
+
+         else
+            for P in Points'First + 1 .. Points'Last loop
+               Sloppy_Line (Points (P - 1), Points (P));
+            end loop;
+
+            if Close or else Self.Data.Fill /= Cairo.Null_Pattern then
+               Sloppy_Line (Points (Points'Last), Points (Points'First));
+               --  Manually draw line back to the first point
+
+               Close_Path (Cr);
+            end if;
          end if;
 
       else
@@ -1198,7 +1210,7 @@ package body Gtkada.Style is
          Finish_Path (Self, Cr);
 
          if Self.Data /= null and then Show_Arrows then
-            Self.Draw_Arrows_And_Symbols (Cr, Points);
+            Self.Draw_Arrows_And_Symbols (Cr, Points, Relative => Relative);
          end if;
       end if;
    end Draw_Polyline;
@@ -1244,7 +1256,7 @@ package body Gtkada.Style is
       Finish_Path (Self, Cr);
 
       if Show_Arrows then
-         Self.Draw_Arrows_And_Symbols (Cr, Points);
+         Self.Draw_Arrows_And_Symbols (Cr, Points, Relative => Relative);
       end if;
    end Draw_Polycurve;
 
@@ -1255,9 +1267,20 @@ package body Gtkada.Style is
    procedure Draw_Arrows_And_Symbols
      (Self     : Drawing_Style;
       Cr       : Cairo.Cairo_Context;
-      Points   : Point_Array)
+      Points   : Point_Array;
+      Relative : Boolean := False)
    is
+      procedure Draw_Arrow
+        (Self    : Arrow_Style;
+         Cr      : Cairo.Cairo_Context;
+         To      : Point;
+         Angle   : Gdouble);
+      --  Draw an arrow at the end of the line from Start to To, with the given
+      --  style.
+
       procedure Draw_Symbol (S : Symbol_Style; P : Point);
+      --  Draw the symbol at the end of the line
+
       procedure Draw_Symbol (S : Symbol_Style; P : Point) is
       begin
          case S.Name is
@@ -1302,45 +1325,176 @@ package body Gtkada.Style is
                Set_Line_Width (Cr, S.Line_Width);
                Stroke (Cr);
                Restore (Cr);
-
          end case;
       end Draw_Symbol;
 
+      ----------------
+      -- Draw_Arrow --
+      ----------------
+
+      procedure Draw_Arrow
+        (Self    : Arrow_Style;
+         Cr      : Cairo.Cairo_Context;
+         To      : Point;
+         Angle   : Gdouble)
+      is
+         X1, Y1, X2, Y2, X4, Y4, TX, TY : Gdouble;
+      begin
+         if Self.Head = None then
+            return;
+         end if;
+
+         Set_Line_Width (Cr, Self.Line_Width);
+
+         TX := To.X + (Get_Line_Width (Cr) - 0.5) * Cos (Angle);
+         TY := To.Y + (Get_Line_Width (Cr) - 0.5) * Sin (Angle);
+         X1 := To.X + Self.Length * Cos (Angle - Self.Angle);
+         Y1 := To.Y + Self.Length * Sin (Angle - Self.Angle);
+         X2 := To.X + Self.Length * Cos (Angle + Self.Angle);
+         Y2 := To.Y + Self.Length * Sin (Angle + Self.Angle);
+
+         case Self.Head is
+         when None =>
+            null;
+         when Open =>
+            Save (Cr);
+            New_Path (Cr);
+            Move_To (Cr, X1, Y1);
+            Line_To (Cr, TX, TY);
+            Line_To (Cr, X2, Y2);
+
+            Set_Source_Color (Cr, Self.Stroke);
+            Stroke (Cr);
+            Restore (Cr);
+
+         when Solid =>
+            Save (Cr);
+            New_Path (Cr);
+            Move_To (Cr, X1, Y1);
+            Line_To (Cr, TX, TY);
+            Line_To (Cr, X2, Y2);
+            Close_Path (Cr);
+
+            if Self.Stroke /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Stroke);
+               Stroke_Preserve (Cr);
+            end if;
+
+            if Self.Fill /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Fill);
+               Cairo.Fill (Cr);
+            end if;
+
+            Restore (Cr);
+
+         when Diamond =>
+            X4 := X1 + Self.Length * Cos (Angle + Self.Angle);
+            Y4 := Y1 + Self.Length * Sin (Angle + Self.Angle);
+
+            Save (Cr);
+            Move_To (Cr, X1, Y1);
+            Line_To (Cr, TX, TY);
+            Line_To (Cr, X2, Y2);
+            Line_To (Cr, X4, Y4);
+            Close_Path (Cr);
+
+            if Self.Stroke /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Stroke);
+               Stroke_Preserve (Cr);
+            end if;
+
+            if Self.Fill /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Fill);
+               Cairo.Fill (Cr);
+            end if;
+
+            Restore (Cr);
+
+         when Circle =>
+            Save (Cr);
+            Arc
+              (Cr,
+               Xc     => To.X,
+               Yc     => To.Y,
+               Radius => Self.Length,
+               Angle1 => 0.0,
+               Angle2 => 2.0 * Pi);
+
+            if Self.Stroke /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Stroke);
+               Stroke_Preserve (Cr);
+            end if;
+
+            if Self.Fill /= Null_RGBA then
+               Set_Source_Color (Cr, Self.Fill);
+               Cairo.Fill (Cr);
+            end if;
+
+            Restore (Cr);
+         end case;
+      end Draw_Arrow;
+
       X2, Y2, Angle : Gdouble;
    begin
-      if Self.Data.Symbol_From /= No_Symbol then
-         Angle := Pi + Arctan
-           (Y => Points (Points'First).Y - Points (Points'First + 1).Y,
-            X => Points (Points'First).X - Points (Points'First + 1).X);
-         X2 := Points (Points'First).X
-           + Self.Data.Symbol_From.Distance * Cos (Angle);
-         Y2 := Points (Points'First).Y
-           + Self.Data.Symbol_From.Distance * Sin (Angle);
-         Draw_Symbol (Self.Data.Symbol_From, (X2, Y2));
+      if Self.Data.Symbol_From /= No_Symbol
+        or else Self.Data.Arrow_From.Head /= None
+      then
+         if Relative then
+            Angle := Pi + Arctan
+              (Y => -Points (Points'First + 1).Y,
+               X => -Points (Points'First + 1).X);
+         else
+            Angle := Pi + Arctan
+              (Y => Points (Points'First).Y - Points (Points'First + 1).Y,
+               X => Points (Points'First).X - Points (Points'First + 1).X);
+         end if;
+
+         if Self.Data.Symbol_From /= No_Symbol then
+            X2 := Points (Points'First).X
+              + Self.Data.Symbol_From.Distance * Cos (Angle);
+            Y2 := Points (Points'First).Y
+              + Self.Data.Symbol_From.Distance * Sin (Angle);
+            Draw_Symbol (Self.Data.Symbol_From, (X2, Y2));
+         end if;
+
+         if Self.Data.Arrow_From.Head /= None then
+            Draw_Arrow
+              (Self.Data.Arrow_From,
+               Cr,
+               To     => Points (Points'First),
+               Angle  => Angle);
+         end if;
       end if;
 
-      if Self.Data.Arrow_From.Head /= None then
-         Draw_Arrow
-           (Self.Data.Arrow_From,
-            Cr, Points (Points'First + 1), Points (Points'First));
-      end if;
+      if Self.Data.Symbol_To /= No_Symbol
+        or else Self.Data.Arrow_To.Head /= None
+      then
+         if Relative then
+            Angle := Pi + Arctan
+              (Y => Points (Points'Last).Y,
+               X => Points (Points'Last).X);
+         else
+            Angle := Pi + Arctan
+              (Y => Points (Points'Last).Y - Points (Points'Last - 1).Y,
+               X => Points (Points'Last).X - Points (Points'Last - 1).X);
+         end if;
 
-      if Self.Data.Symbol_To /= No_Symbol then
-         Angle := Pi + Arctan
-           (Y => Points (Points'Last).Y - Points (Points'Last - 1).Y,
-            X => Points (Points'Last).X - Points (Points'Last - 1).X);
-         X2 := Points (Points'Last).X
-           + Self.Data.Symbol_To.Distance * Cos (Angle);
-         Y2 := Points (Points'Last).Y
-           + Self.Data.Symbol_To.Distance * Sin (Angle);
-         Draw_Symbol (Self.Data.Symbol_To, (X2, Y2));
-      end if;
+         if Self.Data.Symbol_To /= No_Symbol then
+            X2 := Points (Points'Last).X
+              + Self.Data.Symbol_To.Distance * Cos (Angle);
+            Y2 := Points (Points'Last).Y
+              + Self.Data.Symbol_To.Distance * Sin (Angle);
+            Draw_Symbol (Self.Data.Symbol_To, (X2, Y2));
+         end if;
 
-      if Self.Data.Arrow_To.Head /= None then
-         Draw_Arrow
-           (Self.Data.Arrow_To,
-            Cr, Points (Points'Last - 1), Points (Points'Last));
-      end  if;
+         if Self.Data.Arrow_To.Head /= None then
+            Draw_Arrow
+              (Self.Data.Arrow_To,
+               Cr,
+               To     => Points (Points'Last),
+               Angle  => Angle);
+         end if;
+      end if;
    end Draw_Arrows_And_Symbols;
 
    ------------------
@@ -1431,113 +1585,6 @@ package body Gtkada.Style is
          New_Path (Cr);
       end if;
    end Draw_Text;
-
-   ----------------
-   -- Draw_Arrow --
-   ----------------
-
-   procedure Draw_Arrow
-      (Self    : Arrow_Style;
-       Cr      : Cairo.Cairo_Context;
-       From    : Point;
-       To      : Point)
-   is
-      Angle, X1, Y1, X2, Y2, X4, Y4, TX, TY : Gdouble;
-   begin
-      if Self.Head = None then
-         return;
-      end if;
-
-      Set_Line_Width (Cr, Self.Line_Width);
-
-      Angle := Arctan (Y => To.Y - From.Y, X => To.X - From.X) + Pi;
-      TX := To.X + (Get_Line_Width (Cr) - 0.5) * Cos (Angle);
-      TY := To.Y + (Get_Line_Width (Cr) - 0.5) * Sin (Angle);
-      X1 := To.X + Self.Length * Cos (Angle - Self.Angle);
-      Y1 := To.Y + Self.Length * Sin (Angle - Self.Angle);
-      X2 := To.X + Self.Length * Cos (Angle + Self.Angle);
-      Y2 := To.Y + Self.Length * Sin (Angle + Self.Angle);
-
-      case Self.Head is
-         when None =>
-            null;
-         when Open =>
-            Save (Cr);
-            New_Path (Cr);
-            Move_To (Cr, X1, Y1);
-            Line_To (Cr, TX, TY);
-            Line_To (Cr, X2, Y2);
-
-            Set_Source_Color (Cr, Self.Stroke);
-            Stroke (Cr);
-            Restore (Cr);
-
-         when Solid =>
-            Save (Cr);
-            New_Path (Cr);
-            Move_To (Cr, X1, Y1);
-            Line_To (Cr, TX, TY);
-            Line_To (Cr, X2, Y2);
-            Close_Path (Cr);
-
-            if Self.Stroke /= Null_RGBA then
-               Set_Source_Color (Cr, Self.Stroke);
-               Stroke_Preserve (Cr);
-            end if;
-
-            if Self.Fill /= Null_RGBA then
-               Set_Source_Color (Cr, Self.Fill);
-               Cairo.Fill (Cr);
-            end if;
-
-            Restore (Cr);
-
-         when Diamond =>
-            X4 := X1 + Self.Length * Cos (Angle + Self.Angle);
-            Y4 := Y1 + Self.Length * Sin (Angle + Self.Angle);
-
-            Save (Cr);
-            Move_To (Cr, X1, Y1);
-            Line_To (Cr, TX, TY);
-            Line_To (Cr, X2, Y2);
-            Line_To (Cr, X4, Y4);
-            Close_Path (Cr);
-
-            if Self.Stroke /= Null_RGBA then
-               Set_Source_Color (Cr, Self.Stroke);
-               Stroke_Preserve (Cr);
-            end if;
-
-            if Self.Fill /= Null_RGBA then
-               Set_Source_Color (Cr, Self.Fill);
-               Cairo.Fill (Cr);
-            end if;
-
-            Restore (Cr);
-
-         when Circle =>
-            Save (Cr);
-            Arc
-              (Cr,
-               Xc     => To.X,
-               Yc     => To.Y,
-               Radius => Self.Length,
-               Angle1 => 0.0,
-               Angle2 => 2.0 * Pi);
-
-            if Self.Stroke /= Null_RGBA then
-               Set_Source_Color (Cr, Self.Stroke);
-               Stroke_Preserve (Cr);
-            end if;
-
-            if Self.Fill /= Null_RGBA then
-               Set_Source_Color (Cr, Self.Fill);
-               Cairo.Fill (Cr);
-            end if;
-
-            Restore (Cr);
-      end case;
-   end Draw_Arrow;
 
    -----------------
    -- Finish_Path --

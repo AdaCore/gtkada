@@ -388,9 +388,12 @@ package Gtkada.Style is
    procedure Draw_Arrows_And_Symbols
      (Self     : Drawing_Style;
       Cr       : Cairo.Cairo_Context;
-      Points   : Point_Array);
+      Points   : Point_Array;
+      Relative : Boolean := False);
    --  Draw arrow heads and symbols to both ends of the line, based on Self.
    --  This is similar to Polyline, but does not draw the line itself.
+   --  Relative should be True if each point are defined relative to the
+   --  previous point.
 
    procedure Finish_Path
       (Self       : Drawing_Style;

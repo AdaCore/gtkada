@@ -1958,14 +1958,16 @@ package body Gtkada.Canvas_View is
    function Gtk_New_Polyline
      (Style    : Gtkada.Style.Drawing_Style;
       Points   : Item_Point_Array;
-      Close    : Boolean := False)
+      Close    : Boolean := False;
+      Relative : Boolean := False)
       return Polyline_Item
    is
       R   : constant Polyline_Item := new Polyline_Item_Record;
    begin
-      R.Style := Style;
-      R.Close  := Close;
-      R.Points := new Item_Point_Array'(Points);
+      R.Style    := Style;
+      R.Close    := Close;
+      R.Relative := Relative;
+      R.Points   := new Item_Point_Array'(Points);
       return R;
    end Gtk_New_Polyline;
 
@@ -1977,7 +1979,8 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Polyline_Item_Record;
       Context : Draw_Context)
    is
-      B : constant Item_Rectangle := Compute_Bounding_Box (Self.Points.all);
+      B : constant Item_Rectangle := Compute_Bounding_Box
+        (Self.Points.all, Relative => Self.Relative);
    begin
       Container_Item_Record (Self.all).Size_Request (Context);  --  inherited
       Self.Width := Model_Coordinate'Max (Self.Width, B.Width + B.X);
@@ -1995,7 +1998,9 @@ package body Gtkada.Canvas_View is
    begin
       Resize_Fill_Pattern (Self);
       Self.Style.Draw_Polyline
-        (Context.Cr, Self.Points.all, Close => Self.Close);
+        (Context.Cr, Self.Points.all,
+         Close    => Self.Close,
+         Relative => Self.Relative);
       Draw_Children (Self, Context);
    end Draw;
 
@@ -2304,6 +2309,5 @@ package body Gtkada.Canvas_View is
    begin
       Self.Offset := Offset;
    end Set_Offset;
-
 
 end Gtkada.Canvas_View;

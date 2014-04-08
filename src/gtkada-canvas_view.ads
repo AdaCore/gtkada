@@ -866,9 +866,14 @@ package Gtkada.Canvas_View is
    function Gtk_New_Polyline
      (Style    : Gtkada.Style.Drawing_Style;
       Points   : Item_Point_Array;
-      Close    : Boolean := False)
+      Close    : Boolean := False;
+      Relative : Boolean := False)
       return Polyline_Item;
    --  Create a new polyline item.
+   --  If Relative is true, then each point is relative to the previous one
+   --  (i.e. its coordinates are the previous points's coordinate plus the
+   --  offset given in points). The first point is of course in item
+   --  coordinates.
 
    overriding procedure Draw
      (Self    : not null access Polyline_Item_Record;
@@ -995,6 +1000,7 @@ package Gtkada.Canvas_View is
    --  This only applies to arc links, and is used to specify the curve of the
    --  arc (this is basically the maximal distance between the straight line
    --  and the summit of the arc).
+   --  Offset must not be 0.0
 
    procedure Refresh_Layout
      (Self    : not null access Canvas_Link_Record;
@@ -1099,6 +1105,7 @@ private
    type Polyline_Item_Record is new Container_Item_Record with record
       Points   : Item_Point_Array_Access;
       Close    : Boolean;
+      Relative : Boolean;
    end record;
 
    type Ellipse_Item_Record is new Container_Item_Record with null record;
@@ -1141,7 +1148,7 @@ private
       Label_From   : Container_Item;
       Label_To     : Container_Item;
 
-      Offset : Gdouble := 0.0;
+      Offset : Gdouble := 10.0;
       --  For arc links
 
       Waypoints   : Item_Point_Array_Access;
