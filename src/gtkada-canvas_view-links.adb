@@ -94,12 +94,29 @@ package body Gtkada.Canvas_View.Links is
    --  Compute the last point after applying all the relative coordinates
    --  from Wp
 
-   procedure Margins_Between_Items
-     (Item1, Item2     : Model_Rectangle;
-      Margin1, Margin2 : out Margins);
-   --  When computing the layout for orthogonal links, we add some borders
-   --  around the items, through which the link might go. These borders are
-   --  larger between the two items.
+   procedure Orthogonal_Waypoints
+     (Link       : not null access Canvas_Link_Record'Class;
+      Context    : Draw_Context;
+      Min_Margin : Gdouble;
+      Max_Margin : Gdouble);
+   --  Min_Margin: we do not want lines to be displayed too close to an item,
+   --  this is the minimal distance.
+   --
+   --  Max_Margin: On the other hand, we do not want the link to be too far
+   --  either, so that for instance if Item1 is linked to both Item2 and Item3,
+   --  the two link will share the middle line even when the items are not
+   --  aligned:
+   --
+   --           Item1
+   --             |
+   --       ------+--------
+   --       |             |
+   --      Item2          |
+   --                   Item3
+   --
+   --  If the position of the horizontal line only depends on the distance
+   --  between Item1 and either Item2 or Item3, it would only be shared
+   --  if Item2 and Item3 are at the same y coordinate.
 
    --------------------
    -- Manhattan_Dist --
@@ -449,84 +466,6 @@ package body Gtkada.Canvas_View.Links is
       end loop;
    end Sort;
 
-   ---------------------------
-   -- Margins_Between_Items --
-   ---------------------------
-
-   procedure Margins_Between_Items
-     (Item1, Item2     : Model_Rectangle;
-      Margin1, Margin2 : out Margins)
-   is
-      Min_Margin : constant Gdouble := 6.0;
-      --  We do not want lines to be displayed too close to an item, this is
-      --  the minimal distance.
-
-      Max_Margin : constant Gdouble := 25.0;
-      --  On the other hand, we do not want the link to be too far either, so
-      --  that for instance if Item1 is linked to both Item2 and Item3, the two
-      --  link will share the middle line even when the items are not aligned:
-      --
-      --           Item1
-      --             |
-      --       ------+--------
-      --       |             |
-      --      Item2          |
-      --                   Item3
-      --
-      --  If the position of the horizontal line only depends on the distance
-      --  between Item1 and either Item2 or Item3, it would only be shared
-      --  if Item2 and Item3 are at the same y coordinate.
-
-      Dist : Gdouble;
-
-   begin
-      if Item1.X + Item1.Width < Item2.X then
-         Dist := Item2.X - Item1.X - Item1.Width;
-         Margin1.Left := Min_Margin;
-         Margin1.Right := Gdouble'Min
-           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
-         Margin2.Left := Dist - Margin1.Right;
-         Margin2.Right := Min_Margin;
-
-      elsif Item2.X + Item2.Width < Item1.X then
-         Dist := Item1.X - Item2.X - Item2.Width;
-         Margin1.Right := Min_Margin;
-         Margin1.Left := Gdouble'Min
-           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
-         Margin2.Right := Dist - Margin1.Left;
-         Margin2.Left := Min_Margin;
-
-      else
-         Margin1.Left := Min_Margin;
-         Margin1.Right := Min_Margin;
-         Margin2.Left := Min_Margin;
-         Margin2.Right := Min_Margin;
-      end if;
-
-      if Item1.Y + Item1.Height < Item2.Y then
-         Dist := Item2.Y - Item1.Y - Item1.Height;
-         Margin1.Top := Min_Margin;
-         Margin1.Bottom := Gdouble'Min
-           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
-         Margin2.Top := Dist - Margin1.Bottom;
-         Margin2.Bottom := Min_Margin;
-
-      elsif Item2.Y + Item2.Height < Item1.Y then
-         Dist := Item1.Y - Item2.Y - Item2.Height;
-         Margin1.Bottom := Min_Margin;
-         Margin1.Top := Gdouble'Min
-           (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
-         Margin2.Bottom := Dist - Margin1.Top;
-         Margin2.Top := Min_Margin;
-
-      else
-         Margin1.Top := Min_Margin;
-         Margin1.Bottom := Min_Margin;
-         Margin2.Top := Min_Margin;
-         Margin2.Bottom := Min_Margin;
-      end if;
-   end Margins_Between_Items;
-
    ----------------------------------------
    -- Compute_Layout_For_Orthogonal_Link --
    ----------------------------------------
@@ -534,6 +473,21 @@ package body Gtkada.Canvas_View.Links is
    procedure Compute_Layout_For_Orthogonal_Link
      (Link    : not null access Canvas_Link_Record'Class;
       Context : Draw_Context)
+   is
+   begin
+      Orthogonal_Waypoints
+        (Link, Context, Min_Margin => 6.0, Max_Margin => 25.0);
+   end Compute_Layout_For_Orthogonal_Link;
+
+   --------------------------
+   -- Orthogonal_Waypoints --
+   --------------------------
+
+   procedure Orthogonal_Waypoints
+     (Link       : not null access Canvas_Link_Record'Class;
+      Context    : Draw_Context;
+      Min_Margin : Gdouble;
+      Max_Margin : Gdouble)
    is
       Min_Space : constant Gdouble := Link.Style.Get_Line_Width * 3.0;
       --  Minimal space between two boxes to pass a link between them
@@ -549,6 +503,13 @@ package body Gtkada.Canvas_View.Links is
       TTX2 : constant Gdouble := TTX1 + Dim.To.Toplevel.Width;
       TTY1 : constant Gdouble := Dim.To.Toplevel.Y;  --  from-top-y1
       TTY2 : constant Gdouble := TTY1 + Dim.To.Toplevel.Height;
+
+      procedure Margins_Between_Items
+        (Item1, Item2     : Model_Rectangle;
+         Margin1, Margin2 : out Margins);
+      --  When computing the layout for orthogonal links, we add some borders
+      --  around the items, through which the link might go. These borders are
+      --  larger between the two items.
 
       procedure Compute_Sides
         (Anchor : Anchor_Attachment;
@@ -609,6 +570,63 @@ package body Gtkada.Canvas_View.Links is
                null;
          end case;
       end Compute_Sides;
+
+      ---------------------------
+      -- Margins_Between_Items --
+      ---------------------------
+
+      procedure Margins_Between_Items
+        (Item1, Item2     : Model_Rectangle;
+         Margin1, Margin2 : out Margins)
+      is
+         Dist : Gdouble;
+      begin
+         if Item1.X + Item1.Width < Item2.X then
+            Dist := Item2.X - Item1.X - Item1.Width;
+            Margin1.Left := Min_Margin;
+            Margin1.Right := Gdouble'Min
+              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Margin2.Left := Dist - Margin1.Right;
+            Margin2.Right := Min_Margin;
+
+         elsif Item2.X + Item2.Width < Item1.X then
+            Dist := Item1.X - Item2.X - Item2.Width;
+            Margin1.Right := Min_Margin;
+            Margin1.Left := Gdouble'Min
+              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Margin2.Right := Dist - Margin1.Left;
+            Margin2.Left := Min_Margin;
+
+         else
+            Margin1.Left := Min_Margin;
+            Margin1.Right := Min_Margin;
+            Margin2.Left := Min_Margin;
+            Margin2.Right := Min_Margin;
+         end if;
+
+         if Item1.Y + Item1.Height < Item2.Y then
+            Dist := Item2.Y - Item1.Y - Item1.Height;
+            Margin1.Top := Min_Margin;
+            Margin1.Bottom := Gdouble'Min
+              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Margin2.Top := Dist - Margin1.Bottom;
+            Margin2.Bottom := Min_Margin;
+
+         elsif Item2.Y + Item2.Height < Item1.Y then
+            Dist := Item1.Y - Item2.Y - Item2.Height;
+            Margin1.Bottom := Min_Margin;
+            Margin1.Top := Gdouble'Min
+              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Margin2.Bottom := Dist - Margin1.Top;
+            Margin2.Top := Min_Margin;
+
+         else
+            Margin1.Top := Min_Margin;
+            Margin1.Bottom := Min_Margin;
+            Margin2.Top := Min_Margin;
+            Margin2.Bottom := Min_Margin;
+         end if;
+      end Margins_Between_Items;
 
       From, To : Item_Point;
       M      : Item_Point;
@@ -750,7 +768,7 @@ package body Gtkada.Canvas_View.Links is
 
       Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
       Compute_Labels (Link, Context, Dim);
-   end Compute_Layout_For_Orthogonal_Link;
+   end Orthogonal_Waypoints;
 
    --------------------------------------
    -- Compute_Layout_For_Straight_Link --
@@ -948,7 +966,9 @@ package body Gtkada.Canvas_View.Links is
       P : Item_Point_Array_Access;
       L : Integer;
    begin
-      Compute_Layout_For_Orthogonal_Link (Link, Context);
+      Orthogonal_Waypoints
+        (Link, Context, Min_Margin => 6.0, Max_Margin => Gdouble'Last);
+
       P := Link.Points;
 
       if P'Length <= 2 then
