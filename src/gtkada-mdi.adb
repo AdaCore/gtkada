@@ -4390,9 +4390,9 @@ package body Gtkada.MDI is
 
          Event.Add (Box);
 
+         Note.Set_Tab_Label (Child, Event);
          Note.Set_Tab_Detachable (Child, False);
          Note.Set_Tab_Reorderable (Child, Note.Get_N_Pages > 1);
-         Note.Set_Tab_Label (Child, Event);
 
          Show_All (Event);
 

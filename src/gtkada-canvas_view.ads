@@ -666,6 +666,20 @@ package Gtkada.Canvas_View is
    --  of the view remains at the same location in the widget, as if the user
    --  was zooming towards that specific point.
 
+   function Get_Scale
+     (Self : not null access Canvas_View_Record) return Gdouble;
+   --  Return the current scale
+
+   procedure Scale_To_Fit
+     (Self      : not null access Canvas_View_Record;
+      Max_Scale : Gdouble := 4.0);
+   --  Chose the scale and scroll position so that the whole model is visible.
+   --  This procedure leaves a small margin on each sides of the model, since
+   --  that looks nicer.
+   --  This function can be called even before Self has got a size assigned by
+   --  window manager, but the computation of the scale will be delayed until
+   --  an actual size is known.
+
    procedure Viewport_Changed
      (Self   : not null access Canvas_View_Record'Class);
    procedure On_Viewport_Changed
@@ -1137,6 +1151,11 @@ private
 
       Layout     : Pango.Layout.Pango_Layout;
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
+
+      Scale_To_Fit_Requested : Gdouble := 0.0;
+      --  Set to true when the user calls Scale_To_Fit before the view has had
+      --  a size allocated (and thus we could not perform computation).
+      --  This is set to the maximal zoom requested (or 0.0 if not requested)
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record

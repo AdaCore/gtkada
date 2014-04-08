@@ -559,7 +559,7 @@ package body Gtkada.Canvas_View is
       end if;
 
       Box := Self.Model.Bounding_Box;
-      M := View_Margin * Self.Scale;
+      M := View_Margin / Self.Scale;
 
       --  We want a small margin around the minimal box for the model, since it
       --  looks better.
@@ -747,6 +747,10 @@ package body Gtkada.Canvas_View is
       SAlloc.Y := 0;
       Inherited_Size_Allocate (View_Class_Record, Self, SAlloc);
       Set_Adjustment_Values (Self);
+
+      if Self.Scale_To_Fit_Requested /= 0.0 then
+         Self.Scale_To_Fit (Max_Scale => Self.Scale_To_Fit_Requested);
+      end if;
    end On_Size_Allocate;
 
    ----------------------
@@ -880,8 +884,64 @@ package body Gtkada.Canvas_View is
          Self.Topleft.Y := Box.Y + (Box.Height - Tmp) / 2.0;
       end if;
 
+      Self.Set_Adjustment_Values;
       Self.Viewport_Changed;
+      Self.Queue_Draw;
    end Set_Scale;
+
+   ---------------
+   -- Get_Scale --
+   ---------------
+
+   function Get_Scale
+     (Self : not null access Canvas_View_Record) return Gdouble is
+   begin
+      return Self.Scale;
+   end Get_Scale;
+
+   ------------------
+   -- Scale_To_Fit --
+   ------------------
+
+   procedure Scale_To_Fit
+     (Self      : not null access Canvas_View_Record;
+      Max_Scale : Gdouble := 4.0)
+   is
+      Box   : Model_Rectangle;
+      W, H  : Gdouble;
+      Alloc : Gtk_Allocation;
+   begin
+      Self.Get_Allocation (Alloc);
+      if Alloc.Width <= 1 then
+         Self.Scale_To_Fit_Requested := Max_Scale;
+
+      elsif Self.Model /= null then
+         Self.Scale_To_Fit_Requested := 0.0;
+
+         Box := Self.Model.Bounding_Box;
+
+         if Box.Width /= 0.0 and then Box.Height /= 0.0 then
+            W := Gdouble (Alloc.Width);
+            H := Gdouble (Alloc.Height);
+
+            --  The "-1.0" below compensates for rounding errors, since
+            --  otherwise we are still seeing the scrollbar along the axis
+            --  used to compute the scale.
+            Self.Scale := Gdouble'Min
+              (Max_Scale,
+               Gdouble'Min
+                 ((W - 2.0 * View_Margin - 1.0) / Box.Width,
+                  (H - 2.0 * View_Margin - 1.0) / Box.Height));
+            Self.Topleft :=
+              (X => Box.X - (W / Self.Scale - Box.Width) / 2.0,
+               Y => Box.Y - (H / Self.Scale - Box.Height) / 2.0);
+
+            Self.Set_Adjustment_Values;
+            Self.Viewport_Changed;
+            Self.Queue_Draw;
+         end if;
+      end if;
+   end Scale_To_Fit;
 
    ----------------------
    -- Viewport_Changed --

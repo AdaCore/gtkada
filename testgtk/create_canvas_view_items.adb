@@ -318,6 +318,8 @@ package body Create_Canvas_View_Items is
       Unref (Model);
       Scrolled.Add (Canvas);
 
+      Canvas.Scale_To_Fit;
+
       Frame.Show_All;
    end Run;
 
