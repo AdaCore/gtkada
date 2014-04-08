@@ -870,7 +870,7 @@ package body Gtkada.Canvas_View.Links is
    procedure Compute_Layout_For_Arc_Link
      (Link    : not null access Canvas_Link_Record'Class;
       Context : Draw_Context;
-      Offset  : Gint := 1)
+      Offset  : Gdouble := 10.0)
    is
       Dim : constant Anchors := Compute_Anchors (Link);
 
@@ -898,18 +898,12 @@ package body Gtkada.Canvas_View.Links is
          Dx : Gdouble := To.X - From.X;
          Dy : Gdouble := To.Y - From.Y;
          D : constant Gdouble := Sqrt (Dx * Dx + Dy * Dy);
-
-         Pixels : constant Gdouble := 10.0;
-         --  Height of the rectangle, i.e. maximum distance between the arc
-         --  link and the straight link joining the same two ends.
-
-         E : constant Gdouble := Pixels * Gdouble (abs (Offset)) / D;
-
+         E : constant Gdouble := abs (Offset) / D;
       begin
          Dx := Dx * E;
          Dy := Dy * E;
 
-         if Offset > 0 then
+         if Offset > 0.0 then
             Ctrl1 := (From.X - Dy, From.Y + Dx);
             Ctrl2 := (To.X - Dy,   To.Y + Dx);
          else
@@ -930,7 +924,7 @@ package body Gtkada.Canvas_View.Links is
               (Center => Link.Model_To_Item
                    ((Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
                     Dim.From.Toplevel.Y)),
-               Radius => 10.0 + 4.0 * Gdouble (abs (Offset) - 1)));
+               Radius => 10.0 + abs (Offset)));
 
       elsif Waypoints'Length = 0 then
          FP := Link.Model_To_Item (Dim.From.P);

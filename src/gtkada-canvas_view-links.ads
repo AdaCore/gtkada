@@ -44,7 +44,7 @@ package Gtkada.Canvas_View.Links is
    procedure Compute_Layout_For_Arc_Link
      (Link    : not null access Canvas_Link_Record'Class;
       Context : Draw_Context;
-      Offset  : Gint := 1);
+      Offset  : Gdouble := 10.0);
    --  Compute the layout for the link, with a curve link.
    --  The offset can be used to make the link more or less curved, in
    --  particular when there are multiple links between the same two objects,

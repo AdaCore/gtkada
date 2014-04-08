@@ -989,6 +989,13 @@ package Gtkada.Canvas_View is
    --  If the Label is directed, the direction of the arrow will be changed
    --  automatically to match the layout of the link.
 
+   procedure Set_Offset
+     (Self    : not null access Canvas_Link_Record;
+      Offset  : Gdouble);
+   --  This only applies to arc links, and is used to specify the curve of the
+   --  arc (this is basically the maximal distance between the straight line
+   --  and the summit of the arc).
+
    procedure Refresh_Layout
      (Self    : not null access Canvas_Link_Record;
       Context : Draw_Context);
@@ -1133,6 +1140,9 @@ private
       Label        : Container_Item;
       Label_From   : Container_Item;
       Label_To     : Container_Item;
+
+      Offset : Gdouble := 0.0;
+      --  For arc links
 
       Waypoints   : Item_Point_Array_Access;
       --  The waypoints created by the user (as opposed to Points, which

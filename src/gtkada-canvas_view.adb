@@ -1410,7 +1410,7 @@ package body Gtkada.Canvas_View is
          when Straight =>
             Compute_Layout_For_Straight_Link (Self, Context);
          when Arc =>
-            Compute_Layout_For_Arc_Link (Self, Context);
+            Compute_Layout_For_Arc_Link (Self, Context, Self.Offset);
          when Curve =>
             Compute_Layout_For_Curve_Link (Self, Context);
       end case;
@@ -2292,5 +2292,18 @@ package body Gtkada.Canvas_View is
          Self.Height := 1.0;
       end if;
    end Size_Request;
+
+   ----------------
+   -- Set_Offset --
+   ----------------
+
+   procedure Set_Offset
+     (Self    : not null access Canvas_Link_Record;
+      Offset  : Gdouble)
+   is
+   begin
+      Self.Offset := Offset;
+   end Set_Offset;
+
 
 end Gtkada.Canvas_View;
