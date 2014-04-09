@@ -3113,7 +3113,7 @@ package body Gtkada.MDI is
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child
    is
       W   : Gtk_Widget := Gtk_Widget (Widget);
-      Win : Gtk_Window;
+      Win : Gtk_Widget;
       C   : MDI_Child;
    begin
       --  As a special case, if the widget's parent is a notebook, we check
@@ -3141,7 +3141,7 @@ package body Gtkada.MDI is
       --  Not found ? We might have a floating window. Unfortunately, these
       --  windows do not keep track of the MDI child they belong to...
 
-      Win := Gtk_Window (Get_Toplevel (Widget));
+      Win := Get_Toplevel (Widget);
       if Win /= null
          and then Child_User_Data.Is_Set (Win, "parent_mdi_child")
       then
