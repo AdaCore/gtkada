@@ -32,6 +32,7 @@ with Cairo.Pattern;                      use Cairo.Pattern;
 with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
+with Gdk.Cairo;                          use Gdk.Cairo;
 with Gdk.Event;                          use Gdk.Event;
 with Gdk.RGBA;                           use Gdk.RGBA;
 with Gdk.Window;                         use Gdk.Window;
@@ -52,7 +53,8 @@ package body Gtkada.Canvas_View is
      (1 => New_String (String (Signal_Item_Contents_Changed)),
       2 => New_String (String (Signal_Layout_Changed)));
    View_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
-     (1 => New_String (String (Signal_Viewport_Changed)));
+     (1 => New_String (String (Signal_Viewport_Changed)),
+      2 => New_String (String (Signal_Item_Event)));
 
    Model_Class_Record : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
@@ -82,12 +84,22 @@ package body Gtkada.Canvas_View is
    --  default handler for "size_allocate" on views.
 
    function GValue_To_Abstract_Item (Value : GValue) return Abstract_Item;
-   function Abstract_Item_To_Address (S : Abstract_Item) return System.Address;
+   function Abstract_Item_To_Address is new Ada.Unchecked_Conversion
+     (Abstract_Item, System.Address);
    package Abstract_Item_Marshallers is new Object_Callback.Marshallers
      .Generic_Marshaller (Abstract_Item, GValue_To_Abstract_Item);
    procedure Abstract_Item_Emit
      is new Abstract_Item_Marshallers.Emit_By_Name_Generic
      (Abstract_Item_To_Address);
+   --  support for the "item_contents_changed" signal
+
+   function GValue_To_EDA (Value : GValue) return Event_Details_Access;
+   function EDA_To_Address is new Ada.Unchecked_Conversion
+     (Event_Details_Access, System.Address);
+   package EDA_Marshallers is new Object_Callback.Marshallers
+     .Generic_Marshaller (Event_Details_Access, GValue_To_EDA);
+   procedure EDA_Emit
+     is new EDA_Marshallers.Emit_By_Name_Generic (EDA_To_Address);
    --  support for the "item_contents_changed" signal
 
    procedure View_Class_Init (Self : GObject_Class);
@@ -148,6 +160,11 @@ package body Gtkada.Canvas_View is
    procedure Free (Self : in out Abstract_Item);
    --  Free the memory used by Self
 
+   function On_Button_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button) return Boolean;
+   --  Low-level handling of mouse events.
+
    ----------
    -- Free --
    ----------
@@ -174,20 +191,17 @@ package body Gtkada.Canvas_View is
       return Unchecked_Convert (S);
    end GValue_To_Abstract_Item;
 
-   ------------------------------
-   -- Abstract_Item_To_Address --
-   ------------------------------
+   -------------------
+   -- GValue_To_EDA --
+   -------------------
 
-   function Abstract_Item_To_Address
-     (S : Abstract_Item) return System.Address
-   is
+   function GValue_To_EDA (Value : GValue) return Event_Details_Access is
+      S : constant System.Address := Get_Address (Value);
+      function Unchecked_Convert is new Ada.Unchecked_Conversion
+        (System.Address, Event_Details_Access);
    begin
-      if S = null then
-         return System.Null_Address;
-      else
-         return S.all'Address;
-      end if;
-   end Abstract_Item_To_Address;
+      return Unchecked_Convert (S);
+   end GValue_To_EDA;
 
    -------------------
    -- Item_To_Model --
@@ -236,8 +250,22 @@ package body Gtkada.Canvas_View is
      (Item   : not null access Abstract_Item_Record'Class;
       P      : Model_Point) return Item_Point
    is
+      Rect   : constant Item_Rectangle :=
+        Model_To_Item (Item, (P.X, P.Y, 1.0, 1.0));
+   begin
+      return (Rect.X, Rect.Y);
+   end Model_To_Item;
+
+   -------------------
+   -- Model_To_Item --
+   -------------------
+
+   function Model_To_Item
+     (Item   : not null access Abstract_Item_Record'Class;
+      P      : Model_Rectangle) return Item_Rectangle
+   is
       Parent : Abstract_Item := Abstract_Item (Item);
-      Result : Item_Point := (P.X, P.Y);
+      Result : Item_Rectangle := (P.X, P.Y, P.Width, P.Height);
       Pos    : Item_Point;
    begin
       while Parent /= null loop
@@ -398,10 +426,16 @@ package body Gtkada.Canvas_View is
       Item : Abstract_Item)
    is
       Self : constant Canvas_View := Canvas_View (View);
+      Rect : constant Window_Rectangle :=
+        Self.Model_To_Window (Item.Model_Bounding_Box);
    begin
       Gdk.Window.Invalidate_Rect
         (Self.Get_Window,
-         Rect                => Self.Model_To_Window (Item.Model_Bounding_Box),
+         Rect                =>
+           (X      => Gint (Rect.X),
+            Y      => Gint (Rect.Y),
+            Width  => Gint (Rect.Width),
+            Height => Gint (Rect.Height)),
          Invalidate_Children => True);
    end On_Item_Contents_Changed_For_View;
 
@@ -430,12 +464,63 @@ package body Gtkada.Canvas_View is
 
       Self.Layout := Self.Create_Pango_Layout;
 
-      Self.Add_Events (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask);
+      Self.Add_Events
+        (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask
+         or Button_Press_Mask or Button_Release_Mask);
 
       Self.On_Destroy (On_View_Destroy'Access);
+      Self.On_Button_Press_Event (On_Button_Event'Access);
+      Self.On_Button_Release_Event (On_Button_Event'Access);
+      --  Self.On_Motion_Notify_Event (On_Motion_Notify_Event'Access);
 
       Self.Set_Model (Model);
    end Initialize;
+
+   ---------------------
+   -- On_Button_Event --
+   ---------------------
+
+   function On_Button_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Button)
+      return Boolean
+   is
+      Self    : constant Canvas_View := Canvas_View (View);
+      Context : Draw_Context;
+      Details : aliased Canvas_Event_Details;
+      Typ     : Canvas_Event_Type;
+   begin
+      if Self.Model /= null then
+         Context := (Cr     => Gdk.Cairo.Create (Self.Get_Window),
+                     Layout => null);
+
+         case Event.The_Type is
+            when Gdk.Event.Button_Press =>
+               Typ := Button_Press;
+            when Gdk.Event.Button_Release =>
+               Typ := Button_Release;
+            when others =>
+               return False;
+         end case;
+
+         Details :=
+           (Event_Type => Typ,
+            Button     => Event.Button,
+            State      => Event.State,
+            Root_Point => (Event.X_Root, Event.Y_Root),
+            M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
+            Toplevel_Item => null,
+            Allowed_Drag_Area => No_Drag_Allowed);
+         Details.Toplevel_Item := Self.Model.Toplevel_Item_At
+           (Details.M_Point, Context => Context);
+
+         Self.Item_Event (Details'Unchecked_Access);
+
+         Cairo.Destroy (Context.Cr);
+         return True;
+      end if;
+      return False;
+   end On_Button_Event;
 
    ---------------
    -- Set_Model --
@@ -476,6 +561,18 @@ package body Gtkada.Canvas_View is
       end if;
    end Set_Model;
 
+   -----------
+   -- Model --
+   -----------
+
+   function Model
+     (Self  : not null access Canvas_View_Record'Class)
+      return Canvas_Model
+   is
+   begin
+      return Self.Model;
+   end Model;
+
    ---------------------
    -- View_Class_Init --
    ---------------------
@@ -506,7 +603,8 @@ package body Gtkada.Canvas_View is
          Signals      => View_Signals,
          Class_Record => View_Class_Record'Access,
          Type_Name    => "GtkadaCanvasView",
-         Parameters   => (1 => (1 .. 0 => GType_None)),
+         Parameters   => (1 => (1 => GType_None),
+                          2 => (1 => GType_Pointer)),
          Class_Init   => View_Class_Init'Access)
       then
          Info := new GInterface_Info'
@@ -815,6 +913,19 @@ package body Gtkada.Canvas_View is
    end View_To_Model;
 
    -------------------
+   -- View_To_Model --
+   -------------------
+
+   function View_To_Model
+     (Self   : not null access Canvas_View_Record;
+      P      : View_Point) return Model_Point
+   is
+   begin
+      return (X      => P.X / Self.Scale + Self.Topleft.X,
+              Y      => P.Y / Self.Scale + Self.Topleft.Y);
+   end View_To_Model;
+
+   -------------------
    -- Model_To_View --
    -------------------
 
@@ -854,11 +965,45 @@ package body Gtkada.Canvas_View is
       Alloc : Gtk_Allocation;
    begin
       Self.Get_Allocation (Alloc);
-      return (X      => Gint (View.X) + Alloc.X,
-              Y      => Gint (View.Y) + Alloc.Y,
-              Width  => Gint (View.Width),
-              Height => Gint (View.Height));
+      return (X    => Window_Coordinate (View.X) + Window_Coordinate (Alloc.X),
+              Y    => Window_Coordinate (View.Y) + Window_Coordinate (Alloc.Y),
+              Width  => Window_Coordinate (View.Width),
+              Height => Window_Coordinate (View.Height));
    end Model_To_Window;
+
+   ---------------------
+   -- Window_To_Model --
+   ---------------------
+
+   function Window_To_Model
+     (Self   : not null access Canvas_View_Record;
+      P      : Window_Point) return Model_Point
+   is
+      Alloc : Gtk_Allocation;
+   begin
+      Self.Get_Allocation (Alloc);
+      return Self.View_To_Model
+        ((X      => View_Coordinate (P.X) - View_Coordinate (Alloc.X),
+          Y      => View_Coordinate (P.Y) - View_Coordinate (Alloc.Y)));
+   end Window_To_Model;
+
+   ---------------------
+   -- Window_To_Model --
+   ---------------------
+
+   function Window_To_Model
+     (Self   : not null access Canvas_View_Record;
+      Rect   : Window_Rectangle) return Model_Rectangle
+   is
+      Alloc : Gtk_Allocation;
+   begin
+      Self.Get_Allocation (Alloc);
+      return Self.View_To_Model
+        ((X      => View_Coordinate (Rect.X) - View_Coordinate (Alloc.X),
+          Y      => View_Coordinate (Rect.Y) - View_Coordinate (Alloc.Y),
+          Width  => View_Coordinate (Rect.Width),
+          Height => View_Coordinate (Rect.Height)));
+   end Window_To_Model;
 
    ---------------
    -- Set_Scale --
@@ -972,6 +1117,42 @@ package body Gtkada.Canvas_View is
            (Self, Signal_Viewport_Changed, Call, Slot);
       end if;
    end On_Viewport_Changed;
+
+   ----------------
+   -- Item_Event --
+   ----------------
+
+   procedure Item_Event
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : Event_Details_Access)
+   is
+   begin
+      EDA_Emit
+        (Self, Signal_Item_Event & ASCII.NUL, Details);
+   end Item_Event;
+
+   -------------------
+   -- On_Item_Event --
+   -------------------
+
+   procedure On_Item_Event
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self    : not null access GObject_Record'Class;
+         Details : Event_Details_Access);
+      Slot : access GObject_Record'Class := null)
+   is
+   begin
+      if Slot = null then
+         Object_Callback.Connect
+           (Self, Signal_Item_Event,
+            EDA_Marshallers.To_Marshaller (Call));
+      else
+         Object_Callback.Object_Connect
+           (Self, Signal_Item_Event,
+            EDA_Marshallers.To_Marshaller (Call), Slot);
+      end if;
+   end On_Item_Event;
 
    -------------
    -- Refresh --
@@ -1156,10 +1337,11 @@ package body Gtkada.Canvas_View is
    --------------
 
    overriding function Contains
-     (Self : not null access Canvas_Link_Record;
-      P    : Item_Point) return Boolean
+     (Self    : not null access Canvas_Link_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean
    is
-      pragma Unreferenced (Self, P);
+      pragma Unreferenced (Self, Point, Context);
    begin
       return False;
    end Contains;
@@ -1260,13 +1442,16 @@ package body Gtkada.Canvas_View is
    --------------
 
    overriding function Contains
-     (Self : not null access Canvas_Item_Record;
-      P    : Item_Point) return Boolean
+     (Self    : not null access Canvas_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean
    is
+      pragma Unreferenced (Context);
       Box : constant Item_Rectangle :=
         Canvas_Item_Record'Class (Self.all).Bounding_Box;
    begin
-      return Point_In_Rect (Box, P);
+      --  ??? This does not take into account the line width
+      return Point_In_Rect (Box, Point);
    end Contains;
 
    -----------------------
@@ -1367,6 +1552,19 @@ package body Gtkada.Canvas_View is
    ----------------
 
    function Intersects (Rect1, Rect2 : Model_Rectangle) return Boolean is
+   begin
+      return not
+        (Rect1.X > Rect2.X + Rect2.Width            --  R1 on the right of R2
+         or else Rect2.X > Rect1.X + Rect1.Width    --  R2 on the right of R1
+         or else Rect1.Y > Rect2.Y + Rect2.Height   --  R1 below R2
+         or else Rect2.Y > Rect1.Y + Rect1.Height); --  R1 above R2
+   end Intersects;
+
+   ----------------
+   -- Intersects --
+   ----------------
+
+   function Intersects (Rect1, Rect2 : Item_Rectangle) return Boolean is
    begin
       return not
         (Rect1.X > Rect2.X + Rect2.Width            --  R1 on the right of R2
@@ -1537,6 +1735,34 @@ package body Gtkada.Canvas_View is
 
       Self.Layout_Changed;
    end Refresh_Layout;
+
+   -----------------------
+   -- Toplevel_Items_At --
+   -----------------------
+
+   function Toplevel_Item_At
+     (Self    : not null access Canvas_Model_Record;
+      Point   : Model_Point;
+      Context : Draw_Context) return Abstract_Item
+   is
+      Found : Abstract_Item;
+
+      procedure Check_Item
+        (Item : not null access Abstract_Item_Record'Class);
+      procedure Check_Item
+        (Item : not null access Abstract_Item_Record'Class) is
+      begin
+         if Found = null
+           and then Item.Contains (Model_To_Item (Item, Point), Context)
+         then
+            Found := Abstract_Item (Item);
+         end if;
+      end Check_Item;
+
+   begin
+      Canvas_Model_Record'Class (Self.all).For_Each_Item (Check_Item'Access);
+      return Found;
+   end Toplevel_Item_At;
 
    -----------
    -- Union --
@@ -2064,6 +2290,31 @@ package body Gtkada.Canvas_View is
       Draw_Children (Self, Context);
    end Draw;
 
+   --------------
+   -- Contains --
+   --------------
+
+   overriding function Contains
+     (Self    : not null access Polyline_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean
+   is
+      Box   : constant Item_Rectangle :=
+        Canvas_Item_Record'Class (Self.all).Bounding_Box;
+   begin
+      if Point_In_Rect (Box, Point) then
+         if Self.Style.Path_Polyline
+           (Context.Cr,
+            Points   => Self.Points.all,
+            Close    => Self.Close,
+            Relative => Self.Relative)
+         then
+            return In_Fill (Context.Cr, Point.X, Point.Y);
+         end if;
+      end if;
+      return False;
+   end Contains;
+
    -------------
    -- Destroy --
    -------------
@@ -2108,6 +2359,33 @@ package body Gtkada.Canvas_View is
       Self.Draw_Children (Context);
    end Draw;
 
+   --------------
+   -- Contains --
+   --------------
+
+   overriding function Contains
+     (Self    : not null access Ellipse_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean
+   is
+      pragma Unreferenced (Context);
+      Box   : constant Item_Rectangle :=
+        Canvas_Item_Record'Class (Self.all).Bounding_Box;
+      Center : Item_Point;
+      Dx, Dy : Item_Coordinate;
+   begin
+      if Point_In_Rect (Box, Point) then
+         Center := (Box.Width / 2.0, Box.Height / 2.0);
+
+         --  This doesn't test the whole rectangle, only the topleft corner
+         Dx := Point.X - Center.X;
+         Dy := Point.Y - Center.Y;
+         return Dx * Dx / (Center.X * Center.X)
+           + Dy * Dy / (Center.Y * Center.Y) <= 1.0;
+      end if;
+      return False;
+   end Contains;
+
    ------------------
    -- Gtk_New_Text --
    ------------------
@@ -2125,6 +2403,19 @@ package body Gtkada.Canvas_View is
       R.Directed := Directed;
       return R;
    end Gtk_New_Text;
+
+   --------------
+   -- Set_Text --
+   --------------
+
+   procedure Set_Text
+     (Self : not null access Text_Item_Record;
+      Text : String)
+   is
+   begin
+      Free (Self.Text);
+      Self.Text := new String'(Text);
+   end Set_Text;
 
    ------------------
    -- Compute_Text --

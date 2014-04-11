@@ -1528,10 +1528,14 @@ package body Gtkada.Style is
 
       if Max_Height > 0.0 then
          Layout.Set_Height (Gint (Max_Height + 1.0) * Pango_Scale);
+      else
+         Layout.Set_Height (-1);
       end if;
 
       if Max_Width > 0.0 then
          Layout.Set_Width (Gint (Max_Width + 1.0) * Pango_Scale);
+      else
+         Layout.Set_Width (-1);
       end if;
 
       --  Layout.Set_Justify (False);
@@ -1539,6 +1543,8 @@ package body Gtkada.Style is
       --  Layout.Set_Wrap (Pango_Wrap_Word);
 
       Unref (Attr);
+
+      Layout.Context_Changed;
    end Setup_Layout;
 
    ------------------
@@ -1556,6 +1562,7 @@ package body Gtkada.Style is
    begin
       if Self.Data /= null then
          Setup_Layout (Self.Data.Font, Layout);
+         Layout.Set_Ellipsize (Ellipsize_None);
          Layout.Set_Text (Text);
          Layout.Get_Extents (Ink_Rect, Logical_Rect);
          Width  := Gdouble (Logical_Rect.Width) / Gdouble (Pango_Scale);

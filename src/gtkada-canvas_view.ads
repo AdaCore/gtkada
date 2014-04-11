@@ -129,10 +129,11 @@
 
 pragma Ada_2012;
 
-private with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Containers.Doubly_Linked_Lists;
 private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
-with Cairo.Region;
+with Cairo;
+with Gdk.Types;        use Gdk.Types;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Gtk.Adjustment;   use Gtk.Adjustment;
@@ -178,7 +179,7 @@ package Gtkada.Canvas_View is
    subtype Model_Coordinate  is Gdouble;
    subtype View_Coordinate   is Gdouble;
    subtype Item_Coordinate   is Gdouble;
-   subtype Window_Coordinate is Gint;
+   subtype Window_Coordinate is Gdouble;
    --  We use subtypes for convenience in your applications to avoid casts.
 
    type Model_Rectangle  is record
@@ -190,7 +191,9 @@ package Gtkada.Canvas_View is
    type Item_Rectangle   is record
       X, Y, Width, Height : Item_Coordinate;
    end record;
-   subtype Window_Rectangle is Cairo.Region.Cairo_Rectangle_Int;
+   type Window_Rectangle is record
+      X, Y, Width, Height : Window_Coordinate;
+   end record;
    --  A rectangle in various coordinates
 
    type Model_Point is record
@@ -198,6 +201,9 @@ package Gtkada.Canvas_View is
    end record;
    type View_Point  is record
       X, Y : View_Coordinate;
+   end record;
+   type Window_Point  is record
+      X, Y : Window_Coordinate;
    end record;
    subtype Item_Point  is Gtkada.Style.Point;
    --  A point in various coordinates
@@ -218,6 +224,7 @@ package Gtkada.Canvas_View is
    --  Whether the point is in the rectangle
 
    function Intersects (Rect1, Rect2 : Model_Rectangle) return Boolean;
+   function Intersects (Rect1, Rect2 : Item_Rectangle) return Boolean;
    --  Whether the two rectangles intersect.
 
    procedure Union
@@ -308,6 +315,9 @@ package Gtkada.Canvas_View is
    --  Abstract_Item_Record which provides its own non-abstract handling for a
    --  number of subprograms below.
 
+   package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
+     (Abstract_Item);
+
    function Position
      (Self : not null access Abstract_Item_Record)
       return Gtkada.Style.Point is abstract;
@@ -351,9 +361,10 @@ package Gtkada.Canvas_View is
    --  This procedure should be used instead of calling Draw directly.
 
    function Contains
-     (Self : not null access Abstract_Item_Record;
-      P    : Item_Point) return Boolean is abstract;
-   --  Should test whether P is within the painted region for Self (i.e.
+     (Self    : not null access Abstract_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean is abstract;
+   --  Should test whether Point is within the painted region for Self (i.e.
    --  whether Self should be selected when the user clicks on the point).
    --  For an item with holes, this function should return False when the
    --  point is inside one of the holes, for instance.
@@ -411,8 +422,9 @@ package Gtkada.Canvas_View is
    overriding function Position
      (Self : not null access Canvas_Item_Record) return Gtkada.Style.Point;
    overriding function Contains
-     (Self : not null access Canvas_Item_Record;
-      P    : Item_Point) return Boolean;
+     (Self    : not null access Canvas_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean;
    overriding function Link_Anchor_Point
      (Self   : not null access Canvas_Item_Record;
       Anchor : Anchor_Attachment)
@@ -421,7 +433,7 @@ package Gtkada.Canvas_View is
      (Self   : not null access Canvas_Item_Record;
       P1, P2 : Item_Point) return Item_Point;
       --  Provide a default implementation for a number of primitives.
-   --  Contains only checks whether the point is within the bounding box, so
+   --  Intersects only checks whether the point is within the bounding box, so
    --  only works for rectangular items.
 
    procedure Set_Position
@@ -497,6 +509,15 @@ package Gtkada.Canvas_View is
    --  ellipsis.
    --  In fact, this procedure is called automatically on the model the first
    --  time it is associated with a view.
+
+   function Toplevel_Item_At
+     (Self    : not null access Canvas_Model_Record;
+      Point   : Model_Point;
+      Context : Draw_Context) return Abstract_Item;
+   --  Return the toplevel item at the specific coordinates (if any).
+   --  The default implementation simply traverses the list of items, and
+   --  calls Contains on each child.
+   --  This function returns the topmost item
 
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
@@ -581,6 +602,11 @@ package Gtkada.Canvas_View is
        Model : access Canvas_Model_Record'Class);
    --  Change the model, and redraw the whole draw.
 
+   function Model
+     (Self  : not null access Canvas_View_Record'Class)
+      return Canvas_Model;
+   --  Return the model
+
    function View_Get_Type return Glib.GType;
    pragma Convention (C, View_Get_Type);
    --  Return the internal type
@@ -634,6 +660,9 @@ package Gtkada.Canvas_View is
    function View_To_Model
      (Self   : not null access Canvas_View_Record;
       Rect   : View_Rectangle) return Model_Rectangle;
+   function View_To_Model
+     (Self   : not null access Canvas_View_Record;
+      P      : View_Point) return Model_Point;
    function Model_To_View
      (Self   : not null access Canvas_View_Record;
       Rect   : Model_Rectangle) return View_Rectangle;
@@ -643,6 +672,12 @@ package Gtkada.Canvas_View is
    function Model_To_Window
      (Self   : not null access Canvas_View_Record;
       Rect   : Model_Rectangle) return Window_Rectangle;
+   function Window_To_Model
+     (Self   : not null access Canvas_View_Record;
+      Rect   : Window_Rectangle) return Model_Rectangle;
+   function Window_To_Model
+     (Self   : not null access Canvas_View_Record;
+      P      : Window_Point) return Model_Point;
    function Item_To_Model
      (Item   : not null access Abstract_Item_Record'Class;
       Rect   : Item_Rectangle) return Model_Rectangle;
@@ -652,6 +687,9 @@ package Gtkada.Canvas_View is
    function Model_To_Item
      (Item   : not null access Abstract_Item_Record'Class;
       P      : Model_Point) return Item_Point;
+   function Model_To_Item
+     (Item   : not null access Abstract_Item_Record'Class;
+      P      : Model_Rectangle) return Item_Rectangle;
    --  Conversion between the various coordinate systems.
    --  Calling these should seldom be needed, as Cairo uses a transformation
    --  matrix to automatically (and efficiently) do the transformation on
@@ -680,6 +718,66 @@ package Gtkada.Canvas_View is
    --  window manager, but the computation of the scale will be delayed until
    --  an actual size is known.
 
+   No_Drag_Allowed : constant Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
+   Drag_Anywhere   : constant Model_Rectangle :=
+     (Gdouble'First, Gdouble'First, Gdouble'Last, Gdouble'Last);
+   --  Values for the Event_Details.Allowed_Drag_Area field
+
+   type Canvas_Event_Type is
+     (Button_Press, Button_Release, Start_Drag, End_Drag, Key_Press);
+   --  The event types that are emitted for the Item_Event signal:
+   --  * Button_Press is called when the user presses any mouse buttton either
+   --    on an item or in the background.
+   --    This event can also be used to start a drag event (by
+   --    setting the Allowed_Drag_Area field of the Canvas_Event_Details).
+   --    It can be used also to display contextual menus.
+   --
+   --  * Start_Drag is used after a user has pressed a mouse button, and the
+   --    callback has enabled a drag area, and the mouse has moved by at least
+   --    a small margin. It applies to either the item (and all other selected
+   --    items, or to the background, for instance to scroll the canvas).
+   --
+   --  * End_Drag is used after a successfull drag, when the mouse is released.
+   --
+   --  * Button_Release is called when the mouse is released but no drag action
+   --    too place. This is the event to use to modify the current selection,
+   --    either by unselecting everything, adding the specific item to the
+   --    selection,...
+   --
+   --  * Key_Press is used when the user types something on the keyboard while
+   --    the canvas has the focus. It can be used to move items with the arrow
+   --    keys, edit an item,...
+
+   type Canvas_Event_Details is record
+      Event_Type     : Canvas_Event_Type;
+      Button         : Guint;
+      State          : Gdk.Types.Gdk_Modifier_Type;
+      Root_Point     : Gtkada.Style.Point;  --  coordinates in root window
+      --  Attributes of the low-level event
+
+      M_Point        : Model_Point;
+      Toplevel_Item  : Abstract_Item;
+      --  higher-level details on the event
+
+      Allowed_Drag_Area : Model_Rectangle := No_Drag_Allowed;
+   end record;
+   type Event_Details_Access is not null access all Canvas_Event_Details;
+   --  This record describes high-level aspects of user interaction with the
+   --  canvas. In addition to some information about the gtk+ event, the
+   --  following information:
+   --  * State describes the state of the modifier keys (shift, alt, control)
+   --    and can be used to activate different behavior in such cases.
+   --  * M_Point indicates where in the model the user clicked. This is
+   --    independent of the zoom level or current scrolling.
+   --  * Toplevel_Item is the item that was clicked on. It is set to null if
+   --    the user clicked in the background.
+   --  * Allowed_Drag_Area should be modified by the callback when the event is
+   --    a button_press event. It should be set to the area within which the
+   --    item (and all currently selected items) can be moved. If you leave it
+   --    to No_Drag_Allowed, the item cannot be moved.
+   --    This field is ignored for events other than button_press, since it
+   --    makes no sense for instance to start a drag on a button release.
+
    procedure Viewport_Changed
      (Self   : not null access Canvas_View_Record'Class);
    procedure On_Viewport_Changed
@@ -691,6 +789,22 @@ package Gtkada.Canvas_View is
    --  This signal is emitted whenever the view is zoomed or scrolled.
    --  This can be used for instance to synchronize multiple views, or display
    --  a "mini-map" of the whole view.
+
+   procedure Item_Event
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : Event_Details_Access);
+   procedure On_Item_Event
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self    : not null access GObject_Record'Class;
+         Details : Event_Details_Access);
+      Slot : access GObject_Record'Class := null);
+   Signal_Item_Event : constant Glib.Signal_Name := "item_event";
+   --  This signal is emitted whenever the user interacts with an item (button
+   --  press or release, key events,...).
+   --  It is recommended to connect to this signal rather than the lower-level
+   --  Button_Press_Event, Button_Release_Event,... since most information is
+   --  provided here in the form of the details parameter.
 
    ------------------------
    -- Object hierarchies --
@@ -866,6 +980,10 @@ package Gtkada.Canvas_View is
    overriding procedure Draw
      (Self    : not null access Ellipse_Item_Record;
       Context : Draw_Context);
+   overriding function Contains
+     (Self    : not null access Ellipse_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean;
 
    ---------------
    -- Polylines --
@@ -896,6 +1014,10 @@ package Gtkada.Canvas_View is
    overriding procedure Size_Request
      (Self    : not null access Polyline_Item_Record;
       Context : Draw_Context);
+   overriding function Contains
+     (Self    : not null access Polyline_Item_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean;
 
    -----------
    -- Texts --
@@ -929,6 +1051,14 @@ package Gtkada.Canvas_View is
    --  Change the direction of the arrow.
    --  In particular, this is done automatically when the text is used on a
    --  link.
+
+   procedure Set_Text
+     (Self : not null access Text_Item_Record;
+      Text : String);
+   --  Change the text displayed in the item.
+   --  This does not force a refresh of the item, and it is likely that you
+   --  will need to call the Model's Refresh_Layout method to properly
+   --  recompute sizes of items and link paths.
 
    overriding procedure Draw
      (Self    : not null access Text_Item_Record;
@@ -1054,8 +1184,9 @@ package Gtkada.Canvas_View is
      (Self    : not null access Canvas_Link_Record;
       Context : Draw_Context);
    overriding function Contains
-     (Self : not null access Canvas_Link_Record;
-      P    : Item_Point) return Boolean;
+     (Self    : not null access Canvas_Link_Record;
+      Point   : Item_Point;
+      Context : Draw_Context) return Boolean;
    overriding function Clip_Line
      (Self   : not null access Canvas_Link_Record;
       P1, P2 : Item_Point) return Item_Point;
@@ -1078,9 +1209,6 @@ private
         (Gdouble'First, Gdouble'First);
       --  Position within its parent or the canvas view.
    end record;
-
-   package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
-     (Abstract_Item);
 
    type Container_Item_Record is abstract new Canvas_Item_Record with record
       Width, Height : Model_Coordinate;
