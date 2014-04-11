@@ -175,6 +175,11 @@ package body Gtkada.Canvas_View is
    --  Refresh the layout for all links (or only the ones linked to Item, or
    --  indirectly to a link to Item).
 
+   function Intersection
+     (P11, P12, P21, P22 : Item_Point) return Item_Point;
+   --  Compute the intersection of the two segments (P11,P12) and (P21,P22).
+   --  The result has X set to Gdouble'First when no intersection exists
+
    ----------
    -- Free --
    ----------
@@ -634,12 +639,12 @@ package body Gtkada.Canvas_View is
                --  visible one.
 
                X := Self.Topleft_At_Drag_Start.X
-                 - Details.Root_Point.X
-                 + Self.Last_Button_Press.Root_Point.X;
+                 - (Details.Root_Point.X
+                    - Self.Last_Button_Press.Root_Point.X) / Self.Scale;
 
                Y := Self.Topleft_At_Drag_Start.Y
-                 - Details.Root_Point.Y
-                 + Self.Last_Button_Press.Root_Point.Y;
+                 - (Details.Root_Point.Y
+                    - Self.Last_Button_Press.Root_Point.Y) / Self.Scale;
 
                if Self.Last_Button_Press.Allowed_Drag_Area /=
                  Drag_Anywhere
@@ -663,10 +668,12 @@ package body Gtkada.Canvas_View is
                while Has_Element (C) loop
                   It := Element (C);
 
-                  X := It.Pos.X + Details.Root_Point.X
-                    - Self.Last_Button_Press.Root_Point.X;
-                  Y := It.Pos.Y + Details.Root_Point.Y
-                    - Self.Last_Button_Press.Root_Point.Y;
+                  X := It.Pos.X
+                    + (Details.Root_Point.X
+                       - Self.Last_Button_Press.Root_Point.X) / Self.Scale;
+                  Y := It.Pos.Y
+                    + (Details.Root_Point.Y
+                       - Self.Last_Button_Press.Root_Point.Y) / Self.Scale;
 
                   if Self.Last_Button_Press.Allowed_Drag_Area /=
                     Drag_Anywhere
@@ -1181,21 +1188,23 @@ package body Gtkada.Canvas_View is
       Scale     : Gdouble := 1.0;
       Center_On : Model_Point := No_Point)
    is
-      Box : constant Model_Rectangle := Self.Get_Visible_Area;
-      Tmp : Gdouble;
+      Box : Model_Rectangle;
+      Old_Scale : constant Gdouble := Self.Scale;
+      P   : Model_Point;
    begin
-      Self.Scale := Scale;
-
       if Center_On /= No_Point then
-         Self.Topleft := Center_On;
+         P := Center_On;
       else
-         Tmp := Gdouble (Self.Get_Allocated_Width) / Scale;  --  model width
-         Self.Topleft.X := Box.X + (Box.Width - Tmp) / 2.0;
-
-         Tmp := Gdouble (Self.Get_Allocated_Height) / Scale;  --  model height
-         Self.Topleft.Y := Box.Y + (Box.Height - Tmp) / 2.0;
+         Box := Self.Get_Visible_Area;
+         P := (Box.X + Box.Width / 2.0, Box.Y + Box.Height / 2.0);
       end if;
 
+      Self.Scale := Scale;
+      Self.Topleft :=
+        (P.X - (P.X - Self.Topleft.X) * Old_Scale / Scale,
+         P.Y - (P.Y - Self.Topleft.Y) * Old_Scale / Scale);
+
+      Self.Scale_To_Fit_Requested := 0.0;
       Self.Set_Adjustment_Values;
       Self.Viewport_Changed;
       Self.Queue_Draw;
@@ -2866,5 +2875,118 @@ package body Gtkada.Canvas_View is
    begin
       Self.Offset := Offset;
    end Set_Offset;
+
+   ------------------
+   -- Intersection --
+   ------------------
+   --  Algorithm adapted from [GGII - xlines.c].
+   --  Copied from gnatcoll-geometry.adb
+
+   function Intersection
+     (P11, P12, P21, P22 : Item_Point) return Item_Point
+   is
+      type Line is record
+         A, B, C : Item_Coordinate;
+      end record;
+
+      function To_Line (P1, P2 : Item_Point) return Line;
+      --  Compute the parameters for the line
+
+      function To_Line (P1, P2 : Item_Point) return Line is
+         A : constant Item_Coordinate := P2.Y - P1.Y;
+         B : constant Item_Coordinate := P2.X - P1.X;
+      begin
+         return (A => A,
+                 B => B,
+                 C => A * P1.X + B * P1.Y);
+      end To_Line;
+
+      L1 : constant Line := To_Line (P11, P12);
+      R3 : constant Item_Coordinate := L1.A * P21.X + L1.B * P21.Y - L1.C;
+      R4 : constant Item_Coordinate := L1.A * P22.X + L1.B * P21.Y - L1.C;
+      L2 : constant Line := To_Line (P21, P22);
+      R1 : constant Item_Coordinate := L2.A * P11.X + L2.B * P11.Y - L2.C;
+      R2 : constant Item_Coordinate := L2.A * P12.X + L2.B * P12.Y - L2.C;
+
+      Denom : Item_Coordinate;
+
+   begin
+      --  Check signs of R3 and R4. If both points 3 and 4 lie on same side
+      --  of line 1, the line segments do not intersect
+
+      if (R3 > 0.0 and then R4 > 0.0)
+        or else (R3 < 0.0 and then R4 < 0.0)
+      then
+         return (Gdouble'First, Gdouble'First);
+      end if;
+
+      --  Check signs of r1 and r2. If both points lie on same side of
+      --  second line segment, the line segments do not intersect
+
+      if (R1 > 0.0 and then R2 > 0.0)
+        or else (R1 < 0.0 and then R2 < 0.0)
+      then
+         return (Gdouble'First, Gdouble'First);
+      end if;
+
+      --  Line segments intersect, compute intersection point
+      Denom := L1.A * L2.B - L2.A * L1.B;
+      if Denom = 0.0 then
+         --  colinears
+--           if Inside (P11, S2)
+--             or else Inside (P12, S2)
+--           then
+--              return ;
+--           else
+         return (Gdouble'First, Gdouble'First);
+--         end if;
+      end if;
+
+      return
+        (X => (L2.B * L1.C - L1.B * L2.C) / Denom,
+         Y => (L1.A * L2.C - L2.A * L1.C) / Denom);
+   end Intersection;
+
+   ---------------
+   -- Clip_Line --
+   ---------------
+
+   overriding function Clip_Line
+     (Self   : not null access Polyline_Item_Record;
+      P1, P2 : Item_Point) return Item_Point
+   is
+      Inter : Item_Point;
+      Current, Next : Item_Point;
+   begin
+      if Self.Points /= null then
+         Current := Self.Points (Self.Points'First);
+
+         for P in Self.Points'First + 1 .. Self.Points'Last loop
+            if Self.Relative then
+               Next := (Current.X + Self.Points (P).X,
+                        Current.Y + Self.Points (P).Y);
+            else
+               Next := Self.Points (P);
+            end if;
+
+            Inter := Intersection (P1, P2, Current, Next);
+            if Inter.X /= Gdouble'First then
+               return Inter;
+            end if;
+
+            Current := Next;
+         end loop;
+
+         if Self.Close then
+            Inter := Intersection
+              (P1, P2, Current, Self.Points (Self.Points'First));
+            if Inter.X /= Gdouble'First then
+               return Inter;
+            end if;
+         end if;
+      end if;
+
+      return P1; --  Container_Item_Record (Self.all).Clip_Line (P1, P2);
+   end Clip_Line;
 
 end Gtkada.Canvas_View;

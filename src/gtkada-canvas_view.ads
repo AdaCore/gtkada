@@ -99,8 +99,12 @@
 --  User interaction
 --  ================
 --
---  By default, limited user interaction is supported (scrolling when the view
---  is put in a Gtk_Scrolled_Window, including with mouse wheel and touchpad).
+--  By default, limited user interaction is supported:
+--     * When a view is added to a Gtk_Scrolled_Window, scrolling is
+--       automatically supported (it is handled by the scrolled window).
+--       Users can use the mouse wheel to scroll vertically, shift and the
+--       mouse wheel to scroll horizontally, or use the touchpad to navigate
+--       (in general with multiple fingers).
 --
 --  But of course it supports much more advanced interactions, like clicking
 --  on items, moving them with the mouse or keyboard,...
@@ -1048,6 +1052,9 @@ package Gtkada.Canvas_View is
      (Self    : not null access Polyline_Item_Record;
       Point   : Item_Point;
       Context : Draw_Context) return Boolean;
+   overriding function Clip_Line
+     (Self   : not null access Polyline_Item_Record;
+      P1, P2 : Item_Point) return Item_Point;
 
    -----------
    -- Texts --
