@@ -70,9 +70,9 @@ package body Gtkada.Canvas_View is
    V_Scroll_Property : constant Property_Id := 4;
    --  The properties for the View
 
-   View_Margin : constant View_Coordinate := 20.0;
-   --  The number of pixels on each sides of the view. This avoids having
-   --  items displays exactly next to the border of the view.
+   Mouse_Move_Before_Drag : constant Gdouble := 4.0 * 4.0;
+   --  Minimal amount the mouse should move before we start dragging (this is
+   --  the square).
 
    function On_View_Draw
      (View : System.Address; Cr : Cairo_Context) return Gboolean;
@@ -163,6 +163,9 @@ package body Gtkada.Canvas_View is
    function On_Button_Event
      (View  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event_Button) return Boolean;
+   function On_Motion_Notify_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean;
    --  Low-level handling of mouse events.
 
    ----------
@@ -466,12 +469,17 @@ package body Gtkada.Canvas_View is
 
       Self.Add_Events
         (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask
-         or Button_Press_Mask or Button_Release_Mask);
+         or Button_Press_Mask or Button_Release_Mask
+         or Button1_Motion_Mask
+         or Button2_Motion_Mask
+         or Button3_Motion_Mask
+         --  or Pointer_Motion_Mask or Pointer_Motion_Hint_Mask
+        );
 
       Self.On_Destroy (On_View_Destroy'Access);
       Self.On_Button_Press_Event (On_Button_Event'Access);
       Self.On_Button_Release_Event (On_Button_Event'Access);
-      --  Self.On_Motion_Notify_Event (On_Motion_Notify_Event'Access);
+      Self.On_Motion_Notify_Event (On_Motion_Notify_Event'Access);
 
       Self.Set_Model (Model);
    end Initialize;
@@ -486,41 +494,144 @@ package body Gtkada.Canvas_View is
       return Boolean
    is
       Self    : constant Canvas_View := Canvas_View (View);
-      Context : Draw_Context;
       Details : aliased Canvas_Event_Details;
-      Typ     : Canvas_Event_Type;
-   begin
-      if Self.Model /= null then
+
+      procedure Compute_Item;
+      --  compute the selected item
+
+      procedure Compute_Item is
+         Context : Draw_Context;
+      begin
          Context := (Cr     => Gdk.Cairo.Create (Self.Get_Window),
                      Layout => null);
+         Details.Toplevel_Item := Self.Model.Toplevel_Item_At
+           (Details.M_Point, Context => Context);
+         Cairo.Destroy (Context.Cr);
+      end Compute_Item;
 
-         case Event.The_Type is
-            when Gdk.Event.Button_Press =>
-               Typ := Button_Press;
-            when Gdk.Event.Button_Release =>
-               Typ := Button_Release;
-            when others =>
-               return False;
-         end case;
-
+   begin
+      if Self.Model /= null then
          Details :=
-           (Event_Type => Typ,
+           (Event_Type => Button_Press,
             Button     => Event.Button,
             State      => Event.State,
             Root_Point => (Event.X_Root, Event.Y_Root),
             M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
             Toplevel_Item => null,
             Allowed_Drag_Area => No_Drag_Allowed);
-         Details.Toplevel_Item := Self.Model.Toplevel_Item_At
-           (Details.M_Point, Context => Context);
+
+         case Event.The_Type is
+            when Gdk.Event.Button_Press =>
+               Compute_Item;
+
+            when Gdk.Event.Button_Release =>
+               if Self.In_Drag then
+                  Details.Event_Type := End_Drag;
+                  Details.Toplevel_Item :=
+                    Self.Last_Button_Press.Toplevel_Item;
+
+               else
+                  Details.Event_Type := Button_Release;
+
+                  if Details.M_Point = Self.Last_Button_Press.M_Point then
+                     --  Do not spend time recomputing
+                     Details.Toplevel_Item :=
+                       Self.Last_Button_Press.Toplevel_Item;
+                  else
+                     Compute_Item;
+                  end if;
+               end if;
+
+            when others =>
+               return False;
+         end case;
 
          Self.Item_Event (Details'Unchecked_Access);
 
-         Cairo.Destroy (Context.Cr);
+         if Details.Event_Type = Button_Press then
+            Self.Last_Button_Press := Details;
+         end if;
+
+         Self.In_Drag := False;
          return True;
       end if;
+
+      Self.In_Drag := False;
       return False;
    end On_Button_Event;
+
+   ----------------------------
+   -- On_Motion_Notify_Event --
+   ----------------------------
+
+   function On_Motion_Notify_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Motion) return Boolean
+   is
+      Self    : constant Canvas_View := Canvas_View (View);
+      Details : aliased Canvas_Event_Details;
+      Dx, Dy  : Gdouble;
+      Area, B : Model_Rectangle;
+      X, Y    : Model_Coordinate;
+   begin
+      if Self.Model /= null
+        and then Self.Last_Button_Press.Allowed_Drag_Area /= No_Drag_Allowed
+      then
+         if not Self.In_Drag then
+            Dx := Event.X_Root - Self.Last_Button_Press.Root_Point.X;
+            Dy := Event.Y_Root - Self.Last_Button_Press.Root_Point.Y;
+
+            if Dx * Dx + Dy * Dy >= Mouse_Move_Before_Drag then
+               Self.In_Drag := True;
+               Details := Self.Last_Button_Press;
+               Details.Event_Type := Start_Drag;
+               Self.Item_Event (Details'Unchecked_Access);
+
+               Self.Topleft_At_Drag_Start := Self.Topleft;
+            end if;
+         end if;
+
+         --  Whether we were already in a drag or just started
+
+         if Self.In_Drag then
+            Details := Self.Last_Button_Press;
+            Details.Event_Type := In_Drag;
+            Details.Root_Point := (Event.X_Root, Event.Y_Root);
+            Details.M_Point :=
+              Self.Window_To_Model ((X => Event.X, Y => Event.Y));
+            Self.Item_Event (Details'Unchecked_Access);
+
+            if Details.Toplevel_Item = null then
+               --  Compute the area that we are allowed to make visible. This
+               --  is the combination of the allowed area and the currently
+               --  visible one.
+
+               Area := Self.Get_Visible_Area;
+               B    := Self.Last_Button_Press.Allowed_Drag_Area;
+               Union (B, Area);
+
+               X := Self.Topleft_At_Drag_Start.X
+                 - Details.Root_Point.X
+                 + Self.Last_Button_Press.Root_Point.X;
+               X := Model_Coordinate'Max (X, B.X);
+               X := Model_Coordinate'Min (X, B.X + B.Width - Area.Width);
+
+               Y := Self.Topleft_At_Drag_Start.Y
+                 - Details.Root_Point.Y
+                 + Self.Last_Button_Press.Root_Point.Y;
+               Y := Model_Coordinate'Max (Y, B.Y);
+               Y := Model_Coordinate'Min (Y, B.Y + B.Height - Area.Height);
+
+               Self.Topleft := (X, Y);
+
+               Self.Queue_Draw;
+            else
+               null;
+            end if;
+         end if;
+      end if;
+      return False;
+   end On_Motion_Notify_Event;
 
    ---------------
    -- Set_Model --
@@ -648,7 +759,6 @@ package body Gtkada.Canvas_View is
    is
       Box   : Model_Rectangle;
       Area  : constant Model_Rectangle := Self.Get_Visible_Area;
-      M     : Model_Coordinate;
       Min, Max : Gdouble;
    begin
       if Self.Model = null or else Area.Width <= 1.0 then
@@ -656,15 +766,10 @@ package body Gtkada.Canvas_View is
          return;
       end if;
 
-      Box := Self.Model.Bounding_Box;
-      M := View_Margin / Self.Scale;
-
       --  We want a small margin around the minimal box for the model, since it
       --  looks better.
-      Box.X := Box.X - M;
-      Box.Y := Box.Y - M;
-      Box.Width := Box.Width + 2.0 * M;
-      Box.Height := Box.Height + 2.0 * M;
+
+      Box := Self.Model.Bounding_Box (View_Margin / Self.Scale);
 
       --  We set the adjustments to include the model area, but also at least
       --  the current visible area (if we don't, then part of the display will
@@ -1789,7 +1894,8 @@ package body Gtkada.Canvas_View is
    ------------------
 
    function Bounding_Box
-     (Self : not null access Canvas_Model_Record)
+     (Self   : not null access Canvas_Model_Record;
+      Margin : Model_Coordinate := 0.0)
       return Model_Rectangle
    is
       Result : Model_Rectangle;
@@ -1813,6 +1919,10 @@ package body Gtkada.Canvas_View is
       if Is_First then
          return No_Rectangle;
       else
+         Result.X := Result.X - Margin;
+         Result.Y := Result.Y - Margin;
+         Result.Width := Result.Width + 2.0 * Margin;
+         Result.Height := Result.Height + 2.0 * Margin;
          return Result;
       end if;
    end Bounding_Box;

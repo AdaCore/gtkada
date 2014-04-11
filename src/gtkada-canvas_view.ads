@@ -96,6 +96,19 @@
 --  item is moved closed enough to the grid, it will be aligned to the grid.
 --  But if it is far from any grid line, you can drop it anywhere.
 --
+--  User interaction
+--  ================
+--
+--  By default, limited user interaction is supported (scrolling when the view
+--  is put in a Gtk_Scrolled_Window, including with mouse wheel and touchpad).
+--
+--  But of course it supports much more advanced interactions, like clicking
+--  on items, moving them with the mouse or keyboard,...
+--
+--  For this, you need to connect to the "item_event" signal, and either
+--  directly handle the signal (a simple click for instance), or set some
+--  data in the details parameters, to enable dragging items or the background
+--  of the canvas (for crolling).
 --
 --  The following has not been backported yet:
 --  ==========================================
@@ -326,6 +339,12 @@ package Gtkada.Canvas_View is
    --  coordinates. These coordinates describe the origin (0,0) point of
    --  the item's coordinate system.
 
+   procedure Set_Position
+     (Self  : not null access Abstract_Item_Record;
+      Pos   : Gtkada.Style.Point) is null;
+   --  Used to change the position of an item (by default an item cannot be
+   --  moved). You must call the model's Refresh_Layout after moving items.
+
    function Bounding_Box
      (Self : not null access Abstract_Item_Record)
       return Item_Rectangle is abstract;
@@ -436,7 +455,7 @@ package Gtkada.Canvas_View is
    --  Intersects only checks whether the point is within the bounding box, so
    --  only works for rectangular items.
 
-   procedure Set_Position
+   overriding procedure Set_Position
      (Self  : not null access Canvas_Item_Record;
       Pos   : Gtkada.Style.Point);
    --  Sets the position of the item within its parent (or within the canvas
@@ -483,11 +502,13 @@ package Gtkada.Canvas_View is
    --  efficiency, although it is valid to return all items otherwise.
 
    function Bounding_Box
-     (Self : not null access Canvas_Model_Record)
+     (Self   : not null access Canvas_Model_Record;
+      Margin : Model_Coordinate := 0.0)
       return Model_Rectangle;
    --  Returns the rectangle that encompasses all the items in the model.
    --  This is used by views to compute the maximum area that should be made
    --  visible.
+   --  An extra margin is added to each side of the box.
    --  The default implementation is not efficient, since it will iterate all
    --  items one by one to compute the rectangle. No caching is done.
 
@@ -575,6 +596,10 @@ package Gtkada.Canvas_View is
    -----------------
    -- Canvas_View --
    -----------------
+
+   View_Margin : constant View_Coordinate := 20.0;
+   --  The number of blank pixels on each sides of the view. This avoids having
+   --  items displays exactly next to the border of the view.
 
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Canvas_View is access all Canvas_View_Record'Class;
@@ -724,7 +749,7 @@ package Gtkada.Canvas_View is
    --  Values for the Event_Details.Allowed_Drag_Area field
 
    type Canvas_Event_Type is
-     (Button_Press, Button_Release, Start_Drag, End_Drag, Key_Press);
+     (Button_Press, Button_Release, Start_Drag, In_Drag, End_Drag, Key_Press);
    --  The event types that are emitted for the Item_Event signal:
    --  * Button_Press is called when the user presses any mouse buttton either
    --    on an item or in the background.
@@ -736,6 +761,8 @@ package Gtkada.Canvas_View is
    --    callback has enabled a drag area, and the mouse has moved by at least
    --    a small margin. It applies to either the item (and all other selected
    --    items, or to the background, for instance to scroll the canvas).
+   --
+   --  * In_Drag is used during an actual drag.
    --
    --  * End_Drag is used after a successfull drag, when the mouse is released.
    --
@@ -1268,6 +1295,13 @@ private
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
 
+   type Item_And_Position is record
+      Item : Abstract_Item;
+      Pos  : Model_Point;
+   end record;
+   package Item_And_Position_Lists is new Ada.Containers.Doubly_Linked_Lists
+     (Item_And_Position);
+
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
       Model   : Canvas_Model;
       Topleft : Model_Point := (0.0, 0.0);
@@ -1284,6 +1318,19 @@ private
       --  Set to true when the user calls Scale_To_Fit before the view has had
       --  a size allocated (and thus we could not perform computation).
       --  This is set to the maximal zoom requested (or 0.0 if not requested)
+
+      Last_Button_Press : Canvas_Event_Details;
+      --  Attributes of the last button_press event, used to properly handle
+      --  dragging and avoid recomputing the selectd item on button_release.
+
+      Items : Item_And_Position_Lists.List;
+      --  The items that are being dragged.
+
+      In_Drag : Boolean := False;
+      --  Whether we are in the middle of a drag.
+
+      Topleft_At_Drag_Start : Model_Point;
+      --  Toplevel at the stat of the drag
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record

@@ -88,8 +88,16 @@ package body Create_Canvas_View_Events is
       end if;
 
       if Event.Event_Type = Button_Press then
-         --  Enable moving the item
-         Event.Allowed_Drag_Area := Drag_Anywhere;
+         if Event.Toplevel_Item /= null then
+            --  Enable moving the item
+            Event.Allowed_Drag_Area := Drag_Anywhere;
+         else
+            --  Enable scrolling by dragging the background. However, there is
+            --  no point showing an area where there is no item, so we limit
+            --  the scrolling.
+            Event.Allowed_Drag_Area :=
+              Self.Model.Bounding_Box (Margin => View_Margin / Self.Get_Scale);
+         end if;
       end if;
 
       Self.Model.Refresh_Layout;
@@ -152,6 +160,10 @@ package body Create_Canvas_View_Events is
 
       L2 := Gtk_New (From => It2, To => It3, Style => Gtk_New);
       Model.Add (L2);
+
+      It3 := Gtk_New_Rect (Black, 40.0, 80.0);
+      It3.Set_Position ((650.0, 400.0));
+      Model.Add (It3);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
