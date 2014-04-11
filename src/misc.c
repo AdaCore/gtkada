@@ -313,9 +313,6 @@ ada_gsignal_query_return_type (GSignalQuery* query)
 typedef struct {
    GType type;            // The type. This also acts as a lock while
                           // initializing the class record.
-
-   //  GObjectClass* c_klass;   // The C class
-
    void (*class_init)(gpointer type);           // ada class init
    GObjectSetPropertyFunc ada_property_setter;
    GObjectGetPropertyFunc ada_property_getter;
@@ -323,26 +320,20 @@ typedef struct {
 typedef AdaGObjectClassRecord* AdaGObjectClass;
 //  Type must be synchronized with Ada.
 
-GType
-ada_type_from_class (GObjectClass* klass)
+GType ada_type_from_class (GObjectClass* klass)
 {
   return G_TYPE_FROM_CLASS (klass);
 }
 
-AdaGObjectClass ada_gobject_class_from_object(GObject* object) {
-   GTypeQuery query;
-   g_type_query (G_TYPE_FROM_INSTANCE(object), &query);
+/** Reuse the dummy padding pointers set by gtk+. They are never used by
+ *  gtk+, and just there for binary compatibility. Simpler to use them than
+ *  do pointer arithmetics to find the pointer on the class structure.
+ */
+#define ADA_CLASS_FROM_C_CLASS(class) (AdaGObjectClass)(class->pdummy[0])
+#define SET_ADA_CLASS_FROM_C_CLASS(class, adaclass) (class->pdummy[0] = (gpointer)adaclass)
 
-   return (AdaGObjectClass)((char*)(G_OBJECT_GET_CLASS (object))
-				  + query.class_size
- 			     - sizeof (AdaGObjectClass));
-}
-AdaGObjectClass ada_gobject_class_from_class(GObjectClass* class) {
-   GTypeQuery query;
-   g_type_query (G_OBJECT_CLASS_TYPE(class), &query);
-   return (AdaGObjectClass)((char*)(class)
-				  + query.class_size
- 			     - sizeof (AdaGObjectClass));
+AdaGObjectClass ada_gobject_class_from_object(GObject* object) {
+   return ADA_CLASS_FROM_C_CLASS(G_OBJECT_GET_CLASS(object));
 }
 
 
@@ -371,9 +362,7 @@ ada_class_record_init (GObjectClass* klass, gpointer class_data)
    /* Set a pointer to the AdaGObjectClass, so that we can retrieve it
     * later from a type.
     */
-   *(AdaGObjectClass*)((char*)(klass)
-       + query.class_size
-       - sizeof (AdaGObjectClass)) = ada_klass;
+   SET_ADA_CLASS_FROM_C_CLASS(klass, ada_klass);
 
    if (ada_klass->class_init) {
       ada_klass->class_init (klass);
@@ -411,8 +400,8 @@ ada_initialize_class_record
 
        GTypeInfo info;
        info.class_size = query.class_size
-              + nsignals * sizeof (void*)
-              + sizeof (AdaGObjectClass);
+              + nsignals * sizeof (void*);
+              //+ sizeof (AdaGObjectClass);
        info.base_init = NULL;
        info.base_finalize = NULL;
        info.class_init = (GClassInitFunc)(&ada_class_record_init);
@@ -1423,7 +1412,7 @@ ada_install_property_handlers
   G_OBJECT_CLASS (klass)->set_property = c_set_handler;
   G_OBJECT_CLASS (klass)->get_property = c_get_handler;
 
-  AdaGObjectClass adaklass = ada_gobject_class_from_class(klass);
+  AdaGObjectClass adaklass = ADA_CLASS_FROM_C_CLASS(klass);
   adaklass->ada_property_getter = ada_get_handler;
   adaklass->ada_property_setter = ada_set_handler;
 }
