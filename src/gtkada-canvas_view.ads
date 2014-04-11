@@ -298,7 +298,7 @@ package Gtkada.Canvas_View is
    ------------------
 
    type Draw_Context is record
-      Cr     : Cairo.Cairo_Context;
+      Cr     : Cairo.Cairo_Context := Cairo.Null_Context;
       Layout : Pango.Layout.Pango_Layout := null;
    end record;
    --  Context to perform the actual drawing
@@ -960,6 +960,9 @@ package Gtkada.Canvas_View is
    overriding function Bounding_Box
      (Self : not null access Container_Item_Record)
       return Item_Rectangle;
+   overriding procedure Set_Position
+     (Self  : not null access Container_Item_Record;
+      Pos   : Gtkada.Style.Point);
 
    ----------------
    -- Rectangles --
@@ -1323,7 +1326,7 @@ private
       --  Attributes of the last button_press event, used to properly handle
       --  dragging and avoid recomputing the selectd item on button_release.
 
-      Items : Item_And_Position_Lists.List;
+      Dragged_Items : Item_And_Position_Lists.List;
       --  The items that are being dragged.
 
       In_Drag : Boolean := False;

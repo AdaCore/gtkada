@@ -168,6 +168,13 @@ package body Gtkada.Canvas_View is
       Event : Gdk_Event_Motion) return Boolean;
    --  Low-level handling of mouse events.
 
+   procedure Refresh_Link_Layout
+     (Model : not null access Canvas_Model_Record'Class;
+      Items : Item_And_Position_Lists.List :=
+        Item_And_Position_Lists.Empty_List);
+   --  Refresh the layout for all links (or only the ones linked to Item, or
+   --  indirectly to a link to Item).
+
    ----------
    -- Free --
    ----------
@@ -425,21 +432,22 @@ package body Gtkada.Canvas_View is
    -----------------------------------------
 
    procedure On_Item_Contents_Changed_For_View
-     (View   : access GObject_Record'Class;
+     (View : access GObject_Record'Class;
       Item : Abstract_Item)
    is
+      pragma Unreferenced (Item);
       Self : constant Canvas_View := Canvas_View (View);
-      Rect : constant Window_Rectangle :=
-        Self.Model_To_Window (Item.Model_Bounding_Box);
+
+      --  ??? Ideally we should only redraw the minimal area
+--        Rect : constant View_Rectangle :=
+--          Self.Model_To_View (Item.Model_Bounding_Box);
    begin
-      Gdk.Window.Invalidate_Rect
-        (Self.Get_Window,
-         Rect                =>
-           (X      => Gint (Rect.X),
-            Y      => Gint (Rect.Y),
-            Width  => Gint (Rect.Width),
-            Height => Gint (Rect.Height)),
-         Invalidate_Children => True);
+      Self.Queue_Draw;
+--        Self.Queue_Draw_Area
+--          (X      => Gint (Rect.X),
+--           Y      => Gint (Rect.Y),
+--           Width  => Gint (Rect.Width),
+--           Height => Gint (Rect.Height));
    end On_Item_Contents_Changed_For_View;
 
    -------------
@@ -526,6 +534,11 @@ package body Gtkada.Canvas_View is
 
             when Gdk.Event.Button_Release =>
                if Self.In_Drag then
+
+                  --  Validate the position of items and recompute all links,
+                  --  not just the ones that moved.
+                  Self.Model.Refresh_Layout;
+
                   Details.Event_Type := End_Drag;
                   Details.Toplevel_Item :=
                     Self.Last_Button_Press.Toplevel_Item;
@@ -553,10 +566,12 @@ package body Gtkada.Canvas_View is
          end if;
 
          Self.In_Drag := False;
+         Self.Dragged_Items.Clear;
          return True;
       end if;
 
       Self.In_Drag := False;
+      Self.Dragged_Items.Clear;
       return False;
    end On_Button_Event;
 
@@ -568,11 +583,15 @@ package body Gtkada.Canvas_View is
      (View  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event_Motion) return Boolean
    is
+      use Item_And_Position_Lists;
       Self    : constant Canvas_View := Canvas_View (View);
       Details : aliased Canvas_Event_Details;
       Dx, Dy  : Gdouble;
       Area, B : Model_Rectangle;
+      BB      : Item_Rectangle;
       X, Y    : Model_Coordinate;
+      C       : Item_And_Position_Lists.Cursor;
+      It      : Item_And_Position;
    begin
       if Self.Model /= null
         and then Self.Last_Button_Press.Allowed_Drag_Area /= No_Drag_Allowed
@@ -588,6 +607,14 @@ package body Gtkada.Canvas_View is
                Self.Item_Event (Details'Unchecked_Access);
 
                Self.Topleft_At_Drag_Start := Self.Topleft;
+
+               --  ??? Should add all selected items
+               if Details.Toplevel_Item /= null then
+                  Self.Dragged_Items.Append
+                    ((Item => Details.Toplevel_Item,
+                      Pos  => (X => Details.Toplevel_Item.Position.X,
+                               Y => Details.Toplevel_Item.Position.Y)));
+               end if;
             end if;
          end if;
 
@@ -601,32 +628,67 @@ package body Gtkada.Canvas_View is
               Self.Window_To_Model ((X => Event.X, Y => Event.Y));
             Self.Item_Event (Details'Unchecked_Access);
 
-            if Details.Toplevel_Item = null then
+            if Self.Dragged_Items.Is_Empty then
                --  Compute the area that we are allowed to make visible. This
                --  is the combination of the allowed area and the currently
                --  visible one.
 
-               Area := Self.Get_Visible_Area;
-               B    := Self.Last_Button_Press.Allowed_Drag_Area;
-               Union (B, Area);
-
                X := Self.Topleft_At_Drag_Start.X
                  - Details.Root_Point.X
                  + Self.Last_Button_Press.Root_Point.X;
-               X := Model_Coordinate'Max (X, B.X);
-               X := Model_Coordinate'Min (X, B.X + B.Width - Area.Width);
 
                Y := Self.Topleft_At_Drag_Start.Y
                  - Details.Root_Point.Y
                  + Self.Last_Button_Press.Root_Point.Y;
-               Y := Model_Coordinate'Max (Y, B.Y);
-               Y := Model_Coordinate'Min (Y, B.Y + B.Height - Area.Height);
+
+               if Self.Last_Button_Press.Allowed_Drag_Area /=
+                 Drag_Anywhere
+               then
+                  Area := Self.Get_Visible_Area;
+                  B    := Self.Last_Button_Press.Allowed_Drag_Area;
+                  Union (B, Area);
+
+                  X := Model_Coordinate'Max (X, B.X);
+                  X := Model_Coordinate'Min (X, B.X + B.Width - Area.Width);
+                  Y := Model_Coordinate'Max (Y, B.Y);
+                  Y := Model_Coordinate'Min (Y, B.Y + B.Height - Area.Height);
+               end if;
 
                Self.Topleft := (X, Y);
 
                Self.Queue_Draw;
+
             else
-               null;
+               C := Self.Dragged_Items.First;
+               while Has_Element (C) loop
+                  It := Element (C);
+
+                  X := It.Pos.X + Details.Root_Point.X
+                    - Self.Last_Button_Press.Root_Point.X;
+                  Y := It.Pos.Y + Details.Root_Point.Y
+                    - Self.Last_Button_Press.Root_Point.Y;
+
+                  if Self.Last_Button_Press.Allowed_Drag_Area /=
+                    Drag_Anywhere
+                  then
+                     BB := It.Item.Bounding_Box;
+                     B  := Self.Last_Button_Press.Allowed_Drag_Area;
+
+                     X := Model_Coordinate'Max (X, B.X);
+                     X := Model_Coordinate'Min (X, B.X + B.Width - BB.Width);
+                     Y := Model_Coordinate'Max (Y, B.Y);
+                     Y := Model_Coordinate'Min (Y, B.Y + B.Height - BB.Height);
+                  end if;
+
+                  It.Item.Set_Position ((X => X, Y => Y));
+                  Next (C);
+               end loop;
+
+               Refresh_Link_Layout (Self.Model, Self.Dragged_Items);
+
+               --  Should redo the layout for links, but this might be
+               --  expensive.
+               Self.Queue_Draw;
             end if;
          end if;
       end if;
@@ -1779,37 +1841,69 @@ package body Gtkada.Canvas_View is
       end case;
    end Refresh_Layout;
 
-   --------------------
-   -- Refresh_Layout --
-   --------------------
+   -------------------------
+   -- Refresh_Link_Layout --
+   -------------------------
 
-   procedure Refresh_Layout (Self : not null access Canvas_Model_Record) is
-      Context : Draw_Context;
+   procedure Refresh_Link_Layout
+     (Model : not null access Canvas_Model_Record'Class;
+      Items : Item_And_Position_Lists.List :=
+        Item_And_Position_Lists.Empty_List)
+   is
+      pragma Unreferenced (Items);
+      Context : constant Draw_Context := (Cr => <>, Layout => Model.Layout);
 
       procedure Reset_Link_Layout
-        (Item : not null access Abstract_Item_Record'Class);
+        (It : not null access Abstract_Item_Record'Class);
+      --  Invalid the current layout for the link
+
+      procedure Do_Link_Layout
+        (It : not null access Abstract_Item_Record'Class);
+      --  Recompute the layout for the link (and first to any link it is
+      --  linked to).
+
       procedure Reset_Link_Layout
-        (Item : not null access Abstract_Item_Record'Class) is
+        (It : not null access Abstract_Item_Record'Class) is
       begin
-         if Item.all in Canvas_Link_Record'Class then
-            Unchecked_Free (Canvas_Link_Record'Class (Item.all).Points);
+         --  ??? Should only reset layout for the links to any of items, or
+         --  links to those links.
+         --  This is inefficient to compute in general, so perhaps we should
+         --  instead provide an overridable primitive operation on the model.
+         if It.all in Canvas_Link_Record'Class then
+            Unchecked_Free (Canvas_Link_Record'Class (It.all).Points);
          end if;
       end Reset_Link_Layout;
 
       procedure Do_Link_Layout
-        (Item : not null access Abstract_Item_Record'Class);
-      procedure Do_Link_Layout
-        (Item : not null access Abstract_Item_Record'Class)
+        (It : not null access Abstract_Item_Record'Class)
       is
          Link : Canvas_Link;
       begin
-         if Item.all in Canvas_Link_Record'Class then
-            Link := Canvas_Link (Item);
+         if It.all in Canvas_Link_Record'Class then
+            Link := Canvas_Link (It);
             if Link.Points = null then
                Link.Refresh_Layout (Context);
             end if;
          end if;
       end Do_Link_Layout;
+
+   begin
+      --  To properly do the layout of links, we must first compute the layout
+      --  of any item they are linked to, including other links. So we do the
+      --  following:
+      --     reset all previous layout computation
+      --     when we layout a link, we first layout its end
+
+      Model.For_Each_Item (Reset_Link_Layout'Access);
+      Model.For_Each_Item (Do_Link_Layout'Access);
+   end Refresh_Link_Layout;
+
+   --------------------
+   -- Refresh_Layout --
+   --------------------
+
+   procedure Refresh_Layout (Self : not null access Canvas_Model_Record) is
+      Context : constant Draw_Context := (Cr => <>, Layout => Self.Layout);
 
       procedure Do_Container_Layout
         (Item : not null access Abstract_Item_Record'Class);
@@ -1823,20 +1917,9 @@ package body Gtkada.Canvas_View is
       end Do_Container_Layout;
 
    begin
-      Context.Layout := Self.Layout;
-
-      --  To properly do the layout of links, we must first compute the layout
-      --  of any item they are linked to, including other links. So we do the
-      --  following:
-      --     reset all previous layout computation
-      --     when we layout a link, we first layout its end
-
-      Canvas_Model_Record'Class (Self.all).For_Each_Item
-        (Reset_Link_Layout'Access);
       Canvas_Model_Record'Class (Self.all).For_Each_Item
         (Do_Container_Layout'Access);
-      Canvas_Model_Record'Class (Self.all).For_Each_Item
-        (Do_Link_Layout'Access);
+      Refresh_Link_Layout (Self);
 
       Self.Layout_Changed;
    end Refresh_Layout;
@@ -2015,6 +2098,19 @@ package body Gtkada.Canvas_View is
    begin
       return Self.Computed_Position;
    end Position;
+
+   ------------------
+   -- Set_Position --
+   ------------------
+
+   overriding procedure Set_Position
+     (Self  : not null access Container_Item_Record;
+      Pos   : Gtkada.Style.Point)
+   is
+   begin
+      Self.Computed_Position := Pos;
+      Canvas_Item_Record (Self.all).Set_Position (Pos);  --  inherited
+   end Set_Position;
 
    ------------------
    -- Set_Min_Size --

@@ -87,10 +87,13 @@ package body Create_Canvas_View_Events is
          Self.Console.Set_Text (Base_Text);
       end if;
 
+      Self.Model.Item_Contents_Changed (Self.Console);
+
       if Event.Event_Type = Button_Press then
          if Event.Toplevel_Item /= null then
             --  Enable moving the item
-            Event.Allowed_Drag_Area := Drag_Anywhere;
+            Event.Allowed_Drag_Area := --  Drag_Anywhere;
+              Self.Model.Bounding_Box;
          else
             --  Enable scrolling by dragging the background. However, there is
             --  no point showing an area where there is no item, so we limit
@@ -99,8 +102,6 @@ package body Create_Canvas_View_Events is
               Self.Model.Bounding_Box (Margin => View_Margin / Self.Get_Scale);
          end if;
       end if;
-
-      Self.Model.Refresh_Layout;
    end On_Item_Event;
 
    ---------
@@ -114,7 +115,7 @@ package body Create_Canvas_View_Events is
       Scrolled      : Gtk_Scrolled_Window;
       Black, Font   : Drawing_Style;
 
-      L1, L2        : Canvas_Link;
+      L1, L2, L3    : Canvas_Link;
       It1, It3      : Rect_Item;
       It2           : Polyline_Item;
 
@@ -155,11 +156,18 @@ package body Create_Canvas_View_Events is
       It3.Set_Position ((50.0, 220.0));
       Model.Add (It3);
 
-      L1 := Gtk_New (From => It1, To => It2, Style => Gtk_New);
+      L1 := Gtk_New (From => It1, To => It2, Style => Gtk_New,
+                     Routing => Straight);
       Model.Add (L1);
 
-      L2 := Gtk_New (From => It2, To => It3, Style => Gtk_New);
+      L2 := Gtk_New (From => It2, To => It3, Style => Gtk_New,
+                     Routing => Straight);
       Model.Add (L2);
+
+      L3 := Gtk_New (From => L1, To => L2,
+                     Style => Gtk_New (Dashes => (4.0, 4.0)),
+                     Routing => Straight);
+      Model.Add (L3);
 
       It3 := Gtk_New_Rect (Black, 40.0, 80.0);
       It3.Set_Position ((650.0, 400.0));
