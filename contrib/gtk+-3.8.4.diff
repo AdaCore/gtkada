@@ -1,3 +1,10 @@
+2014-04-16	Nicolas Setton  <setton@adacore.com>
+
+	* gtk/gtktextview.c (gtk_text_view_value_changed): After scroll,
+	invalidate the whole text view to force a redraw. Fixes
+	display bugs on Windows and Mac OS.
+	For N217-012.
+
 2013-10-17  Raphael Amiard  <amiard@adacore.com>
 
 	* gtk/gtktextlayout.c (gtk_text_layout_set_screen_width): Only
@@ -438,3 +445,24 @@
    layout->screen_width = width;
 
    DV (g_print ("invalidating all due to new screen width (%s)\n", G_STRLOC));
+--- gtk/gtktextview.c.orig	2014-04-16 17:59:45.297600000 -0400
++++ gtk/gtktextview.c	2014-04-16 18:26:04.095600000 -0400
+@@ -8154,6 +8154,18 @@
+   gtk_text_view_update_handles (text_view,
+                                 _gtk_text_handle_get_mode (priv->text_handle));
+ 
++  /* Request a redraw of the whole window, to workaround scroll display bug. */
++  if (gtk_widget_get_realized (GTK_WIDGET (text_view)))
++    {
++      gdk_window_invalidate_rect (priv->text_window->bin_window, NULL, FALSE);
++
++      if (priv->left_window)
++         gdk_window_invalidate_rect (priv->left_window->bin_window, NULL, FALSE);
++
++      if (priv->right_window)
++         gdk_window_invalidate_rect (priv->right_window->bin_window, NULL, FALSE);
++    }
++
+   DV(g_print(">End scroll offset changed handler ("G_STRLOC")\n"));
+ }
+ 
