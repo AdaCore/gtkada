@@ -3432,12 +3432,12 @@ package Gtk.Widget is
    --  call gdk_drag_status and *not* finish the drag. If the data was received
    --  in response to a Gtk.Widget.Gtk_Widget::drag-drop signal (and this is
    --  the last target to be received), the handler for this signal is expected
-   --  to process the received data and then call gtk_drag_finish, setting the
+   --  to process the received data and then call Gtk.Dnd.Finish, setting the
    --  Success parameter depending on whether the data was processed
    --  successfully.
    --
    --  The handler may inspect the selected action with
-   --  Gdk.Drag_Contexts.Get_Selected_Action before calling gtk_drag_finish,
+   --  Gdk.Drag_Contexts.Get_Selected_Action before calling Gtk.Dnd.Finish,
    --  e.g. to implement Gdk.Drag_Contexts.Action_Ask as shown in the following
    --  example: |[ void drag_data_received (GtkWidget *widget, GdkDragContext
    --  *context, gint x, gint y, GtkSelectionData *data, guint info, guint
@@ -3498,8 +3498,8 @@ package Gtk.Widget is
    --  cursor position is in a drop zone or not. If it is not in a drop zone,
    --  it returns False and no further processing is necessary. Otherwise, the
    --  handler returns True. In this case, the handler must ensure that
-   --  gtk_drag_finish is called to let the source know that the drop is done.
-   --  The call to gtk_drag_finish can be done either directly or in a
+   --  Gtk.Dnd.Finish is called to let the source know that the drop is done.
+   --  The call to Gtk.Dnd.Finish can be done either directly or in a
    --  Gtk.Widget.Gtk_Widget::drag-data-received handler which gets triggered
    --  by calling Gtk.Widget.Drag_Get_Data to receive the data for one or more
    --  of the supported targets.

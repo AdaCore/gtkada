@@ -459,6 +459,7 @@ naming.cname_to_adaname = {
                                     "Gdk.Pixbuf.Gdk_New_From_File",
     "gdk_pixbuf_new":               "Gdk.Pixbuf.Gdk_New",
     "gdk_pixbuf_new_subpixbuf":     "Gdk.Pixbuf.Gdk_New_Subpixbuf",
+    "gtk_drag_finish":              "Gtk.Dnd.Finish",
 
     "TRUE": "True",
     "FALSE": "False",
