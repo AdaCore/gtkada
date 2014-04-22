@@ -2891,10 +2891,11 @@ package body Gtkada.Canvas_View is
 
       function To_Line (P1, P2 : Item_Point) return Line;
       --  Compute the parameters for the line
+      --     Ax + By = C
 
       function To_Line (P1, P2 : Item_Point) return Line is
          A : constant Item_Coordinate := P2.Y - P1.Y;
-         B : constant Item_Coordinate := P2.X - P1.X;
+         B : constant Item_Coordinate := P1.X - P2.X;
       begin
          return (A => A,
                  B => B,
@@ -2903,7 +2904,7 @@ package body Gtkada.Canvas_View is
 
       L1 : constant Line := To_Line (P11, P12);
       R3 : constant Item_Coordinate := L1.A * P21.X + L1.B * P21.Y - L1.C;
-      R4 : constant Item_Coordinate := L1.A * P22.X + L1.B * P21.Y - L1.C;
+      R4 : constant Item_Coordinate := L1.A * P22.X + L1.B * P22.Y - L1.C;
       L2 : constant Line := To_Line (P21, P22);
       R1 : constant Item_Coordinate := L2.A * P11.X + L2.B * P11.Y - L2.C;
       R2 : constant Item_Coordinate := L2.A * P12.X + L2.B * P12.Y - L2.C;
@@ -2932,14 +2933,12 @@ package body Gtkada.Canvas_View is
       --  Line segments intersect, compute intersection point
       Denom := L1.A * L2.B - L2.A * L1.B;
       if Denom = 0.0 then
-         --  colinears
---           if Inside (P11, S2)
---             or else Inside (P12, S2)
---           then
---              return ;
---           else
-         return (Gdouble'First, Gdouble'First);
---         end if;
+         if abs (L1.A * P21.X + L1.B * P21.Y - L1.C) < 0.00001 then
+            --  colinears
+            return P11;
+         else
+            return (Gdouble'First, Gdouble'First);
+         end if;
       end if;
 
       return
@@ -2986,7 +2985,7 @@ package body Gtkada.Canvas_View is
          end if;
       end if;
 
-      return P1; --  Container_Item_Record (Self.all).Clip_Line (P1, P2);
+      return P1;
    end Clip_Line;
 
 end Gtkada.Canvas_View;
