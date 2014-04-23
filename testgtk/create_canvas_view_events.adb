@@ -94,7 +94,9 @@ package body Create_Canvas_View_Events is
          Self.Console.Set_Text (Base_Text);
       end if;
 
-      Self.Model.Item_Contents_Changed (Self.Console);
+      --  layout changed, since the size of the console has changed
+      Self.Model.Refresh_Layout;
+
       return False;  --  fallback to other handlers
    end On_Item_Event;
 
