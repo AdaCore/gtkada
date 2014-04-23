@@ -21,19 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Tags;            use Ada.Tags;
-with Cairo;               use Cairo;
-with Gdk.Event;           use Gdk.Event;
-with Gdk.Types;           use Gdk.Types;
-with Glib;                use Glib;
-with Glib.Object;         use Glib.Object;
-with Gdk.RGBA;            use Gdk.RGBA;
-with Gtk.Enums;           use Gtk.Enums;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Widget;          use Gtk.Widget;
-with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
-with Gtkada.Style;        use Gtkada.Style;
-with Pango.Font;          use Pango.Font;
+with Ada.Tags;                 use Ada.Tags;
+with Cairo;                    use Cairo;
+with Glib;                     use Glib;
+with Glib.Object;              use Glib.Object;
+with Gdk.RGBA;                 use Gdk.RGBA;
+with Gdk.Types;                use Gdk.Types;
+with Gtk.Enums;                use Gtk.Enums;
+with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
+with Gtk.Widget;               use Gtk.Widget;
+with Gtkada.Canvas_View;       use Gtkada.Canvas_View;
+with Gtkada.Canvas_View.Views; use Gtkada.Canvas_View.Views;
+with Gtkada.Style;             use Gtkada.Style;
+with Pango.Font;               use Pango.Font;
 
 package body Create_Canvas_View_Events is
 
@@ -43,15 +43,14 @@ package body Create_Canvas_View_Events is
    end record;
    type Demo_View is access all Demo_View_Record'Class;
 
-   procedure On_Item_Event
-      (View  : not null access GObject_Record'Class;
-       Event : Event_Details_Access);
+   function On_Item_Event
+     (View  : not null access GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
    --  Called when the canvas reports an event
 
-   function On_Scroll_Event
-     (View  : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event_Scroll) return Boolean;
-   --  Handles mouse-wheel events
+   function On_Item_Event_Zoom is new On_Item_Event_Zoom_Generic
+     (Modifier => Mod1_Mask);
 
    ----------
    -- Help --
@@ -77,15 +76,15 @@ package body Create_Canvas_View_Events is
    -- On_Item_Event --
    -------------------
 
-   procedure On_Item_Event
+   function On_Item_Event
       (View  : not null access GObject_Record'Class;
        Event : Event_Details_Access)
+     return Boolean
    is
       Self : constant Demo_View := Demo_View (View);
       Base_Text : constant String :=
         Canvas_Event_Type'Image (Event.Event_Type)
         & " (button" & Guint'Image (Event.Button) & ")";
-
    begin
       if Event.Toplevel_Item /= null then
          Self.Console.Set_Text
@@ -96,50 +95,8 @@ package body Create_Canvas_View_Events is
       end if;
 
       Self.Model.Item_Contents_Changed (Self.Console);
-
-      if Event.Event_Type = Button_Press then
-         if Event.Toplevel_Item /= null then
-            --  Enable moving the item anywhere
-            Event.Allowed_Drag_Area := Drag_Anywhere;
-         else
-            --  Enable scrolling by dragging the background. However, there is
-            --  no point showing an area where there is no item, so we limit
-            --  the scrolling.
-            Event.Allowed_Drag_Area :=
-              Self.Model.Bounding_Box (Margin => View_Margin / Self.Get_Scale);
-         end if;
-      end if;
+      return False;  --  fallback to other handlers
    end On_Item_Event;
-
-   ---------------------
-   -- On_Scroll_Event --
-   ---------------------
-
-   function On_Scroll_Event
-     (View  : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event_Scroll) return Boolean
-   is
-      Self : constant Canvas_View := Canvas_View (View);
-      S : Gdouble;
-   begin
-      if Event.State = Mod1_Mask then
-         case Event.Direction is
-            when Scroll_Up =>
-               S := Self.Get_Scale * 1.1;
-            when Scroll_Down =>
-               S := Self.Get_Scale / 1.1;
-            when others =>
-               return False;
-         end case;
-
-         Self.Set_Scale
-           (S,
-            Center_On => Self.Window_To_Model ((Event.X, Event.Y)));
-         return True;
-      end if;
-
-      return False;
-   end On_Scroll_Event;
 
    ---------
    -- Run --
@@ -162,8 +119,14 @@ package body Create_Canvas_View_Events is
 
       Canvas := new Demo_View_Record;
       Gtkada.Canvas_View.Initialize (Canvas);
+
+      --  Connect this one first so that all events are traced
       Canvas.On_Item_Event (On_Item_Event'Access);
-      Canvas.On_Scroll_Event (On_Scroll_Event'Access);
+
+      --  Order is irrelevant here.
+      Canvas.On_Item_Event (On_Item_Event_Move_Item'Access);
+      Canvas.On_Item_Event (On_Item_Event_Scroll_Background'Access);
+      Canvas.On_Item_Event (On_Item_Event_Zoom'Access);
 
       Font := Gtk_New (Stroke => Null_RGBA,
                        Font   => (Name   => From_String ("sans 8"),

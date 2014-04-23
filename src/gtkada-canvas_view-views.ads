@@ -24,6 +24,8 @@
 
 --  Various support utilities for the grid and smart guides in the canvas
 
+with Glib.Object;
+
 package Gtkada.Canvas_View.Views is
 
    ----------------------------
@@ -64,6 +66,40 @@ package Gtkada.Canvas_View.Views is
       Area    : Model_Rectangle;
       Size    : Model_Coordinate);
    --  Draw a grid with dots in the background
+
+   ---------------
+   -- Callbacks --
+   ---------------
+   --  These procedures contain a number of example callbacks for "item_event"
+   --  which enable various behaviors. Depending on your application, one of
+   --  these might be useful as is, or a starting point for your own callback
+
+   function On_Item_Event_Move_Item
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  Add this to the list of callbacks for "item_event" to enable dragging
+   --  items with the mouse.
+
+   function On_Item_Event_Scroll_Background
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  Add this to the list of callbacks for "item_event" to enable scrolling
+   --  the canvas by dragging the background. Scrolling is limited to the area
+   --  that actually contains items.
+
+   generic
+      Modifier : Gdk.Types.Gdk_Modifier_Type := Mod1_Mask;
+      Factor   : Gdouble := 1.1;
+   function On_Item_Event_Zoom_Generic
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  Add this to the list of callbacks for "item_event" to enable zooming in
+   --  or out with the mouse wheel and a keyboard modifier like ctrl, alt,...
+   --  (since the mouse wheel on its own is used for vertical scrolling by
+   --  gtk+, and for horizontal scrolling when used with shift).
 
    --------------
    -- Snapping --

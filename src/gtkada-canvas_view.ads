@@ -753,7 +753,8 @@ package Gtkada.Canvas_View is
    --  Values for the Event_Details.Allowed_Drag_Area field
 
    type Canvas_Event_Type is
-     (Button_Press, Button_Release, Start_Drag, In_Drag, End_Drag, Key_Press);
+     (Button_Press, Button_Release, Start_Drag, In_Drag, End_Drag, Key_Press,
+      Scroll);
    --  The event types that are emitted for the Item_Event signal:
    --  * Button_Press is called when the user presses any mouse buttton either
    --    on an item or in the background.
@@ -778,6 +779,11 @@ package Gtkada.Canvas_View is
    --  * Key_Press is used when the user types something on the keyboard while
    --    the canvas has the focus. It can be used to move items with the arrow
    --    keys, edit an item,...
+   --
+   --  * Scroll is used when the user uses the mouse wheel. It is not possible
+   --    to start a drag from this event.
+   --    In the Canvas_Event_Details, the button is set to either 5 or 6,
+   --    depending on the direction of the scrolling.
 
    type Canvas_Event_Details is record
       Event_Type     : Canvas_Event_Type;
@@ -821,14 +827,15 @@ package Gtkada.Canvas_View is
    --  This can be used for instance to synchronize multiple views, or display
    --  a "mini-map" of the whole view.
 
-   procedure Item_Event
+   function Item_Event
      (Self    : not null access Canvas_View_Record'Class;
-      Details : Event_Details_Access);
+      Details : Event_Details_Access) return Boolean;
    procedure On_Item_Event
      (Self : not null access Canvas_View_Record'Class;
-      Call : not null access procedure
+      Call : not null access function
         (Self    : not null access GObject_Record'Class;
-         Details : Event_Details_Access);
+         Details : Event_Details_Access)
+      return Boolean;
       Slot : access GObject_Record'Class := null);
    Signal_Item_Event : constant Glib.Signal_Name := "item_event";
    --  This signal is emitted whenever the user interacts with an item (button
@@ -836,6 +843,13 @@ package Gtkada.Canvas_View is
    --  It is recommended to connect to this signal rather than the lower-level
    --  Button_Press_Event, Button_Release_Event,... since most information is
    --  provided here in the form of the details parameter.
+   --
+   --  The callback should return True if the event was processed, or False if
+   --  the default handling should be performed.
+   --
+   --  The package Gtkada.Canvas_View.Views contains a number of examples of
+   --  compatible callbacks which enable behaviors such as a moving items,
+   --  scrolling the canvas by dragging the background,...
 
    ------------------------
    -- Object hierarchies --

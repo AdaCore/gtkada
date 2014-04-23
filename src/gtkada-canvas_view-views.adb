@@ -113,4 +113,76 @@ package body Gtkada.Canvas_View.Views is
       Style.Finish_Path (Context.Cr);
    end Draw_Grid_Dots;
 
+   -------------------------------------
+   -- On_Item_Event_Scroll_Background --
+   -------------------------------------
+
+   function On_Item_Event_Scroll_Background
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+   begin
+      if Event.Event_Type = Button_Press
+        and then Event.Toplevel_Item = null
+      then
+         --  Enable scrolling by dragging the background. However, there is
+         --  no point showing an area where there is no item, so we limit
+         --  the scrolling.
+         Event.Allowed_Drag_Area :=
+           Self.Model.Bounding_Box (Margin => View_Margin / Self.Get_Scale);
+         return True;
+      end if;
+      return False;
+   end On_Item_Event_Scroll_Background;
+
+   -----------------------------
+   -- On_Item_Event_Move_Item --
+   -----------------------------
+
+   function On_Item_Event_Move_Item
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      pragma Unreferenced (View);
+   begin
+      if Event.Event_Type = Button_Press
+        and then Event.Toplevel_Item /= null
+      then
+         --  Enable moving the item anywhere
+         Event.Allowed_Drag_Area := Drag_Anywhere;
+         return True;
+      end if;
+      return False;
+   end On_Item_Event_Move_Item;
+
+   --------------------------------
+   -- On_Item_Event_Zoom_Generic --
+   --------------------------------
+
+   function On_Item_Event_Zoom_Generic
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+      S    : Gdouble;
+   begin
+      if Event.Event_Type = Scroll then
+         if Event.State = Modifier then
+            if Event.Button = 5 then
+               S := Self.Get_Scale * Factor;
+            else
+               S := Self.Get_Scale / Factor;
+            end if;
+
+            Self.Set_Scale (S, Center_On => Event.M_Point);
+            return True;
+         end if;
+      end if;
+      return False;
+   end On_Item_Event_Zoom_Generic;
+
 end Gtkada.Canvas_View.Views;

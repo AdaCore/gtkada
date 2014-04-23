@@ -96,9 +96,9 @@ package body Gtkada.Canvas_View is
    function GValue_To_EDA (Value : GValue) return Event_Details_Access;
    function EDA_To_Address is new Ada.Unchecked_Conversion
      (Event_Details_Access, System.Address);
-   package EDA_Marshallers is new Object_Callback.Marshallers
+   package EDA_Marshallers is new Object_Return_Callback.Marshallers
      .Generic_Marshaller (Event_Details_Access, GValue_To_EDA);
-   procedure EDA_Emit
+   function EDA_Emit
      is new EDA_Marshallers.Emit_By_Name_Generic (EDA_To_Address);
    --  support for the "item_contents_changed" signal
 
@@ -166,6 +166,9 @@ package body Gtkada.Canvas_View is
    function On_Motion_Notify_Event
      (View  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event_Motion) return Boolean;
+   function On_Scroll_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Scroll) return Boolean;
    --  Low-level handling of mouse events.
 
    procedure Refresh_Link_Layout
@@ -179,6 +182,12 @@ package body Gtkada.Canvas_View is
      (P11, P12, P21, P22 : Item_Point) return Item_Point;
    --  Compute the intersection of the two segments (P11,P12) and (P21,P22).
    --  The result has X set to Gdouble'First when no intersection exists
+
+   procedure Compute_Item
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : in out Canvas_Event_Details);
+   --  Compute the item that was clicked on, from the coordinates stored in
+   --  Details.
 
    ----------
    -- Free --
@@ -493,9 +502,67 @@ package body Gtkada.Canvas_View is
       Self.On_Button_Press_Event (On_Button_Event'Access);
       Self.On_Button_Release_Event (On_Button_Event'Access);
       Self.On_Motion_Notify_Event (On_Motion_Notify_Event'Access);
+      Self.On_Scroll_Event (On_Scroll_Event'Access);
 
       Self.Set_Model (Model);
    end Initialize;
+
+   ------------------
+   -- Compute_Item --
+   ------------------
+
+   procedure Compute_Item
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : in out Canvas_Event_Details)
+   is
+      Context : Draw_Context;
+   begin
+      Context := (Cr     => Gdk.Cairo.Create (Self.Get_Window),
+                  Layout => null);
+      Details.Toplevel_Item := Self.Model.Toplevel_Item_At
+        (Details.M_Point, Context => Context);
+      Cairo.Destroy (Context.Cr);
+   end Compute_Item;
+
+   ---------------------
+   -- On_Scroll_Event --
+   ---------------------
+
+   function On_Scroll_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Scroll) return Boolean
+   is
+      Self    : constant Canvas_View := Canvas_View (View);
+      Details : aliased Canvas_Event_Details;
+      Button  : Guint;
+   begin
+      if Self.Model /= null then
+         case Event.Direction is
+            when Scroll_Up | Scroll_Left =>
+               Button := 5;
+            when Scroll_Down | Scroll_Right =>
+               Button := 6;
+            when Scroll_Smooth =>
+               if Event.Delta_Y > 0.0 then
+                  Button := 6;
+               else
+                  Button := 5;
+               end if;
+         end case;
+
+         Details :=
+           (Event_Type => Scroll,
+            Button     => Button,
+            State      => Event.State,
+            Root_Point => (Event.X_Root, Event.Y_Root),
+            M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
+            Toplevel_Item => null,
+            Allowed_Drag_Area => No_Drag_Allowed);
+         Compute_Item (Self, Details);
+         return Self.Item_Event (Details'Unchecked_Access);
+      end if;
+      return False;
+   end On_Scroll_Event;
 
    ---------------------
    -- On_Button_Event --
@@ -508,20 +575,6 @@ package body Gtkada.Canvas_View is
    is
       Self    : constant Canvas_View := Canvas_View (View);
       Details : aliased Canvas_Event_Details;
-
-      procedure Compute_Item;
-      --  compute the selected item
-
-      procedure Compute_Item is
-         Context : Draw_Context;
-      begin
-         Context := (Cr     => Gdk.Cairo.Create (Self.Get_Window),
-                     Layout => null);
-         Details.Toplevel_Item := Self.Model.Toplevel_Item_At
-           (Details.M_Point, Context => Context);
-         Cairo.Destroy (Context.Cr);
-      end Compute_Item;
-
    begin
       if Self.Model /= null then
          Details :=
@@ -535,7 +588,7 @@ package body Gtkada.Canvas_View is
 
          case Event.The_Type is
             when Gdk.Event.Button_Press =>
-               Compute_Item;
+               Compute_Item (Self, Details);
 
             when Gdk.Event.Button_Release =>
                if Self.In_Drag then
@@ -556,7 +609,7 @@ package body Gtkada.Canvas_View is
                      Details.Toplevel_Item :=
                        Self.Last_Button_Press.Toplevel_Item;
                   else
-                     Compute_Item;
+                     Compute_Item (Self, Details);
                   end if;
                end if;
 
@@ -564,15 +617,15 @@ package body Gtkada.Canvas_View is
                return False;
          end case;
 
-         Self.Item_Event (Details'Unchecked_Access);
+         if Self.Item_Event (Details'Unchecked_Access) then
+            if Details.Event_Type = Button_Press then
+               Self.Last_Button_Press := Details;
+            end if;
 
-         if Details.Event_Type = Button_Press then
-            Self.Last_Button_Press := Details;
+            Self.In_Drag := False;
+            Self.Dragged_Items.Clear;
+            return True;
          end if;
-
-         Self.In_Drag := False;
-         Self.Dragged_Items.Clear;
-         return True;
       end if;
 
       Self.In_Drag := False;
@@ -597,6 +650,7 @@ package body Gtkada.Canvas_View is
       X, Y    : Model_Coordinate;
       C       : Item_And_Position_Lists.Cursor;
       It      : Item_And_Position;
+      Dummy   : Boolean;
    begin
       if Self.Model /= null
         and then Self.Last_Button_Press.Allowed_Drag_Area /= No_Drag_Allowed
@@ -609,7 +663,7 @@ package body Gtkada.Canvas_View is
                Self.In_Drag := True;
                Details := Self.Last_Button_Press;
                Details.Event_Type := Start_Drag;
-               Self.Item_Event (Details'Unchecked_Access);
+               Dummy := Self.Item_Event (Details'Unchecked_Access);
 
                Self.Topleft_At_Drag_Start := Self.Topleft;
 
@@ -631,7 +685,7 @@ package body Gtkada.Canvas_View is
             Details.Root_Point := (Event.X_Root, Event.Y_Root);
             Details.M_Point :=
               Self.Window_To_Model ((X => Event.X, Y => Event.Y));
-            Self.Item_Event (Details'Unchecked_Access);
+            Dummy := Self.Item_Event (Details'Unchecked_Access);
 
             if Self.Dragged_Items.Is_Empty then
                --  Compute the area that we are allowed to make visible. This
@@ -785,6 +839,8 @@ package body Gtkada.Canvas_View is
          Type_Name    => "GtkadaCanvasView",
          Parameters   => (1 => (1 => GType_None),
                           2 => (1 => GType_Pointer)),
+         Returns      => (1 => GType_None,
+                          2 => GType_Boolean),
          Class_Init   => View_Class_Init'Access)
       then
          Info := new GInterface_Info'
@@ -1298,12 +1354,13 @@ package body Gtkada.Canvas_View is
    -- Item_Event --
    ----------------
 
-   procedure Item_Event
+   function Item_Event
      (Self    : not null access Canvas_View_Record'Class;
       Details : Event_Details_Access)
+      return Boolean
    is
    begin
-      EDA_Emit
+      return EDA_Emit
         (Self, Signal_Item_Event & ASCII.NUL, Details);
    end Item_Event;
 
@@ -1313,18 +1370,19 @@ package body Gtkada.Canvas_View is
 
    procedure On_Item_Event
      (Self : not null access Canvas_View_Record'Class;
-      Call : not null access procedure
+      Call : not null access function
         (Self    : not null access GObject_Record'Class;
-         Details : Event_Details_Access);
+         Details : Event_Details_Access)
+        return Boolean;
       Slot : access GObject_Record'Class := null)
    is
    begin
       if Slot = null then
-         Object_Callback.Connect
+         Object_Return_Callback.Connect
            (Self, Signal_Item_Event,
             EDA_Marshallers.To_Marshaller (Call));
       else
-         Object_Callback.Object_Connect
+         Object_Return_Callback.Object_Connect
            (Self, Signal_Item_Event,
             EDA_Marshallers.To_Marshaller (Call), Slot);
       end if;
