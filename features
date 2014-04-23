@@ -9,6 +9,22 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 3.8.3
+----------------------------
+
+N423-008 Creating signals with return types (2014-04-23)
+
+  It is now possible to create new signals that return values, when you
+  create new widgets. In particular, when a callback returns a boolean,
+  the propagation of the signal is stopped as soon as one of the callbacks
+  returns True.
+
+N326-016 Implementing gtk+ interfaces (2014-03-26)
+
+  It is now possible to implement gtk+ interfaces (for instance
+  Gtk_Scrollable) when you create new widgets. This required minor changes
+  to Glib.Object.Initialize_Class_Record.
+
 New features in GtkAda 3.8.2
 ----------------------------
 

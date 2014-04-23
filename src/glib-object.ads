@@ -282,6 +282,14 @@ package Glib.Object is
    --  defines two signals, the first with a single Gdk_Event parameter, the
    --  second with two ints parameters.
 
+   type Signal_Return_Types is array (Natural range <>) of GType;
+   No_Return_Types : constant Signal_Return_Types := (1 .. 0 => GType_None);
+   --  The expected return types for signal callbacks.
+   --  In general, callbacks are not expected to return any value. One special
+   --  case is callbacks returning a boolean (GType_Boolean). In such a case,
+   --  GtkAda assumes the return value is used to stop signal propagation when
+   --  it is true (indicating the signal has been handled).
+
    No_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
       (1 .. 0 => Gtkada.Types.Null_Ptr);
    Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
@@ -294,6 +302,7 @@ package Glib.Object is
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null);
    function Initialize_Class_Record
      (Ancestor     : GType;
@@ -301,6 +310,7 @@ package Glib.Object is
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null)
    return Boolean;
    --  Create the class record for a new object type.

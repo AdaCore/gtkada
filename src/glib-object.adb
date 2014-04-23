@@ -55,6 +55,7 @@ package body Glib.Object is
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null;
       Created      : out Boolean);
    --  Internal version of Initialize_Class_Record
@@ -311,13 +312,14 @@ package body Glib.Object is
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null)
    is
       Ignored : Boolean;
       pragma Unreferenced (Ignored);
    begin
       Initialize_Class_Record
-        (Ancestor, Class_Record, Type_Name, Signals, Parameters,
+        (Ancestor, Class_Record, Type_Name, Signals, Parameters, Returns,
          Class_Init, Created => Ignored);
    end Initialize_Class_Record;
 
@@ -331,13 +333,14 @@ package body Glib.Object is
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null)
       return Boolean
    is
       Created : Boolean;
    begin
       Initialize_Class_Record
-        (Ancestor, Class_Record.all, Type_Name, Signals, Parameters,
+        (Ancestor, Class_Record.all, Type_Name, Signals, Parameters, Returns,
          Class_Init, Created => Created);
       return Created;
    end Initialize_Class_Record;
@@ -352,6 +355,7 @@ package body Glib.Object is
       Type_Name    : String;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null;
       Created      : out Boolean)
    is
@@ -361,6 +365,8 @@ package body Glib.Object is
          Signals        : System.Address;
          Parameters     : System.Address;
          Max_Parameters : Gint;
+         Returns        : System.Address;
+         Max_Returns    : Gint;
          Class_Record   : not null access Ada_GObject_Class_Record;
          Type_Name      : String) return Integer;
       pragma Import (C, Internal, "ada_initialize_class_record");
@@ -391,8 +397,10 @@ package body Glib.Object is
          Signals'Address,
          Pa,
          Num,
-         Class_Record,
-         Type_Name & ASCII.NUL) /= 0;
+         Returns      => Returns'Address,
+         Max_Returns  => Returns'Length,
+         Class_Record => Class_Record,
+         Type_Name    => Type_Name & ASCII.NUL) /= 0;
 
       --  if Created then
          --  Register a type conversion hook: if the user adds a customer

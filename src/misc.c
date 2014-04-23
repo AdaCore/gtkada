@@ -376,6 +376,8 @@ ada_initialize_class_record
    char*         signals[],
    GType         parameters[],
    gint          max_parameters,
+   GType         returns[],
+   gint          max_returns,
    AdaGObjectClass klass,
    gchar*        type_name)
 {
@@ -439,16 +441,26 @@ ada_initialize_class_record
           closure = g_signal_type_cclosure_new
               (new_type, query.class_size + j * sizeof (void*)); /* offset */
 
+          GType return_type = G_TYPE_NONE;
+          GSignalAccumulator acc = NULL;
+
+          if (j < max_returns) {
+             return_type = returns[j];
+             if (return_type == G_TYPE_BOOLEAN) {
+                acc = g_signal_accumulator_true_handled;
+             }
+          }
+
           /* id = */ g_signal_newv
             (signals[j],                       /* signal_name */
              new_type,                         /* itype */
              G_SIGNAL_RUN_LAST,                /* signal_flags */
              closure,                          /* class_closure */
-             NULL,                             /* accumulator */
+             acc,                              /* accumulator */
              NULL,                             /* accu_data */
              g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
                Ada level ??? This probably makes the widget unusable from C */
-             G_TYPE_NONE,                      /* return_type */
+             return_type,                      /* return_type */
              count,                            /* n_params */
              parameters + j * max_parameters); /* param_types */
        }
