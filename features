@@ -25,6 +25,13 @@ N326-016 Implementing gtk+ interfaces (2014-03-26)
   Gtk_Scrollable) when you create new widgets. This required minor changes
   to Glib.Object.Initialize_Class_Record.
 
+N226-019 New widget Gtkada.Canvas_View (2014-03-20)
+
+  This new widget is a rewrite of Gtkada.Canvas. It provides a cleaner API
+  (clarifying confusion between the various coordinate systems for instance)
+  and has support for creating hierarchies of basic item (text, boxes,
+  polygons,..) to easily create more complex items.
+
 New features in GtkAda 3.8.2
 ----------------------------
 
