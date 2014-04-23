@@ -2423,12 +2423,26 @@ package body Gtkada.Canvas_View is
    is
       R : constant Rect_Item := new Rect_Item_Record;
    begin
-      R.Style         := Style;
-      R.Forced_Width  := Width;
-      R.Forced_Height := Height;
-      R.Radius        := Radius;
+      Initialize_Rect (R, Style, Width, Height, Radius);
       return R;
    end Gtk_New_Rect;
+
+   ---------------------
+   -- Initialize_Rect --
+   ---------------------
+
+   procedure Initialize_Rect
+     (Self          : not null access Rect_Item_Record'Class;
+      Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0;
+      Radius        : Model_Coordinate := 0.0)
+   is
+   begin
+      Self.Style         := Style;
+      Self.Forced_Width  := Width;
+      Self.Forced_Height := Height;
+      Self.Radius        := Radius;
+   end Initialize_Rect;
 
    -------------------------
    -- Resize_Fill_Pattern --
@@ -2512,12 +2526,26 @@ package body Gtkada.Canvas_View is
    is
       R   : constant Polyline_Item := new Polyline_Item_Record;
    begin
-      R.Style    := Style;
-      R.Close    := Close;
-      R.Relative := Relative;
-      R.Points   := new Item_Point_Array'(Points);
+      Initialize_Polyline (R, Style, Points, Close, Relative);
       return R;
    end Gtk_New_Polyline;
+
+   -------------------------
+   -- Initialize_Polyline --
+   -------------------------
+
+   procedure Initialize_Polyline
+     (Self     : not null access Polyline_Item_Record'Class;
+      Style    : Gtkada.Style.Drawing_Style;
+      Points   : Item_Point_Array;
+      Close    : Boolean := False;
+      Relative : Boolean := False) is
+   begin
+      Self.Style    := Style;
+      Self.Close    := Close;
+      Self.Relative := Relative;
+      Self.Points   := new Item_Point_Array'(Points);
+   end Initialize_Polyline;
 
    ------------------
    -- Size_Request --
@@ -2600,11 +2628,24 @@ package body Gtkada.Canvas_View is
    is
       R : constant Ellipse_Item := new Ellipse_Item_Record;
    begin
-      R.Style := Style;
-      R.Forced_Width := Width;
-      R.Forced_Height := Height;
+      Initialize_Ellipse (R, Style, Width, Height);
       return R;
    end Gtk_New_Ellipse;
+
+   ------------------------
+   -- Initialize_Ellipse --
+   ------------------------
+
+   procedure Initialize_Ellipse
+     (Self          : not null access Ellipse_Item_Record'Class;
+      Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0)
+   is
+   begin
+      Self.Style := Style;
+      Self.Forced_Width := Width;
+      Self.Forced_Height := Height;
+   end Initialize_Ellipse;
 
    ----------
    -- Draw --
@@ -2660,11 +2701,24 @@ package body Gtkada.Canvas_View is
    is
       R : constant Text_Item := new Text_Item_Record;
    begin
-      R.Style := Style;
-      R.Text  := new String'(Text);
-      R.Directed := Directed;
+      Initialize_Text (R, Style, Text, Directed);
       return R;
    end Gtk_New_Text;
+
+   ---------------------
+   -- Initialize_Text --
+   ---------------------
+
+   procedure Initialize_Text
+     (Self     : not null access Text_Item_Record'Class;
+      Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow) is
+   begin
+      Self.Style := Style;
+      Self.Text  := new String'(Text);
+      Self.Directed := Directed;
+   end Initialize_Text;
 
    --------------
    -- Set_Text --
@@ -2835,12 +2889,24 @@ package body Gtkada.Canvas_View is
       Text    : String := "")
      return Hr_Item
    is
-      Res : constant Hr_Item := new Hr_Item_Record;
+      R : constant Hr_Item := new Hr_Item_Record;
    begin
-      Res.Style := Style;
-      Res.Text := new String'(Text);
-      return Res;
+      Initialize_Hr (R, Style, Text);
+      return R;
    end Gtk_New_Hr;
+
+   -------------------
+   -- Initialize_Hr --
+   -------------------
+
+   procedure Initialize_Hr
+     (Self    : not null access Hr_Item_Record'Class;
+      Style   : Gtkada.Style.Drawing_Style;
+      Text    : String := "") is
+   begin
+      Self.Style := Style;
+      Self.Text := new String'(Text);
+   end Initialize_Hr;
 
    ----------
    -- Draw --

@@ -996,6 +996,11 @@ package Gtkada.Canvas_View is
       Width, Height : Model_Coordinate := -1.0;
       Radius        : Model_Coordinate := 0.0)
       return Rect_Item;
+   procedure Initialize_Rect
+     (Self          : not null access Rect_Item_Record'Class;
+      Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0;
+      Radius        : Model_Coordinate := 0.0);
    --  Create a new rectangle item.
    --  If either Width or Height are negative, they will be computed based on
    --  the children's requested size (if there are no children, a default size
@@ -1018,6 +1023,10 @@ package Gtkada.Canvas_View is
      (Style         : Gtkada.Style.Drawing_Style;
       Width, Height : Model_Coordinate := -1.0)
       return Ellipse_Item;
+   procedure Initialize_Ellipse
+     (Self          : not null access Ellipse_Item_Record'Class;
+      Style         : Gtkada.Style.Drawing_Style;
+      Width, Height : Model_Coordinate := -1.0);
    --  Create a new ellipse item.
    --  If either Width or Height are negative, they will be computed based on
    --  the children's requested size (if there are no children, a default size
@@ -1049,6 +1058,12 @@ package Gtkada.Canvas_View is
       Close    : Boolean := False;
       Relative : Boolean := False)
       return Polyline_Item;
+   procedure Initialize_Polyline
+     (Self     : not null access Polyline_Item_Record'Class;
+      Style    : Gtkada.Style.Drawing_Style;
+      Points   : Item_Point_Array;
+      Close    : Boolean := False;
+      Relative : Boolean := False);
    --  Create a new polyline item.
    --  If Relative is true, then each point is relative to the previous one
    --  (i.e. its coordinates are the previous points's coordinate plus the
@@ -1090,6 +1105,11 @@ package Gtkada.Canvas_View is
       Text     : Glib.UTF8_String;
       Directed : Text_Arrow_Direction := No_Text_Arrow)
       return Text_Item;
+   procedure Initialize_Text
+     (Self     : not null access Text_Item_Record'Class;
+      Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow);
    --  Create a new text item
    --
    --  Directed indicates whether the text should be followed (or preceded)
@@ -1135,6 +1155,10 @@ package Gtkada.Canvas_View is
      (Style   : Gtkada.Style.Drawing_Style;
       Text    : String := "")
       return Hr_Item;
+   procedure Initialize_Hr
+     (Self    : not null access Hr_Item_Record'Class;
+      Style   : Gtkada.Style.Drawing_Style;
+      Text    : String := "");
    --  Create a new horizontal rule
 
    overriding procedure Draw
