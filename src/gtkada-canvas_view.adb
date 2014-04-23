@@ -903,12 +903,6 @@ package body Gtkada.Canvas_View is
       if Self.Hadj /= null then
          Min := Gdouble'Min (Area.X, Box.X);
          Max := Gdouble'Max (Area.X + Area.Width, Box.X + Box.Width);
-
-         if Area.Width >= Box.Width then
-            --  screen is large enough to accomodate whole model
-            Max := Gdouble'Max (Box.X + Box.Width, Min + Area.Width);
-         end if;
-
          Self.Hadj.Configure
            (Value          => Area.X,
             Lower          => Min,
@@ -921,11 +915,6 @@ package body Gtkada.Canvas_View is
       if Self.Vadj /= null then
          Min := Gdouble'Min (Area.Y, Box.Y);
          Max := Gdouble'Max (Area.Y + Area.Height, Box.Y + Box.Height);
-
-         if Area.Height >= Box.Height then
-            Max := Gdouble'Max (Box.Y + Box.Height, Min + Area.Height);
-         end if;
-
          Self.Vadj.Configure
            (Value          => Area.Y,
             Lower          => Min,

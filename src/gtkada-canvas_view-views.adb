@@ -124,7 +124,8 @@ package body Gtkada.Canvas_View.Views is
    is
       Self : constant Canvas_View := Canvas_View (View);
    begin
-      if Event.Event_Type = Button_Press
+      if Self.Model /= null
+        and then Event.Event_Type = Button_Press
         and then Event.Toplevel_Item = null
       then
          --  Enable scrolling by dragging the background. However, there is
@@ -170,7 +171,7 @@ package body Gtkada.Canvas_View.Views is
       Self : constant Canvas_View := Canvas_View (View);
       S    : Gdouble;
    begin
-      if Event.Event_Type = Scroll then
+      if Self.Model /= null and then Event.Event_Type = Scroll then
          if Event.State = Modifier then
             if Event.Button = 5 then
                S := Self.Get_Scale * Factor;
