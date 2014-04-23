@@ -150,6 +150,7 @@ with Ada.Containers.Doubly_Linked_Lists;
 private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
 with Cairo;
+with Gdk.Event;        use Gdk.Event;
 with Gdk.Types;        use Gdk.Types;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
@@ -753,14 +754,18 @@ package Gtkada.Canvas_View is
    --  Values for the Event_Details.Allowed_Drag_Area field
 
    type Canvas_Event_Type is
-     (Button_Press, Button_Release, Start_Drag, In_Drag, End_Drag, Key_Press,
-      Scroll);
+     (Button_Press, Button_Release, Double_Click,
+      Start_Drag, In_Drag, End_Drag, Key_Press, Scroll);
    --  The event types that are emitted for the Item_Event signal:
    --  * Button_Press is called when the user presses any mouse buttton either
    --    on an item or in the background.
    --    This event can also be used to start a drag event (by
    --    setting the Allowed_Drag_Area field of the Canvas_Event_Details).
    --    It can be used also to display contextual menus.
+   --
+   --  * Double_Click is used when the left mouse button is pressed twice in
+   --    rapid succession (note that Button_Press is also emitted for the first
+   --    click).
    --
    --  * Start_Drag is used after a user has pressed a mouse button, and the
    --    callback has enabled a drag area, and the mouse has moved by at least
@@ -814,6 +819,12 @@ package Gtkada.Canvas_View is
    --    to No_Drag_Allowed, the item cannot be moved.
    --    This field is ignored for events other than button_press, since it
    --    makes no sense for instance to start a drag on a button release.
+
+   procedure Set_Details
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : in out Canvas_Event_Details;
+      Event   : Gdk.Event.Gdk_Event_Button);
+   --  Set the details from a specific gtk+ event
 
    procedure Viewport_Changed
      (Self   : not null access Canvas_View_Record'Class);

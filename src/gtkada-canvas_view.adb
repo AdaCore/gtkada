@@ -33,7 +33,6 @@ with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
 with Gdk.Cairo;                          use Gdk.Cairo;
-with Gdk.Event;                          use Gdk.Event;
 with Gdk.RGBA;                           use Gdk.RGBA;
 with Gdk.Window;                         use Gdk.Window;
 with Gtk.Enums;                          use Gtk.Enums;
@@ -564,6 +563,56 @@ package body Gtkada.Canvas_View is
       return False;
    end On_Scroll_Event;
 
+   -----------------
+   -- Set_Details --
+   -----------------
+
+   procedure Set_Details
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : in out Canvas_Event_Details;
+      Event   : Gdk.Event.Gdk_Event_Button)
+   is
+   begin
+      Details :=
+        (Event_Type => Button_Press,
+         Button     => Event.Button,
+         State      => Event.State,
+         Root_Point => (Event.X_Root, Event.Y_Root),
+         M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
+         Toplevel_Item => null,
+         Allowed_Drag_Area => No_Drag_Allowed);
+
+      case Event.The_Type is
+         when Gdk.Event.Button_Press =>
+            Compute_Item (Self, Details);
+
+         when Gdk_2button_Press =>
+            Details.Event_Type := Double_Click;
+            Compute_Item (Self, Details);
+
+         when Gdk.Event.Button_Release =>
+            if Self.In_Drag then
+               Details.Event_Type := End_Drag;
+               Details.Toplevel_Item :=
+                 Self.Last_Button_Press.Toplevel_Item;
+            else
+               Details.Event_Type := Button_Release;
+
+               if Details.M_Point = Self.Last_Button_Press.M_Point then
+                  --  Do not spend time recomputing
+                  Details.Toplevel_Item :=
+                    Self.Last_Button_Press.Toplevel_Item;
+               else
+                  Compute_Item (Self, Details);
+               end if;
+            end if;
+
+         when others =>
+            --  invalid
+            Details.Event_Type := Key_Press;
+      end case;
+   end Set_Details;
+
    ---------------------
    -- On_Button_Event --
    ---------------------
@@ -577,45 +626,19 @@ package body Gtkada.Canvas_View is
       Details : aliased Canvas_Event_Details;
    begin
       if Self.Model /= null then
-         Details :=
-           (Event_Type => Button_Press,
-            Button     => Event.Button,
-            State      => Event.State,
-            Root_Point => (Event.X_Root, Event.Y_Root),
-            M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
-            Toplevel_Item => null,
-            Allowed_Drag_Area => No_Drag_Allowed);
+         Self.Set_Details (Details, Event);
 
-         case Event.The_Type is
-            when Gdk.Event.Button_Press =>
-               Compute_Item (Self, Details);
+         if Details.Event_Type = Key_Press then
+            return False;
+         end if;
 
-            when Gdk.Event.Button_Release =>
-               if Self.In_Drag then
-
-                  --  Validate the position of items and recompute all links,
-                  --  not just the ones that moved.
-                  Self.Model.Refresh_Layout;
-
-                  Details.Event_Type := End_Drag;
-                  Details.Toplevel_Item :=
-                    Self.Last_Button_Press.Toplevel_Item;
-
-               else
-                  Details.Event_Type := Button_Release;
-
-                  if Details.M_Point = Self.Last_Button_Press.M_Point then
-                     --  Do not spend time recomputing
-                     Details.Toplevel_Item :=
-                       Self.Last_Button_Press.Toplevel_Item;
-                  else
-                     Compute_Item (Self, Details);
-                  end if;
-               end if;
-
-            when others =>
-               return False;
-         end case;
+         if Event.The_Type = Gdk.Event.Button_Release
+           and then Self.In_Drag
+         then
+            --  Validate the position of items and recompute all links,
+            --  not just the ones that moved.
+            Self.Model.Refresh_Layout;
+         end if;
 
          if Self.Item_Event (Details'Unchecked_Access) then
             if Details.Event_Type = Button_Press then
