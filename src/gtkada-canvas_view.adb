@@ -758,7 +758,7 @@ package body Gtkada.Canvas_View is
                end if;
 
                Self.Topleft := (X, Y);
-
+               Self.Set_Adjustment_Values;
                Self.Queue_Draw;
 
             else
@@ -967,6 +967,10 @@ package body Gtkada.Canvas_View is
             Page_Increment => 100.0,
             Page_Size      => Area.Height);
       end if;
+
+      --  ??? This is already called when changing the value of the adjustments
+      --  but not if we only change the page_size for instance.
+--      Self.Viewport_Changed;
    end Set_Adjustment_Values;
 
    -----------------------
@@ -1295,7 +1299,6 @@ package body Gtkada.Canvas_View is
 
       Self.Scale_To_Fit_Requested := 0.0;
       Self.Set_Adjustment_Values;
-      Self.Viewport_Changed;
       Self.Queue_Draw;
    end Set_Scale;
 
@@ -1347,7 +1350,6 @@ package body Gtkada.Canvas_View is
                Y => Box.Y - (H / Self.Scale - Box.Height) / 2.0);
 
             Self.Set_Adjustment_Values;
-            Self.Viewport_Changed;
             Self.Queue_Draw;
          end if;
       end if;
