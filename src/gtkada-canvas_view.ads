@@ -112,24 +112,15 @@
 --  For this, you need to connect to the "item_event" signal, and either
 --  directly handle the signal (a simple click for instance), or set some
 --  data in the details parameters, to enable dragging items or the background
---  of the canvas (for crolling).
+--  of the canvas (for scrolling). The package Gtkada.Canvas_View.Views
+--  provides a number of precoded behaviors.
+--
+--  When dragging items, the view will scroll automatically if the mouse is
+--  going outside of the visible area. Scrolling will continue while the mouse
+--  stays there, even if the user does not move the mouse.
 --
 --  The following has not been backported yet:
 --  ==========================================
---  It also supports scrolling if put in a Gtk_Scrolled_Window.
---  The canvas will be scrolled (and the selected items moved) if an item is
---  selected and the mouse is dragged on a small area on the side of the canvas
---  or even directly outside of the canvas. Scrolling will continue until the
---  mouse is either released or moved back inside the canvas.
---
---  The scrolling speed will slightly increase over time if the mouse is kept
---  outside of the canvas. This makes the canvas much more comfortable to use
---  for the user.
---
---  The items can also react to mouse events: mouse clicks are transmitted to
---  the item if the mouse did not move more than a given amount of pixels.
---  To decide what their reaction should be, you should override the
---  On_Button_Click subprogram.
 --
 --  Items are selected automatically when they are clicked. If Control is
 --  pressed at the same time, multiple items can be selected.
@@ -152,6 +143,7 @@ private with GNAT.Strings;
 with Cairo;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Types;        use Gdk.Types;
+private with Glib.Main;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Gtk.Adjustment;   use Gtk.Adjustment;
@@ -1384,6 +1376,26 @@ private
    package Item_And_Position_Lists is new Ada.Containers.Doubly_Linked_Lists
      (Item_And_Position);
 
+   type Continuous_Scroll_Data is record
+      Id      : Glib.Main.G_Source_Id := Glib.Main.No_Source_Id;
+      --  The timeout callback used to provide continuous scrolling
+
+      Dx, Dy  : Model_Coordinate := 0.0;
+      --  Amount of scrolling at each step
+
+      Timeout : Glib.Guint := 30;
+      --  Number of milliseconds between each step of the auto scrolling
+
+      Margin  : View_Coordinate := 10.0;
+      --  Number of pixels on each side of the view in which the auto
+      --  scrolling should start. We can't start it only when the mouse is
+      --  outside of the view, since otherwise there would be no way to get
+      --  it started when the view is aligned with the screen edge.
+
+      Speed   : Model_Coordinate := 15.0;
+      --  Speed of the scrolling at each step
+   end record;
+
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
       Model   : Canvas_Model;
       Topleft : Model_Point := (0.0, 0.0);
@@ -1413,6 +1425,8 @@ private
 
       Topleft_At_Drag_Start : Model_Point;
       --  Toplevel at the stat of the drag
+
+      Continuous_Scroll : Continuous_Scroll_Data;
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record

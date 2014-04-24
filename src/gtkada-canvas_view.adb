@@ -29,6 +29,7 @@ with System;
 with Cairo;                              use Cairo;
 with Cairo.Matrix;                       use Cairo.Matrix;
 with Cairo.Pattern;                      use Cairo.Pattern;
+with Glib.Main;                          use Glib.Main;
 with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
@@ -72,6 +73,8 @@ package body Gtkada.Canvas_View is
    Mouse_Move_Before_Drag : constant Gdouble := 4.0 * 4.0;
    --  Minimal amount the mouse should move before we start dragging (this is
    --  the square).
+
+   package View_Sources is new Glib.Main.Generic_Sources (Canvas_View);
 
    function On_View_Draw
      (View : System.Address; Cr : Cairo_Context) return Gboolean;
@@ -187,6 +190,77 @@ package body Gtkada.Canvas_View is
       Details : in out Canvas_Event_Details);
    --  Compute the item that was clicked on, from the coordinates stored in
    --  Details.
+
+   procedure Move_Selected_Items
+     (Self         : not null access Canvas_View_Record'Class;
+      Dx, Dy       : Model_Coordinate;
+      From_Initial : Boolean);
+   --  Move all selected items (part of the current drag operation) by the
+   --  specified amount (from their initial position if From_Initial is true,
+   --  or from their current position otherwise)).
+
+   procedure Start_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class;
+      Dx, Dy  : Model_Coordinate := 0.0);
+   procedure Cancel_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class);
+   function Do_Continuous_Scroll (Self : Canvas_View) return Boolean;
+   --  Start or cancel any continuous scrolling that might exist.
+
+   --------------------------------
+   -- Start_Continuous_Scrolling --
+   --------------------------------
+
+   procedure Start_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class;
+      Dx, Dy  : Model_Coordinate := 0.0)
+   is
+   begin
+      Self.Continuous_Scroll.Dx := Dx;
+      Self.Continuous_Scroll.Dy := Dy;
+
+      if Self.Continuous_Scroll.Id = No_Source_Id then
+         Self.Continuous_Scroll.Id := View_Sources.Timeout_Add
+           (Interval   => Self.Continuous_Scroll.Timeout,
+            Func       => Do_Continuous_Scroll'Access,
+            Data       => Canvas_View (Self));
+      end if;
+   end Start_Continuous_Scrolling;
+
+   ---------------------------------
+   -- Cancel_Continuous_Scrolling --
+   ---------------------------------
+
+   procedure Cancel_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class)
+   is
+   begin
+      if Self.Continuous_Scroll.Id /= No_Source_Id then
+         Remove (Self.Continuous_Scroll.Id);
+         Self.Continuous_Scroll.Id := No_Source_Id;
+      end if;
+   end Cancel_Continuous_Scrolling;
+
+   --------------------------
+   -- Do_Continuous_Scroll --
+   --------------------------
+
+   function Do_Continuous_Scroll (Self : Canvas_View) return Boolean is
+   begin
+      Self.Topleft :=
+        (Self.Topleft.X + Self.Continuous_Scroll.Dx,
+         Self.Topleft.Y + Self.Continuous_Scroll.Dy);
+
+      Move_Selected_Items
+        (Self,
+         Dx => Self.Continuous_Scroll.Dx,
+         Dy => Self.Continuous_Scroll.Dy,
+         From_Initial => False);
+
+      Self.Viewport_Changed;
+      Queue_Draw (Self);
+      return True;  --  keep repeating the timeout
+   end Do_Continuous_Scroll;
 
    ----------
    -- Free --
@@ -646,6 +720,8 @@ package body Gtkada.Canvas_View is
       Self    : constant Canvas_View := Canvas_View (View);
       Details : aliased Canvas_Event_Details;
    begin
+      Cancel_Continuous_Scrolling (Self);
+
       if Self.Model /= null then
          Self.Set_Details (Details, Event);
 
@@ -677,6 +753,57 @@ package body Gtkada.Canvas_View is
       return False;
    end On_Button_Event;
 
+   -------------------------
+   -- Move_Selected_Items --
+   -------------------------
+
+   procedure Move_Selected_Items
+     (Self         : not null access Canvas_View_Record'Class;
+      Dx, Dy       : Model_Coordinate;
+      From_Initial : Boolean)
+   is
+      use Item_And_Position_Lists;
+      C    : Item_And_Position_Lists.Cursor := Self.Dragged_Items.First;
+      It   : Item_And_Position;
+      B    : Model_Rectangle;
+      BB   : Item_Rectangle;
+      X, Y : Model_Coordinate;
+      Pos  : Gtkada.Style.Point;
+   begin
+      while Has_Element (C) loop
+         It := Element (C);
+
+         --  The use of Topleft is to take into account the continuous
+         --  scrolling
+
+         if From_Initial then
+            X := It.Pos.X + Dx;
+            Y := It.Pos.Y + Dy;
+         else
+            Pos := It.Item.Position;
+            X := Pos.X + Dx;
+            Y := Pos.Y + Dy;
+         end if;
+
+         if Self.Last_Button_Press.Allowed_Drag_Area /=
+           Drag_Anywhere
+         then
+            BB := It.Item.Bounding_Box;
+            B  := Self.Last_Button_Press.Allowed_Drag_Area;
+
+            X := Model_Coordinate'Max (X, B.X);
+            X := Model_Coordinate'Min (X, B.X + B.Width - BB.Width);
+            Y := Model_Coordinate'Max (Y, B.Y);
+            Y := Model_Coordinate'Min (Y, B.Y + B.Height - BB.Height);
+         end if;
+
+         It.Item.Set_Position ((X => X, Y => Y));
+         Next (C);
+      end loop;
+
+      Refresh_Link_Layout (Self.Model, Self.Dragged_Items);
+   end Move_Selected_Items;
+
    ----------------------------
    -- On_Motion_Notify_Event --
    ----------------------------
@@ -685,16 +812,13 @@ package body Gtkada.Canvas_View is
      (View  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event_Motion) return Boolean
    is
-      use Item_And_Position_Lists;
       Self    : constant Canvas_View := Canvas_View (View);
       Details : aliased Canvas_Event_Details;
       Dx, Dy  : Gdouble;
       Area, B : Model_Rectangle;
-      BB      : Item_Rectangle;
       X, Y    : Model_Coordinate;
-      C       : Item_And_Position_Lists.Cursor;
-      It      : Item_And_Position;
       Dummy   : Boolean;
+      Alloc   : Gtk_Allocation;
    begin
       if Self.Model /= null
         and then Self.Last_Button_Press.Allowed_Drag_Area /= No_Drag_Allowed
@@ -762,34 +886,49 @@ package body Gtkada.Canvas_View is
                Self.Queue_Draw;
 
             else
-               C := Self.Dragged_Items.First;
-               while Has_Element (C) loop
-                  It := Element (C);
-
-                  X := It.Pos.X
+               Move_Selected_Items
+                 (Self,
+                  Dx => (Self.Topleft.X - Self.Topleft_At_Drag_Start.X)
                     + (Details.Root_Point.X
-                       - Self.Last_Button_Press.Root_Point.X) / Self.Scale;
-                  Y := It.Pos.Y
+                    - Self.Last_Button_Press.Root_Point.X) / Self.Scale,
+                  Dy => (Self.Topleft.Y - Self.Topleft_At_Drag_Start.Y)
                     + (Details.Root_Point.Y
-                       - Self.Last_Button_Press.Root_Point.Y) / Self.Scale;
+                    - Self.Last_Button_Press.Root_Point.Y) / Self.Scale,
+                  From_Initial => True);
 
-                  if Self.Last_Button_Press.Allowed_Drag_Area /=
-                    Drag_Anywhere
-                  then
-                     BB := It.Item.Bounding_Box;
-                     B  := Self.Last_Button_Press.Allowed_Drag_Area;
+               --  Should we do automatic scrolling of the view ?
 
-                     X := Model_Coordinate'Max (X, B.X);
-                     X := Model_Coordinate'Min (X, B.X + B.Width - BB.Width);
-                     Y := Model_Coordinate'Max (Y, B.Y);
-                     Y := Model_Coordinate'Min (Y, B.Y + B.Height - BB.Height);
-                  end if;
+               Self.Get_Allocation (Alloc);
 
-                  It.Item.Set_Position ((X => X, Y => Y));
-                  Next (C);
-               end loop;
+               if Event.X < View_Coordinate (Alloc.X)
+                 + Self.Continuous_Scroll.Margin
+               then
+                  Start_Continuous_Scrolling
+                    (Self, Dx => -Self.Scale * Self.Continuous_Scroll.Speed);
 
-               Refresh_Link_Layout (Self.Model, Self.Dragged_Items);
+               elsif Event.X >
+                 View_Coordinate (Alloc.X + Alloc.Width)
+                 - Self.Continuous_Scroll.Margin
+               then
+                  Start_Continuous_Scrolling
+                    (Self, Dx => Self.Scale * Self.Continuous_Scroll.Speed);
+
+               elsif Event.Y < View_Coordinate (Alloc.Y)
+                 + Self.Continuous_Scroll.Margin
+               then
+                  Start_Continuous_Scrolling
+                    (Self, Dy => -Self.Scale * Self.Continuous_Scroll.Speed);
+
+               elsif Event.Y >
+                 View_Coordinate (Alloc.Y + Alloc.Height)
+                 - Self.Continuous_Scroll.Margin
+               then
+                  Start_Continuous_Scrolling
+                    (Self, Dy => Self.Scale * Self.Continuous_Scroll.Speed);
+
+               else
+                  Cancel_Continuous_Scrolling (Self);
+               end if;
 
                --  Should redo the layout for links, but this might be
                --  expensive.
@@ -1052,6 +1191,8 @@ package body Gtkada.Canvas_View is
    procedure On_View_Destroy (Self : access Gtk_Widget_Record'Class) is
       S : constant Canvas_View := Canvas_View (Self);
    begin
+      Cancel_Continuous_Scrolling (S);
+
       if S.Model /= null then
          Unref (S.Model);
          S.Model := null;
