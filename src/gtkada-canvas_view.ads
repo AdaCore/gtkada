@@ -95,6 +95,8 @@
 --  not aligned), the Canvas_View's effect is more subtle: basically, when an
 --  item is moved closed enough to the grid, it will be aligned to the grid.
 --  But if it is far from any grid line, you can drop it anywhere.
+--  Snapping also takes into account all four edges of items, not just their
+--  topleft corner.
 --
 --  User interaction
 --  ================
@@ -641,6 +643,31 @@ package Gtkada.Canvas_View is
    function View_Get_Type return Glib.GType;
    pragma Convention (C, View_Get_Type);
    --  Return the internal type
+
+   procedure Set_Grid_Size
+     (Self : not null access Canvas_View_Record'Class;
+      Size : Model_Coordinate := 30.0);
+   --  Set the size of the grid.
+   --  This grid is not visible by default. To display it, you should override
+   --  Draw_Internal and call one of the functions in Gtkada.Canvas_View.Views.
+   --
+   --  This grid is also size for snapping of items while they are moved: when
+   --  they are dragged to a position close to one of the grid lines, they will
+   --  be moved by a small extra amount to align on this grid line.
+
+   procedure Set_Snap
+     (Self         : not null access Canvas_View_Record'Class;
+      Snap_To_Grid : Boolean := True;
+      Snap_Margin  : Model_Coordinate := 5.0);
+   --  Configure the snapping feature.
+   --  When items are moved interactively, they will tend to snap to various
+   --  coordinates, as defined for instance by Set_Grid_Size.
+   --  For instance, when any size of the item gets close to one of the grid
+   --  lines (i.e. less than Snap_Margin), it will be moved an extra small
+   --  amount so that the coordinate of that size of the item is exactly that
+   --  of the grid line. This results in nicer alignment of the items.
+   --
+   --  No snapping to grid occurs if the grid size is set to 0.
 
    procedure Draw_Internal
      (Self    : not null access Canvas_View_Record;
@@ -1396,6 +1423,13 @@ private
       --  Speed of the scrolling at each step
    end record;
 
+   type Snap_Data is record
+      Grid : Boolean := True;
+      --  Whether to snap to the grid
+
+      Margin : Model_Coordinate := 5.0;
+   end record;
+
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
       Model   : Canvas_Model;
       Topleft : Model_Point := (0.0, 0.0);
@@ -1426,7 +1460,11 @@ private
       Topleft_At_Drag_Start : Model_Point;
       --  Toplevel at the stat of the drag
 
+      Grid_Size : Model_Coordinate := 20.0;
+      --  Size of the grid.
+
       Continuous_Scroll : Continuous_Scroll_Data;
+      Snap              : Snap_Data;
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record

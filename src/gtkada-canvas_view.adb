@@ -44,6 +44,7 @@ with Gtk.Widget;                         use Gtk.Widget;
 with Gtkada.Bindings;                    use Gtkada.Bindings;
 with Gtkada.Canvas_View.Links;           use Gtkada.Canvas_View.Links;
 with Gtkada.Canvas_View.Objects;         use Gtkada.Canvas_View.Objects;
+with Gtkada.Canvas_View.Views;           use Gtkada.Canvas_View.Views;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
 with Gtkada.Types;                       use Gtkada.Types;
 
@@ -773,9 +774,6 @@ package body Gtkada.Canvas_View is
       while Has_Element (C) loop
          It := Element (C);
 
-         --  The use of Topleft is to take into account the continuous
-         --  scrolling
-
          if From_Initial then
             X := It.Pos.X + Dx;
             Y := It.Pos.Y + Dy;
@@ -785,16 +783,26 @@ package body Gtkada.Canvas_View is
             Y := Pos.Y + Dy;
          end if;
 
+         BB := It.Item.Bounding_Box;
+
+         --  Constraint the move to a specific area
+
          if Self.Last_Button_Press.Allowed_Drag_Area /=
            Drag_Anywhere
          then
-            BB := It.Item.Bounding_Box;
             B  := Self.Last_Button_Press.Allowed_Drag_Area;
 
             X := Model_Coordinate'Max (X, B.X);
             X := Model_Coordinate'Min (X, B.X + B.Width - BB.Width);
             Y := Model_Coordinate'Max (Y, B.Y);
             Y := Model_Coordinate'Min (Y, B.Y + B.Height - BB.Height);
+         end if;
+
+         --  Snap to grid or smart guides
+
+         if Self.Snap.Grid then
+            X := Do_Snap_Grid (Self, Self.Snap.Margin, X, BB.Width);
+            Y := Do_Snap_Grid (Self, Self.Snap.Margin, Y, BB.Height);
          end if;
 
          It.Item.Set_Position ((X => X, Y => Y));
@@ -886,6 +894,9 @@ package body Gtkada.Canvas_View is
                Self.Queue_Draw;
 
             else
+               --  The use of Topleft is to take into account the continuous
+               --  scrolling
+
                Move_Selected_Items
                  (Self,
                   Dx => (Self.Topleft.X - Self.Topleft_At_Drag_Start.X)
@@ -3314,5 +3325,31 @@ package body Gtkada.Canvas_View is
 
       return P1;
    end Clip_Line;
+
+   -------------------
+   -- Set_Grid_Size --
+   -------------------
+
+   procedure Set_Grid_Size
+     (Self : not null access Canvas_View_Record'Class;
+      Size : Model_Coordinate := 30.0)
+   is
+   begin
+      Self.Grid_Size := Size;
+   end Set_Grid_Size;
+
+   --------------
+   -- Set_Snap --
+   --------------
+
+   procedure Set_Snap
+     (Self         : not null access Canvas_View_Record'Class;
+      Snap_To_Grid : Boolean := True;
+      Snap_Margin  : Model_Coordinate := 5.0)
+   is
+   begin
+      Self.Snap.Grid := Snap_To_Grid;
+      Self.Snap.Margin := Snap_Margin;
+   end Set_Snap;
 
 end Gtkada.Canvas_View;

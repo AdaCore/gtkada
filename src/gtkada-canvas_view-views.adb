@@ -32,26 +32,42 @@ package body Gtkada.Canvas_View.Views is
    ------------------
 
    function Do_Snap_Grid
-     (Grid_Size   : Model_Coordinate;
-      Snap_Margin : Glib.Gint;
+     (Self        : not null access Canvas_View_Record'Class;
+      Snap_Margin : Model_Coordinate;
       Pos         : Model_Coordinate;
       Size        : Model_Coordinate) return Model_Coordinate
    is
-      G : constant Gint := Gint (Grid_Size);
-      X : constant Gint := Gint (Pos);
+      GX : Model_Coordinate;
    begin
-      if Snap_Margin = 0 then
+      if Snap_Margin = 0.0 then
          return Pos;
-      elsif X mod G < Snap_Margin then
-         return Gdouble (Gint (X / G) * G);
-      elsif X mod G > G - Snap_Margin then
-         return Gdouble (G + Gint (X / G) * G);
-      elsif (X + Gint (Size)) mod G < Snap_Margin then
-         return Gdouble (Gint ((X + Gint (Size)) / G) * G - Gint (Size));
-      elsif (X + Gint (Size)) mod G > G - Snap_Margin then
-         return Gdouble (G + Gint ((X + Gint (Size)) / G) * G - Gint (Size));
       end if;
-      return Gdouble (X);
+
+      --  Find the closest grid position to the left of Pos
+      GX := Gdouble (Gint (Pos / Self.Grid_Size)) * Self.Grid_Size;
+      if abs (Pos - GX) < Snap_Margin then
+         return GX;
+      end if;
+
+      --  Find the closest grid position to the right of Pos
+      GX := GX + Self.Grid_Size;
+      if abs (Pos - GX) < Snap_Margin then
+         return GX;
+      end if;
+
+      --  Find the closest grid position to the left of Pos + size
+      GX := Gdouble (Gint ((Pos + Size) / Self.Grid_Size)) * Self.Grid_Size;
+      if abs (Pos + Size - GX) < Snap_Margin then
+         return GX - Size;
+      end if;
+
+      --  Find the closest grid position to the right of Pos + size
+      GX := GX + Self.Grid_Size;
+      if abs (Pos + Size - GX) < Snap_Margin then
+         return GX - Size;
+      end if;
+
+      return Pos;
    end Do_Snap_Grid;
 
    ---------------------
@@ -59,27 +75,27 @@ package body Gtkada.Canvas_View.Views is
    ---------------------
 
    procedure Draw_Grid_Lines
-     (Style   : Gtkada.Style.Drawing_Style;
+     (Self    : not null access Canvas_View_Record'Class;
+      Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context;
-      Area    : Model_Rectangle;
-      Size    : Model_Coordinate)
+      Area    : Model_Rectangle)
    is
       Tmp  : Gdouble;
    begin
       New_Path (Context.Cr);
 
-      Tmp := Gdouble (Gint (Area.X / Size)) * Size;
+      Tmp := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
       while Tmp < Area.X + Area.Width loop
          Move_To (Context.Cr, Tmp, Area.Y);
          Rel_Line_To (Context.Cr, 0.0, Area.Height);
-         Tmp := Tmp + Size;
+         Tmp := Tmp + Self.Grid_Size;
       end loop;
 
-      Tmp := Gdouble (Gint (Area.Y / Size)) * Size;
+      Tmp := Gdouble (Gint (Area.Y / Self.Grid_Size)) * Self.Grid_Size;
       while Tmp < Area.Y + Area.Height loop
          Move_To (Context.Cr, Area.X, Tmp);
          Rel_Line_To (Context.Cr, Area.Width, 0.0);
-         Tmp := Tmp + Size;
+         Tmp := Tmp + Self.Grid_Size;
       end loop;
 
       Style.Finish_Path (Context.Cr);
@@ -90,24 +106,24 @@ package body Gtkada.Canvas_View.Views is
    --------------------
 
    procedure Draw_Grid_Dots
-     (Style   : Gtkada.Style.Drawing_Style;
+     (Self    : not null access Canvas_View_Record'Class;
+      Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context;
-      Area    : Model_Rectangle;
-      Size    : Model_Coordinate)
+      Area    : Model_Rectangle)
    is
       TmpX, TmpY  : Gdouble;
    begin
       New_Path (Context.Cr);
 
-      TmpX := Gdouble (Gint (Area.X / Size)) * Size;
+      TmpX := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
       while TmpX < Area.X + Area.Width loop
-         TmpY := Gdouble (Gint (Area.Y / Size)) * Size;
+         TmpY := Gdouble (Gint (Area.Y / Self.Grid_Size)) * Self.Grid_Size;
          while TmpY < Area.Y + Area.Height loop
             Rectangle (Context.Cr, TmpX - 0.5, TmpY - 0.5, 1.0, 1.0);
-            TmpY := TmpY + Size;
+            TmpY := TmpY + Self.Grid_Size;
          end loop;
 
-         TmpX := TmpX + Size;
+         TmpX := TmpX + Self.Grid_Size;
       end loop;
 
       Style.Finish_Path (Context.Cr);

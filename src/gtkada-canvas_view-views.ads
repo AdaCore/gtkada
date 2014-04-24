@@ -54,17 +54,18 @@ package Gtkada.Canvas_View.Views is
    --     Paint (Context.Cr);
 
    procedure Draw_Grid_Lines
-     (Style   : Gtkada.Style.Drawing_Style;
+     (Self    : not null access Canvas_View_Record'Class;
+      Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context;
-      Area    : Model_Rectangle;
-      Size    : Model_Coordinate);
-   --  Draw a grid with lines in the background
+      Area    : Model_Rectangle);
+   --  Draw a grid with lines in the background.
+   --  The size of the grid can be set with Gtkada.Canvas_View.Set_Grid_Size
 
    procedure Draw_Grid_Dots
-     (Style   : Gtkada.Style.Drawing_Style;
+     (Self    : not null access Canvas_View_Record'Class;
+      Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context;
-      Area    : Model_Rectangle;
-      Size    : Model_Coordinate);
+      Area    : Model_Rectangle);
    --  Draw a grid with dots in the background
 
    ---------------
@@ -106,8 +107,8 @@ package Gtkada.Canvas_View.Views is
    --------------
 
    function Do_Snap_Grid
-     (Grid_Size   : Model_Coordinate;
-      Snap_Margin : Glib.Gint;
+     (Self        : not null access Canvas_View_Record'Class;
+      Snap_Margin : Model_Coordinate;
       Pos         : Model_Coordinate;
       Size        : Model_Coordinate) return Model_Coordinate;
    --  Snap the Pos coordinate to the canvas grid.

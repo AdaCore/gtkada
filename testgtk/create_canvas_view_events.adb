@@ -42,6 +42,10 @@ package body Create_Canvas_View_Events is
       --  A text item that reports the events from the view.
    end record;
    type Demo_View is access all Demo_View_Record'Class;
+   overriding procedure Draw_Internal
+     (Self    : not null access Demo_View_Record;
+      Context : Draw_Context;
+      Area    : Model_Rectangle);
 
    function On_Item_Event
      (View  : not null access GObject_Record'Class;
@@ -69,8 +73,34 @@ package body Create_Canvas_View_Events is
         & "But if you want more advanced behavior (@bselection@B of items,"
         & " @bmoving items@B with the mouse or keyboard, @bzooming@B in or"
         & " out, ...) you will need to connect to the signals emitted by"
-        & " the view, in particular ""@bitem_event@B"".";
+        & " the view, in particular ""@bitem_event@B""."
+        & ASCII.LF
+        & "This demo shows the following capabilities:" & ASCII.LF
+        & "  - @bdragging items@B with the mouse. Items will tend to @bsnap@B"
+        & " to the grid when they get close enough to it, but they are"
+        & " not constrained to grid coordinates." & ASCII.LF
+        & "  - @bscrolling@B by dragging the background with the mouse."
+        & ASCII.LF
+        & "  - @bzooming@b with alt-mouse wheel.";
    end Help;
+
+   -------------------
+   -- Draw_Internal --
+   -------------------
+
+   overriding procedure Draw_Internal
+     (Self    : not null access Demo_View_Record;
+      Context : Draw_Context;
+      Area    : Model_Rectangle)
+   is
+   begin
+      Draw_Grid_Lines
+        (Self    => Self,
+         Style   => Gtk_New (Stroke => (0.8, 0.8, 0.8, 0.8)),
+         Context => Context,
+         Area    => Area);
+      Canvas_View_Record (Self.all).Draw_Internal (Context, Area);
+   end Draw_Internal;
 
    -------------------
    -- On_Item_Event --
@@ -121,6 +151,7 @@ package body Create_Canvas_View_Events is
 
       Canvas := new Demo_View_Record;
       Gtkada.Canvas_View.Initialize (Canvas);
+      Canvas.Set_Grid_Size (30.0);
 
       --  Connect this one first so that all events are traced
       Canvas.On_Item_Event (On_Item_Event'Access);
@@ -155,7 +186,7 @@ package body Create_Canvas_View_Events is
       It2.Set_Position ((250.0, 250.0));
       Model.Add (It2);
 
-      It3 := Gtk_New_Rect (Black, 40.0, 80.0);
+      It3 := Gtk_New_Rect (Black, 50.0, 80.0);
       It3.Set_Position ((50.0, 220.0));
       Model.Add (It3);
 
@@ -172,7 +203,7 @@ package body Create_Canvas_View_Events is
                      Routing => Straight);
       Model.Add (L3);
 
-      It3 := Gtk_New_Rect (Black, 40.0, 80.0);
+      It3 := Gtk_New_Rect (Black, 50.0, 80.0);
       It3.Set_Position ((650.0, 400.0));
       Model.Add (It3);
 
