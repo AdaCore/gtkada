@@ -518,8 +518,23 @@ package body Gtkada.Canvas_View is
    begin
       Context := (Cr     => Gdk.Cairo.Create (Self.Get_Window),
                   Layout => null);
+
       Details.Toplevel_Item := Self.Model.Toplevel_Item_At
         (Details.M_Point, Context => Context);
+
+      if Details.Toplevel_Item = null then
+         Details.Item := null;
+      else
+         Details.T_Point := Details.Toplevel_Item.Model_To_Item
+           (Details.M_Point);
+         Details.Item := Details.Toplevel_Item.Inner_Most_Item
+           (Details.M_Point, Context);
+
+         if Details.Item /= null then
+            Details.I_Point := Details.Item.Model_To_Item (Details.M_Point);
+         end if;
+      end if;
+
       Cairo.Destroy (Context.Cr);
    end Compute_Item;
 
@@ -555,6 +570,9 @@ package body Gtkada.Canvas_View is
             State      => Event.State,
             Root_Point => (Event.X_Root, Event.Y_Root),
             M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
+            T_Point    => No_Item_Point,
+            I_Point    => No_Item_Point,
+            Item       => null,
             Toplevel_Item => null,
             Allowed_Drag_Area => No_Drag_Allowed);
          Compute_Item (Self, Details);
@@ -579,6 +597,9 @@ package body Gtkada.Canvas_View is
          State      => Event.State,
          Root_Point => (Event.X_Root, Event.Y_Root),
          M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
+         T_Point    => No_Item_Point,
+         I_Point    => No_Item_Point,
+         Item       => null,
          Toplevel_Item => null,
          Allowed_Drag_Area => No_Drag_Allowed);
 
@@ -2121,6 +2142,33 @@ package body Gtkada.Canvas_View is
    begin
       return Abstract_Item (Self.Parent);
    end Parent;
+
+   ---------------------
+   -- Inner_Most_Item --
+   ---------------------
+
+   overriding function Inner_Most_Item
+     (Self     : not null access Container_Item_Record;
+      At_Point : Model_Point;
+      Context  : Draw_Context) return Abstract_Item
+   is
+      use Items_Lists;
+      C     : Items_Lists.Cursor := Self.Children.First;
+      P     : Item_Point;
+      Child : Container_Item;
+   begin
+      while Has_Element (C) loop
+         Child := Container_Item (Element (C));
+         P := Child.Model_To_Item  (At_Point);
+
+         if Child.Contains (P, Context) then
+            return Child.Inner_Most_Item (At_Point, Context);
+         end if;
+
+         Next (C);
+      end loop;
+      return Abstract_Item (Self);
+   end Inner_Most_Item;
 
    ------------------
    -- Bounding_Box --

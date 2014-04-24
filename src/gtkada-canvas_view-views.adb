@@ -125,6 +125,7 @@ package body Gtkada.Canvas_View.Views is
       Self : constant Canvas_View := Canvas_View (View);
    begin
       if Self.Model /= null
+        and then Event.Button = 1
         and then Event.Event_Type = Button_Press
         and then Event.Toplevel_Item = null
       then
@@ -151,6 +152,7 @@ package body Gtkada.Canvas_View.Views is
    begin
       if Event.Event_Type = Button_Press
         and then Event.Toplevel_Item /= null
+        and then Event.Button = 1
       then
          --  Enable moving the item anywhere
          Event.Allowed_Drag_Area := Drag_Anywhere;

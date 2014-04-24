@@ -232,8 +232,9 @@ package Gtkada.Canvas_View is
    subtype Item_Point_Array is Gtkada.Style.Point_Array;
    subtype Item_Point_Array_Access is Gtkada.Style.Point_Array_Access;
 
-   No_Rectangle : constant Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
-   No_Point     : constant Model_Point := (Gdouble'First, Gdouble'First);
+   No_Rectangle  : constant Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
+   No_Point      : constant Model_Point := (Gdouble'First, Gdouble'First);
+   No_Item_Point : constant Item_Point := (Gdouble'First, Gdouble'First);
 
    function Point_In_Rect
      (Rect : Model_Rectangle; P : Model_Point) return Boolean;
@@ -405,6 +406,14 @@ package Gtkada.Canvas_View is
    --  null is returned for toplevel items, in which case the coordinates of
    --  the bounding box are model coordinats. Otherwise, the coordinates are
    --  relative to the returned item.
+
+   function Inner_Most_Item
+     (Self     : not null access Abstract_Item_Record;
+      At_Point : Model_Point;
+      Context  : Draw_Context)
+      return Abstract_Item is (Self);
+   --  Return the inner-most item at the specific coordinates in Self (or
+   --  Self itself).
 
    function Link_Anchor_Point
      (Self   : not null access Abstract_Item_Record;
@@ -798,8 +807,18 @@ package Gtkada.Canvas_View is
       --  Attributes of the low-level event
 
       M_Point        : Model_Point;
+
+      Item           : Abstract_Item;
+      --  The actual item that was clicked.
+
       Toplevel_Item  : Abstract_Item;
-      --  higher-level details on the event
+      --  The toplevel item that contains Item (might be Item itself)
+
+      T_Point        : Item_Point;
+      --  The corodinates of the click in toplevel_item
+
+      I_Point        : Item_Point;
+      --  The coordinates of the click in Item
 
       Allowed_Drag_Area : Model_Rectangle := No_Drag_Allowed;
    end record;
@@ -992,6 +1011,10 @@ package Gtkada.Canvas_View is
    overriding procedure Set_Position
      (Self  : not null access Container_Item_Record;
       Pos   : Gtkada.Style.Point);
+   overriding function Inner_Most_Item
+     (Self     : not null access Container_Item_Record;
+      At_Point : Model_Point;
+      Context  : Draw_Context) return Abstract_Item;
 
    ----------------
    -- Rectangles --
