@@ -164,8 +164,14 @@ package body Gtkada.Canvas_View.Views is
       Event : Event_Details_Access)
       return Boolean
    is
-      pragma Unreferenced (View);
+      Self : constant Canvas_View := Canvas_View (View);
    begin
+      if Event.Event_Type = In_Drag then
+         --  Disable snapping when shift is pressed.
+         Event.Allow_Snapping := (Event.State and Shift_Mask) = 0;
+         Self.Last_Button_Press.Allow_Snapping := Event.Allow_Snapping;
+      end if;
+
       if Event.Event_Type = Button_Press
         and then Event.Toplevel_Item /= null
         and then Event.Button = 1

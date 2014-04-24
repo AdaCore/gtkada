@@ -81,6 +81,7 @@ package Gtkada.Canvas_View.Views is
       return Boolean;
    --  Add this to the list of callbacks for "item_event" to enable dragging
    --  items with the mouse.
+   --  If shift is pressed, no snapping on the grid or smart guides occurs.
 
    function On_Item_Event_Scroll_Background
      (View   : not null access Glib.Object.GObject_Record'Class;

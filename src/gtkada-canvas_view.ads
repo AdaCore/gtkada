@@ -821,17 +821,27 @@ package Gtkada.Canvas_View is
    type Canvas_Event_Details is record
       Event_Type     : Canvas_Event_Type;
       Button         : Guint;
+
       State          : Gdk.Types.Gdk_Modifier_Type;
-      Root_Point     : Gtkada.Style.Point;  --  coordinates in root window
-      --  Attributes of the low-level event
+      --  The modifier keys (shift, alt, control). It can be used to activate
+      --  different behavior in such cases.
+
+      Root_Point     : Gtkada.Style.Point;
+      --  Coordinates in root window.
+      --  Attributes of the low-level event.
+      --   This is an implementation detail for proper handling of dragging.
 
       M_Point        : Model_Point;
+      --  Where in the model the user clicked. This is independent of the zoom
+      --  level or current scrolling.
 
       Item           : Abstract_Item;
       --  The actual item that was clicked.
+      --  Set to null when the user clicked in the background.
 
       Toplevel_Item  : Abstract_Item;
-      --  The toplevel item that contains Item (might be Item itself)
+      --  The toplevel item that contains Item (might be Item itself).
+      --  Set to null when the user clicked in the background.
 
       T_Point        : Item_Point;
       --  The corodinates of the click in toplevel_item
@@ -840,23 +850,22 @@ package Gtkada.Canvas_View is
       --  The coordinates of the click in Item
 
       Allowed_Drag_Area : Model_Rectangle := No_Drag_Allowed;
+      --  Allowed_Drag_Area should be modified by the callback when the event
+      --  is a button_press event. It should be set to the area within which
+      --  the item (and all currently selected items) can be moved. If you
+      --  leave it to No_Drag_Allowed, the item cannot be moved.
+      --
+      --  This field is ignored for events other than button_press, since it
+      --  makes no sense for instance to start a drag on a button release.
+
+      Allow_Snapping    : Boolean := True;
+      --  If set to False, this temporary overrides the settings from
+      --  Set_Snap, and prevents any snapping on the grid or smart guides.
+      --  It should be set at the same time that Allowed_Drag_Area is set.
    end record;
    type Event_Details_Access is not null access all Canvas_Event_Details;
    --  This record describes high-level aspects of user interaction with the
-   --  canvas. In addition to some information about the gtk+ event, the
-   --  following information:
-   --  * State describes the state of the modifier keys (shift, alt, control)
-   --    and can be used to activate different behavior in such cases.
-   --  * M_Point indicates where in the model the user clicked. This is
-   --    independent of the zoom level or current scrolling.
-   --  * Toplevel_Item is the item that was clicked on. It is set to null if
-   --    the user clicked in the background.
-   --  * Allowed_Drag_Area should be modified by the callback when the event is
-   --    a button_press event. It should be set to the area within which the
-   --    item (and all currently selected items) can be moved. If you leave it
-   --    to No_Drag_Allowed, the item cannot be moved.
-   --    This field is ignored for events other than button_press, since it
-   --    makes no sense for instance to start a drag on a button release.
+   --  canvas.
 
    procedure Set_Details
      (Self    : not null access Canvas_View_Record'Class;

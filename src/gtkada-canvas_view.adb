@@ -193,9 +193,9 @@ package body Gtkada.Canvas_View is
    --  Details.
 
    procedure Move_Selected_Items
-     (Self         : not null access Canvas_View_Record'Class;
-      Dx, Dy       : Model_Coordinate;
-      From_Initial : Boolean);
+     (Self           : not null access Canvas_View_Record'Class;
+      Dx, Dy         : Model_Coordinate;
+      From_Initial   : Boolean);
    --  Move all selected items (part of the current drag operation) by the
    --  specified amount (from their initial position if From_Initial is true,
    --  or from their current position otherwise)).
@@ -254,9 +254,9 @@ package body Gtkada.Canvas_View is
 
       Move_Selected_Items
         (Self,
-         Dx => Self.Continuous_Scroll.Dx,
-         Dy => Self.Continuous_Scroll.Dy,
-         From_Initial => False);
+         Dx             => Self.Continuous_Scroll.Dx,
+         Dy             => Self.Continuous_Scroll.Dy,
+         From_Initial   => False);
 
       Self.Viewport_Changed;
       Queue_Draw (Self);
@@ -649,6 +649,7 @@ package body Gtkada.Canvas_View is
             I_Point    => No_Item_Point,
             Item       => null,
             Toplevel_Item => null,
+            Allow_Snapping    => True,
             Allowed_Drag_Area => No_Drag_Allowed);
          Compute_Item (Self, Details);
          return Self.Item_Event (Details'Unchecked_Access);
@@ -675,7 +676,8 @@ package body Gtkada.Canvas_View is
          T_Point    => No_Item_Point,
          I_Point    => No_Item_Point,
          Item       => null,
-         Toplevel_Item => null,
+         Toplevel_Item     => null,
+         Allow_Snapping    => True,
          Allowed_Drag_Area => No_Drag_Allowed);
 
       case Event.The_Type is
@@ -759,9 +761,9 @@ package body Gtkada.Canvas_View is
    -------------------------
 
    procedure Move_Selected_Items
-     (Self         : not null access Canvas_View_Record'Class;
-      Dx, Dy       : Model_Coordinate;
-      From_Initial : Boolean)
+     (Self           : not null access Canvas_View_Record'Class;
+      Dx, Dy         : Model_Coordinate;
+      From_Initial   : Boolean)
    is
       use Item_And_Position_Lists;
       C    : Item_And_Position_Lists.Cursor := Self.Dragged_Items.First;
@@ -800,7 +802,9 @@ package body Gtkada.Canvas_View is
 
          --  Snap to grid or smart guides
 
-         if Self.Snap.Grid then
+         if Self.Last_Button_Press.Allow_Snapping
+           and then Self.Snap.Grid
+         then
             X := Do_Snap_Grid (Self, Self.Snap.Margin, X, BB.Width);
             Y := Do_Snap_Grid (Self, Self.Snap.Margin, Y, BB.Height);
          end if;
@@ -858,6 +862,7 @@ package body Gtkada.Canvas_View is
          if Self.In_Drag then
             Details := Self.Last_Button_Press;
             Details.Event_Type := In_Drag;
+            Details.State := Event.State;
             Details.Root_Point := (Event.X_Root, Event.Y_Root);
             Details.M_Point :=
               Self.Window_To_Model ((X => Event.X, Y => Event.Y));
@@ -905,7 +910,7 @@ package body Gtkada.Canvas_View is
                   Dy => (Self.Topleft.Y - Self.Topleft_At_Drag_Start.Y)
                     + (Details.Root_Point.Y
                     - Self.Last_Button_Press.Root_Point.Y) / Self.Scale,
-                  From_Initial => True);
+                  From_Initial   => True);
 
                --  Should we do automatic scrolling of the view ?
 

@@ -78,7 +78,9 @@ package body Create_Canvas_View_Events is
         & "This demo shows the following capabilities:" & ASCII.LF
         & "  - @bdragging items@B with the mouse. Items will tend to @bsnap@B"
         & " to the grid when they get close enough to it, but they are"
-        & " not constrained to grid coordinates." & ASCII.LF
+        & " not constrained to grid coordinates. Snapping is disabled if you"
+        & " press shift during the move."
+        & ASCII.LF
         & "  - @bscrolling@B by dragging the background with the mouse."
         & ASCII.LF
         & "  - @bzooming@b with alt-mouse wheel.";
