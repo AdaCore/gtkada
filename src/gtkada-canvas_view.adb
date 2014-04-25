@@ -854,7 +854,9 @@ package body Gtkada.Canvas_View is
                Self.Topleft_At_Drag_Start := Self.Topleft;
 
                --  ??? Should add all selected items
-               if Details.Toplevel_Item /= null then
+               if Details.Toplevel_Item /= null
+                 and then not Details.Toplevel_Item.Is_Link
+               then
                   Self.Dragged_Items.Include
                     (Details.Toplevel_Item,
                      (Item => Details.Toplevel_Item,
@@ -1788,9 +1790,17 @@ package body Gtkada.Canvas_View is
       Point   : Item_Point;
       Context : Draw_Context) return Boolean
    is
-      pragma Unreferenced (Self, Point, Context);
+      Tolerance : constant Gdouble := 10.0;
    begin
-      return False;
+      if Self.Points = null then
+         return False;
+      end if;
+
+      Save (Context.Cr);
+      Set_Line_Width (Context.Cr, Tolerance);
+
+      return Prepare_Path (Self, Context)
+        and then In_Stroke (Context.Cr, Point.X, Point.Y);
    end Contains;
 
    ---------------

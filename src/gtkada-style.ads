@@ -361,6 +361,12 @@ package Gtkada.Style is
       Points      : Point_Array;
       Show_Arrows : Boolean := True;
       Relative    : Boolean := False);
+   function Path_Polycurve
+     (Self        : Drawing_Style;
+      Cr          : Cairo.Cairo_Context;
+      Points      : Point_Array;
+      Show_Arrows : Boolean := True;
+      Relative    : Boolean := False) return Boolean;
    --  Same as Drawpolyline, but draws bezier curves.
    --  Points is an array of both points and control points, as in:
    --     pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...

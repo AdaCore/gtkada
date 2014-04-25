@@ -61,6 +61,15 @@ package Gtkada.Canvas_View.Links is
       Context : Draw_Context);
    --  Compute the layout for the link
 
+   function Prepare_Path
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context) return Boolean;
+   --  Prepare a cairo path for the link.
+   --  The path is not displayed, so this can be used for various purposes like
+   --  computing intersections.
+   --  The path does not include any of the labels.
+   --  Return True if the path could be prepared successfully
+
    procedure Draw_Link
      (Link    : not null access Canvas_Link_Record'Class;
       Context : Draw_Context);

@@ -1216,20 +1216,20 @@ package body Gtkada.Style is
    end Draw_Polyline;
 
    --------------------
-   -- Draw_Polycurve --
+   -- Path_Polycurve --
    --------------------
 
-   procedure Draw_Polycurve
+   function Path_Polycurve
      (Self        : Drawing_Style;
       Cr          : Cairo.Cairo_Context;
       Points      : Point_Array;
       Show_Arrows : Boolean := True;
-      Relative    : Boolean := False)
+      Relative    : Boolean := False) return Boolean
    is
       P : Integer;
    begin
       if Self.Data = null or else Points'Length < 4 then
-         return;
+         return False;
       end if;
 
       New_Path (Cr);
@@ -1252,11 +1252,26 @@ package body Gtkada.Style is
          end if;
          P := P + 3;
       end loop;
+      return True;
+   end Path_Polycurve;
 
-      Finish_Path (Self, Cr);
+   --------------------
+   -- Draw_Polycurve --
+   --------------------
 
-      if Show_Arrows then
-         Self.Draw_Arrows_And_Symbols (Cr, Points, Relative => Relative);
+   procedure Draw_Polycurve
+     (Self        : Drawing_Style;
+      Cr          : Cairo.Cairo_Context;
+      Points      : Point_Array;
+      Show_Arrows : Boolean := True;
+      Relative    : Boolean := False) is
+   begin
+      if Path_Polycurve (Self, Cr, Points, Show_Arrows) then
+         Finish_Path (Self, Cr);
+
+         if Show_Arrows then
+            Self.Draw_Arrows_And_Symbols (Cr, Points, Relative => Relative);
+         end if;
       end if;
    end Draw_Polycurve;
 

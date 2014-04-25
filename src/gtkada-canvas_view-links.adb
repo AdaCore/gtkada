@@ -1022,6 +1022,36 @@ package body Gtkada.Canvas_View.Links is
       end if;
    end Compute_Layout_For_Curve_Link;
 
+   ------------------
+   -- Prepare_Path --
+   ------------------
+
+   function Prepare_Path
+     (Link    : not null access Canvas_Link_Record'Class;
+      Context : Draw_Context) return Boolean
+   is
+      P    : constant Item_Point_Array_Access := Link.Points;
+   begin
+      case Link.Routing is
+         when Straight | Orthogonal =>
+            return Link.Style.Path_Polyline
+              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+
+         when Curve =>
+            if P'Length = 2 then
+               return Link.Style.Path_Polyline
+                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+            else
+               return Link.Style.Path_Polycurve
+                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+            end if;
+
+         when Arc =>
+            return Link.Style.Path_Polycurve
+              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+      end case;
+   end Prepare_Path;
+
    ---------------
    -- Draw_Link --
    ---------------
@@ -1036,29 +1066,14 @@ package body Gtkada.Canvas_View.Links is
       pragma Assert (P /= null, "waypoints must be computed first");
       pragma Assert (P'Length >= 2, "no enough waypoints");
 
-      --  never fill a link
-      Link.Style.Set_Fill (Null_Pattern);
-
-      case Link.Routing is
-         when Straight | Orthogonal =>
-            Link.Style.Draw_Polyline
-              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
-
-         when Curve =>
-            if P'Length = 2 then
-               Link.Style.Draw_Polyline
-                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
-            else
-               Link.Style.Draw_Polycurve
-                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
-            end if;
-
-         when Arc =>
-            Link.Style.Draw_Polycurve
-              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
-      end case;
-
-      Link.Style.Set_Fill (Fill);
+      if Prepare_Path (Link, Context) then
+         --  never fill a link
+         Link.Style.Set_Fill (Null_Pattern);
+         Link.Style.Finish_Path (Context.Cr);
+         Link.Style.Draw_Arrows_And_Symbols
+           (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+         Link.Style.Set_Fill (Fill);
+      end if;
 
       if Link.Label /= null then
          Link.Label.Translate_And_Draw_Item (Context);
