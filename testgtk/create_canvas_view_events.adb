@@ -79,7 +79,10 @@ package body Create_Canvas_View_Events is
         & "  - @bdragging items@B with the mouse. Items will tend to @bsnap@B"
         & " to the grid when they get close enough to it, but they are"
         & " not constrained to grid coordinates. Snapping is disabled if you"
-        & " press shift during the move."
+        & " press shift during the move. Items will also snap on @bsmart"
+        & " guides@B, which are lines matching various points of interest"
+        & " from the other items. This provides a convenient way to align"
+        & " items."
         & ASCII.LF
         & "  - @bscrolling@B by dragging the background with the mouse."
         & ASCII.LF
@@ -154,6 +157,8 @@ package body Create_Canvas_View_Events is
       Canvas := new Demo_View_Record;
       Gtkada.Canvas_View.Initialize (Canvas);
       Canvas.Set_Grid_Size (30.0);
+      Canvas.Set_Snap (Snap_To_Grid   => True,
+                       Snap_To_Guides => True);
 
       --  Connect this one first so that all events are traced
       Canvas.On_Item_Event (On_Item_Event'Access);

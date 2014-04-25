@@ -140,6 +140,7 @@
 pragma Ada_2012;
 
 with Ada.Containers.Doubly_Linked_Lists;
+private with Ada.Containers.Hashed_Maps;
 private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
 with Cairo;
@@ -330,6 +331,17 @@ package Gtkada.Canvas_View is
 
    package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
      (Abstract_Item);
+
+   function Is_Link
+     (Self : not null access Abstract_Item_Record)
+      return Boolean is (False);
+   --  Whether this item should be considered as a link between two other
+   --  items.
+   --  Such links have a few specific behavior: for instance, they cannot be
+   --  dragged by the user to a new position (their layout is provided by the
+   --  items they are linked to).
+   --  They also do not contribute to the smart guides that are used while
+   --  items are moved around.
 
    function Position
      (Self : not null access Abstract_Item_Record)
@@ -655,10 +667,15 @@ package Gtkada.Canvas_View is
    --  they are dragged to a position close to one of the grid lines, they will
    --  be moved by a small extra amount to align on this grid line.
 
+   Default_Guide_Style : constant Gtkada.Style.Drawing_Style :=
+     Gtkada.Style.Gtk_New (Stroke => (0.957, 0.363, 0.913, 1.0));
+
    procedure Set_Snap
-     (Self         : not null access Canvas_View_Record'Class;
-      Snap_To_Grid : Boolean := True;
-      Snap_Margin  : Model_Coordinate := 5.0);
+     (Self           : not null access Canvas_View_Record'Class;
+      Snap_To_Grid   : Boolean := True;
+      Snap_To_Guides : Boolean := False;
+      Snap_Margin    : Model_Coordinate := 5.0;
+      Guides_Style   : Gtkada.Style.Drawing_Style := Default_Guide_Style);
    --  Configure the snapping feature.
    --  When items are moved interactively, they will tend to snap to various
    --  coordinates, as defined for instance by Set_Grid_Size.
@@ -1331,6 +1348,9 @@ package Gtkada.Canvas_View is
      (Self   : not null access Canvas_Link_Record;
       Anchor : Anchor_Attachment)
       return Item_Point;
+   overriding function Is_Link
+     (Self : not null access Canvas_Link_Record)
+      return Boolean is (True);
 
 private
    procedure Unchecked_Free is new Ada.Unchecked_Deallocation
@@ -1405,12 +1425,17 @@ private
 
    No_Waypoints : constant Item_Point_Array := (1 .. 0 => (0.0, 0.0));
 
-   type Item_And_Position is record
+   type Item_Drag_Info is record
       Item : Abstract_Item;
       Pos  : Model_Point;
    end record;
-   package Item_And_Position_Lists is new Ada.Containers.Doubly_Linked_Lists
-     (Item_And_Position);
+
+   function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type;
+   package Item_Drag_Infos is new Ada.Containers.Hashed_Maps
+     (Key_Type        => Abstract_Item,
+      Element_Type    => Item_Drag_Info,
+      Hash            => Hash,
+      Equivalent_Keys => "=");
 
    type Continuous_Scroll_Data is record
       Id      : Glib.Main.G_Source_Id := Glib.Main.No_Source_Id;
@@ -1432,17 +1457,33 @@ private
       --  Speed of the scrolling at each step
    end record;
 
-   type Snap_Data is record
-      Grid : Boolean := True;
-      --  Whether to snap to the grid
+   type Smart_Guide is record
+      Pos        : Model_Coordinate;
+      Min, Max   : Model_Coordinate;
+      Visible    : Boolean := False;
+   end record;
+   --  Description for a smart guide:
+   --  For a horizontal guide, Pos is the y coordinate of the guide, and
+   --  Min,Max are its minimum and maximum x coordinates for all items along
+   --  that guide.
 
-      Margin : Model_Coordinate := 5.0;
+   package Smart_Guide_Lists is new Ada.Containers.Doubly_Linked_Lists
+     (Smart_Guide);
+
+   type Snap_Data is record
+      Grid             : Boolean := True;
+      Smart_Guides     : Boolean := False;
+      Margin           : Model_Coordinate := 5.0;
+
+      Hguides, Vguides : Smart_Guide_Lists.List;
+      Style            : Gtkada.Style.Drawing_Style := Default_Guide_Style;
    end record;
 
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
-      Model   : Canvas_Model;
-      Topleft : Model_Point := (0.0, 0.0);
-      Scale   : Gdouble := 1.0;
+      Model     : Canvas_Model;
+      Topleft   : Model_Point := (0.0, 0.0);
+      Scale     : Gdouble := 1.0;
+      Grid_Size : Model_Coordinate := 20.0;
 
       Id_Layout_Changed,
       Id_Item_Contents_Changed : Gtk.Handlers.Handler_Id;
@@ -1460,7 +1501,7 @@ private
       --  Attributes of the last button_press event, used to properly handle
       --  dragging and avoid recomputing the selectd item on button_release.
 
-      Dragged_Items : Item_And_Position_Lists.List;
+      Dragged_Items : Item_Drag_Infos.Map;
       --  The items that are being dragged.
 
       In_Drag : Boolean := False;
@@ -1468,9 +1509,6 @@ private
 
       Topleft_At_Drag_Start : Model_Point;
       --  Toplevel at the stat of the drag
-
-      Grid_Size : Model_Coordinate := 20.0;
-      --  Size of the grid.
 
       Continuous_Scroll : Continuous_Scroll_Data;
       Snap              : Snap_Data;

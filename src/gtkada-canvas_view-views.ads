@@ -106,14 +106,36 @@ package Gtkada.Canvas_View.Views is
    --------------
    -- Snapping --
    --------------
+   --  These functions are mostly for the internal implementation of the view.
 
-   function Do_Snap_Grid
+   function Snap_To_Grid
      (Self        : not null access Canvas_View_Record'Class;
-      Snap_Margin : Model_Coordinate;
       Pos         : Model_Coordinate;
       Size        : Model_Coordinate) return Model_Coordinate;
    --  Snap the Pos coordinate to the canvas grid.
    --  Size is the size of the item along that coordinate, since the item
    --  could be snap either on its left (resp. top) or right (resp. bottom)
+
+   procedure Prepare_Smart_Guides
+     (Self : not null access Canvas_View_Record'Class);
+   --  Prepare data for the smart guides, before we start a drag operation.
+
+   procedure Free_Smart_Guides
+     (Self : not null access Canvas_View_Record'Class);
+   --  Free the memory used for the smart guidss
+
+   function Snap_To_Smart_Guides
+     (Self       : not null access Canvas_View_Record'Class;
+      Pos        : Model_Coordinate;
+      Size       : Model_Coordinate;
+      Horizontal : Boolean) return Model_Coordinate;
+   --  Snap the Pos coordinate to the smart guides.
+   --  This also computes which smart guides should be made visible
+
+   procedure Draw_Visible_Smart_Guides
+     (Self     : not null access Canvas_View_Record'Class;
+      Context  : Draw_Context;
+      For_Item : not null access Abstract_Item_Record'Class);
+   --  Draw the visible smart guides, as computed by Snap_To_Smart_Guides;
 
 end Gtkada.Canvas_View.Views;

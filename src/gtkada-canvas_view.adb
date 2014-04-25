@@ -47,6 +47,7 @@ with Gtkada.Canvas_View.Objects;         use Gtkada.Canvas_View.Objects;
 with Gtkada.Canvas_View.Views;           use Gtkada.Canvas_View.Views;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
 with Gtkada.Types;                       use Gtkada.Types;
+with System.Storage_Elements;            use System.Storage_Elements;
 
 package body Gtkada.Canvas_View is
 
@@ -176,8 +177,7 @@ package body Gtkada.Canvas_View is
 
    procedure Refresh_Link_Layout
      (Model : not null access Canvas_Model_Record'Class;
-      Items : Item_And_Position_Lists.List :=
-        Item_And_Position_Lists.Empty_List);
+      Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map);
    --  Refresh the layout for all links (or only the ones linked to Item, or
    --  indirectly to a link to Item).
 
@@ -724,6 +724,7 @@ package body Gtkada.Canvas_View is
       Details : aliased Canvas_Event_Details;
    begin
       Cancel_Continuous_Scrolling (Self);
+      Free_Smart_Guides (Self);
 
       if Self.Model /= null then
          Self.Set_Details (Details, Event);
@@ -765,9 +766,9 @@ package body Gtkada.Canvas_View is
       Dx, Dy         : Model_Coordinate;
       From_Initial   : Boolean)
    is
-      use Item_And_Position_Lists;
-      C    : Item_And_Position_Lists.Cursor := Self.Dragged_Items.First;
-      It   : Item_And_Position;
+      use Item_Drag_Infos;
+      C    : Item_Drag_Infos.Cursor := Self.Dragged_Items.First;
+      It   : Item_Drag_Info;
       B    : Model_Rectangle;
       BB   : Item_Rectangle;
       X, Y : Model_Coordinate;
@@ -802,11 +803,16 @@ package body Gtkada.Canvas_View is
 
          --  Snap to grid or smart guides
 
-         if Self.Last_Button_Press.Allow_Snapping
-           and then Self.Snap.Grid
-         then
-            X := Do_Snap_Grid (Self, Self.Snap.Margin, X, BB.Width);
-            Y := Do_Snap_Grid (Self, Self.Snap.Margin, Y, BB.Height);
+         if Self.Last_Button_Press.Allow_Snapping then
+            if Self.Snap.Grid then
+               X := Snap_To_Grid (Self, X, BB.Width);
+               Y := Snap_To_Grid (Self, Y, BB.Height);
+            end if;
+
+            if Self.Snap.Smart_Guides then
+               X := Snap_To_Smart_Guides (Self, X, BB.Width, False);
+               Y := Snap_To_Smart_Guides (Self, Y, BB.Height, True);
+            end if;
          end if;
 
          It.Item.Set_Position ((X => X, Y => Y));
@@ -849,10 +855,13 @@ package body Gtkada.Canvas_View is
 
                --  ??? Should add all selected items
                if Details.Toplevel_Item /= null then
-                  Self.Dragged_Items.Append
-                    ((Item => Details.Toplevel_Item,
+                  Self.Dragged_Items.Include
+                    (Details.Toplevel_Item,
+                     (Item => Details.Toplevel_Item,
                       Pos  => (X => Details.Toplevel_Item.Position.X,
                                Y => Details.Toplevel_Item.Position.Y)));
+
+                  Prepare_Smart_Guides (Self);
                end if;
             end if;
          end if;
@@ -1657,8 +1666,20 @@ package body Gtkada.Canvas_View is
       begin
          Translate_And_Draw_Item (Item, Context);
       end Draw_Item;
+
+      use Item_Drag_Infos;
    begin
       if Self.Model /= null then
+         --  Draw the active smart guides if needed
+         if Self.In_Drag
+           and then Self.Last_Button_Press.Allow_Snapping
+           and then Self.Snap.Smart_Guides
+           and then not Self.Dragged_Items.Is_Empty
+         then
+            Draw_Visible_Smart_Guides
+              (Self, Context, Element (Self.Dragged_Items.First).Item);
+         end if;
+
          Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
       end if;
    end Draw_Internal;
@@ -1682,11 +1703,11 @@ package body Gtkada.Canvas_View is
       F : Anchor_Attachment := Anchor_From;
       T : Anchor_Attachment := Anchor_To;
    begin
-      if From.all in Canvas_Link_Record'Class then
+      if From.Is_Link then
          F.Toplevel_Side := No_Clipping;
       end if;
 
-      if To.all in Canvas_Link_Record'Class then
+      if To.Is_Link then
          T.Toplevel_Side := No_Clipping;
       end if;
 
@@ -2076,13 +2097,13 @@ package body Gtkada.Canvas_View is
    begin
       --  Target links must already have their own layout
 
-      if Self.From.all in Canvas_Link_Record'Class
+      if Self.From.Is_Link
          and then Canvas_Link (Self.From).Points = null
       then
          Canvas_Link (Self.From).Refresh_Layout (Context);
       end if;
 
-      if Self.To.all in Canvas_Link_Record'Class
+      if Self.To.Is_Link
          and then Canvas_Link (Self.To).Points = null
       then
          Canvas_Link (Self.To).Refresh_Layout (Context);
@@ -2106,8 +2127,7 @@ package body Gtkada.Canvas_View is
 
    procedure Refresh_Link_Layout
      (Model : not null access Canvas_Model_Record'Class;
-      Items : Item_And_Position_Lists.List :=
-        Item_And_Position_Lists.Empty_List)
+      Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map)
    is
       pragma Unreferenced (Items);
       Context : constant Draw_Context := (Cr => <>, Layout => Model.Layout);
@@ -2128,7 +2148,7 @@ package body Gtkada.Canvas_View is
          --  links to those links.
          --  This is inefficient to compute in general, so perhaps we should
          --  instead provide an overridable primitive operation on the model.
-         if It.all in Canvas_Link_Record'Class then
+         if It.Is_Link then
             Unchecked_Free (Canvas_Link_Record'Class (It.all).Points);
          end if;
       end Reset_Link_Layout;
@@ -2138,7 +2158,7 @@ package body Gtkada.Canvas_View is
       is
          Link : Canvas_Link;
       begin
-         if It.all in Canvas_Link_Record'Class then
+         if It.Is_Link then
             Link := Canvas_Link (It);
             if Link.Points = null then
                Link.Refresh_Layout (Context);
@@ -3348,13 +3368,32 @@ package body Gtkada.Canvas_View is
    --------------
 
    procedure Set_Snap
-     (Self         : not null access Canvas_View_Record'Class;
-      Snap_To_Grid : Boolean := True;
-      Snap_Margin  : Model_Coordinate := 5.0)
+     (Self           : not null access Canvas_View_Record'Class;
+      Snap_To_Grid   : Boolean := True;
+      Snap_To_Guides : Boolean := False;
+      Snap_Margin    : Model_Coordinate := 5.0;
+      Guides_Style   : Gtkada.Style.Drawing_Style := Default_Guide_Style)
    is
    begin
-      Self.Snap.Grid := Snap_To_Grid;
-      Self.Snap.Margin := Snap_Margin;
+      Self.Snap.Grid         := Snap_To_Grid;
+      Self.Snap.Smart_Guides := Snap_To_Guides;
+      Self.Snap.Margin       := Snap_Margin;
+      Self.Snap.Style        := Guides_Style;
    end Set_Snap;
+
+   ----------
+   -- Hash --
+   ----------
+
+   function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type is
+   begin
+      if Key = null then
+         return 0;
+      else
+         return Ada.Containers.Hash_Type
+           (To_Integer (Key.all'Address)
+            mod Integer_Address (Ada.Containers.Hash_Type'Last));
+      end if;
+   end Hash;
 
 end Gtkada.Canvas_View;
