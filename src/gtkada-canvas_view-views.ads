@@ -103,6 +103,44 @@ package Gtkada.Canvas_View.Views is
    --  (since the mouse wheel on its own is used for vertical scrolling by
    --  gtk+, and for horizontal scrolling when used with shift).
 
+   -------------
+   -- Minimap --
+   -------------
+
+   type Minimap_View_Record is new Canvas_View_Record with private;
+   type Minimap_View is access all Minimap_View_Record'Class;
+   --  A special canvas view that monitors another view and displays the same
+   --  contents, but at a scale such that the whole model is visible (and the
+   --  area visible in the monitored view is drawn as a rectangle).
+
+   Default_Current_Region_Style : constant Gtkada.Style.Drawing_Style :=
+     Gtkada.Style.Gtk_New
+       (Stroke     => (0.0, 0.0, 0.0, 1.0),
+        Fill       => Gtkada.Style.Create_Rgba_Pattern ((0.9, 0.9, 0.9, 0.2)),
+        Line_Width => 2.0);
+
+   procedure Gtk_New
+     (Self  : out Minimap_View;
+      Style : Gtkada.Style.Drawing_Style := Default_Current_Region_Style);
+   procedure Initialize
+     (Self  : not null access Minimap_View_Record'Class;
+      Style : Gtkada.Style.Drawing_Style := Default_Current_Region_Style);
+   --  Create a new minimap, which does not monitor any view yet.
+   --  The style is used to highlight the region currently visible in the
+   --  monitored view.
+
+   procedure Monitor
+     (Self : not null access Minimap_View_Record;
+      View : access Canvas_View_Record'Class := null);
+   --  Start monitoring a specific view.
+   --  Any change in the viewport or the model of that view will be reflected
+   --  in the display of Self.
+
+   overriding procedure Draw_Internal
+     (Self    : not null access Minimap_View_Record;
+      Context : Draw_Context;
+      Area    : Model_Rectangle);
+
    --------------
    -- Snapping --
    --------------
@@ -138,4 +176,20 @@ package Gtkada.Canvas_View.Views is
       For_Item : not null access Abstract_Item_Record'Class);
    --  Draw the visible smart guides, as computed by Snap_To_Smart_Guides;
 
+   -------------------------
+   -- Continous scrolling --
+   -------------------------
+   --  These functions are mostly for the internal implementation of the view.
+
+   procedure Cancel_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class);
+
+private
+   type Minimap_View_Record is new Canvas_View_Record with record
+      Monitored           : Canvas_View;
+      Viewport_Changed_Id : Gtk.Handlers.Handler_Id;
+      Area_Style          : Gtkada.Style.Drawing_Style;
+
+      Drag_Pos_X, Drag_Pos_Y : Gdouble;
+   end record;
 end Gtkada.Canvas_View.Views;

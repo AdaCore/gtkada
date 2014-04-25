@@ -771,13 +771,21 @@ package Gtkada.Canvas_View is
    --  your behalf. See the documentation for Set_Transform.
 
    procedure Set_Scale
-     (Self      : not null access Canvas_View_Record;
-      Scale     : Gdouble := 1.0;
-      Center_On : Model_Point := No_Point);
+     (Self     : not null access Canvas_View_Record;
+      Scale    : Gdouble := 1.0;
+      Preserve : Model_Point := No_Point);
    --  Changes the scaling factor for Self.
-   --  This also scrols the view so that either Center_On or the current center
+   --  This also scrols the view so that either Preserve or the current center
    --  of the view remains at the same location in the widget, as if the user
    --  was zooming towards that specific point.
+
+   procedure Center_On
+     (Self         : not null access Canvas_View_Record;
+      Center_On    : Model_Point;
+      X_Pos, Y_Pos : Gdouble := 0.5);
+   --  Scroll the canvas so that Center_On appears at the given position
+   --  within the view (center when using 0.5, or left when using 0.0, and so
+   --  on).
 
    function Get_Scale
      (Self : not null access Canvas_View_Record) return Gdouble;
@@ -892,11 +900,12 @@ package Gtkada.Canvas_View is
 
    procedure Viewport_Changed
      (Self   : not null access Canvas_View_Record'Class);
-   procedure On_Viewport_Changed
+   function On_Viewport_Changed
      (Self : not null access Canvas_View_Record'Class;
       Call : not null access procedure
         (Self : not null access GObject_Record'Class);
-      Slot : access GObject_Record'Class := null);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
    Signal_Viewport_Changed : constant Glib.Signal_Name := "viewport_changed";
    --  This signal is emitted whenever the view is zoomed or scrolled.
    --  This can be used for instance to synchronize multiple views, or display
@@ -1555,5 +1564,11 @@ private
    type List_Canvas_Model_Record is new Canvas_Model_Record with record
       Items : Items_Lists.List;
    end record;
+
+   procedure Refresh_Link_Layout
+     (Model : not null access Canvas_Model_Record'Class;
+      Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map);
+   --  Refresh the layout for all links (or only the ones linked to Item, or
+   --  indirectly to a link to Item).
 
 end Gtkada.Canvas_View;

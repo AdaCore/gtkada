@@ -22,10 +22,49 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo;   use Cairo;
-with Glib;    use Glib;
+with Cairo;        use Cairo;
+with Glib;         use Glib;
+with Glib.Main;    use Glib.Main;
+with Glib.Object;  use Glib.Object;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Widget;   use Gtk.Widget;
+with System;       use System;
 
 package body Gtkada.Canvas_View.Views is
+
+   procedure On_Monitored_Destroyed
+     (Minimap : System.Address; Monitored : System.Address);
+   pragma Convention (C, On_Monitored_Destroyed);
+   --  Called when the view monitored by a minimap is being destroyed.
+
+   procedure On_Destroy_Minimap (Minimap : access Gtk_Widget_Record'Class);
+   --  Called when the minimap is being destroyed
+
+   procedure On_Monitored_Viewport_Changed
+     (Minimap : not null access GObject_Record'Class);
+   --  Called when the viewport has changed in the monitored view
+
+   function On_Minimap_Item_Event
+     (View  : not null access GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  React to events in the minimap
+
+   procedure Start_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class;
+      Dx, Dy  : Model_Coordinate := 0.0);
+   function Do_Continuous_Scroll (Self : Canvas_View) return Boolean;
+   --  Start or cancel any continuous scrolling that might exist.
+
+   package View_Sources is new Glib.Main.Generic_Sources (Canvas_View);
+
+   procedure Move_Selected_Items
+     (Self           : not null access Canvas_View_Record'Class;
+      Dx, Dy         : Model_Coordinate;
+      From_Initial   : Boolean);
+   --  Move all selected items (part of the current drag operation) by the
+   --  specified amount (from their initial position if From_Initial is true,
+   --  or from their current position otherwise)).
 
    ------------------
    -- Snap_To_Grid --
@@ -137,19 +176,52 @@ package body Gtkada.Canvas_View.Views is
       Event : Event_Details_Access)
       return Boolean
    is
-      Self : constant Canvas_View := Canvas_View (View);
+      Self    : constant Canvas_View := Canvas_View (View);
+      Area, B : Model_Rectangle;
+      X, Y    : Model_Coordinate;
    begin
       if Self.Model /= null
         and then Event.Button = 1
-        and then Event.Event_Type = Button_Press
         and then Event.Toplevel_Item = null
       then
-         --  Enable scrolling by dragging the background. However, there is
-         --  no point showing an area where there is no item, so we limit
-         --  the scrolling.
-         Event.Allowed_Drag_Area :=
-           Self.Model.Bounding_Box (Margin => View_Margin / Self.Get_Scale);
-         return True;
+
+         if Event.Event_Type = Button_Press then
+            --  Enable scrolling by dragging the background. However, there is
+            --  no point showing an area where there is no item, so we limit
+            --  the scrolling.
+            Event.Allowed_Drag_Area :=
+              Self.Model.Bounding_Box (Margin => View_Margin / Self.Get_Scale);
+            --  Event.Dragging_Scrolls := True;
+            return True;
+
+         elsif Event.Event_Type = In_Drag then
+            --  Compute the area that we are allowed to make visible. This
+            --  is the combination of the allowed area and the currently
+            --  visible one.
+
+            X := Self.Topleft_At_Drag_Start.X
+              - (Event.Root_Point.X
+                 - Self.Last_Button_Press.Root_Point.X) / Self.Scale;
+
+            Y := Self.Topleft_At_Drag_Start.Y
+              - (Event.Root_Point.Y
+                 - Self.Last_Button_Press.Root_Point.Y) / Self.Scale;
+
+            if Self.Last_Button_Press.Allowed_Drag_Area /=
+              Drag_Anywhere
+            then
+               Area := Self.Get_Visible_Area;
+               B    := Self.Last_Button_Press.Allowed_Drag_Area;
+               Union (B, Area);
+
+               X := Model_Coordinate'Max (X, B.X);
+               X := Model_Coordinate'Min (X, B.X + B.Width - Area.Width);
+               Y := Model_Coordinate'Max (Y, B.Y);
+               Y := Model_Coordinate'Min (Y, B.Y + B.Height - Area.Height);
+            end if;
+
+            Self.Center_On ((X, Y), X_Pos => 0.0, Y_Pos => 0.0);
+         end if;
       end if;
       return False;
    end On_Item_Event_Scroll_Background;
@@ -163,15 +235,70 @@ package body Gtkada.Canvas_View.Views is
       Event : Event_Details_Access)
       return Boolean
    is
-      Self : constant Canvas_View := Canvas_View (View);
+      Self  : constant Canvas_View := Canvas_View (View);
+      Alloc : Gtk_Allocation;
+      P     : View_Point;
    begin
-      if Event.Event_Type = In_Drag then
+      if Event.Event_Type = In_Drag
+        and then not Self.Dragged_Items.Is_Empty
+      then
          --  Disable snapping when shift is pressed.
          Event.Allow_Snapping := (Event.State and Shift_Mask) = 0;
          Self.Last_Button_Press.Allow_Snapping := Event.Allow_Snapping;
-      end if;
 
-      if Event.Event_Type = Button_Press
+         --  The use of Topleft is to take into account the continuous
+         --  scrolling
+
+         Move_Selected_Items
+           (Self,
+            Dx => (Self.Topleft.X - Self.Topleft_At_Drag_Start.X)
+            + (Event.Root_Point.X
+              - Self.Last_Button_Press.Root_Point.X) / Self.Scale,
+            Dy => (Self.Topleft.Y - Self.Topleft_At_Drag_Start.Y)
+            + (Event.Root_Point.Y
+              - Self.Last_Button_Press.Root_Point.Y) / Self.Scale,
+            From_Initial   => True);
+
+         --  Should we do automatic scrolling of the view ?
+
+         Self.Get_Allocation (Alloc);
+         P := Self.Model_To_View (Event.M_Point);
+
+         if P.X < View_Coordinate (Alloc.X)
+           + Self.Continuous_Scroll.Margin
+         then
+            Start_Continuous_Scrolling
+              (Self, Dx => -Self.Scale * Self.Continuous_Scroll.Speed);
+
+         elsif P.X >
+           View_Coordinate (Alloc.X + Alloc.Width)
+           - Self.Continuous_Scroll.Margin
+         then
+            Start_Continuous_Scrolling
+              (Self, Dx => Self.Scale * Self.Continuous_Scroll.Speed);
+
+         elsif P.Y < View_Coordinate (Alloc.Y)
+           + Self.Continuous_Scroll.Margin
+         then
+            Start_Continuous_Scrolling
+              (Self, Dy => -Self.Scale * Self.Continuous_Scroll.Speed);
+
+         elsif P.Y >
+           View_Coordinate (Alloc.Y + Alloc.Height)
+           - Self.Continuous_Scroll.Margin
+         then
+            Start_Continuous_Scrolling
+              (Self, Dy => Self.Scale * Self.Continuous_Scroll.Speed);
+
+         else
+            Cancel_Continuous_Scrolling (Self);
+         end if;
+
+         --  Should redo the layout for links, but this might be
+         --  expensive.
+         Self.Queue_Draw;
+
+      elsif Event.Event_Type = Button_Press
         and then Event.Toplevel_Item /= null
         and then Event.Button = 1
       then
@@ -202,7 +329,7 @@ package body Gtkada.Canvas_View.Views is
                S := Self.Get_Scale / Factor;
             end if;
 
-            Self.Set_Scale (S, Center_On => Event.M_Point);
+            Self.Set_Scale (S, Preserve => Event.M_Point);
             return True;
          end if;
       end if;
@@ -436,5 +563,304 @@ package body Gtkada.Canvas_View.Views is
          Next (C);
       end loop;
    end Draw_Visible_Smart_Guides;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+     (Self  : out Minimap_View;
+      Style : Gtkada.Style.Drawing_Style := Default_Current_Region_Style)
+   is
+   begin
+      Self := new Minimap_View_Record;
+      Gtkada.Canvas_View.Views.Initialize (Self, Style);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Self  : not null access Minimap_View_Record'Class;
+      Style : Gtkada.Style.Drawing_Style := Default_Current_Region_Style)
+   is
+   begin
+      Gtkada.Canvas_View.Initialize (Self, Model => null);
+      Self.Area_Style := Style;
+      Self.On_Destroy (On_Destroy_Minimap'Access);
+      Self.On_Item_Event (On_Minimap_Item_Event'Access);
+   end Initialize;
+
+   -------------
+   -- Monitor --
+   -------------
+
+   procedure Monitor
+     (Self : not null access Minimap_View_Record;
+      View : access Canvas_View_Record'Class := null)
+   is
+   begin
+      if Self.Monitored /= null then
+         Weak_Unref (Self.Monitored, On_Monitored_Destroyed'Access,
+                     Get_Object (Self));
+         Self.Set_Model (null);
+         Disconnect (Self.Monitored, Self.Viewport_Changed_Id);
+      end if;
+
+      Self.Monitored := Canvas_View (View);
+      if View /= null then
+         Weak_Ref (Self.Monitored, On_Monitored_Destroyed'Access,
+                   Get_Object (Self));
+
+         Self.Viewport_Changed_Id := View.On_Viewport_Changed
+             (On_Monitored_Viewport_Changed'Access, Self);
+      end if;
+
+      Self.Queue_Draw;
+   end Monitor;
+
+   -----------------------------------
+   -- On_Monitored_Viewport_Changed --
+   -----------------------------------
+
+   procedure On_Monitored_Viewport_Changed
+     (Minimap : not null access GObject_Record'Class)
+   is
+      Self : constant Minimap_View := Minimap_View (Minimap);
+   begin
+      Self.Set_Model (Self.Monitored.Model);
+      Self.Scale_To_Fit (Max_Scale => Gdouble'Last);
+   end On_Monitored_Viewport_Changed;
+
+   ------------------------
+   -- On_Destroy_Minimap --
+   ------------------------
+
+   procedure On_Destroy_Minimap (Minimap : access Gtk_Widget_Record'Class) is
+   begin
+      Minimap_View (Minimap).Monitor (null);
+   end On_Destroy_Minimap;
+
+   ----------------------------
+   -- On_Monitored_Destroyed --
+   ----------------------------
+
+   procedure On_Monitored_Destroyed
+     (Minimap : System.Address; Monitored : System.Address)
+   is
+      pragma Unreferenced (Monitored);
+      Self : constant Minimap_View :=
+        Minimap_View (Get_User_Data_Or_Null (Minimap));
+   begin
+      Self.Monitored := null;
+      Self.Queue_Draw;
+   end On_Monitored_Destroyed;
+
+   -------------------
+   -- Draw_Internal --
+   -------------------
+
+   overriding procedure Draw_Internal
+     (Self    : not null access Minimap_View_Record;
+      Context : Draw_Context;
+      Area    : Model_Rectangle)
+   is
+      Box : Model_Rectangle;
+   begin
+      Canvas_View_Record (Self.all).Draw_Internal (Context, Area); --  inherit
+
+      if Self.Monitored /= null then
+         Box := Self.Monitored.Get_Visible_Area;
+         Self.Area_Style.Draw_Rect
+           (Context.Cr,
+            Topleft => (Box.X, Box.Y),
+            Width   => Box.Width,
+            Height  => Box.Height);
+      end if;
+   end Draw_Internal;
+
+   ---------------------------
+   -- On_Minimap_Item_Event --
+   ---------------------------
+
+   function On_Minimap_Item_Event
+     (View  : not null access GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self   : constant Minimap_View := Minimap_View (View);
+      Screen : Model_Rectangle;
+      S      : Gdouble;
+   begin
+      if Self.Monitored /= null then
+         case Event.Event_Type is
+            when Button_Press =>
+               Event.Toplevel_Item := null;
+               Event.Item := null;
+               Event.Allowed_Drag_Area := Drag_Anywhere;
+
+               Screen := Self.Monitored.Get_Visible_Area;
+
+               if Point_In_Rect (Screen, Event.M_Point) then
+                  Self.Drag_Pos_X :=
+                    (Event.M_Point.X - Self.Monitored.Topleft.X)
+                    / Screen.Width;
+                  Self.Drag_Pos_Y :=
+                    (Event.M_Point.Y - Self.Monitored.Topleft.Y)
+                    / Screen.Height;
+               else
+                  Self.Monitored.Center_On (Event.M_Point);
+                  Self.Drag_Pos_X := 0.5;
+                  Self.Drag_Pos_Y := 0.5;
+               end if;
+
+               return True;
+
+            when Button_Release =>
+               Self.Monitored.Center_On (Event.M_Point);
+               return True;
+
+            when In_Drag =>
+               Self.Monitored.Center_On
+                 (Event.M_Point, Self.Drag_Pos_X, Self.Drag_Pos_Y);
+               return True;
+
+            when Scroll =>
+               if Event.Button = 5 then
+                  S := Self.Monitored.Get_Scale * 1.1;
+               else
+                  S := Self.Monitored.Get_Scale / 1.1;
+               end if;
+
+               Self.Monitored.Set_Scale (S, Preserve => Event.M_Point);
+               return True;
+
+            when others =>
+               null;
+         end case;
+      end if;
+      return False;
+   end On_Minimap_Item_Event;
+
+   --------------------------------
+   -- Start_Continuous_Scrolling --
+   --------------------------------
+
+   procedure Start_Continuous_Scrolling
+     (Self   : not null access Canvas_View_Record'Class;
+      Dx, Dy : Model_Coordinate := 0.0)
+   is
+   begin
+      Self.Continuous_Scroll.Dx := Dx;
+      Self.Continuous_Scroll.Dy := Dy;
+
+      if Self.Continuous_Scroll.Id = No_Source_Id then
+         Self.Continuous_Scroll.Id := View_Sources.Timeout_Add
+           (Interval   => Self.Continuous_Scroll.Timeout,
+            Func       => Do_Continuous_Scroll'Access,
+            Data       => Canvas_View (Self));
+      end if;
+   end Start_Continuous_Scrolling;
+
+   ---------------------------------
+   -- Cancel_Continuous_Scrolling --
+   ---------------------------------
+
+   procedure Cancel_Continuous_Scrolling
+     (Self    : not null access Canvas_View_Record'Class)
+   is
+   begin
+      if Self.Continuous_Scroll.Id /= No_Source_Id then
+         Remove (Self.Continuous_Scroll.Id);
+         Self.Continuous_Scroll.Id := No_Source_Id;
+      end if;
+   end Cancel_Continuous_Scrolling;
+
+   --------------------------
+   -- Do_Continuous_Scroll --
+   --------------------------
+
+   function Do_Continuous_Scroll (Self : Canvas_View) return Boolean is
+   begin
+      Self.Topleft :=
+        (Self.Topleft.X + Self.Continuous_Scroll.Dx,
+         Self.Topleft.Y + Self.Continuous_Scroll.Dy);
+
+      Move_Selected_Items
+        (Self,
+         Dx             => Self.Continuous_Scroll.Dx,
+         Dy             => Self.Continuous_Scroll.Dy,
+         From_Initial   => False);
+
+      Self.Viewport_Changed;
+      Queue_Draw (Self);
+      return True;  --  keep repeating the timeout
+   end Do_Continuous_Scroll;
+
+   -------------------------
+   -- Move_Selected_Items --
+   -------------------------
+
+   procedure Move_Selected_Items
+     (Self           : not null access Canvas_View_Record'Class;
+      Dx, Dy         : Model_Coordinate;
+      From_Initial   : Boolean)
+   is
+      use Item_Drag_Infos;
+      C    : Item_Drag_Infos.Cursor := Self.Dragged_Items.First;
+      It   : Item_Drag_Info;
+      B    : Model_Rectangle;
+      BB   : Item_Rectangle;
+      X, Y : Model_Coordinate;
+      Pos  : Gtkada.Style.Point;
+   begin
+      while Has_Element (C) loop
+         It := Element (C);
+
+         if From_Initial then
+            X := It.Pos.X + Dx;
+            Y := It.Pos.Y + Dy;
+         else
+            Pos := It.Item.Position;
+            X := Pos.X + Dx;
+            Y := Pos.Y + Dy;
+         end if;
+
+         BB := It.Item.Bounding_Box;
+
+         --  Constraint the move to a specific area
+
+         if Self.Last_Button_Press.Allowed_Drag_Area /=
+           Drag_Anywhere
+         then
+            B  := Self.Last_Button_Press.Allowed_Drag_Area;
+
+            X := Model_Coordinate'Max (X, B.X);
+            X := Model_Coordinate'Min (X, B.X + B.Width - BB.Width);
+            Y := Model_Coordinate'Max (Y, B.Y);
+            Y := Model_Coordinate'Min (Y, B.Y + B.Height - BB.Height);
+         end if;
+
+         --  Snap to grid or smart guides
+
+         if Self.Last_Button_Press.Allow_Snapping then
+            if Self.Snap.Grid then
+               X := Snap_To_Grid (Self, X, BB.Width);
+               Y := Snap_To_Grid (Self, Y, BB.Height);
+            end if;
+
+            if Self.Snap.Smart_Guides then
+               X := Snap_To_Smart_Guides (Self, X, BB.Width, False);
+               Y := Snap_To_Smart_Guides (Self, Y, BB.Height, True);
+            end if;
+         end if;
+
+         It.Item.Set_Position ((X => X, Y => Y));
+         Next (C);
+      end loop;
+
+      Refresh_Link_Layout (Self.Model, Self.Dragged_Items);
+   end Move_Selected_Items;
 
 end Gtkada.Canvas_View.Views;

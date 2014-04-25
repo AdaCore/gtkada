@@ -74,6 +74,7 @@ with Create_Canvas_View_Composite;
 with Create_Canvas_View_Events;
 with Create_Canvas_View_Items;
 with Create_Canvas_View_Links;
+with Create_Canvas_View_Minimap;
 with Create_Canvas_View_Routes;
 with Create_Cell_View;
 with Create_Check_Buttons;
@@ -279,21 +280,24 @@ package body Main_Windows is
 
       (NS ("canvas"),           Gtkada,  Create_Canvas.Run'Access,
                                          Create_Canvas.Help'Access),
-      (NS ("canvas view (composite)"),     Gtkada,
-       Create_Canvas_View_Composite.Run'Access,
-       Create_Canvas_View_Composite.Help'Access),
-      (NS ("canvas view (events)"),     Gtkada,
-       Create_Canvas_View_Events.Run'Access,
-       Create_Canvas_View_Events.Help'Access),
       (NS ("canvas view (items)"),     Gtkada,
        Create_Canvas_View_Items.Run'Access,
        Create_Canvas_View_Items.Help'Access),
+      (NS ("canvas view (composite)"),     Gtkada,
+       Create_Canvas_View_Composite.Run'Access,
+       Create_Canvas_View_Composite.Help'Access),
       (NS ("canvas view (links)"),     Gtkada,
        Create_Canvas_View_Links.Run'Access,
        Create_Canvas_View_Links.Help'Access),
       (NS ("canvas view (routes)"),     Gtkada,
        Create_Canvas_View_Routes.Run'Access,
        Create_Canvas_View_Routes.Help'Access),
+      (NS ("canvas view (events)"),     Gtkada,
+       Create_Canvas_View_Events.Run'Access,
+       Create_Canvas_View_Events.Help'Access),
+      (NS ("canvas view (minimap)"),     Gtkada,
+       Create_Canvas_View_Minimap.Run'Access,
+       Create_Canvas_View_Minimap.Help'Access),
       (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
                                          Create_Cell_View.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
