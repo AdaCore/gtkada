@@ -1223,7 +1223,6 @@ package body Gtkada.Style is
      (Self        : Drawing_Style;
       Cr          : Cairo.Cairo_Context;
       Points      : Point_Array;
-      Show_Arrows : Boolean := True;
       Relative    : Boolean := False) return Boolean
    is
       P : Integer;
@@ -1266,7 +1265,7 @@ package body Gtkada.Style is
       Show_Arrows : Boolean := True;
       Relative    : Boolean := False) is
    begin
-      if Path_Polycurve (Self, Cr, Points, Show_Arrows) then
+      if Path_Polycurve (Self, Cr, Points) then
          Finish_Path (Self, Cr);
 
          if Show_Arrows then

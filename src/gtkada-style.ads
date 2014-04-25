@@ -365,7 +365,6 @@ package Gtkada.Style is
      (Self        : Drawing_Style;
       Cr          : Cairo.Cairo_Context;
       Points      : Point_Array;
-      Show_Arrows : Boolean := True;
       Relative    : Boolean := False) return Boolean;
    --  Same as Drawpolyline, but draws bezier curves.
    --  Points is an array of both points and control points, as in:
