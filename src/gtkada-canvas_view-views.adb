@@ -370,6 +370,8 @@ package body Gtkada.Canvas_View.Views is
 
                      else
                         Self.Model.Remove_From_Selection (Event.Item);
+                        Self.Model.Remove_From_Selection
+                          (Event.Item.Get_Toplevel_Item);
                      end if;
 
                   else
@@ -377,7 +379,8 @@ package body Gtkada.Canvas_View.Views is
                         Self.Model.Clear_Selection;
                      end if;
 
-                     Self.Model.Add_To_Selection (Event.Item);
+                     Self.Model.Add_To_Selection
+                       (Event.Item.Get_Toplevel_Item);
                   end if;
 
                when others =>
