@@ -126,8 +126,9 @@ package body Gtkada.Canvas_View is
      (View   : access GObject_Record'Class;
       Item : Abstract_Item);
    procedure On_Selection_Changed_For_View
-     (View : not null access GObject_Record'Class);
-     --  Handles the model events for the view.
+     (View : not null access GObject_Record'Class;
+      Item : Abstract_Item);
+   --  Handles the model events for the view.
 
    procedure On_Adj_Value_Changed
      (View : access Glib.Object.GObject_Record'Class);
@@ -326,9 +327,9 @@ package body Gtkada.Canvas_View is
          Signals      => Model_Signals,
          Class_Record => Model_Class_Record,
          Type_Name    => "GtkadaCanvasModel",
-         Parameters   => (1 => (1 => GType_Pointer),
-                          2 => (1 => GType_None),
-                          3 => (1 => GType_None)));
+         Parameters   => (1 => (1 => GType_Pointer), --  item_content_changed
+                          2 => (1 => GType_None),  --  layout_changed
+                          3 => (1 => GType_Pointer)));  --  selection_changed
       return Model_Class_Record.The_Type;
    end Model_Get_Type;
 
@@ -447,8 +448,10 @@ package body Gtkada.Canvas_View is
    -----------------------------------
 
    procedure On_Selection_Changed_For_View
-     (View : not null access GObject_Record'Class)
+     (View : not null access GObject_Record'Class;
+      Item : Abstract_Item)
    is
+      pragma Unreferenced (Item);
       Self  : constant Canvas_View := Canvas_View (View);
    begin
       Self.Queue_Draw;
@@ -3521,11 +3524,11 @@ package body Gtkada.Canvas_View is
          when Selection_Single =>
             Canvas_Model_Record'Class (Self.all).Clear_Selection;
             Self.Selection.Include (Abstract_Item (Item));
-            Self.Selection_Changed;
+            Self.Selection_Changed (Item);
 
          when Selection_Multiple =>
             Self.Selection.Include (Abstract_Item (Item));
-            Self.Selection_Changed;
+            Self.Selection_Changed (Item);
       end case;
    end Add_To_Selection;
 
@@ -3539,7 +3542,7 @@ package body Gtkada.Canvas_View is
    begin
       if Canvas_Model_Record'Class (Self.all).Is_Selected (Item) then
          Self.Selection.Delete (Abstract_Item (Item));
-         Self.Selection_Changed;
+         Self.Selection_Changed (Item);
       end if;
    end Remove_From_Selection;
 
@@ -3561,9 +3564,12 @@ package body Gtkada.Canvas_View is
    -----------------------
 
    procedure Selection_Changed
-     (Self : not null access Canvas_Model_Record'Class) is
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : access Abstract_Item_Record'Class := null) is
    begin
-      Object_Callback.Emit_By_Name (Self, Signal_Selection_Changed);
+      Abstract_Item_Emit
+        (Self, Signal_Selection_Changed & ASCII.NUL,
+         Abstract_Item (Item));
    end Selection_Changed;
 
    --------------------------
@@ -3573,7 +3579,8 @@ package body Gtkada.Canvas_View is
    function On_Selection_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
-        (Self : not null access GObject_Record'Class);
+        (Self : not null access GObject_Record'Class;
+         Item : Abstract_Item);
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id
    is
@@ -3582,14 +3589,36 @@ package body Gtkada.Canvas_View is
          return Object_Callback.Connect
            (Self,
             Signal_Selection_Changed,
-            Object_Callback.To_Marshaller (Call));
+            Abstract_Item_Marshallers.To_Marshaller (Call));
       else
          return Object_Callback.Object_Connect
            (Self,
             Signal_Selection_Changed,
-            Object_Callback.To_Marshaller (Call),
+            Abstract_Item_Marshallers.To_Marshaller (Call),
             Slot);
       end if;
    end On_Selection_Changed;
+
+   -------------------------
+   -- Set_Selection_Style --
+   -------------------------
+
+   procedure Set_Selection_Style
+     (Self  : not null access Canvas_View_Record;
+      Style : Gtkada.Style.Drawing_Style) is
+   begin
+      Self.Selection_Style := Style;
+   end Set_Selection_Style;
+
+   -------------------------
+   -- Get_Selection_Style --
+   -------------------------
+
+   function Get_Selection_Style
+     (Self  : not null access Canvas_View_Record)
+      return Gtkada.Style.Drawing_Style is
+   begin
+      return Self.Selection_Style;
+   end Get_Selection_Style;
 
 end Gtkada.Canvas_View;

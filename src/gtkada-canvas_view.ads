@@ -608,14 +608,18 @@ package Gtkada.Canvas_View is
    --  emitted.
 
    procedure Selection_Changed
-     (Self : not null access Canvas_Model_Record'Class);
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : access Abstract_Item_Record'Class := null);
    function On_Selection_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
-        (Self : not null access GObject_Record'Class);
+        (Self : not null access GObject_Record'Class;
+         Item : Abstract_Item);
       Slot : access GObject_Record'Class := null)
       return Gtk.Handlers.Handler_Id;
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection_changed";
+   --  Item is set to null when the selection was cleared, otherwise it is
+   --  set to the element that was just added or removed from the selection.
 
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
@@ -819,6 +823,14 @@ package Gtkada.Canvas_View is
    --  Calling these should seldom be needed, as Cairo uses a transformation
    --  matrix to automatically (and efficiently) do the transformation on
    --  your behalf. See the documentation for Set_Transform.
+
+   procedure Set_Selection_Style
+     (Self  : not null access Canvas_View_Record;
+      Style : Gtkada.Style.Drawing_Style);
+   function Get_Selection_Style
+     (Self  : not null access Canvas_View_Record)
+      return Gtkada.Style.Drawing_Style;
+   --  The style used to highlight selected items
 
    procedure Set_Scale
      (Self     : not null access Canvas_View_Record;
