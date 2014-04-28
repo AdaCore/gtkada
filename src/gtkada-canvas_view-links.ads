@@ -71,8 +71,9 @@ package Gtkada.Canvas_View.Links is
    --  Return True if the path could be prepared successfully
 
    procedure Draw_Link
-     (Link    : not null access Canvas_Link_Record'Class;
-      Context : Draw_Context);
+     (Link     : not null access Canvas_Link_Record'Class;
+      Context  : Draw_Context;
+      Selected : Boolean);
    --  Draw the link, using the layout computed earlier via one of the
    --  procedures above. This is a help method for the Draw primitive
    --  operation on the link, which should be used preferrably.

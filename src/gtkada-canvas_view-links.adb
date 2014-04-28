@@ -1057,22 +1057,43 @@ package body Gtkada.Canvas_View.Links is
    ---------------
 
    procedure Draw_Link
-     (Link    : not null access Canvas_Link_Record'Class;
-      Context : Draw_Context)
+     (Link     : not null access Canvas_Link_Record'Class;
+      Context  : Draw_Context;
+      Selected : Boolean)
    is
       P    : constant Item_Point_Array_Access := Link.Points;
-      Fill : constant Cairo_Pattern := Link.Style.Get_Fill;
+      Fill : Cairo_Pattern;
+      S    : Drawing_Style;
    begin
       pragma Assert (P /= null, "waypoints must be computed first");
       pragma Assert (P'Length >= 2, "no enough waypoints");
 
       if Prepare_Path (Link, Context) then
          --  never fill a link
+         Fill := Link.Style.Get_Fill;
          Link.Style.Set_Fill (Null_Pattern);
          Link.Style.Finish_Path (Context.Cr);
          Link.Style.Draw_Arrows_And_Symbols
            (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
          Link.Style.Set_Fill (Fill);
+
+         if Selected
+           and then Context.View /= null
+         then
+            S := Link.Style;
+            Link.Style := Context.View.Selection_Style;
+
+            if Prepare_Path (Link, Context) then
+               Fill := Link.Style.Get_Fill;
+               Link.Style.Set_Fill (Null_Pattern);
+               Link.Style.Finish_Path (Context.Cr);
+               Link.Style.Draw_Arrows_And_Symbols
+                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+               Link.Style.Set_Fill (Fill);
+            end if;
+
+            Link.Style := S;
+         end if;
       end if;
 
       if Link.Label /= null then

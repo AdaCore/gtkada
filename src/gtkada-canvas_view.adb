@@ -54,7 +54,8 @@ package body Gtkada.Canvas_View is
 
    Model_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
      (1 => New_String (String (Signal_Item_Contents_Changed)),
-      2 => New_String (String (Signal_Layout_Changed)));
+      2 => New_String (String (Signal_Layout_Changed)),
+      3 => New_String (String (Signal_Selection_Changed)));
    View_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
      (1 => New_String (String (Signal_Viewport_Changed)),
       2 => New_String (String (Signal_Item_Event)));
@@ -124,7 +125,9 @@ package body Gtkada.Canvas_View is
    procedure On_Item_Contents_Changed_For_View
      (View   : access GObject_Record'Class;
       Item : Abstract_Item);
-   --  Handles the model events for the view.
+   procedure On_Selection_Changed_For_View
+     (View : not null access GObject_Record'Class);
+     --  Handles the model events for the view.
 
    procedure On_Adj_Value_Changed
      (View : access Glib.Object.GObject_Record'Class);
@@ -321,7 +324,8 @@ package body Gtkada.Canvas_View is
          Class_Record => Model_Class_Record,
          Type_Name    => "GtkadaCanvasModel",
          Parameters   => (1 => (1 => GType_Pointer),
-                          2 => (1 => GType_None)));
+                          2 => (1 => GType_None),
+                          3 => (1 => GType_None)));
       return Model_Class_Record.The_Type;
    end Model_Get_Type;
 
@@ -435,6 +439,18 @@ package body Gtkada.Canvas_View is
       end if;
    end On_Layout_Changed_For_View;
 
+   -----------------------------------
+   -- On_Selection_Changed_For_View --
+   -----------------------------------
+
+   procedure On_Selection_Changed_For_View
+     (View : not null access GObject_Record'Class)
+   is
+      Self  : constant Canvas_View := Canvas_View (View);
+   begin
+      Self.Queue_Draw;
+   end On_Selection_Changed_For_View;
+
    -----------------------------------------
    -- On_Item_Contents_Changed_For_View --
    -----------------------------------------
@@ -512,6 +528,7 @@ package body Gtkada.Canvas_View is
       Context : Draw_Context;
    begin
       Context := (Cr     => Gdk.Cairo.Create (Self.Get_Window),
+                  View   => Canvas_View (Self),
                   Layout => null);
 
       Details.Toplevel_Item := Self.Model.Toplevel_Item_At
@@ -751,6 +768,7 @@ package body Gtkada.Canvas_View is
       if Self.Model /= null then
          Disconnect (Self.Model, Self.Id_Layout_Changed);
          Disconnect (Self.Model, Self.Id_Item_Contents_Changed);
+         Disconnect (Self.Model, Self.Id_Selection_Changed);
          Unref (Self.Model);
       end if;
 
@@ -760,6 +778,8 @@ package body Gtkada.Canvas_View is
       if Self.Model /= null then
          Self.Id_Layout_Changed := Model.On_Layout_Changed
             (On_Layout_Changed_For_View'Access, Self);
+         Self.Id_Selection_Changed := Model.On_Selection_Changed
+           (On_Selection_Changed_For_View'Access, Self);
          Self.Id_Item_Contents_Changed := Model.On_Item_Contents_Changed
             (On_Item_Contents_Changed_For_View'Access, Self);
       end if;
@@ -1404,13 +1424,44 @@ package body Gtkada.Canvas_View is
       --  GDK already clears the exposed area to the background color, so
       --  we do not need to clear ourselves.
 
-      C := (Cr => Cr, Layout => Self.Layout);
+      C := (Cr => Cr, Layout => Self.Layout, View => Canvas_View (Self));
 
       Save (Cr);
       Self.Set_Transform (Cr);
       Self.Draw_Internal (C, A);
       Restore (Cr);
    end Refresh;
+
+   ----------------------
+   -- Draw_As_Selected --
+   ----------------------
+
+   overriding procedure Draw_As_Selected
+     (Self            : not null access Canvas_Item_Record;
+      Context         : Draw_Context)
+   is
+      Box : constant Item_Rectangle :=
+        Canvas_Item_Record'Class (Self.all).Bounding_Box;
+
+      Margin_Pixels : constant View_Coordinate := 2.0;
+      Margin : Model_Coordinate;
+   begin
+      --  So that any clip done by Draw doesn't impact drawing the selection
+
+      Save (Context.Cr);
+      Canvas_Item_Record'Class (Self.all).Draw (Context);
+      Restore (Context.Cr);
+
+      if Context.View /= null then
+         Margin := Margin_Pixels * Context.View.Scale;
+
+         Context.View.Selection_Style.Draw_Rect
+           (Context.Cr,
+            (Box.X - Margin, Box.Y - Margin),
+            Box.Width + 2.0 * Margin,
+            Box.Height + 2.0 * Margin);
+      end if;
+   end Draw_As_Selected;
 
    -----------------------------
    -- Translate_And_Draw_Item --
@@ -1425,7 +1476,15 @@ package body Gtkada.Canvas_View is
       Save (Context.Cr);
       Pos := Self.Position;
       Translate (Context.Cr, Pos.X, Pos.Y);
-      Self.Draw (Context);
+
+      if Context.View /= null
+        and then Context.View.Model /= null
+        and then Context.View.Model.Is_Selected (Self)
+      then
+         Self.Draw_As_Selected (Context);
+      else
+         Self.Draw (Context);
+      end if;
 
       if Debug_Show_Bounding_Boxes then
          declare
@@ -1438,6 +1497,7 @@ package body Gtkada.Canvas_View is
       end if;
 
       Restore (Context.Cr);
+
    exception
       when E : others =>
          Restore (Context.Cr);
@@ -1570,8 +1630,20 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Canvas_Link_Record;
       Context : Draw_Context) is
    begin
-      Gtkada.Canvas_View.Links.Draw_Link (Self, Context);
+      Gtkada.Canvas_View.Links.Draw_Link (Self, Context, Selected => False);
    end Draw;
+
+   ----------------------
+   -- Draw_As_Selected --
+   ----------------------
+
+   procedure Draw_As_Selected
+     (Self    : not null access Canvas_Link_Record;
+      Context : Draw_Context)
+   is
+   begin
+      Gtkada.Canvas_View.Links.Draw_Link (Self, Context, Selected => True);
+   end Draw_As_Selected;
 
    --------------
    -- Contains --
@@ -1932,7 +2004,8 @@ package body Gtkada.Canvas_View is
       Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map)
    is
       pragma Unreferenced (Items);
-      Context : constant Draw_Context := (Cr => <>, Layout => Model.Layout);
+      Context : constant Draw_Context :=
+        (Cr => <>, Layout => Model.Layout, View => null);
 
       procedure Reset_Link_Layout
         (It : not null access Abstract_Item_Record'Class);
@@ -1984,7 +2057,8 @@ package body Gtkada.Canvas_View is
    --------------------
 
    procedure Refresh_Layout (Self : not null access Canvas_Model_Record) is
-      Context : constant Draw_Context := (Cr => <>, Layout => Self.Layout);
+      Context : constant Draw_Context :=
+        (Cr => <>, Layout => Self.Layout, View => null);
 
       procedure Do_Container_Layout
         (Item : not null access Abstract_Item_Record'Class);
@@ -3219,7 +3293,9 @@ package body Gtkada.Canvas_View is
       Topleft   : constant Model_Point := Self.Topleft;
       Box       : Model_Rectangle;
    begin
-      Context := (Cr => Create (Surf), Layout => Self.Layout);
+      Context := (Cr     => Create (Surf),
+                  Layout => Self.Layout,
+                  View   => Canvas_View (Self));
 
       if Visible_Area_Only then
          Box := Self.Get_Visible_Area;
@@ -3256,5 +3332,118 @@ package body Gtkada.Canvas_View is
       Self.Scale := Old_Scale;
       Self.Topleft := Topleft;
    end Export_To_PDF;
+
+   ------------------------
+   -- Set_Selection_Mode --
+   ------------------------
+
+   procedure Set_Selection_Mode
+     (Self : not null access Canvas_Model_Record;
+      Mode : Selection_Mode)
+   is
+   begin
+      if Mode /= Self.Mode then
+         Self.Mode := Mode;
+         Canvas_Model_Record'Class (Self.all).Clear_Selection;
+      end if;
+   end Set_Selection_Mode;
+
+   ---------------------
+   -- Clear_Selection --
+   ---------------------
+
+   procedure Clear_Selection (Self : not null access Canvas_Model_Record) is
+   begin
+      if not Self.Selection.Is_Empty then
+         Self.Selection.Clear;
+         Self.Selection_Changed;
+      end if;
+   end Clear_Selection;
+
+   ----------------------
+   -- Add_To_Selection --
+   ----------------------
+
+   procedure Add_To_Selection
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class) is
+   begin
+      case Self.Mode is
+         when Selection_None =>
+            null;
+
+         when Selection_Single =>
+            Canvas_Model_Record'Class (Self.all).Clear_Selection;
+            Self.Selection.Include (Abstract_Item (Item));
+            Self.Selection_Changed;
+
+         when Selection_Multiple =>
+            Self.Selection.Include (Abstract_Item (Item));
+            Self.Selection_Changed;
+      end case;
+   end Add_To_Selection;
+
+   ---------------------------
+   -- Remove_From_Selection --
+   ---------------------------
+
+   procedure Remove_From_Selection
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class) is
+   begin
+      if Canvas_Model_Record'Class (Self.all).Is_Selected (Item) then
+         Self.Selection.Delete (Abstract_Item (Item));
+         Self.Selection_Changed;
+      end if;
+   end Remove_From_Selection;
+
+   -----------------
+   -- Is_Selected --
+   -----------------
+
+   function Is_Selected
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class)
+      return Boolean
+   is
+   begin
+      return Self.Selection.Contains (Abstract_Item (Item));
+   end Is_Selected;
+
+   -----------------------
+   -- Selection_Changed --
+   -----------------------
+
+   procedure Selection_Changed
+     (Self : not null access Canvas_Model_Record'Class) is
+   begin
+      Object_Callback.Emit_By_Name (Self, Signal_Selection_Changed);
+   end Selection_Changed;
+
+   --------------------------
+   -- On_Selection_Changed --
+   --------------------------
+
+   function On_Selection_Changed
+     (Self : not null access Canvas_Model_Record'Class;
+      Call : not null access procedure
+        (Self : not null access GObject_Record'Class);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id
+   is
+   begin
+      if Slot = null then
+         return Object_Callback.Connect
+           (Self,
+            Signal_Selection_Changed,
+            Object_Callback.To_Marshaller (Call));
+      else
+         return Object_Callback.Object_Connect
+           (Self,
+            Signal_Selection_Changed,
+            Object_Callback.To_Marshaller (Call),
+            Slot);
+      end if;
+   end On_Selection_Changed;
 
 end Gtkada.Canvas_View;

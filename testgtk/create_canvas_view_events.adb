@@ -153,17 +153,18 @@ package body Create_Canvas_View_Events is
       L             : Gdouble;
    begin
       Gtk_New (Model);
+      Model.Set_Selection_Mode (Selection_Multiple);
 
       Canvas := new Demo_View_Record;
       Gtkada.Canvas_View.Initialize (Canvas);
       Canvas.Set_Grid_Size (30.0);
       Canvas.Set_Snap (Snap_To_Grid   => True,
                        Snap_To_Guides => True);
-
       --  Connect this one first so that all events are traced
       Canvas.On_Item_Event (On_Item_Event'Access);
 
       --  Order is irrelevant here.
+      Canvas.On_Item_Event (On_Item_Event_Select'Access);
       Canvas.On_Item_Event (On_Item_Event_Move_Item'Access);
       Canvas.On_Item_Event (On_Item_Event_Scroll_Background'Access);
       Canvas.On_Item_Event (On_Item_Event_Zoom'Access);

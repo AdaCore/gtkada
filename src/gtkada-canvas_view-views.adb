@@ -337,6 +337,56 @@ package body Gtkada.Canvas_View.Views is
    end On_Item_Event_Zoom_Generic;
 
    --------------------------
+   -- On_Item_Event_Select --
+   --------------------------
+
+   function On_Item_Event_Select
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+   begin
+      if Self.Model /= null then
+         if Event.Item = null then
+            case Event.Event_Type is
+               when Button_Press =>
+                  if Event.State = 0 then
+                     Self.Model.Clear_Selection;
+                  end if;
+
+               when others =>
+                  null;
+            end case;
+
+         else
+            case Event.Event_Type is
+               when Button_Press =>
+                  if Self.Model.Is_Selected (Event.Item) then
+                     if Event.State = 0 then
+                        null;   --  do nothing, preserve current selection
+
+                     else
+                        Self.Model.Remove_From_Selection (Event.Item);
+                     end if;
+
+                  else
+                     if Event.State = 0 then
+                        Self.Model.Clear_Selection;
+                     end if;
+
+                     Self.Model.Add_To_Selection (Event.Item);
+                  end if;
+
+               when others =>
+                  null;
+            end case;
+         end if;
+      end if;
+      return False;  --  always pass the event through
+   end On_Item_Event_Select;
+
+   --------------------------
    -- Prepare_Smart_Guides --
    --------------------------
 

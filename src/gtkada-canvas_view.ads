@@ -141,6 +141,7 @@ pragma Ada_2012;
 
 with Ada.Containers.Doubly_Linked_Lists;
 private with Ada.Containers.Hashed_Maps;
+private with Ada.Containers.Hashed_Sets;
 private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
 with Cairo;
@@ -156,6 +157,13 @@ with Gtkada.Style;     use Gtkada.Style;
 with Pango.Layout;     use Pango.Layout;
 
 package Gtkada.Canvas_View is
+
+   type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Canvas_View is access all Canvas_View_Record'Class;
+   --  A view is a display of one particular part of the model, or a subset of
+   --  it. Multiple views can be associated with a specific model, and will
+   --  monitor changes to it view signals.
+   --  The view automatically refreshes its display when its model changes.
 
    -----------------
    -- Coordinates --
@@ -301,6 +309,7 @@ package Gtkada.Canvas_View is
    type Draw_Context is record
       Cr     : Cairo.Cairo_Context := Cairo.Null_Context;
       Layout : Pango.Layout.Pango_Layout := null;
+      View   : Canvas_View := null;
    end record;
    --  Context to perform the actual drawing
 
@@ -391,6 +400,12 @@ package Gtkada.Canvas_View is
    --  Translate the transformation matrix and draw the item.
    --  This procedure should be used instead of calling Draw directly.
 
+   procedure Draw_As_Selected
+     (Self    : not null access Abstract_Item_Record;
+      Context : Draw_Context) is abstract;
+      --  Draw the item when it is selected.
+      --  The default is to draw the item and then highlight its bounding box
+
    function Contains
      (Self    : not null access Abstract_Item_Record;
       Point   : Item_Point;
@@ -471,9 +486,9 @@ package Gtkada.Canvas_View is
    overriding function Clip_Line
      (Self   : not null access Canvas_Item_Record;
       P1, P2 : Item_Point) return Item_Point;
-      --  Provide a default implementation for a number of primitives.
-   --  Intersects only checks whether the point is within the bounding box, so
-   --  only works for rectangular items.
+   procedure Draw_As_Selected
+     (Self    : not null access Canvas_Item_Record;
+      Context : Draw_Context);
 
    overriding procedure Set_Position
      (Self  : not null access Canvas_Item_Record;
@@ -560,6 +575,43 @@ package Gtkada.Canvas_View is
    --  calls Contains on each child.
    --  This function returns the topmost item
 
+   type Selection_Mode is
+     (Selection_None, Selection_Single, Selection_Multiple);
+   procedure Set_Selection_Mode
+     (Self : not null access Canvas_Model_Record;
+      Mode : Selection_Mode);
+   --  Controls whether items can be selected.
+   --  Changing the mode always clears the selection.
+
+   procedure Clear_Selection (Self : not null access Canvas_Model_Record);
+   procedure Add_To_Selection
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   procedure Remove_From_Selection
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   function Is_Selected
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class)
+      return Boolean;
+   --  Handling of selection. Depending on the selection mode, some of these
+   --  operations might have no effect, or might unselect the current selection
+   --  before selecting a new item.
+   --  The selection might contain child items (i.e. not just toplevel items).
+   --
+   --  Whenever the selection is changed, the signal "selection_changed" is
+   --  emitted.
+
+   procedure Selection_Changed
+     (Self : not null access Canvas_Model_Record'Class);
+   function On_Selection_Changed
+     (Self : not null access Canvas_Model_Record'Class;
+      Call : not null access procedure
+        (Self : not null access GObject_Record'Class);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
+   Signal_Selection_Changed : constant Glib.Signal_Name := "selection_changed";
+
    procedure Layout_Changed
      (Self : not null access Canvas_Model_Record'Class);
    function On_Layout_Changed
@@ -620,13 +672,6 @@ package Gtkada.Canvas_View is
    View_Margin : constant View_Coordinate := 20.0;
    --  The number of blank pixels on each sides of the view. This avoids having
    --  items displays exactly next to the border of the view.
-
-   type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-   type Canvas_View is access all Canvas_View_Record'Class;
-   --  A view is a display of one particular part of the model, or a subset of
-   --  it. Multiple views can be associated with a specific model, and will
-   --  monitor changes to it view signals.
-   --  The view automatically refreshes its display when its model changes.
 
    procedure Gtk_New
      (Self  : out Canvas_View;
@@ -1379,14 +1424,28 @@ package Gtkada.Canvas_View is
    overriding function Is_Link
      (Self : not null access Canvas_Link_Record)
       return Boolean is (True);
+   procedure Draw_As_Selected
+     (Self    : not null access Canvas_Link_Record;
+      Context : Draw_Context);
 
 private
    procedure Unchecked_Free is new Ada.Unchecked_Deallocation
      (Gtkada.Style.Point_Array, Gtkada.Style.Point_Array_Access);
 
+   function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type;
+
+   package Item_Sets is new Ada.Containers.Hashed_Sets
+     (Element_Type        => Abstract_Item,
+      Hash                => Hash,
+      Equivalent_Elements => "=",
+      "="                 => "=");
+
    type Canvas_Model_Record is abstract new Glib.Object.GObject_Record
    with record
-      Layout : Pango.Layout.Pango_Layout;
+      Layout    : Pango.Layout.Pango_Layout;
+
+      Selection : Item_Sets.Set;
+      Mode      : Selection_Mode := Selection_Single;
    end record;
 
    type Canvas_Item_Record is abstract new Abstract_Item_Record with record
@@ -1458,7 +1517,6 @@ private
       Pos  : Model_Point;
    end record;
 
-   function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type;
    package Item_Drag_Infos is new Ada.Containers.Hashed_Maps
      (Key_Type        => Abstract_Item,
       Element_Type    => Item_Drag_Info,
@@ -1514,11 +1572,17 @@ private
       Grid_Size : Model_Coordinate := 20.0;
 
       Id_Layout_Changed,
-      Id_Item_Contents_Changed : Gtk.Handlers.Handler_Id;
+      Id_Item_Contents_Changed,
+      Id_Selection_Changed : Gtk.Handlers.Handler_Id;
       --  Connections to model signals
 
       Layout     : Pango.Layout.Pango_Layout;
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
+
+      Selection_Style : Gtkada.Style.Drawing_Style :=
+        Gtkada.Style.Gtk_New
+          (Stroke     => (0.8, 0.0, 0.0, 0.3),
+           Line_Width => 4.0);
 
       Scale_To_Fit_Requested : Gdouble := 0.0;
       --  Set to true when the user calls Scale_To_Fit before the view has had

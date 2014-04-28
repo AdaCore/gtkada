@@ -77,6 +77,7 @@ package body Create_Canvas_View_Minimap is
                        Snap_To_Guides => True);
 
       --  Order is irrelevant here.
+      Canvas.On_Item_Event (On_Item_Event_Select'Access);
       Canvas.On_Item_Event (On_Item_Event_Move_Item'Access);
       Canvas.On_Item_Event (On_Item_Event_Scroll_Background'Access);
       Canvas.On_Item_Event (On_Item_Event_Zoom'Access);

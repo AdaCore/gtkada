@@ -103,6 +103,14 @@ package Gtkada.Canvas_View.Views is
    --  (since the mouse wheel on its own is used for vertical scrolling by
    --  gtk+, and for horizontal scrolling when used with shift).
 
+   function On_Item_Event_Select
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  When an item is clicked, it is added to the selection (or replaces the
+   --  selection, depending on the modifiers).
+   --  This callback should be connected first (before any of the others above)
+
    -------------
    -- Minimap --
    -------------
