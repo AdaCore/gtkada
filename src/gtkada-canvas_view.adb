@@ -169,6 +169,9 @@ package body Gtkada.Canvas_View is
    function On_Button_Event
      (View  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event_Button) return Boolean;
+   function On_Key_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Key) return Boolean;
    function On_Motion_Notify_Event
      (View  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event_Motion) return Boolean;
@@ -512,7 +515,10 @@ package body Gtkada.Canvas_View is
       Self.On_Button_Press_Event (On_Button_Event'Access);
       Self.On_Button_Release_Event (On_Button_Event'Access);
       Self.On_Motion_Notify_Event (On_Motion_Notify_Event'Access);
+      Self.On_Key_Press_Event (On_Key_Event'Access);
       Self.On_Scroll_Event (On_Scroll_Event'Access);
+
+      Self.Set_Can_Focus (True);
 
       Self.Set_Model (Model);
    end Initialize;
@@ -579,6 +585,7 @@ package body Gtkada.Canvas_View is
          Details :=
            (Event_Type => Scroll,
             Button     => Button,
+            Key        => 0,
             State      => Event.State,
             Root_Point => (Event.X_Root, Event.Y_Root),
             M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
@@ -607,6 +614,7 @@ package body Gtkada.Canvas_View is
       Details :=
         (Event_Type => Button_Press,
          Button     => Event.Button,
+         Key        => 0,
          State      => Event.State,
          Root_Point => (Event.X_Root, Event.Y_Root),
          M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
@@ -648,6 +656,55 @@ package body Gtkada.Canvas_View is
       end case;
    end Set_Details;
 
+   ------------------
+   -- On_Key_Event --
+   ------------------
+
+   function On_Key_Event
+     (View  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event_Key) return Boolean
+   is
+      Self    : constant Canvas_View := Canvas_View (View);
+      Details : aliased Canvas_Event_Details;
+      Box     : Model_Rectangle;
+      IBox    : Item_Rectangle;
+   begin
+      --  Do not cancel drag, since pressing shift is used to disable snapping
+      --  in this context.
+
+      if Self.Model /= null then
+         Details.Event_Type        := Key_Press;
+         Details.State             := Event.State;
+         Details.Allow_Snapping    := True;
+         Details.Allowed_Drag_Area := No_Drag_Allowed;
+         Details.Key               := Event.Keyval;
+
+         if not Self.Model.Selection.Is_Empty then
+            Details.Item := Item_Sets.Element (Self.Model.Selection.First);
+
+            if Details.Item /= null then
+               IBox := Details.Item.Bounding_Box;
+               Details.I_Point := (IBox.X + IBox.Width / 2.0,
+                                   IBox.Y + IBox.Height / 2.0);
+
+               Box := Details.Item.Model_Bounding_Box;
+               Details.M_Point := (Box.X + Box.Width / 2.0,
+                                   Box.Y + Box.Height / 2.0);
+
+               Details.Toplevel_Item := Details.Item.Get_Toplevel_Item;
+
+               IBox := Details.Toplevel_Item.Bounding_Box;
+               Details.T_Point := (IBox.X + IBox.Width / 2.0,
+                                   IBox.Y + IBox.Height / 2.0);
+            end if;
+         end if;
+
+         return Self.Item_Event (Details'Unchecked_Access);
+      end if;
+
+      return False;
+   end On_Key_Event;
+
    ---------------------
    -- On_Button_Event --
    ---------------------
@@ -660,6 +717,7 @@ package body Gtkada.Canvas_View is
       Self    : constant Canvas_View := Canvas_View (View);
       Details : aliased Canvas_Event_Details;
    begin
+      Self.Grab_Focus;
       Cancel_Continuous_Scrolling (Self);
       Free_Smart_Guides (Self);
 
@@ -694,6 +752,59 @@ package body Gtkada.Canvas_View is
       return False;
    end On_Button_Event;
 
+   -----------------------
+   -- Get_Toplevel_Item --
+   -----------------------
+
+   function Get_Toplevel_Item
+     (Self : not null access Abstract_Item_Record'Class)
+      return Abstract_Item
+   is
+      Result : Abstract_Item := Abstract_Item (Self);
+      P      : Abstract_Item;
+   begin
+      loop
+         P := Parent (Result);
+         exit when P = null;
+         Result := P;
+      end loop;
+      return Result;
+   end Get_Toplevel_Item;
+
+   ------------------------------------
+   -- Copy_Selected_To_Dragged_Items --
+   ------------------------------------
+
+   procedure Copy_Selected_To_Dragged_Items
+     (Self  : not null access Canvas_View_Record'Class;
+      Force : access Abstract_Item_Record'Class)
+   is
+      use Item_Sets;
+      C : Item_Sets.Cursor := Self.Model.Selection.First;
+      Item : Abstract_Item;
+      P    : Gtkada.Style.Point;
+   begin
+      Self.Dragged_Items.Clear;
+
+      while Has_Element (C) loop
+         Item := Element (C).Get_Toplevel_Item;
+         if not Item.Is_Link then
+            P := Item.Position;
+            Self.Dragged_Items.Include
+              (Item, (Item => Item, Pos  => (X => P.X, Y => P.Y)));
+         end if;
+
+         Next (C);
+      end loop;
+
+      if Force /= null and then not Force.Is_Link then
+         Item := Force.Get_Toplevel_Item;
+         P := Item.Position;
+         Self.Dragged_Items.Include
+           (Item, (Item => Item, Pos  => (X => P.X, Y => P.Y)));
+      end if;
+   end Copy_Selected_To_Dragged_Items;
+
    ----------------------------
    -- On_Motion_Notify_Event --
    ----------------------------
@@ -726,12 +837,8 @@ package body Gtkada.Canvas_View is
                if Details.Toplevel_Item /= null
                  and then not Details.Toplevel_Item.Is_Link
                then
-                  Self.Dragged_Items.Include
-                    (Details.Toplevel_Item,
-                     (Item => Details.Toplevel_Item,
-                      Pos  => (X => Details.Toplevel_Item.Position.X,
-                               Y => Details.Toplevel_Item.Position.Y)));
-
+                  Copy_Selected_To_Dragged_Items
+                    (Self, Force => Details.Toplevel_Item);
                   Prepare_Smart_Guides (Self);
                end if;
             end if;
@@ -1277,6 +1384,45 @@ package body Gtkada.Canvas_View is
       Self.Set_Adjustment_Values;
       Self.Queue_Draw;
    end Center_On;
+
+   ----------------------
+   -- Scroll_Into_View --
+   ----------------------
+
+   procedure Scroll_Into_View
+     (Self : not null access Canvas_View_Record;
+      Item : not null access Abstract_Item_Record'Class)
+   is
+      Box  : Model_Rectangle := Item.Model_Bounding_Box;
+      Area : Model_Rectangle := Self.Get_Visible_Area;
+      Modified : Boolean := False;
+      Margin   : constant Model_Coordinate := View_Margin * Self.Scale;
+   begin
+      Box.X := Box.X - Margin;
+      Box.Y := Box.Y - Margin;
+      Box.Width := Box.Width + Margin * 2.0;
+      Box.Height := Box.Height + Margin * 2.0;
+
+      if Box.X < Area.X then
+         Area.X := Box.X;
+         Modified := True;
+      elsif Box.X + Box.Width > Area.X + Area.Width then
+         Area.X := Gdouble'Min (Box.X, Box.X + Box.Width - Area.Width);
+         Modified := True;
+      end if;
+
+      if Box.Y < Area.Y then
+         Area.Y := Box.Y;
+         Modified := True;
+      elsif Box.Y + Box.Height > Area.Y + Area.Height then
+         Area.Y := Gdouble'Min (Box.Y, Box.Y + Box.Height - Area.Height);
+         Modified := True;
+      end if;
+
+      if Modified then
+         Self.Center_On ((Area.X, Area.Y), X_Pos => 0.0, Y_Pos => 0.0);
+      end if;
+   end Scroll_Into_View;
 
    ---------------
    -- Get_Scale --

@@ -25,6 +25,7 @@
 --  Various support utilities for the grid and smart guides in the canvas
 
 with Glib.Object;
+with Gtk.Enums;
 
 package Gtkada.Canvas_View.Views is
 
@@ -111,6 +112,25 @@ package Gtkada.Canvas_View.Views is
    --  selection, depending on the modifiers).
    --  This callback should be connected first (before any of the others above)
 
+   generic
+      Modifier     : Gdk.Types.Gdk_Modifier_Type := 0;
+      Ignore_Links : Boolean := True;
+   function On_Item_Event_Key_Navigate_Generic
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  Add this to the list of callbacks for "item_event" so that arrow keys
+   --  move the selection to another item.
+
+   generic
+      Modifier : Gdk.Types.Gdk_Modifier_Type := Mod1_Mask;
+   function On_Item_Event_Key_Scrolls_Generic
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  Add this to the list of callbacks for "item_event" so that arrow keys
+   --  scroll the view when no item is selected, or moves the selected items.
+
    -------------
    -- Minimap --
    -------------
@@ -148,6 +168,18 @@ package Gtkada.Canvas_View.Views is
      (Self    : not null access Minimap_View_Record;
       Context : Draw_Context;
       Area    : Model_Rectangle);
+
+   ----------------
+   -- Navigation --
+   ----------------
+
+   function Move_To_Item
+     (Self         : not null access Canvas_View_Record'Class;
+      Item         : not null access Abstract_Item_Record'Class;
+      Dir          : Gtk.Enums.Gtk_Direction_Type;
+      Ignore_Links : Boolean := True)
+      return Abstract_Item;
+   --  Search for the next item in the given direction
 
    --------------
    -- Snapping --

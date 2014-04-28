@@ -428,6 +428,11 @@ package Gtkada.Canvas_View is
    --  the bounding box are model coordinats. Otherwise, the coordinates are
    --  relative to the returned item.
 
+   function Get_Toplevel_Item
+     (Self : not null access Abstract_Item_Record'Class)
+      return Abstract_Item;
+   --  Return the toplevel item that contains Self (or self itself)
+
    function Inner_Most_Item
      (Self     : not null access Abstract_Item_Record;
       At_Point : Model_Point;
@@ -832,6 +837,11 @@ package Gtkada.Canvas_View is
    --  within the view (center when using 0.5, or left when using 0.0, and so
    --  on).
 
+   procedure Scroll_Into_View
+     (Self : not null access Canvas_View_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   --  Do the minimal amount of scrolling to make the item visible
+
    function Get_Scale
      (Self : not null access Canvas_View_Record) return Gdouble;
    --  Return the current scale
@@ -914,6 +924,9 @@ package Gtkada.Canvas_View is
       State          : Gdk.Types.Gdk_Modifier_Type;
       --  The modifier keys (shift, alt, control). It can be used to activate
       --  different behavior in such cases.
+
+      Key            : Gdk.Types.Gdk_Key_Type;
+      --  The key that was pressed (for key events)
 
       Root_Point     : Gtkada.Style.Point;
       --  Coordinates in root window.
@@ -1653,5 +1666,11 @@ private
       Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map);
    --  Refresh the layout for all links (or only the ones linked to Item, or
    --  indirectly to a link to Item).
+
+   procedure Copy_Selected_To_Dragged_Items
+     (Self  : not null access Canvas_View_Record'Class;
+      Force : access Abstract_Item_Record'Class);
+   --  Setup the 'dragged_items" field from the contents of the selection, and
+   --  forces a specific item to be there (in addition)
 
 end Gtkada.Canvas_View;

@@ -55,6 +55,10 @@ package body Create_Canvas_View_Events is
 
    function On_Item_Event_Zoom is new On_Item_Event_Zoom_Generic
      (Modifier => Mod1_Mask);
+   function On_Item_Event_Key_Navigate
+     is new On_Item_Event_Key_Navigate_Generic (Modifier => Mod1_Mask);
+   function On_Item_Event_Key_Scrolls is new On_Item_Event_Key_Scrolls_Generic
+     (Modifier => 0);
 
    ----------
    -- Help --
@@ -86,7 +90,11 @@ package body Create_Canvas_View_Events is
         & ASCII.LF
         & "  - @bscrolling@B by dragging the background with the mouse."
         & ASCII.LF
-        & "  - @bzooming@b with alt-mouse wheel.";
+        & "  - @bzooming@B with alt-mouse wheel." & ASCII.LF
+        & "  - @bkeys@B can be used to move the selected items, or scroll the"
+        & " view when no item is selected." & ASCII.LF
+        & "  - @bkeys@B can also be used to navigate between items, by"
+        & " pressing @balt@B at the same time as the keyboard arrows.";
    end Help;
 
    -------------------
@@ -167,6 +175,8 @@ package body Create_Canvas_View_Events is
       Canvas.On_Item_Event (On_Item_Event_Select'Access);
       Canvas.On_Item_Event (On_Item_Event_Move_Item'Access);
       Canvas.On_Item_Event (On_Item_Event_Scroll_Background'Access);
+      Canvas.On_Item_Event (On_Item_Event_Key_Navigate'Access);
+      Canvas.On_Item_Event (On_Item_Event_Key_Scrolls'Access);
       Canvas.On_Item_Event (On_Item_Event_Zoom'Access);
 
       Font := Gtk_New (Stroke => Null_RGBA,

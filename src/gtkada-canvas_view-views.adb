@@ -22,13 +22,15 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo;        use Cairo;
-with Glib;         use Glib;
-with Glib.Main;    use Glib.Main;
-with Glib.Object;  use Glib.Object;
-with Gtk.Handlers; use Gtk.Handlers;
-with Gtk.Widget;   use Gtk.Widget;
-with System;       use System;
+with Cairo;             use Cairo;
+with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
+with Glib;              use Glib;
+with Glib.Main;         use Glib.Main;
+with Glib.Object;       use Glib.Object;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Handlers;      use Gtk.Handlers;
+with Gtk.Widget;        use Gtk.Widget;
+with System;            use System;
 
 package body Gtkada.Canvas_View.Views is
 
@@ -58,7 +60,7 @@ package body Gtkada.Canvas_View.Views is
 
    package View_Sources is new Glib.Main.Generic_Sources (Canvas_View);
 
-   procedure Move_Selected_Items
+   procedure Move_Dragged_Items
      (Self           : not null access Canvas_View_Record'Class;
       Dx, Dy         : Model_Coordinate;
       From_Initial   : Boolean);
@@ -249,7 +251,7 @@ package body Gtkada.Canvas_View.Views is
          --  The use of Topleft is to take into account the continuous
          --  scrolling
 
-         Move_Selected_Items
+         Move_Dragged_Items
            (Self,
             Dx => (Self.Topleft.X - Self.Topleft_At_Drag_Start.X)
             + (Event.Root_Point.X
@@ -385,6 +387,189 @@ package body Gtkada.Canvas_View.Views is
       end if;
       return False;  --  always pass the event through
    end On_Item_Event_Select;
+
+   ------------------
+   -- Move_To_Item --
+   ------------------
+
+   function Move_To_Item
+     (Self         : not null access Canvas_View_Record'Class;
+      Item         : not null access Abstract_Item_Record'Class;
+      Dir          : Gtk.Enums.Gtk_Direction_Type;
+      Ignore_Links : Boolean := True)
+      return Abstract_Item
+   is
+      Box : constant Model_Rectangle := Item.Model_Bounding_Box;
+      Result : Abstract_Item := null;
+      Best   : Model_Coordinate := Model_Coordinate'Last;
+      Best_Center : Model_Coordinate := Model_Coordinate'Last;
+      Best_Is_Centered : Boolean := False;
+
+      procedure Do_Item (It : not null access Abstract_Item_Record'Class);
+      procedure Do_Item (It : not null access Abstract_Item_Record'Class) is
+         B        : constant Model_Rectangle := It.Model_Bounding_Box;
+         D, C     : Model_Coordinate := Gdouble'Last;
+         Centered : Boolean;
+      begin
+         if Ignore_Links and then It.Is_Link then
+            return;
+         end if;
+
+         case Dir is
+            when Dir_Tab_Forward | Dir_Right =>
+               if B.X > Box.X + Box.Width then
+                  --  Whether It is on the same "row" as Item (this is defined
+                  --  computed so that any item in the same row gets precedence
+                  --  other items farther away).
+                  Centered := not
+                    (B.Y + B.Height < Box.Y or else B.Y > Box.Y + Box.Height);
+
+                  --  D is the vertical distance
+                  D := Gdouble'Min (abs (B.X - Box.X - Box.Width), D);
+
+                  --  C is the vertical distance between the centers
+                  C := Gdouble'Min
+                    (abs (Box.Y - B.Y + (Box.Height - B.Height) / 2.0), C);
+               end if;
+
+            when Dir_Tab_Backward | Dir_Left =>
+               if B.X + B.Width < Box.X then
+                  Centered := not
+                    (B.Y + B.Height < Box.Y or else B.Y > Box.Y + Box.Height);
+                  D := Gdouble'Min (abs (B.X + B.Width - Box.X), D);
+                  C := Gdouble'Min
+                    (abs (Box.Y - B.Y + (Box.Height - B.Height) / 2.0), C);
+               end if;
+
+            when Dir_Up =>
+               if B.Y + B.Height < Box.Y then
+                  Centered := not
+                    (B.X + B.Width < Box.X or else B.X > Box.X + Box.Width);
+                  D := Gdouble'Min (abs (B.Y + B.Height - Box.Y), D);
+                  C := Gdouble'Min
+                    (abs (Box.X - B.X + (Box.Width - B.Width) / 2.0), C);
+               end if;
+
+            when Dir_Down =>
+               if B.Y > Box.Y + Box.Height then
+                  Centered := not
+                    (B.X + B.Width < Box.X or else B.X > Box.X + Box.Width);
+                  D := Gdouble'Min (abs (B.Y - Box.Y - Box.Height), D);
+                  C := Gdouble'Min
+                    (abs (Box.X - B.X + (Box.Width - B.Width) / 2.0), C);
+               end if;
+         end case;
+
+         if Best_Is_Centered then
+            if Centered and then D < Best then
+               Best := D;
+               Result := Abstract_Item (It);
+            end if;
+         else
+            if C < Best_Center then
+               Best_Is_Centered := Centered;
+               Best_Center := C;
+               Best := D;
+               Result := Abstract_Item (It);
+            end if;
+         end if;
+      end Do_Item;
+
+   begin
+      Self.Model.For_Each_Item (Do_Item'Access);
+
+      if Result = null then
+         return Abstract_Item (Item);
+      else
+         return Result;
+      end if;
+   end Move_To_Item;
+
+   ----------------------------------------
+   -- On_Item_Event_Key_Navigate_Generic --
+   ----------------------------------------
+
+   function On_Item_Event_Key_Navigate_Generic
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+      Item : Abstract_Item;
+   begin
+      if Self.Model /= null
+        and then Event.State = Modifier
+        and then Event.Item /= null
+      then
+         case Event.Key is
+            when GDK_Up    | GDK_KP_Up    =>
+               Item := Move_To_Item
+                 (Self, Event.Item, Dir_Up, Ignore_Links);
+            when GDK_Down  | GDK_KP_Down  =>
+               Item := Move_To_Item
+                 (Self, Event.Item, Dir_Down, Ignore_Links);
+            when GDK_Left  | GDK_KP_Left  =>
+               Item := Move_To_Item
+                 (Self, Event.Item, Dir_Left, Ignore_Links);
+            when GDK_Right | GDK_KP_Right =>
+               Item := Move_To_Item
+                 (Self, Event.Item, Dir_Right, Ignore_Links);
+            when others =>
+               return False;
+         end case;
+
+         if Item /= null then
+            Self.Model.Clear_Selection;
+            Self.Model.Add_To_Selection (Item);
+            Self.Scroll_Into_View (Item);
+         end if;
+         return True;
+      end if;
+      return False;
+   end On_Item_Event_Key_Navigate_Generic;
+
+   ---------------------------------------
+   -- On_Item_Event_Key_Scrolls_Generic --
+   ---------------------------------------
+
+   function On_Item_Event_Key_Scrolls_Generic
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+      Box  : Model_Rectangle;
+      Dx, Dy : Model_Coordinate := 0.0;
+   begin
+      if Self.Model /= null
+        and then Event.State = Modifier
+      then
+         case Event.Key is
+            when GDK_Up    | GDK_KP_Up    => Dy := -5.0;
+            when GDK_Down  | GDK_KP_Down  => Dy := 5.0;
+            when GDK_Left  | GDK_KP_Left  => Dx := -5.0;
+            when GDK_Right | GDK_KP_Right => Dx := 5.0;
+            when others => return False;
+         end case;
+
+         if Event.Item = null then
+            Box := Self.Get_Visible_Area;
+            Self.Center_On
+              ((Box.X + Dx, Box.Y + Dy), X_Pos => 0.0, Y_Pos => 0.0);
+
+         else
+            Copy_Selected_To_Dragged_Items
+              (Self, Force => Event.Toplevel_Item);
+            Move_Dragged_Items
+              (Self, Dx => Dx, Dy => Dy, From_Initial => True);
+            Self.Dragged_Items.Clear;
+         end if;
+
+         return True;
+      end if;
+
+      return False;
+   end On_Item_Event_Key_Scrolls_Generic;
 
    --------------------------
    -- Prepare_Smart_Guides --
@@ -837,7 +1022,7 @@ package body Gtkada.Canvas_View.Views is
         (Self.Topleft.X + Self.Continuous_Scroll.Dx,
          Self.Topleft.Y + Self.Continuous_Scroll.Dy);
 
-      Move_Selected_Items
+      Move_Dragged_Items
         (Self,
          Dx             => Self.Continuous_Scroll.Dx,
          Dy             => Self.Continuous_Scroll.Dy,
@@ -848,11 +1033,11 @@ package body Gtkada.Canvas_View.Views is
       return True;  --  keep repeating the timeout
    end Do_Continuous_Scroll;
 
-   -------------------------
-   -- Move_Selected_Items --
-   -------------------------
+   ------------------------
+   -- Move_Dragged_Items --
+   ------------------------
 
-   procedure Move_Selected_Items
+   procedure Move_Dragged_Items
      (Self           : not null access Canvas_View_Record'Class;
       Dx, Dy         : Model_Coordinate;
       From_Initial   : Boolean)
@@ -911,6 +1096,6 @@ package body Gtkada.Canvas_View.Views is
       end loop;
 
       Refresh_Link_Layout (Self.Model, Self.Dragged_Items);
-   end Move_Selected_Items;
+   end Move_Dragged_Items;
 
 end Gtkada.Canvas_View.Views;
