@@ -29,6 +29,7 @@ with System;
 with Cairo;                              use Cairo;
 with Cairo.Matrix;                       use Cairo.Matrix;
 with Cairo.Pattern;                      use Cairo.Pattern;
+with Cairo.PDF;                          use Cairo.PDF;
 with Glib.Main;                          use Glib.Main;
 with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
@@ -3196,5 +3197,64 @@ package body Gtkada.Canvas_View is
             mod Integer_Address (Ada.Containers.Hash_Type'Last));
       end if;
    end Hash;
+
+   -------------------
+   -- Export_To_PDF --
+   -------------------
+
+   procedure Export_To_PDF
+     (Self              : not null access Canvas_View_Record;
+      Filename          : String;
+      Format            : Page_Format;
+      Visible_Area_Only : Boolean := True)
+   is
+      W : constant Gdouble := Format.Width_In_Inches * 72.0;  --  in points
+      H : constant Gdouble := Format.Height_In_Inches * 72.0;
+      Surf : constant Cairo_Surface := Cairo.PDF.Create
+        (Filename         => Filename,
+         Width_In_Points  => W,
+         Height_In_Points => H);
+      Context : Draw_Context;
+      Old_Scale : constant Gdouble := Self.Scale;
+      Topleft   : constant Model_Point := Self.Topleft;
+      Box       : Model_Rectangle;
+   begin
+      Context := (Cr => Create (Surf), Layout => Self.Layout);
+
+      if Visible_Area_Only then
+         Box := Self.Get_Visible_Area;
+
+         Self.Scale := Self.Scale *
+           Gdouble'Min
+             (Gdouble'Min
+                (W / Gdouble (Self.Get_Allocated_Width),
+                 H / Gdouble (Self.Get_Allocated_Height)),
+              1.0);
+         Canvas_View_Record'Class (Self.all).Set_Transform (Context.Cr);
+
+         --  Need to clip, otherwise the items partially visible on the screen
+         --  will be fully visible in the print
+
+         Rectangle (Context.Cr, Box.X, Box.Y, Box.Width, Box.Height);
+         Clip (Context.Cr);
+
+         Canvas_View_Record'Class (Self.all).Draw_Internal (Context, Box);
+
+      else
+         Box := Self.Model.Bounding_Box;
+         Self.Scale := Gdouble'Min
+           (1.0,
+            Gdouble'Min (W / (Box.Width + 20.0), H / (Box.Height + 20.0)));
+         Self.Topleft := (Box.X - 10.0 * Self.Scale,
+                          Box.Y - 10.0 * Self.Scale);
+         Canvas_View_Record'Class (Self.all).Set_Transform (Context.Cr);
+         Canvas_View_Record'Class (Self.all).Draw_Internal (Context, Box);
+      end if;
+
+      Destroy (Context.Cr);
+      Surface_Destroy (Surf);
+      Self.Scale := Old_Scale;
+      Self.Topleft := Topleft;
+   end Export_To_PDF;
 
 end Gtkada.Canvas_View;

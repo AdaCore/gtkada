@@ -801,6 +801,25 @@ package Gtkada.Canvas_View is
    --  window manager, but the computation of the scale will be delayed until
    --  an actual size is known.
 
+   type Page_Format is record
+      Width_In_Inches, Height_In_Inches : Gdouble;
+   end record;
+
+   A3_Portrait      : constant Page_Format := (11.7, 16.5);
+   A3_Landscape     : constant Page_Format := (16.5, 11.7);
+   A4_Portrait      : constant Page_Format := (8.3, 11.7);
+   A4_Landscape     : constant Page_Format := (11.7, 8.3);
+   Letter_Portrait  : constant Page_Format := (8.5, 11.0);
+   Letter_Landscape : constant Page_Format := (11.0, 8.5);
+
+   procedure Export_To_PDF
+     (Self              : not null access Canvas_View_Record;
+      Filename          : String;
+      Format            : Page_Format;
+      Visible_Area_Only : Boolean := True);
+   --  Create a PDF file with the contents of the view (or the whole model
+   --  if Visible_Area_Only is False).
+
    No_Drag_Allowed : constant Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
    Drag_Anywhere   : constant Model_Rectangle :=
      (Gdouble'First, Gdouble'First, Gdouble'Last, Gdouble'Last);
