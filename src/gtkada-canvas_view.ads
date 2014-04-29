@@ -287,15 +287,18 @@ package Gtkada.Canvas_View is
 
    type Anchor_Attachment is record
       X, Y          : Glib.Gdouble := 0.5;
-      Toplevel_Side : Side_Attachment;
+      Toplevel_Side : Side_Attachment := Auto;
+      Distance      : Model_Coordinate := 0.0;
    end record;
-   Middle_Attachment : constant Anchor_Attachment := (0.5, 0.5, Auto);
+   Middle_Attachment : constant Anchor_Attachment := (0.5, 0.5, Auto, 0.0);
    --  Where in the item the link is attached (0.5 means the middle, 0.0
    --  means left or top, and 1.0 means right or bottom).
    --  You can therefore force a link to always emerge from the right side of
    --  an item by setting X to 1.0 and Y to any value, for instance.
    --  See the description of Side_Attachment for an example on how to use
    --  Toplevel_Side.
+   --  Distance indicates at which distance from the border of the item the
+   --  link should stop. By default, it reaches the border.
 
    type Route_Style is (Orthogonal, Straight, Arc, Curve);
    --  This defines how a link is routed between its two ends.

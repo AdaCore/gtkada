@@ -219,8 +219,8 @@ package body Create_Canvas_View_Routes is
                      To          => Items (It + 1),
                      Style       => Link_Styles (Route),
                      Routing     => Route,
-                     Anchor_From => (0.5, 0.5, From_Side),
-                     Anchor_To   => (0.5, 0.5, To_Side));
+                     Anchor_From => (0.5, 0.5, From_Side, others => <>),
+                     Anchor_To   => (0.5, 0.5, To_Side, others => <>));
                   Model.Add (Link);
                   It := It + 2;
                end loop;
@@ -230,8 +230,8 @@ package body Create_Canvas_View_Routes is
                   To          => Items (Items'Last),
                   Style       => Link_Styles (Route),
                   Routing     => Route,
-                  Anchor_From => (0.5, 0.5, From_Side),
-                  Anchor_To   => (0.5, 0.5, To_Side));
+                  Anchor_From => (0.5, 0.5, From_Side, others => <>),
+                  Anchor_To   => (0.5, 0.5, To_Side, others => <>));
                Model.Add (Link);
             end loop;
 

@@ -217,6 +217,7 @@ package body Gtkada.Canvas_View.Links is
       DT : Abstract_Item := Gtkada.Canvas_View.Objects.Toplevel (D);
       P  : Model_Point;
       Result : Anchors;
+      L  : Gdouble;
    begin
       if ST = null then
          ST := S;
@@ -251,9 +252,22 @@ package body Gtkada.Canvas_View.Links is
          else
             P := Self.Item_To_Model (Self.Waypoints (Self.Waypoints'First));
          end if;
+
          Result.From.P := ST.Item_To_Model
            (ST.Clip_Line
               (ST.Model_To_Item (Result.From.P), ST.Model_To_Item (P)));
+
+         if Self.Anchor_From.Distance > 0.0 then
+            L := Sqrt
+              ((Result.From.P.X - P.X) * (Result.From.P.X - P.X)
+               + (Result.From.P.Y - P.Y) * (Result.From.P.Y - P.Y));
+
+            L := Self.Anchor_From.Distance / L;
+
+            Result.From.P :=
+              (Result.From.P.X + L * (P.X - Result.From.P.X),
+               Result.From.P.Y + L * (P.Y - Result.From.P.Y));
+         end if;
       end if;
 
       if Self.Anchor_To.Toplevel_Side = Auto then
@@ -264,9 +278,22 @@ package body Gtkada.Canvas_View.Links is
          else
             P := Self.Item_To_Model (Self.Waypoints (Self.Waypoints'Last));
          end if;
+
          Result.To.P := DT.Item_To_Model
            (DT.Clip_Line
               (DT.Model_To_Item (Result.To.P), DT.Model_To_Item (P)));
+
+         if Self.Anchor_To.Distance > 0.0 then
+            L := Sqrt
+              ((Result.To.P.X - P.X) * (Result.To.P.X - P.X)
+               + (Result.To.P.Y - P.Y) * (Result.To.P.Y - P.Y));
+
+            L := Self.Anchor_To.Distance / L;
+
+            Result.To.P :=
+              (Result.To.P.X + L * (P.X - Result.To.P.X),
+               Result.To.P.Y + L * (P.Y - Result.To.P.Y));
+         end if;
       end if;
 
       return Result;

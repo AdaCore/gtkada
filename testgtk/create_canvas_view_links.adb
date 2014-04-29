@@ -22,14 +22,15 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics.Generic_Elementary_Functions;
-with Cairo;               use Cairo;
-with Gdk.RGBA;            use Gdk.RGBA;
-with Glib;                use Glib;
-with Gtk.Enums;           use Gtk.Enums;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
-with Gtkada.Style;        use Gtkada.Style;
-with Pango.Font;          use Pango.Font;
+with Cairo;                    use Cairo;
+with Gdk.RGBA;                 use Gdk.RGBA;
+with Glib;                     use Glib;
+with Gtk.Enums;                use Gtk.Enums;
+with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
+with Gtkada.Canvas_View;       use Gtkada.Canvas_View;
+with Gtkada.Canvas_View.Views; use Gtkada.Canvas_View.Views;
+with Gtkada.Style;             use Gtkada.Style;
+with Pango.Font;               use Pango.Font;
 
 package body Create_Canvas_View_Links is
 
@@ -109,7 +110,7 @@ package body Create_Canvas_View_Links is
       P2     : constant Item_Point := Points (Points'Last);
       Deltax : constant Item_Coordinate := P2.X - P1.X;
       Deltay : constant Item_Coordinate := P2.Y - P1.Y;
-      Angle  : constant Gdouble := Arctan (Y => Deltay, X => Deltax);
+      Angle  : Gdouble;
       Length : constant Gdouble := Sqrt (Deltax * Deltax + Deltay * Deltay);
       P      : Item_Point_Array (1 .. N + 4);
       X_Inc  : Gdouble;
@@ -120,10 +121,15 @@ package body Create_Canvas_View_Links is
       --  never fill a link
       Style.Set_Fill (Null_Pattern);
 
-      Translate (Context.Cr, Points (Points'First).X, Points (Points'First).Y);
-      Rotate (Context.Cr, Angle);
+      if Length <= L * Gdouble (N)
+        or else (Deltax = 0.0 and then Deltay = 0.0)
+      then
+         Angle := Arctan (Y => Deltay, X => Deltax);
+         Translate
+           (Context.Cr, Points (Points'First).X,
+            Points (Points'First).Y);
+         Rotate (Context.Cr, Angle);
 
-      if Length <= L * Gdouble (N) then
          X_Inc := (Length - 2.0 * Pad) / Gdouble (N);
          Y_Inc := Sqrt (L * L + X_Inc * X_Inc);
 
@@ -179,8 +185,8 @@ package body Create_Canvas_View_Links is
          L1 := Gtk_New
            (From => It1, To => It2, Style => Black,
             Routing => Routing,
-            Anchor_From => (1.0, 0.5, Auto),
-            Anchor_To   => (0.0, 0.5, Auto));
+            Anchor_From => (1.0, 0.5, Auto, Distance => 0.0),
+            Anchor_To   => (0.0, 0.5, Auto, Distance => 0.0));
          Model.Add (L1);
 
          S := Gtk_New
@@ -191,7 +197,7 @@ package body Create_Canvas_View_Links is
 
          L2 := Gtk_New
            (From => L1, To => It3, Style => S, Routing => Routing,
-            Anchor_From => (0.5, 0.5, No_Clipping));
+            Anchor_From => (0.5, 0.5, No_Clipping, Distance => 0.0));
          Model.Add (L2);
       end Do_Example;
 
@@ -292,6 +298,48 @@ package body Create_Canvas_View_Links is
                        Label_To   => Gtk_New_Text (Style, "labelTo"));
          Model.Add (L);
       end Label_Example;
+
+      procedure Distance_Example
+        (X, Y : Model_Coordinate; Distance : Model_Coordinate);
+      procedure Distance_Example
+        (X, Y : Model_Coordinate; Distance : Model_Coordinate)
+      is
+         It1, It2, It3 : Rect_Item;
+         L : Canvas_Link;
+         S : Drawing_Style;
+      begin
+         It1 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It1.Set_Position ((X, Y));
+         Model.Add (It1);
+
+         It2 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It2.Set_Position ((X + 150.0, Y));
+         Model.Add (It2);
+
+         It3 := Gtk_New_Rect (Black, 20.0, 20.0);
+         It3.Set_Position ((X + 75.0, Y + 75.0));
+         Model.Add (It3);
+
+         S := Gtk_New
+           (Stroke => Black_RGBA,
+            Arrow_From => (Head => Open, others => <>),
+            Arrow_To   => (Head => Solid, others => <>));
+
+         L := Gtk_New (It1, It2, S, Straight,
+                       Anchor_From => (Distance => Distance, others => <>),
+                       Anchor_To   => (Distance => Distance, others => <>));
+         Model.Add (L);
+
+         L := Gtk_New (It2, It3, S, Straight,
+                       Anchor_From => (Distance => Distance, others => <>),
+                       Anchor_To   => (Distance => Distance, others => <>));
+         Model.Add (L);
+
+         L := Gtk_New (It3, It1, S, Straight,
+                       Anchor_From => (Distance => Distance, others => <>),
+                       Anchor_To   => (Distance => Distance, others => <>));
+         Model.Add (L);
+      end Distance_Example;
 
       Text : Text_Item;
    begin
@@ -424,6 +472,14 @@ package body Create_Canvas_View_Links is
                                  others => <>)),
                      Directed => Left_Text_Arrow);
 
+      Text := Gtk_New_Text (Font, "Links can stop a distance from the items");
+      Text.Set_Position ((0.0, 880.0));
+      Model.Add (Text);
+
+      Distance_Example (0.0, 900.0, Distance => 0.0);
+      Distance_Example (190.0, 900.0, Distance => 10.0);
+      Distance_Example (380.0, 900.0, Distance => 30.0);
+
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
 
@@ -432,6 +488,7 @@ package body Create_Canvas_View_Links is
       Frame.Add (Scrolled);
 
       Gtk_New (Canvas, Model);
+      Canvas.On_Item_Event (On_Item_Event_Move_Item'Access);
       Unref (Model);
       Scrolled.Add (Canvas);
 
