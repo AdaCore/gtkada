@@ -122,6 +122,9 @@ package body Gtkada.Canvas_View.Views is
    is
       Tmp  : Gdouble;
    begin
+      Set_Source (Context.Cr, Style.Get_Fill);
+      Paint (Context.Cr);
+
       New_Path (Context.Cr);
 
       Tmp := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
@@ -153,6 +156,9 @@ package body Gtkada.Canvas_View.Views is
    is
       TmpX, TmpY  : Gdouble;
    begin
+      Set_Source (Context.Cr, Style.Get_Fill);
+      Paint (Context.Cr);
+
       New_Path (Context.Cr);
 
       TmpX := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;

@@ -106,12 +106,27 @@ package body Create_Canvas_View_Events is
       Context : Draw_Context;
       Area    : Model_Rectangle)
    is
+      P : Cairo_Pattern;
+      B : constant Model_Rectangle := Self.Get_Visible_Area;
    begin
+      P := Pattern_Create_Linear
+        (X0  => B.X,
+         Y0  => B.Y,
+         X1  => B.X + B.Width,
+         Y1  => B.Y + B.Height);
+      Pattern_Add_Color_Stop_Rgb (P, 0.0, 0.76, 0.9, 0.4);
+      Pattern_Add_Color_Stop_Rgb (P, 0.7, 0.76, 0.9, 0.4);
+      Pattern_Add_Color_Stop_Rgb (P, 1.0, 0.0,  0.0, 0.0);
+
       Draw_Grid_Lines
         (Self    => Self,
-         Style   => Gtk_New (Stroke => (0.8, 0.8, 0.8, 0.8)),
+         Style   => Gtk_New (Stroke => (0.8, 0.8, 0.8, 0.8),
+                             Fill => P),
          Context => Context,
          Area    => Area);
+
+      Pattern_Destroy (P);
+
       Canvas_View_Record (Self.all).Draw_Internal (Context, Area);
    end Draw_Internal;
 

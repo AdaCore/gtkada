@@ -60,7 +60,8 @@ package Gtkada.Canvas_View.Views is
       Context : Draw_Context;
       Area    : Model_Rectangle);
    --  Draw a grid with lines in the background.
-   --  The size of the grid can be set with Gtkada.Canvas_View.Set_Grid_Size
+   --  The size of the grid can be set with Gtkada.Canvas_View.Set_Grid_Size.
+   --  This also sets the background color from the style's fill pattern.
 
    procedure Draw_Grid_Dots
      (Self    : not null access Canvas_View_Record'Class;
@@ -68,6 +69,7 @@ package Gtkada.Canvas_View.Views is
       Context : Draw_Context;
       Area    : Model_Rectangle);
    --  Draw a grid with dots in the background
+   --  This also sets the background color from the style's fill pattern.
 
    ---------------
    -- Callbacks --
