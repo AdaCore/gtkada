@@ -2782,6 +2782,21 @@ package Gtk.Widget is
    --  Call the inherited size_allocate. This is useful if you have overloaded it in
    --  your own class, but still need to call the standard implementation.
 
+   type Realize_Handler is access procedure (Widget : System.Address);
+   pragma Convention (C, Realize_Handler);
+   procedure Set_Default_Realize_Handler
+     (Klass   : Glib.Object.GObject_Class;
+      Handler : Realize_Handler);
+   pragma Import (C, Set_Default_Realize_Handler,
+      "ada_WIDGET_CLASS_override_realize");
+   --  Override the handler for the "realize" signal. This handler should
+   --  create the window for the widget
+
+   procedure Inherited_Realize
+     (Klass      : Glib.Object.Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class);
+   --  Call the inherited realize.
+
    ---------------------------
    -- Override Draw handler --
    ---------------------------

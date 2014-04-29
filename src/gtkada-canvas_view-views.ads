@@ -133,6 +133,16 @@ package Gtkada.Canvas_View.Views is
    --  Add this to the list of callbacks for "item_event" so that arrow keys
    --  scroll the view when no item is selected, or moves the selected items.
 
+   function On_Item_Event_Edit
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean;
+   --  Add this to the list of callbacks for "item_event" so that double
+   --  clicking on an item that supports it starts editing it.
+   --  This editing is by default only supported for Text_Item, but you can
+   --  override the Edit_Widget method for other items if you want to support
+   --  in-place editing for them too.
+
    -------------
    -- Minimap --
    -------------
@@ -224,7 +234,17 @@ package Gtkada.Canvas_View.Views is
    --  These functions are mostly for the internal implementation of the view.
 
    procedure Cancel_Continuous_Scrolling
+     (Self : not null access Canvas_View_Record'Class);
+   --  Stops the continuous scrolling (that occurs while dragging items outside
+   --  of the visible area)
+
+   --------------------
+   -- Inline editing --
+   --------------------
+
+   procedure Cancel_Inline_Editing
      (Self    : not null access Canvas_View_Record'Class);
+   --  Destroys any inline editing widget that might be set
 
 private
    type Minimap_View_Record is new Canvas_View_Record with record

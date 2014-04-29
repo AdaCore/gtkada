@@ -346,7 +346,7 @@ package Gdk.Window is
       (Self            : out Gdk_Window;
        Parent          : Gdk.Gdk_Window;
        Attributes      : Gdk.Gdk_Window_Attr;
-       Attributes_Mask : Gint);
+       Attributes_Mask : Gdk_Window_Attributes_Type);
    --  Creates a new Gdk.Gdk_Window using the attributes from Attributes. See
    --  Gdk_Window_Attr and Gdk.Window.Gdk_Window_Attributes_Type for more
    --  details. Note: to use this on displays other than the default display,
@@ -359,7 +359,7 @@ package Gdk.Window is
    function Gdk_Window_New
       (Parent          : Gdk.Gdk_Window;
        Attributes      : Gdk.Gdk_Window_Attr;
-       Attributes_Mask : Gint) return Gdk_Window;
+       Attributes_Mask : Gdk_Window_Attributes_Type) return Gdk_Window;
    --  Creates a new Gdk.Gdk_Window using the attributes from Attributes. See
    --  Gdk_Window_Attr and Gdk.Window.Gdk_Window_Attributes_Type for more
    --  details. Note: to use this on displays other than the default display,

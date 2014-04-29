@@ -486,6 +486,7 @@ ada_initialize_class_record
 
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, size_allocate)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, draw)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, realize)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height)
 
@@ -495,6 +496,15 @@ void ada_inherited_WIDGET_CLASS_size_allocate (
    GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
    GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, rect);
+   g_type_class_unref (objklass);
+}
+
+void ada_inherited_WIDGET_CLASS_realize (
+      AdaGObjectClass klass, GtkWidget* widget)
+{
+   GObjectClass* objklass = g_type_class_ref (klass->type);
+   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
+   GTK_WIDGET_CLASS (parent_class)->realize (widget);
    g_type_class_unref (objklass);
 }
 

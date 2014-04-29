@@ -152,6 +152,7 @@ with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Handlers;
+with Gtk.Bin;          use Gtk.Bin;
 with Gtk.Widget;
 with Gtkada.Style;     use Gtkada.Style;
 with Pango.Layout;     use Pango.Layout;
@@ -417,6 +418,16 @@ package Gtkada.Canvas_View is
    --  whether Self should be selected when the user clicks on the point).
    --  For an item with holes, this function should return False when the
    --  point is inside one of the holes, for instance.
+
+   function Edit_Widget
+     (Self  : not null access Abstract_Item_Record;
+      View  : not null access Canvas_View_Record'Class)
+      return Gtk.Widget.Gtk_Widget is (null);
+   --  Return the widget to use for in-place editing of the item.
+   --  null should be returned when the item is not editable in place.
+   --  It is the responsibility of the returned widget to monitor events and
+   --  validate the editing, update Self, and then call model's layout_changed
+   --  signal.
 
    procedure Destroy
      (Self : not null access Abstract_Item_Record) is null;
@@ -1337,6 +1348,10 @@ package Gtkada.Canvas_View is
       Context : Draw_Context);
    overriding procedure Size_Allocate
      (Self    : not null access Text_Item_Record);
+   overriding function Edit_Widget
+     (Self  : not null access Text_Item_Record;
+      View  : not null access Canvas_View_Record'Class)
+      return Gtk.Widget.Gtk_Widget;
 
    ----------------------
    -- Horizontal lines --
@@ -1610,7 +1625,12 @@ private
       Style            : Gtkada.Style.Drawing_Style := Default_Guide_Style;
    end record;
 
-   type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with record
+   type Inline_Edit_Data is record
+      Item : Abstract_Item;
+   end record;
+   --  Data used when editing a widget
+
+   type Canvas_View_Record is new Gtk.Bin.Gtk_Bin_Record with record
       Model     : Canvas_Model;
       Topleft   : Model_Point := (0.0, 0.0);
       Scale     : Gdouble := 1.0;
@@ -1649,6 +1669,7 @@ private
 
       Continuous_Scroll : Continuous_Scroll_Data;
       Snap              : Snap_Data;
+      Inline_Edit       : Inline_Edit_Data;
    end record;
 
    type Canvas_Link_Record is new Abstract_Item_Record with record

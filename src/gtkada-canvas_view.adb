@@ -36,11 +36,16 @@ with Glib.Values;                        use Glib.Values;
 with Gdk;                                use Gdk;
 with Gdk.Cairo;                          use Gdk.Cairo;
 with Gdk.RGBA;                           use Gdk.RGBA;
+with Gdk.Types.Keysyms;                  use Gdk.Types.Keysyms;
+with Gdk.Window_Attr;                    use Gdk.Window_Attr;
 with Gdk.Window;                         use Gdk.Window;
 with Gtk.Enums;                          use Gtk.Enums;
-with Gtk.Drawing_Area;                   use Gtk.Drawing_Area;
 with Gtk.Handlers;                       use Gtk.Handlers;
 with Gtk.Scrollable;                     use Gtk.Scrollable;
+with Gtk.Style_Context;                  use Gtk.Style_Context;
+with Gtk.Text_Buffer;                    use Gtk.Text_Buffer;
+with Gtk.Text_Iter;                      use Gtk.Text_Iter;
+with Gtk.Text_View;                      use Gtk.Text_View;
 with Gtk.Widget;                         use Gtk.Widget;
 with Gtkada.Bindings;                    use Gtkada.Bindings;
 with Gtkada.Canvas_View.Links;           use Gtkada.Canvas_View.Links;
@@ -191,6 +196,17 @@ package body Gtkada.Canvas_View is
       Details : in out Canvas_Event_Details);
    --  Compute the item that was clicked on, from the coordinates stored in
    --  Details.
+
+   procedure On_View_Realize (Widget : System.Address);
+   pragma Convention (C, On_View_Realize);
+   --  Called when the view is realized
+
+   function On_Text_Edit_Key_Press
+     (View  : access GObject_Record'Class;
+      Event : Gdk_Event_Key)
+      return Boolean;
+   --  Called when the user is inline-editing a text widget, to properly close
+   --  the editor.
 
    ----------
    -- Free --
@@ -504,6 +520,7 @@ package body Gtkada.Canvas_View is
       G_New (Self, View_Get_Type);
 
       Self.Layout := Self.Create_Pango_Layout;
+      Self.Set_Has_Window (True);
 
       Self.Add_Events
         (Scroll_Mask or Smooth_Scroll_Mask or Touch_Mask
@@ -720,7 +737,6 @@ package body Gtkada.Canvas_View is
       Self    : constant Canvas_View := Canvas_View (View);
       Details : aliased Canvas_Event_Details;
    begin
-      Self.Grab_Focus;
       Cancel_Continuous_Scrolling (Self);
       Free_Smart_Guides (Self);
 
@@ -729,6 +745,12 @@ package body Gtkada.Canvas_View is
 
          if Details.Event_Type = Key_Press then
             return False;
+         elsif Details.Event_Type = Button_Press then
+            Cancel_Inline_Editing (Self);
+            Self.Grab_Add;
+            Self.Grab_Focus;
+         elsif Details.Event_Type = Button_Release then
+            Self.Grab_Remove;
          end if;
 
          if Event.The_Type = Gdk.Event.Button_Release
@@ -823,6 +845,7 @@ package body Gtkada.Canvas_View is
    begin
       if Self.Model /= null
         and then Self.Last_Button_Press.Allowed_Drag_Area /= No_Drag_Allowed
+        and then Self.Get_Child = null   --  no inline editing
       then
          if not Self.In_Drag then
             Dx := Event.X_Root - Self.Last_Button_Press.Root_Point.X;
@@ -919,6 +942,47 @@ package body Gtkada.Canvas_View is
    end Model;
 
    ---------------------
+   -- On_View_Realize --
+   ---------------------
+
+   procedure On_View_Realize (Widget : System.Address) is
+      W          : constant Gtk_Widget :=
+        Gtk_Widget (Get_User_Data_Or_Null (Widget));
+      Allocation : Gtk_Allocation;
+      Window     : Gdk_Window;
+      Attr       : Gdk.Window_Attr.Gdk_Window_Attr;
+      Mask       : Gdk_Window_Attributes_Type;
+
+   begin
+      if not W.Get_Has_Window then
+         Inherited_Realize (View_Class_Record, W);
+      else
+         W.Set_Realized (True);
+         W.Get_Allocation (Allocation);
+
+         Gdk_New
+           (Attr,
+            Window_Type => Gdk.Window.Window_Child,
+            X           => Allocation.X,
+            Y           => Allocation.Y,
+            Width       => Allocation.Width,
+            Height      => Allocation.Height,
+            Wclass      => Gdk.Window.Input_Output,
+            Visual      => W.Get_Visual,
+            Event_Mask  => W.Get_Events or Exposure_Mask);
+         Mask := Wa_X or Wa_Y or Wa_Visual;
+
+         Gdk_New (Window, W.Get_Parent_Window, Attr, Mask);
+         Register_Window (W, Window);
+         W.Set_Window (Window);
+         Get_Style_Context (W).Set_Background (Window);
+
+         --  See also handler for size_allocate, which moves the window to its
+         --  proper location.
+      end if;
+   end On_View_Realize;
+
+   ---------------------
    -- View_Class_Init --
    ---------------------
 
@@ -934,6 +998,7 @@ package body Gtkada.Canvas_View is
 
       Set_Default_Draw_Handler (Self, On_View_Draw'Access);
       Set_Default_Size_Allocate_Handler (Self, On_Size_Allocate'Access);
+      Set_Default_Realize_Handler (Self, On_View_Realize'Access);
    end View_Class_Init;
 
    -------------------
@@ -944,7 +1009,7 @@ package body Gtkada.Canvas_View is
       Info : access GInterface_Info;
    begin
       if Glib.Object.Initialize_Class_Record
-        (Ancestor     => Gtk.Drawing_Area.Get_Type,
+        (Ancestor     => Gtk.Bin.Get_Type,
          Signals      => View_Signals,
          Class_Record => View_Class_Record'Access,
          Type_Name    => "GtkadaCanvasView",
@@ -1166,6 +1231,9 @@ package body Gtkada.Canvas_View is
    is
       Self : constant Canvas_View := Canvas_View (Glib.Object.Convert (View));
       SAlloc : Gtk_Allocation := Alloc;
+      Edit   : Gtk_Widget;
+      Box    : View_Rectangle;
+      WMin, WNat, HMin, HNat : Gint;
    begin
       --  For some reason, when we maximize the toplevel window in testgtk, or
       --  at least enlarge it horizontally, we are starting to see an alloc
@@ -1177,8 +1245,36 @@ package body Gtkada.Canvas_View is
 
       SAlloc.X := 0;
       SAlloc.Y := 0;
-      Inherited_Size_Allocate (View_Class_Record, Self, SAlloc);
+      Self.Set_Allocation (SAlloc);
+      --  Inherited_Size_Allocate (View_Class_Record, Self, SAlloc);
       Set_Adjustment_Values (Self);
+
+      if Self.Get_Realized then
+         if Self.Get_Has_Window then
+            Move_Resize
+              (Self.Get_Window, Alloc.X, Alloc.Y, Alloc.Width, Alloc.Height);
+         end if;
+
+         --  send_configure event ?
+      end if;
+
+      --  Are we in the middle of inline-editing ?
+      Edit := Self.Get_Child;
+      if Edit /= null then
+
+         Box := Self.Model_To_View (Self.Inline_Edit.Item.Model_Bounding_Box);
+
+         SAlloc.X := Alloc.X + Gint (Box.X);
+         SAlloc.Y := Alloc.Y + Gint (Box.Y);
+
+         Edit.Get_Preferred_Height (HMin, HNat);
+         SAlloc.Height := Gint'Max (HMin, Gint (Box.Height));
+
+         Edit.Get_Preferred_Width_For_Height (SAlloc.Height, WMin, WNat);
+         SAlloc.Width := Gint'Max (WMin, Gint (Box.Width));
+
+         Edit.Size_Allocate (SAlloc);
+      end if;
 
       if Self.Scale_To_Fit_Requested /= 0.0 then
          Self.Scale_To_Fit (Max_Scale => Self.Scale_To_Fit_Requested);
@@ -1602,7 +1698,7 @@ package body Gtkada.Canvas_View is
       Restore (Context.Cr);
 
       if Context.View /= null then
-         Margin := Margin_Pixels * Context.View.Scale;
+         Margin := Margin_Pixels / Context.View.Scale;
 
          Context.View.Selection_Style.Draw_Rect
            (Context.Cr,
@@ -3209,6 +3305,66 @@ package body Gtkada.Canvas_View is
       Container_Item_Record (Self.all).Size_Allocate;
       Align_Text (Self);
    end Size_Allocate;
+
+   ----------------------------
+   -- On_Text_Edit_Key_Press --
+   ----------------------------
+
+   function On_Text_Edit_Key_Press
+     (View  : access GObject_Record'Class;
+      Event : Gdk_Event_Key)
+     return Boolean
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+      Text : Gtk_Text_View;
+      From, To : Gtk_Text_Iter;
+   begin
+      if Event.State = Control_Mask
+        and then Event.Keyval = GDK_Return
+      then
+         Text := Gtk_Text_View (Self.Get_Child);
+         Text.Get_Buffer.Get_Start_Iter (From);
+         Text.Get_Buffer.Get_End_Iter (To);
+
+         Text_Item (Self.Inline_Edit.Item).Set_Text
+           (Text.Get_Buffer.Get_Text
+              (Start   => From,
+               The_End => To));
+
+         Cancel_Inline_Editing (Self);
+
+         Self.Model.Refresh_Layout;
+
+         return True;
+
+      elsif Event.Keyval = GDK_Escape then
+         Cancel_Inline_Editing (Self);
+         return True;
+      end if;
+
+      return False;
+   end On_Text_Edit_Key_Press;
+
+   -----------------
+   -- Edit_Widget --
+   -----------------
+
+   overriding function Edit_Widget
+     (Self  : not null access Text_Item_Record;
+      View  : not null access Canvas_View_Record'Class)
+      return Gtk.Widget.Gtk_Widget
+   is
+      Text   : Gtk_Text_View;
+      Buffer : Gtk_Text_Buffer;
+   begin
+      Gtk_New (Buffer);
+      Gtk_New (Text, Buffer);
+      Buffer.Set_Text (Self.Text.all);   --  not compute_text
+
+      Text.On_Key_Press_Event (On_Text_Edit_Key_Press'Access, View);
+
+      return Gtk_Widget (Text);
+   end Edit_Widget;
 
    ----------------
    -- Gtk_New_Hr --

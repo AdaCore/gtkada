@@ -125,12 +125,12 @@ package body Gdk.Window is
       (Self            : out Gdk_Window;
        Parent          : Gdk.Gdk_Window;
        Attributes      : Gdk.Gdk_Window_Attr;
-       Attributes_Mask : Gint)
+       Attributes_Mask : Gdk_Window_Attributes_Type)
    is
       function Internal
          (Parent          : Gdk.Gdk_Window;
           Attributes      : Gdk.Gdk_Window_Attr;
-          Attributes_Mask : Gint) return Gdk_Window;
+          Attributes_Mask : Gdk_Window_Attributes_Type) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_new");
    begin
       Self := Internal (Parent, Attributes, Attributes_Mask);
@@ -143,12 +143,12 @@ package body Gdk.Window is
    function Gdk_Window_New
       (Parent          : Gdk.Gdk_Window;
        Attributes      : Gdk.Gdk_Window_Attr;
-       Attributes_Mask : Gint) return Gdk_Window
+       Attributes_Mask : Gdk_Window_Attributes_Type) return Gdk_Window
    is
       function Internal
          (Parent          : Gdk.Gdk_Window;
           Attributes      : Gdk.Gdk_Window_Attr;
-          Attributes_Mask : Gint) return Gdk_Window;
+          Attributes_Mask : Gdk_Window_Attributes_Type) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_new");
       Self : Gdk_Window;
    begin

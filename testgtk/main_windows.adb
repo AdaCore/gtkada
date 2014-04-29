@@ -71,6 +71,7 @@ with Create_Cairo;
 with Create_Calendar;
 with Create_Canvas;
 with Create_Canvas_View_Composite;
+with Create_Canvas_View_Edit;
 with Create_Canvas_View_Events;
 with Create_Canvas_View_Items;
 with Create_Canvas_View_Links;
@@ -298,6 +299,9 @@ package body Main_Windows is
       (NS ("canvas view (minimap)"),     Gtkada,
        Create_Canvas_View_Minimap.Run'Access,
        Create_Canvas_View_Minimap.Help'Access),
+      (NS ("canvas view (editing)"),     Gtkada,
+       Create_Canvas_View_Edit.Run'Access,
+       Create_Canvas_View_Edit.Help'Access),
       (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
                                          Create_Cell_View.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,

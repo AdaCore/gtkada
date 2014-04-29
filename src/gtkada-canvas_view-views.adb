@@ -192,7 +192,6 @@ package body Gtkada.Canvas_View.Views is
         and then Event.Button = 1
         and then Event.Toplevel_Item = null
       then
-
          if Event.Event_Type = Button_Press then
             --  Enable scrolling by dragging the background. However, there is
             --  no point showing an area where there is no item, so we limit
@@ -233,6 +232,49 @@ package body Gtkada.Canvas_View.Views is
       end if;
       return False;
    end On_Item_Event_Scroll_Background;
+
+   ---------------------------
+   -- Cancel_Inline_Editing --
+   ---------------------------
+
+   procedure Cancel_Inline_Editing
+     (Self    : not null access Canvas_View_Record'Class)
+   is
+   begin
+      if Self.Inline_Edit.Item /= null then
+         Self.Inline_Edit.Item := null;
+         Self.Remove (Self.Get_Child);
+      end if;
+   end Cancel_Inline_Editing;
+
+   ------------------------
+   -- On_Item_Event_Edit --
+   ------------------------
+
+   function On_Item_Event_Edit
+     (View   : not null access Glib.Object.GObject_Record'Class;
+      Event : Event_Details_Access)
+      return Boolean
+   is
+      Self  : constant Canvas_View := Canvas_View (View);
+      W     : Gtk_Widget;
+   begin
+      if Event.Item /= null
+        and then Event.Event_Type = Double_Click
+      then
+         W := Event.Item.Edit_Widget (Self);
+         if W /= null then
+            Self.Inline_Edit.Item := Event.Item;
+            Self.Add (W);  --  also queues a resize, so calls On_Size_Allocate
+            W.Show_All;
+            W.Grab_Focus;
+         end if;
+
+         return True;
+      end if;
+
+      return False;
+   end On_Item_Event_Edit;
 
    -----------------------------
    -- On_Item_Event_Move_Item --
@@ -339,6 +381,7 @@ package body Gtkada.Canvas_View.Views is
             end if;
 
             Self.Set_Scale (S, Preserve => Event.M_Point);
+            Cancel_Inline_Editing (Self);
             return True;
          end if;
       end if;
@@ -531,6 +574,8 @@ package body Gtkada.Canvas_View.Views is
          end case;
 
          if Item /= null then
+            Cancel_Inline_Editing (Self);
+
             Self.Model.Clear_Selection;
             Self.Model.Add_To_Selection (Item);
             Self.Scroll_Into_View (Item);
@@ -563,6 +608,8 @@ package body Gtkada.Canvas_View.Views is
             when GDK_Right | GDK_KP_Right => Dx := 5.0;
             when others => return False;
          end case;
+
+         Cancel_Inline_Editing (Self);
 
          if Event.Item = null then
             Box := Self.Get_Visible_Area;
