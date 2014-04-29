@@ -131,7 +131,7 @@ package body Create_Canvas_View_Links is
          Rotate (Context.Cr, Angle);
 
          X_Inc := (Length - 2.0 * Pad) / Gdouble (N);
-         Y_Inc := Sqrt (L * L + X_Inc * X_Inc);
+         Y_Inc := Sqrt (L * L - X_Inc * X_Inc);
 
          P (P'First)     := (0.0, 0.0);
          P (P'First + 1) := (Pad, 0.0);

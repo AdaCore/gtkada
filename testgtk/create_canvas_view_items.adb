@@ -161,6 +161,7 @@ package body Create_Canvas_View_Items is
 
          Filled := Gtk_New
            (Stroke => Black_RGBA,
+            Sloppy => Sloppy,
             Fill   => Pattern);
 
          Black := Gtk_New (Stroke => Black_RGBA, Sloppy => Sloppy);
