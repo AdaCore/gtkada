@@ -306,6 +306,7 @@ package body Gtkada.Canvas_View.Views is
       then
          --  Enable moving the item anywhere
          Event.Allowed_Drag_Area := Drag_Anywhere;
+         Self.Model.Raise_Item (Event.Toplevel_Item);
          return True;
       end if;
       return False;
@@ -362,6 +363,8 @@ package body Gtkada.Canvas_View.Views is
             end case;
 
          else
+            Self.Model.Raise_Item (Event.Toplevel_Item);
+
             case Event.Event_Type is
                when Button_Press =>
                   if Self.Model.Is_Selected (Event.Item) then

@@ -539,10 +539,12 @@ package Gtkada.Canvas_View is
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
       In_Area  : Model_Rectangle := No_Rectangle) is abstract;
-   --  Calls Callback for each item in the model, not including the links
-   --  which are handled specially.
+   --  Calls Callback for each item in the model, including links.
    --  Only the items that intersect In_Area should be returned for
-   --  efficiency, although it is valid to return all items otherwise.
+   --  efficiency, although it is valid to return all items.
+   --
+   --  Items are returned in z-layer order: lowest items first, highest items
+   --  last.
 
    function Bounding_Box
      (Self   : not null access Canvas_Model_Record;
@@ -582,6 +584,15 @@ package Gtkada.Canvas_View is
    --  The default implementation simply traverses the list of items, and
    --  calls Contains on each child.
    --  This function returns the topmost item
+
+   procedure Raise_Item
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class) is abstract;
+   procedure Lower_Item
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class) is abstract;
+   --  Change the z-order of the item.
+   --  This emits the layout_changed signal
 
    type Selection_Mode is
      (Selection_None, Selection_Single, Selection_Multiple);
@@ -676,6 +687,12 @@ package Gtkada.Canvas_View is
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
       In_Area  : Model_Rectangle := No_Rectangle);
+   overriding procedure Raise_Item
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   procedure Lower_Item
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
 
    -----------------
    -- Canvas_View --
@@ -1674,6 +1691,7 @@ private
 
    type List_Canvas_Model_Record is new Canvas_Model_Record with record
       Items : Items_Lists.List;
+      --  items are sorted: lowest items first (minimal z-layer)
    end record;
 
    procedure Refresh_Link_Layout

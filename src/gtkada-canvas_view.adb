@@ -2070,6 +2070,61 @@ package body Gtkada.Canvas_View is
       end loop;
    end For_Each_Item;
 
+   ----------------
+   -- Raise_Item --
+   ----------------
+
+   overriding procedure Raise_Item
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class)
+   is
+      use Items_Lists;
+      C : Items_Lists.Cursor := Self.Items.First;
+   begin
+      while Has_Element (C) loop
+         if Element (C) = Abstract_Item (Item) then
+            if C /= Self.Items.Last then
+               Self.Items.Delete (C);
+               Self.Items.Append (Abstract_Item (Item));
+               Self.Layout_Changed;
+            end if;
+
+            return;
+         end if;
+         Next (C);
+      end loop;
+   end Raise_Item;
+
+   ----------------
+   -- Lower_Item --
+   ----------------
+
+   procedure Lower_Item
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class)
+   is
+      use Items_Lists;
+      C : Items_Lists.Cursor := Self.Items.First;
+   begin
+      if not Has_Element (C)
+        or else Element (C) = Abstract_Item (Item)
+      then
+         return;   --  nothing to do
+      end if;
+
+      Next (C);
+
+      while Has_Element (C) loop
+         if Element (C) = Abstract_Item (Item) then
+            Self.Items.Delete (C);
+            Self.Items.Prepend (Abstract_Item (Item));
+            Self.Layout_Changed;
+            return;
+         end if;
+         Next (C);
+      end loop;
+   end Lower_Item;
+
    ---------------
    -- Get_Style --
    ---------------

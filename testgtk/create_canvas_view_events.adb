@@ -186,7 +186,7 @@ package body Create_Canvas_View_Events is
       Canvas.Console.Set_Position ((0.0, 0.0));
       Model.Add (Canvas.Console);
 
-      Black := Gtk_New (Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.5)));
+      Black := Gtk_New (Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 1.0)));
       It1 := Gtk_New_Rect (Black, 80.0, 80.0);
       It1.Set_Position ((50.0, 50.0));
       Model.Add (It1);
