@@ -3013,7 +3013,23 @@ package body Gtkada.Canvas_View is
    is
       Stroke : constant Gdk_RGBA := Self.Style.Get_Stroke;
       Fill   : constant Cairo_Pattern := Self.Style.Get_Fill;
+      Shadow : constant Shadow_Style := Self.Style.Get_Shadow;
    begin
+      if Shadow /= No_Shadow then
+         Save (Context.Cr);
+         Translate (Context.Cr, Shadow.X_Offset, Shadow.Y_Offset);
+
+         if Self.Style.Path_Rect
+           (Context.Cr, (0.0, 0.0),
+            Self.Width, Self.Height, Radius => Self.Radius)
+         then
+            Set_Source_RGBA (Context.Cr, Shadow.Color);
+            Cairo.Fill (Context.Cr);
+         end if;
+
+         Restore (Context.Cr);
+      end if;
+
       Resize_Fill_Pattern (Self);
 
       --  We need to clip the contents of the rectangle. Also, we
@@ -3021,8 +3037,8 @@ package body Gtkada.Canvas_View is
       --  no hide the stroke.
 
       if Self.Style.Path_Rect
-        (Context.Cr, (0.0, 0.0), Self.Width, Self.Height,
-         Radius => Self.Radius)
+        (Context.Cr, (0.0, 0.0),
+         Self.Width, Self.Height, Radius => Self.Radius)
       then
          Clip_Preserve (Context.Cr);
 
@@ -3106,7 +3122,24 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Polyline_Item_Record;
       Context : Draw_Context)
    is
+      Shadow : constant Shadow_Style := Self.Style.Get_Shadow;
    begin
+      if Shadow /= No_Shadow then
+         Save (Context.Cr);
+         Translate (Context.Cr, Shadow.X_Offset, Shadow.Y_Offset);
+
+         if Self.Style.Path_Polyline
+           (Context.Cr, Self.Points.all,
+            Close    => Self.Close,
+            Relative => Self.Relative)
+         then
+            Set_Source_RGBA (Context.Cr, Shadow.Color);
+            Cairo.Fill (Context.Cr);
+         end if;
+
+         Restore (Context.Cr);
+      end if;
+
       Resize_Fill_Pattern (Self);
       Self.Style.Draw_Polyline
         (Context.Cr, Self.Points.all,
@@ -3190,7 +3223,22 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Ellipse_Item_Record;
       Context : Draw_Context)
    is
+      Shadow : constant Shadow_Style := Self.Style.Get_Shadow;
    begin
+      if Shadow /= No_Shadow then
+         Save (Context.Cr);
+         Translate (Context.Cr, Shadow.X_Offset, Shadow.Y_Offset);
+
+         if Self.Style.Path_Ellipse
+           (Context.Cr, (0.0, 0.0), Self.Width, Self.Height)
+         then
+            Set_Source_RGBA (Context.Cr, Shadow.Color);
+            Cairo.Fill (Context.Cr);
+         end if;
+
+         Restore (Context.Cr);
+      end if;
+
       Resize_Fill_Pattern (Self);
       Self.Style.Draw_Ellipse
         (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);

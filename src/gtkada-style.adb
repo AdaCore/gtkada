@@ -945,6 +945,7 @@ package body Gtkada.Style is
        Arrow_To         : Arrow_Style := No_Arrow_Style;
        Symbol_From      : Symbol_Style := No_Symbol;
        Symbol_To        : Symbol_Style := No_Symbol;
+       Shadow           : Shadow_Style := No_Shadow;
        Sloppy           : Boolean := False)
      return Drawing_Style
    is
@@ -959,6 +960,7 @@ package body Gtkada.Style is
          Arrow_To    => Arrow_To,
          Symbol_From => Symbol_From,
          Symbol_To   => Symbol_To,
+         Shadow      => Shadow,
          Sloppy      => Sloppy);
    begin
       if Fill /= Null_Pattern then
@@ -1073,6 +1075,28 @@ package body Gtkada.Style is
    end Draw_Rect;
 
    ------------------
+   -- Path_Ellipse --
+   ------------------
+
+   function Path_Ellipse
+     (Self          : Drawing_Style;
+      Cr            : Cairo.Cairo_Context;
+      Topleft       : Point;
+      Width, Height : Glib.Gdouble) return Boolean
+   is
+   begin
+      if Self.Data /= null then
+         Save (Cr);
+         Translate (Cr, Topleft.X + Width / 2.0, Topleft.Y + Height / 2.0);
+         Scale (Cr, Width / 2.0, Height / 2.0);
+         Arc (Cr, 0.0, 0.0, 1.0, 0.0, 2.0 * Ada.Numerics.Pi);
+         Restore (Cr);   --  before we do the stroke, or line is too large
+         return True;
+      end if;
+      return False;
+   end Path_Ellipse;
+
+   ------------------
    -- Draw_Ellipse --
    ------------------
 
@@ -1082,12 +1106,7 @@ package body Gtkada.Style is
       Topleft       : Point;
       Width, Height : Glib.Gdouble) is
    begin
-      if Self.Data /= null then
-         Save (Cr);
-         Translate (Cr, Topleft.X + Width / 2.0, Topleft.Y + Height / 2.0);
-         Scale (Cr, Width / 2.0, Height / 2.0);
-         Arc (Cr, 0.0, 0.0, 1.0, 0.0, 2.0 * Ada.Numerics.Pi);
-         Restore (Cr);   --  before we do the stroke, or line is too large
+      if Path_Ellipse (Self, Cr, Topleft, Width, Height) then
          Self.Finish_Path (Cr);
       end if;
    end Draw_Ellipse;
@@ -1749,6 +1768,19 @@ package body Gtkada.Style is
          return Self.Data.Fill;
       end if;
    end Get_Fill;
+
+   ----------------
+   -- Get_Shadow --
+   ----------------
+
+   function Get_Shadow (Self : Drawing_Style) return Shadow_Style is
+   begin
+      if Self.Data = null then
+         return Default_Style.Shadow;
+      else
+         return Self.Data.Shadow;
+      end if;
+   end Get_Shadow;
 
    --------------
    -- Set_Fill --

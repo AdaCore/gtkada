@@ -307,6 +307,8 @@ package body Create_Canvas_View_Items is
       Ellipse.Set_Position ((200.0, 0.0));
       Model.Add (Ellipse);
 
+      --  Images
+
       Rect1 := Gtk_New_Rect (Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0)));
       Rect1.Set_Position ((300.0, 0.0));
       Model.Add (Rect1);

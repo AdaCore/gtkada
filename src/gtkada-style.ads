@@ -285,6 +285,13 @@ package Gtkada.Style is
    --  instance, if Valign is 0.5, then the Y position given by the call to
    --  Set_Position is the position of the middle of the box.
 
+   type Shadow_Style is record
+      Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
+      X_Offset : Glib.Gdouble := 5.0;
+      Y_Offset : Glib.Gdouble := 5.0;
+   end record;
+   No_Shadow : constant Shadow_Style := (Gdk.RGBA.Null_RGBA, 5.0, 5.0);
+
    type Point is record
       X, Y : Glib.Gdouble;
    end record;
@@ -301,6 +308,7 @@ package Gtkada.Style is
        Arrow_To         : Arrow_Style := No_Arrow_Style;
        Symbol_From      : Symbol_Style := No_Symbol;
        Symbol_To        : Symbol_Style := No_Symbol;
+       Shadow           : Shadow_Style := No_Shadow;
        Sloppy           : Boolean := False)
      return Drawing_Style;
    --  Creates a new instance of drawing style.
@@ -375,6 +383,11 @@ package Gtkada.Style is
       Cr            : Cairo.Cairo_Context;
       Topleft       : Point;
       Width, Height : Glib.Gdouble);
+   function Path_Ellipse
+     (Self          : Drawing_Style;
+      Cr            : Cairo.Cairo_Context;
+      Topleft       : Point;
+      Width, Height : Glib.Gdouble) return Boolean;
    --  Draw an ellipse inscribed in the specified rectangle
 
    procedure Draw_Text
@@ -422,6 +435,7 @@ package Gtkada.Style is
    function Get_Line_Width (Self : Drawing_Style) return Glib.Gdouble;
    function Get_Font (Self : Drawing_Style) return Font_Style;
    function Get_Fill (Self : Drawing_Style) return Cairo.Cairo_Pattern;
+   function Get_Shadow (Self : Drawing_Style) return Shadow_Style;
    --  Access the various properties of the style
 
    procedure Set_Fill
@@ -535,6 +549,7 @@ private
       Symbol_From      : Symbol_Style := No_Symbol;
       Symbol_To        : Symbol_Style := No_Symbol;
       Sloppy           : Boolean := False;
+      Shadow           : Shadow_Style := No_Shadow;
    end record;
    type Drawing_Style_Data_Access is access all Drawing_Style_Data;
 

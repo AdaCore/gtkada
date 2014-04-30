@@ -172,6 +172,7 @@ package body Create_Canvas_View_Events is
       L1, L2, L3    : Canvas_Link;
       It1, It3      : Rect_Item;
       It2           : Polyline_Item;
+      Ellipse       : Ellipse_Item;
 
       L             : Gdouble;
    begin
@@ -208,7 +209,8 @@ package body Create_Canvas_View_Events is
 
       L := 30.0;
       It2 := Gtk_New_Polyline
-        (Black,
+        (Gtk_New (Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 1.0)),
+                  Shadow => (Color => (0.0, 0.0, 0.0, 0.1), others => <>)),
          ((2.0 * L, L * S),
           (1.5 * L, L * S * 2.0),
           (0.5 * L, L * S * 2.0),
@@ -219,7 +221,10 @@ package body Create_Canvas_View_Events is
       It2.Set_Position ((250.0, 250.0));
       Model.Add (It2);
 
-      It3 := Gtk_New_Rect (Black, 50.0, 80.0);
+      It3 := Gtk_New_Rect
+        (Gtk_New (Fill => Create_Rgba_Pattern ((0.0, 1.0, 0.0, 1.0)),
+                  Shadow => (Color => (0.0, 0.0, 0.0, 0.1), others => <>)),
+         50.0, 80.0);
       It3.Set_Position ((50.0, 220.0));
       Model.Add (It3);
 
@@ -239,6 +244,13 @@ package body Create_Canvas_View_Events is
       It3 := Gtk_New_Rect (Black, 50.0, 80.0);
       It3.Set_Position ((650.0, 400.0));
       Model.Add (It3);
+
+      Ellipse := Gtk_New_Ellipse
+        (Gtk_New (Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 1.0)),
+                  Shadow => (Color => (0.0, 0.0, 0.0, 0.1), others => <>)),
+         Width => 70.0, Height => 40.0);
+      Ellipse.Set_Position ((200.0, 30.0));
+      Model.Add (Ellipse);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
