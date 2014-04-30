@@ -2837,6 +2837,115 @@ package body Gtkada.Canvas_View is
       end loop;
    end Draw_Children;
 
+   -------------------
+   -- Gtk_New_Image --
+   -------------------
+
+   function Gtk_New_Image
+     (Style  : Gtkada.Style.Drawing_Style;
+      Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+      Width, Height : Model_Coordinate := -1.0)
+      return Image_Item
+   is
+      R : constant Image_Item := new Image_Item_Record;
+   begin
+      Initialize_Image (R, Style, Image, Width, Height);
+      return R;
+   end Gtk_New_Image;
+
+   ----------------------
+   -- Initialize_Image --
+   ----------------------
+
+   procedure Initialize_Image
+     (Self   : not null access Image_Item_Record'Class;
+      Style  : Gtkada.Style.Drawing_Style;
+      Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+      Width, Height : Model_Coordinate := -1.0) is
+   begin
+      Self.Style := Style;
+      Self.Image := Gdk_Pixbuf (Image);
+      Ref (Self.Image);
+      Self.Forced_Width := Width;
+      Self.Forced_Height := Height;
+   end Initialize_Image;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   overriding procedure Destroy
+     (Self    : not null access Image_Item_Record) is
+   begin
+      if Self.Image /= null then
+         Unref (Self.Image);
+         Self.Image := null;
+      end if;
+   end Destroy;
+
+   ----------
+   -- Draw --
+   ----------
+
+   overriding procedure Draw
+     (Self    : not null access Image_Item_Record;
+      Context : Draw_Context)
+   is
+      P : Gdk_Pixbuf;
+   begin
+      Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
+
+      Save (Context.Cr);
+      Rectangle
+        (Context.Cr,
+         X      => 0.0,
+         Y      => 0.0,
+         Width  => Self.Width,
+         Height => Self.Height);
+      Set_Source_RGBA (Context.Cr, (1.0, 0.0, 0.0, 1.0));
+
+      if Get_Width (Self.Image) /= Gint (Self.Width)
+        or else Get_Height (Self.Image) /= Gint (Self.Height)
+      then
+         P := Scale_Simple
+           (Self.Image,
+            Dest_Width  => Gint (Self.Width),
+            Dest_Height => Gint (Self.Height));
+         Set_Source_Pixbuf
+           (Context.Cr,
+            P,
+            Pixbuf_X => 0.0,
+            Pixbuf_Y => 0.0);
+         Unref (P);
+      else
+         Set_Source_Pixbuf
+           (Context.Cr,
+            Self.Image,
+            Pixbuf_X => 0.0,
+            Pixbuf_Y => 0.0);
+      end if;
+
+      Cairo.Fill (Context.Cr);
+
+      Restore (Context.Cr);
+   end Draw;
+
+   ------------------
+   -- Size_Request --
+   ------------------
+
+   overriding procedure Size_Request
+     (Self    : not null access Image_Item_Record;
+      Context : Draw_Context)
+   is
+   begin
+      Container_Item_Record (Self.all).Size_Request (Context);  --  inherited
+      Self.Width := Model_Coordinate'Max
+        (Self.Width, Gdouble (Get_Width (Self.Image)));
+      Self.Height := Model_Coordinate'Max
+        (Self.Height, Gdouble (Get_Height (Self.Image)));
+   end Size_Request;
+
    ------------------
    -- Gtk_New_Rect --
    ------------------

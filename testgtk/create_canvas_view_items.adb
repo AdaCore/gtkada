@@ -21,9 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Text_IO;         use Ada.Text_IO;
 with Cairo.Pattern;       use Cairo, Cairo.Pattern;
+with Gdk.Pixbuf;          use Gdk.Pixbuf;
 with Gdk.RGBA;            use Gdk.RGBA;
 with Glib;                use Glib;
+with Glib.Error;          use Glib.Error;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
@@ -252,6 +255,10 @@ package body Create_Canvas_View_Items is
       Ellipse       : Ellipse_Item;
       Text          : Text_Item;
       Pattern       : Cairo_Pattern;
+      Image         : Image_Item;
+      Pixbuf        : Gdk_Pixbuf;
+      Error         : GError;
+      Rect1, Rect2  : Rect_Item;
 
    begin
       Font := Gtk_New
@@ -285,7 +292,7 @@ package body Create_Canvas_View_Items is
       Text.Set_Position ((12.0, 15.0));
       Hexa.Add_Child (Text);
 
-      --  A simple ellipe
+      --  A simple ellipse
 
       Pattern := Create_Radial
         (Cx0 => 0.5, Cy0 => 0.5, Radius0 => 0.0,
@@ -299,6 +306,50 @@ package body Create_Canvas_View_Items is
       Ellipse := Gtk_New_Ellipse (Filled, 60.0, 30.0);
       Ellipse.Set_Position ((200.0, 0.0));
       Model.Add (Ellipse);
+
+      Rect1 := Gtk_New_Rect (Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0)));
+      Rect1.Set_Position ((300.0, 0.0));
+      Model.Add (Rect1);
+
+      Rect2 := Gtk_New_Rect (Gtk_New (Stroke => (0.0, 1.0, 0.0, 1.0)));
+      Rect2.Set_Position ((400.0, 0.0));
+      Model.Add (Rect2);
+
+      Gdk_New_From_File (Pixbuf, "refresh.svg", Error);
+      if Error /= null then
+         Put_Line (Get_Message (Error));
+         Error_Free (Error);
+      else
+         Image := Gtk_New_Image
+           (Style => Gtk_New (Stroke => (0.0, 0.0, 0.0, 1.0)),
+            Image => Pixbuf);
+         Rect1.Add_Child (Image);
+
+         Image := Gtk_New_Image
+           (Style  => Gtk_New (Stroke => (0.0, 0.0, 0.0, 1.0)),
+            Image  => Pixbuf,
+            Width  => 50.0,
+            Height => 50.0);
+         Rect2.Add_Child (Image);
+      end if;
+
+      Gdk_New_From_File (Pixbuf, "search_and_menu.png", Error);
+      if Error /= null then
+         Put_Line (Get_Message (Error));
+         Error_Free (Error);
+      else
+         Image := Gtk_New_Image
+           (Style => Gtk_New (Stroke => (0.0, 0.0, 0.0, 1.0)),
+            Image => Pixbuf);
+         Rect1.Add_Child (Image);
+
+         Image := Gtk_New_Image
+           (Style  => Gtk_New (Stroke => (0.0, 0.0, 0.0, 1.0)),
+            Image  => Pixbuf,
+            Width  => 50.0,
+            Height => 50.0);
+         Rect2.Add_Child (Image);
+      end if;
 
       Add_UML_Actor (False, 0.0,   100.0);
       Add_UML_Block (False, 100.0, 100.0);

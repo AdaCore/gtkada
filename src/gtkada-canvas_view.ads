@@ -146,6 +146,7 @@ private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
 with Cairo;
 with Gdk.Event;        use Gdk.Event;
+with Gdk.Pixbuf;       use Gdk.Pixbuf;
 with Gdk.Types;        use Gdk.Types;
 private with Glib.Main;
 with Glib;             use Glib;
@@ -1254,6 +1255,37 @@ package Gtkada.Canvas_View is
       Point   : Item_Point;
       Context : Draw_Context) return Boolean;
 
+   ------------
+   -- Images --
+   ------------
+
+   type Image_Item_Record is new Container_Item_Record with private;
+   type Image_Item is access all Image_Item_Record'Class;
+   --  An item that shows an image.
+   --  The style is used to draw a rectangle around the image
+
+   function Gtk_New_Image
+     (Style  : Gtkada.Style.Drawing_Style;
+      Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+      Width, Height : Model_Coordinate := -1.0)
+      return Image_Item;
+   procedure Initialize_Image
+     (Self   : not null access Image_Item_Record'Class;
+      Style  : Gtkada.Style.Drawing_Style;
+      Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+      Width, Height : Model_Coordinate := -1.0);
+   --  Create a new image item.
+   --  By default, the size is computed from the image
+
+   overriding procedure Draw
+     (Self    : not null access Image_Item_Record;
+      Context : Draw_Context);
+   overriding procedure Destroy
+     (Self    : not null access Image_Item_Record);
+   overriding procedure Size_Request
+     (Self    : not null access Image_Item_Record;
+      Context : Draw_Context);
+
    ---------------
    -- Polylines --
    ---------------
@@ -1578,6 +1610,10 @@ private
 
    type Rect_Item_Record is new Container_Item_Record with record
       Radius   : Model_Coordinate;
+   end record;
+
+   type Image_Item_Record is new Container_Item_Record with record
+      Image    : Gdk.Pixbuf.Gdk_Pixbuf;
    end record;
 
    type Polyline_Item_Record is new Container_Item_Record with record
