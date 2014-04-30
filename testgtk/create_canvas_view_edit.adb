@@ -34,6 +34,8 @@ package body Create_Canvas_View_Edit is
 
    function On_Item_Event_Zoom is new On_Item_Event_Zoom_Generic
       (Modifier => Mod1_Mask);
+   function On_Item_Event_Key_Navigate is new
+      On_Item_Event_Key_Navigate_Generic (Modifier => 0);
 
    ----------
    -- Help --
@@ -57,7 +59,8 @@ package body Create_Canvas_View_Edit is
       Scrolled    : Gtk_Scrolled_Window;
       Canvas      : Canvas_View;
       Model       : List_Canvas_Model;
-      Text        : Text_Item;
+      Text        : Editable_Text_Item;
+      NText       : Text_Item;
       Rect        : Rect_Item;
       White, Font : Drawing_Style;
    begin
@@ -76,21 +79,25 @@ package body Create_Canvas_View_Edit is
       Rect.Set_Position ((50.0, 50.0));
       Model.Add (Rect);
 
-      Text := Gtk_New_Text (Font, "Line 1");
+      Text := Gtk_New_Editable_Text (Font, "Line 1");
       Rect.Add_Child (Text);
 
-      Text := Gtk_New_Text (Font, "Line 2");
+      Text := Gtk_New_Editable_Text (Font, "Line 2");
       Rect.Add_Child (Text);
 
-      Text := Gtk_New_Text (Font, "Line 3");
+      Text := Gtk_New_Editable_Text (Font, "Line 3");
       Rect.Add_Child (Text);
 
-      Text := Gtk_New_Text (Font, "Line 4");
-      Rect.Add_Child (Text);
+      NText := Gtk_New_Text (Font, "Non editable");
+      Rect.Add_Child (NText);
 
       Rect := Gtk_New_Rect (White, 50.0, 50.0);
       Rect.Set_Position ((550.0, 550.0));
       Model.Add (Rect);
+
+      Text := Gtk_New_Editable_Text (Font, "Legend");
+      Text.Set_Position ((200.0, 50.0));
+      Model.Add (Text);
 
       Gtk_New (Scrolled);
       Scrolled.Set_Policy (Policy_Automatic, Policy_Automatic);
@@ -105,6 +112,7 @@ package body Create_Canvas_View_Edit is
       Canvas.On_Item_Event (On_Item_Event_Scroll_Background'Access);
       Canvas.On_Item_Event (On_Item_Event_Edit'Access);
       Canvas.On_Item_Event (On_Item_Event_Zoom'Access);
+      Canvas.On_Item_Event (On_Item_Event_Key_Navigate'Access);
 
       Frame.Show_All;
    end Run;

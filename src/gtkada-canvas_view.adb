@@ -3306,6 +3306,36 @@ package body Gtkada.Canvas_View is
       Align_Text (Self);
    end Size_Allocate;
 
+   ---------------------------
+   -- Gtk_New_Editable_Text --
+   ---------------------------
+
+   function Gtk_New_Editable_Text
+     (Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow)
+      return Editable_Text_Item
+   is
+      Result : constant Editable_Text_Item := new Editable_Text_Item_Record;
+   begin
+      Initialize_Editable_Text (Result, Style, Text, Directed);
+      return Result;
+   end Gtk_New_Editable_Text;
+
+   ------------------------------
+   -- Initialize_Editable_Text --
+   ------------------------------
+
+   procedure Initialize_Editable_Text
+     (Self     : not null access Editable_Text_Item_Record'Class;
+      Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow)
+   is
+   begin
+      Initialize_Text (Self, Style, Text, Directed);
+   end Initialize_Editable_Text;
+
    ----------------------------
    -- On_Text_Edit_Key_Press --
    ----------------------------
@@ -3322,18 +3352,24 @@ package body Gtkada.Canvas_View is
       if Event.State = Control_Mask
         and then Event.Keyval = GDK_Return
       then
-         Text := Gtk_Text_View (Self.Get_Child);
-         Text.Get_Buffer.Get_Start_Iter (From);
-         Text.Get_Buffer.Get_End_Iter (To);
+         declare
+            Old : constant String := Editable_Text_Item
+              (Self.Inline_Edit.Item).Text.all;
+         begin
+            Text := Gtk_Text_View (Self.Get_Child);
+            Text.Get_Buffer.Get_Start_Iter (From);
+            Text.Get_Buffer.Get_End_Iter (To);
 
-         Text_Item (Self.Inline_Edit.Item).Set_Text
-           (Text.Get_Buffer.Get_Text
-              (Start   => From,
-               The_End => To));
+            Editable_Text_Item (Self.Inline_Edit.Item).Set_Text
+              (Text.Get_Buffer.Get_Text
+                 (Start   => From,
+                  The_End => To));
 
-         Cancel_Inline_Editing (Self);
+            Editable_Text_Item (Self.Inline_Edit.Item).On_Edited (Old);
 
-         Self.Model.Refresh_Layout;
+            Cancel_Inline_Editing (Self);
+            Self.Model.Refresh_Layout;
+         end;
 
          return True;
 
@@ -3350,7 +3386,7 @@ package body Gtkada.Canvas_View is
    -----------------
 
    overriding function Edit_Widget
-     (Self  : not null access Text_Item_Record;
+     (Self  : not null access Editable_Text_Item_Record;
       View  : not null access Canvas_View_Record'Class)
       return Gtk.Widget.Gtk_Widget
    is
@@ -3360,10 +3396,26 @@ package body Gtkada.Canvas_View is
       Gtk_New (Buffer);
       Gtk_New (Text, Buffer);
       Buffer.Set_Text (Self.Text.all);   --  not compute_text
-
       Text.On_Key_Press_Event (On_Text_Edit_Key_Press'Access, View);
 
       return Gtk_Widget (Text);
+   end Edit_Widget;
+
+   -----------------
+   -- Edit_Widget --
+   -----------------
+
+   function Edit_Widget
+     (Self  : not null access Canvas_Item_Record;
+      View  : not null access Canvas_View_Record'Class)
+      return Gtk.Widget.Gtk_Widget
+   is
+      pragma Unreferenced (Self, View);
+   begin
+      --  for some reason, we need to define this function even though the
+      --  one defined for the interface is already defined as "null".
+      --  Otherwise, dispatching from Start_Inline_Editing does not work...
+      return null;
    end Edit_Widget;
 
    ----------------

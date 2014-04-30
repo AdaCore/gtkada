@@ -242,6 +242,14 @@ package Gtkada.Canvas_View.Views is
    -- Inline editing --
    --------------------
 
+   procedure Start_Inline_Editing
+     (Self : not null access Canvas_View_Record'Class;
+      Item : not null access Abstract_Item_Record'Class);
+   --  If Item is editable, overlap a widget on top of it to allow its editing.
+   --  The widget is created via the Item.Edit_Widget method.
+   --  Returns True if such a widget could be displayed, False if editing could
+   --  not take place.
+
    procedure Cancel_Inline_Editing
      (Self    : not null access Canvas_View_Record'Class);
    --  Destroys any inline editing widget that might be set

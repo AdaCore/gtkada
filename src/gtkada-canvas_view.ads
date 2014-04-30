@@ -505,7 +505,11 @@ package Gtkada.Canvas_View is
    overriding function Clip_Line
      (Self   : not null access Canvas_Item_Record;
       P1, P2 : Item_Point) return Item_Point;
-   procedure Draw_As_Selected
+   overriding function Edit_Widget
+     (Self  : not null access Canvas_Item_Record;
+      View  : not null access Canvas_View_Record'Class)
+      return Gtk.Widget.Gtk_Widget;
+   overriding procedure Draw_As_Selected
      (Self    : not null access Canvas_Item_Record;
       Context : Draw_Context);
 
@@ -1348,8 +1352,36 @@ package Gtkada.Canvas_View is
       Context : Draw_Context);
    overriding procedure Size_Allocate
      (Self    : not null access Text_Item_Record);
+
+   -------------------
+   -- Editable text --
+   -------------------
+
+   type Editable_Text_Item_Record is new Text_Item_Record with private;
+   type Editable_Text_Item is access all Editable_Text_Item_Record'Class;
+   --  A special text item that can be double-clicked on to be editing in
+   --  place (provided the Gtkada.Canvas_View.Views.On_Item_Event_Edit
+   --  callback was added to the view).
+
+   function Gtk_New_Editable_Text
+     (Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow)
+      return Editable_Text_Item;
+   procedure Initialize_Editable_Text
+     (Self     : not null access Editable_Text_Item_Record'Class;
+      Style    : Gtkada.Style.Drawing_Style;
+      Text     : Glib.UTF8_String;
+      Directed : Text_Arrow_Direction := No_Text_Arrow);
+   --  Create a new text item
+
+   procedure On_Edited
+     (Self     : not null access Editable_Text_Item_Record'Class;
+      Old_Text : String) is null;
+   --  Called after the text has been edited
+
    overriding function Edit_Widget
-     (Self  : not null access Text_Item_Record;
+     (Self  : not null access Editable_Text_Item_Record;
       View  : not null access Canvas_View_Record'Class)
       return Gtk.Widget.Gtk_Widget;
 
@@ -1561,6 +1593,8 @@ private
       Directed : Text_Arrow_Direction;
       Requested_Width, Requested_Height : Model_Coordinate;
    end record;
+
+   type Editable_Text_Item_Record is new Text_Item_Record with null record;
 
    type Hr_Item_Record is new Container_Item_Record with record
       Text     : GNAT.Strings.String_Access;

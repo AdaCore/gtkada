@@ -247,6 +247,26 @@ package body Gtkada.Canvas_View.Views is
       end if;
    end Cancel_Inline_Editing;
 
+   --------------------------
+   -- Start_Inline_Editing --
+   --------------------------
+
+   procedure Start_Inline_Editing
+     (Self : not null access Canvas_View_Record'Class;
+      Item : not null access Abstract_Item_Record'Class)
+   is
+      W     : Gtk_Widget;
+   begin
+      Cancel_Inline_Editing (Self);
+      W := Item.Edit_Widget (Self);
+      if W /= null then
+         Self.Inline_Edit.Item := Abstract_Item (Item);
+         Self.Add (W);  --  also queues a resize, so calls On_Size_Allocate
+         W.Show_All;
+         W.Grab_Focus;
+      end if;
+   end Start_Inline_Editing;
+
    ------------------------
    -- On_Item_Event_Edit --
    ------------------------
@@ -257,20 +277,15 @@ package body Gtkada.Canvas_View.Views is
       return Boolean
    is
       Self  : constant Canvas_View := Canvas_View (View);
-      W     : Gtk_Widget;
    begin
-      if Event.Item /= null
-        and then Event.Event_Type = Double_Click
-      then
-         W := Event.Item.Edit_Widget (Self);
-         if W /= null then
-            Self.Inline_Edit.Item := Event.Item;
-            Self.Add (W);  --  also queues a resize, so calls On_Size_Allocate
-            W.Show_All;
-            W.Grab_Focus;
+      if Event.Item /= null then
+         if Event.Event_Type = Double_Click
+           or else (Event.Event_Type = Key_Press
+                    and then Event.Key = GDK_Return)
+         then
+            Start_Inline_Editing (Self, Event.Item);
+            return True;
          end if;
-
-         return True;
       end if;
 
       return False;
