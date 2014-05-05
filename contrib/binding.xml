@@ -6468,6 +6468,10 @@ direction, widget state, or icon size.
      (Tree_Model : access Gtk_Root_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Gint;
+   function Get_Ulong
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gulong;
    function Get_Boolean
      (Tree_Model : access Gtk_Root_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
@@ -6494,6 +6498,10 @@ direction, widget state, or icon size.
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Gint;
+   function Get_Ulong
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gulong;
    function Get_Boolean
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
@@ -6537,7 +6545,7 @@ direction, widget state, or icon size.
      return Get_Int (To_Interface (Tree_Model), Iter, Column);
    end Get_Int;
 
-  function Get_Int
+   function Get_Int
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Gint
@@ -6557,7 +6565,35 @@ direction, widget state, or icon size.
       return A;
    end Get_Int;
 
-  function Get_Boolean
+   function Get_Ulong
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gulong is
+   begin
+     return Get_Ulong (To_Interface (Tree_Model), Iter, Column);
+   end Get_Ulong;
+
+   function Get_Ulong
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gulong
+   is
+      procedure Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out Gulong);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
+      A : Gulong;
+   begin
+      if Iter = Null_Iter then
+         raise Program_Error with "Get_Ulong with null_iter";
+      end if;
+      Internal (Tree_Model, Iter, Column, A);
+      return A;
+   end Get_Ulong;
+
+   function Get_Boolean
      (Tree_Model : access Gtk_Root_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Boolean is
@@ -6565,7 +6601,7 @@ direction, widget state, or icon size.
       return Get_Boolean (To_Interface (Tree_Model), Iter, Column);
    end Get_Boolean;
 
-  function Get_Boolean
+   function Get_Boolean
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return Boolean is
@@ -7099,6 +7135,11 @@ Iter := Gtk.Tree_Model.Null_Iter;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : Boolean);
+   procedure Set_Ulong
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gulong);
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -7232,6 +7273,22 @@ package body Generic_Set is
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Value);
    end Set;
+
+   procedure Set_Ulong
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gulong)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gulong);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ulong");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set_Ulong;
 
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;

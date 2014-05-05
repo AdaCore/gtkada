@@ -133,6 +133,22 @@ package body Gtk.Tree_Store is
       Internal (Get_Object (Tree_Store), Iter, Column, Value);
    end Set;
 
+   procedure Set_Ulong
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Gulong)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : Gulong);
+      pragma Import (C, Internal, "ada_gtk_tree_store_set_ulong");
+   begin
+      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+   end Set_Ulong;
+
    procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;

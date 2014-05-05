@@ -210,6 +210,16 @@ ada_gtk_tree_store_set_int (GtkTreeStore *tree_store,
   gtk_tree_store_set (tree_store, iter, col, val, -1);
 }
 
+void
+ada_gtk_tree_store_set_ulong (GtkTreeStore *list_store,
+                            GtkTreeIter  *iter,
+                            gint          col,
+                            gulong        val)
+{
+  gtk_tree_store_set (list_store, iter, col, val, -1);
+}
+
+
 GtkWidget*
 ada_gtk_dialog_new_with_buttons (const gchar     *title,
                                  GtkWindow       *parent,

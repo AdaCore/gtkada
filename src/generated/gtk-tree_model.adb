@@ -60,6 +60,34 @@ package body Gtk.Tree_Model is
       return A;
    end Get_Int;
 
+   function Get_Ulong
+     (Tree_Model : access Gtk_Root_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gulong is
+   begin
+      return Get_Ulong (To_Interface (Tree_Model), Iter, Column);
+   end Get_Ulong;
+
+   function Get_Ulong
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return Gulong
+   is
+      procedure Internal
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out Gulong);
+      pragma Import (C, Internal, "ada_gtk_tree_model_get");
+      A : Gulong;
+   begin
+      if Iter = Null_Iter then
+         raise Program_Error with "Get_Ulong with null_iter";
+      end if;
+      Internal (Tree_Model, Iter, Column, A);
+      return A;
+   end Get_Ulong;
+
    function Get_Boolean
      (Tree_Model : access Gtk_Root_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;

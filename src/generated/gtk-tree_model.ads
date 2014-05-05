@@ -654,6 +654,10 @@ package Gtk.Tree_Model is
         (Tree_Model : access Gtk_Root_Tree_Model_Record;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint) return Gint;
+      function Get_Ulong
+        (Tree_Model : access Gtk_Root_Tree_Model_Record;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Gulong;
       function Get_Boolean
         (Tree_Model : access Gtk_Root_Tree_Model_Record;
          Iter       : Gtk_Tree_Iter;
@@ -680,6 +684,10 @@ package Gtk.Tree_Model is
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint) return Gint;
+      function Get_Ulong
+        (Tree_Model : Gtk_Tree_Model;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint) return Gulong;
       function Get_Boolean
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
