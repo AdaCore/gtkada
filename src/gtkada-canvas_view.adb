@@ -2113,6 +2113,40 @@ package body Gtkada.Canvas_View is
       Self.Layout_Changed;
    end Add;
 
+   ------------
+   -- Remove --
+   ------------
+
+   procedure Remove
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class)
+   is
+      It : Abstract_Item := Abstract_Item (Item);
+   begin
+      Self.Items.Append (Abstract_Item (Item));
+      Free (It);
+      Self.Layout_Changed;
+   end Remove;
+
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear
+     (Self : not null access List_Canvas_Model_Record)
+   is
+      use Items_Lists;
+      C  : Items_Lists.Cursor := Self.Items.First;
+      It : Abstract_Item;
+   begin
+      while Has_Element (C) loop
+         It := Element (C);
+         Free (It);
+         Next (C);
+      end loop;
+      Self.Items.Clear;
+   end Clear;
+
    ----------------
    -- Intersects --
    ----------------
@@ -2147,6 +2181,7 @@ package body Gtkada.Canvas_View is
      (Self     : not null access List_Canvas_Model_Record;
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
+      Selected_Only : Boolean := False;
       In_Area  : Model_Rectangle := No_Rectangle)
    is
       use Items_Lists;
@@ -2156,8 +2191,11 @@ package body Gtkada.Canvas_View is
       while Has_Element (C) loop
          Item := Element (C);
 
-         if In_Area = No_Rectangle
-           or else Intersects (In_Area, Item.Model_Bounding_Box)
+         if (not Selected_Only
+             or else List_Canvas_Model (Self).Is_Selected (Item))
+           and then
+             (In_Area = No_Rectangle
+              or else Intersects (In_Area, Item.Model_Bounding_Box))
          then
             Callback (Item);
          end if;

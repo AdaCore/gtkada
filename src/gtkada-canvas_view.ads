@@ -554,10 +554,13 @@ package Gtkada.Canvas_View is
      (Self     : not null access Canvas_Model_Record;
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
+      Selected_Only : Boolean := False;
       In_Area  : Model_Rectangle := No_Rectangle) is abstract;
    --  Calls Callback for each item in the model, including links.
    --  Only the items that intersect In_Area should be returned for
    --  efficiency, although it is valid to return all items.
+   --
+   --  If Selected_Only is true, then only selected items are returned
    --
    --  Items are returned in z-layer order: lowest items first, highest items
    --  last.
@@ -698,10 +701,20 @@ package Gtkada.Canvas_View is
       Item : not null access Abstract_Item_Record'Class);
    --  Add a new item to the model
 
+   procedure Remove
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   --  Remove an item to the model, and destroy it
+
+   procedure Clear
+     (Self : not null access List_Canvas_Model_Record);
+   --  Remove all items from the model, and destroy them.
+
    overriding procedure For_Each_Item
      (Self     : not null access List_Canvas_Model_Record;
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
+      Selected_Only : Boolean := False;
       In_Area  : Model_Rectangle := No_Rectangle);
    overriding procedure Raise_Item
      (Self : not null access List_Canvas_Model_Record;
