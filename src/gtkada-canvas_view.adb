@@ -169,7 +169,9 @@ package body Gtkada.Canvas_View is
    --  Resize the fill pattern so that it extends to the whole item, instead of
    --  just the 0.0 .. 1.0 pattern space.
 
-   procedure Free (Self : in out Abstract_Item);
+   procedure Free
+     (Self     : in out Abstract_Item;
+      In_Model : not null access Canvas_Model_Record'Class);
    --  Free the memory used by Self
 
    function On_Button_Event
@@ -212,12 +214,17 @@ package body Gtkada.Canvas_View is
    -- Free --
    ----------
 
-   procedure Free (Self : in out Abstract_Item) is
+   procedure Free
+     (Self     : in out Abstract_Item;
+      In_Model : not null access Canvas_Model_Record'Class)
+   is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Abstract_Item_Record'Class, Abstract_Item);
    begin
       if Self /= null then
-         Destroy (Self);
+         In_Model.Remove_From_Selection (Self);
+
+         Destroy (Self, In_Model);
          Unchecked_Free (Self);
       end if;
    end Free;
@@ -1952,15 +1959,16 @@ package body Gtkada.Canvas_View is
    -------------
 
    overriding procedure Destroy
-     (Self : not null access Canvas_Link_Record)
+     (Self : not null access Canvas_Link_Record;
+      In_Model : not null access Canvas_Model_Record'Class)
    is
    begin
-      Destroy (Abstract_Item_Record (Self.all)'Access);
+      Destroy (Abstract_Item_Record (Self.all)'Access, In_Model);
       Unchecked_Free (Self.Points);
       Unchecked_Free (Self.Waypoints);
-      Free (Abstract_Item (Self.Label));
-      Free (Abstract_Item (Self.Label_From));
-      Free (Abstract_Item (Self.Label_To));
+      Free (Abstract_Item (Self.Label), In_Model);
+      Free (Abstract_Item (Self.Label_From), In_Model);
+      Free (Abstract_Item (Self.Label_To), In_Model);
    end Destroy;
 
    -------------------
@@ -2121,10 +2129,15 @@ package body Gtkada.Canvas_View is
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class)
    is
+      use Items_Lists;
       It : Abstract_Item := Abstract_Item (Item);
+      C  : Items_Lists.Cursor := Self.Items.Find (Abstract_Item (Item));
    begin
-      Self.Items.Append (Abstract_Item (Item));
-      Free (It);
+      if Has_Element (C) then
+         Self.Items.Delete (C);
+      end if;
+
+      Free (It, In_Model => Self);
       Self.Layout_Changed;
    end Remove;
 
@@ -2141,7 +2154,7 @@ package body Gtkada.Canvas_View is
    begin
       while Has_Element (C) loop
          It := Element (C);
-         Free (It);
+         Free (It, Self);
          Next (C);
       end loop;
       Self.Items.Clear;
@@ -2502,6 +2515,26 @@ package body Gtkada.Canvas_View is
          return Result;
       end if;
    end Bounding_Box;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   overriding procedure Destroy
+     (Self     : not null access Container_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class)
+   is
+      procedure Do_Child (C : not null access Container_Item_Record'Class);
+      procedure Do_Child (C : not null access Container_Item_Record'Class) is
+      begin
+         C.Destroy (In_Model);
+      end Do_Child;
+
+   begin
+      Container_Item_Record'Class (Self.all).For_Each_Child (Do_Child'Access);
+      Self.Children.Clear;
+      Canvas_Item_Record (Self.all).Destroy (In_Model);  --  inherited
+   end Destroy;
 
    ---------------
    -- Add_Child --
@@ -2913,12 +2946,14 @@ package body Gtkada.Canvas_View is
    -------------
 
    overriding procedure Destroy
-     (Self    : not null access Image_Item_Record) is
+     (Self     : not null access Image_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class) is
    begin
       if Self.Image /= null then
          Unref (Self.Image);
          Self.Image := null;
       end if;
+      Container_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
 
    ----------
@@ -3216,11 +3251,12 @@ package body Gtkada.Canvas_View is
    -------------
 
    overriding procedure Destroy
-     (Self : not null access Polyline_Item_Record)
+     (Self : not null access Polyline_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class)
    is
    begin
       Unchecked_Free (Self.Points);
-      Container_Item_Record (Self.all).Destroy;  --  inherited
+      Container_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
 
    ---------------------
@@ -3438,10 +3474,12 @@ package body Gtkada.Canvas_View is
    -- Destroy --
    -------------
 
-   overriding procedure Destroy (Self : not null access Text_Item_Record) is
+   overriding procedure Destroy
+     (Self : not null access Text_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class) is
    begin
       Free (Self.Text);
-      Container_Item_Record (Self.all).Destroy;  --  inherited
+      Container_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
 
    ----------------
@@ -3677,10 +3715,12 @@ package body Gtkada.Canvas_View is
    -- Destroy --
    -------------
 
-   overriding procedure Destroy (Self : not null access Hr_Item_Record) is
+   overriding procedure Destroy
+     (Self : not null access Hr_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class) is
    begin
       Free (Self.Text);
-      Container_Item_Record (Self.all).Destroy;
+      Container_Item_Record (Self.all).Destroy (In_Model);
    end Destroy;
 
    ------------------

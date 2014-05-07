@@ -122,26 +122,30 @@ package body Gtkada.Canvas_View.Views is
    is
       Tmp  : Gdouble;
    begin
-      Set_Source (Context.Cr, Style.Get_Fill);
-      Paint (Context.Cr);
+      if Style.Get_Fill /= Null_Pattern then
+         Set_Source (Context.Cr, Style.Get_Fill);
+         Paint (Context.Cr);
+      end if;
 
-      New_Path (Context.Cr);
+      if Self.Grid_Size /= 0.0 then
+         New_Path (Context.Cr);
 
-      Tmp := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
-      while Tmp < Area.X + Area.Width loop
-         Move_To (Context.Cr, Tmp, Area.Y);
-         Rel_Line_To (Context.Cr, 0.0, Area.Height);
-         Tmp := Tmp + Self.Grid_Size;
-      end loop;
+         Tmp := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
+         while Tmp < Area.X + Area.Width loop
+            Move_To (Context.Cr, Tmp, Area.Y);
+            Rel_Line_To (Context.Cr, 0.0, Area.Height);
+            Tmp := Tmp + Self.Grid_Size;
+         end loop;
 
-      Tmp := Gdouble (Gint (Area.Y / Self.Grid_Size)) * Self.Grid_Size;
-      while Tmp < Area.Y + Area.Height loop
-         Move_To (Context.Cr, Area.X, Tmp);
-         Rel_Line_To (Context.Cr, Area.Width, 0.0);
-         Tmp := Tmp + Self.Grid_Size;
-      end loop;
+         Tmp := Gdouble (Gint (Area.Y / Self.Grid_Size)) * Self.Grid_Size;
+         while Tmp < Area.Y + Area.Height loop
+            Move_To (Context.Cr, Area.X, Tmp);
+            Rel_Line_To (Context.Cr, Area.Width, 0.0);
+            Tmp := Tmp + Self.Grid_Size;
+         end loop;
 
-      Style.Finish_Path (Context.Cr);
+         Style.Finish_Path (Context.Cr);
+      end if;
    end Draw_Grid_Lines;
 
    --------------------
@@ -156,23 +160,27 @@ package body Gtkada.Canvas_View.Views is
    is
       TmpX, TmpY  : Gdouble;
    begin
-      Set_Source (Context.Cr, Style.Get_Fill);
-      Paint (Context.Cr);
+      if Style.Get_Fill /= Null_Pattern then
+         Set_Source (Context.Cr, Style.Get_Fill);
+         Paint (Context.Cr);
+      end if;
 
-      New_Path (Context.Cr);
+      if Self.Grid_Size /= 0.0 then
+         New_Path (Context.Cr);
 
-      TmpX := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
-      while TmpX < Area.X + Area.Width loop
-         TmpY := Gdouble (Gint (Area.Y / Self.Grid_Size)) * Self.Grid_Size;
-         while TmpY < Area.Y + Area.Height loop
-            Rectangle (Context.Cr, TmpX - 0.5, TmpY - 0.5, 1.0, 1.0);
-            TmpY := TmpY + Self.Grid_Size;
+         TmpX := Gdouble (Gint (Area.X / Self.Grid_Size)) * Self.Grid_Size;
+         while TmpX < Area.X + Area.Width loop
+            TmpY := Gdouble (Gint (Area.Y / Self.Grid_Size)) * Self.Grid_Size;
+            while TmpY < Area.Y + Area.Height loop
+               Rectangle (Context.Cr, TmpX - 0.5, TmpY - 0.5, 1.0, 1.0);
+               TmpY := TmpY + Self.Grid_Size;
+            end loop;
+
+            TmpX := TmpX + Self.Grid_Size;
          end loop;
 
-         TmpX := TmpX + Self.Grid_Size;
-      end loop;
-
-      Style.Finish_Path (Context.Cr);
+         Style.Finish_Path (Context.Cr);
+      end if;
    end Draw_Grid_Dots;
 
    -------------------------------------

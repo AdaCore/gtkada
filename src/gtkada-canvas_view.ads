@@ -167,6 +167,23 @@ package Gtkada.Canvas_View is
    --  monitor changes to it view signals.
    --  The view automatically refreshes its display when its model changes.
 
+   type Canvas_Model_Record
+      is abstract new Glib.Object.GObject_Record with private;
+   type Canvas_Model is access all Canvas_Model_Record'Class;
+   --  A model is a common interface to query the list of items that should
+   --  be displayed in the canvas. It does not assume anything regarding the
+   --  actual storage of the items, so it is possible to create your own
+   --  model implementation that simply query the rest of your application
+   --  (or a database, or some other source of data) as needed, without
+   --  duplicating the items.
+   --
+   --  This type is not an Ada interface because it needs to inherit from
+   --  GObject so that it can send signals.
+   --
+   --  The interface does not provide support for adding items to the model:
+   --  instead, this is expected to be done by the concrete implementations of
+   --  the model, which must then send the signal "layout_changed".
+
    -----------------
    -- Coordinates --
    -----------------
@@ -431,7 +448,8 @@ package Gtkada.Canvas_View is
    --  signal.
 
    procedure Destroy
-     (Self : not null access Abstract_Item_Record) is null;
+     (Self     : not null access Abstract_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class) is null;
    --  Called when Self is no longer needed.
    --  Do not call directly.
 
@@ -523,23 +541,6 @@ package Gtkada.Canvas_View is
    ------------------
    -- Canvas_Model --
    ------------------
-
-   type Canvas_Model_Record
-      is abstract new Glib.Object.GObject_Record with private;
-   type Canvas_Model is access all Canvas_Model_Record'Class;
-   --  A model is a common interface to query the list of items that should
-   --  be displayed in the canvas. It does not assume anything regarding the
-   --  actual storage of the items, so it is possible to create your own
-   --  model implementation that simply query the rest of your application
-   --  (or a database, or some other source of data) as needed, without
-   --  duplicating the items.
-   --
-   --  This type is not an Ada interface because it needs to inherit from
-   --  GObject so that it can send signals.
-   --
-   --  The interface does not provide support for adding items to the model:
-   --  instead, this is expected to be done by the concrete implementations of
-   --  the model, which must then send the signal "layout_changed".
 
    function Model_Get_Type return Glib.GType;
    pragma Convention (C, Model_Get_Type);
@@ -1192,6 +1193,9 @@ package Gtkada.Canvas_View is
       Context : Draw_Context);
    --  Display all the children of Self
 
+   overriding procedure Destroy
+     (Self     : not null access Container_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class);
    overriding function Position
      (Self : not null access Container_Item_Record) return Gtkada.Style.Point;
    overriding function Parent
@@ -1294,7 +1298,8 @@ package Gtkada.Canvas_View is
      (Self    : not null access Image_Item_Record;
       Context : Draw_Context);
    overriding procedure Destroy
-     (Self    : not null access Image_Item_Record);
+     (Self     : not null access Image_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class);
    overriding procedure Size_Request
      (Self    : not null access Image_Item_Record;
       Context : Draw_Context);
@@ -1330,7 +1335,9 @@ package Gtkada.Canvas_View is
    overriding procedure Draw
      (Self    : not null access Polyline_Item_Record;
       Context : Draw_Context);
-   overriding procedure Destroy (Self : not null access Polyline_Item_Record);
+   overriding procedure Destroy
+     (Self     : not null access Polyline_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class);
    overriding procedure Size_Request
      (Self    : not null access Polyline_Item_Record;
       Context : Draw_Context);
@@ -1391,7 +1398,9 @@ package Gtkada.Canvas_View is
    overriding procedure Draw
      (Self    : not null access Text_Item_Record;
       Context : Draw_Context);
-   overriding procedure Destroy (Self : not null access Text_Item_Record);
+   overriding procedure Destroy
+     (Self     : not null access Text_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class);
    overriding procedure Size_Request
      (Self    : not null access Text_Item_Record;
       Context : Draw_Context);
@@ -1453,7 +1462,9 @@ package Gtkada.Canvas_View is
    overriding procedure Draw
      (Self    : not null access Hr_Item_Record;
       Context : Draw_Context);
-   overriding procedure Destroy (Self : not null access Hr_Item_Record);
+   overriding procedure Destroy
+     (Self     : not null access Hr_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class);
    overriding procedure Size_Request
      (Self    : not null access Hr_Item_Record;
       Context : Draw_Context);
@@ -1537,7 +1548,8 @@ package Gtkada.Canvas_View is
    --  Do not free or store the result
 
    overriding procedure Destroy
-     (Self : not null access Canvas_Link_Record);
+     (Self     : not null access Canvas_Link_Record;
+      In_Model : not null access Canvas_Model_Record'Class);
    overriding function Bounding_Box
      (Self : not null access Canvas_Link_Record)
       return Item_Rectangle;
