@@ -210,6 +210,9 @@ package body Gtkada.Canvas_View is
    --  Called when the user is inline-editing a text widget, to properly close
    --  the editor.
 
+   procedure Cancel_Drag (Self : not null access Canvas_View_Record'Class);
+   --  Cancel any drag currently in place.
+
    ----------
    -- Free --
    ----------
@@ -732,6 +735,17 @@ package body Gtkada.Canvas_View is
       return False;
    end On_Key_Event;
 
+   -----------------
+   -- Cancel_Drag --
+   -----------------
+
+   procedure Cancel_Drag (Self : not null access Canvas_View_Record'Class) is
+   begin
+      Self.In_Drag := False;
+      Self.Dragged_Items.Clear;
+      Self.Last_Button_Press.Allowed_Drag_Area := No_Drag_Allowed;
+   end Cancel_Drag;
+
    ---------------------
    -- On_Button_Event --
    ---------------------
@@ -769,18 +783,17 @@ package body Gtkada.Canvas_View is
          end if;
 
          if Self.Item_Event (Details'Unchecked_Access) then
+            Cancel_Drag (Self);
+
             if Details.Event_Type = Button_Press then
                Self.Last_Button_Press := Details;
             end if;
 
-            Self.In_Drag := False;
-            Self.Dragged_Items.Clear;
             return True;
          end if;
       end if;
 
-      Self.In_Drag := False;
-      Self.Dragged_Items.Clear;
+      Cancel_Drag (Self);
       return False;
    end On_Button_Event;
 
