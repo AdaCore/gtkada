@@ -551,12 +551,14 @@ package Gtkada.Canvas_View is
    --  Initialize the internal data so that signals can be sent.
    --  This procedure must always be called when you create a new model.
 
+   type Item_Kind_Filter is (Kind_Item, Kind_Link, Kind_Any);
    procedure For_Each_Item
      (Self     : not null access Canvas_Model_Record;
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
       Selected_Only : Boolean := False;
-      In_Area  : Model_Rectangle := No_Rectangle) is abstract;
+      Filter        : Item_Kind_Filter := Kind_Any;
+      In_Area       : Model_Rectangle := No_Rectangle) is abstract;
    --  Calls Callback for each item in the model, including links.
    --  Only the items that intersect In_Area should be returned for
    --  efficiency, although it is valid to return all items.
@@ -604,6 +606,13 @@ package Gtkada.Canvas_View is
    --  The default implementation simply traverses the list of items, and
    --  calls Contains on each child.
    --  This function returns the topmost item
+
+   procedure Remove
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class) is null;
+   --  Remove item from the list of items.
+   --  This is called in particular when an item is freed, before it is
+   --  deallocated.
 
    procedure Raise_Item
      (Self : not null access Canvas_Model_Record;
@@ -702,7 +711,7 @@ package Gtkada.Canvas_View is
       Item : not null access Abstract_Item_Record'Class);
    --  Add a new item to the model
 
-   procedure Remove
+   overriding procedure Remove
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class);
    --  Remove an item to the model, and destroy it
@@ -716,7 +725,8 @@ package Gtkada.Canvas_View is
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
       Selected_Only : Boolean := False;
-      In_Area  : Model_Rectangle := No_Rectangle);
+      Filter        : Item_Kind_Filter := Kind_Any;
+      In_Area       : Model_Rectangle := No_Rectangle);
    overriding procedure Raise_Item
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class);

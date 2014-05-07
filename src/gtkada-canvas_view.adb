@@ -223,9 +223,34 @@ package body Gtkada.Canvas_View is
    is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Abstract_Item_Record'Class, Abstract_Item);
+
+      use Items_Lists;
+      To_Remove : Items_Lists.List;
+      C         : Items_Lists.Cursor;
+
+      procedure Remove_Link (C : not null access Abstract_Item_Record'Class);
+      procedure Remove_Link (C : not null access Abstract_Item_Record'Class) is
+      begin
+         if Canvas_Link (C).From = Self
+           or else Canvas_Link (C).To = Self
+         then
+            To_Remove.Append (Abstract_Item (C));
+         end if;
+      end Remove_Link;
+
    begin
       if Self /= null then
          In_Model.Remove_From_Selection (Self);
+
+         --  Any link to or from this item should also be removed
+
+         In_Model.For_Each_Item (Remove_Link'Access, Filter => Kind_Link);
+
+         C := To_Remove.First;
+         while Has_Element (C) loop
+            In_Model.Remove (Element (C));
+            Next (C);
+         end loop;
 
          Destroy (Self, In_Model);
          Unchecked_Free (Self);
@@ -1976,12 +2001,14 @@ package body Gtkada.Canvas_View is
       In_Model : not null access Canvas_Model_Record'Class)
    is
    begin
-      Destroy (Abstract_Item_Record (Self.all)'Access, In_Model);
       Unchecked_Free (Self.Points);
       Unchecked_Free (Self.Waypoints);
       Free (Abstract_Item (Self.Label), In_Model);
       Free (Abstract_Item (Self.Label_From), In_Model);
       Free (Abstract_Item (Self.Label_To), In_Model);
+
+      --  Can't call destroy from the interface, this results in infinite loop
+      --  Abstract_Item_Record (Self.all).Destroy (In_Model); --  inherited
    end Destroy;
 
    -------------------
@@ -2208,7 +2235,8 @@ package body Gtkada.Canvas_View is
       Callback : not null access procedure
         (Item : not null access Abstract_Item_Record'Class);
       Selected_Only : Boolean := False;
-      In_Area  : Model_Rectangle := No_Rectangle)
+      Filter        : Item_Kind_Filter := Kind_Any;
+      In_Area       : Model_Rectangle := No_Rectangle)
    is
       use Items_Lists;
       C    : Items_Lists.Cursor := Self.Items.First;
@@ -2216,17 +2244,20 @@ package body Gtkada.Canvas_View is
    begin
       while Has_Element (C) loop
          Item := Element (C);
+         Next (C);
 
-         if (not Selected_Only
-             or else List_Canvas_Model (Self).Is_Selected (Item))
+         if (Filter = Kind_Any
+             or else (Filter = Kind_Item and then not Item.Is_Link)
+             or else (Filter = Kind_Link and then Item.Is_Link))
+           and then
+             (not Selected_Only
+              or else List_Canvas_Model (Self).Is_Selected (Item))
            and then
              (In_Area = No_Rectangle
               or else Intersects (In_Area, Item.Model_Bounding_Box))
          then
             Callback (Item);
          end if;
-
-         Next (C);
       end loop;
    end For_Each_Item;
 
@@ -2387,21 +2418,16 @@ package body Gtkada.Canvas_View is
          --  links to those links.
          --  This is inefficient to compute in general, so perhaps we should
          --  instead provide an overridable primitive operation on the model.
-         if It.Is_Link then
-            Unchecked_Free (Canvas_Link_Record'Class (It.all).Points);
-         end if;
+         Unchecked_Free (Canvas_Link_Record'Class (It.all).Points);
       end Reset_Link_Layout;
 
       procedure Do_Link_Layout
         (It : not null access Abstract_Item_Record'Class)
       is
-         Link : Canvas_Link;
+         Link : constant Canvas_Link := Canvas_Link (It);
       begin
-         if It.Is_Link then
-            Link := Canvas_Link (It);
-            if Link.Points = null then
-               Link.Refresh_Layout (Context);
-            end if;
+         if Link.Points = null then
+            Link.Refresh_Layout (Context);
          end if;
       end Do_Link_Layout;
 
@@ -2412,8 +2438,8 @@ package body Gtkada.Canvas_View is
       --     reset all previous layout computation
       --     when we layout a link, we first layout its end
 
-      Model.For_Each_Item (Reset_Link_Layout'Access);
-      Model.For_Each_Item (Do_Link_Layout'Access);
+      Model.For_Each_Item (Reset_Link_Layout'Access, Filter => Kind_Link);
+      Model.For_Each_Item (Do_Link_Layout'Access, Filter => Kind_Link);
    end Refresh_Link_Layout;
 
    --------------------
@@ -2437,7 +2463,7 @@ package body Gtkada.Canvas_View is
 
    begin
       Canvas_Model_Record'Class (Self.all).For_Each_Item
-        (Do_Container_Layout'Access);
+        (Do_Container_Layout'Access, Filter => Kind_Item);
       Refresh_Link_Layout (Self);
 
       Self.Layout_Changed;
