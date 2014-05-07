@@ -123,10 +123,11 @@ package body Gtkada.Canvas_View.Links is
    --------------------
 
    function Manhattan_Dist
-      (Self : Layout_Matrix; From, To : Coordinate) return Integer is
+     (Self : Layout_Matrix; From, To : Coordinate) return Integer
+   is
+      pragma Unreferenced (Self);
    begin
-      return Integer (abs (Self.X (From.X) - Self.X (To.X))
-                      + abs (Self.Y (From.Y) - Self.Y (To.Y)));
+      return abs (From.X - To.X) + abs (From.Y - To.Y);
    end Manhattan_Dist;
 
    --------------------
@@ -151,14 +152,15 @@ package body Gtkada.Canvas_View.Links is
         or else Point_In_Rect
           (Self.Dim.To.Toplevel, (Self.X (To.X), Self.Y (To.Y)))
       then
-         return 10_000;   --  very expensive, but not impossible if we have to
+         return 1_000_000; --  very expensive, but not impossible if we have to
 
       else
          --  A bend is costly
-         if abs (Parent.X - From.X) /= abs (From.X - To.X)
-           or else abs (Parent.Y - From.Y) /= abs (From.Y - To.Y)
+
+         if (Parent.X = From.X and then From.X /= To.X)
+           or else (Parent.Y = From.Y and then From.Y /= To.Y)
          then
-            return 100;
+            return 100_000;
          else
             return 1;
          end if;
@@ -668,7 +670,7 @@ package body Gtkada.Canvas_View.Links is
       M      : Item_Point;
       P_From : Item_Point;   --  extending from the From box
       P_To   : Item_Point;   --  extending from the To box
-      C1, C2 : Coordinate;
+      C1, C2, C3 : Coordinate;
       Matrix : Layout_Matrix;
       Margin_From, Margin_To : Margins;
 
@@ -726,17 +728,11 @@ package body Gtkada.Canvas_View.Links is
 
       Matrix :=
         (Dim => Dim,
-         X => ((FTX1 - Margin_From.Left,
-                From.X,
-                FTX2 + Margin_From.Right,
-                TTX1 - Margin_To.Left, To.X, TTX2 + Margin_To.Right,
+         X => ((FTX1 - Margin_From.Left,  From.X, FTX2 + Margin_From.Right,
+                TTX1 - Margin_To.Left,    To.X,   TTX2 + Margin_To.Right,
                 M.X)),
-         Y => ((FTY1 - Margin_From.Top,
-                From.Y,
-                FTY2 + Margin_From.Bottom,
-                TTY1 - Margin_To.Top,
-                To.Y,
-                TTY2 + Margin_To.Bottom,
+         Y => ((FTY1 - Margin_From.Top,   From.Y, FTY2 + Margin_From.Bottom,
+                TTY1 - Margin_To.Top,     To.Y,   TTY2 + Margin_To.Bottom,
                 M.Y)));
       Sort (Matrix.X);
       Sort (Matrix.Y);
@@ -748,11 +744,18 @@ package body Gtkada.Canvas_View.Links is
          if abs (Matrix.X (J) - P_To.X) < 0.01 then
             C2.X := J;
          end if;
+         if abs (Matrix.X (J) - From.X) < 0.01 then
+            C3.X := J;
+         end if;
+
          if abs (Matrix.Y (J) - P_From.Y) < 0.01 then
             C1.Y := J;
          end if;
          if abs (Matrix.Y (J) - P_To.Y) < 0.01 then
             C2.Y := J;
+         end if;
+         if abs (Matrix.Y (J) - From.Y) < 0.01 then
+            C3.Y := J;
          end if;
       end loop;
 
@@ -761,7 +764,8 @@ package body Gtkada.Canvas_View.Links is
       --  turn speeds up drawing and click
 
       declare
-         Path   : constant Coordinate_Array := Astar_Find (Matrix, C1, C2);
+         Path   : constant Coordinate_Array :=
+           Astar_Find (Matrix, C1, C2, Parent => C3);
          Points : Item_Point_Array (1 .. 4 + Path'Length);
          P      : Integer;
          Along_X : Boolean;
@@ -790,7 +794,6 @@ package body Gtkada.Canvas_View.Links is
          P := Points'First + 1;
          Points (P) := P_From;
          Along_X := abs (Points (P).X - Points (P - 1).X) < 0.01;
-
          P := P + 1;
 
          for C in Path'First + 1 .. Path'Last loop

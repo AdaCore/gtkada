@@ -109,8 +109,9 @@ package body Gtkada.Canvas_View.Astar is
    ---------------
 
    function Find_Path
-      (Self     : User_Data;
-       From, To : Coordinate) return Coordinate_Array
+     (Self     : User_Data;
+      From, To : Coordinate;
+      Parent   : Coordinate) return Coordinate_Array
    is
       Open     : Coordinate_Set.Set;
       Visited  : Coordinate_Htable.Map;
@@ -128,7 +129,7 @@ package body Gtkada.Canvas_View.Astar is
       Insert (Open, (P        => From,
                      Gval     => 0,
                      Hval     => Heuristic_Dist (Self, From, To),
-                     Parent   => From),
+                     Parent   => Parent),
               Iter);
 
       while not Is_Empty (Open) loop

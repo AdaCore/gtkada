@@ -72,8 +72,12 @@ package Gtkada.Canvas_View.Astar is
       --  moves. This algorithm works better when using the Manhattan distance.
 
    function Find_Path
-      (Self : User_Data; From, To : Coordinate) return Coordinate_Array;
+     (Self     : User_Data;
+      From, To : Coordinate;
+      Parent   : Coordinate) return Coordinate_Array;
    --  Return the optimal path from From to To.
+   --  Parent is the point that came before From (in case the first segment
+   --  is imposed for instance, to get away from the item)
 
    ----------------
    -- Next point --
