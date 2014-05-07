@@ -645,6 +645,7 @@ package body Gtkada.Canvas_View.Views is
             Move_Dragged_Items
               (Self, Dx => Dx, Dy => Dy, From_Initial => True);
             Self.Dragged_Items.Clear;
+            Self.Queue_Draw;
          end if;
 
          return True;
@@ -1148,8 +1149,8 @@ package body Gtkada.Canvas_View.Views is
 
          --  Constraint the move to a specific area
 
-         if Self.Last_Button_Press.Allowed_Drag_Area /=
-           Drag_Anywhere
+         if Self.Last_Button_Press.Allowed_Drag_Area /= Drag_Anywhere
+           and then Self.Last_Button_Press.Allowed_Drag_Area /= No_Drag_Allowed
          then
             B  := Self.Last_Button_Press.Allowed_Drag_Area;
 
