@@ -198,22 +198,24 @@ package Gtkada.MDI is
    -- Windows --
    -------------
 
-   type Child_Flags is mod 2 ** 5;
+   type Child_Flags is mod 2 ** 6;
    Destroy_Button       : constant Child_Flags := 2 ** 2;
    Float_As_Transient   : constant Child_Flags := 2 ** 3;
+   Float_As_Dialog      : constant Child_Flags := 2 ** 5;
    Always_Destroy_Float : constant Child_Flags := 2 ** 4;
    All_Buttons          : constant Child_Flags := Destroy_Button;
-   --  Special flags to set up the widgets:
-   --  The first is the buttons that should be displayed in the title
-   --  bar of the MDI children.
-   --  If Float_As_Transient is set, then the child will be set up as a
-   --  transient window when floating: on most window managers, it will stay on
-   --  top of the MDI, but the window will have less decorations in its title
-   --  bar, in particular no destroy button. In such a case, <Esc> will close
-   --  the window, or unfloat it depending on the MDI's setup, as is the case
-   --  for all dialogs in GtkAda. The MDI's setup will be ignored (and the
-   --  child always destroyed when Esc is pressed) if Always_Destroy_Float is
-   --  true.
+   --  Special flags to set up the widgets: The first is the buttons
+   --  that should be displayed in the title bar of the MDI children. If
+   --  Float_As_Transient is set, then the child will be set up as a transient
+   --  window when floating: on most window managers, it will stay on top of
+   --  the MDI, but the window will have less decorations in its title bar,
+   --  in particular no destroy button. In such a case, <Esc> will close the
+   --  window, or unfloat it depending on the MDI's setup, as is the case for
+   --  all dialogs in GtkAda. The MDI's setup will be ignored (and the child
+   --  always destroyed when Esc is pressed) if Always_Destroy_Float is true.
+   --  Float_As_Dialog has the same behavior as Float_As_Transient, except
+   --  that the floated child won't be attached to the current MDI child, so
+   --  it won't close when the current MDI child is closed
 
    type Child_Group is new Positive;
    Group_Default : constant Child_Group := 1;

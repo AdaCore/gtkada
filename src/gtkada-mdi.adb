@@ -3624,36 +3624,39 @@ package body Gtkada.MDI is
             Remove (Gtk_Container (Get_Parent (Child)), Child);
          end if;
 
-         if (Child.Flags and Float_As_Transient) /= 0 then
+         if (Child.Flags and Float_As_Transient) /= 0
+             or else (Child.Flags and Float_As_Dialog) /= 0
+         then
             declare
-               Parent : Gtk_Window;
+               Parent : Gtk_Window := null;
                Item   : Widget_List.Glist;
                It     : MDI_Child;
             begin
-               --  If the current child is floating, we do not want to float
-               --  the dialog as transient for the main window, but for the
-               --  current child.
-               --  ??? Should we introduce a flag for childs that are allways
-               --  transient for the main window ?
 
-               Item := Child.MDI.Items;
-               while Item /= Widget_List.Null_List loop
-                  It := MDI_Child (Get_Data (Item));
+               --  If the current child is floating, and the mode is
+               --  Float_As_Transient, we want to float the dialog as
+               --  transient for the current child.
 
-                  if It /= MDI_Child (Child) then
-                     if It.State = Floating
-                       and then It.Initial.Get_Realized
-                     then
-                        Parent := Gtk_Window (Get_Toplevel (It.Initial));
-                     else
-                        Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+               if (Child.Flags and Float_As_Transient) /= 0 then
+                  Item := Child.MDI.Items;
+                  while Item /= Widget_List.Null_List loop
+                     It := MDI_Child (Get_Data (Item));
+
+                     if It /= MDI_Child (Child) then
+                        if It.State = Floating
+                          and then It.Initial.Get_Realized
+                        then
+                           Parent := Gtk_Window (Get_Toplevel (It.Initial));
+                        else
+                           Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+                        end if;
+
+                        exit;
                      end if;
 
-                     exit;
-                  end if;
-
-                  Item := Widget_List.Next (Item);
-               end loop;
+                     Item := Widget_List.Next (Item);
+                  end loop;
+               end if;
 
                Gtk_New (Diag,
                         Title  => "",
