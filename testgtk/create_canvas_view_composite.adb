@@ -79,6 +79,7 @@ package body Create_Canvas_View_Composite is
          W, H, W2, H2 : Model_Coordinate;
          Rect, Rect2  : Rect_Item;
          Text         : Text_Item;
+         Anchor_X, Anchor_Y : Gdouble := 0.0;
       begin
          --  rectangle 1
 
@@ -131,7 +132,7 @@ package body Create_Canvas_View_Composite is
                H := -1.0;
             when Vertical_Stack =>
                M := (Left => 10.0, Right => 10.0, others => 0.0);
-               W2 := 100.0;
+               W2 := -1.0; --  100.0;
                H2 := -1.0;
                W := -1.0;
                H := 30.0;
@@ -142,6 +143,11 @@ package body Create_Canvas_View_Composite is
          Rect.Set_Child_Layout (Layout);
          Rect.Set_Position ((X + 220.0, Y + 0.0));
 
+         if Layout = Vertical_Stack then
+            Text := Gtk_New_Text (Font, "Alignments (forced size)");
+            Rect.Add_Child (Text);
+         end if;
+
          Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
          Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
 
@@ -151,6 +157,11 @@ package body Create_Canvas_View_Composite is
          Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
          Rect.Add_Child (Rect2, Align  => Align_End, Margin => M);
 
+         if Layout = Vertical_Stack then
+            Text := Gtk_New_Text (Font, "Alignments (automatic size)");
+            Rect.Add_Child (Text);
+         end if;
+
          Rect2 := Gtk_New_Rect (Green, W, H);
          Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
 
@@ -159,6 +170,39 @@ package body Create_Canvas_View_Composite is
 
          Rect2 := Gtk_New_Rect (Green, W, H);
          Rect.Add_Child (Rect2, Align  => Align_End, Margin => M);
+
+         --  Playing with the anchors. We do not set a position for the
+         --  items, so this position is the one that is computed automatically
+         --  by the layout (horizontal or vertical).
+
+         if Layout = Vertical_Stack then
+            Text := Gtk_New_Text (Font, "Anchors (positions)");
+            Rect.Add_Child (Text);
+         end if;
+
+         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
+         Rect2.Set_Position (Anchor_X => Anchor_X, Anchor_Y => Anchor_Y);
+         Rect.Add_Child (Rect2, Margin => M);
+
+         if Layout = Vertical_Stack then
+            Anchor_X := 0.5;
+         else
+            Anchor_Y := 0.5;
+         end if;
+
+         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
+         Rect2.Set_Position (Anchor_X => Anchor_X, Anchor_Y => Anchor_Y);
+         Rect.Add_Child (Rect2, Margin => M);
+
+         if Layout = Vertical_Stack then
+            Anchor_X := 1.0;
+         else
+            Anchor_Y := 1.0;
+         end if;
+
+         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
+         Rect2.Set_Position (Anchor_X => Anchor_X, Anchor_Y => Anchor_Y);
+         Rect.Add_Child (Rect2, Margin => M);
       end Do_Example;
 
    begin
@@ -178,7 +222,7 @@ package body Create_Canvas_View_Composite is
       Gtk_New (Model);
 
       Do_Example (Vertical_Stack, 0.0, 0.0);
-      Do_Example (Horizontal_Stack, 0.0, 250.0);
+      Do_Example (Horizontal_Stack, 0.0, 350.0);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.

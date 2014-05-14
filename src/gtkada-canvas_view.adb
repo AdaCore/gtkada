@@ -160,10 +160,6 @@ package body Gtkada.Canvas_View is
       return String;
    --  Return the text to display for Self, including the directional arrow
 
-   procedure Align_Text (Self : not null access Text_Item_Record);
-   --  Adjust the computed position for the text to match the alignment
-   --  requested by the user.
-
    procedure Resize_Fill_Pattern
      (Self : not null access Container_Item_Record'Class);
    --  Resize the fill pattern so that it extends to the whole item, instead of
@@ -2555,6 +2551,19 @@ package body Gtkada.Canvas_View is
       end if;
    end Bounding_Box;
 
+   ------------------
+   -- Is_Invisible --
+   ------------------
+
+   overriding function Is_Invisible
+     (Self : not null access Container_Item_Record)
+      return Boolean
+   is
+   begin
+      return Self.Style.Get_Stroke = Null_RGBA
+        and then Self.Style.Get_Fill = Null_Pattern;
+   end Is_Invisible;
+
    -------------
    -- Destroy --
    -------------
@@ -2696,11 +2705,27 @@ package body Gtkada.Canvas_View is
    ------------------
 
    overriding procedure Set_Position
-     (Self  : not null access Container_Item_Record;
-      Pos   : Gtkada.Style.Point)
+     (Self     : not null access Container_Item_Record;
+      Pos      : Gtkada.Style.Point)
+   is
+   begin
+      Container_Item_Record'Class (Self.all).Set_Position (Pos, 0.0, 0.0);
+   end Set_Position;
+
+   ------------------
+   -- Set_Position --
+   ------------------
+
+   procedure Set_Position
+     (Self     : not null access Container_Item_Record;
+      Pos      : Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
+      Anchor_X : Gdouble;
+      Anchor_Y : Gdouble)
    is
    begin
       Self.Computed_Position := Pos;
+      Self.Anchor_X := Anchor_X;
+      Self.Anchor_Y := Anchor_Y;
       Canvas_Item_Record (Self.all).Set_Position (Pos);  --  inherited
    end Set_Position;
 
@@ -2849,6 +2874,11 @@ package body Gtkada.Canvas_View is
                     - Child.Computed_Position.X;
                end if;
 
+               Child.Computed_Position.X :=
+                 Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
+               Child.Computed_Position.Y :=
+                 Child.Computed_Position.Y - (Child.Height * Child.Anchor_Y);
+
                case Child.Align is
                   when Align_Start =>
                      null;
@@ -2890,6 +2920,11 @@ package body Gtkada.Canvas_View is
                     - Child.Computed_Position.Y;
                end if;
 
+               Child.Computed_Position.X :=
+                 Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
+               Child.Computed_Position.Y :=
+                 Child.Computed_Position.Y - (Child.Height * Child.Anchor_Y);
+
                case Child.Align is
                   when Align_Start =>
                      null;
@@ -2928,6 +2963,11 @@ package body Gtkada.Canvas_View is
       Self.Computed_Position := Self.Position;
       Container_Item_Record'Class (Self.all).Size_Request (Context);
       Container_Item_Record'Class (Self.all).Size_Allocate;
+
+      Self.Computed_Position.X :=
+        Self.Computed_Position.X - (Self.Width * Self.Anchor_X);
+      Self.Computed_Position.Y :=
+        Self.Computed_Position.Y - (Self.Height * Self.Anchor_Y);
    end Refresh_Layout;
 
    -------------------
@@ -3488,24 +3528,16 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Text_Item_Record;
       Context : Draw_Context)
    is
-      F    : constant Font_Style := Self.Style.Get_Font;
       Text : constant String := Compute_Text (Self);
-      Y    : Glib.Gdouble := 0.0;
    begin
       Resize_Fill_Pattern (Self);
       Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
 
-      if F.Valign /= 0.0
-        and then Self.Height > Self.Requested_Height
-      then
-         Y := (Self.Height - Self.Requested_Height) * F.Valign;
-      end if;
-
       if Context.Layout /= null then
          Self.Style.Draw_Text
-           (Context.Cr, Context.Layout, (0.0, Y), Text,
+           (Context.Cr, Context.Layout, (0.0, 0.0), Text,
             Max_Width  => Self.Width,
-            Max_Height => Self.Height - Y);
+            Max_Height => Self.Height);
       end if;
    end Draw;
 
@@ -3520,25 +3552,6 @@ package body Gtkada.Canvas_View is
       Free (Self.Text);
       Container_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
-
-   ----------------
-   -- Align_Text --
-   ----------------
-
-   procedure Align_Text (Self  : not null access Text_Item_Record) is
-      F    : constant Font_Style := Self.Style.Get_Font;
-   begin
-      if F.Valign /= 0.0
-        and then Self.Position.Y /= Gdouble'First
-      then
-         --  We want the Y coordinate to be in a specific position in the
-         --  text box
-
-         Self.Computed_Position.Y :=
-           Self.Computed_Position.Y
-             - Self.Height * F.Valign;
-      end if;
-   end Align_Text;
 
    ------------------
    -- Size_Request --
@@ -3558,25 +3571,11 @@ package body Gtkada.Canvas_View is
             Height => Self.Requested_Height);
          Self.Width  := Self.Requested_Width;
          Self.Height := Self.Requested_Height;
-
-         Align_Text (Self);
       else
          Self.Width := 0.0;
          Self.Height := 0.0;
       end if;
    end Size_Request;
-
-   -------------------
-   -- Size_Allocate --
-   -------------------
-
-   overriding procedure Size_Allocate
-     (Self : not null access Text_Item_Record)
-   is
-   begin
-      Container_Item_Record (Self.all).Size_Allocate;
-      Align_Text (Self);
-   end Size_Allocate;
 
    ---------------------------
    -- Gtk_New_Editable_Text --

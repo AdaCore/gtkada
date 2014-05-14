@@ -276,14 +276,10 @@ package Gtkada.Style is
       --  Space between two lines
 
       Halign     : Pango.Enums.Alignment := Pango.Enums.Pango_Align_Left;
-      Valign     : Percent := 0.0;   --  (text) to the top
    end record;
    Default_Font : constant Font_Style := (others => <>);
-   --  Some of the attributes like Valign are only taken into account when
+   --  Some of the attributes like Halign are only taken into account when
    --  using Gtkada.Canvas_View.Text_Item.
-   --  Valign will modify the interpretation of the item's position. For
-   --  instance, if Valign is 0.5, then the Y position given by the call to
-   --  Set_Position is the position of the middle of the box.
 
    type Shadow_Style is record
       Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;

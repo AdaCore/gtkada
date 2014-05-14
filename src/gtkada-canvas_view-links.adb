@@ -218,6 +218,7 @@ package body Gtkada.Canvas_View.Links is
       D  : constant Abstract_Item := Self.To;
       DT : Abstract_Item := Gtkada.Canvas_View.Objects.Toplevel (D);
       P  : Model_Point;
+      Item : Abstract_Item;
       Result : Anchors;
       L  : Gdouble;
    begin
@@ -244,6 +245,17 @@ package body Gtkada.Canvas_View.Links is
       --  Clip the line to the side of the toplevel boxes.
 
       if Self.Anchor_From.Toplevel_Side = Auto then
+
+         --  Find the topmost non-invisible parent
+         Item := S;
+         ST := Item;
+         while Item /= null loop
+            if not Item.Is_Invisible then
+               ST := Item;
+            end if;
+            Item := Item.Parent;
+         end loop;
+
          if Self.Waypoints = null then
             P := Result.To.P;
          elsif Self.Relative_Waypoints then
@@ -273,6 +285,17 @@ package body Gtkada.Canvas_View.Links is
       end if;
 
       if Self.Anchor_To.Toplevel_Side = Auto then
+
+         --  Find the topmost non-invisible parent
+         Item := D;
+         DT := Item;
+         while Item /= null loop
+            if not Item.Is_Invisible then
+               DT := Item;
+            end if;
+            Item := Item.Parent;
+         end loop;
+
          if Self.Waypoints = null then
             P := Result.From.P;
          elsif Self.Relative_Waypoints then

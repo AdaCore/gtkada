@@ -380,11 +380,12 @@ package Gtkada.Canvas_View is
    --  The coordinates of the item within its parent.
    --  If the item has no parent, the coordinates should be returned in model
    --  coordinates. These coordinates describe the origin (0,0) point of
-   --  the item's coordinate system.
+   --  the item's coordinate system (even if Set_Position was specified to
+   --  point to another location in the item).
 
    procedure Set_Position
-     (Self  : not null access Abstract_Item_Record;
-      Pos   : Gtkada.Style.Point) is null;
+     (Self     : not null access Abstract_Item_Record;
+      Pos      : Gtkada.Style.Point) is null;
    --  Used to change the position of an item (by default an item cannot be
    --  moved). You must call the model's Refresh_Layout after moving items.
 
@@ -499,6 +500,13 @@ package Gtkada.Canvas_View is
    --  As opposed to Bounding_Box, model coordinates are also returned
    --  for nested items.
 
+   function Is_Invisible
+     (Self : not null access Abstract_Item_Record)
+     return Boolean is (False);
+   --  True if Self has no filling or stroke information (and therefore is
+   --  invisible even when displayed, although some of its children might be
+   --  visible).
+
    -----------
    -- Items --
    -----------
@@ -533,8 +541,8 @@ package Gtkada.Canvas_View is
       Context : Draw_Context);
 
    overriding procedure Set_Position
-     (Self  : not null access Canvas_Item_Record;
-      Pos   : Gtkada.Style.Point);
+     (Self     : not null access Canvas_Item_Record;
+      Pos      : Gtkada.Style.Point);
    --  Sets the position of the item within its parent (or within the canvas
    --  view if Self has no parent).
 
@@ -1203,6 +1211,19 @@ package Gtkada.Canvas_View is
       Context : Draw_Context);
    --  Display all the children of Self
 
+   overriding procedure Set_Position
+     (Self     : not null access Container_Item_Record;
+      Pos      : Gtkada.Style.Point);
+   procedure Set_Position
+     (Self     : not null access Container_Item_Record;
+      Pos      : Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
+      Anchor_X : Gdouble;
+      Anchor_Y : Gdouble);
+   --  Anchor_X and Anchor_Y indicate which part of the item is at the given
+   --  coordinates. For instance, (0, 0) indicates that Pos is the location of
+   --  the top-left corner of the item, but (0.5, 0.5) indicates that Pos is
+   --  the position of the center of the item.
+
    overriding procedure Destroy
      (Self     : not null access Container_Item_Record;
       In_Model : not null access Canvas_Model_Record'Class);
@@ -1214,13 +1235,13 @@ package Gtkada.Canvas_View is
    overriding function Bounding_Box
      (Self : not null access Container_Item_Record)
       return Item_Rectangle;
-   overriding procedure Set_Position
-     (Self  : not null access Container_Item_Record;
-      Pos   : Gtkada.Style.Point);
    overriding function Inner_Most_Item
      (Self     : not null access Container_Item_Record;
       At_Point : Model_Point;
       Context  : Draw_Context) return Abstract_Item;
+   overriding function Is_Invisible
+     (Self : not null access Container_Item_Record)
+      return Boolean;
 
    ----------------
    -- Rectangles --
@@ -1414,8 +1435,6 @@ package Gtkada.Canvas_View is
    overriding procedure Size_Request
      (Self    : not null access Text_Item_Record;
       Context : Draw_Context);
-   overriding procedure Size_Allocate
-     (Self    : not null access Text_Item_Record);
 
    -------------------
    -- Editable text --
@@ -1621,6 +1640,12 @@ private
       --  The position within the parent, as computed in Size_Allocate.
       --  The field Position is used for the position specifically requested by
       --  the user.
+      --  This is always the position of the top-left corner, no matter what
+      --  Anchor_X and Anchor_Y are set to.
+
+      Anchor_X : Gdouble := 0.0;
+      Anchor_Y : Gdouble := 0.0;
+      --  The position within the item that Self.Position points to.
 
       Forced_Width, Forced_Height : Model_Coordinate := -1.0;
       --  Whether the user requested a specific size

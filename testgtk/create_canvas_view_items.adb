@@ -78,6 +78,7 @@ package body Create_Canvas_View_Items is
         (Sloppy : Boolean := False; X, Y : Model_Coordinate);
       procedure Add_UML_Actor
         (Sloppy : Boolean := False; X, Y : Model_Coordinate);
+      procedure Add_Alignment (X, Y : Model_Coordinate);
       --  Add various blocks
 
       function Font_Name (Sloppy : Boolean) return String;
@@ -113,13 +114,11 @@ package body Create_Canvas_View_Items is
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
             Font   => (Name   => From_String (Font_Name (Sloppy) & " 8"),
-                       Valign => 0.5,
                        others => <>));
          Large_Font := Gtk_New
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
             Font   => (Name   => From_String (Font_Name (Sloppy) & " 25"),
-                       Valign => 0.5,
                        others => <>));
 
          It := Gtk_New_Polyline
@@ -132,7 +131,7 @@ package body Create_Canvas_View_Items is
          It.Add_Child (Rect);
 
          Text := Gtk_New_Text (Small_Font, "+");
-         Text.Set_Position ((9.0, 20.0));
+         Text.Set_Position ((9.0, 20.0), Anchor_X => 0.0, Anchor_Y => 0.5);
          It.Add_Child (Text, Float => True);
 
          Rect := Gtk_New_Rect (Black_Filled, 6.0, 6.0);
@@ -140,11 +139,11 @@ package body Create_Canvas_View_Items is
          It.Add_Child (Rect);
 
          Text := Gtk_New_Text (Small_Font, "-");
-         Text.Set_Position ((9.0, 60.0));
+         Text.Set_Position ((9.0, 60.0), Anchor_X => 0.0, Anchor_Y => 0.5);
          It.Add_Child (Text, Float => True);
 
          Text := Gtk_New_Text (Large_Font, N_Ary_Summation);
-         Text.Set_Position ((15.0, 40.0));
+         Text.Set_Position ((15.0, 40.0), Anchor_X => 0.0, Anchor_Y => 0.5);
          It.Add_Child (Text, Float => True);
       end Add_Sum_Block;
 
@@ -248,6 +247,43 @@ package body Create_Canvas_View_Items is
          It.Set_Position ((0.0, 1.0));
          Rect.Add_Child (It);
       end Add_UML_Actor;
+
+      -------------------
+      -- Add_Alignment --
+      -------------------
+
+      procedure Add_Alignment (X, Y : Model_Coordinate) is
+         Font, Black : Drawing_Style;
+         Text : Text_Item;
+         It   : Rect_Item;
+      begin
+         Font := Gtk_New
+           (Stroke => Null_RGBA,
+            Font   => (Name => From_String ("sans 10"), others => <>));
+         Black := Gtk_New;
+
+         Text := Gtk_New_Text
+           (Font, "Position of items can be the center of the item" & ASCII.LF
+            & "The three boxes have the same position, but not the same"
+            & " anchors");
+         Text.Set_Position ((X, Y));
+         Model.Add (Text);
+
+         It := Gtk_New_Rect (Black, Width => 40.0, Height => 40.0);
+         It.Set_Position
+           ((X + 50.0, Y + 40.0), Anchor_X => 0.0, Anchor_Y => 0.0);
+         Model.Add (It);
+
+         It := Gtk_New_Rect (Black, Width => 40.0, Height => 40.0);
+         It.Set_Position
+           ((X + 50.0, Y + 80.0), Anchor_X => 0.5, Anchor_Y => 0.0);
+         Model.Add (It);
+
+         It := Gtk_New_Rect (Black, Width => 40.0, Height => 40.0);
+         It.Set_Position
+           ((X + 50.0, Y + 120.0), Anchor_X => 1.0, Anchor_Y => 0.0);
+         Model.Add (It);
+      end Add_Alignment;
 
       Scrolled      : Gtk_Scrolled_Window;
       Filled, Font  : Drawing_Style;
@@ -360,6 +396,8 @@ package body Create_Canvas_View_Items is
       Add_UML_Actor (True,  0.0,   250.0);
       Add_UML_Block (True,  100.0, 250.0);
       Add_Sum_Block (True,  280.0, 250.0);
+
+      Add_Alignment (0.0, 400.0);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
