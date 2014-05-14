@@ -247,7 +247,7 @@ package body Gtkada.Canvas_View.Links is
          if Self.Waypoints = null then
             P := Result.To.P;
          elsif Self.Relative_Waypoints then
-            P := Result.To.P;
+            P := Result.From.P;
             P := Self.Item_To_Model
               ((P.X + Self.Waypoints (Self.Waypoints'First).X,
                 P.Y + Self.Waypoints (Self.Waypoints'First).Y));
