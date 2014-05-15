@@ -3189,10 +3189,16 @@ package body Gtkada.Canvas_View is
       --  no hide the stroke.
 
       if Self.Style.Path_Rect
-        (Context.Cr, (0.0, 0.0),
-         Self.Width, Self.Height, Radius => Self.Radius)
+        (Context.Cr, (0.0, 0.0), Self.Width, Self.Height,
+         Radius => Self.Radius)
       then
-         Clip_Preserve (Context.Cr);
+         --  Only clip if the item is visible, otherwise let nested items do
+         --  their own clipping. This ensures that nested items with shadows
+         --  are properly rendered
+
+         if not Self.Is_Invisible then
+            Clip_Preserve (Context.Cr);
+         end if;
 
          if not Self.Children.Is_Empty then
             Self.Style.Set_Stroke (Null_RGBA);
