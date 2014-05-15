@@ -88,9 +88,9 @@ package body Gtkada.Canvas_View.Links is
    --  Functions for the A* algorithm.
 
    function Relative_To_Item
-     (From : Item_Point; Wp : Item_Point_Array) return Item_Point;
-   function Relative_To_Item
      (From : Model_Point; Wp : Item_Point_Array) return Model_Point;
+   function Relative_To_Array
+     (From : Item_Point; Wp : Item_Point_Array) return Item_Point_Array;
    --  Compute the last point after applying all the relative coordinates
    --  from Wp
 
@@ -181,21 +181,6 @@ package body Gtkada.Canvas_View.Links is
    ----------------------
 
    function Relative_To_Item
-     (From : Item_Point; Wp : Item_Point_Array) return Item_Point
-   is
-      C : Item_Point := From;
-   begin
-      for W in Wp'Range loop
-         C := (C.X + Wp (W).X, C.Y + Wp (W).Y);
-      end loop;
-      return C;
-   end Relative_To_Item;
-
-   ----------------------
-   -- Relative_To_Item --
-   ----------------------
-
-   function Relative_To_Item
      (From : Model_Point; Wp : Item_Point_Array) return Model_Point
    is
       C : Model_Point := From;
@@ -205,6 +190,25 @@ package body Gtkada.Canvas_View.Links is
       end loop;
       return C;
    end Relative_To_Item;
+
+   -----------------------
+   -- Relative_To_Array --
+   -----------------------
+
+   function Relative_To_Array
+     (From : Item_Point; Wp : Item_Point_Array) return Item_Point_Array
+   is
+      Result : Item_Point_Array (Wp'Range);
+   begin
+      Result (Result'First) :=
+        (From.X + Wp (Wp'First).X, From.Y + Wp (Wp'First).Y);
+      for P in Wp'First + 1 .. Wp'Last loop
+         Result (P) :=
+           (Result (P - 1).X + Wp (P).X,
+            Result (P - 1).Y + Wp (P).Y);
+      end loop;
+      return Result;
+   end Relative_To_Array;
 
    ---------------------
    -- Compute_Anchors --
@@ -695,7 +699,7 @@ package body Gtkada.Canvas_View.Links is
          end if;
       end Margins_Between_Items;
 
-      From, To, T : Item_Point;
+      From, To : Item_Point;
       M      : Item_Point;
       P_From : Item_Point;   --  extending from the From box
       P_To   : Item_Point;   --  extending from the To box
@@ -713,10 +717,8 @@ package body Gtkada.Canvas_View.Links is
 
       if Link.Waypoints /= null then
          if Link.Relative_Waypoints then
-            T := Relative_To_Item (From, Link.Waypoints.all);
             Link.Points := new Item_Point_Array'
-              (From & Link.Waypoints.all
-               & Item_Point'(To.X - T.X, To.Y - T.Y));
+              (From & Relative_To_Array (From, Link.Waypoints.all) & To);
          else
             Link.Points := new Item_Point_Array'
               (From & Link.Waypoints.all & To);
@@ -727,28 +729,24 @@ package body Gtkada.Canvas_View.Links is
 
          if abs (To.X - P_To.X) < 0.001
            and then Link.Anchor_To.X < 0.0
-           and then T.X >= Dim.To.Box.X
-           and then T.X <= Dim.To.Box.X + Dim.To.Box.Width
+           and then Link.Points (Link.Points'Last - 1).X >= Dim.To.Box.X
+           and then Link.Points (Link.Points'Last - 1).X <=
+              Dim.To.Box.X + Dim.To.Box.Width
          then
-            if Link.Relative_Waypoints then
-               Link.Points (Link.Points'Last).X := 0.0;
-            else
-               Link.Points (Link.Points'Last).X := To.X;
-            end if;
+            Link.Points (Link.Points'Last).X :=
+              Link.Points (Link.Points'Last - 1).X;
 
          --  Is the final link supposed to be horizontal ?
          --  And can we make it fully vertical, if the user requested it ?
 
          elsif abs (To.Y - P_To.Y) < 0.001
            and then Link.Anchor_To.Y < 0.0
-           and then T.Y >= Dim.To.Box.Y
-           and then T.Y <= Dim.To.Box.Y + Dim.To.Box.Height
+           and then Link.Points (Link.Points'Last - 1).Y >= Dim.To.Box.Y
+           and then Link.Points (Link.Points'Last - 1).Y <=
+              Dim.To.Box.Y + Dim.To.Box.Height
          then
-            if Link.Relative_Waypoints then
-               Link.Points (Link.Points'Last).Y := 0.0;
-            else
-               Link.Points (Link.Points'Last).Y := To.Y;
-            end if;
+            Link.Points (Link.Points'Last).Y :=
+              Link.Points (Link.Points'Last - 1).Y;
          end if;
 
          return;
@@ -863,8 +861,7 @@ package body Gtkada.Canvas_View.Links is
          Link.Points := new Item_Point_Array'(Points (Points'First .. P - 1));
       end;
 
-      Link.Bounding_Box := Compute_Bounding_Box
-        (Link.Points.all, Relative => Link.Relative_Waypoints);
+      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
       Compute_Labels (Link, Context, Dim);
    end Orthogonal_Waypoints;
 
@@ -878,7 +875,6 @@ package body Gtkada.Canvas_View.Links is
    is
       Dim : constant Anchors := Compute_Anchors (Link);
       Tmp, Tmp2 : Item_Point;
-      C   : Item_Point;
       Pos : Item_Coordinate;
    begin
       if Link.From = Link.To then
@@ -898,16 +894,11 @@ package body Gtkada.Canvas_View.Links is
 
          if Link.Relative_Waypoints then
             Tmp2 := Link.Model_To_Item (Dim.From.P);
-            C := Relative_To_Item (Tmp2, Link.Waypoints.all);
             Link.Points := new Item_Point_Array'
-              (Tmp2
-               & Link.Waypoints.all
-               & Item_Point'(Tmp.X - C.X, Tmp.Y - C.Y));
+              (Tmp2 & Relative_To_Array (Tmp2, Link.Waypoints.all) & Tmp);
          else
             Link.Points := new Item_Point_Array'
-              (Link.Model_To_Item (Dim.From.P)
-               & Link.Waypoints.all
-               & Tmp);
+              (Link.Model_To_Item (Dim.From.P) & Link.Waypoints.all & Tmp);
          end if;
 
       else
@@ -923,49 +914,28 @@ package body Gtkada.Canvas_View.Links is
       if Link.Anchor_To.X < 0.0
         or else Link.Anchor_To.Y < 0.0
       then
-         if Link.Relative_Waypoints then
-            Tmp2 := Relative_To_Item
-              (Link.Points (Link.Points'First),
-               Link.Points (Link.Points'First + 1 .. Link.Points'Last));
-            Tmp := (Tmp2.X - Link.Points (Link.Points'Last).X,
-                    Tmp2.Y - Link.Points (Link.Points'Last).Y);
-         else
-            Tmp2 := Link.Points (Link.Points'Last);
-            Tmp := Link.Points (Link.Points'Last - 1);
-         end if;
+         Tmp2 := Link.Points (Link.Points'Last);
+         Tmp := Link.Points (Link.Points'Last - 1);
 
          if Link.Anchor_To.X < 0.0
            and then Tmp.X >= Dim.To.Box.X
            and then Tmp.X <= Dim.To.Box.X + Dim.To.Box.Width
          then
-            if Link.Points'Length = 2
-              or else not Link.Relative_Waypoints
-            then
-               Pos := (Tmp.X + Tmp2.X) / 2.0;
-               Link.Points (Link.Points'Last - 1).X := Pos;
-               Link.Points (Link.Points'Last).X := Pos;
-            else
-               Link.Points (Link.Points'Last).X := 0.0;
-            end if;
+            Pos := (Tmp.X + Tmp2.X) / 2.0;
+            Link.Points (Link.Points'Last - 1).X := Pos;
+            Link.Points (Link.Points'Last).X := Pos;
 
          elsif Link.Anchor_To.Y < 0.0
            and then Tmp.Y >= Dim.To.Box.Y
            and then Tmp.Y <= Dim.To.Box.Y + Dim.To.Box.Height
          then
-            if Link.Points'Length = 2
-              or else not Link.Relative_Waypoints
-            then
-               Pos := (Tmp.Y + Tmp2.Y) / 2.0;
-               Link.Points (Link.Points'Last - 1).Y := Pos;
-               Link.Points (Link.Points'Last).Y := Pos;
-            else
-               Link.Points (Link.Points'Last).Y := 0.0;
-            end if;
+            Pos := (Tmp.Y + Tmp2.Y) / 2.0;
+            Link.Points (Link.Points'Last - 1).Y := Pos;
+            Link.Points (Link.Points'Last).Y := Pos;
          end if;
       end if;
 
-      Link.Bounding_Box := Compute_Bounding_Box
-        (Link.Points.all, Relative => Link.Relative_Waypoints);
+      Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
       Compute_Labels (Link, Context, Dim);
    end Compute_Layout_For_Straight_Link;
 
@@ -1129,21 +1099,17 @@ package body Gtkada.Canvas_View.Links is
    begin
       case Link.Routing is
          when Straight | Orthogonal =>
-            return Link.Style.Path_Polyline
-              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+            return Link.Style.Path_Polyline (Context.Cr, P.all);
 
          when Curve =>
             if P'Length = 2 then
-               return Link.Style.Path_Polyline
-                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+               return Link.Style.Path_Polyline (Context.Cr, P.all);
             else
-               return Link.Style.Path_Polycurve
-                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+               return Link.Style.Path_Polycurve (Context.Cr, P.all);
             end if;
 
          when Arc =>
-            return Link.Style.Path_Polycurve
-              (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+            return Link.Style.Path_Polycurve (Context.Cr, P.all);
       end case;
    end Prepare_Path;
 
@@ -1168,8 +1134,7 @@ package body Gtkada.Canvas_View.Links is
          Fill := Link.Style.Get_Fill;
          Link.Style.Set_Fill (Null_Pattern);
          Link.Style.Finish_Path (Context.Cr);
-         Link.Style.Draw_Arrows_And_Symbols
-           (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+         Link.Style.Draw_Arrows_And_Symbols (Context.Cr, P.all);
          Link.Style.Set_Fill (Fill);
 
          if Selected
@@ -1182,8 +1147,7 @@ package body Gtkada.Canvas_View.Links is
                Fill := Link.Style.Get_Fill;
                Link.Style.Set_Fill (Null_Pattern);
                Link.Style.Finish_Path (Context.Cr);
-               Link.Style.Draw_Arrows_And_Symbols
-                 (Context.Cr, P.all, Relative => Link.Relative_Waypoints);
+               Link.Style.Draw_Arrows_And_Symbols (Context.Cr, P.all);
                Link.Style.Set_Fill (Fill);
             end if;
 

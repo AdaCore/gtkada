@@ -1833,15 +1833,15 @@ private
       --      pt1, ctrl1, ctrl2, pt2, ctrl3, ctrl4, pt3, ...
 
       Relative_Waypoints : Boolean := False;
-      --  Whether the waypoints are given in relative coordinates
+      --  Whether the waypoints are given in relative coordinates.
+      --  This does not apply to Points.
 
       Points   : Item_Point_Array_Access;
       --  The cached computation of waypoints for this link.
       --  These are recomputed every time the layout of the canvas changes, but
       --  are cached so that redrawing the canvas is fast.
-      --  These are absolute coordinates.
+      --  These are absolute coordinates, even if waypoints are relative.
       --  See the documentation on Waypoints for more information on the format
-      --  These points are relative if Relative_Waypoints are relative.
 
       Anchor_From : Anchor_Attachment := Middle_Attachment;
       Anchor_To   : Anchor_Attachment := Middle_Attachment;
