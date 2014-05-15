@@ -312,6 +312,13 @@ package Gtkada.Canvas_View is
    Middle_Attachment : constant Anchor_Attachment := (0.5, 0.5, Auto, 0.0);
    --  Where in the item the link is attached (0.5 means the middle, 0.0
    --  means left or top, and 1.0 means right or bottom).
+   --
+   --  For the target side of a link, if X or Y are negative, Gtkada will try
+   --  to draw a strictly orthogonal or vertical segment next on that end by
+   --  adjusting the location of the end point along the border of the item. If
+   --  it cannot, then GtkAda will use the absolute value of X and Y to specify
+   --  the attachment.
+   --
    --  You can therefore force a link to always emerge from the right side of
    --  an item by setting X to 1.0 and Y to any value, for instance.
    --  See the description of Side_Attachment for an example on how to use

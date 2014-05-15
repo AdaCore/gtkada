@@ -255,6 +255,7 @@ package body Gtkada.Canvas_View.Links is
             end if;
             Item := Item.Parent;
          end loop;
+         Result.From.Toplevel := ST.Model_Bounding_Box;
 
          if Self.Waypoints = null then
             P := Result.To.P;
@@ -295,6 +296,7 @@ package body Gtkada.Canvas_View.Links is
             end if;
             Item := Item.Parent;
          end loop;
+         Result.To.Toplevel := DT.Model_Bounding_Box;
 
          if Self.Waypoints = null then
             P := Result.From.P;
@@ -601,11 +603,13 @@ package body Gtkada.Canvas_View.Links is
             when Top | Bottom | Right | Left =>
                Effective_Side := Anchor.Toplevel_Side;
             when Auto =>
-               if Info.P.X = Info.Toplevel.X then
+               if abs (Info.P.X - Info.Toplevel.X) < 0.001 then
                   Effective_Side := Left;
-               elsif Info.P.Y = Info.Toplevel.Y then
+               elsif abs (Info.P.Y - Info.Toplevel.Y) < 0.001 then
                   Effective_Side := Top;
-               elsif Info.P.X = Info.Toplevel.X + Info.Toplevel.Width then
+               elsif abs (Info.P.X - Info.Toplevel.X - Info.Toplevel.Width)
+                 < 0.001
+               then
                   Effective_Side := Right;
                else
                   Effective_Side := Bottom;
@@ -614,18 +618,20 @@ package body Gtkada.Canvas_View.Links is
 
          case Effective_Side is
             when Top =>
-               P := (Info.Box.X + Info.Box.Width * Anchor.X, Info.Toplevel.Y);
+               P := (Info.Box.X + Info.Box.Width * abs (Anchor.X),
+                     Info.Toplevel.Y);
                P2 := (P.X, P.Y - Margin.Top);
             when Bottom =>
-               P := (Info.Box.X + Info.Box.Width * Anchor.X,
+               P := (Info.Box.X + Info.Box.Width * abs (Anchor.X),
                      Info.Toplevel.Y + Info.Toplevel.Height);
                P2 := (P.X, P.Y + Margin.Bottom);
             when Right =>
                P := (Info.Toplevel.X + Info.Toplevel.Width,
-                     Info.Box.Y + Info.Box.Height * Anchor.Y);
+                     Info.Box.Y + Info.Box.Height * abs (Anchor.Y));
                P2 := (P.X + Margin.Right, P.Y);
             when Left =>
-               P := (Info.Toplevel.X, Info.Box.Y + Info.Box.Height * Anchor.Y);
+               P := (Info.Toplevel.X,
+                     Info.Box.Y + Info.Box.Height * abs (Anchor.Y));
                P2 := (P.X - Margin.Left, P.Y);
             when others =>
                null;
@@ -715,6 +721,36 @@ package body Gtkada.Canvas_View.Links is
             Link.Points := new Item_Point_Array'
               (From & Link.Waypoints.all & To);
          end if;
+
+         --  Is the final link supposed to be vertical ?
+         --  And can we make it fully vertical, if the user requested it ?
+
+         if abs (To.X - P_To.X) < 0.001
+           and then Link.Anchor_To.X < 0.0
+           and then T.X >= Dim.To.Box.X
+           and then T.X <= Dim.To.Box.X + Dim.To.Box.Width
+         then
+            if Link.Relative_Waypoints then
+               Link.Points (Link.Points'Last).X := 0.0;
+            else
+               Link.Points (Link.Points'Last).X := To.X;
+            end if;
+
+         --  Is the final link supposed to be horizontal ?
+         --  And can we make it fully vertical, if the user requested it ?
+
+         elsif abs (To.Y - P_To.Y) < 0.001
+           and then Link.Anchor_To.Y < 0.0
+           and then T.Y >= Dim.To.Box.Y
+           and then T.Y <= Dim.To.Box.Y + Dim.To.Box.Height
+         then
+            if Link.Relative_Waypoints then
+               Link.Points (Link.Points'Last).Y := 0.0;
+            else
+               Link.Points (Link.Points'Last).Y := To.Y;
+            end if;
+         end if;
+
          return;
       end if;
 
@@ -840,10 +876,10 @@ package body Gtkada.Canvas_View.Links is
      (Link    : not null access Canvas_Link_Record'Class;
       Context : Draw_Context)
    is
-      P   : constant Item_Point_Array_Access := Link.Points;
       Dim : constant Anchors := Compute_Anchors (Link);
       Tmp, Tmp2 : Item_Point;
       C   : Item_Point;
+      Pos : Item_Coordinate;
    begin
       if Link.From = Link.To then
          Tmp := (Dim.From.Toplevel.X + Dim.From.Toplevel.Width,
@@ -855,46 +891,6 @@ package body Gtkada.Canvas_View.Links is
             (Tmp.X + 10.0, Tmp.Y - 10.0),
             (Tmp.X + 10.0, Tmp.Y + 10.0),
             (Tmp.X, Tmp.Y + 10.0));
-
-      --  If a link had waypoints so that the first outbound segment from a
-      --  box is horizontal or vertical, we move the waypoint to keep the
-      --  segment that way. This provides a more natural feel.
-
-      elsif P /= null and then Link.Waypoints /= null then
-         declare
-            Wp : Item_Point_Array := Link.Waypoints.all;
-         begin
-            --  Is the first segment horizontal or vertical ?
-            if abs (P (P'First).Y - Wp (Wp'First).Y) < 0.8 then
-               Wp (Wp'First).Y := Dim.From.P.Y;
-            elsif abs (P (P'First).X - Wp (Wp'First).Y) < 0.8 then
-               Wp (Wp'First).X := Dim.From.P.X;
-            end if;
-
-            --  Is the last segment horizontal or vertical ?
-
-            --  If this horizontal ?
-            if abs (P (P'Last).Y - Wp (Wp'Last).Y) < 0.8 then
-               Wp (Wp'Last).Y := Dim.To.P.Y;
-               --  is this vertical ?
-            elsif abs (P (P'Last).X - Wp (Wp'Last).Y) < 0.8 then
-               Wp (Wp'Last).X := Dim.To.P.X;
-            end if;
-
-            Unchecked_Free (Link.Points);
-            Tmp := Link.Model_To_Item (Dim.To.P);
-
-            if Link.Relative_Waypoints then
-               Link.Points := new Item_Point_Array'
-                 (Link.Model_To_Item (Dim.From.P)
-                  & Wp
-                  & Item_Point'
-                    (Tmp.X - Wp (Wp'Last).X, Tmp.Y - Wp (Wp'Last).Y));
-            else
-               Link.Points := new Item_Point_Array'
-                 (Link.Model_To_Item (Dim.From.P) & Wp & Tmp);
-            end if;
-         end;
 
       elsif Link.Waypoints /= null then
          Unchecked_Free (Link.Points);
@@ -919,6 +915,53 @@ package body Gtkada.Canvas_View.Links is
          Link.Points := new Item_Point_Array'
            (Link.Model_To_Item (Dim.From.P)
             & Link.Model_To_Item (Dim.To.P));
+      end if;
+
+      --  Is the user asking to get the link fully vertical when possible.
+      --  This only applies to the last segment.
+
+      if Link.Anchor_To.X < 0.0
+        or else Link.Anchor_To.Y < 0.0
+      then
+         if Link.Relative_Waypoints then
+            Tmp2 := Relative_To_Item
+              (Link.Points (Link.Points'First),
+               Link.Points (Link.Points'First + 1 .. Link.Points'Last));
+            Tmp := (Tmp2.X - Link.Points (Link.Points'Last).X,
+                    Tmp2.Y - Link.Points (Link.Points'Last).Y);
+         else
+            Tmp2 := Link.Points (Link.Points'Last);
+            Tmp := Link.Points (Link.Points'Last - 1);
+         end if;
+
+         if Link.Anchor_To.X < 0.0
+           and then Tmp.X >= Dim.To.Box.X
+           and then Tmp.X <= Dim.To.Box.X + Dim.To.Box.Width
+         then
+            if Link.Points'Length = 2
+              or else not Link.Relative_Waypoints
+            then
+               Pos := (Tmp.X + Tmp2.X) / 2.0;
+               Link.Points (Link.Points'Last - 1).X := Pos;
+               Link.Points (Link.Points'Last).X := Pos;
+            else
+               Link.Points (Link.Points'Last).X := 0.0;
+            end if;
+
+         elsif Link.Anchor_To.Y < 0.0
+           and then Tmp.Y >= Dim.To.Box.Y
+           and then Tmp.Y <= Dim.To.Box.Y + Dim.To.Box.Height
+         then
+            if Link.Points'Length = 2
+              or else not Link.Relative_Waypoints
+            then
+               Pos := (Tmp.Y + Tmp2.Y) / 2.0;
+               Link.Points (Link.Points'Last - 1).Y := Pos;
+               Link.Points (Link.Points'Last).Y := Pos;
+            else
+               Link.Points (Link.Points'Last).Y := 0.0;
+            end if;
+         end if;
       end if;
 
       Link.Bounding_Box := Compute_Bounding_Box

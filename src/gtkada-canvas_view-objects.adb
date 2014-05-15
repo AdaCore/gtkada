@@ -39,19 +39,19 @@ package body Gtkada.Canvas_View.Objects is
    begin
       case Anchor.Toplevel_Side is
          when Auto | No_Clipping =>
-            return (C.Width * Anchor.X, C.Height * Anchor.Y);
+            return (C.Width * abs (Anchor.X), C.Height * abs (Anchor.Y));
 
          when Top =>
-            return (C.Width * Anchor.X, 0.0);
+            return (C.Width * abs (Anchor.X), 0.0);
 
          when Right =>
-            return (C.Width, C.Height * Anchor.Y);
+            return (C.Width, C.Height * abs (Anchor.Y));
 
          when Bottom =>
-            return (C.Width * Anchor.X, C.Height);
+            return (C.Width * abs (Anchor.X), C.Height);
 
          when Left =>
-            return (0.0, C.Height * Anchor.Y);
+            return (0.0, C.Height * abs (Anchor.Y));
       end case;
    end Link_Anchor_Point;
 
