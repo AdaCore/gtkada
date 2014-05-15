@@ -689,7 +689,7 @@ package body Gtkada.Canvas_View.Links is
          end if;
       end Margins_Between_Items;
 
-      From, To : Item_Point;
+      From, To, T : Item_Point;
       M      : Item_Point;
       P_From : Item_Point;   --  extending from the From box
       P_To   : Item_Point;   --  extending from the To box
@@ -707,11 +707,10 @@ package body Gtkada.Canvas_View.Links is
 
       if Link.Waypoints /= null then
          if Link.Relative_Waypoints then
+            T := Relative_To_Item (From, Link.Waypoints.all);
             Link.Points := new Item_Point_Array'
               (From & Link.Waypoints.all
-               & Item_Point'
-                 (To.X - Link.Waypoints (Link.Waypoints'Last).X,
-                  To.Y - Link.Waypoints (Link.Waypoints'Last).Y));
+               & Item_Point'(To.X - T.X, To.Y - T.Y));
          else
             Link.Points := new Item_Point_Array'
               (From & Link.Waypoints.all & To);
