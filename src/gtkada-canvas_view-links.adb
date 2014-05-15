@@ -749,6 +749,9 @@ package body Gtkada.Canvas_View.Links is
               Link.Points (Link.Points'Last - 1).Y;
          end if;
 
+         Link.Bounding_Box := Compute_Bounding_Box (Link.Points.all);
+         Compute_Labels (Link, Context, Dim);
+
          return;
       end if;
 
