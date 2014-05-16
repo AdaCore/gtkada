@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 2014, AdaCore                          --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,31 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;        use Ada.Text_IO;
-with Gtkada.Bindings;    use Gtkada.Bindings;
-with Gtkada.Style;       use Gtkada.Style;
-with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Style_Provider; use Gtk.Style_Provider;
-with Gtk.Main;
+with Ada.Text_IO; use Ada.Text_IO;
 
-with Global_Exception_Handler;
-with Main_Windows;
+package body Global_Exception_Handler is
 
-procedure Testgtk is
+   procedure On_Exception (E : Ada.Exceptions.Exception_Occurrence) is
+   begin
+      Put_Line
+        ("Unexpected exception:" & ASCII.LF & Exception_Information (E));
+   end On_Exception;
 
-   Win     : Main_Windows.Main_Window;
-begin
-   Gtk.Main.Init;
-
-   --  For debug purposes only
-   Gtkada.Bindings.Set_On_Exception
-     (Global_Exception_Handler.On_Exception'Access);
-
-   Load_Css_File
-      ("testgtk.css", Ada.Text_IO.Put_Line'Access, Priority_Application);
-
-   Main_Windows.Gtk_New (Win);
-   Win.Set_Position (Win_Pos_Center);
-   Main_Windows.Show_All (Win);
-   Gtk.Main.Main;
-end Testgtk;
+end Global_Exception_Handler;

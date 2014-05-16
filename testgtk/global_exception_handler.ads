@@ -21,31 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;        use Ada.Text_IO;
-with Gtkada.Bindings;    use Gtkada.Bindings;
-with Gtkada.Style;       use Gtkada.Style;
-with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Style_Provider; use Gtk.Style_Provider;
-with Gtk.Main;
+with Ada.Exceptions; use Ada.Exceptions;
 
-with Global_Exception_Handler;
-with Main_Windows;
+package Global_Exception_Handler is
 
-procedure Testgtk is
+   procedure On_Exception (E : Ada.Exceptions.Exception_Occurrence);
+   --  Global exception handler for the application
 
-   Win     : Main_Windows.Main_Window;
-begin
-   Gtk.Main.Init;
-
-   --  For debug purposes only
-   Gtkada.Bindings.Set_On_Exception
-     (Global_Exception_Handler.On_Exception'Access);
-
-   Load_Css_File
-      ("testgtk.css", Ada.Text_IO.Put_Line'Access, Priority_Application);
-
-   Main_Windows.Gtk_New (Win);
-   Win.Set_Position (Win_Pos_Center);
-   Main_Windows.Show_All (Win);
-   Gtk.Main.Main;
-end Testgtk;
+end Global_Exception_Handler;

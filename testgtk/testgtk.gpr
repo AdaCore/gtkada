@@ -23,7 +23,10 @@ project TestGtk is
       end case;
    end Builder;
 
-   package Compiler renames Shared.Compiler;
+   package Compiler is
+      for Switches ("ada") use Shared.Compiler'Switches ("ada");
+   end Compiler;
+
    package Binder   renames Shared.Binder;
    package IDE      renames Shared.IDE;
 
