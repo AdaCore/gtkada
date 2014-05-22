@@ -272,7 +272,8 @@ package Gtkada.MDI is
       Position_Bottom,
       Position_Top,
       Position_Left,
-      Position_Right);
+      Position_Right,
+      Position_Float);
    subtype Side_Position is Child_Position
       range Position_Bottom .. Position_Right;
    --  The initial position of windows within the MDI.
@@ -280,6 +281,7 @@ package Gtkada.MDI is
    --  following algorithm. This algorithm is designed with the notion of
    --  groups of windows in mind, so that some windows (typically editors) have
    --  a special status.
+   --     - If Position_Float, make the window floating
    --     - If another window with the same Group is already in the MDI, the
    --       new window is put on top of it.
    --     - Otherwise, if Position_Automatic, if an empty area exists within

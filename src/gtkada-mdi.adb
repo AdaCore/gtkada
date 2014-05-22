@@ -2168,7 +2168,7 @@ package body Gtkada.MDI is
                end if;
 
                case Position is
-                  when Position_Bottom =>
+                  when Position_Float | Position_Bottom =>
                      if Current = null then
                         Split
                           (Pane,
@@ -2795,9 +2795,12 @@ package body Gtkada.MDI is
       end if;
 
       Set_State (Child, Normal);
-      Float_Child (Child, MDI.All_Floating_Mode);
+      Float_Child
+         (Child, MDI.All_Floating_Mode or Initial_Position = Position_Float);
 
-      if not MDI.All_Floating_Mode then
+      if not MDI.All_Floating_Mode
+         and then Initial_Position /= Position_Float
+      then
          Put_In_Notebook (MDI, Child, Initial_Position => Initial_Position);
       end if;
 
@@ -3570,8 +3573,10 @@ package body Gtkada.MDI is
       Diag        : Gtk_Dialog;
       Win         : Gtk_Window;
       Cont        : Gtk_Container;
+      Widget      : Gtk_Widget;
       Min, Requisition : Gtk_Requisition;
       Groups      : Object_List.GSlist;
+      Box         : Gtk_Box;
       W, H        : Gint;
    begin
       if Traces then
@@ -3728,7 +3733,13 @@ package body Gtkada.MDI is
             Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
-         Reparent (Get_Parent (Child.Initial), Cont);
+         Widget := Child.Initial.Get_Parent;
+         Reparent (Widget, Cont);
+         if Cont.all in Gtk_Box_Record'Class then
+            Gtk_Box (Cont).Set_Child_Packing
+               (Widget, Expand => True, Fill => True, Padding => 0,
+                Pack_Type => Pack_Start);
+         end if;
 
          Set_State (Child, Floating);
          Update_Float_Menu (Child);
@@ -3742,8 +3753,14 @@ package body Gtkada.MDI is
          --  Reassign the widget to Child instead of the notebook
 
          Win := Gtk_Window (Get_Toplevel (Child.Initial));
-         Reparent (Get_Parent (Child.Initial),
-                   New_Parent => Gtk_Box (Get_Child (Child)));
+         Box := Gtk_Box (Get_Child (Child));
+         Widget := Child.Initial.Get_Parent;
+
+         Reparent (Widget, New_Parent => Box);
+         Box.Set_Child_Packing
+            (Widget, Expand => True, Fill => True, Padding => 0,
+             Pack_Type => Pack_Start);
+
          Set_State (Child, Normal);
          Destroy (Win);
 

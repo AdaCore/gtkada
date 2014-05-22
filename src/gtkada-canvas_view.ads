@@ -745,7 +745,7 @@ package Gtkada.Canvas_View is
    overriding procedure Raise_Item
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class);
-   procedure Lower_Item
+   overriding procedure Lower_Item
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class);
 
