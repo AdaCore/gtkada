@@ -763,6 +763,7 @@ package body Gtkada.MDI is
       else
          if C.MDI.Delay_Before_Focus_Id /= No_Source_Id then
             Remove (C.MDI.Delay_Before_Focus_Id);
+            C.MDI.Delay_Before_Focus_Id := No_Source_Id;
          end if;
 
          C.MDI.Delay_Before_Focus_Id := Widget_Sources.Timeout_Add
@@ -2168,7 +2169,7 @@ package body Gtkada.MDI is
                end if;
 
                case Position is
-                  when Position_Float | Position_Bottom =>
+                  when Position_Bottom =>
                      if Current = null then
                         Split
                           (Pane,
@@ -2213,7 +2214,7 @@ package body Gtkada.MDI is
                         Split (Pane, Current, Note, Orientation_Horizontal);
                      end if;
 
-                  when Position_Automatic =>
+                  when Position_Automatic | Position_Float =>
                      if C.MDI.Central /= null
                         and then Current = Gtk_Widget (C.MDI.Central)
                      then
@@ -2779,7 +2780,12 @@ package body Gtkada.MDI is
    procedure Put
      (MDI              : access MDI_Window_Record;
       Child            : access MDI_Child_Record'Class;
-      Initial_Position : Child_Position := Position_Automatic) is
+      Initial_Position : Child_Position := Position_Automatic)
+   is
+      Float : constant Boolean :=
+         MDI.All_Floating_Mode
+         or else (not MDI.Loading_Desktop
+                  and then Initial_Position = Position_Float);
    begin
       Child.MDI := MDI_Window (MDI);
 
@@ -2792,15 +2798,13 @@ package body Gtkada.MDI is
 
       if Child.State = Invisible then
          Unref (Child);  --  Set in Remove_All_Items
+         return;
       end if;
 
       Set_State (Child, Normal);
-      Float_Child
-         (Child, MDI.All_Floating_Mode or Initial_Position = Position_Float);
+      Float_Child (Child, Float);
 
-      if not MDI.All_Floating_Mode
-         and then Initial_Position /= Position_Float
-      then
+      if not Float then
          Put_In_Notebook (MDI, Child, Initial_Position => Initial_Position);
       end if;
 
@@ -4679,7 +4683,7 @@ package body Gtkada.MDI is
                       Width       => -1,
                       Height      => -1,
                       After       => True);
-            when others =>
+            when Position_Automatic | Position_Float =>
                if Current /= null then
                   Note := Current;
                else
@@ -6540,6 +6544,8 @@ package body Gtkada.MDI is
 
          To_Raise := Widget_List.Null_List;
          To_Hide  := Widget_List.Null_List;
+
+         MDI.Loading_Desktop := True;
 
          if not MDI.Independent_Perspectives and then From_Tree /= null then
             --  ??? Incorrect: the size of the central area is only known once
