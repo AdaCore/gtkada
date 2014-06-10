@@ -756,6 +756,20 @@ class AdaTypeArray(CType):
     def convert_to_c(self, pkg=None):
         return "%(var)s (%(var)s'First)'Address"
 
+    def convert_from_c(self):
+        # ??? This implementation is specialized for the Gtk.Clipboard pkg,
+        # which is the only place where we use it
+        c = ("Atom_Arrays.To_Array " +
+             "(Atom_Arrays.Convert (%(var)s), Integer (N_Atoms))")
+
+        return (self.param,       # name of Ada type
+                self.cparam,      # name of C type
+                c,                # convert from C to Ada
+                [                 # list of temporary variables needed
+                ],
+                self.cparam,      # name of C type for out parameters
+                c)                # convert from previous line to Ada type
+
 
 class AdaNaming(object):
 
@@ -890,8 +904,14 @@ class AdaNaming(object):
             t = UTF8_List()
         elif (cname in ("gint**", "int**")
               or name in ("array_of_gint", "array_of_guint", "array_of_gint8",
-                          "array_of_guint8")):
+                          "array_of_guint8", "array_of_guint16")):
             t = AdaTypeArray("gint")
+            isArray = True
+        elif name in ("array_of_Gdk.Atom", ):
+            t = AdaTypeArray("Gdk_Atom")
+            isArray = True
+        elif name in ("array_of_gdouble", ):
+            t = AdaTypeArray("gdouble")
             isArray = True
         elif cname == "void":
             return None

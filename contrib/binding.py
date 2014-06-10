@@ -51,6 +51,7 @@ ctype_qname = QName(c_uri, "type").text
 ggettype = QName(glib_uri, "get-type").text
 gsignal = QName(glib_uri, "signal").text
 glib_type_struct = QName(glib_uri, "type-struct").text
+glib_type_name = QName(glib_uri, "type-name").text
 namespace = QName(uri, "namespace").text
 narray = QName(uri, "array").text
 nbitfield = QName(uri, "bitfield").text
@@ -337,7 +338,7 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
             # that the function is not bound.
             return None
 
-    print "Error: XML Node has unknown type\n", nodeOrType
+    print("Error: XML Node has unknown type: %s (%s)" % (nodeOrType, nodeOrType.attrib))
     return None
 
 
@@ -703,6 +704,10 @@ class GIRClass(object):
         self.node = node
         self.rootNode = rootNode
         self.ctype = self.node.get(ctype_qname)
+        if not self.ctype:
+            print("no c:type defined for %s" % (self.node.get(glib_type_name, )))
+            return
+
         self._private = ""
         self._generated = False
         self.identifier_prefix = identifier_prefix

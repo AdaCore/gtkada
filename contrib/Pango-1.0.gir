@@ -4623,33 +4623,6 @@ for a font (possibly restricted to a script). The fields of this
 structure are private to implementations of a font backend. See
 the documentation of the corresponding getters for documentation
 of their meaning.</doc>
-      <field name="ref_count" writable="1">
-        <type name="guint" c:type="guint"/>
-      </field>
-      <field name="ascent" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="descent" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="approximate_char_width" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="approximate_digit_width" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="underline_position" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="underline_thickness" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="strikethrough_position" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="strikethrough_thickness" writable="1">
-        <type name="gint" c:type="int"/>
-      </field>
       <constructor name="new" c:identifier="pango_font_metrics_new">
         <doc xml:space="preserve">Creates a new #PangoFontMetrics structure. This is only for
 internal use by Pango backends and there is no public way

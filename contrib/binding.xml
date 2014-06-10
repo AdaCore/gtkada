@@ -3886,6 +3886,7 @@ creating a tag.
 
    <package id="GtkTextTagTable">
      <parameter name="self" ada="Table"/>
+     <method id='gtk_text_tag_table_add' return='void'/> <!--  backward compatibility -->
    </package>
 
    <package id="GtkTextView">
@@ -4589,6 +4590,7 @@ creating a tag.
    </package>
 
    <package id="PangoFontMetrics">
+      <!--<record ctype="PangoFontMetrics" private="true"/>-->
    </package>
 
    <package id="PangoFontset">
@@ -6188,6 +6190,7 @@ direction, widget state, or icon size.
       Enums.Pango_Weight_Medium      =&gt; "Medium    ",
       Enums.Pango_Weight_Semibold    =&gt; "Semi-Bold ",
       Enums.Pango_Weight_Bold        =&gt; "Bold      ",
+      Enums.Pango_Weight_Semilight   =&gt; "Semi-Light",
       Enums.Pango_Weight_Ultrabold   =&gt; "Bold      ",
       Enums.Pango_Weight_Ultraheavy  =&gt; "Ultraheavy",
       Enums.Pango_Weight_Heavy       =&gt; "Heavy     ");
@@ -7507,12 +7510,24 @@ package body Generic_Set is
      <method id="g_application_get_dbus_connection" bind="False"/> <!-- requires DBus -->
      <method id="g_application_open" bind="False" /> <!-- requires GFile -->
      <method id="::open" bind="False"/>  <!--  requires GFile -->
+     <method id="g_application_add_main_option_entries" bind="False"/>  <!--  requires GOptionEntry -->
+     <method id="g_application_add_main_option" bind="False" /> <!--  circular dependency -->
+     <method id="g_application_add_option_group" bind="False"/> <!--  circular dependency -->
+     <method id="::handle-local-options" bind="False"/>  <!--  require GVariant -->
+   </package>
+
+   <package id="GNotification" ada="Glib.Notification">
+      <method id="g_notification_set_body">
+         <parameter name="body" ada="the_body"/>
+      </method>
+      <enum ctype='GNotificationPriority'/>
    </package>
 
    <package id="GApplicationCommandLine" into="GApplication" ada="Glib.Application">
      <method id="g_application_command_line_create_file_for_arg" bind="False" /> <!-- requires GFile -->
      <method id="g_application_command_line_get_stdin" bind="False" /> <!-- requires GInputStream -->
      <method id="g_application_command_line_get_type" ada="Get_Type_Command_Line" />
+     <method id="g_application_command_line_get_options_dict" bind="False"/> <!-- requires GVariant -->
      <method id="g_application_command_line_get_arguments">
        <parameter name="argc" ada="" default="null"/>
        <return-value transfer-ownership="full"/>
@@ -7556,6 +7571,7 @@ package body Generic_Set is
      <method id="g_option_context_new" ada="G_New"/>
      <method id="g_option_group_new" ada="G_New"/>
      <method id="g_option_context_parse" bind="False"/> <!-- Invalid binding generated -->
+     <method id="g_option_context_parse_strv" bind="False"/> <!-- low-level -->
      <method id="g_option_context_add_main_entries">
        <parameter name="entries" type="GOption_Entry_Array"/>
      </method>
@@ -7920,6 +7936,15 @@ package body Generic_Set is
    <package id='GtkActivatable'>
       <virtual-method id='*' bind='False'/>
    </package>
+
+   <package id='GtkListBoxRow'>
+     <list ctype="GtkListBoxRow" ada="List_Box_Row_List" />
+   </package>
+   <package id='GtkListBox'>
+      <method id='gtk_list_box_get_selected_rows' return='ListBoxRowList'>
+      </method>
+   </package>
+
 
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
