@@ -236,14 +236,15 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkAccelGroup",
            "GtkAccelLabel",
            "GtkAccelMap",
-           #"GtkAccessible",  # Needs ATK
+           "--GtkAccessible",  # Needs ATK
            "GtkAction",
            "GtkActionGroup",
+           "GtkActionBar",
            "GtkAdjustment",
            "GtkAlignment",
-           #"GtkAppChooserButton",  # Needs GFile
-           #"GtkAppChooserDialog",  # Needs GFile
-           #"GtkAppChooserWidget",  # Needs GFile
+           "--GtkAppChooserButton",  # Needs GFile
+           "--GtkAppChooserDialog",  # Needs GFile
+           "--GtkAppChooserWidget",  # Needs GFile
            "GtkApplication",
            "GtkApplicationWindow",
            "GtkArrow",
@@ -299,6 +300,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkFileChooserWidget",
            "GtkFileFilter",
            "GtkFixed",
+           "GtkFlowBox",
+           "GtkFlowBoxChild",
            "GtkFontButton",
            "GtkFontChooserDialog",
            "GtkFontChooserWidget",
@@ -310,6 +313,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkHandleBox",
            "GtkHBox",
            "GtkHButtonBox",
+           "GtkHeaderBar",
            "GtkHPaned",
            "GtkHScale",
            "GtkHScrollbar",
@@ -332,8 +336,10 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkLayout",
            "GtkLevelBar",
            "GtkLinkButton",
+           "GtkListBox",
+           "GtkListBoxRow",
            "GtkListStore",
-           # "GtkLockButton",  # requires GPermission
+           "--GtkLockButton",  # requires GPermission
            "GtkMain",
            "GtkMisc",
            "GtkMenu",
@@ -343,14 +349,15 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkMenuShell",
            "GtkMenuToolButton",
            "GtkMessageDialog",
-           #"GtkMountOperation",  # Requires a lot of GIO
+           "--GtkMountOperation",  # Requires a lot of GIO
            "GtkNotebook",
-           # "GtkNumerableIcon",   # Requires a lot of GIO
+           "--GtkNumerableIcon",   # Requires a lot of GIO
            "GtkOffscreenWindow",
            "GtkOverlay",
            "GtkPaned",
            "GtkPageSetup",
            "GtkPaperSize",
+           "--GtkPlacesSidebar",  # Requires GFile
            "GtkPopover",
            "GtkPrintContext",
            "GtkPrintOperation",
@@ -370,8 +377,10 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkRecentFilter",
            "GtkRecentInfo",
            "GtkRecentManager",
+           "GtkRevealer",
            "GtkScale",
            "GtkScaleButton",
+           "GtkSearchBar",
            "GtkSearchEntry",
            "GtkSelectionData",
            "GtkSeparator",
@@ -384,6 +393,8 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GtkSocket",  #  X11-specific, no binding
            "GtkSpinner",
            "GtkSpinButton",
+           "GtkStack",
+           "GtkStackSwitcher",
            "GtkStatusbar",
            "GtkStatusIcon",
            "GtkStockItem",

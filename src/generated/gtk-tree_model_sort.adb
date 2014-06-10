@@ -151,20 +151,26 @@ package body Gtk.Tree_Model_Sort is
    -- Gtk_New_With_Model --
    ------------------------
 
-   procedure Gtk_New_With_Model (Self : out Gtk_Tree_Model_Sort) is
+   procedure Gtk_New_With_Model
+      (Self        : out Gtk_Tree_Model_Sort;
+       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
+   is
    begin
       Self := new Gtk_Tree_Model_Sort_Record;
-      Gtk.Tree_Model_Sort.Initialize_With_Model (Self);
+      Gtk.Tree_Model_Sort.Initialize_With_Model (Self, Child_Model);
    end Gtk_New_With_Model;
 
    ---------------------------------------------
    -- Gtk_Tree_Model_Sort_Sort_New_With_Model --
    ---------------------------------------------
 
-   function Gtk_Tree_Model_Sort_Sort_New_With_Model return Gtk_Tree_Model_Sort is
+   function Gtk_Tree_Model_Sort_Sort_New_With_Model
+      (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
+       return Gtk_Tree_Model_Sort
+   is
       Self : constant Gtk_Tree_Model_Sort := new Gtk_Tree_Model_Sort_Record;
    begin
-      Gtk.Tree_Model_Sort.Initialize_With_Model (Self);
+      Gtk.Tree_Model_Sort.Initialize_With_Model (Self, Child_Model);
       return Self;
    end Gtk_Tree_Model_Sort_Sort_New_With_Model;
 
@@ -173,13 +179,15 @@ package body Gtk.Tree_Model_Sort is
    ---------------------------
 
    procedure Initialize_With_Model
-      (Self : not null access Gtk_Tree_Model_Sort_Record'Class)
+      (Self        : not null access Gtk_Tree_Model_Sort_Record'Class;
+       Child_Model : Gtk.Tree_Model.Gtk_Tree_Model)
    is
-      function Internal return System.Address;
+      function Internal
+         (Child_Model : Gtk.Tree_Model.Gtk_Tree_Model) return System.Address;
       pragma Import (C, Internal, "gtk_tree_model_sort_new_with_model");
    begin
       if not Self.Is_Created then
-         Set_Object (Self, Internal);
+         Set_Object (Self, Internal (Child_Model));
       end if;
    end Initialize_With_Model;
 
