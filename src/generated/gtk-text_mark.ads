@@ -22,10 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  You may wish to begin by reading the <link linkend="TextWidget">text
---  widget conceptual overview</link> which gives an overview of all the
---  objects and data types related to the text widget and how they work
---  together.
+--  You may wish to begin by reading the [text widget conceptual
+--  overview][TextWidget] which gives an overview of all the objects and data
+--  types related to the text widget and how they work together.
 --
 --  A Gtk.Text_Mark.Gtk_Text_Mark is like a bookmark in a text buffer; it
 --  preserves a position in the text. You can convert the mark to an iterator
@@ -33,13 +32,13 @@
 --  valid across buffer mutations, because their behavior is defined when text
 --  is inserted or deleted. When text containing a mark is deleted, the mark
 --  remains in the position originally occupied by the deleted text. When text
---  is inserted at a mark, a mark with 'left gravity' will be moved to the
---  beginning of the newly-inserted text, and a mark with 'right gravity' will
+--  is inserted at a mark, a mark with "left gravity" will be moved to the
+--  beginning of the newly-inserted text, and a mark with "right gravity" will
 --  be moved to the end.
 --
---  [ "left" and "right" here refer to logical direction (left is the toward
---  the start of the buffer); in some languages such as Hebrew the
---  logically-leftmost text is not actually on the left when displayed. ]
+--  Note that "left" and "right" here refer to logical direction (left is the
+--  toward the start of the buffer); in some languages such as Hebrew the
+--  logically-leftmost text is not actually on the left when displayed.
 --
 --  Marks are reference counted, but the reference count only controls the
 --  validity of the memory; marks can be deleted from the buffer at any time

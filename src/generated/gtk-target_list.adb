@@ -142,7 +142,7 @@ package body Gtk.Target_List is
    procedure Find
       (List   : Gtk_Target_List;
        Target : Gdk.Types.Gdk_Atom;
-       Info   : in out Guint;
+       Info   : out Guint;
        Found  : out Boolean)
    is
       function Internal
@@ -150,7 +150,7 @@ package body Gtk.Target_List is
           Target   : Gdk.Types.Gdk_Atom;
           Acc_Info : access Guint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_target_list_find");
-      Acc_Info   : aliased Guint := Info;
+      Acc_Info   : aliased Guint;
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (List), Target, Acc_Info'Access);

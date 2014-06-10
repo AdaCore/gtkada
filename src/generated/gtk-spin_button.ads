@@ -33,57 +33,52 @@
 --  Gtk.Adjustment.Gtk_Adjustment section for more details about an
 --  adjustment's properties.
 --
---  == Using a GtkSpinButton to get an integer ==
+--  ## Using a GtkSpinButton to get an integer
 --
---    /* Provides a function to retrieve an integer value from a
---    * GtkSpinButton and creates a spin button to model percentage
---    * values.
---    */
---    gint
---    grab_int_value (GtkSpinButton *button,
---       gpointer       user_data)
---    {
---       return gtk_spin_button_get_value_as_int (button);
---    }
---    void
---    create_integer_spin_button (void)
---    {
---       GtkWidget *window, *button;
---       GtkAdjustment *adjustment;
---       adjustment = gtk_adjustment_new (50.0, 0.0, 100.0, 1.0, 5.0, 0.0);
---       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---       gtk_container_set_border_width (GTK_CONTAINER (window), 5);
---       /* creates the spinbutton, with no decimal places */
---       button = gtk_spin_button_new (adjustment, 1.0, 0);
---       gtk_container_add (GTK_CONTAINER (window), button);
---       gtk_widget_show_all (window);
---    }
+--  |[<!-- language="C" --> // Provides a function to retrieve an integer
+--  value from a GtkSpinButton // and creates a spin button to model percentage
+--  values.
 --
---  == Using a GtkSpinButton to get a floating point value ==
+--  gint grab_int_value (GtkSpinButton *button, gpointer user_data) { return
+--  gtk_spin_button_get_value_as_int (button); }
 --
---    /* Provides a function to retrieve a floating point value from a
---    * GtkSpinButton, and creates a high precision spin button.
---    */
---    gfloat
---    grab_float_value (GtkSpinButton *button,
---       gpointer       user_data)
---    {
---       return gtk_spin_button_get_value (button);
---    }
---    void
---    create_floating_spin_button (void)
---    {
---       GtkWidget *window, *button;
---       GtkAdjustment *adjustment;
---       adjustment = gtk_adjustment_new (2.500, 0.0, 5.0, 0.001, 0.1, 0.0);
---       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---       gtk_container_set_border_width (GTK_CONTAINER (window), 5);
---       /* creates the spinbutton, with three decimal places */
---       button = gtk_spin_button_new (adjustment, 0.001, 3);
---       gtk_container_add (GTK_CONTAINER (window), button);
---       gtk_widget_show_all (window);
---    }
+--  void create_integer_spin_button (void) {
 --
+--  GtkWidget *window, *button; GtkAdjustment *adjustment;
+--
+--  adjustment = gtk_adjustment_new (50.0, 0.0, 100.0, 1.0, 5.0, 0.0);
+--
+--  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--  gtk_container_set_border_width (GTK_CONTAINER (window), 5);
+--
+--  // creates the spinbutton, with no decimal places button =
+--  gtk_spin_button_new (adjustment, 1.0, 0); gtk_container_add (GTK_CONTAINER
+--  (window), button);
+--
+--  gtk_widget_show_all (window); } ]|
+--
+--  ## Using a GtkSpinButton to get a floating point value
+--
+--  |[<!-- language="C" --> // Provides a function to retrieve a floating
+--  point value from a // GtkSpinButton, and creates a high precision spin
+--  button.
+--
+--  gfloat grab_float_value (GtkSpinButton *button, gpointer user_data) {
+--  return gtk_spin_button_get_value (button); }
+--
+--  void create_floating_spin_button (void) { GtkWidget *window, *button;
+--  GtkAdjustment *adjustment;
+--
+--  adjustment = gtk_adjustment_new (2.500, 0.0, 5.0, 0.001, 0.1, 0.0);
+--
+--  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--  gtk_container_set_border_width (GTK_CONTAINER (window), 5);
+--
+--  // creates the spinbutton, with three decimal places button =
+--  gtk_spin_button_new (adjustment, 0.001, 3); gtk_container_add
+--  (GTK_CONTAINER (window), button);
+--
+--  gtk_widget_show_all (window); } ]|
 --
 --  </description>
 pragma Ada_2005;
@@ -523,7 +518,8 @@ package Gtk.Spin_Button is
    -- 
    --  Callback parameters:
    --    --  "new_value": return location for the new value
-   --    --  Returns True for a successful conversion, False if the input was not handled, and GTK_INPUT_ERROR if the conversion failed.
+   --    --  Returns True for a successful conversion, False if the input
+   --     was not handled, and GTK_INPUT_ERROR if the conversion failed.
 
    type Cb_Gtk_Spin_Button_Boolean is not null access function
      (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
@@ -543,9 +539,9 @@ package Gtk.Spin_Button is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::output signal can be used to change to formatting of the value
-   --  that is displayed in the spin buttons entry. |[ /* show leading zeros */
-   --  static gboolean on_output (GtkSpinButton *spin, gpointer data) {
-   --  GtkAdjustment *adjustment; gchar *text; int value;
+   --  that is displayed in the spin buttons entry. |[<!-- language="C" --> //
+   --  show leading zeros static gboolean on_output (GtkSpinButton *spin,
+   --  gpointer data) { GtkAdjustment *adjustment; gchar *text; int value;
    --
    --  adjustment = gtk_spin_button_get_adjustment (spin); value =
    --  (int)gtk_adjustment_get_value (adjustment); text = g_strdup_printf

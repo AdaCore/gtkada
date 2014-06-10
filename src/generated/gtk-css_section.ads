@@ -54,9 +54,9 @@ package Gtk.Css_Section is
       Css_Section_Keyframes);
    pragma Convention (C, Gtk_Css_Section_Type);
    --  The different types of sections indicate parts of a CSS document as
-   --  parsed by GTK's CSS parser. They are oriented towards the CSS grammar
-   --  <ulink url="http://www.w3.org/TR/CSS21/grammar.html">CSS
-   --  grammer</ulink>, but may contain extensions.
+   --  parsed by GTK's CSS parser. They are oriented towards the [CSS
+   --  Grammar](http://www.w3.org/TR/CSS21/grammar.html), but may contain
+   --  extensions.
    --
    --  More types might be added in the future as the parser incorporates more
    --  features.

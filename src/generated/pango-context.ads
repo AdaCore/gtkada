@@ -21,6 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Context.Pango_Context structure stores global information used
+--  to control the itemization process.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");

@@ -22,10 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.Tool_Item.Gtk_Tool_Item<!-- -->s are widgets that can appear on a
---  toolbar. To create a toolbar item that contain something else than a
---  button, use Gtk.Tool_Item.Gtk_New. Use Gtk.Container.Add to add a child
---  widget to the tool item.
+--  Gtk_Tool_Items are widgets that can appear on a toolbar. To create a
+--  toolbar item that contain something else than a button, use
+--  Gtk.Tool_Item.Gtk_New. Use Gtk.Container.Add to add a child widget to the
+--  tool item.
 --
 --  For toolbar items that contain buttons, see the
 --  Gtk.Tool_Button.Gtk_Tool_Button,
@@ -161,7 +161,7 @@ package Gtk.Tool_Item is
    --  Gtk.Menu_Item.Gtk_Menu_Item.
    --  Custom subclasses of Gtk.Tool_Item.Gtk_Tool_Item should use this
    --  function to update their menu item when the Gtk.Tool_Item.Gtk_Tool_Item
-   --  changes. That the Menu_Item_Id<!-- -->s must match ensures that a
+   --  changes. That the Menu_Item_Ids must match ensures that a
    --  Gtk.Tool_Item.Gtk_Tool_Item will not inadvertently change a menu item
    --  that they did not create.
    --  Since: gtk+ 2.4
@@ -219,12 +219,11 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function in the handler of
    --  the GtkToolItem::toolbar_reconfigured signal to find out in what style
    --  the toolbar is displayed and change themselves accordingly
-   --  Possibilities are:
-   --     * GTK_TOOLBAR_BOTH, meaning the tool item should show both an icon
-   --  and a label, stacked vertically
-   --     * GTK_TOOLBAR_ICONS, meaning the toolbar shows only icons
-   --     * GTK_TOOLBAR_TEXT, meaning the tool item should only show text
-   --     * GTK_TOOLBAR_BOTH_HORIZ, meaning the tool item should show both an
+   --  Possibilities are: - Gtk.Enums.Toolbar_Both, meaning the tool item
+   --  should show both an icon and a label, stacked vertically -
+   --  Gtk.Enums.Toolbar_Icons, meaning the toolbar shows only icons -
+   --  Gtk.Enums.Toolbar_Text, meaning the tool item should only show text -
+   --  Gtk.Enums.Toolbar_Both_Horiz, meaning the tool item should show both an
    --  icon and a label, arranged horizontally
    --  Since: gtk+ 2.4
 
@@ -327,25 +326,31 @@ package Gtk.Tool_Item is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Tool_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Tool_Item_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Tool_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tool_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Tool_Item_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Tool_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --
@@ -384,16 +389,15 @@ package Gtk.Tool_Item is
    --  Tool_Item about whether the item should appear in the toolbar overflow
    --  menu. In response the tool item should either
    --
-   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a null pointer and
-   --  return True to indicate that the item should not appear in the overflow
-   --  menu
+   --  - call Gtk.Tool_Item.Set_Proxy_Menu_Item with a null pointer and return
+   --  True to indicate that the item should not appear in the overflow menu
    --
-   --     * call Gtk.Tool_Item.Set_Proxy_Menu_Item with a new menu item and
+   --  - call Gtk.Tool_Item.Set_Proxy_Menu_Item with a new menu item and
    --  return True, or
    --
-   --     * return False to indicate that the signal was not handled by the
-   --  item. This means that the item will not appear in the overflow menu
-   --  unless a later handler installs a menu item.
+   --  - return False to indicate that the signal was not handled by the item.
+   --  This means that the item will not appear in the overflow menu unless a
+   --  later handler installs a menu item.
    --
    --  The toolbar may cache the result of this signal. When the tool item
    --  changes how it will respond to this signal it must call
@@ -421,18 +425,9 @@ package Gtk.Tool_Item is
    --  This signal is emitted when some property of the toolbar that the item
    --  is a child of changes. For custom subclasses of
    --  Gtk.Tool_Item.Gtk_Tool_Item, the default handler of this signal use the
-   --  functions
-   --
-   --     * gtk_tool_shell_get_orientation
-   --
-   --     * gtk_tool_shell_get_style
-   --
-   --     * gtk_tool_shell_get_icon_size
-   --
-   --     * gtk_tool_shell_get_relief_style
-   --
-   --  to find out what the toolbar should look like and change themselves
-   --  accordingly.
+   --  functions - Gtk.Tool_Shell.Get_Orientation - Gtk.Tool_Shell.Get_Style -
+   --  Gtk.Tool_Shell.Get_Icon_Size - Gtk.Tool_Shell.Get_Relief_Style to find
+   --  out what the toolbar should look like and change themselves accordingly.
 
    ----------------
    -- Interfaces --

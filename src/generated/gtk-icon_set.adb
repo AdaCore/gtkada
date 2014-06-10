@@ -238,6 +238,28 @@ package body Gtk.Icon_Set is
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Self), Get_Object (Context), Size), Stub_Gdk_Pixbuf));
    end Render_Icon_Pixbuf;
 
+   -------------------------
+   -- Render_Icon_Surface --
+   -------------------------
+
+   function Render_Icon_Surface
+      (Self       : Gtk_Icon_Set;
+       Context    : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       Size       : Gtk.Enums.Gtk_Icon_Size;
+       Scale      : Gint;
+       For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface
+   is
+      function Internal
+         (Self       : System.Address;
+          Context    : System.Address;
+          Size       : Gtk.Enums.Gtk_Icon_Size;
+          Scale      : Gint;
+          For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface;
+      pragma Import (C, Internal, "gtk_icon_set_render_icon_surface");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Context), Size, Scale, For_Window);
+   end Render_Icon_Surface;
+
    -----------
    -- Unref --
    -----------

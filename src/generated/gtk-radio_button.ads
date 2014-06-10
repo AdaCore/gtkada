@@ -53,27 +53,26 @@
 --  Gtk.Radio_Button.Gtk_Radio_Button will remove itself and its list item when
 --  it is destroyed.
 --
---  == How to create a group of two radio buttons. ==
+--  ## How to create a group of two radio buttons.
 --
---    void create_radio_buttons (void) {
---       GtkWidget *window, *radio1, *radio2, *box, *entry;
---       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---       box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
---       gtk_box_set_homogeneous (GTK_BOX (box), TRUE);
---       /* Create a radio button with a GtkEntry widget */
---       radio1 = gtk_radio_button_new (NULL);
---       entry = gtk_entry_new (<!-- -->);
---          gtk_container_add (GTK_CONTAINER (radio1), entry);
---          /* Create a radio button with a label */
---             radio2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio1),
---             "I'm the second radio button.");
---          /* Pack them into a box, then show all the widgets */
---          gtk_box_pack_start (GTK_BOX (box), radio1, TRUE, TRUE, 2);
---          gtk_box_pack_start (GTK_BOX (box), radio2, TRUE, TRUE, 2);
---          gtk_container_add (GTK_CONTAINER (window), box);
---          gtk_widget_show_all (window);
---          return;
---       }
+--  |[<!-- language="C" --> void create_radio_buttons (void) {
+--
+--  GtkWidget *window, *radio1, *radio2, *box, *entry; window = gtk_window_new
+--  (GTK_WINDOW_TOPLEVEL); box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
+--  gtk_box_set_homogeneous (GTK_BOX (box), TRUE);
+--
+--  // Create a radio button with a GtkEntry widget radio1 =
+--  gtk_radio_button_new (NULL); entry = gtk_entry_new (); gtk_container_add
+--  (GTK_CONTAINER (radio1), entry);
+--
+--  // Create a radio button with a label radio2 =
+--  gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio1),
+--  "I'm the second radio button.");
+--
+--  // Pack them into a box, then show all the widgets gtk_box_pack_start
+--  (GTK_BOX (box), radio1, TRUE, TRUE, 2); gtk_box_pack_start (GTK_BOX (box),
+--  radio2, TRUE, TRUE, 2); gtk_container_add (GTK_CONTAINER (window), box);
+--  gtk_widget_show_all (window); return; } ]|
 --
 --  When an unselected button in the group is clicked the clicked button
 --  receives the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal, as does
@@ -174,7 +173,7 @@ package Gtk.Radio_Button is
    --  adding it to the same group as Group. The label will be created using
    --  Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate the
    --  mnemonic for the button.
-   --  "group": the radio button group
+   --  "group": the radio button group, or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 
@@ -203,7 +202,7 @@ package Gtk.Radio_Button is
    --  adding it to the same group as Group. The label will be created using
    --  Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate the
    --  mnemonic for the button.
-   --  "group": the radio button group
+   --  "group": the radio button group, or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 
@@ -240,7 +239,7 @@ package Gtk.Radio_Button is
    --  you are changing the group, it is likely you will need to re-arrange the
    --  user interface to reflect these changes.
    --  "group": an existing radio button group, such as one returned from
-   --  Gtk.Radio_Button.Get_Group.
+   --  Gtk.Radio_Button.Get_Group, or null.
 
    procedure Join_Group
       (Radio_Button : not null access Gtk_Radio_Button_Record;
@@ -249,10 +248,11 @@ package Gtk.Radio_Button is
    --  another Gtk.Radio_Button.Gtk_Radio_Button object
    --  Use this in language bindings instead of the Gtk.Radio_Button.Get_Group
    --  and Gtk.Radio_Button.Set_Group methods
-   --  A common way to set up a group of radio buttons is the following: |[
-   --  GtkRadioButton *radio_button; GtkRadioButton *last_button;
-   --  while (/* more buttons to add */) { radio_button = gtk_radio_button_new
-   --  (...);
+   --  A common way to set up a group of radio buttons is the following:
+   --  |[<!-- language="C" --> GtkRadioButton *radio_button; GtkRadioButton
+   --  *last_button;
+   --  while ( ...more buttons to add... ) { radio_button =
+   --  gtk_radio_button_new (...);
    --  gtk_radio_button_join_group (radio_button, last_button); last_button =
    --  radio_button; } ]|
    --  Since: gtk+ 3.0
@@ -288,25 +288,31 @@ package Gtk.Radio_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Radio_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Radio_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Radio_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Radio_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Radio_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Radio_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

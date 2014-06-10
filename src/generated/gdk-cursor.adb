@@ -82,6 +82,28 @@ package body Gdk.Cursor is
       return Self;
    end Gdk_Cursor_New_From_Name;
 
+   ---------------------------------
+   -- Gdk_Cursor_New_From_Surface --
+   ---------------------------------
+
+   function Gdk_Cursor_New_From_Surface
+      (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Surface : Cairo.Cairo_Surface;
+       X       : Gdouble;
+       Y       : Gdouble) return Gdk_Cursor
+   is
+      function Internal
+         (Display : System.Address;
+          Surface : Cairo.Cairo_Surface;
+          X       : Gdouble;
+          Y       : Gdouble) return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_from_surface");
+      Self : Gdk_Cursor;
+   begin
+      Self := Internal (Get_Object (Display), Surface, X, Y);
+      return Self;
+   end Gdk_Cursor_New_From_Surface;
+
    -------------
    -- Gdk_New --
    -------------
@@ -131,6 +153,27 @@ package body Gdk.Cursor is
       Self := Tmp_Return;
    end Gdk_New_From_Name;
 
+   --------------------------
+   -- Gdk_New_From_Surface --
+   --------------------------
+
+   procedure Gdk_New_From_Surface
+      (Self    : out Gdk_Cursor;
+       Display : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Surface : Cairo.Cairo_Surface;
+       X       : Gdouble;
+       Y       : Gdouble)
+   is
+      function Internal
+         (Display : System.Address;
+          Surface : Cairo.Cairo_Surface;
+          X       : Gdouble;
+          Y       : Gdouble) return Gdk_Cursor;
+      pragma Import (C, Internal, "gdk_cursor_new_from_surface");
+   begin
+      Self := Internal (Get_Object (Display), Surface, X, Y);
+   end Gdk_New_From_Surface;
+
    -----------------
    -- Get_Display --
    -----------------
@@ -144,5 +187,30 @@ package body Gdk.Cursor is
    begin
       return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Self), Stub_Gdk_Display));
    end Get_Display;
+
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   procedure Get_Surface
+      (Self    : Gdk.Gdk_Cursor;
+       X_Hot   : in out Gdouble;
+       Y_Hot   : in out Gdouble;
+       Surface : out Cairo.Cairo_Surface)
+   is
+      function Internal
+         (Self      : Gdk.Gdk_Cursor;
+          Acc_X_Hot : access Gdouble;
+          Acc_Y_Hot : access Gdouble) return Cairo.Cairo_Surface;
+      pragma Import (C, Internal, "gdk_cursor_get_surface");
+      Acc_X_Hot  : aliased Gdouble := X_Hot;
+      Acc_Y_Hot  : aliased Gdouble := Y_Hot;
+      Tmp_Return : Cairo.Cairo_Surface;
+   begin
+      Tmp_Return := Internal (Self, Acc_X_Hot'Access, Acc_Y_Hot'Access);
+      X_Hot := Acc_X_Hot;
+      Y_Hot := Acc_Y_Hot;
+      Surface := Tmp_Return;
+   end Get_Surface;
 
 end Gdk.Cursor;

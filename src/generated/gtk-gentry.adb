@@ -525,6 +525,19 @@ package body Gtk.GEntry is
       return Internal (Get_Object (The_Entry));
    end Get_Max_Length;
 
+   -------------------------
+   -- Get_Max_Width_Chars --
+   -------------------------
+
+   function Get_Max_Width_Chars
+      (The_Entry : not null access Gtk_Entry_Record) return Gint
+   is
+      function Internal (The_Entry : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_entry_get_max_width_chars");
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Max_Width_Chars;
+
    ------------------------
    -- Get_Overwrite_Mode --
    ------------------------
@@ -577,6 +590,20 @@ package body Gtk.GEntry is
    begin
       return Internal (Get_Object (The_Entry));
    end Get_Progress_Pulse_Step;
+
+   --------------
+   -- Get_Tabs --
+   --------------
+
+   function Get_Tabs
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Pango.Tabs.Pango_Tab_Array
+   is
+      function Internal (The_Entry : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_entry_get_tabs");
+   begin
+      return From_Object (Internal (Get_Object (The_Entry)));
+   end Get_Tabs;
 
    --------------
    -- Get_Text --
@@ -1079,6 +1106,20 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Max);
    end Set_Max_Length;
 
+   -------------------------
+   -- Set_Max_Width_Chars --
+   -------------------------
+
+   procedure Set_Max_Width_Chars
+      (The_Entry : not null access Gtk_Entry_Record;
+       N_Chars   : Gint)
+   is
+      procedure Internal (The_Entry : System.Address; N_Chars : Gint);
+      pragma Import (C, Internal, "gtk_entry_set_max_width_chars");
+   begin
+      Internal (Get_Object (The_Entry), N_Chars);
+   end Set_Max_Width_Chars;
+
    ------------------------
    -- Set_Overwrite_Mode --
    ------------------------
@@ -1140,6 +1181,20 @@ package body Gtk.GEntry is
    begin
       Internal (Get_Object (The_Entry), Fraction);
    end Set_Progress_Pulse_Step;
+
+   --------------
+   -- Set_Tabs --
+   --------------
+
+   procedure Set_Tabs
+      (The_Entry : not null access Gtk_Entry_Record;
+       Tabs      : Pango.Tabs.Pango_Tab_Array)
+   is
+      procedure Internal (The_Entry : System.Address; Tabs : System.Address);
+      pragma Import (C, Internal, "gtk_entry_set_tabs");
+   begin
+      Internal (Get_Object (The_Entry), Get_Object (Tabs));
+   end Set_Tabs;
 
    --------------
    -- Set_Text --

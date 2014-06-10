@@ -45,9 +45,9 @@
 --  that are expected to be honored by all children.
 --
 --  Beyond merely rendering a cell, cell renderers can optionally provide
---  active user interface elements. A cell renderer can be 'activatable' like
+--  active user interface elements. A cell renderer can be "activatable" like
 --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle, which toggles when it
---  gets activated by a mouse click, or it can be 'editable' like
+--  gets activated by a mouse click, or it can be "editable" like
 --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text, which allows the user to
 --  edit the text using a Gtk.GEntry.Gtk_Entry. To make a cell renderer
 --  activatable or editable, you have to implement the
@@ -317,7 +317,7 @@ package Gtk.Cell_Renderer is
    --  offsets (if set) of the cell relative to this location.
    --  Please note that the values set in Width and Height, as well as those
    --  in X_Offset and Y_Offset are inclusive of the xpad and ypad properties.
-   --  Deprecated since 3.0, Use Gtk.Cell_Renderer.Get_Preferred_Size instead.
+   --  Deprecated since 3.0, 1
    --  "widget": the widget the renderer is rendering to
    --  "cell_area": The area a cell will be allocated, or null
    --  "x_offset": location to return x offset of cell relative to Cell_Area,
@@ -508,11 +508,11 @@ package Gtk.Cell_Renderer is
    --  Note that GTK+ doesn't guarantee that cell renderers will continue to
    --  use the same kind of widget for editing in future releases, therefore
    --  you should check the type of Editable before doing any specific setup,
-   --  as in the following example: |[ static void text_editing_started
-   --  (GtkCellRenderer *cell, GtkCellEditable *editable, const gchar *path,
-   --  gpointer data) { if (GTK_IS_ENTRY (editable)) { GtkEntry *entry =
-   --  GTK_ENTRY (editable); /* ... create a GtkEntryCompletion */
-   --  gtk_entry_set_completion (entry, completion); } } ]|
+   --  as in the following example: |[<!-- language="C" --> static void
+   --  text_editing_started (GtkCellRenderer *cell, GtkCellEditable *editable,
+   --  const gchar *path, gpointer data) { if (GTK_IS_ENTRY (editable)) {
+   --  GtkEntry *entry = GTK_ENTRY (editable); // ... create a
+   --  GtkEntryCompletion gtk_entry_set_completion (entry, completion); } } ]|
    -- 
    --  Callback parameters:
    --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable

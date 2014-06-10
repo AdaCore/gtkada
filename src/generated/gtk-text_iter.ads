@@ -22,10 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  You may wish to begin by reading the <link linkend="TextWidget">text
---  widget conceptual overview</link> which gives an overview of all the
---  objects and data types related to the text widget and how they work
---  together.
+--  You may wish to begin by reading the [text widget conceptual
+--  overview][TextWidget] which gives an overview of all the objects and data
+--  types related to the text widget and how they work together.
 --
 --  </description>
 pragma Ada_2005;
@@ -45,7 +44,11 @@ package Gtk.Text_Iter is
 
    type Gtk_Text_Search_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Text_Search_Flags);
-
+   --  Flags affecting how a search is done.
+   --
+   --  If neither GTK_TEXT_SEARCH_VISIBLE_ONLY nor GTK_TEXT_SEARCH_TEXT_ONLY
+   --  are enabled, the match must be exact; the special 0xFFFC character will
+   --  match embedded pixbufs or child widgets.
 
    Visible_Only : constant Gtk_Text_Search_Flags := 1;
    Text_Only : constant Gtk_Text_Search_Flags := 2;
@@ -54,10 +57,9 @@ package Gtk.Text_Iter is
    type Gtk_Text_Iter is private;
    function From_Object_Free (B : access Gtk_Text_Iter) return Gtk_Text_Iter;
    pragma Inline (From_Object_Free);
-   --  You may wish to begin by reading the <link linkend="TextWidget">text
-   --  widget conceptual overview</link> which gives an overview of all the
-   --  objects and data types related to the text widget and how they work
-   --  together.
+   --  You may wish to begin by reading the [text widget conceptual
+   --  overview][TextWidget] which gives an overview of all the objects and
+   --  data types related to the text widget and how they work together.
 
    Null_Text_Iter : constant Gtk_Text_Iter;
 
@@ -83,8 +85,8 @@ package Gtk.Text_Iter is
    procedure Assign (Iter : Gtk_Text_Iter; Other : Gtk_Text_Iter);
    pragma Import (C, Assign, "gtk_text_iter_assign");
    --  Assigns the value of Other to Iter. This function is not useful in
-   --  applications, because iterators can be assigned with 'GtkTextIter i =
-   --  j;'. The function is used by language bindings.
+   --  applications, because iterators can be assigned with `GtkTextIter i =
+   --  j;`. The function is used by language bindings.
    --  Since: gtk+ 3.2
    --  "other": another Gtk.Text_Iter.Gtk_Text_Iter
 
@@ -154,6 +156,8 @@ package Gtk.Text_Iter is
        Limit       : Gtk_Text_Iter := Null_Text_Iter;
        Result      : out Boolean);
    --  Same as Gtk.Text_Iter.Forward_Search, but moves backward.
+   --  Match_End will never be set to a Gtk.Text_Iter.Gtk_Text_Iter located
+   --  after Iter, even if there is a possible Match_Start before or at Iter.
    --  "str": search string
    --  "flags": bitmask of flags affecting the search
    --  "match_start": return location for start of match, or null
@@ -270,10 +274,12 @@ package Gtk.Text_Iter is
       (Iter : Gtk_Text_Iter;
        Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean;
    --  Returns True if Tag is toggled on at exactly this point. If Tag is
-   --  null, returns True if any tag is toggled on at this point. Note that the
-   --  gtk_text_iter_begins_tag () returns True if Iter is the *start* of the
-   --  tagged range; gtk_text_iter_has_tag () tells you whether an iterator is
-   --  *within* a tagged range.
+   --  null, returns True if any tag is toggled on at this point.
+   --  Note that if Gtk.Text_Iter.Begins_Tag returns True, it means that Iter
+   --  is at the beginning of the tagged range, and that the character at Iter
+   --  is inside the tagged range. In other words, unlike
+   --  Gtk.Text_Iter.Ends_Tag, if Gtk.Text_Iter.Begins_Tag returns True,
+   --  Gtk.Text_Iter.Has_Tag will also return True for the same parameters.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 
    function Can_Insert
@@ -328,10 +334,12 @@ package Gtk.Text_Iter is
       (Iter : Gtk_Text_Iter;
        Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean;
    --  Returns True if Tag is toggled off at exactly this point. If Tag is
-   --  null, returns True if any tag is toggled off at this point. Note that
-   --  the gtk_text_iter_ends_tag () returns True if Iter is the *end* of the
-   --  tagged range; gtk_text_iter_has_tag () tells you whether an iterator is
-   --  *within* a tagged range.
+   --  null, returns True if any tag is toggled off at this point.
+   --  Note that if Gtk.Text_Iter.Ends_Tag returns True, it means that Iter is
+   --  at the end of the tagged range, but that the character at Iter is
+   --  outside the tagged range. In other words, unlike
+   --  Gtk.Text_Iter.Begins_Tag, if Gtk.Text_Iter.Ends_Tag returns True,
+   --  Gtk.Text_Iter.Has_Tag will return False for the same parameters.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 
    function Ends_Word (Iter : Gtk_Text_Iter) return Boolean;
@@ -381,8 +389,7 @@ package Gtk.Text_Iter is
    --  say the letter "a" with an accent mark will be represented as two
    --  characters, first the letter then a "combining mark" that causes the
    --  accent to be rendered; so the cursor can't go between those two
-   --  characters. See also the Pango_Log_Attr structure and pango_break
-   --  function.
+   --  characters. See also the Pango_Log_Attr-struct and pango_break function.
 
    procedure Forward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
@@ -426,20 +433,14 @@ package Gtk.Text_Iter is
    --  after the match. The search will not continue past Limit. Note that a
    --  search is a linear or O(n) operation, so you may wish to use Limit to
    --  avoid locking up your UI on large buffers.
-   --  If the GTK_TEXT_SEARCH_VISIBLE_ONLY flag is present, the match may have
-   --  invisible text interspersed in Str. i.e. Str will be a
-   --  possibly-noncontiguous subsequence of the matched range. similarly, if
-   --  you specify GTK_TEXT_SEARCH_TEXT_ONLY, the match may have pixbufs or
-   --  child widgets mixed inside the matched range. If these flags are not
-   --  given, the match must be exact; the special 0xFFFC character in Str will
-   --  match embedded pixbufs or child widgets. If you specify the
-   --  GTK_TEXT_SEARCH_CASE_INSENSITIVE flag, the text will be matched
-   --  regardless of what case it is in.
+   --  Match_Start will never be set to a Gtk.Text_Iter.Gtk_Text_Iter located
+   --  before Iter, even if there is a possible Match_End after or at Iter.
    --  "str": a search string
    --  "flags": flags affecting how the search is done
    --  "match_start": return location for start of match, or null
    --  "match_end": return location for end of match, or null
-   --  "limit": bound for the search, or null for the end of the buffer
+   --  "limit": location of last possible Match_End, or null for the end of
+   --  the buffer
 
    procedure Forward_Sentence_End
       (Iter   : in out Gtk_Text_Iter;
@@ -585,13 +586,12 @@ package Gtk.Text_Iter is
 
    function Get_Char (Iter : Gtk_Text_Iter) return Gunichar;
    pragma Import (C, Get_Char, "gtk_text_iter_get_char");
-   --  Returns the Unicode character at this iterator. (Equivalent to
+   --  The Unicode character at this iterator is returned. (Equivalent to
    --  operator* on a C++ iterator.) If the element at this iterator is a
    --  non-character element, such as an image embedded in the buffer, the
    --  Unicode "unknown" character 0xFFFC is returned. If invoked on the end
    --  iterator, zero is returned; zero is not a valid Unicode character. So
-   --  you can write a loop which ends when gtk_text_iter_get_char () returns
-   --  0.
+   --  you can write a loop which ends when Gtk.Text_Iter.Get_Char returns 0.
 
    function Get_Chars_In_Line (Iter : Gtk_Text_Iter) return Gint;
    pragma Import (C, Get_Chars_In_Line, "gtk_text_iter_get_chars_in_line");
@@ -629,9 +629,9 @@ package Gtk.Text_Iter is
       (Iter         : in out Gtk_Text_Iter;
        Byte_On_Line : Gint);
    pragma Import (C, Set_Line_Index, "gtk_text_iter_set_line_index");
-   --  Same as Gtk.Text_Iter.Set_Line_Offset, but works with a *byte* index.
-   --  The given byte index must be at the start of a character, it can't be in
-   --  the middle of a UTF-8 encoded character.
+   --  Same as Gtk.Text_Iter.Set_Line_Offset, but works with a byte index. The
+   --  given byte index must be at the start of a character, it can't be in the
+   --  middle of a UTF-8 encoded character.
    --  "byte_on_line": a byte index relative to the start of Iter's current
    --  line
 
@@ -645,7 +645,7 @@ package Gtk.Text_Iter is
       (Iter         : in out Gtk_Text_Iter;
        Char_On_Line : Gint);
    pragma Import (C, Set_Line_Offset, "gtk_text_iter_set_line_offset");
-   --  Moves Iter within a line, to a new *character* (not byte) offset. The
+   --  Moves Iter within a line, to a new character (not byte) offset. The
    --  given character offset must be less than or equal to the number of
    --  characters in the line; if equal, Iter moves to the start of the next
    --  line. See Gtk.Text_Iter.Set_Line_Index if you have a byte index rather
@@ -700,7 +700,7 @@ package Gtk.Text_Iter is
    function Get_Text
       (Iter    : Gtk_Text_Iter;
        The_End : Gtk_Text_Iter) return UTF8_String;
-   --  Returns *text* in the given range. If the range contains non-text
+   --  Returns text in the given range. If the range contains non-text
    --  elements such as images, the character and byte offsets in the returned
    --  string will not correspond to character and byte offsets in the buffer.
    --  If you want offsets to correspond, see gtk_text_iter_get_slice ().
@@ -713,8 +713,8 @@ package Gtk.Text_Iter is
    --  at this point. (If Toggled_On is True, the list contains tags that are
    --  toggled on.) If a tag is toggled on at Iter, then some non-empty range
    --  of characters following Iter has that tag applied to it. If a tag is
-   --  toggled off, then some non-empty range following Iter does *not* have
-   --  the tag applied to it.
+   --  toggled off, then some non-empty range following Iter does not have the
+   --  tag applied to it.
    --  "toggled_on": True to get toggled-on tags
 
    function Get_Visible_Line_Index (Iter : Gtk_Text_Iter) return Gint;
@@ -766,7 +766,9 @@ package Gtk.Text_Iter is
       (Iter : Gtk_Text_Iter;
        Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
        return Boolean;
-   --  Returns True if Iter is within a range tagged with Tag.
+   --  Returns True if Iter points to a character that is part of a range
+   --  tagged with Tag. See also Gtk.Text_Iter.Begins_Tag and
+   --  Gtk.Text_Iter.Ends_Tag.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag
 
    function In_Range
@@ -836,7 +838,7 @@ package Gtk.Text_Iter is
        Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean;
    --  This is equivalent to (gtk_text_iter_begins_tag () ||
    --  gtk_text_iter_ends_tag ()), i.e. it tells you whether a range with Tag
-   --  applied to it begins *or* ends at Iter.
+   --  applied to it begins or ends at Iter.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 
    ----------------------

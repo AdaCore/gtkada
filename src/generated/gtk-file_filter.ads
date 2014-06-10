@@ -32,33 +32,27 @@
 --  e.g. a filter for text/plain also matches a file with mime type
 --  application/rtf, since application/rtf is a subclass of text/plain. Note
 --  that Gtk.File_Filter.Gtk_File_Filter allows wildcards for the subtype of a
---  mime type, so you can e.g. filter for image/*.
+--  mime type, so you can e.g. filter for image/\*.
 --
 --  Normally, filters are used by adding them to a
 --  Gtk.File_Chooser.Gtk_File_Chooser, see Gtk.File_Chooser.Add_Filter, but it
 --  is also possible to manually use a filter on a file with
 --  Gtk.File_Filter.Filter.
 --
---  == GtkFileFilter as GtkBuildable ==
+--  # GtkFileFilter as GtkBuildable
 --
 --  The GtkFileFilter implementation of the GtkBuildable interface supports
 --  adding rules using the <mime-types>, <patterns> and <applications> elements
---  and listing the rules within. Specifying a <mime-type> or <pattern> is the
---  same as calling Gtk.Recent_Filter.Add_Mime_Type or
---  Gtk.Recent_Filter.Add_Pattern
+--  and listing the rules within. Specifying a <mime-type> or <pattern> has the
+--  same effect as as calling Gtk.Recent_Filter.Add_Mime_Type or
+--  Gtk.Recent_Filter.Add_Pattern.
 --
---  == A UI definition fragment specifying GtkFileFilter rules ==
+--  An example of a UI definition fragment specifying GtkFileFilter rules: |[
+--  <object class="GtkFileFilter"> <mime-types>
+--  <mime-type>text/plain</mime-type> <mime-type>image/ *</mime-type>
+--  </mime-types> <patterns> <pattern>*.txt</pattern> <pattern>*.png</pattern>
+--  </patterns> </object> ]|
 --
---    <object class="GtkFileFilter">
---    <mime-types>
---    <mime-type>text/plain</mime-type>
---    <mime-type>image/*</mime-type>
---    </mime-types>
---    <patterns>
---    <pattern>*.txt</pattern>
---    <pattern>*.png</pattern>
---    </patterns>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -97,7 +91,7 @@ package Gtk.File_Filter is
 
    function From_Object_Free (B : access Gtk_File_Filter_Info) return Gtk_File_Filter_Info;
    pragma Inline (From_Object_Free);
-   --  A Gtk.File_Filter.Gtk_File_Filter_Info struct is used to pass
+   --  A Gtk.File_Filter.Gtk_File_Filter_Info-struct is used to pass
    --  information about the tested file to Gtk.File_Filter.Filter.
 
    ---------------
@@ -129,8 +123,9 @@ package Gtk.File_Filter is
    --  it. Such a filter doesn't accept any files, so is not particularly
    --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,
    --  Gtk.File_Filter.Add_Pattern, or Gtk.File_Filter.Add_Custom. To create a
-   --  filter that accepts any file, use: |[ GtkFileFilter *filter =
-   --  gtk_file_filter_new (); gtk_file_filter_add_pattern (filter, "*"); ]|
+   --  filter that accepts any file, use: |[<!-- language="C" --> GtkFileFilter
+   --  *filter = gtk_file_filter_new (); gtk_file_filter_add_pattern (filter,
+   --  "*"); ]|
    --  Since: gtk+ 2.4
 
    function Gtk_File_Filter_New return Gtk_File_Filter;
@@ -138,8 +133,9 @@ package Gtk.File_Filter is
    --  it. Such a filter doesn't accept any files, so is not particularly
    --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,
    --  Gtk.File_Filter.Add_Pattern, or Gtk.File_Filter.Add_Custom. To create a
-   --  filter that accepts any file, use: |[ GtkFileFilter *filter =
-   --  gtk_file_filter_new (); gtk_file_filter_add_pattern (filter, "*"); ]|
+   --  filter that accepts any file, use: |[<!-- language="C" --> GtkFileFilter
+   --  *filter = gtk_file_filter_new (); gtk_file_filter_add_pattern (filter,
+   --  "*"); ]|
    --  Since: gtk+ 2.4
 
    function Get_Type return Glib.GType;
@@ -224,14 +220,14 @@ package Gtk.File_Filter is
       (Self        : not null access Gtk_File_Filter_Record;
        Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  Tests whether a file should be displayed according to Filter. The
-   --  Gtk.File_Filter.Gtk_File_Filter_Info structure Filter_Info should
-   --  include the fields returned from Gtk.File_Filter.Get_Needed.
+   --  Gtk.File_Filter.Gtk_File_Filter_Info Filter_Info should include the
+   --  fields returned from Gtk.File_Filter.Get_Needed.
    --  This function will not typically be used by applications; it is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
-   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info structure
-   --  containing information about a file.
+   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info containing
+   --  information about a file.
 
    function Get_Name
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
@@ -252,8 +248,8 @@ package Gtk.File_Filter is
    function Get_Needed
       (Self : not null access Gtk_File_Filter_Record)
        return Gtk_File_Filter_Flags;
-   --  Gets the fields that need to be filled in for the structure passed to
-   --  Gtk.File_Filter.Filter
+   --  Gets the fields that need to be filled in for the
+   --  Gtk.File_Filter.Gtk_File_Filter_Info passed to Gtk.File_Filter.Filter
    --  This function will not typically be used by applications; it is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.

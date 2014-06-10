@@ -51,11 +51,11 @@ package Gtk.Selection_Data is
    -------------
 
    function Copy (Selection : Gtk_Selection_Data) return Gtk_Selection_Data;
-   --  Makes a copy of a Gtk.Selection_Data.Gtk_Selection_Data structure and
-   --  its data.
+   --  Makes a copy of a Gtk.Selection_Data.Gtk_Selection_Data-struct and its
+   --  data.
 
    procedure Free (Selection : Gtk_Selection_Data);
-   --  Frees a Gtk.Selection_Data.Gtk_Selection_Data structure returned from
+   --  Frees a Gtk.Selection_Data.Gtk_Selection_Data-struct returned from
    --  Gtk.Selection_Data.Copy.
 
    function Get_Data (Selection : Gtk_Selection_Data) return System.Address;

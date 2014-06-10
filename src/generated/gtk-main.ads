@@ -52,8 +52,7 @@ package Gtk.Main is
    pragma Obsolescent (Key_Snooper_Install);
    --  Installs a key snooper function, which will get called on all key
    --  events before delivering them normally.
-   --  Deprecated since 3.4, Key snooping should not be done. Events should be
-   --  handled by widgets.
+   --  Deprecated since 3.4, 1
    --  "snooper": a Gtk_Key_Snoop_Func
 
    generic
@@ -77,8 +76,7 @@ package Gtk.Main is
       pragma Obsolescent (Key_Snooper_Install);
       --  Installs a key snooper function, which will get called on all key
       --  events before delivering them normally.
-      --  Deprecated since 3.4, Key snooping should not be done. Events should
-      --  be handled by widgets.
+      --  Deprecated since 3.4, 1
       --  "snooper": a Gtk_Key_Snoop_Func
       --  "func_data": data to pass to Snooper
 
@@ -130,17 +128,15 @@ package Gtk.Main is
    --  Since: gtk+ 3.0
 
    function Get_Binary_Age return Guint;
-   --  Returns the binary age as passed to <application>libtool</application>
-   --  when building the GTK+ library the process is running against. If
-   --  <application>libtool</application> means nothing to you, don't worry
-   --  about it.
+   --  Returns the binary age as passed to `libtool` when building the GTK+
+   --  library the process is running against. If `libtool` means nothing to
+   --  you, don't worry about it.
    --  Since: gtk+ 3.0
 
    function Get_Interface_Age return Guint;
-   --  Returns the interface age as passed to
-   --  <application>libtool</application> when building the GTK+ library the
-   --  process is running against. If <application>libtool</application> means
-   --  nothing to you, don't worry about it.
+   --  Returns the interface age as passed to `libtool` when building the GTK+
+   --  library the process is running against. If `libtool` means nothing to
+   --  you, don't worry about it.
    --  Since: gtk+ 3.0
 
    function Check_Version
@@ -169,7 +165,7 @@ package Gtk.Main is
 
    procedure Disable_Setlocale;
    --  Prevents gtk_init, gtk_init_check, gtk_init_with_args and
-   --  gtk_parse_args from automatically calling 'setlocale (LC_ALL, "")'. You
+   --  gtk_parse_args from automatically calling `setlocale (LC_ALL, "")`. You
    --  would want to use this function if you wanted to set the locale for your
    --  program to something other than the user's locale, or if you wanted to
    --  set different values for different locale categories.
@@ -188,11 +184,10 @@ package Gtk.Main is
    --  Checks if any events are pending.
    --  This can be used to update the UI and invoke timeouts etc. while doing
    --  some time intensive computation.
-   --  == Updating the UI during a long computation ==
-   --    /* computation going on... */
-   --    while (gtk_events_pending ())
-   --    gtk_main_iteration ();
-   --    /* ...computation continued */
+   --  ## Updating the UI during a long computation
+   --  |[<!-- language="C" --> // computation going on...
+   --  while (gtk_events_pending ()) gtk_main_iteration ();
+   --  // ...computation continued ]|
 
    procedure Main_Do_Event (Event : Gdk.Event.Gdk_Event);
    --  Processes a single GDK event.
@@ -201,30 +196,28 @@ package Gtk.Main is
    --  While you should not call this function directly, you might want to
    --  know how exactly events are handled. So here is what this function does
    --  with the event:
-   --     * Compress enter/leave notify events. If the event passed build an
+   --  1. Compress enter/leave notify events. If the event passed build an
    --  enter/leave pair together with the next event (peeked from GDK), both
    --  events are thrown away. This is to avoid a backlog of (de-)highlighting
    --  widgets crossed by the pointer.
-   --     * Find the widget which got the event. If the widget can't be
+   --  2. Find the widget which got the event. If the widget can't be
    --  determined the event is thrown away unless it belongs to a INCR
    --  transaction.
-   --     * Then the event is pushed onto a stack so you can query the
-   --  currently handled event with Gtk.Main.Get_Current_Event.
-   --     * The event is sent to a widget. If a grab is active all events for
+   --  3. Then the event is pushed onto a stack so you can query the currently
+   --  handled event with Gtk.Main.Get_Current_Event.
+   --  4. The event is sent to a widget. If a grab is active all events for
    --  widgets that are not in the contained in the grab widget are sent to the
-   --  latter with a few exceptions:
-   --     * Deletion and destruction events are still sent to the event widget
-   --  for obvious reasons.
-   --     * Events which directly relate to the visual representation of the
-   --  event widget.
-   --     * Leave events are delivered to the event widget if there was an
-   --  enter event delivered to it before without the paired leave event.
-   --     * Drag events are not redirected because it is unclear what the
-   --  semantics of that would be. Another point of interest might be that all
-   --  key events are first passed through the key snooper functions if there
-   --  are any. Read the description of Gtk.Main.Key_Snooper_Install if you
-   --  need this feature.
-   --     * After finishing the delivery the event is popped from the event
+   --  latter with a few exceptions: - Deletion and destruction events are
+   --  still sent to the event widget for obvious reasons. - Events which
+   --  directly relate to the visual representation of the event widget. -
+   --  Leave events are delivered to the event widget if there was an enter
+   --  event delivered to it before without the paired leave event. - Drag
+   --  events are not redirected because it is unclear what the semantics of
+   --  that would be. Another point of interest might be that all key events
+   --  are first passed through the key snooper functions if there are any.
+   --  Read the description of Gtk.Main.Key_Snooper_Install if you need this
+   --  feature.
+   --  5. After finishing the delivery the event is popped from the event
    --  stack.
    --  "event": An event to process (normally passed by GDK)
 
@@ -257,26 +250,20 @@ package Gtk.Main is
    --  This can be useful for example if you want to inhibit the deletion of a
    --  window. Of course you should not do this as the user expects a reaction
    --  from clicking the close icon of the window...
-   --  == A persistent window ==
-   --    include <gtk/gtk.h><
-   --    int
-   --    main (int argc, char **argv)
-   --    {
-   --       GtkWidget *win, *but;
-   --       gtk_init (&amp;argc, &amp;argv);
-   --       win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-   --       g_signal_connect (win, "delete-event",
-   --          G_CALLBACK (gtk_true), NULL);
-   --       g_signal_connect (win, "destroy",
-   --          G_CALLBACK (gtk_main_quit), NULL);
-   --       but = gtk_button_new_with_label ("Close yourself. I mean it!");
-   --       g_signal_connect_swapped (but, "clicked",
-   --          G_CALLBACK (gtk_object_destroy), win);
-   --       gtk_container_add (GTK_CONTAINER (win), but);
-   --       gtk_widget_show_all (win);
-   --       gtk_main ();
-   --       return 0;
-   --    }
+   --  ## A persistent window
+   --  |[<!-- language="C" --> include <gtk/gtk.h>
+   --  int main (int argc, char **argv) { GtkWidget *win, *but; const char
+   --  *text = "Close yourself. I mean it!";
+   --  gtk_init (&argc, &argv);
+   --  win = gtk_window_new (GTK_WINDOW_TOPLEVEL); g_signal_connect (win,
+   --  "delete-event", G_CALLBACK (gtk_true), NULL); g_signal_connect (win,
+   --  "destroy", G_CALLBACK (gtk_main_quit), NULL);
+   --  but = gtk_button_new_with_label (text); g_signal_connect_swapped (but,
+   --  "clicked", G_CALLBACK (gtk_object_destroy), win); gtk_container_add
+   --  (GTK_CONTAINER (win), but);
+   --  gtk_widget_show_all (win);
+   --  gtk_main ();
+   --  return 0; } ]|
 
    function False return Boolean;
    --  Analogical to Gtk.Main.True, this function does nothing but always
@@ -311,8 +298,7 @@ package Gtk.Main is
    procedure Key_Snooper_Remove (Snooper_Handler_Id : Guint);
    pragma Obsolescent (Key_Snooper_Remove);
    --  Removes the key snooper function with the given id.
-   --  Deprecated since 3.4, Key snooping should not be done. Events should be
-   --  handled by widgets.
+   --  Deprecated since 3.4, 1
    --  "snooper_handler_id": Identifies the key snooper to remove
 
    function Get_Current_Event return Gdk.Event.Gdk_Event;

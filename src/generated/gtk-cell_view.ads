@@ -139,8 +139,8 @@ package Gtk.Cell_View is
        Markup    : UTF8_String);
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
    --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
-   --  Markup. The text can be marked up with the <link
-   --  linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  Markup. The text can be marked up with the [Pango text markup
+   --  language][PangoMarkupFormat].
    --  Since: gtk+ 2.6
    --  "markup": the text to display in the cell view
 
@@ -148,8 +148,8 @@ package Gtk.Cell_View is
       (Markup : UTF8_String) return Gtk_Cell_View;
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget, adds a
    --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
-   --  Markup. The text can be marked up with the <link
-   --  linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  Markup. The text can be marked up with the [Pango text markup
+   --  language][PangoMarkupFormat].
    --  Since: gtk+ 2.6
    --  "markup": the text to display in the cell view
 
@@ -276,11 +276,7 @@ package Gtk.Cell_View is
    --  Sets Requisition to the size needed by Cell_View to display the model
    --  row pointed to by Path.
    --  Since: gtk+ 2.6
-   --  Deprecated since 3.0, Combo box formerly used this to calculate the
-   --  sizes for cellviews, now you can achieve this by either using the
-   --  Gtk.Cell_View.Gtk_Cell_View:fit-model property or by setting the
-   --  currently displayed row of the Gtk.Cell_View.Gtk_Cell_View and using
-   --  Gtk.Widget.Get_Preferred_Size.
+   --  Deprecated since 3.0, 1
    --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
    --  "requisition": return location for the size
 
@@ -290,7 +286,7 @@ package Gtk.Cell_View is
    pragma Obsolescent (Set_Background_Color);
    --  Sets the background color of View.
    --  Since: gtk+ 2.6
-   --  Deprecated since 3.4, Use Gtk.Cell_View.Set_Background_Rgba instead.
+   --  Deprecated since 3.4, 1
    --  "color": the new background color
 
    procedure Set_Background_Rgba

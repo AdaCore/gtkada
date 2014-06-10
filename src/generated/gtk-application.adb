@@ -27,6 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
+with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -133,6 +134,27 @@ package body Gtk.Application is
    begin
       Internal (Get_Object (Self), Get_Object (Window));
    end Add_Window;
+
+   ---------------------------
+   -- Get_Accels_For_Action --
+   ---------------------------
+
+   function Get_Accels_For_Action
+      (Self                 : not null access Gtk_Application_Record;
+       Detailed_Action_Name : UTF8_String) return GNAT.Strings.String_List
+   is
+      function Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr)
+          return chars_ptr_array_access;
+      pragma Import (C, Internal, "gtk_application_get_accels_for_action");
+      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+      Tmp_Return               : chars_ptr_array_access;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
+      Free (Tmp_Detailed_Action_Name);
+      return To_String_List_And_Free (Tmp_Return);
+   end Get_Accels_For_Action;
 
    -----------------------
    -- Get_Active_Window --
@@ -257,6 +279,21 @@ package body Gtk.Application is
       return Internal (Get_Object (Self), Flags) /= 0;
    end Is_Inhibited;
 
+   ------------------------------
+   -- List_Action_Descriptions --
+   ------------------------------
+
+   function List_Action_Descriptions
+      (Self : not null access Gtk_Application_Record)
+       return GNAT.Strings.String_List
+   is
+      function Internal
+         (Self : System.Address) return chars_ptr_array_access;
+      pragma Import (C, Internal, "gtk_application_list_action_descriptions");
+   begin
+      return To_String_List_And_Free (Internal (Get_Object (Self)));
+   end List_Action_Descriptions;
+
    ------------------------
    -- Remove_Accelerator --
    ------------------------
@@ -290,6 +327,28 @@ package body Gtk.Application is
    begin
       Internal (Get_Object (Self), Get_Object (Window));
    end Remove_Window;
+
+   ---------------------------
+   -- Set_Accels_For_Action --
+   ---------------------------
+
+   procedure Set_Accels_For_Action
+      (Self                 : not null access Gtk_Application_Record;
+       Detailed_Action_Name : UTF8_String;
+       Accels               : GNAT.Strings.String_List)
+   is
+      procedure Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr;
+          Accels               : Interfaces.C.Strings.chars_ptr_array);
+      pragma Import (C, Internal, "gtk_application_set_accels_for_action");
+      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+      Tmp_Accels               : Interfaces.C.Strings.chars_ptr_array := From_String_List (Accels);
+   begin
+      Internal (Get_Object (Self), Tmp_Detailed_Action_Name, Tmp_Accels);
+      GtkAda.Types.Free (Tmp_Accels);
+      Free (Tmp_Detailed_Action_Name);
+   end Set_Accels_For_Action;
 
    ------------------
    -- Set_App_Menu --

@@ -73,11 +73,7 @@
 --  Glib.Variant.Gvariant values. Glib.Variant.Gvariant includes a printer for
 --  this language and a parser with type inferencing.
 --
--- 
---
---  == Memory Use ==
---
--- 
+--  ## Memory Use
 --
 --  Glib.Variant.Gvariant tries to be quite efficient with respect to memory
 --  use. This section gives a rough idea of how much memory is used by the
@@ -89,9 +85,7 @@
 --  cache, buffer management memory and memory for the Glib.Variant.Gvariant
 --  structure itself.
 --
---  == Serialised Data Memory ==
---
--- 
+--  ## Serialised Data Memory
 --
 --  This is the memory that is used for storing GVariant data in serialised
 --  form. This is what would be sent over the network or what would end up on
@@ -146,9 +140,7 @@
 --  framing offsets for an extra two bytes. 14 + 2 + 11 + 2 = 29 bytes to
 --  encode the entire two-item dictionary.
 --
---  == Type Information Cache ==
---
--- 
+--  ## Type Information Cache
 --
 --  For each GVariant type that currently exists in the program a type
 --  information structure is kept in the type information cache. The type
@@ -168,15 +160,15 @@
 --  dictionary entries.
 --
 --  Array type info structures are 6 * sizeof (void *), plus the memory
---  required to store the type string itself. This means that on 32bit systems,
---  the cache entry for "a{sv}" would require 30 bytes of memory (plus malloc
---  overhead).
+--  required to store the type string itself. This means that on 32-bit
+--  systems, the cache entry for "a{sv}" would require 30 bytes of memory (plus
+--  malloc overhead).
 --
 --  Tuple type info structures are 6 * sizeof (void *), plus 4 * sizeof (void
 --  *) for each item in the tuple, plus the memory required to store the type
 --  string itself. A 2-item tuple, for example, would have a type information
 --  structure that consumed writable memory in the size of 14 * sizeof (void *)
---  (plus type string) This means that on 32bit systems, the cache entry for
+--  (plus type string) This means that on 32-bit systems, the cache entry for
 --  "{sv}" would require 61 bytes of memory (plus malloc overhead).
 --
 --  This means that in total, for our "a{sv}" example, 91 bytes of type
@@ -192,9 +184,7 @@
 --  values in it and that only one type information structure is required for
 --  many different values of the same type.
 --
---  == Buffer Management Memory ==
---
--- 
+--  ## Buffer Management Memory
 --
 --  Glib.Variant.Gvariant uses an internal buffer management structure to deal
 --  with the various different possible sources of serialised data that it
@@ -203,14 +193,12 @@
 --  involve a g_free or a g_slice_free or even g_mapped_file_unref.
 --
 --  One buffer management structure is used for each chunk of serialised data.
---  The size of the buffer management structure is 4 * (void *). On 32bit
+--  The size of the buffer management structure is 4 * (void *). On 32-bit
 --  systems, that's 16 bytes.
 --
---  == GVariant structure ==
+--  ## GVariant structure
 --
--- 
---
---  The size of a Glib.Variant.Gvariant structure is 6 * (void *). On 32 bit
+--  The size of a Glib.Variant.Gvariant structure is 6 * (void *). On 32-bit
 --  systems, that's 24 bytes.
 --
 --  Glib.Variant.Gvariant structures only exist if they are explicitly created
@@ -227,9 +215,7 @@
 --  information is shared. The serialised data and the buffer management
 --  structure for that serialised data is shared by the child.
 --
---  == Summary ==
---
--- 
+--  ## Summary
 --
 --  To put the entire example together, for our dictionary mapping strings to
 --  variants (with two entries, as given above), we are using 91 bytes of
@@ -561,6 +547,26 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  "strv": an array of strings
    --  "length": the length of Strv, or -1
+
+   procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String);
+   --  Creates a string Glib.Variant.Gvariant with the contents of String.
+   --  String must be valid utf8.
+   --  This function consumes String. g_free will be called on String when it
+   --  is no longer required.
+   --  You must not modify or access String in any other way after passing it
+   --  to this function. It is even possible that String is immediately freed.
+   --  Since: gtk+ 2.38
+   --  "string": a normal utf8 nul-terminated string
+
+   function Gvariant_New_Take_String (String : UTF8_String) return Gvariant;
+   --  Creates a string Glib.Variant.Gvariant with the contents of String.
+   --  String must be valid utf8.
+   --  This function consumes String. g_free will be called on String when it
+   --  is no longer required.
+   --  You must not modify or access String in any other way after passing it
+   --  to this function. It is even possible that String is immediately freed.
+   --  Since: gtk+ 2.38
+   --  "string": a normal utf8 nul-terminated string
 
    procedure G_New_Uint16 (Self : out Gvariant; Value : Guint16);
    --  Creates a new uint16 Glib.Variant.Gvariant instance.
@@ -973,19 +979,21 @@ package Glib.Variant is
        Key           : UTF8_String;
        Expected_Type : Gvariant_Type) return Gvariant;
    --  Looks up a value in a dictionary Glib.Variant.Gvariant.
-   --  This function works with dictionaries of the type 'a{s*}' (and equally
-   --  well with type 'a{o*}', but we only further discuss the string case for
+   --  This function works with dictionaries of the type a{s*} (and equally
+   --  well with type a{o*}, but we only further discuss the string case for
    --  sake of clarity).
-   --  In the event that Dictionary has the type 'a{sv}', the Expected_Type
+   --  In the event that Dictionary has the type a{sv}, the Expected_Type
    --  string specifies what type of value is expected to be inside of the
    --  variant. If the value inside the variant has a different type then null
-   --  is returned. In the event that Dictionary has a value type other than
-   --  'v' then Expected_Type must directly match the key type and it is used
-   --  to unpack the value directly or an error occurs.
+   --  is returned. In the event that Dictionary has a value type other than v
+   --  then Expected_Type must directly match the key type and it is used to
+   --  unpack the value directly or an error occurs.
    --  In either case, if Key is not found in Dictionary, null is returned.
    --  If the key is found and the value has the correct type, it is returned.
    --  If Expected_Type was specified then any non-null return value will have
    --  this type.
+   --  This function is currently implemented with a linear scan. If you plan
+   --  to do many lookups then GVariant_Dict may be more efficient.
    --  Since: gtk+ 2.28
    --  "key": the key to lookup in the dictionary
    --  "expected_type": a Glib.Variant.Gvariant_Type, or null
@@ -1006,7 +1014,7 @@ package Glib.Variant is
       (Self          : Gvariant;
        Type_Annotate : Boolean) return UTF8_String;
    --  Pretty-prints Value in the format understood by Glib.Variant.Parse.
-   --  The format is described <link linkend='gvariant-text'>here</link>.
+   --  The format is described [here][gvariant-text].
    --  If Type_Annotate is True, then type information is included in the
    --  output.
    --  Since: gtk+ 2.24
@@ -1031,7 +1039,7 @@ package Glib.Variant is
 
    function Ref_Sink (Self : Gvariant) return Gvariant;
    --  Glib.Variant.Gvariant uses a floating reference count system. All
-   --  functions with names starting with 'g_variant_new_' return floating
+   --  functions with names starting with `g_variant_new_` return floating
    --  references.
    --  Calling Glib.Variant.Ref_Sink on a Glib.Variant.Gvariant with a
    --  floating reference will convert the floating reference into a full
@@ -1113,24 +1121,16 @@ package Glib.Variant is
    --  is returned.
    --  Use Glib.Variant.Unref to drop your reference on the return value when
    --  you no longer need it.
-   -- 
-   --  == Iterating with Glib.Variant.Next_Value ==
-   -- 
-   --    /<!-- -->* recursively iterate a container *<!-- -->/
-   --    void
-   --    iterate_container_recursive (GVariant *container)
-   --    {
-   --       GVariantIter iter;
-   --       GVariant *child;
-   --       g_variant_iter_init (&iter, container);
-   --       while ((child = g_variant_iter_next_value (&iter)))
-   --       {
-   --          g_print ("type '%s'\n", g_variant_get_type_string (child));
-   --          if (g_variant_is_container (child))
-   --          iterate_container_recursive (child);
-   --          g_variant_unref (child);
-   --       }
-   --    }
+   --  Here is an example for iterating with Glib.Variant.Next_Value: |[<!--
+   --  language="C" --> // recursively iterate a container void
+   --  iterate_container_recursive (GVariant *container) { GVariantIter iter;
+   --  GVariant *child;
+   --  g_variant_iter_init (&iter, container); while ((child =
+   --  g_variant_iter_next_value (&iter))) { g_print ("type '%s'\n",
+   --  g_variant_get_type_string (child));
+   --  if (g_variant_is_container (child)) iterate_container_recursive
+   --  (child);
+   --  g_variant_unref (child); } } ]|
    --  Since: gtk+ 2.24
 
    function Copy (Self : Gvariant_Type) return Gvariant_Type;
@@ -1317,7 +1317,7 @@ package Glib.Variant is
        Endptr   : GNAT.Strings.String_List) return Gvariant;
    --  Parses a Glib.Variant.Gvariant from a text representation.
    --  A single Glib.Variant.Gvariant is parsed from the content of Text.
-   --  The format is described <link linkend='gvariant-text'>here</link>.
+   --  The format is described [here][gvariant-text].
    --  The memory at Limit will never be accessed and the parser behaves as if
    --  the character at Limit is the nul terminator. This has the effect of
    --  bounding Text.
@@ -1342,6 +1342,8 @@ package Glib.Variant is
    --  "endptr": a location to store the end pointer, or null
 
    function Parser_Get_Error_Quark return Glib.GQuark;
+   pragma Obsolescent (Parser_Get_Error_Quark);
+   --  Deprecated since None, 1
 
    function String_Is_Valid (Type_String : UTF8_String) return Boolean;
    --  Checks if Type_String is a valid GVariant type string. This call is

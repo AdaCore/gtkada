@@ -31,6 +31,17 @@ package body Pango.Font_Map is
      (Get_Type'Access, Pango_Font_Map_Record);
    pragma Unreferenced (Type_Conversion_Pango_Font_Map);
 
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed (Self : not null access Pango_Font_Map_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "pango_font_map_changed");
+   begin
+      Internal (Get_Object (Self));
+   end Changed;
+
    --------------------
    -- Create_Context --
    --------------------

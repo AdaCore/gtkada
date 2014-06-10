@@ -148,8 +148,10 @@ package Gtk.Stock is
 
    function Copy (Self : Gtk_Stock_Item) return Gtk_Stock_Item;
    pragma Import (C, Copy, "gtk_stock_item_copy");
+   pragma Obsolescent (Copy);
    --  Copies a stock item, mostly useful for language bindings and not in
    --  applications.
+   --  Deprecated since 3.10, 1
 
    ----------------------
    -- GtkAda additions --
@@ -179,16 +181,20 @@ package Gtk.Stock is
    ---------------
 
    procedure Add (Items : Gtk_Stock_Item_Array);
+   pragma Obsolescent (Add);
    --  Registers each of the stock items in Items. If an item already exists
    --  with the same stock ID as one of the Items, the old item gets replaced.
    --  The stock items are copied, so GTK+ does not hold any pointer into Items
    --  and Items can be freed. Use Gtk.Stock.Add_Static if Items is persistent
    --  and GTK+ need not copy the array.
+   --  Deprecated since 3.10, 1
    --  "items": a Gtk.Stock.Gtk_Stock_Item or array of items
 
    procedure Add_Static (Items : Gtk_Stock_Item_Array);
+   pragma Obsolescent (Add_Static);
    --  Same as Gtk.Stock.Add, but doesn't copy Items, so Items must persist
    --  until application exit.
+   --  Deprecated since 3.10, 1
    --  "items": a Gtk.Stock.Gtk_Stock_Item or array of
    --  Gtk.Stock.Gtk_Stock_Item
 
@@ -196,8 +202,10 @@ package Gtk.Stock is
       (Stock_Id : UTF8_String;
        Item     : out Gtk_Stock_Item;
        Success  : out Boolean);
+   pragma Obsolescent (Lookup);
    --  Fills Item with the registered values for Stock_Id, returning True if
    --  Stock_Id was known.
+   --  Deprecated since 3.10, 1
    --  "stock_id": a stock item name
    --  "item": stock item to initialize with values
 

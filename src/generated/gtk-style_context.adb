@@ -384,6 +384,19 @@ package body Gtk.Style_Context is
       Free (Tmp_Property);
    end Get_Property;
 
+   ---------------
+   -- Get_Scale --
+   ---------------
+
+   function Get_Scale
+      (Self : not null access Gtk_Style_Context_Record) return Gint
+   is
+      function Internal (Self : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_style_context_get_scale");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Scale;
+
    ----------------
    -- Get_Screen --
    ----------------
@@ -802,6 +815,20 @@ package body Gtk.Style_Context is
    begin
       Internal (Get_Object (Self), Path);
    end Set_Path;
+
+   ---------------
+   -- Set_Scale --
+   ---------------
+
+   procedure Set_Scale
+      (Self  : not null access Gtk_Style_Context_Record;
+       Scale : Gint)
+   is
+      procedure Internal (Self : System.Address; Scale : Gint);
+      pragma Import (C, Internal, "gtk_style_context_set_scale");
+   begin
+      Internal (Get_Object (Self), Scale);
+   end Set_Scale;
 
    ----------------
    -- Set_Screen --

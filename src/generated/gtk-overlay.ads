@@ -23,7 +23,7 @@
 
 --  <description>
 --  GtkOverlay is a container which contains a single main child, on top of
---  which it can place 'overlay' widgets. The position of each overlay widget
+--  which it can place "overlay" widgets. The position of each overlay widget
 --  is determined by its Gtk.Widget.Gtk_Widget:halign and
 --  Gtk.Widget.Gtk_Widget:valign properties. E.g. a widget with both alignments
 --  set to Gtk.Widget.Align_Start will be placed at the top left corner of the
@@ -35,12 +35,11 @@
 --  More complicated placement of overlays is possible by connecting to the
 --  Gtk.Overlay.Gtk_Overlay::get-child-position signal.
 --
---  == GtkOverlay as GtkBuildable ==
+--  # GtkOverlay as GtkBuildable
 --
 --  The GtkOverlay implementation of the GtkBuildable interface supports
 --  placing a child as an overlay by specifying "overlay" as the "type"
---  attribute of a <tag class="starttag">child</tag> element.
---
+--  attribute of a `<child>` element.
 --
 --  </description>
 pragma Ada_2005;
@@ -128,12 +127,11 @@ package Gtk.Overlay is
    --  overlay to be full-width/height). If the main child is a
    --  Gtk.Scrolled_Window.Gtk_Scrolled_Window, the overlays are placed
    --  relative to its contents.
-   --
-   --  Return: True if the Allocation has been filled
    -- 
    --  Callback parameters:
    --    --  "widget": the child widget to position
    --    --  "allocation": return location for the allocation
+   --    --  Returns True if the Allocation has been filled
 
    ----------------
    -- Interfaces --

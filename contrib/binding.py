@@ -72,6 +72,7 @@ ntype = QName(uri, "type").text
 nvalue = QName(uri, "value").text
 nvarargs = QName(uri, "varargs").text
 nconstant = QName(uri, "constant").text
+ninstanceparam = QName(uri, "instance-parameter").text
 
 
 class GIR(object):
@@ -172,7 +173,7 @@ class GIR(object):
                 sys.stdout.write("%-28s" % (name + "(intf)", ))
                 count += 1
                 if (count % 4) == 0:
-                    print
+                    sys.stdout.write("\n")
 
         for name in sorted(gir.classes.iterkeys()):
             if name not in self.bound:
@@ -180,7 +181,7 @@ class GIR(object):
                 #print '    "--%s", # Not tested yet, from Gio' % name
                 count += 1
                 if (count % 4) == 0:
-                    print
+                    sys.stdout.write("\n")
 
         print
 
@@ -224,9 +225,9 @@ class GIR(object):
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
         for pkg in self.packages.itervalues():
-            out.write(pkg.spec())
+            out.write(pkg.spec().encode('UTF-8'))
             out.write("\n")
-            out.write(pkg.body())
+            out.write(pkg.body().encode('UTF-8'))
             out.write("\n")
 
         cout.write(self.ccode)
@@ -248,6 +249,18 @@ class GlobalsBinder(object):
     def get_function(self, id):
         """Return the XML node corresponding to a global function"""
         return self.globals[id]
+
+
+def _get_clean_doc(node):
+    """
+    Get the <doc> child node, and replace common unicode characters by their
+    ASCII equivalent to keep the Ada specs more readable in a terminal.
+    """
+
+    doc = node.findtext(ndoc, "")
+    if doc:
+        doc = doc.replace(u"\u2019", "'").replace(u"\u201c", '"').replace(u"\u201d", '"')
+    return doc
 
 
 def _get_type(nodeOrType, allow_access=True, allow_none=False,
@@ -551,10 +564,9 @@ class SubprogramProfile(object):
         return subp
 
     def _getdoc(self, gtkmethod, node):
-        doc = gtkmethod.get_doc(default=node.findtext(ndoc, ""))
+        doc = gtkmethod.get_doc(default=_get_clean_doc(node))
         if node.get("version"):
             doc.append("Since: gtk+ %s" % node.get("version"))
-        # doc.append(self.returns_doc)
         return doc
 
     def _parameters(self, c, gtkmethod, pkg):
@@ -572,7 +584,10 @@ class SubprogramProfile(object):
         result = []
 
         for p_index, p in enumerate(params.findall(nparam)):
-            name = p.get("name") or "varargs"
+            name = p.get("name")
+            if name == "...":
+                name = "varargs"
+
             gtkparam = gtkmethod.get_param(name=name)
             adan = gtkparam.ada_name()
 
@@ -632,7 +647,7 @@ class SubprogramProfile(object):
             if is_function and direction not in ("in", "access"):
                 mode = "access"
 
-            doc = p.findtext(ndoc, "")
+            doc = _get_clean_doc(p)
             if doc:
                 doc = '"%s": %s' % (name, doc)
 
@@ -657,7 +672,7 @@ class SubprogramProfile(object):
                 # of the field itself
                 ret = node
             else:
-                self.returns_doc = ret.findtext(ndoc, "")
+                self.returns_doc = _get_clean_doc(ret)
                 if self.returns_doc:
                     self.returns_doc = "Returns %s" % self.returns_doc
 
@@ -807,15 +822,41 @@ class GIRClass(object):
             and not self.is_boxed \
             and profile.direct_c_map()
 
-    def _add_self_param(self, adaname, gtkmethod, profile, is_import):
+    def _add_self_param(self, adaname, node, gtkmethod, profile, inherited):
         """Add a Self parameter to the list of parameters in profile.
            The exact type of the parameter depends on several criteria.
-           'is_import' should be true if the function will be implemented as
-           a pragma Import, with no body.
+           
+           :param bool inherited: should be true if this is for a subprogram
+             inherited from an interface (in which case we force the type of
+             Self to be that of the child, not the interface type as described
+             in the gir file)
         """
 
-        t = naming.type(self._subst["cname"], cname=self._subst["cname"],
-                        useclass=gtkmethod.is_class_wide())
+        # Try to extract the type of the parameter from the instance-parameter
+        # node.
+        t = None
+        if not inherited:
+            try:
+                ip = node.iter(ninstanceparam).next()
+                ipt = ip.find(ntype)
+                if ipt is not None:
+                    ctype_name = ipt.get(ctype_qname)
+                    if ctype_name:
+                        ctype_name = ctype_name.replace('const ', '')
+                    t = naming.type(name=ipt.get('name'),
+                                    cname=ctype_name,
+                                    useclass=gtkmethod.is_class_wide())
+            except StopIteration:
+                t = None
+
+        # There was no instance-parameter node, guess the type from the
+        # package name
+
+        if t is None:
+            t = naming.type(self._subst["cname"],
+                            cname=self._subst["cname"],
+                            useclass=gtkmethod.is_class_wide())
+
         gtkparam = gtkmethod.get_param("self")
         pname = gtkparam.ada_name() or "Self"
 
@@ -863,7 +904,7 @@ class GIRClass(object):
 
         if ismethod:
             self._add_self_param(
-                adaname, gtkmethod, profile, is_import=is_import)
+                adaname, node, gtkmethod, profile, inherited=isinherited)
 
         if adaname.startswith("Gtk_New"):
             # Overrides the GIR file even if it reported a function or method
@@ -1473,8 +1514,8 @@ void gtkada_%s_set_%s(%s* iface, %s* handler) {
                     gtkmethod=gtkmethod,
                     pkg=self.pkg)
                 self._add_self_param(
-                    adaname=adaname, gtkmethod=gtkmethod, profile=profile,
-                    is_import=False)
+                    adaname=adaname, node=c, gtkmethod=gtkmethod, profile=profile,
+                    inherited=False)
                 subp = profile.subprogram(
                     name=adaname,
                     lang="ada->c",
@@ -1648,7 +1689,7 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                     "cname": p.get("name"),
                     "name": naming.case(p.get("name")),
                     "flags": "-".join(flags),
-                    "doc": p.findtext(ndoc, ""),
+                    "doc": _get_clean_doc(p),
                     "pkg": pkg,
                     "ptype": ptype,
                     "type": tp.as_ada_param(self.pkg)})
@@ -2029,7 +2070,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                            name)
                     section.add(obj_connect)
 
-                doc = s.findtext(ndoc, "")
+                doc = _get_clean_doc(s)
                 if doc:
                     section.add(Code("  %s""" % doc, iscomment=True))
 
@@ -2361,7 +2402,7 @@ begin
    return Result;
 end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
-        section.add(Code(node.findtext(ndoc, ""), iscomment=True))
+        section.add(Code(_get_clean_doc(node), iscomment=True))
 
     def get_enumeration_values(sef, enum_ctype):
         """Return the list of enumeration values for the given enum, as a list
@@ -2453,7 +2494,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                                      for m in sorted(members, key=lambda m:m[1]))
                 + ");\n"
                 + "pragma Convention (C, %s);\n" % base)
-            section.add(Code(node.findtext(ndoc, ""), iscomment=True))
+            section.add(Code(_get_clean_doc(node), iscomment=True))
 
             if not is_default_representation:
                 repr = ("   for %s use (\n" % base
@@ -2467,7 +2508,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 "\ntype %s is " % base
                 + "mod 2 ** Integer'Size;\n"
                 + "pragma Convention (C, %s);\n" % base)
-            section.add(Code(node.findtext(ndoc, ""), iscomment=True))
+            section.add(Code(_get_clean_doc(node), iscomment=True))
 
             for m, value in members:
                 decl += "%s : constant %s := %s;\n" % (m, base, value)
@@ -2510,7 +2551,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
         self._generated = True
 
-        girdoc = self.node.findtext(ndoc)
+        girdoc = _get_clean_doc(self.node)
 
         into = self.gtkpkg.into()
         if into:

@@ -612,12 +612,12 @@ package body Gtk.Recent_Action is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
+       Filter  : access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
    is
       procedure Internal (Chooser : System.Address; Filter : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_set_filter");
    begin
-      Internal (Get_Object (Chooser), Get_Object (Filter));
+      Internal (Get_Object (Chooser), Get_Object_Or_Null (GObject (Filter)));
    end Set_Filter;
 
    ---------------

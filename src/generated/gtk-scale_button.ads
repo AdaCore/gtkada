@@ -194,25 +194,31 @@ package Gtk.Scale_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Scale_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Scale_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Scale_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Scale_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Scale_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Scale_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    function Get_Orientation
       (Self : not null access Gtk_Scale_Button_Record)
@@ -259,8 +265,8 @@ package Gtk.Scale_Button is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted to popdown the scale widget.
+   --  The ::popdown signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted to popdown the scale widget.
    --
    --  The default binding for this signal is Escape.
 
@@ -274,8 +280,8 @@ package Gtk.Scale_Button is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted to popup the scale widget.
+   --  The ::popup signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted to popup the scale widget.
    --
    --  The default bindings for this signal are Space, Enter and Return.
 

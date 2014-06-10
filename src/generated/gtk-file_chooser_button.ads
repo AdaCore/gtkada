@@ -30,25 +30,24 @@
 --  support setting the Gtk.File_Chooser.Gtk_File_Chooser:select-multiple
 --  property to True.
 --
---  == Create a button to let the user select a file in /etc ==
+--  ## Create a button to let the user select a file in /etc
 --
---    {
---       GtkWidget *button;
---       button = gtk_file_chooser_button_new (_("Select a file"),
---          GTK_FILE_CHOOSER_ACTION_OPEN);
---       gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (button),
---          "/etc");
---    }
+--  |[<!-- language="C" --> { GtkWidget *button;
+--
+--  button = gtk_file_chooser_button_new (_("Select a file"),
+--  GTK_FILE_CHOOSER_ACTION_OPEN); gtk_file_chooser_set_current_folder
+--  (GTK_FILE_CHOOSER (button), "/etc"); } ]|
 --
 --  The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button supports the
---  Gtk.File_Chooser.Gtk_File_Chooser_Action<!-- -->s
---  Gtk.File_Chooser.Action_Open and Gtk.File_Chooser.Action_Select_Folder.
+--  Gtk_File_Chooser_Actions Gtk.File_Chooser.Action_Open and
+--  Gtk.File_Chooser.Action_Select_Folder.
 --
---  <important> The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button will
---  ellipsize the label, and thus will thus request little horizontal space. To
---  give the button more space, you should call Gtk.Widget.Get_Preferred_Size,
---  Gtk.File_Chooser_Button.Set_Width_Chars, or pack the button in such a way
---  that other interface elements give space to the widget. </important>
+--  > The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button will ellipsize the
+--  label, and will thus > request little horizontal space. To give the button
+--  more space, > you should call Gtk.Widget.Get_Preferred_Size, >
+--  Gtk.File_Chooser_Button.Set_Width_Chars, or pack the button in > such a way
+--  that other interface elements give space to the > widget.
+--
 --  </description>
 --  <group>Buttons and Toggles</group>
 pragma Ada_2005;
@@ -231,6 +230,14 @@ package Gtk.File_Chooser_Button is
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        URI     : UTF8_String) return Boolean;
 
+   function Get_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Button_Record)
+       return UTF8_String;
+
+   procedure Set_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Name    : UTF8_String);
+
    function Get_Do_Overwrite_Confirmation
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
@@ -370,10 +377,6 @@ package Gtk.File_Chooser_Button is
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        URI     : UTF8_String) return Boolean;
 
-   procedure Set_Current_Name
-      (Chooser : not null access Gtk_File_Chooser_Button_Record;
-       Name    : UTF8_String);
-
    procedure Unselect_All
       (Chooser : not null access Gtk_File_Chooser_Button_Record);
 
@@ -438,7 +441,7 @@ package Gtk.File_Chooser_Button is
        After : Boolean := False);
    --  The ::file-set signal is emitted when the user selects a file.
    --
-   --  Note that this signal is only emitted when the *user* changes the file.
+   --  Note that this signal is only emitted when the user changes the file.
 
    ----------------
    -- Interfaces --

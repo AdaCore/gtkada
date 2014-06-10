@@ -260,6 +260,17 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Edge, Button, Root_X, Root_Y, Timestamp);
    end Begin_Resize_Drag;
 
+   -----------
+   -- Close --
+   -----------
+
+   procedure Close (Window : not null access Gtk_Window_Record) is
+      procedure Internal (Window : System.Address);
+      pragma Import (C, Internal, "gtk_window_close");
+   begin
+      Internal (Get_Object (Window));
+   end Close;
+
    ---------------
    -- Deiconify --
    ---------------
@@ -844,6 +855,19 @@ package body Gtk.Window is
    begin
       return Internal (Get_Object (Window)) /= 0;
    end Is_Active;
+
+   ------------------
+   -- Is_Maximized --
+   ------------------
+
+   function Is_Maximized
+      (Window : not null access Gtk_Window_Record) return Boolean
+   is
+      function Internal (Window : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_window_is_maximized");
+   begin
+      return Internal (Get_Object (Window)) /= 0;
+   end Is_Maximized;
 
    ------------------
    -- List_Windows --
@@ -1593,6 +1617,22 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Tmp_Title);
       Free (Tmp_Title);
    end Set_Title;
+
+   ------------------
+   -- Set_Titlebar --
+   ------------------
+
+   procedure Set_Titlebar
+      (Window   : not null access Gtk_Window_Record;
+       Titlebar : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+         (Window   : System.Address;
+          Titlebar : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_titlebar");
+   begin
+      Internal (Get_Object (Window), Get_Object_Or_Null (GObject (Titlebar)));
+   end Set_Titlebar;
 
    -----------------------
    -- Set_Transient_For --

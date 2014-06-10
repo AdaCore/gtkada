@@ -35,13 +35,13 @@
 --  undeterminate value on the scale, without changing the layout of the
 --  application (such as movie or music players).
 --
---  == GtkScale as GtkBuildable ==
+--  # GtkScale as GtkBuildable
 --
 --  GtkScale supports a custom <marks> element, which can contain multiple
 --  <mark> elements. The "value" and "position" attributes have the same
 --  meaning as Gtk.Scale.Add_Mark parameters of the same name. If the element
 --  is not empty, its content is taken as the markup to show at the mark. It
---  can be translated with the usual "translatable and "context" attributes.
+--  can be translated with the usual "translatable" and "context" attributes.
 --
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>
@@ -277,8 +277,8 @@ package Gtk.Scale is
    --  and Gtk.Enums.Pos_Left are drawn above the scale, anything else below.
    --  For a vertical scale, GTK_POS_LEFT and Gtk.Enums.Pos_Top are drawn to
    --  the left of the scale, anything else to the right.
-   --  "markup": Text to be shown at the mark, using <link
-   --  linkend="PangoMarkupFormat">Pango markup</link>, or null
+   --  "markup": Text to be shown at the mark, using [Pango
+   --  markup][PangoMarkupFormat], or null
 
    procedure Clear_Marks (Scale : not null access Gtk_Scale_Record);
    --  Removes any marks that have been added with Gtk.Scale.Add_Mark.
@@ -412,9 +412,9 @@ package Gtk.Scale is
    --  Value. That string will then be used to display the scale's value.
    --
    --  Here's an example signal handler which displays a value 1.0 as with
-   --  "-->1.0<--". |[ static gchar* format_value_callback (GtkScale *scale,
-   --  gdouble value) { return g_strdup_printf ("-->%0.*g<--",
-   --  gtk_scale_get_digits (scale), value); } ]|
+   --  "-->1.0<--". |[<!-- language="C" --> static gchar* format_value_callback
+   --  (GtkScale *scale, gdouble value) { return g_strdup_printf
+   --  ("-->\%0.*g<--", gtk_scale_get_digits (scale), value); } ]|
    -- 
    --  Callback parameters:
    --    --  "value": the value to format

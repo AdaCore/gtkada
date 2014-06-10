@@ -113,6 +113,19 @@ package body Gtk.Grid is
       Internal (Get_Object (Self), Get_Object (Child), Get_Object_Or_Null (GObject (Sibling)), Side, Width, Height);
    end Attach_Next_To;
 
+   ----------------------
+   -- Get_Baseline_Row --
+   ----------------------
+
+   function Get_Baseline_Row
+      (Self : not null access Gtk_Grid_Record) return Gint
+   is
+      function Internal (Self : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_grid_get_baseline_row");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Baseline_Row;
+
    ------------------
    -- Get_Child_At --
    ------------------
@@ -157,6 +170,22 @@ package body Gtk.Grid is
    begin
       return Internal (Get_Object (Self));
    end Get_Column_Spacing;
+
+   -------------------------------
+   -- Get_Row_Baseline_Position --
+   -------------------------------
+
+   function Get_Row_Baseline_Position
+      (Self : not null access Gtk_Grid_Record;
+       Row  : Gint) return Gtk.Enums.Gtk_Baseline_Position
+   is
+      function Internal
+         (Self : System.Address;
+          Row  : Gint) return Gtk.Enums.Gtk_Baseline_Position;
+      pragma Import (C, Internal, "gtk_grid_get_row_baseline_position");
+   begin
+      return Internal (Get_Object (Self), Row);
+   end Get_Row_Baseline_Position;
 
    -------------------------
    -- Get_Row_Homogeneous --
@@ -230,6 +259,48 @@ package body Gtk.Grid is
       Internal (Get_Object (Self), Position);
    end Insert_Row;
 
+   -------------------
+   -- Remove_Column --
+   -------------------
+
+   procedure Remove_Column
+      (Self     : not null access Gtk_Grid_Record;
+       Position : Gint)
+   is
+      procedure Internal (Self : System.Address; Position : Gint);
+      pragma Import (C, Internal, "gtk_grid_remove_column");
+   begin
+      Internal (Get_Object (Self), Position);
+   end Remove_Column;
+
+   ----------------
+   -- Remove_Row --
+   ----------------
+
+   procedure Remove_Row
+      (Self     : not null access Gtk_Grid_Record;
+       Position : Gint)
+   is
+      procedure Internal (Self : System.Address; Position : Gint);
+      pragma Import (C, Internal, "gtk_grid_remove_row");
+   begin
+      Internal (Get_Object (Self), Position);
+   end Remove_Row;
+
+   ----------------------
+   -- Set_Baseline_Row --
+   ----------------------
+
+   procedure Set_Baseline_Row
+      (Self : not null access Gtk_Grid_Record;
+       Row  : Gint)
+   is
+      procedure Internal (Self : System.Address; Row : Gint);
+      pragma Import (C, Internal, "gtk_grid_set_baseline_row");
+   begin
+      Internal (Get_Object (Self), Row);
+   end Set_Baseline_Row;
+
    ----------------------------
    -- Set_Column_Homogeneous --
    ----------------------------
@@ -259,6 +330,24 @@ package body Gtk.Grid is
    begin
       Internal (Get_Object (Self), Spacing);
    end Set_Column_Spacing;
+
+   -------------------------------
+   -- Set_Row_Baseline_Position --
+   -------------------------------
+
+   procedure Set_Row_Baseline_Position
+      (Self : not null access Gtk_Grid_Record;
+       Row  : Gint;
+       Pos  : Gtk.Enums.Gtk_Baseline_Position)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Row  : Gint;
+          Pos  : Gtk.Enums.Gtk_Baseline_Position);
+      pragma Import (C, Internal, "gtk_grid_set_row_baseline_position");
+   begin
+      Internal (Get_Object (Self), Row, Pos);
+   end Set_Row_Baseline_Position;
 
    -------------------------
    -- Set_Row_Homogeneous --

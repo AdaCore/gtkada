@@ -155,6 +155,10 @@ package Gtk.Cell_Renderer_Toggle is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::toggled signal is emitted when the cell is toggled.
+   --
+   --  It is the responsibility of the application to update the model with
+   --  the correct value to store at Path. Often this is simply the opposite of
+   --  the value currently stored at Path.
 
 private
    Radio_Property : constant Glib.Properties.Property_Boolean :=

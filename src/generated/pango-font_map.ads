@@ -53,6 +53,14 @@ package Pango.Font_Map is
    -- Methods --
    -------------
 
+   procedure Changed (Self : not null access Pango_Font_Map_Record);
+   --  Forces a change in the context, which will cause any
+   --  Pango.Context.Pango_Context using this fontmap to change.
+   --  This function is only useful when implementing a new backend for Pango,
+   --  something applications won't do. Backends should call this function if
+   --  they have attached extra data to the context and such data is changed.
+   --  Since: gtk+ 1.34
+
    function Create_Context
       (Self : not null access Pango_Font_Map_Record)
        return Pango.Context.Pango_Context;

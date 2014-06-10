@@ -158,11 +158,9 @@ package Glib.Option is
    --  A convenience function which creates a main group if it doesn't exist,
    --  adds the Entries to it and sets the translation domain.
    --  Since: gtk+ 2.6
-   --  "entries": a null-terminated array of Glib.Option.GOption_Entry<!--
-   --  -->s
+   --  "entries": a null-terminated array of GOption_Entrys
    --  "translation_domain": a translation domain to use for translating the
-   --  <option>--help</option> output for the options in Entries with gettext,
-   --  or null
+   --  `--help` output for the options in Entries with gettext, or null
 
    procedure Free (Self : Goption_Context);
    --  Frees context and all the groups which have been added to it.
@@ -177,45 +175,42 @@ package Glib.Option is
    procedure Set_Description
       (Self        : Goption_Context;
        Description : UTF8_String := "");
-   --  Adds a string to be displayed in <option>--help</option> output after
-   --  the list of options. This text often includes a bug reporting address.
+   --  Adds a string to be displayed in `--help` output after the list of
+   --  options. This text often includes a bug reporting address.
    --  Note that the summary is translated (see
    --  Glib.Option.Set_Translate_Func).
    --  Since: gtk+ 2.12
-   --  "description": a string to be shown in <option>--help</option> output
-   --  after the list of options, or null
+   --  "description": a string to be shown in `--help` output after the list
+   --  of options, or null
 
    function Get_Help
       (Self      : Goption_Context;
        Main_Help : Boolean;
        Group     : GOption_Group) return UTF8_String;
    --  Returns a formatted, translated help text for the given context. To
-   --  obtain the text produced by <option>--help</option>, call
-   --  'g_option_context_get_help (context, TRUE, NULL)'. To obtain the text
-   --  produced by <option>--help-all</option>, call 'g_option_context_get_help
-   --  (context, FALSE, NULL)'. To obtain the help text for an option group,
-   --  call 'g_option_context_get_help (context, FALSE, group)'.
+   --  obtain the text produced by `--help`, call `g_option_context_get_help
+   --  (context, TRUE, NULL)`. To obtain the text produced by `--help-all`,
+   --  call `g_option_context_get_help (context, FALSE, NULL)`. To obtain the
+   --  help text for an option group, call `g_option_context_get_help (context,
+   --  FALSE, group)`.
    --  Since: gtk+ 2.14
    --  "main_help": if True, only include the main group
    --  "group": the Glib.Option.GOption_Group to create help for, or null
 
    function Get_Help_Enabled (Self : Goption_Context) return Boolean;
-   --  Returns whether automatic <option>--help</option> generation is turned
-   --  on for Context. See Glib.Option.Set_Help_Enabled.
+   --  Returns whether automatic `--help` generation is turned on for Context.
+   --  See Glib.Option.Set_Help_Enabled.
    --  Since: gtk+ 2.6
 
    procedure Set_Help_Enabled
       (Self         : Goption_Context;
        Help_Enabled : Boolean);
-   --  Enables or disables automatic generation of <option>--help</option>
-   --  output. By default, g_option_context_parse recognizes
-   --  <option>--help</option>, <option>-h</option>, <option>-?</option>,
-   --  <option>--help-all</option> and
-   --  <option>--help-</option><replaceable>groupname</replaceable> and creates
-   --  suitable output to stdout.
+   --  Enables or disables automatic generation of `--help` output. By
+   --  default, g_option_context_parse recognizes `--help`, `-h`, `-?`,
+   --  `--help-all` and `--help-groupname` and creates suitable output to
+   --  stdout.
    --  Since: gtk+ 2.6
-   --  "help_enabled": True to enable <option>--help</option>, False to
-   --  disable it
+   --  "help_enabled": True to enable `--help`, False to disable it
 
    function Get_Ignore_Unknown_Options
       (Self : Goption_Context) return Boolean;
@@ -244,7 +239,7 @@ package Glib.Option is
    --  Sets a Glib.Option.GOption_Group as main group of the Context. This has
    --  the same effect as calling Glib.Option.Add_Group, the only difference is
    --  that the options in the main group are treated differently when
-   --  generating <option>--help</option> output.
+   --  generating `--help` output.
    --  Since: gtk+ 2.6
    --  "group": the group to set as main group
 
@@ -255,22 +250,21 @@ package Glib.Option is
    procedure Set_Summary
       (Self    : Goption_Context;
        Summary : UTF8_String := "");
-   --  Adds a string to be displayed in <option>--help</option> output before
-   --  the list of options. This is typically a summary of the program
-   --  functionality.
+   --  Adds a string to be displayed in `--help` output before the list of
+   --  options. This is typically a summary of the program functionality.
    --  Note that the summary is translated (see Glib.Option.Set_Translate_Func
    --  and Glib.Option.Set_Translation_Domain).
    --  Since: gtk+ 2.12
-   --  "summary": a string to be shown in <option>--help</option> output
-   --  before the list of options, or null
+   --  "summary": a string to be shown in `--help` output before the list of
+   --  options, or null
 
    procedure Set_Translate_Func
       (Self           : Goption_Context;
        Func           : Gtranslate_Func;
        Destroy_Notify : Glib.G_Destroy_Notify_Address);
    --  Sets the function which is used to translate the contexts user-visible
-   --  strings, for <option>--help</option> output. If Func is null, strings
-   --  are not translated.
+   --  strings, for `--help` output. If Func is null, strings are not
+   --  translated.
    --  Note that option groups have their own translation functions, this
    --  function only affects the Parameter_String (see Glib.Option.G_New), the
    --  summary (see Glib.Option.Set_Summary) and the description (see
@@ -301,8 +295,8 @@ package Glib.Option is
           Data           : User_Data_Type;
           Destroy_Notify : Glib.G_Destroy_Notify_Address);
       --  Sets the function which is used to translate the contexts
-      --  user-visible strings, for <option>--help</option> output. If Func is
-      --  null, strings are not translated.
+      --  user-visible strings, for `--help` output. If Func is null, strings
+      --  are not translated.
       --  Note that option groups have their own translation functions, this
       --  function only affects the Parameter_String (see Glib.Option.G_New),
       --  the summary (see Glib.Option.Set_Summary) and the description (see
@@ -366,8 +360,7 @@ package Glib.Option is
    --  untranslated.
    --  Since: gtk+ 2.6
    --  "parameter_string": a string which is displayed in the first line of
-   --  <option>--help</option> output, after the usage summary
-   --  '<replaceable>programname</replaceable> [OPTION...]'
+   --  `--help` output, after the usage summary `programname [OPTION...]`
 
 private
 

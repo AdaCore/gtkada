@@ -262,11 +262,13 @@ package body Gtk.Action_Group is
        Data         : System.Address;
        Notify       : Glib.G_Destroy_Notify_Address);
    pragma Import (C, C_Gtk_Action_Group_Set_Translate_Func, "gtk_action_group_set_translate_func");
+   pragma Obsolescent (C_Gtk_Action_Group_Set_Translate_Func);
    --  Sets a function to be used for translating the Label and Tooltip of
-   --  Gtk_Action_Entry<!-- -->s added by gtk_action_group_add_actions.
+   --  Gtk_Action_Entrys added by gtk_action_group_add_actions.
    --  If you're using gettext, it is enough to set the translation domain
    --  with Gtk.Action_Group.Set_Translation_Domain.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "func": a Gtk_Translate_Func
    --  "data": data to be passed to Func and Notify
    --  "notify": a Glib.G_Destroy_Notify_Address function to be called when

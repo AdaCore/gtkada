@@ -105,9 +105,8 @@ package Gtk.Cell_Renderer_Combo is
    --  Specifies the model column which holds the possible values for the
    --  combo box.
    --
-   --  Note that this refers to the model specified in the model property,
-   --  *not* the model backing the tree view to which this cell renderer is
-   --  attached.
+   --  Note that this refers to the model specified in the model property, not
+   --  the model backing the tree view to which this cell renderer is attached.
    --
    --  Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo automatically adds a
    --  text cell renderer for this column to its combo box.

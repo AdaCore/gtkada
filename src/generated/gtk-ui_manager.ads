@@ -26,137 +26,106 @@
 --  toolbars) from one or more UI definitions, which reference actions from one
 --  or more action groups.
 --
---  == UI Definitions ==
+--  # UI Definitions # {XML-UI}
 --
 --  The UI definitions are specified in an XML format which can be roughly
 --  described by the following DTD.
 --
---  Note:
+--  > Do not confuse the GtkUIManager UI Definitions described here with > the
+--  similarly named [GtkBuilder UI Definitions][BUILDER-UI].
 --
---  Do not confuse the GtkUIManager UI Definitions described here with the
---  similarly named <link linkend="BUILDER-UI">GtkBuilder UI
---  Definitions</link>.
+--  |[ <!ELEMENT ui (menubar|toolbar|popup|accelerator)* > <!ELEMENT menubar
+--  (menuitem|separator|placeholder|menu)* > <!ELEMENT menu
+--  (menuitem|separator|placeholder|menu)* > <!ELEMENT popup
+--  (menuitem|separator|placeholder|menu)* > <!ELEMENT toolbar
+--  (toolitem|separator|placeholder)* > <!ELEMENT placeholder
+--  (menuitem|toolitem|separator|placeholder|menu)* > <!ELEMENT menuitem EMPTY
+--  > <!ELEMENT toolitem (menu?) > <!ELEMENT separator EMPTY > <!ELEMENT
+--  accelerator EMPTY > <!ATTLIST menubar name IMPLIED action IMPLIED >
+--  <!ATTLIST toolbar name IMPLIED action IMPLIED > <!ATTLIST popup name
+--  IMPLIED action IMPLIED accelerators (true|false) IMPLIED > <!ATTLIST
+--  placeholder name IMPLIED action IMPLIED > <!ATTLIST separator name IMPLIED
+--  action IMPLIED expand (true|false) IMPLIED > <!ATTLIST menu name IMPLIED
+--  action REQUIRED position (top|bot) IMPLIED > <!ATTLIST menuitem name
+--  IMPLIED action REQUIRED position (top|bot) IMPLIED always-show-image
+--  (true|false) IMPLIED > <!ATTLIST toolitem name IMPLIED action REQUIRED
+--  position (top|bot) IMPLIED > <!ATTLIST accelerator name IMPLIED action
+--  REQUIRED > ]|
 --
---    <!ELEMENT ui          (menubar|toolbar|popup|accelerator)* >
---    <!ELEMENT menubar     (menuitem|separator|placeholder|menu)* >
---    <!ELEMENT menu        (menuitem|separator|placeholder|menu)* >
---    <!ELEMENT popup       (menuitem|separator|placeholder|menu)* >
---    <!ELEMENT toolbar     (toolitem|separator|placeholder)* >
---    <!ELEMENT placeholder (menuitem|toolitem|separator|placeholder|menu)* >
---    <!ELEMENT menuitem     EMPTY >
---    <!ELEMENT toolitem     (menu?) >
---    <!ELEMENT separator    EMPTY >
---    <!ELEMENT accelerator  EMPTY >
---    <!ATTLIST menubar      name                      IMPLIED
---    action                    IMPLIED >
---    <!ATTLIST toolbar      name                      IMPLIED
---    action                    IMPLIED >
---    <!ATTLIST popup        name                      IMPLIED
---    action                    IMPLIED
---    accelerators (true|false) IMPLIED >
---    <!ATTLIST placeholder  name                      IMPLIED
---    action                    IMPLIED >
---    <!ATTLIST separator    name                      IMPLIED
---    action                    IMPLIED
---    expand       (true|false) IMPLIED >
---    <!ATTLIST menu         name                      IMPLIED
---    action                    REQUIRED
---    position     (top|bot)    IMPLIED >
---    <!ATTLIST menuitem     name                      IMPLIED
---    action                    REQUIRED
---    position     (top|bot)    IMPLIED
---    always-show-image (true|false) IMPLIED >
---    <!ATTLIST toolitem     name                      IMPLIED
---    action                    REQUIRED
---    position     (top|bot)    IMPLIED >
---    <!ATTLIST accelerator  name                      IMPLIED
---    action                    REQUIRED >
 --  There are some additional restrictions beyond those specified in the DTD,
 --  e.g. every toolitem must have a toolbar in its anchestry and every menuitem
---  must have a menubar or popup in its anchestry. Since a GMarkup parser is
+--  must have a menubar or popup in its anchestry. Since a GMarkup_Parser is
 --  used to parse the UI description, it must not only be valid XML, but valid
---  GMarkup.
+--  markup.
 --
 --  If a name is not specified, it defaults to the action. If an action is not
 --  specified either, the element name is used. The name and action attributes
---  must not contain '/' characters after parsing (since that would mess up
+--  must not contain "/" characters after parsing (since that would mess up
 --  path lookup) and must be usable as XML attributes when enclosed in
---  doublequotes, thus they must not '"' characters or references to the &quot;
+--  doublequotes, thus they must not """ characters or references to the &quot;
 --  entity.
 --
---  == A UI definition ==
+--  # A UI definition #
 --
---    <ui>
---    <menubar>
---    <menu name="FileMenu" action="FileMenuAction">
---    <menuitem name="New" action="New2Action" />
---    <placeholder name="FileMenuAdditions" />
---    </menu>
---    <menu name="JustifyMenu" action="JustifyMenuAction">
---    <menuitem name="Left" action="justify-left"/>
---    <menuitem name="Centre" action="justify-center"/>
---    <menuitem name="Right" action="justify-right"/>
---    <menuitem name="Fill" action="justify-fill"/>
---    </menu>
---    </menubar>
---    <toolbar action="toolbar1">
---    <placeholder name="JustifyToolItems">
---    <separator/>
---    <toolitem name="Left" action="justify-left"/>
---    <toolitem name="Centre" action="justify-center"/>
---    <toolitem name="Right" action="justify-right"/>
---    <toolitem name="Fill" action="justify-fill"/>
---    <separator/>
---    </placeholder>
---    </toolbar>
---    </ui>
+--  |[ <ui> <menubar> <menu name="FileMenu" action="FileMenuAction"> <menuitem
+--  name="New" action="New2Action" /> <placeholder name="FileMenuAdditions" />
+--  </menu> <menu name="JustifyMenu" action="JustifyMenuAction"> <menuitem
+--  name="Left" action="justify-left"/> <menuitem name="Centre"
+--  action="justify-center"/> <menuitem name="Right" action="justify-right"/>
+--  <menuitem name="Fill" action="justify-fill"/> </menu> </menubar> <toolbar
+--  action="toolbar1"> <placeholder name="JustifyToolItems"> <separator/>
+--  <toolitem name="Left" action="justify-left"/> <toolitem name="Centre"
+--  action="justify-center"/> <toolitem name="Right" action="justify-right"/>
+--  <toolitem name="Fill" action="justify-fill"/> <separator/> </placeholder>
+--  </toolbar> </ui> ]|
+--
 --  The constructed widget hierarchy is very similar to the element tree of
 --  the XML, with the exception that placeholders are merged into their
 --  parents. The correspondence of XML elements to widgets should be almost
 --  obvious:
 --
---  'menubar'
+--  - menubar
 --
---     * a Gtk.Menu_Bar.Gtk_Menu_Bar
+--  a Gtk.Menu_Bar.Gtk_Menu_Bar
 --
---  'toolbar'
+--  - toolbar
 --
---     * a Gtk.Toolbar.Gtk_Toolbar
+--  a Gtk.Toolbar.Gtk_Toolbar
 --
---  'popup'
+--  - popup
 --
---     * a toplevel Gtk.Menu.Gtk_Menu
+--  a toplevel Gtk.Menu.Gtk_Menu
 --
---  'menu'
+--  - menu
 --
---     * a Gtk.Menu.Gtk_Menu attached to a menuitem
+--  a Gtk.Menu.Gtk_Menu attached to a menuitem
 --
---  'menuitem'
+--  - menuitem
 --
---     * a Gtk.Menu_Item.Gtk_Menu_Item subclass, the exact type depends on the
+--  a Gtk.Menu_Item.Gtk_Menu_Item subclass, the exact type depends on the
 --  action
 --
---  'toolitem'
+--  - toolitem
 --
---     * a Gtk.Tool_Item.Gtk_Tool_Item subclass, the exact type depends on the
+--  a Gtk.Tool_Item.Gtk_Tool_Item subclass, the exact type depends on the
 --  action. Note that toolitem elements may contain a menu element, but only if
 --  their associated action specifies a
 --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button as proxy.
 --
---  'separator'
+--  - separator
 --
---     * a Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item or
+--  a Gtk.Separator_Menu_Item.Gtk_Separator_Menu_Item or
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
 --
---  'accelerator'
+--  - accelerator
 --
---     * a keyboard accelerator
+--  a keyboard accelerator
 --
 --  The "position" attribute determines where a constructed widget is
 --  positioned wrt. to its siblings in the partially constructed tree. If it is
 --  "top", the widget is prepended, otherwise it is appended.
 --
---  == UI Merging ==
+--  # UI Merging # {UI-Merging}
 --
 --  The most remarkable feature of Gtk.UI_Manager.Gtk_UI_Manager is that it
 --  can overlay a set of menuitems and toolitems over another one, and demerge
@@ -165,17 +134,17 @@
 --  Merging is done based on the names of the XML elements. Each element is
 --  identified by a path which consists of the names of its anchestors,
 --  separated by slashes. For example, the menuitem named "Left" in the example
---  above has the path '/ui/menubar/JustifyMenu/Left' and the toolitem with the
---  same name has path '/ui/toolbar1/JustifyToolItems/Left'.
+--  above has the path `/ui/menubar/JustifyMenu/Left` and the toolitem with the
+--  same name has path `/ui/toolbar1/JustifyToolItems/Left`.
 --
---  == Accelerators ==
+--  # Accelerators #
 --
 --  Every action has an accelerator path. Accelerators are installed together
 --  with menuitem proxies, but they can also be explicitly added with
 --  <accelerator> elements in the UI definition. This makes it possible to have
 --  accelerators for actions even if they have no visible proxies.
 --
---  == Smart Separators ==
+--  # Smart Separators # {Smart-Separators}
 --
 --  The separators created by Gtk.UI_Manager.Gtk_UI_Manager are "smart", i.e.
 --  they do not show up in the UI unless they end up between two visible menu
@@ -185,25 +154,26 @@
 --  elements from multiple sources can make it hard or impossible to determine
 --  in advance whether a separator will end up in such an unfortunate position.
 --
---  For separators in toolbars, you can set 'expand="true"' to turn them from
+--  For separators in toolbars, you can set `expand="true"` to turn them from
 --  a small, visible separator to an expanding, invisible one. Toolitems
 --  following an expanding separator are effectively right-aligned.
 --
---  == Empty Menus ==
+--  # Empty Menus
 --
 --  Submenus pose similar problems to separators inconnection with merging. It
 --  is impossible to know in advance whether they will end up empty after
 --  merging. Gtk.UI_Manager.Gtk_UI_Manager offers two ways to treat empty
 --  submenus:
 --
---     * make them disappear by hiding the menu item they're attached to
+--  - make them disappear by hiding the menu item they're attached to
 --
---     * add an insensitive "Empty" item
+--  - add an insensitive "Empty" item
 --
 --  The behaviour is chosen based on the "hide_if_empty" property of the
 --  action to which the submenu is associated.
 --
---  == GtkUIManager as GtkBuildable ==
+--  # GtkUIManager as GtkBuildable #
+--  {Gtk.UI_Manager.Gtk_UI_Manager-BUILDER-UI}
 --
 --  The GtkUIManager implementation of the GtkBuildable interface accepts
 --  GtkActionGroup objects as <child> elements in UI definitions.
@@ -215,30 +185,16 @@
 --  other parts of the constructed user interface with the help of the
 --  "constructor" attribute. See the example below.
 --
---  == An embedded GtkUIManager UI definition ==
+--  ## An embedded GtkUIManager UI definition
 --
---    <object class="GtkUIManager" id="uiman">
---    <child>
---    <object class="GtkActionGroup" id="actiongroup">
---    <child>
---    <object class="GtkAction" id="file">
---    <property name="label">_File</property>
---    </object>
---    </child>
---    </object>
---    </child>
---    <ui>
---    <menubar name="menubar1">
---    <menu action="file">
---    </menu>
---    </menubar>
---    </ui>
---    </object>
---    <object class="GtkWindow" id="main-window">
---    <child>
---    <object class="GtkMenuBar" id="menubar1" constructor="uiman"/>
---    </child>
---    </object>
+--  |[ <object class="GtkUIManager" id="uiman"> <child> <object
+--  class="GtkActionGroup" id="actiongroup"> <child> <object class="GtkAction"
+--  id="file"> <property name="label">_File</property> </object> </child>
+--  </object> </child> <ui> <menubar name="menubar1"> <menu action="file">
+--  </menu> </menubar> </ui> </object> <object class="GtkWindow"
+--  id="main-window"> <child> <object class="GtkMenuBar" id="menubar1"
+--  constructor="uiman"/> </child> </object> ]|
+--
 --  </description>
 pragma Ada_2005;
 
@@ -313,6 +269,7 @@ package Gtk.UI_Manager is
        Action   : UTF8_String := "";
        The_Type : Manager_Item_Type := Manager_Auto;
        Top      : Boolean := False);
+   pragma Obsolescent (Add_UI);
    --  Adds a UI element to the current contents of Manager.
    --  If Type is Gtk.UI_Manager.Manager_Auto, GTK+ inserts a menuitem,
    --  toolitem or separator if such an element can be inserted at the place
@@ -321,6 +278,7 @@ package Gtk.UI_Manager is
    --  If Path points to a menuitem or toolitem, the new element will be
    --  inserted before or after this item, depending on Top.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "merge_id": the merge id for the merged UI, see
    --  Gtk.UI_Manager.New_Merge_Id
    --  "path": a path
@@ -335,61 +293,76 @@ package Gtk.UI_Manager is
       (Self     : not null access Gtk_UI_Manager_Record;
        Filename : UTF8_String;
        Error    : access Glib.Error.GError) return Guint;
-   --  Parses a file containing a <link linkend="XML-UI">UI definition</link>
-   --  and merges it with the current contents of Manager.
+   pragma Obsolescent (Add_UI_From_File);
+   --  Parses a file containing a [UI definition][XML-UI] and merges it with
+   --  the current contents of Manager.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "filename": the name of the file to parse
 
    function Add_UI_From_Resource
       (Self          : not null access Gtk_UI_Manager_Record;
        Resource_Path : UTF8_String;
        Error         : access Glib.Error.GError) return Guint;
-   --  Parses a resource file containing a <link linkend="XML-UI">UI
-   --  definition</link> and merges it with the current contents of Manager.
+   pragma Obsolescent (Add_UI_From_Resource);
+   --  Parses a resource file containing a [UI definition][XML-UI] and merges
+   --  it with the current contents of Manager.
    --  Since: gtk+ 3.4
+   --  Deprecated since 3.10, 1
    --  "resource_path": the resource path of the file to parse
 
    function Add_UI_From_String
       (Self   : not null access Gtk_UI_Manager_Record;
        Buffer : UTF8_String;
        Error  : access Glib.Error.GError) return Guint;
-   --  Parses a string containing a <link linkend="XML-UI">UI
-   --  definition</link> and merges it with the current contents of Manager. An
-   --  enclosing <ui> element is added if it is missing.
+   pragma Obsolescent (Add_UI_From_String);
+   --  Parses a string containing a [UI definition][XML-UI] and merges it with
+   --  the current contents of Manager. An enclosing <ui> element is added if
+   --  it is missing.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "buffer": the string to parse
 
    procedure Ensure_Update (Self : not null access Gtk_UI_Manager_Record);
+   pragma Obsolescent (Ensure_Update);
    --  Makes sure that all pending updates to the UI have been completed.
    --  This may occasionally be necessary, since Gtk.UI_Manager.Gtk_UI_Manager
    --  updates the UI in an idle function. A typical example where this
    --  function is useful is to enforce that the menubar and toolbar have been
-   --  added to the main window before showing it: |[ gtk_container_add
-   --  (GTK_CONTAINER (window), vbox); g_signal_connect (merge, "add-widget",
-   --  G_CALLBACK (add_widget), vbox); gtk_ui_manager_add_ui_from_file (merge,
-   --  "my-menus"); gtk_ui_manager_add_ui_from_file (merge, "my-toolbars");
+   --  added to the main window before showing it: |[<!-- language="C" -->
+   --  gtk_container_add (GTK_CONTAINER (window), vbox); g_signal_connect
+   --  (merge, "add-widget", G_CALLBACK (add_widget), vbox);
+   --  gtk_ui_manager_add_ui_from_file (merge, "my-menus");
+   --  gtk_ui_manager_add_ui_from_file (merge, "my-toolbars");
    --  gtk_ui_manager_ensure_update (merge); gtk_widget_show (window); ]|
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    function Get_Accel_Group
       (Self : not null access Gtk_UI_Manager_Record)
        return Gtk.Accel_Group.Gtk_Accel_Group;
+   pragma Obsolescent (Get_Accel_Group);
    --  Returns the Gtk.Accel_Group.Gtk_Accel_Group associated with Manager.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    function Get_Action
       (Self : not null access Gtk_UI_Manager_Record;
        Path : UTF8_String) return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Action);
    --  Looks up an action by following a path. See Gtk.UI_Manager.Get_Widget
    --  for more information about paths.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "path": a path
 
    function Get_Action_Groups
       (Self : not null access Gtk_UI_Manager_Record)
        return Glib.Object.Object_Simple_List.Glist;
+   pragma Obsolescent (Get_Action_Groups);
    --  Returns the list of action groups associated with Manager.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    function Get_Add_Tearoffs
       (Self : not null access Gtk_UI_Manager_Record) return Boolean;
@@ -397,8 +370,7 @@ package Gtk.UI_Manager is
    --  Returns whether menus generated by this Gtk.UI_Manager.Gtk_UI_Manager
    --  will have tearoff menu items.
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.4, Tearoff menus are deprecated and should not be
-   --  used in newly written code.
+   --  Deprecated since 3.4, 1
 
    procedure Set_Add_Tearoffs
       (Self         : not null access Gtk_UI_Manager_Record;
@@ -410,74 +382,87 @@ package Gtk.UI_Manager is
    --  Note that this only affects regular menus. Generated popup menus never
    --  have tearoff menu items.
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.4, Tearoff menus are deprecated and should not be
-   --  used in newly written code.
+   --  Deprecated since 3.4, 1
    --  "add_tearoffs": whether tearoff menu items are added
 
    function Get_Toplevels
       (Self  : not null access Gtk_UI_Manager_Record;
        Types : Manager_Item_Type) return Gtk.Widget.Widget_SList.GSlist;
+   pragma Obsolescent (Get_Toplevels);
    --  Obtains a list of all toplevel widgets of the requested types.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "types": specifies the types of toplevel widgets to include. Allowed
    --  types are GTK_UI_MANAGER_MENUBAR, GTK_UI_MANAGER_TOOLBAR and
    --  GTK_UI_MANAGER_POPUP.
 
    function Get_Ui
       (Self : not null access Gtk_UI_Manager_Record) return UTF8_String;
-   --  Creates a <link linkend="XML-UI">UI definition</link> of the merged UI.
+   pragma Obsolescent (Get_Ui);
+   --  Creates a [UI definition][XML-UI] of the merged UI.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    function Get_Widget
       (Self : not null access Gtk_UI_Manager_Record;
        Path : UTF8_String) return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Widget);
    --  Looks up a widget by following a path. The path consists of the names
-   --  specified in the XML description of the UI. separated by '/'. Elements
+   --  specified in the XML description of the UI. separated by "/". Elements
    --  which don't have a name or action attribute in the XML (e.g. <popup>)
    --  can be addressed by their XML element name (e.g. "popup"). The root
    --  element ("/ui") can be omitted in the path.
-   --  Note that the widget found by following a path that ends in a <menu>
-   --  element is the menuitem to which the menu is attached, not the menu
-   --  itmanager.
+   --  Note that the widget found by following a path that ends in a <menu>;
+   --  element is the menuitem to which the menu is attached, not the menu it
+   --  manages.
    --  Also note that the widgets constructed by a ui manager are not tied to
    --  the lifecycle of the ui manager. If you add the widgets returned by this
    --  function to some container or explicitly ref them, they will survive the
    --  destruction of the ui manager.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "path": a path
 
    procedure Insert_Action_Group
       (Self         : not null access Gtk_UI_Manager_Record;
        Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
        Pos          : Gint);
+   pragma Obsolescent (Insert_Action_Group);
    --  Inserts an action group into the list of action groups associated with
    --  Manager. Actions in earlier groups hide actions with the same name in
    --  later groups.
    --  If Pos is larger than the number of action groups in Manager, or
    --  negative, Action_Group will be inserted at the end of the internal list.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "action_group": the action group to be inserted
    --  "pos": the position at which the group will be inserted.
 
    function New_Merge_Id
       (Self : not null access Gtk_UI_Manager_Record) return Guint;
+   pragma Obsolescent (New_Merge_Id);
    --  Returns an unused merge id, suitable for use with
    --  Gtk.UI_Manager.Add_UI.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    procedure Remove_Action_Group
       (Self         : not null access Gtk_UI_Manager_Record;
        Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class);
+   pragma Obsolescent (Remove_Action_Group);
    --  Removes an action group from the list of action groups associated with
    --  Manager.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "action_group": the action group to be removed
 
    procedure Remove_UI
       (Self     : not null access Gtk_UI_Manager_Record;
        Merge_Id : Guint);
-   --  Unmerges the part of Manager<!-- -->s content identified by Merge_Id.
+   pragma Obsolescent (Remove_UI);
+   --  Unmerges the part of Manager's content identified by Merge_Id.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "merge_id": a merge id as returned by Gtk.UI_Manager.Add_UI_From_String
 
    ----------------

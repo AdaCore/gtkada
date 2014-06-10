@@ -94,6 +94,43 @@ package body Glib.Action is
       return From_Object (Internal (Self));
    end Get_State_Hint;
 
+   -------------------
+   -- Name_Is_Valid --
+   -------------------
+
+   function Name_Is_Valid (Action_Name : UTF8_String) return Boolean is
+      function Internal
+         (Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_action_name_is_valid");
+      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Return      : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Tmp_Action_Name);
+      Free (Tmp_Action_Name);
+      return Tmp_Return /= 0;
+   end Name_Is_Valid;
+
+   -------------------------
+   -- Print_Detailed_Name --
+   -------------------------
+
+   function Print_Detailed_Name
+      (Action_Name : UTF8_String;
+       Parameter   : Glib.Variant.Gvariant) return UTF8_String
+   is
+      function Internal
+         (Action_Name : Interfaces.C.Strings.chars_ptr;
+          Parameter   : System.Address)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "g_action_print_detailed_name");
+      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Return      : Interfaces.C.Strings.chars_ptr;
+   begin
+      Tmp_Return := Internal (Tmp_Action_Name, Get_Object (Parameter));
+      Free (Tmp_Action_Name);
+      return Gtkada.Bindings.Value_And_Free (Tmp_Return);
+   end Print_Detailed_Name;
+
    function "+" (W : Gaction) return Gaction is
    begin
       return W;

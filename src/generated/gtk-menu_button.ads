@@ -22,78 +22,84 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gtk.Menu_Button.Gtk_Menu_Button widget is used to display a menu when
---  clicked on. This menu can be provided either as a Gtk.Menu.Gtk_Menu, or an
---  abstract Glib.Menu_Model.Gmenu_Model.
+--  The Gtk.Menu_Button.Gtk_Menu_Button widget is used to display a popup when
+--  clicked on. This popup can be provided either as a Gtk.Menu.Gtk_Menu, a
+--  Gtk.Popover.Gtk_Popover or an abstract Glib.Menu_Model.Gmenu_Model.
 --
 --  The Gtk.Menu_Button.Gtk_Menu_Button widget can hold any valid child
 --  widget. That is, it can hold almost any other standard
 --  Gtk.Widget.Gtk_Widget. The most commonly used child is the provided
 --  Gtk.Arrow.Gtk_Arrow.
 --
---  The positioning of the menu is determined by the
---  Gtk.Menu_Button.Gtk_Menu_Button:direction property of the menu button and
---  the Gtk.Widget.Gtk_Widget:halign or Gtk.Widget.Gtk_Widget:valign properties
---  of the menu. For example, when the direction is Gtk.Enums.Arrow_Down and
---  the horizontal alignment is Gtk.Widget.Align_Start, the menu will be
---  positioned below the button, with the starting edge (depending on the text
---  direction) of the menu aligned with the starting edge of the button. If
---  there is not enough space below the button, the menu is popped up above the
---  button instead. If the alignment would move part of the menu offscreen, it
---  is 'pushed in'.
+--  The positioning of the popup is determined by the
+--  Gtk.Menu_Button.Gtk_Menu_Button:direction property of the menu button.
 --
--- 
+--  For menus, the Gtk.Widget.Gtk_Widget:halign and
+--  Gtk.Widget.Gtk_Widget:valign properties of the menu are also taken into
+--  account. For example, when the direction is Gtk.Enums.Arrow_Down and the
+--  horizontal alignment is Gtk.Widget.Align_Start, the menu will be positioned
+--  below the button, with the starting edge (depending on the text direction)
+--  of the menu aligned with the starting edge of the button. If there is not
+--  enough space below the button, the menu is popped up above the button
+--  instead. If the alignment would move part of the menu offscreen, it is
+--  "pushed in".
 --
--- 
+--  ## Direction = Down
 --
---  halign = start
+--  - halign = start
 --
---  halign = center
+--  ![](down-start.png)
 --
---  halign = end
+--  - halign = center
 --
---  direction = down
+--  ![](down-center.png)
 --
---  <inlinemediaobject> <imageobject><imagedata fileref="down-start.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="down-center.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="down-end.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  direction = up
+--  - halign = end
 --
---  <inlinemediaobject> <imageobject><imagedata fileref="up-start.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="up-center.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="up-end.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
--- 
+--  ![](down-end.png)
 --
--- 
+--  ## Direction = Up
 --
---  direction = left
+--  - halign = start
 --
---  direction = right
+--  ![](up-start.png)
 --
---  valign = start
+--  - halign = center
 --
---  <inlinemediaobject> <imageobject><imagedata fileref="left-start.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="right-start.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  valign = center
+--  ![](up-center.png)
 --
---  <inlinemediaobject> <imageobject><imagedata fileref="left-center.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="right-center.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  valign = end
+--  - halign = end
 --
---  <inlinemediaobject> <imageobject><imagedata fileref="left-end.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
---  <inlinemediaobject> <imageobject><imagedata fileref="right-end.png"
---  format="PNG"/></imageobject> </inlinemediaobject>
+--  ![](up-end.png)
+--
+--  ## Direction = Left
+--
+--  - valign = start
+--
+--  ![](left-start.png)
+--
+--  - valign = center
+--
+--  ![](left-center.png)
+--
+--  - valign = end
+--
+--  ![](left-end.png)
+--
+--  ## Direction = Right
+--
+--  - valign = start
+--
+--  ![](right-start.png)
+--
+--  - valign = center
+--
+--  ![](right-center.png)
+--
+--  - valign = end
+--
+--  ![](right-end.png)
+--
 --  </description>
 pragma Ada_2005;
 
@@ -109,6 +115,7 @@ with Gtk.Activatable;   use Gtk.Activatable;
 with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Menu;          use Gtk.Menu;
+with Gtk.Popover;       use Gtk.Popover;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget;        use Gtk.Widget;
 
@@ -154,26 +161,28 @@ package Gtk.Menu_Button is
    --  Sets the Gtk.Widget.Gtk_Widget to use to line the menu with when popped
    --  up. Note that the Align_Widget must contain the
    --  Gtk.Menu_Button.Gtk_Menu_Button itself.
-   --  Setting it to null means that the popup menu will be aligned with the
-   --  button itself.
+   --  Setting it to null means that the menu will be aligned with the button
+   --  itself.
+   --  Note that this property is only used with menus currently, and not for
+   --  popovers.
    --  Since: gtk+ 3.6
    --  "align_widget": a Gtk.Widget.Gtk_Widget
 
    function Get_Direction
       (Self : not null access Gtk_Menu_Button_Record)
        return Gtk.Enums.Gtk_Arrow_Type;
-   --  Returns the direction the menu will be pointing at when popped up.
+   --  Returns the direction the popup will be pointing at when popped up.
    --  Since: gtk+ 3.6
 
    procedure Set_Direction
       (Self      : not null access Gtk_Menu_Button_Record;
        Direction : Gtk.Enums.Gtk_Arrow_Type);
-   --  Sets the direction in which the menu will be popped up, as well as
+   --  Sets the direction in which the popup will be popped up, as well as
    --  changing the arrow's direction. The child will not be changed to an
    --  arrow if it was customized.
-   --  If the menu when popped out would have collided with screen edges, we
-   --  will do our best to keep it inside the screen and fully visible.
-   --  If you pass Gtk.Enums.Arrow_None for a Direction, the menu will behave
+   --  If the does not fit in the available space in the given direction, GTK+
+   --  will its best to keep it inside the screen and fully visible.
+   --  If you pass Gtk.Enums.Arrow_None for a Direction, the popup will behave
    --  as if you passed Gtk.Enums.Arrow_Down (although you won't see any
    --  arrows).
    --  Since: gtk+ 3.6
@@ -182,38 +191,75 @@ package Gtk.Menu_Button is
    function Get_Menu_Model
       (Self : not null access Gtk_Menu_Button_Record)
        return Glib.Menu_Model.Gmenu_Model;
-   --  Returns the Glib.Menu_Model.Gmenu_Model used to generate the menu.
+   --  Returns the Glib.Menu_Model.Gmenu_Model used to generate the popup.
    --  Since: gtk+ 3.6
 
    procedure Set_Menu_Model
       (Self       : not null access Gtk_Menu_Button_Record;
        Menu_Model : access Glib.Menu_Model.Gmenu_Model_Record'Class);
-   --  Sets the Glib.Menu_Model.Gmenu_Model from which the
-   --  Gtk.Menu_Button.Gtk_Menu_Button:popup property will be filled in, or
-   --  null to disable the button.
-   --  The Gtk.Menu.Gtk_Menu will be created with Gtk.Menu.Gtk_New_From_Model,
-   --  so actions will be connected as documented there.
-   --  If Gtk.Menu_Button.Gtk_Menu_Button:popup is already set, then its
-   --  content will be lost and replaced by our newly created
-   --  Gtk.Menu.Gtk_Menu.
+   --  Sets the Glib.Menu_Model.Gmenu_Model from which the popup will be
+   --  constructed, or null to disable the button.
+   --  Depending on the value of Gtk.Menu_Button.Gtk_Menu_Button:use-popover,
+   --  either a Gtk.Menu.Gtk_Menu will be created with
+   --  Gtk.Menu.Gtk_New_From_Model, or a Gtk.Popover.Gtk_Popover with
+   --  Gtk.Popover.Gtk_New_From_Model. In either case, actions will be
+   --  connected as documented for these functions.
+   --  If Gtk.Menu_Button.Gtk_Menu_Button:popup or
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popover are already set, their content
+   --  will be lost and replaced by the newly created popup.
    --  Since: gtk+ 3.6
    --  "menu_model": a Glib.Menu_Model.Gmenu_Model
+
+   function Get_Popover
+      (Self : not null access Gtk_Menu_Button_Record)
+       return Gtk.Popover.Gtk_Popover;
+   --  Returns the Gtk.Popover.Gtk_Popover that pops out of the button. If the
+   --  button is not using a Gtk.Popover.Gtk_Popover, this function returns
+   --  null.
+   --  Since: gtk+ 3.12
+
+   procedure Set_Popover
+      (Self    : not null access Gtk_Menu_Button_Record;
+       Popover : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Sets the Gtk.Popover.Gtk_Popover that will be popped up when the button
+   --  is clicked, or null to disable the button. If
+   --  Gtk.Menu_Button.Gtk_Menu_Button:menu-model or
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popup are set, they will be set to null.
+   --  Since: gtk+ 3.12
+   --  "popover": a Gtk.Popover.Gtk_Popover
 
    function Get_Popup
       (Self : not null access Gtk_Menu_Button_Record)
        return Gtk.Menu.Gtk_Menu;
-   --  Returns the Gtk.Menu.Gtk_Menu that pops out of the button.
+   --  Returns the Gtk.Menu.Gtk_Menu that pops out of the button. If the
+   --  button does not use a Gtk.Menu.Gtk_Menu, this function returns null.
    --  Since: gtk+ 3.6
 
    procedure Set_Popup
-      (Self  : not null access Gtk_Menu_Button_Record;
-       Popup : access Gtk.Widget.Gtk_Widget_Record'Class);
+      (Self : not null access Gtk_Menu_Button_Record;
+       Menu : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the Gtk.Menu.Gtk_Menu that will be popped up when the button is
    --  clicked, or null to disable the button. If
-   --  Gtk.Menu_Button.Gtk_Menu_Button:menu-model is set, it will be set to
+   --  Gtk.Menu_Button.Gtk_Menu_Button:menu-model or
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popover are set, they will be set to
    --  null.
    --  Since: gtk+ 3.6
-   --  "popup": a Gtk.Menu.Gtk_Menu
+   --  "menu": a Gtk.Menu.Gtk_Menu
+
+   function Get_Use_Popover
+      (Self : not null access Gtk_Menu_Button_Record) return Boolean;
+   --  Returns whether a Gtk.Popover.Gtk_Popover or a Gtk.Menu.Gtk_Menu will
+   --  be constructed from the menu model.
+   --  Since: gtk+ 3.12
+
+   procedure Set_Use_Popover
+      (Self        : not null access Gtk_Menu_Button_Record;
+       Use_Popover : Boolean);
+   --  Sets whether to construct a Gtk.Popover.Gtk_Popover instead of
+   --  Gtk.Menu.Gtk_Menu when Gtk.Menu_Button.Set_Menu_Model is called. Note
+   --  that this property is only consulted when a new menu model is set.
+   --  Since: gtk+ 3.12
+   --  "use_popover": True to construct a popover from the menu model
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -244,25 +290,31 @@ package Gtk.Menu_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Menu_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Menu_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Menu_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Menu_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Menu_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Menu_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --
@@ -272,22 +324,34 @@ package Gtk.Menu_Button is
 
    Align_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Container.Gtk_Container
-   --  The Gtk.Widget.Gtk_Widget to use to align the popup menu with.
+   --  The Gtk.Widget.Gtk_Widget to use to align the menu with.
 
    Direction_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type;
    --  The Gtk.Enums.Gtk_Arrow_Type representing the direction in which the
-   --  menu will be popped out.
+   --  menu or popover will be popped out.
 
    Menu_Model_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Gio.Menu_Model
-   --  The Glib.Menu_Model.Gmenu_Model from which the menu to pop up will be
-   --  created. See Gtk.Menu_Button.Set_Menu_Model for the interaction with the
+   --  The Glib.Menu_Model.Gmenu_Model from which the popup will be created.
+   --  Depending on the Gtk.Menu_Button.Gtk_Menu_Button:use-popover property,
+   --  that may be a menu or a popover.
+   --
+   --  See Gtk.Menu_Button.Set_Menu_Model for the interaction with the
    --  Gtk.Menu_Button.Gtk_Menu_Button:popup property.
+
+   Popover_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Popover.Gtk_Popover
+   --  The Gtk.Popover.Gtk_Popover that will be popped up when the button is
+   --  clicked.
 
    Popup_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Menu.Gtk_Menu
    --  The Gtk.Menu.Gtk_Menu that will be popped up when the button is
    --  clicked.
+
+   Use_Popover_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether to construct a Gtk.Popover.Gtk_Popover from the menu model, or
+   --  a Gtk.Menu.Gtk_Menu.
 
    ----------------
    -- Interfaces --
@@ -334,8 +398,12 @@ package Gtk.Menu_Button is
    renames Implements_Gtk_Buildable.To_Object;
 
 private
+   Use_Popover_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("use-popover");
    Popup_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("popup");
+   Popover_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("popover");
    Menu_Model_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("menu-model");
    Direction_Property : constant Gtk.Enums.Property_Gtk_Arrow_Type :=

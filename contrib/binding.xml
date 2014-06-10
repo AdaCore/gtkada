@@ -2413,6 +2413,10 @@ __PRE__
 
      <method id="gtk_widget_class_install_style_property_parser" bind="False" />
      <method id="gtk_widget_class_list_style_properties" bind="False" />
+
+     <method id="gtk_widget_class_set_template" bind="False"/> <!-- needs GBytes -->
+     <method id="gtk_widget_class_set_template_from_resource" bind="False"/> <!-- needs GBytes -->
+     <method id="gtk_widget_class_bind_template_callback_full" bind="False"/> <!-- useless withouth gtk_widget_class_set_template -->
    </package>
 
    <package id="GtkWidget" needs_merge="false">
@@ -2841,6 +2845,7 @@ __PRE__
      <enum ctype="GtkExpanderStyle"/>
      <enum ctype="GtkIconSize" asbitfield="True"/>
      <enum ctype="GtkJunctionSides"/>
+     <enum ctype="GtkBaselinePosition"/>
      <enum ctype="GtkJustification"/>
      <enum ctype="GtkMenuDirectionType"/>
      <enum ctype="GtkMovementStep"/>
@@ -3859,6 +3864,9 @@ creating a tag.
 
      <method id="gdk_cursor_unref" bind="False" />  <!--  obsolete -->
      <method id="gdk_cursor_ref" bind="False" />  <!--  obsolete -->
+
+     <method id="gdk_cursor_get_surface" return_as_param="Surface"/>
+
      <extra>
        <spec>
    procedure Ref (Self : Gdk.Gdk_Cursor);
@@ -3933,6 +3941,7 @@ creating a tag.
      <method id="gdk_window_get_drag_protocol" return_as_param="Protocol" bind="False"/> <!--  circular dep with GdkDragContent -->
 
      <method id="gdk_window_get_user_data" bind="False"/>  <!-- see below -->
+     <method id="gdk_window_get_children_with_user_data" bind="False"/> <!-- low-level -->
 
      <extra>
        <spec>
@@ -4175,14 +4184,6 @@ creating a tag.
        <gir:method name="Get_Keycode" c:identifier="ada_gdk_event_get_keycode">
          <gir:doc>Hardware key code of the key that was pressed</gir:doc>
          <gir:return-value><gir:type name="guint" c:type="guint"/></gir:return-value>
-       </gir:method>
-       <gir:method name="Get_Event_Type" c:identifier="ada_gdk_event_get_event_type">
-         <gir:doc>The type of the event</gir:doc>
-         <gir:return-value><gir:type name="GdkEventType" c:type="GdkEventType"/></gir:return-value>
-       </gir:method>
-       <gir:method name="Get_Window" c:identifier="ada_gdk_event_get_window">
-         <gir:doc>The window to which the event was sent</gir:doc>
-         <gir:return-value><gir:type name="GdkWindow*" c:type="GdkWindow*"/></gir:return-value>
        </gir:method>
 
        <type ctype="GdkEvent*" ada="Gdk_Event">
@@ -5321,6 +5322,11 @@ creating a tag.
      </method>
      <method id="gtk_builder_get_objects" return="ObjectSList" />
      <method id="gtk_builder_value_from_string" return_as_param="Success" />
+
+     <method id="gtk_builder_set_application" bind="False"/> <!-- circular dep with GtkWidget -->
+     <method id="gtk_builder_get_application" bind="False"/> <!-- circular dep with GtkWidget -->
+
+     <method id="gtk_builder_add_callback_symbol" bind="False"/> <!-- error in generated binding -->
    </package>
 
    <package id="GtkUIManager">
@@ -7650,6 +7656,7 @@ package body Generic_Set is
    </package>
 
    <package id="GAction" ada="Glib.Action">
+      <method id="g_action_parse_detailed_name" bind="False"/>  <!-- incorrect generated binding -->
    </package>
 
    <package id="GSimpleAction" ada="Glib.Simple_Action">

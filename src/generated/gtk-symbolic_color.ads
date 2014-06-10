@@ -23,12 +23,11 @@
 
 --  <description>
 --  GtkSymbolicColor is a boxed type that represents a symbolic color. It is
---  the result of parsing a <link
---  linkend="gtkcssprovider-symbolic-colors">color expression</link>. To obtain
---  the color represented by a GtkSymbolicColor, it has to be resolved with
---  gtk_symbolic_color_resolve, which replaces all symbolic color references by
---  the colors they refer to (in a given context) and evaluates mix, shade and
---  other expressions, resulting in a Gdk.RGBA.Gdk_RGBA value.
+--  the result of parsing a [color expression][gtkcssprovider-symbolic-colors].
+--  To obtain the color represented by a GtkSymbolicColor, it has to be
+--  resolved with gtk_symbolic_color_resolve, which replaces all symbolic color
+--  references by the colors they refer to (in a given context) and evaluates
+--  mix, shade and other expressions, resulting in a Gdk.RGBA.Gdk_RGBA value.
 --
 --  It is not normally necessary to deal directly with Gtk_Symbolic_Colors,
 --  since they are mostly used behind the scenes by
@@ -184,8 +183,7 @@ package Gtk.Symbolic_Color is
    pragma Obsolescent (Ref);
    --  Increases the reference count of Color
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Gtk.Symbolic_Color.Gtk_Symbolic_Color is
-   --  deprecated.
+   --  Deprecated since 3.8, 1
 
    function To_String (Self : Gtk_Symbolic_Color) return UTF8_String;
    pragma Obsolescent (To_String);
@@ -194,16 +192,14 @@ package Gtk.Symbolic_Color is
    --  string may change between different versions of GTK, but it is
    --  guaranteed that the GTK css parser is able to read the string and create
    --  the same symbolic color from it.
-   --  Deprecated since 3.8, Gtk.Symbolic_Color.Gtk_Symbolic_Color is
-   --  deprecated.
+   --  Deprecated since 3.8, 1
 
    procedure Unref (Self : Gtk_Symbolic_Color);
    pragma Obsolescent (Unref);
    --  Decreases the reference count of Color, freeing its memory if the
    --  reference count reaches 0.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Gtk.Symbolic_Color.Gtk_Symbolic_Color is
-   --  deprecated.
+   --  Deprecated since 3.8, 1
 
 private
 

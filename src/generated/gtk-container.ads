@@ -34,19 +34,19 @@
 --  subclasses of the abstract GtkContainer base class.
 --
 --  The first type of container widget has a single child widget and derives
---  from Gtk.Bin.Gtk_Bin. These containers are *decorators*, which add some
---  kind of functionality to the child. For example, a Gtk.Button.Gtk_Button
---  makes its child into a clickable button; a Gtk.Frame.Gtk_Frame draws a
---  frame around its child and a Gtk.Window.Gtk_Window places its child widget
---  inside a top-level window.
+--  from Gtk.Bin.Gtk_Bin. These containers are decorators, which add some kind
+--  of functionality to the child. For example, a Gtk.Button.Gtk_Button makes
+--  its child into a clickable button; a Gtk.Frame.Gtk_Frame draws a frame
+--  around its child and a Gtk.Window.Gtk_Window places its child widget inside
+--  a top-level window.
 --
 --  The second type of container can have more than one child; its purpose is
---  to manage *layout*. This means that these containers assign sizes and
+--  to manage layout. This means that these containers assign sizes and
 --  positions to their children. For example, a Gtk.Box.Gtk_Hbox arranges its
 --  children in a horizontal row, and a Gtk.Grid.Gtk_Grid arranges the widgets
 --  it contains in a two-dimensional grid.
 --
---  == Height for width geometry management ==
+--  # Height for width geometry management
 --
 --  GTK+ uses a height-for-width (and width-for-height) geometry management
 --  system. Height-for-width means that a widget can change how much vertical
@@ -77,48 +77,35 @@
 --  width. This is easily achieved by simply calling the reverse apis
 --  implemented for itself as follows:
 --
---    static void
---    foo_container_get_preferred_height (GtkWidget *widget, gint *min_height, gint *nat_height)
---    {
---       if (i_am_in_height_for_width_mode)
---       {
---          gint min_width;
---          GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget, &min_width, NULL);
---          GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width (widget, min_width,
---             min_height, nat_height);
---       }
---    else
---       {
---          ... many containers support both request modes, execute the real width-for-height
---          request here by returning the collective heights of all widgets that are
---          stacked vertically (or whatever is appropriate for this container) ...
---       }
---    }
+--  |[<!-- language="C" --> static void foo_container_get_preferred_height
+--  (GtkWidget *widget, gint *min_height, gint *nat_height) { if
+--  (i_am_in_height_for_width_mode) { gint min_width;
+--
+--  GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget, &min_width,
+--  NULL); GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
+--  (widget, min_width, min_height, nat_height); } else { ... many containers
+--  support both request modes, execute the real width-for-height request here
+--  by returning the collective heights of all widgets that are stacked
+--  vertically (or whatever is appropriate for this container) ... } } ]|
 --
 --  Similarly, when Gtk.Widget.Get_Preferred_Width_For_Height is called for a
 --  container or widget that is height-for-width, it then only needs to return
 --  the base minimum width like so:
 --
---    static void
---    foo_container_get_preferred_width_for_height (GtkWidget *widget, gint for_height,
---       gint *min_width, gint *nat_width)
---    {
---       if (i_am_in_height_for_width_mode)
---       {
---          GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget, min_width, nat_width);
---       }
---    else
---       {
---          ... execute the real width-for-height request here based on the required width
---          of the children collectively if the container were to be allocated the said height ...
---       }
---    }
+--  |[<!-- language="C" --> static void
+--  foo_container_get_preferred_width_for_height (GtkWidget *widget, gint
+--  for_height, gint *min_width, gint *nat_width) { if
+--  (i_am_in_height_for_width_mode) { GTK_WIDGET_GET_CLASS
+--  (widget)->get_preferred_width (widget, min_width, nat_width); } else { ...
+--  execute the real width-for-height request here based on the required width
+--  of the children collectively if the container were to be allocated the said
+--  height ... } } ]|
 --
 --  Height for width requests are generally implemented in terms of a virtual
 --  allocation of widgets in the input orientation. Assuming an
 --  height-for-width request mode, a container would implement the
---  <function>get_preferred_height_for_width</function> virtual function by
---  first calling Gtk.Widget.Get_Preferred_Width for each of its children.
+--  get_preferred_height_for_width virtual function by first calling
+--  Gtk.Widget.Get_Preferred_Width for each of its children.
 --
 --  For each potential group of children that are lined up horizontally, the
 --  values returned by Gtk.Widget.Get_Preferred_Width should be collected in an
@@ -149,14 +136,14 @@
 --  Then vertical expand space should be added where appropriate and available
 --  and the container should go on to actually allocating the child widgets.
 --
---  See <link linkend="geometry-management">GtkWidget's geometry management
---  section</link> to learn more about implementing height-for-width geometry
---  management for widgets.
+--  See [GtkWidget's geometry management section][geometry-management] to
+--  learn more about implementing height-for-width geometry management for
+--  widgets.
 --
---  == Child properties ==
+--  # Child properties
 --
---  GtkContainer introduces *child properties*. These are object properties
---  that are not specific to either the container or the contained widget, but
+--  GtkContainer introduces child properties. These are object properties that
+--  are not specific to either the container or the contained widget, but
 --  rather to their relation. Typical examples of child properties are the
 --  position or pack-type of a widget which is contained in a Gtk.Box.Gtk_Box.
 --
@@ -172,26 +159,19 @@
 --  gtk_container_child_get_valist. To emit notification about child property
 --  changes, use Gtk.Widget.Child_Notify.
 --
---  == GtkContainer as GtkBuildable ==
+--  # GtkContainer as GtkBuildable
 --
 --  The GtkContainer implementation of the GtkBuildable interface supports a
 --  <packing> element for children, which can contain multiple <property>
 --  elements that specify child properties for the child.
 --
---  == Child properties in UI definitions ==
+--  An example of child properties in UI definitions: |[ <object
+--  class="GtkVBox"> <child> <object class="GtkLabel"/> <packing> <property
+--  name="pack-type">start</property> </packing> </child> </object> ]|
 --
---    <object class="GtkVBox">
---    <child>
---    <object class="GtkLabel"/>
---    <packing>
---    <property name="pack-type">start</property>
---    </packing>
---    </child>
---    </object>
 --  Since 2.16, child properties can also be marked as translatable using the
 --  same "translatable", "comments" and "context" attributes that are used for
 --  regular properties.
---
 --
 --  </description>
 pragma Ada_2005;
@@ -246,6 +226,10 @@ package Gtk.Container is
    --  Gtk.Container.Add in those cases. A widget may be added to only one
    --  container at a time; you can't place the same widget inside two
    --  different containers.
+   --  Note that some containers, such as
+   --  Gtk.Scrolled_Window.Gtk_Scrolled_Window or Gtk.List_Box.Gtk_List_Box,
+   --  may add intermediate children between the added widget and the
+   --  container.
    --  "widget": a widget to be placed inside Container
 
    procedure Check_Resize (Container : not null access Gtk_Container_Record);
@@ -274,9 +258,8 @@ package Gtk.Container is
       (Container      : not null access Gtk_Container_Record;
        Child          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Child_Property : UTF8_String);
-   --  Emits a Gtk.Widget.Gtk_Widget::child-notify signal for the <link
-   --  linkend="child-properties">child property</link> Child_Property on
-   --  widget.
+   --  Emits a Gtk.Widget.Gtk_Widget::child-notify signal for the [child
+   --  property][child-properties] Child_Property on widget.
    --  This is an analogue of g_object_notify for child properties.
    --  Also see Gtk.Widget.Child_Notify.
    --  Since: gtk+ 3.2
@@ -382,7 +365,7 @@ package Gtk.Container is
    --  create a Gtk.Alignment.Gtk_Alignment widget, call
    --  Gtk.Widget.Set_Size_Request to give it a size, and place it on the side
    --  of the container as a spacer.
-   --  "border_width": amount of blank space to leave *outside* the container.
+   --  "border_width": amount of blank space to leave outside the container.
    --  Valid values are in the range 0-65535 pixels.
 
    function Get_Children
@@ -462,16 +445,20 @@ package Gtk.Container is
    function Get_Resize_Mode
       (Container : not null access Gtk_Container_Record)
        return Gtk.Enums.Gtk_Resize_Mode;
+   pragma Obsolescent (Get_Resize_Mode);
    --  Returns the resize mode for the container. See
    --  gtk_container_set_resize_mode ().
+   --  Deprecated since 3.12, 1
 
    procedure Set_Resize_Mode
       (Container   : not null access Gtk_Container_Record;
        Resize_Mode : Gtk.Enums.Gtk_Resize_Mode);
+   pragma Obsolescent (Set_Resize_Mode);
    --  Sets the resize mode for the container.
    --  The resize mode of a container determines whether a resize request will
    --  be passed to the container's parent, queued for later execution or
    --  executed immediately.
+   --  Deprecated since 3.12, 1
    --  "resize_mode": the new resize mode
 
    procedure Propagate_Draw
@@ -513,6 +500,8 @@ package Gtk.Container is
 
    procedure Resize_Children
       (Container : not null access Gtk_Container_Record);
+   pragma Obsolescent (Resize_Children);
+   --  Deprecated since 3.10, 1
 
    procedure Set_Focus_Chain
       (Container         : not null access Gtk_Container_Record;

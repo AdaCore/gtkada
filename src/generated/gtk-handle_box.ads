@@ -24,14 +24,14 @@
 --  <description>
 --  The Gtk.Handle_Box.Gtk_Handle_Box widget allows a portion of a window to
 --  be "torn off". It is a bin widget which displays its child and a handle
---  that the user can drag to tear off a separate window (the 'float window')
---  containing the child widget. A thin 'ghost' is drawn in the original
+--  that the user can drag to tear off a separate window (the "float window")
+--  containing the child widget. A thin "ghost" is drawn in the original
 --  location of the handlebox. By dragging the separate window back to its
 --  original location, it can be reattached.
 --
 --  When reattaching, the ghost and float window, must be aligned along one of
---  the edges, the 'snap edge'. This either can be specified by the application
---  programmer explicitely, or GTK+ will pick a reasonable default based on the
+--  the edges, the "snap edge". This either can be specified by the application
+--  programmer explicitly, or GTK+ will pick a reasonable default based on the
 --  handle position.
 --
 --  To make detaching and reattaching the handlebox as minimally confusing as
@@ -42,9 +42,9 @@
 --  as the height of the handlebox shrinks, so the snap edge should be set to
 --  Gtk.Enums.Pos_Bottom.
 --
---  Note: Gtk.Handle_Box.Gtk_Handle_Box has been deprecated. It is very
---  specialized, lacks features to make it useful and most importantly does not
---  fit well into modern application design. Do not use it. There is no
+--  > Gtk.Handle_Box.Gtk_Handle_Box has been deprecated. It is very
+--  specialized, lacks features > to make it useful and most importantly does
+--  not fit well into modern > application design. Do not use it. There is no
 --  replacement.
 --
 --  </description>
@@ -91,8 +91,7 @@ package Gtk.Handle_Box is
    pragma Obsolescent (Get_Child_Detached);
    --  Whether the handlebox's child is currently detached.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
 
    function Get_Handle_Position
       (Handle_Box : not null access Gtk_Handle_Box_Record)
@@ -100,16 +99,14 @@ package Gtk.Handle_Box is
    pragma Obsolescent (Get_Handle_Position);
    --  Gets the handle position of the handle box. See
    --  Gtk.Handle_Box.Set_Handle_Position.
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
 
    procedure Set_Handle_Position
       (Handle_Box : not null access Gtk_Handle_Box_Record;
        Position   : Gtk.Enums.Gtk_Position_Type);
    pragma Obsolescent (Set_Handle_Position);
    --  Sets the side of the handlebox where the handle is drawn.
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
    --  "position": the side of the handlebox where the handle should be drawn.
 
    function Get_Shadow_Type
@@ -118,8 +115,7 @@ package Gtk.Handle_Box is
    pragma Obsolescent (Get_Shadow_Type);
    --  Gets the type of shadow drawn around the handle box. See
    --  Gtk.Handle_Box.Set_Shadow_Type.
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
 
    procedure Set_Shadow_Type
       (Handle_Box : not null access Gtk_Handle_Box_Record;
@@ -127,8 +123,7 @@ package Gtk.Handle_Box is
    pragma Obsolescent (Set_Shadow_Type);
    --  Sets the type of shadow to be drawn around the border of the handle
    --  box.
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
    --  "type": the shadow type.
 
    function Get_Snap_Edge
@@ -137,8 +132,7 @@ package Gtk.Handle_Box is
    pragma Obsolescent (Get_Snap_Edge);
    --  Gets the edge used for determining reattachment of the handle box. See
    --  Gtk.Handle_Box.Set_Snap_Edge.
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
 
    procedure Set_Snap_Edge
       (Handle_Box : not null access Gtk_Handle_Box_Record;
@@ -153,8 +147,7 @@ package Gtk.Handle_Box is
    --  from the handle position. If the handle position is Gtk.Enums.Pos_Right
    --  or Gtk.Enums.Pos_Left, then the snap edge will be Gtk.Enums.Pos_Top,
    --  otherwise it will be Gtk.Enums.Pos_Left.
-   --  Deprecated since 3.4, Gtk.Handle_Box.Gtk_Handle_Box has been
-   --  deprecated.
+   --  Deprecated since 3.4, 1
    --  "edge": the snap edge, or -1 to unset the value; in which case GTK+
    --  will try to guess an appropriate value in the future.
 

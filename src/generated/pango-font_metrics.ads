@@ -21,6 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  A Pango.Font_Metrics.Pango_Font_Metrics structure holds the overall metric
+--  information for a font (possibly restricted to a script). The fields of
+--  this structure are private to implementations of a font backend. See the
+--  documentation of the corresponding getters for documentation of their
+--  meaning.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");

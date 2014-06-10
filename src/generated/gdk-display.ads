@@ -24,14 +24,14 @@
 --  <description>
 --  Gdk.Display.Gdk_Display objects purpose are two fold:
 --
---     * To manage and provide information about input devices (pointers and
+--  - To manage and provide information about input devices (pointers and
 --  keyboards)
 --
---     * To manage and provide information about the available Gdk_Screens
+--  - To manage and provide information about the available Gdk_Screens
 --
 --  GdkDisplay objects are the GDK representation of an X Display, which can
---  be described as *a workstation consisting of a keyboard, a pointing device
---  (such as a mouse) and one or more screens*. It is used to open and keep
+--  be described as a workstation consisting of a keyboard, a pointing device
+--  (such as a mouse) and one or more screens. It is used to open and keep
 --  track of various GdkScreen objects currently instantiated by the
 --  application. It is also used to access the keyboard(s) and mouse pointer(s)
 --  of the display.
@@ -79,7 +79,7 @@ package Gdk.Display is
    --  Flushes any requests queued for the windowing system; this happens
    --  automatically when the main loop blocks waiting for new events, but if
    --  your application is drawing without returning control to the main loop,
-   --  you may need to call this function explicitely. A common case where this
+   --  you may need to call this function explicitly. A common case where this
    --  function needs to be called is when an application is executing drawing
    --  commands from a thread other than the thread where the main loop is
    --  running.
@@ -116,8 +116,10 @@ package Gdk.Display is
 
    function Get_N_Screens
       (Self : not null access Gdk_Display_Record) return Gint;
+   pragma Obsolescent (Get_N_Screens);
    --  Gets the number of screen managed by the Display.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.10, 1
 
    function Get_Name
       (Self : not null access Gdk_Display_Record) return UTF8_String;
@@ -141,8 +143,7 @@ package Gdk.Display is
    pragma Obsolescent (Keyboard_Ungrab);
    --  Release any keyboard grab
    --  Since: gtk+ 2.2
-   --  Deprecated since 3.0, Use Gdk.Device.Ungrab, together with
-   --  Gdk.Device.Grab instead.
+   --  Deprecated since 3.0, 1
    --  "time_": a timestap (e.g GDK_CURRENT_TIME).
 
    procedure Notify_Startup_Complete
@@ -171,7 +172,7 @@ package Gdk.Display is
    pragma Obsolescent (Pointer_Is_Grabbed);
    --  Test if the pointer is grabbed.
    --  Since: gtk+ 2.2
-   --  Deprecated since 3.0, Use gdk_display_device_is_grabbed instead.
+   --  Deprecated since 3.0, 1
 
    procedure Pointer_Ungrab
       (Self : not null access Gdk_Display_Record;
@@ -179,8 +180,7 @@ package Gdk.Display is
    pragma Obsolescent (Pointer_Ungrab);
    --  Release any pointer grab.
    --  Since: gtk+ 2.2
-   --  Deprecated since 3.0, Use Gdk.Device.Ungrab, together with
-   --  Gdk.Device.Grab instead.
+   --  Deprecated since 3.0, 1
    --  "time_": a timestap (e.g. GDK_CURRENT_TIME).
 
    procedure Put_Event
@@ -205,8 +205,8 @@ package Gdk.Display is
        Distance : Guint);
    --  Sets the double click distance (two clicks within this distance count
    --  as a double click and result in a GDK_2_BUTTON_PRESS event). See also
-   --  Gdk.Display.Set_Double_Click_Time. Applications should *not* set this,
-   --  it is a global user-configured setting.
+   --  Gdk.Display.Set_Double_Click_Time. Applications should not set this, it
+   --  is a global user-configured setting.
    --  Since: gtk+ 2.4
    --  "distance": distance in pixels
 
@@ -215,7 +215,7 @@ package Gdk.Display is
        Msec : Guint);
    --  Sets the double click time (two clicks within this time interval count
    --  as a double click and result in a GDK_2_BUTTON_PRESS event).
-   --  Applications should *not* set this, it is a global user-configured
+   --  Applications should not set this, it is a global user-configured
    --  setting.
    --  Since: gtk+ 2.2
    --  "msec": double click time in milliseconds (thousandths of a second)
@@ -317,8 +317,8 @@ package Gdk.Display is
 
    function Get_Default return Gdk_Display;
    --  Gets the default Gdk.Display.Gdk_Display. This is a convenience
-   --  function for 'gdk_display_manager_get_default_display
-   --  (gdk_display_manager_get ())'.
+   --  function for: `gdk_display_manager_get_default_display
+   --  (gdk_display_manager_get ())`.
    --  Since: gtk+ 2.2
 
    function Open (Display_Name : UTF8_String) return Gdk_Display;

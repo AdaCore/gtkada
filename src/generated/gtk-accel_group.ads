@@ -29,7 +29,7 @@
 --  Gtk.UI_Manager.Gtk_UI_Manager, GTK+ automatically sets up the accelerators
 --  for your menus in the ui manager's Gtk.Accel_Group.Gtk_Accel_Group.
 --
---  Note that 'accelerators' are different from 'mnemonics'. Accelerators are
+--  Note that "accelerators" are different from "mnemonics". Accelerators are
 --  shortcuts for activating a menu item; they appear alongside the menu item
 --  they're a shortcut for. For example "Ctrl+Q" might appear alongside the
 --  "Quit" menu item. Mnemonics are shortcuts for GUI elements such as text
@@ -54,7 +54,7 @@ package Gtk.Accel_Group is
 
    type Gtk_Accel_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Accel_Flags);
-
+   --  Accelerator flags used with Gtk.Accel_Group.Connect.
 
    Accel_Visible : constant Gtk_Accel_Flags := 1;
    Accel_Locked : constant Gtk_Accel_Flags := 2;
@@ -128,7 +128,7 @@ package Gtk.Accel_Group is
       (Accel_Group   : not null access Gtk_Accel_Group_Record;
        Accel_Quark   : Glib.GQuark;
        Acceleratable : not null access Glib.Object.GObject_Record'Class;
-       Accel_Key     : Guint;
+       Accel_Key     : Gdk.Types.Gdk_Key_Type;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in Accel_Group that matches Accel_Key and
    --  Accel_Mods, and activates it.
@@ -140,7 +140,7 @@ package Gtk.Accel_Group is
 
    procedure Connect
       (Accel_Group : not null access Gtk_Accel_Group_Record;
-       Accel_Key   : Guint;
+       Accel_Key   : Gdk.Types.Gdk_Key_Type;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
        Accel_Flags : Gtk_Accel_Flags;
        Closure     : C_Gtk_Accel_Group_Activate);
@@ -185,7 +185,7 @@ package Gtk.Accel_Group is
 
    function Disconnect_Key
       (Accel_Group : not null access Gtk_Accel_Group_Record;
-       Accel_Key   : Guint;
+       Accel_Key   : Gdk.Types.Gdk_Key_Type;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.

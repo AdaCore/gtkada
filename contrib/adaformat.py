@@ -1826,7 +1826,7 @@ class Section(object):
 
         iscode = False
 
-        if isinstance(obj, str):
+        if isinstance(obj, str) or isinstance(obj, unicode):
             obj = Code(obj)
             iscode = True
         elif isinstance(obj, Package):
@@ -1864,11 +1864,12 @@ class Section(object):
                 if not in_spec:
                     continue
 
-                if isinstance(obj, Code):
+                if isinstance(obj, Code) or isinstance(obj, unicode):
                    code.append([obj])
 
-                else:
-                    name = base_name(obj.name).replace("Get_", "") \
+                elif isinstance(obj, Subprogram) or isinstance(obj, Package):
+                    b = base_name(obj.name)
+                    name = b.replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
                         .replace("Gdk_New", "") \
@@ -1876,13 +1877,13 @@ class Section(object):
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
 
-                    if base_name(obj.name) in ("Gtk_New", "Gdk_New", "G_New"):
+                    if b in ("Gtk_New", "Gdk_New", "G_New"):
                         # Always create a new group for Gtk_New, since they all
                         # have different parameters. But we still want to group
                         # Gtk_New and Initialize.
                         t = tmp["Gtk_New%d" % gtk_new_index] = [obj]
                         subprograms.append(t)
-                    elif base_name(obj.name) == "Initialize":
+                    elif b == "Initialize":
                         tmp["Gtk_New%d" % gtk_new_index].append(obj)
                         gtk_new_index += 1
                     elif name in tmp:
@@ -1890,6 +1891,9 @@ class Section(object):
                     else:
                         tmp[name] = [obj]
                         subprograms.append(tmp[name])
+
+                else:
+                    print("Unexpected contents in package %s\n" % (type(obj), ))
 
             return code + subprograms
 
@@ -1925,11 +1929,18 @@ class Section(object):
                     result += obj.spec(pkg=pkg,
                                       show_doc=show_doc,
                                       indent=indent).strip("\n") + "\n"
-                    add_newline = (obj.add_newline and show_doc)
+                    add_newline = (hasattr(obj, "add_newline")
+                                   and obj.add_newline
+                                   and show_doc)
 
-                else:
+                elif isinstance(obj, Package):
                     result += obj.spec().strip("\n") + "\n"
-                    add_newline = obj.add_newline
+                    add_newline = (hasattr(obj, "add_newline")
+                                   and obj.add_newline)
+
+                elif isinstance(obj, unicode):
+                    print("Not adding unicode to package: %s\n" % (
+                        obj.encode('UTF-8'), ))
 
         if add_newline:
             result += "\n"

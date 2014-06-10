@@ -91,7 +91,7 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    pragma Obsolescent (Get_Current_Color);
    --  Sets Color to be the current color in the GtkColorSelection widget.
-   --  Deprecated since 3.4, Use Gtk.Color_Selection.Get_Current_Rgba instead.
+   --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color to fill in with the current color
 
    procedure Set_Current_Color
@@ -101,7 +101,7 @@ package Gtk.Color_Selection is
    --  Sets the current color to be Color.
    --  The first time this is called, it will also set the original color to
    --  be Color too.
-   --  Deprecated since 3.4, Use Gtk.Color_Selection.Set_Current_Rgba instead.
+   --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color to set the current color with
 
    procedure Get_Current_Rgba
@@ -147,7 +147,7 @@ package Gtk.Color_Selection is
    procedure Set_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Alpha    : Guint16);
-   --  Sets the 'previous' alpha to be Alpha.
+   --  Sets the "previous" alpha to be Alpha.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that alpha change.
    --  "alpha": an integer between 0 and 65535
@@ -157,21 +157,19 @@ package Gtk.Color_Selection is
        Color    : out Gdk.Color.Gdk_Color);
    pragma Obsolescent (Get_Previous_Color);
    --  Fills Color in with the original color value.
-   --  Deprecated since 3.4, Use Gtk.Color_Selection.Get_Previous_Rgba
-   --  instead.
+   --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color to fill in with the original color value
 
    procedure Set_Previous_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Color    : Gdk.Color.Gdk_Color);
    pragma Obsolescent (Set_Previous_Color);
-   --  Sets the 'previous' color to be Color.
+   --  Sets the "previous" color to be Color.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that color change. Calling
    --  Gtk.Color_Selection.Set_Current_Color will also set this color the first
    --  time it is called.
-   --  Deprecated since 3.4, Use Gtk.Color_Selection.Set_Previous_Rgba
-   --  instead.
+   --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color to set the previous color with
 
    procedure Get_Previous_Rgba
@@ -184,7 +182,7 @@ package Gtk.Color_Selection is
    procedure Set_Previous_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : Gdk.RGBA.Gdk_RGBA);
-   --  Sets the 'previous' color to be Rgba.
+   --  Sets the "previous" color to be Rgba.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that color change. Calling
    --  Gtk.Color_Selection.Set_Current_Rgba will also set this color the first

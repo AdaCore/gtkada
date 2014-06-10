@@ -139,9 +139,7 @@ package Gtk.Scrolled_Window is
    --  with the Gtk.Viewport.Gtk_Viewport proxy.
    --  A widget supports scrolling natively if it implements the
    --  Gtk.Scrollable.Gtk_Scrollable interface.
-   --  Deprecated since 3.8, Gtk.Container.Add will now automatically add a
-   --  Gtk.Viewport.Gtk_Viewport if the child doesn't implement
-   --  Gtk.Scrollable.Gtk_Scrollable.
+   --  Deprecated since 3.8, 1
    --  "child": the widget you want to scroll
 
    function Get_Capture_Button_Press
@@ -309,7 +307,7 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record);
    --  Unsets the placement of the contents with respect to the scrollbars for
    --  the scrolled window. If no window placement is set for a scrolled
-   --  window, it obeys the "gtk-scrolled-window-placement" XSETTING.
+   --  window, it defaults to GTK_CORNER_TOP_LEFT.
    --  See also Gtk.Scrolled_Window.Set_Placement and
    --  Gtk.Scrolled_Window.Get_Placement.
    --  Since: gtk+ 2.10
@@ -346,8 +344,7 @@ package Gtk.Scrolled_Window is
 
    Window_Placement_Set_Property : constant Glib.Properties.Property_Boolean;
    --  Whether "window-placement" should be used to determine the location of
-   --  the contents with respect to the scrollbars. Otherwise, the
-   --  "gtk-scrolled-window-placement" setting is used.
+   --  the contents with respect to the scrollbars.
 
    -------------
    -- Signals --
@@ -371,13 +368,12 @@ package Gtk.Scrolled_Window is
        Call  : Cb_GObject_Gtk_Direction_Type_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-focus-out signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when focus is moved away from the scrolled window by a keybinding. The
-   --  Gtk.Widget.Gtk_Widget::move-focus signal is emitted with Direction_Type
-   --  on this scrolled windows toplevel parent in the container hierarchy. The
-   --  default bindings for this signal are ['Tab''Ctrl'] and
-   --  ['Tab''Ctrl''Shift'].
+   --  The ::move-focus-out signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when focus is moved away from the scrolled window by
+   --  a keybinding. The Gtk.Widget.Gtk_Widget::move-focus signal is emitted
+   --  with Direction_Type on this scrolled windows toplevel parent in the
+   --  container hierarchy. The default bindings for this signal are `Tab +
+   --  Ctrl` and `Tab + Ctrl + Shift`.
 
    type Cb_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean is not null access function
      (Self       : access Gtk_Scrolled_Window_Record'Class;
@@ -399,11 +395,10 @@ package Gtk.Scrolled_Window is
        Call  : Cb_GObject_Gtk_Scroll_Type_Boolean_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::scroll-child signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when a keybinding that scrolls is pressed. The horizontal or vertical
-   --  adjustment is updated which triggers a signal that the scrolled windows
-   --  child may listen to and scroll itself.
+   --  The ::scroll-child signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when a keybinding that scrolls is pressed. The
+   --  horizontal or vertical adjustment is updated which triggers a signal
+   --  that the scrolled windows child may listen to and scroll itself.
    -- 
    --  Callback parameters:
    --    --  "scroll": a Gtk.Enums.Gtk_Scroll_Type describing how much to scroll

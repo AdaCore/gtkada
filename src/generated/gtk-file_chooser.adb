@@ -128,6 +128,18 @@ package body Gtk.File_Chooser is
       return Gtkada.Bindings.Value_And_Free (Internal (Chooser));
    end Get_Current_Folder_Uri;
 
+   ----------------------
+   -- Get_Current_Name --
+   ----------------------
+
+   function Get_Current_Name (Chooser : Gtk_File_Chooser) return UTF8_String is
+      function Internal
+         (Chooser : Gtk_File_Chooser) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_file_chooser_get_current_name");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Chooser));
+   end Get_Current_Name;
+
    -----------------------------------
    -- Get_Do_Overwrite_Confirmation --
    -----------------------------------

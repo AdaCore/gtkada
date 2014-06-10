@@ -57,7 +57,7 @@ package Gtk.Tree_Row_Reference is
    --  the path is updated appropriately. If Path isn't a valid path in Model,
    --  then null is returned.
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
+   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    function Gtk_Tree_Row_Reference_New
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -68,7 +68,7 @@ package Gtk.Tree_Row_Reference is
    --  the path is updated appropriately. If Path isn't a valid path in Model,
    --  then null is returned.
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
+   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    procedure Gtk_New_Proxy
       (Reference : out Gtk_Tree_Row_Reference;
@@ -96,7 +96,7 @@ package Gtk.Tree_Row_Reference is
    --  not generally needed by most applications.
    --  "proxy": a proxy Glib.Object.GObject
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
+   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    function Gtk_Tree_Row_Reference_New_Proxy
       (Proxy : not null access Glib.Object.GObject_Record'Class;
@@ -123,7 +123,7 @@ package Gtk.Tree_Row_Reference is
    --  not generally needed by most applications.
    --  "proxy": a proxy Glib.Object.GObject
    --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path to monitor
+   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_row_reference_get_type");

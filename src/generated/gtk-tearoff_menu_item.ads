@@ -36,8 +36,8 @@
 --  has a left pointing arrow graphic indicating that the tearoff menu can be
 --  reattached. Activating it will erase the tearoff menu window.
 --
---  Note: Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item is deprecated and should
---  not be used in newly written code. Menus are not meant to be torn around.
+--  > Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item is deprecated and should not
+--  be used in newly > written code. Menus are not meant to be torn around.
 --
 --  </description>
 pragma Ada_2005;
@@ -102,25 +102,31 @@ package Gtk.Tearoff_Menu_Item is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Tearoff_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Tearoff_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Tearoff_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tearoff_Menu_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Tearoff_Menu_Item_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Tearoff_Menu_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Interfaces --

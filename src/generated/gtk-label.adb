@@ -53,7 +53,9 @@ package body Gtk.Label is
    -- Gtk_Label_New_With_Mnemonic --
    ---------------------------------
 
-   function Gtk_Label_New_With_Mnemonic (Str : UTF8_String) return Gtk_Label is
+   function Gtk_Label_New_With_Mnemonic
+      (Str : UTF8_String := "") return Gtk_Label
+   is
       Label : constant Gtk_Label := new Gtk_Label_Record;
    begin
       Gtk.Label.Initialize_With_Mnemonic (Label, Str);
@@ -76,7 +78,7 @@ package body Gtk.Label is
 
    procedure Gtk_New_With_Mnemonic
       (Label : out Gtk_Label;
-       Str   : UTF8_String)
+       Str   : UTF8_String := "")
    is
    begin
       Label := new Gtk_Label_Record;
@@ -94,10 +96,15 @@ package body Gtk.Label is
       function Internal
          (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str    : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
       if not Label.Is_Created then
+         if Str = "" then
+            Tmp_Str := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Str := New_String (Str);
+         end if;
          Tmp_Return := Internal (Tmp_Str);
          Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
@@ -110,15 +117,20 @@ package body Gtk.Label is
 
    procedure Initialize_With_Mnemonic
       (Label : not null access Gtk_Label_Record'Class;
-       Str   : UTF8_String)
+       Str   : UTF8_String := "")
    is
       function Internal
          (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "gtk_label_new_with_mnemonic");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str    : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
    begin
       if not Label.Is_Created then
+         if Str = "" then
+            Tmp_Str := Interfaces.C.Strings.Null_Ptr;
+         else
+            Tmp_Str := New_String (Str);
+         end if;
          Tmp_Return := Internal (Tmp_Str);
          Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
@@ -270,6 +282,17 @@ package body Gtk.Label is
    begin
       return Internal (Get_Object (Label));
    end Get_Line_Wrap_Mode;
+
+   ---------------
+   -- Get_Lines --
+   ---------------
+
+   function Get_Lines (Label : not null access Gtk_Label_Record) return Gint is
+      function Internal (Label : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_label_get_lines");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Lines;
 
    -------------------------
    -- Get_Max_Width_Chars --
@@ -554,6 +577,20 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Wrap_Mode);
    end Set_Line_Wrap_Mode;
+
+   ---------------
+   -- Set_Lines --
+   ---------------
+
+   procedure Set_Lines
+      (Label : not null access Gtk_Label_Record;
+       Lines : Gint)
+   is
+      procedure Internal (Label : System.Address; Lines : Gint);
+      pragma Import (C, Internal, "gtk_label_set_lines");
+   begin
+      Internal (Get_Object (Label), Lines);
+   end Set_Lines;
 
    ----------------
    -- Set_Markup --

@@ -21,6 +21,29 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Layout.Pango_Layout structure represents an entire paragraph of
+--  text. It is initialized with a Pango.Context.Pango_Context, UTF-8 string
+--  and set of attributes for that string. Once that is done, the set of
+--  formatted lines can be extracted from the object, the layout can be
+--  rendered, and conversion between logical character positions within the
+--  layout's text, and the physical position of the resulting glyphs can be
+--  made.
+--
+--  There are also a number of parameters to adjust the formatting of a
+--  Pango.Layout.Pango_Layout, which are illustrated in <xref
+--  linkend="parameters"/>. It is possible, as well, to ignore the 2-D setup,
+--  and simply treat the results of a Pango.Layout.Pango_Layout as a list of
+--  lines.
+--
+--  <figure id="parameters">
+--  == Adjustable parameters for a PangoLayout ==
+--
+--  <graphic fileref="layout.gif" format="GIF"></graphic> </figure>
+--  The Pango.Layout.Pango_Layout structure is opaque, and has no user-visible
+--  fields.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -60,6 +83,15 @@ package Pango.Layout is
    type Pango_Layout_Line is private;
    function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line;
    pragma Inline (From_Object_Free);
+   --  The Pango.Layout.Pango_Layout_Line structure represents one of the
+   --  lines resulting from laying out a paragraph via
+   --  Pango.Layout.Pango_Layout. Pango.Layout.Pango_Layout_Line structures are
+   --  obtained by calling Pango.Layout.Get_Line and are only valid until the
+   --  text, attributes, or settings of the parent Pango.Layout.Pango_Layout
+   --  are modified.
+   --
+   --  Routines for rendering PangoLayout objects are provided in code
+   --  specific to each rendering system.
 
    ----------------------------
    -- Enumeration Properties --
@@ -646,7 +678,7 @@ package Pango.Layout is
    --  layout, the closest position is chosen (the position will be clamped
    --  inside the layout). If the X position is not within the layout, then the
    --  start or the end of the line is chosen as described for
-   --  pango_layout_x_to_index. If either the X or Y positions were not inside
+   --  Pango.Layout.Xy_To_Index. If either the X or Y positions were not inside
    --  the layout, then the function returns False; on an exact hit, it returns
    --  True.
    --  "x": the X offset (in Pango units) from the left edge of the layout.

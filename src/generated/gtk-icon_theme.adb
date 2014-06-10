@@ -174,6 +174,33 @@ package body Gtk.Icon_Theme is
       return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
    end Choose_Icon;
 
+   ---------------------------
+   -- Choose_Icon_For_Scale --
+   ---------------------------
+
+   function Choose_Icon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Names : GNAT.Strings.String_List;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Icon_Names : Interfaces.C.Strings.chars_ptr_array;
+          Size       : Gint;
+          Scale      : Gint;
+          Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_theme_choose_icon_for_scale");
+      Tmp_Icon_Names     : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Names, Size, Scale, Flags);
+      GtkAda.Types.Free (Tmp_Icon_Names);
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
+   end Choose_Icon_For_Scale;
+
    ----------
    -- Copy --
    ----------
@@ -231,6 +258,19 @@ package body Gtk.Icon_Theme is
          return Result;
       end;
    end Get_Attach_Points;
+
+   --------------------
+   -- Get_Base_Scale --
+   --------------------
+
+   function Get_Base_Scale
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint
+   is
+      function Internal (Icon_Info : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_icon_info_get_base_scale");
+   begin
+      return Internal (Get_Object (Icon_Info));
+   end Get_Base_Scale;
 
    -------------------
    -- Get_Base_Size --
@@ -394,6 +434,19 @@ package body Gtk.Icon_Theme is
       return Tmp_Return /= 0;
    end Has_Icon;
 
+   -----------------
+   -- Is_Symbolic --
+   -----------------
+
+   function Is_Symbolic
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Boolean
+   is
+      function Internal (Icon_Info : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_icon_info_is_symbolic");
+   begin
+      return Internal (Get_Object (Icon_Info)) /= 0;
+   end Is_Symbolic;
+
    -------------------
    -- List_Contexts --
    -------------------
@@ -474,6 +527,77 @@ package body Gtk.Icon_Theme is
    begin
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Internal (Get_Object (Icon_Info)), Stub_Gdk_Pixbuf));
    end Load_Icon;
+
+   -------------------------
+   -- Load_Icon_For_Scale --
+   -------------------------
+
+   function Load_Icon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Size       : Gint;
+          Scale      : Gint;
+          Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_theme_load_icon_for_scale");
+      Tmp_Icon_Name   : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
+      Tmp_Return      : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, Flags);
+      Free (Tmp_Icon_Name);
+      return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
+   end Load_Icon_For_Scale;
+
+   ------------------
+   -- Load_Surface --
+   ------------------
+
+   function Load_Surface
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String;
+       Size       : Gint;
+       Scale      : Gint;
+       For_Window : Gdk.Gdk_Window;
+       Flags      : Gtk_Icon_Lookup_Flags) return Cairo.Cairo_Surface
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Size       : Gint;
+          Scale      : Gint;
+          For_Window : Gdk.Gdk_Window;
+          Flags      : Gtk_Icon_Lookup_Flags) return Cairo.Cairo_Surface;
+      pragma Import (C, Internal, "gtk_icon_theme_load_surface");
+      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Return    : Cairo.Cairo_Surface;
+   begin
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, For_Window, Flags);
+      Free (Tmp_Icon_Name);
+      return Tmp_Return;
+   end Load_Surface;
+
+   ------------------
+   -- Load_Surface --
+   ------------------
+
+   function Load_Surface
+      (Icon_Info  : not null access Gtk_Icon_Info_Record;
+       For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface
+   is
+      function Internal
+         (Icon_Info  : System.Address;
+          For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface;
+      pragma Import (C, Internal, "gtk_icon_info_load_surface");
+   begin
+      return Internal (Get_Object (Icon_Info), For_Window);
+   end Load_Surface;
 
    -------------------
    -- Load_Symbolic --
@@ -585,6 +709,29 @@ package body Gtk.Icon_Theme is
       return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Internal (Get_Object (Icon_Theme), Icon, Size, Flags), Stub_Gtk_Icon_Info));
    end Lookup_By_Gicon;
 
+   -------------------------------
+   -- Lookup_By_Gicon_For_Scale --
+   -------------------------------
+
+   function Lookup_By_Gicon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon       : Glib.G_Icon.G_Icon;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Icon       : Glib.G_Icon.G_Icon;
+          Size       : Gint;
+          Scale      : Gint;
+          Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_theme_lookup_by_gicon_for_scale");
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
+   begin
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Internal (Get_Object (Icon_Theme), Icon, Size, Scale, Flags), Stub_Gtk_Icon_Info));
+   end Lookup_By_Gicon_For_Scale;
+
    -----------------
    -- Lookup_Icon --
    -----------------
@@ -609,6 +756,33 @@ package body Gtk.Icon_Theme is
       Free (Tmp_Icon_Name);
       return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
    end Lookup_Icon;
+
+   ---------------------------
+   -- Lookup_Icon_For_Scale --
+   ---------------------------
+
+   function Lookup_Icon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
+   is
+      function Internal
+         (Icon_Theme : System.Address;
+          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Size       : Gint;
+          Scale      : Gint;
+          Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
+      pragma Import (C, Internal, "gtk_icon_theme_lookup_icon_for_scale");
+      Tmp_Icon_Name      : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, Flags);
+      Free (Tmp_Icon_Name);
+      return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
+   end Lookup_Icon_For_Scale;
 
    -------------------------
    -- Prepend_Search_Path --

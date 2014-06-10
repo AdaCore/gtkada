@@ -72,10 +72,12 @@ package Glib.Simple_Action_Group is
       (Self      : not null access Gsimple_Action_Group_Record;
        Entries   : Glib.Action_Map.GAction_Entry_Array;
        User_Data : System.Address := System.Null_Address);
+   pragma Obsolescent (Add_Entries);
    --  A convenience function for creating multiple
    --  Glib.Simple_Action.Gsimple_Action instances and adding them to the
    --  action group.
    --  Since: gtk+ 2.30
+   --  Deprecated since 2.38, 1
    --  "entries": a pointer to the first item in an array of
    --  Glib.Action_Map.GAction_Entry structs
    --  "user_data": the user data for signal connections
@@ -83,27 +85,33 @@ package Glib.Simple_Action_Group is
    procedure Insert
       (Self   : not null access Gsimple_Action_Group_Record;
        Action : Glib.Action.Gaction);
+   pragma Obsolescent (Insert);
    --  Adds an action to the action group.
    --  If the action group already contains an action with the same name as
    --  Action then the old action is dropped from the group.
    --  The action group takes its own reference on Action.
    --  Since: gtk+ 2.28
+   --  Deprecated since 2.38, 1
    --  "action": a Glib.Action.Gaction
 
    function Lookup
       (Self        : not null access Gsimple_Action_Group_Record;
        Action_Name : UTF8_String) return Glib.Action.Gaction;
+   pragma Obsolescent (Lookup);
    --  Looks up the action with the name Action_Name in the group.
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.28
+   --  Deprecated since 2.38, 1
    --  "action_name": the name of an action
 
    procedure Remove
       (Self        : not null access Gsimple_Action_Group_Record;
        Action_Name : UTF8_String);
+   pragma Obsolescent (Remove);
    --  Removes the named action from the action group.
    --  If no action of this name is in the group then nothing happens.
    --  Since: gtk+ 2.28
+   --  Deprecated since 2.38, 1
    --  "action_name": the name of the action
 
    ---------------------------------------------

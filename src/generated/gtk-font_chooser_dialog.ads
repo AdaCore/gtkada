@@ -26,10 +26,11 @@
 --  selecting a font. It implements the Gtk.Font_Chooser.Gtk_Font_Chooser
 --  interface.
 --
---  == GtkFontChooserDialog as GtkBuildable ==
+--  # GtkFontChooserDialog as GtkBuildable
 --
---  The GtkFontChooserDialog implementation of the GtkBuildable interface
---  exposes the buttons with the names "select_button" and "cancel_button.
+--  The GtkFontChooserDialog implementation of the Gtk.Buildable.Gtk_Buildable
+--  interface exposes the buttons with the names "select_button" and
+--  "cancel_button".
 --
 --  </description>
 pragma Ada_2005;

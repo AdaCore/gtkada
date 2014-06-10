@@ -59,47 +59,44 @@
 --  behaviour can be overridden with the
 --  Gtk.Application_Window.Gtk_Application_Window:show-menubar property. If the
 --  desktop environment does not display the application menu, then it will
---  automatically be included in the menubar.
+--  automatically be included in the menubar. It can also be shown as part of
+--  client-side window decorations, e.g. by using
+--  gtk_header_bar_set_show_close_button.
 --
---  == A GtkApplicationWindow with a menubar ==
+--  ## A GtkApplicationWindow with a menubar
 --
---    app = gtk_application_new ();
---    builder = gtk_builder_new ();
---    gtk_builder_add_from_string (builder,
---       "<interface>"
---       "  <menu id='menubar'>"
---       "    <submenu label='_Edit'>"
---       "      <item label='_Copy' action='win.copy'/>"
---       "      <item label='_Paste' action='win.paste'/>"
---       "    </submenu>"
---       "  </menu>"
---       "</interface>");
---    gtk_application_set_menubar (G_APPLICATION (app),
---       G_MENU_MODEL (gtk_builder_get_object (builder, "menubar")));
---    g_object_unref (builder);
---    ...
---    window = gtk_application_window_new (app);
+--  |[<!-- language="C" --> app = gtk_application_new ();
 --
---  == Handling fallback yourself ==
+--  builder = gtk_builder_new (); gtk_builder_add_from_string (builder,
+--  "<interface>" " <menu id='menubar'>" " <submenu label='_Edit'>" " <item
+--  label='_Copy' action='win.copy'/>" " <item label='_Paste'
+--  action='win.paste'/>" " </submenu>" " </menu>" "</interface>");
 --
---    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../examples/sunny.c">
---    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
---    </xi:include>
+--  menubar = G_MENU_MODEL (gtk_builder_get_object (builder, "menubar"));
+--  gtk_application_set_menubar (G_APPLICATION (app), menubar); g_object_unref
+--  (builder);
+--
+--  ...
+--
+--  window = gtk_application_window_new (app); ]|
+--
+--  ## Handling fallback yourself
+--
+--  [A simple
+--  example](https://git.gnome.org/browse/gtk+/tree/examples/sunny.c)
+--
 --  The XML format understood by Gtk.Builder.Gtk_Builder for
---  Glib.Menu_Model.Gmenu_Model consists of a toplevel <tag
---  class="starttag">menu</tag> element, which contains one or more <tag
---  class="starttag">item</tag> elements. Each <tag class="starttag">item</tag>
---  element contains <tag class="starttag">attribute</tag> and <tag
---  class="starttag">link</tag> elements with a mandatory name attribute. <tag
---  class="starttag">link</tag> elements have the same content model as <tag
---  class="starttag">menu</tag>.
+--  Glib.Menu_Model.Gmenu_Model consists of a toplevel `<menu>` element, which
+--  contains one or more `<item>` elements. Each `<item>` element contains
+--  `<attribute>` and `<link>` elements with a mandatory name attribute.
+--  `<link>` elements have the same content model as `<menu>`.
 --
 --  Attribute values can be translated using gettext, like other
---  Gtk.Builder.Gtk_Builder content. <tag class="starttag">attribute</tag>
---  elements can be marked for translation with a 'translatable="yes"'
---  attribute. It is also possible to specify message context and translator
---  comments, using the context and comments attributes. To make use of this,
---  the Gtk.Builder.Gtk_Builder must have been given the gettext domain to use.
+--  Gtk.Builder.Gtk_Builder content. `<attribute>` elements can be marked for
+--  translation with a `translatable="yes"` attribute. It is also possible to
+--  specify message context and translator comments,using the context and
+--  comments attributes. To make use of this, the Gtk.Builder.Gtk_Builder must
+--  have been given the gettext domain to use.
 --
 --  </description>
 pragma Ada_2005;
@@ -153,7 +150,7 @@ package Gtk.Application_Window is
    function Get_Id
       (Self : not null access Gtk_Application_Window_Record) return Guint;
    --  Returns the unique ID of the window. If the window has not yet been
-   --  added to a Gtk.Application.Gtk_Application, returns '0'.
+   --  added to a Gtk.Application.Gtk_Application, returns `0`.
    --  Since: gtk+ 3.6
 
    function Get_Show_Menubar

@@ -26,7 +26,7 @@
 --  manage the selection for a Gtk.Tree_View.Gtk_Tree_View widget. The
 --  Gtk.Tree_Selection.Gtk_Tree_Selection object is automatically created when
 --  a new Gtk.Tree_View.Gtk_Tree_View widget is created, and cannot exist
---  independentally of this widget. The primary reason the
+--  independently of this widget. The primary reason the
 --  Gtk.Tree_Selection.Gtk_Tree_Selection objects exists is for cleanliness of
 --  code and API. That is, there is no conceptual reason all these functions
 --  could not be methods on the Gtk.Tree_View.Gtk_Tree_View widget instead of a

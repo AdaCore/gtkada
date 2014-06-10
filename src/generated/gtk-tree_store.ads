@@ -27,25 +27,20 @@
 --  Gtk.Tree_Model.Gtk_Tree_Model interface, and consequentialy, can use all of
 --  the methods available there. It also implements the
 --  Gtk.Tree_Sortable.Gtk_Tree_Sortable interface so it can be sorted by the
---  view. Finally, it also implements the tree <link linkend="gtktreednd">drag
---  and drop</link> interfaces.
+--  view. Finally, it also implements the tree [drag and
+--  drop][gtk3-GtkTreeView-drag-and-drop] interfaces.
 --
---  == GtkTreeStore as GtkBuildable ==
+--  # GtkTreeStore as GtkBuildable
 --
 --  The GtkTreeStore implementation of the Gtk.Buildable.Gtk_Buildable
 --  interface allows to specify the model columns with a <columns> element that
 --  may contain multiple <column> elements, each specifying one model column.
 --  The "type" attribute specifies the data type for the column.
 --
---  == A UI Definition fragment for a tree store ==
+--  An example of a UI Definition fragment for a tree store: |[ <object
+--  class="GtkTreeStore"> <columns> <column type="gchararray"/> <column
+--  type="gchararray"/> <column type="gint"/> </columns> </object> ]|
 --
---    <object class="GtkTreeStore">
---    <columns>
---    <column type="gchararray"/>
---    <column type="gchararray"/>
---    <column type="gint"/>
---    </columns>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -92,8 +87,8 @@ package Gtk.Tree_Store is
    --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
    --  must be reflexive, antisymmetric and transitive.
    --  For example, if Model is a product catalogue, then a compare function
-   --  for the "price" column could be one which returns 'price_of(A) -
-   --  price_of(B)'.
+   --  for the "price" column could be one which returns `price_of(A) -
+   --  price_of(B)`.
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -268,7 +263,7 @@ package Gtk.Tree_Store is
    --  "parent": A Gtk.Tree_Model.Gtk_Tree_Iter.
    --  "new_order": an array of integers mapping the new position of each
    --  child to its old position before the re-ordering, i.e.
-   --  New_Order'[newpos] = oldpos'.
+   --  New_Order`[newpos] = oldpos`.
 
    procedure Set_Column_Types
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -370,8 +365,8 @@ package Gtk.Tree_Store is
       --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
       --  must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare function
-      --  for the "price" column could be one which returns 'price_of(A) -
-      --  price_of(B)'.
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -424,8 +419,8 @@ package Gtk.Tree_Store is
       --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
       --  must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare function
-      --  for the "price" column could be one which returns 'price_of(A) -
-      --  price_of(B)'.
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -660,6 +655,13 @@ package Gtk.Tree_Store is
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        New_Order  : Gint_Array);
+
+   procedure Rows_Reordered_With_Length
+      (Tree_Model : not null access Gtk_Tree_Store_Record;
+       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+       New_Order  : Gint_Array;
+       Length     : Gint);
 
    procedure Unref_Node
       (Tree_Model : not null access Gtk_Tree_Store_Record;

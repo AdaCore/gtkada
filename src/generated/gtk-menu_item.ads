@@ -23,25 +23,33 @@
 
 --  <description>
 --  The Gtk.Menu_Item.Gtk_Menu_Item widget and the derived widgets are the
---  only valid childs for menus. Their function is to correctly handle
+--  only valid children for menus. Their function is to correctly handle
 --  highlighting, alignment, events and submenus.
 --
---  As it derives from Gtk.Bin.Gtk_Bin it can hold any valid child widget,
---  altough only a few are really useful.
+--  As a GtkMenuItem derives from Gtk.Bin.Gtk_Bin it can hold any valid child
+--  widget, although only a few are really useful.
 --
---  == GtkMenuItem as GtkBuildable ==
+--  By default, a GtkMenuItem sets a Gtk.Accel_Label.Gtk_Accel_Label as its
+--  child. GtkMenuItem has direct functions to set the label and its mnemonic.
+--  For more advanced label settings, you can fetch the child widget from the
+--  GtkBin.
 --
---  The GtkMenuItem implementation of the GtkBuildable interface supports
---  adding a submenu by specifying "submenu" as the "type" attribute of a
---  <child> element.
+--  An example for setting markup and accelerator on a MenuItem: |[<!--
+--  language="C" --> GtkWidget *child = gtk_bin_get_child (GTK_BIN
+--  (menu_item)); gtk_label_set_markup (GTK_LABEL (child), "<i>new label</i>
+--  with <b>markup</b>"); gtk_accel_label_set_accel (GTK_ACCEL_LABEL (child),
+--  GDK_KEY_1, 0); ]|
 --
---  == A UI definition fragment with submenus ==
+--  # GtkMenuItem as GtkBuildable
 --
---    <object class="GtkMenuItem">
---    <child type="submenu">
---    <object class="GtkMenu"/>
---    </child>
---    </object>
+--  The GtkMenuItem implementation of the Gtk.Buildable.Gtk_Buildable
+--  interface supports adding a submenu by specifying "submenu" as the "type"
+--  attribute of a <child> element.
+--
+--  An example of UI definition fragment with submenus: |[ <object
+--  class="GtkMenuItem"> <child type="submenu"> <object class="GtkMenu"/>
+--  </child> </object> ]|
+--
 --  </description>
 pragma Ada_2005;
 
@@ -124,7 +132,7 @@ package Gtk.Menu_Item is
 
    procedure Deselect (Menu_Item : not null access Gtk_Menu_Item_Record);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::deselect signal on the given
-   --  item. Behaves exactly like gtk_item_deselect.
+   --  item.
 
    function Get_Accel_Path
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
@@ -185,7 +193,7 @@ package Gtk.Menu_Item is
    pragma Obsolescent (Get_Right_Justified);
    --  Gets whether the menu item appears justified at the right side of the
    --  menu bar.
-   --  Deprecated since 3.2, See Gtk.Menu_Item.Set_Right_Justified
+   --  Deprecated since 3.2, 1
 
    procedure Set_Right_Justified
       (Menu_Item       : not null access Gtk_Menu_Item_Record;
@@ -196,8 +204,7 @@ package Gtk.Menu_Item is
    --  considered a bad idea. (If the widget layout is reversed for a
    --  right-to-left language like Hebrew or Arabic, right-justified-menu-items
    --  appear at the left.)
-   --  Deprecated since 3.2, If you insist on using it, use
-   --  Gtk.Widget.Set_Hexpand and Gtk.Widget.Set_Halign.
+   --  Deprecated since 3.2, 1
    --  "right_justified": if True the menu item will appear at the far right
    --  if added to a menu bar
 
@@ -230,7 +237,6 @@ package Gtk.Menu_Item is
 
    procedure Gtk_Select (Menu_Item : not null access Gtk_Menu_Item_Record);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::select signal on the given item.
-   --  Behaves exactly like gtk_item_select.
 
    procedure Toggle_Size_Allocate
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
@@ -287,25 +293,31 @@ package Gtk.Menu_Item is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Menu_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Menu_Item_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Menu_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

@@ -121,7 +121,7 @@ package Gtk.Recent_Chooser is
 
    procedure Set_Filter
       (Chooser : Gtk_Recent_Chooser;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
+       Filter  : access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
    --  Sets Filter as the current Gtk.Recent_Filter.Gtk_Recent_Filter object
    --  used by Chooser to affect the displayed recently used resources.
    --  Since: gtk+ 2.10
@@ -338,10 +338,7 @@ package Gtk.Recent_Chooser is
 
    Limit_Property : constant Glib.Properties.Property_Int;
    --  The maximum number of recently used resources to be displayed, or -1 to
-   --  display all items. By default, the GtkSetting:gtk-recent-files-limit
-   --  setting is respected: you can override that limit on a particular
-   --  instance of Gtk.Recent_Chooser.Gtk_Recent_Chooser by setting this
-   --  property.
+   --  display all items.
 
    Local_Only_Property : constant Glib.Properties.Property_Boolean;
    --  Whether this Gtk.Recent_Chooser.Gtk_Recent_Chooser should display only
@@ -398,7 +395,7 @@ package Gtk.Recent_Chooser is
        After : Boolean := False);
    --  This signal is emitted when the user "activates" a recent item in the
    --  recent chooser. This can happen by double-clicking on an item in the
-   --  recently used resources list, or by pressing 'Enter'.
+   --  recently used resources list, or by pressing `Enter`.
 
    Signal_Selection_Changed : constant Glib.Signal_Name := "selection-changed";
    procedure On_Selection_Changed
@@ -412,7 +409,7 @@ package Gtk.Recent_Chooser is
        After : Boolean := False);
    --  This signal is emitted when there is a change in the set of selected
    --  recently used resources. This can happen when a user modifies the
-   --  selection with the mouse or the keyboard, or when explicitely calling
+   --  selection with the mouse or the keyboard, or when explicitly calling
    --  functions to change the selection.
 
    ----------------

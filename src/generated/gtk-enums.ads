@@ -54,7 +54,8 @@ package Gtk.Enums is
       Buttonbox_Edge,
       Buttonbox_Start,
       Buttonbox_End,
-      Buttonbox_Center);
+      Buttonbox_Center,
+      Buttonbox_Expand);
    pragma Convention (C, Gtk_Button_Box_Style);
    --  Used to dictate the style that a Gtk.Button_Box.Gtk_Button_Box uses to
    --  layout the buttons it contains. (See also:
@@ -65,7 +66,8 @@ package Gtk.Enums is
       Buttonbox_Edge => 2,
       Buttonbox_Start => 3,
       Buttonbox_End => 4,
-      Buttonbox_Center => 5);
+      Buttonbox_Center => 5,
+      Buttonbox_Expand => 6);
 
    type Gtk_Corner_Type is (
       Corner_Top_Left,
@@ -87,7 +89,7 @@ package Gtk.Enums is
       Delete_Paragraphs,
       Delete_Whitespace);
    pragma Convention (C, Gtk_Delete_Type);
-
+   --  See also: Gtk.GEntry.Gtk_Entry::delete-from-cursor.
 
    type Gtk_Direction_Type is (
       Dir_Tab_Forward,
@@ -97,7 +99,7 @@ package Gtk.Enums is
       Dir_Left,
       Dir_Right);
    pragma Convention (C, Gtk_Direction_Type);
-
+   --  Focus movement types.
 
    type Gtk_Drag_Result is (
       Drag_Result_Success,
@@ -121,7 +123,7 @@ package Gtk.Enums is
 
    type Gtk_Icon_Size is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Icon_Size);
-
+   --  Built-in stock icon sizes.
 
    Icon_Size_Invalid : constant Gtk_Icon_Size := 0;
    Icon_Size_Menu : constant Gtk_Icon_Size := 1;
@@ -144,6 +146,18 @@ package Gtk.Enums is
    Junction_Bottom : constant Gtk_Junction_Sides := 12;
    Junction_Left : constant Gtk_Junction_Sides := 5;
    Junction_Right : constant Gtk_Junction_Sides := 10;
+
+   type Gtk_Baseline_Position is (
+      Baseline_Position_Top,
+      Baseline_Position_Center,
+      Baseline_Position_Bottom);
+   pragma Convention (C, Gtk_Baseline_Position);
+   --  Whenever a container has some form of natural row it may align children
+   --  in that row along a common typographical baseline. If the amount of
+   --  verical space in the row is taller than the total requested height of
+   --  the baseline-aligned children then it can use a
+   --  Gtk.Enums.Gtk_Baseline_Position to select where to put the baseline
+   --  inside the extra availible space.
 
    type Gtk_Justification is (
       Justify_Left,
@@ -223,10 +237,10 @@ package Gtk.Enums is
    --  The difference between Gtk_Input_Purpose_Digits and
    --  Gtk_Input_Purpose_Number is that the former accepts only digits while
    --  the latter also some punctuation (like commas or points, plus, minus)
-   --  and 'e' or 'E' as in 3.14E+000.
+   --  and "e" or "E" as in 3.14E+000.
    --
    --  This enumeration may be extended in the future; input methods should
-   --  interpret unknown values as 'free form'.
+   --  interpret unknown values as "free form".
 
    type Gtk_Number_Up_Layout is (
       Left_To_Right_Top_To_Bottom,
@@ -271,14 +285,14 @@ package Gtk.Enums is
       Page_Orientation_Reverse_Portrait,
       Page_Orientation_Reverse_Landscape);
    pragma Convention (C, Gtk_Page_Orientation);
-
+   --  See also Gtk.Print_Settings.Set_Orientation.
 
    type Gtk_Page_Set is (
       Page_Set_All,
       Page_Set_Even,
       Page_Set_Odd);
    pragma Convention (C, Gtk_Page_Set);
-
+   --  See also gtk_print_job_set_page_set.
 
    type Gtk_Level_Bar_Mode is (
       Level_Bar_Mode_Continuous,
@@ -296,7 +310,7 @@ package Gtk.Enums is
       Path_Prio_Rc,
       Path_Prio_Highest);
    pragma Convention (C, Gtk_Path_Priority_Type);
-
+   --  Priorities for path lookups. See also Gtk.Binding_Set.Add_Path.
 
    for Gtk_Path_Priority_Type use (
       Path_Prio_Lowest => 0,
@@ -311,7 +325,7 @@ package Gtk.Enums is
       Path_Widget_Class,
       Path_Class);
    pragma Convention (C, Gtk_Path_Type);
-
+   --  Widget path types. See also Gtk.Binding_Set.Add_Path.
 
    type Gtk_Policy_Type is (
       Policy_Always,
@@ -335,7 +349,7 @@ package Gtk.Enums is
       Print_Duplex_Horizontal,
       Print_Duplex_Vertical);
    pragma Convention (C, Gtk_Print_Duplex);
-
+   --  See also Gtk.Print_Settings.Set_Duplex.
 
    type Gtk_Print_Pages is (
       Print_Pages_All,
@@ -343,7 +357,7 @@ package Gtk.Enums is
       Print_Pages_Ranges,
       Print_Pages_Selection);
    pragma Convention (C, Gtk_Print_Pages);
-
+   --  See also gtk_print_job_set_pages
 
    type Gtk_Print_Quality is (
       Print_Quality_Low,
@@ -351,7 +365,7 @@ package Gtk.Enums is
       Print_Quality_High,
       Print_Quality_Draft);
    pragma Convention (C, Gtk_Print_Quality);
-
+   --  See also Gtk.Print_Settings.Set_Quality.
 
    type Gtk_Region_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Region_Flags);
@@ -406,7 +420,7 @@ package Gtk.Enums is
       Scroll_Start,
       Scroll_End);
    pragma Convention (C, Gtk_Scroll_Type);
-
+   --  Scrolling types.
 
    type Gtk_Scrollable_Policy is (
       Scroll_Minimum,
@@ -471,6 +485,8 @@ package Gtk.Enums is
    Gtk_State_Flag_Backdrop : constant Gtk_State_Flags := 64;
    Gtk_State_Flag_Dir_Ltr : constant Gtk_State_Flags := 128;
    Gtk_State_Flag_Dir_Rtl : constant Gtk_State_Flags := 256;
+   Gtk_State_Flag_Link : constant Gtk_State_Flags := 512;
+   Gtk_State_Flag_Visited : constant Gtk_State_Flags := 1024;
 
    type Gtk_State_Type is (
       State_Normal,
@@ -490,7 +506,7 @@ package Gtk.Enums is
    type Gtk_Target_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Target_Flags);
    --  The Gtk.Enums.Gtk_Target_Flags enumeration is used to specify
-   --  constraints on an entry in a Gtk_Target_Table.
+   --  constraints on a Gtk.Target_Entry.Gtk_Target_Entry.
 
    Gtk_Target_Same_App : constant Gtk_Target_Flags := 1;
    Gtk_Target_Same_Widget : constant Gtk_Target_Flags := 2;
@@ -502,7 +518,7 @@ package Gtk.Enums is
       Text_Dir_Ltr,
       Text_Dir_Rtl);
    pragma Convention (C, Gtk_Text_Direction);
-
+   --  Reading directions for text.
 
    type Gtk_Text_Window_Type is (
       Text_Window_Private,
@@ -513,7 +529,7 @@ package Gtk.Enums is
       Text_Window_Top,
       Text_Window_Bottom);
    pragma Convention (C, Gtk_Text_Window_Type);
-
+   --  Used to reference the parts of Gtk.Text_View.Gtk_Text_View.
 
    type Gtk_Tree_View_Grid_Lines is (
       Grid_Lines_None,
@@ -527,7 +543,7 @@ package Gtk.Enums is
       Toolbar_Space_Empty,
       Toolbar_Space_Line);
    pragma Convention (C, Gtk_Toolbar_Space_Style);
-
+   --  Whether spacers are vertical lines or just blank.
 
    type Gtk_Toolbar_Style is (
       Toolbar_Icons,
@@ -546,7 +562,7 @@ package Gtk.Enums is
       Inch,
       Mm);
    pragma Convention (C, Gtk_Unit);
-
+   --  See also Gtk.Print_Settings.Set_Paper_Width.
 
    type Gtk_Window_Position is (
       Win_Pos_None,
@@ -629,6 +645,10 @@ package Gtk.Enums is
    package Gtk_Junction_Sides_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Junction_Sides);
    type Property_Gtk_Junction_Sides is new Gtk_Junction_Sides_Properties.Property;
+
+   package Gtk_Baseline_Position_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Baseline_Position);
+   type Property_Gtk_Baseline_Position is new Gtk_Baseline_Position_Properties.Property;
 
    package Gtk_Justification_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Justification);

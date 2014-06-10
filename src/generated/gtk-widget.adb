@@ -177,10 +177,10 @@ package body Gtk.Widget is
        User_Data : System.Address;
        Notify    : Glib.G_Destroy_Notify_Address) return Guint;
    pragma Import (C, C_Gtk_Widget_Add_Tick_Callback, "gtk_widget_add_tick_callback");
-   --  Queues a animation frame update and adds a callback to be called before
-   --  each frame. Until the tick callback is removed, it will be called
+   --  Queues an animation frame update and adds a callback to be called
+   --  before each frame. Until the tick callback is removed, it will be called
    --  frequently (usually at the frame rate of the output device or as quickly
-   --  as the application an be repainted, whichever is slower). For this
+   --  as the application can be repainted, whichever is slower). For this
    --  reason, is most suitable for handling graphics that change every frame
    --  or every few frames. The tick callback does not automatically imply a
    --  relayout or repaint. If you want a repaint or relayout, and aren't
@@ -201,11 +201,54 @@ package body Gtk.Widget is
    --  "notify": function to call to free User_Data when the callback is
    --  removed.
 
+   procedure C_Gtk_Widget_Class_Set_Connect_Func
+      (Self                 : Glib.Object.GObject_Class;
+       Connect_Func         : System.Address;
+       Connect_Data         : System.Address;
+       Connect_Data_Destroy : Glib.G_Destroy_Notify_Address);
+   pragma Import (C, C_Gtk_Widget_Class_Set_Connect_Func, "gtk_widget_class_set_connect_func");
+   --  For use in lanuage bindings, this will override the default
+   --  Gtk_Builder_Connect_Func to be used when parsing GtkBuilder xml from
+   --  this class's template data.
+   --  Note that this must be called from a composite widget classes class
+   --  initializer after calling gtk_widget_class_set_template.
+   --  Since: gtk+ 3.10
+   --  "connect_func": The Gtk_Builder_Connect_Func to use when connecting
+   --  signals in the class template
+   --  "connect_data": The data to pass to Connect_Func
+   --  "connect_data_destroy": The Glib.G_Destroy_Notify_Address to free
+   --  Connect_Data, this will only be used at class finalization time, when no
+   --  classes of type Widget_Type are in use anymore.
+
    function To_Gtk_Tick_Callback is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tick_Callback);
 
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Tick_Callback, System.Address);
+
+   function To_Gtk_Builder_Connect_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Builder_Connect_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Builder_Connect_Func, System.Address);
+
+   procedure Internal_Gtk_Builder_Connect_Func
+      (Builder        : System.Address;
+       Object         : System.Address;
+       Signal_Name    : Interfaces.C.Strings.chars_ptr;
+       Handler_Name   : Interfaces.C.Strings.chars_ptr;
+       Connect_Object : System.Address;
+       Flags          : Glib.G_Connect_Flags;
+       User_Data      : System.Address);
+   pragma Convention (C, Internal_Gtk_Builder_Connect_Func);
+   --  "builder": a Gtk.Builder.Gtk_Builder
+   --  "object": object to connect a signal to
+   --  "signal_name": name of the signal
+   --  "handler_name": name of the handler
+   --  "connect_object": a Glib.Object.GObject, if non-null, use
+   --  g_signal_connect_object
+   --  "flags": Glib.G_Connect_Flags to use
+   --  "user_data": user data
 
    function Internal_Gtk_Tick_Callback
       (Widget      : System.Address;
@@ -216,6 +259,26 @@ package body Gtk.Widget is
    --  "frame_clock": the frame clock for the widget (same as calling
    --  Gtk.Widget.Get_Frame_Clock)
    --  "user_data": user data passed to Gtk.Widget.Add_Tick_Callback.
+
+   ---------------------------------------
+   -- Internal_Gtk_Builder_Connect_Func --
+   ---------------------------------------
+
+   procedure Internal_Gtk_Builder_Connect_Func
+      (Builder        : System.Address;
+       Object         : System.Address;
+       Signal_Name    : Interfaces.C.Strings.chars_ptr;
+       Handler_Name   : Interfaces.C.Strings.chars_ptr;
+       Connect_Object : System.Address;
+       Flags          : Glib.G_Connect_Flags;
+       User_Data      : System.Address)
+   is
+      Func             : constant Gtk_Builder_Connect_Func := To_Gtk_Builder_Connect_Func (User_Data);
+      Stub_Gtk_Builder : Gtk.Builder.Gtk_Builder_Record;
+      Stub_GObject     : Glib.Object.GObject_Record;
+   begin
+      Func (Gtk.Builder.Gtk_Builder (Get_User_Data (Builder, Stub_Gtk_Builder)), Get_User_Data (Object, Stub_GObject), Gtkada.Bindings.Value_Allowing_Null (Signal_Name), Gtkada.Bindings.Value_Allowing_Null (Handler_Name), Get_User_Data (Connect_Object, Stub_GObject), Flags);
+   end Internal_Gtk_Builder_Connect_Func;
 
    --------------------------------
    -- Internal_Gtk_Tick_Callback --
@@ -401,6 +464,28 @@ package body Gtk.Widget is
 
    end Add_Tick_Callback_User_Data;
 
+   ------------------------------
+   -- Bind_Template_Child_Full --
+   ------------------------------
+
+   procedure Bind_Template_Child_Full
+      (Self           : Glib.Object.GObject_Class;
+       Name           : UTF8_String;
+       Internal_Child : Boolean;
+       Struct_Offset  : Gssize)
+   is
+      procedure Internal
+         (Self           : Glib.Object.GObject_Class;
+          Name           : Interfaces.C.Strings.chars_ptr;
+          Internal_Child : Glib.Gboolean;
+          Struct_Offset  : Gssize);
+      pragma Import (C, Internal, "gtk_widget_class_bind_template_child_full");
+      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+   begin
+      Internal (Self, Tmp_Name, Boolean'Pos (Internal_Child), Struct_Offset);
+      Free (Tmp_Name);
+   end Bind_Template_Child_Full;
+
    ------------------------
    -- Can_Activate_Accel --
    ------------------------
@@ -579,6 +664,33 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget), Get_Object (Device)) /= 0;
    end Device_Is_Shadowed;
 
+   ---------------------------------
+   -- Drag_Begin_With_Coordinates --
+   ---------------------------------
+
+   function Drag_Begin_With_Coordinates
+      (Widget  : not null access Gtk_Widget_Record;
+       Targets : Gtk.Target_List.Gtk_Target_List;
+       Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
+       Button  : Gint;
+       Event   : Gdk.Event.Gdk_Event;
+       X       : Gint;
+       Y       : Gint) return Gdk.Drag_Contexts.Drag_Context
+   is
+      function Internal
+         (Widget  : System.Address;
+          Targets : System.Address;
+          Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
+          Button  : Gint;
+          Event   : Gdk.Event.Gdk_Event;
+          X       : Gint;
+          Y       : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_drag_begin_with_coordinates");
+      Stub_Drag_Context : Gdk.Drag_Contexts.Drag_Context_Record;
+   begin
+      return Gdk.Drag_Contexts.Drag_Context (Get_User_Data (Internal (Get_Object (Widget), Get_Object (Targets), Actions, Button, Event, X, Y), Stub_Drag_Context));
+   end Drag_Begin_With_Coordinates;
+
    --------------------------
    -- Drag_Check_Threshold --
    --------------------------
@@ -744,6 +856,19 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Drag_Source_Add_Image_Targets;
 
+   ----------------------------------
+   -- Drag_Source_Add_Text_Targets --
+   ----------------------------------
+
+   procedure Drag_Source_Add_Text_Targets
+      (Widget : not null access Gtk_Widget_Record)
+   is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_drag_source_add_text_targets");
+   begin
+      Internal (Get_Object (Widget));
+   end Drag_Source_Add_Text_Targets;
+
    ---------------------------------
    -- Drag_Source_Add_Uri_Targets --
    ---------------------------------
@@ -756,6 +881,24 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Drag_Source_Add_Uri_Targets;
+
+   -------------------------------
+   -- Drag_Source_Set_Icon_Name --
+   -------------------------------
+
+   procedure Drag_Source_Set_Icon_Name
+      (Widget    : not null access Gtk_Widget_Record;
+       Icon_Name : UTF8_String)
+   is
+      procedure Internal
+         (Widget    : System.Address;
+          Icon_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_drag_source_set_icon_name");
+      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+   begin
+      Internal (Get_Object (Widget), Tmp_Icon_Name);
+      Free (Tmp_Icon_Name);
+   end Drag_Source_Set_Icon_Name;
 
    ---------------------------------
    -- Drag_Source_Set_Icon_Pixbuf --
@@ -770,6 +913,24 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Get_Object (Pixbuf));
    end Drag_Source_Set_Icon_Pixbuf;
+
+   --------------------------------
+   -- Drag_Source_Set_Icon_Stock --
+   --------------------------------
+
+   procedure Drag_Source_Set_Icon_Stock
+      (Widget   : not null access Gtk_Widget_Record;
+       Stock_Id : UTF8_String)
+   is
+      procedure Internal
+         (Widget   : System.Address;
+          Stock_Id : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_drag_source_set_icon_stock");
+      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+   begin
+      Internal (Get_Object (Widget), Tmp_Stock_Id);
+      Free (Tmp_Stock_Id);
+   end Drag_Source_Set_Icon_Stock;
 
    -----------------------
    -- Drag_Source_Unset --
@@ -850,11 +1011,11 @@ package body Gtk.Widget is
    -------------------------
 
    function Find_Style_Property
-      (Self          : GObject_Class;
+      (Self          : Glib.Object.GObject_Class;
        Property_Name : UTF8_String) return Glib.Param_Spec
    is
       function Internal
-         (Self          : GObject_Class;
+         (Self          : Glib.Object.GObject_Class;
           Property_Name : Interfaces.C.Strings.chars_ptr)
           return Glib.Param_Spec;
       pragma Import (C, Internal, "gtk_widget_class_find_style_property");
@@ -878,6 +1039,19 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Freeze_Child_Notify;
+
+   ----------------------------
+   -- Get_Allocated_Baseline --
+   ----------------------------
+
+   function Get_Allocated_Baseline
+      (Widget : not null access Gtk_Widget_Record) return Gint
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_widget_get_allocated_baseline");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Allocated_Baseline;
 
    --------------------------
    -- Get_Allocated_Height --
@@ -1220,6 +1394,19 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Margin_Bottom;
 
+   --------------------
+   -- Get_Margin_End --
+   --------------------
+
+   function Get_Margin_End
+      (Widget : not null access Gtk_Widget_Record) return Gint
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_widget_get_margin_end");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Margin_End;
+
    ---------------------
    -- Get_Margin_Left --
    ---------------------
@@ -1245,6 +1432,19 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Margin_Right;
+
+   ----------------------
+   -- Get_Margin_Start --
+   ----------------------
+
+   function Get_Margin_Start
+      (Widget : not null access Gtk_Widget_Record) return Gint
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_widget_get_margin_start");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Margin_Start;
 
    --------------------
    -- Get_Margin_Top --
@@ -1407,6 +1607,30 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Minimum_Height, Natural_Height);
    end Get_Preferred_Height;
 
+   -------------------------------------------------
+   -- Get_Preferred_Height_And_Baseline_For_Width --
+   -------------------------------------------------
+
+   procedure Get_Preferred_Height_And_Baseline_For_Width
+      (Widget           : not null access Gtk_Widget_Record;
+       Width            : Gint;
+       Minimum_Height   : out Gint;
+       Natural_Height   : out Gint;
+       Minimum_Baseline : out Gint;
+       Natural_Baseline : out Gint)
+   is
+      procedure Internal
+         (Widget           : System.Address;
+          Width            : Gint;
+          Minimum_Height   : out Gint;
+          Natural_Height   : out Gint;
+          Minimum_Baseline : out Gint;
+          Natural_Baseline : out Gint);
+      pragma Import (C, Internal, "gtk_widget_get_preferred_height_and_baseline_for_width");
+   begin
+      Internal (Get_Object (Widget), Width, Minimum_Height, Natural_Height, Minimum_Baseline, Natural_Baseline);
+   end Get_Preferred_Height_And_Baseline_For_Width;
+
    ------------------------------------
    -- Get_Preferred_Height_For_Width --
    ------------------------------------
@@ -1559,6 +1783,19 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Root_Window;
 
+   ----------------------
+   -- Get_Scale_Factor --
+   ----------------------
+
+   function Get_Scale_Factor
+      (Widget : not null access Gtk_Widget_Record) return Gint
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_widget_get_scale_factor");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Scale_Factor;
+
    ----------------
    -- Get_Screen --
    ----------------
@@ -1664,6 +1901,30 @@ package body Gtk.Widget is
    end Get_Support_Multidevice;
 
    ------------------------
+   -- Get_Template_Child --
+   ------------------------
+
+   function Get_Template_Child
+      (Widget      : not null access Gtk_Widget_Record;
+       Widget_Type : GType;
+       Name        : UTF8_String) return Glib.Object.GObject
+   is
+      function Internal
+         (Widget      : System.Address;
+          Widget_Type : GType;
+          Name        : Interfaces.C.Strings.chars_ptr)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_template_child");
+      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Stub_GObject : Glib.Object.GObject_Record;
+      Tmp_Return   : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Widget), Widget_Type, Tmp_Name);
+      Free (Tmp_Name);
+      return Get_User_Data (Tmp_Return, Stub_GObject);
+   end Get_Template_Child;
+
+   ------------------------
    -- Get_Tooltip_Markup --
    ------------------------
 
@@ -1731,6 +1992,19 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Valign;
+
+   ------------------------------
+   -- Get_Valign_With_Baseline --
+   ------------------------------
+
+   function Get_Valign_With_Baseline
+      (Widget : not null access Gtk_Widget_Record) return Gtk_Align
+   is
+      function Internal (Widget : System.Address) return Gtk_Align;
+      pragma Import (C, Internal, "gtk_widget_get_valign_with_baseline");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Valign_With_Baseline;
 
    -----------------
    -- Get_Vexpand --
@@ -1957,6 +2231,17 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget)) /= 0;
    end In_Destruction;
+
+   -------------------
+   -- Init_Template --
+   -------------------
+
+   procedure Init_Template (Widget : not null access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_init_template");
+   begin
+      Internal (Get_Object (Widget));
+   end Init_Template;
 
    --------------------------------
    -- Input_Shape_Combine_Region --
@@ -2769,6 +3054,100 @@ package body Gtk.Widget is
       Free (Tmp_Name);
    end Set_Composite_Name;
 
+   ----------------------
+   -- Set_Connect_Func --
+   ----------------------
+
+   procedure Set_Connect_Func
+      (Self                 : Glib.Object.GObject_Class;
+       Connect_Func         : Gtk_Builder_Connect_Func;
+       Connect_Data_Destroy : Glib.G_Destroy_Notify_Address)
+   is
+   begin
+      if Connect_Func = null then
+         C_Gtk_Widget_Class_Set_Connect_Func (Self, System.Null_Address, System.Null_Address, Connect_Data_Destroy);
+      else
+         C_Gtk_Widget_Class_Set_Connect_Func (Self, Internal_Gtk_Builder_Connect_Func'Address, To_Address (Connect_Func), Connect_Data_Destroy);
+      end if;
+   end Set_Connect_Func;
+
+   package body Set_Connect_Func_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gtk_Builder_Connect_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Builder_Connect_Func);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Builder_Connect_Func, System.Address);
+
+      procedure Internal_Cb
+         (Builder        : System.Address;
+          Object         : System.Address;
+          Signal_Name    : Interfaces.C.Strings.chars_ptr;
+          Handler_Name   : Interfaces.C.Strings.chars_ptr;
+          Connect_Object : System.Address;
+          Flags          : Glib.G_Connect_Flags;
+          User_Data      : System.Address);
+      pragma Convention (C, Internal_Cb);
+      --  This is the signature of a function used to connect signals. It is
+      --  used by the Gtk.Builder.Connect_Signals and
+      --  Gtk.Builder.Connect_Signals_Full methods. It is mainly intended for
+      --  interpreted language bindings, but could be useful where the
+      --  programmer wants more control over the signal connection process.
+      --  Note that this function can only be called once, subsequent calls
+      --  will do nothing.
+      --  Since: gtk+ 2.12
+      --  "builder": a Gtk.Builder.Gtk_Builder
+      --  "object": object to connect a signal to
+      --  "signal_name": name of the signal
+      --  "handler_name": name of the handler
+      --  "connect_object": a Glib.Object.GObject, if non-null, use
+      --  g_signal_connect_object
+      --  "flags": Glib.G_Connect_Flags to use
+      --  "user_data": user data
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      procedure Internal_Cb
+         (Builder        : System.Address;
+          Object         : System.Address;
+          Signal_Name    : Interfaces.C.Strings.chars_ptr;
+          Handler_Name   : Interfaces.C.Strings.chars_ptr;
+          Connect_Object : System.Address;
+          Flags          : Glib.G_Connect_Flags;
+          User_Data      : System.Address)
+      is
+         D                : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_Builder : Gtk.Builder.Gtk_Builder_Record;
+         Stub_GObject     : Glib.Object.GObject_Record;
+      begin
+         To_Gtk_Builder_Connect_Func (D.Func) (Gtk.Builder.Gtk_Builder (Get_User_Data (Builder, Stub_Gtk_Builder)), Get_User_Data (Object, Stub_GObject), Gtkada.Bindings.Value_Allowing_Null (Signal_Name), Gtkada.Bindings.Value_Allowing_Null (Handler_Name), Get_User_Data (Connect_Object, Stub_GObject), Flags, D.Data.all);
+      end Internal_Cb;
+
+      ----------------------
+      -- Set_Connect_Func --
+      ----------------------
+
+      procedure Set_Connect_Func
+         (Self                 : Glib.Object.GObject_Class;
+          Connect_Func         : Gtk_Builder_Connect_Func;
+          Connect_Data         : User_Data_Type;
+          Connect_Data_Destroy : Glib.G_Destroy_Notify_Address)
+      is
+      begin
+         if Connect_Func = null then
+            C_Gtk_Widget_Class_Set_Connect_Func (Self, System.Null_Address, System.Null_Address, Connect_Data_Destroy);
+         else
+            C_Gtk_Widget_Class_Set_Connect_Func (Self, Internal_Cb'Address, Users.Build (To_Address (Connect_Func), Connect_Data), Connect_Data_Destroy);
+         end if;
+      end Set_Connect_Func;
+
+   end Set_Connect_Func_User_Data;
+
    ------------------------
    -- Set_Device_Enabled --
    ------------------------
@@ -2955,6 +3334,20 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Margin);
    end Set_Margin_Bottom;
 
+   --------------------
+   -- Set_Margin_End --
+   --------------------
+
+   procedure Set_Margin_End
+      (Widget : not null access Gtk_Widget_Record;
+       Margin : Gint)
+   is
+      procedure Internal (Widget : System.Address; Margin : Gint);
+      pragma Import (C, Internal, "gtk_widget_set_margin_end");
+   begin
+      Internal (Get_Object (Widget), Margin);
+   end Set_Margin_End;
+
    ---------------------
    -- Set_Margin_Left --
    ---------------------
@@ -2982,6 +3375,20 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Margin);
    end Set_Margin_Right;
+
+   ----------------------
+   -- Set_Margin_Start --
+   ----------------------
+
+   procedure Set_Margin_Start
+      (Widget : not null access Gtk_Widget_Record;
+       Margin : Gint)
+   is
+      procedure Internal (Widget : System.Address; Margin : Gint);
+      pragma Import (C, Internal, "gtk_widget_set_margin_start");
+   begin
+      Internal (Get_Object (Widget), Margin);
+   end Set_Margin_Start;
 
    --------------------
    -- Set_Margin_Top --
@@ -3431,6 +3838,24 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Allocation);
    end Size_Allocate;
+
+   ---------------------------------
+   -- Size_Allocate_With_Baseline --
+   ---------------------------------
+
+   procedure Size_Allocate_With_Baseline
+      (Widget     : not null access Gtk_Widget_Record;
+       Allocation : in out Gtk_Allocation;
+       Baseline   : Gint)
+   is
+      procedure Internal
+         (Widget     : System.Address;
+          Allocation : in out Gtk_Allocation;
+          Baseline   : Gint);
+      pragma Import (C, Internal, "gtk_widget_size_allocate_with_baseline");
+   begin
+      Internal (Get_Object (Widget), Allocation, Baseline);
+   end Size_Allocate_With_Baseline;
 
    ------------------
    -- Size_Request --

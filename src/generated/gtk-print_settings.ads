@@ -33,7 +33,6 @@
 --  document. The predefined keys try to use shared values as much as possible
 --  so that moving such a document between systems still works.
 --
---  <!-- TODO example of getting, storing and setting settings -->
 --  Printing support was added in GTK+ 2.10.
 --
 --  </description>
@@ -338,16 +337,14 @@ package Gtk.Print_Settings is
    function Get_Media_Type
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String;
    --  Gets the value of GTK_PRINT_SETTINGS_MEDIA_TYPE.
-   --  The set of media types is defined in PWG 5101.1-2002 PWG. <!-- FIXME
-   --  link here -->
+   --  The set of media types is defined in PWG 5101.1-2002 PWG.
    --  Since: gtk+ 2.10
 
    procedure Set_Media_Type
       (Self       : not null access Gtk_Print_Settings_Record;
        Media_Type : UTF8_String);
    --  Sets the value of GTK_PRINT_SETTINGS_MEDIA_TYPE.
-   --  The set of media types is defined in PWG 5101.1-2002 PWG. <!-- FIXME
-   --  link here -->
+   --  The set of media types is defined in PWG 5101.1-2002 PWG.
    --  Since: gtk+ 2.10
    --  "media_type": the media type
 
@@ -425,7 +422,7 @@ package Gtk.Print_Settings is
        Page_Ranges : Gtk_Page_Range_Array);
    --  Sets the value of GTK_PRINT_SETTINGS_PAGE_RANGES.
    --  Since: gtk+ 2.10
-   --  "page_ranges": an array of Gtk_Page_Range_Record<!-- -->s
+   --  "page_ranges": an array of Gtk_Page_Ranges
 
    function Get_Page_Set
       (Self : not null access Gtk_Print_Settings_Record)

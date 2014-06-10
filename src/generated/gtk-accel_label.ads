@@ -24,7 +24,7 @@
 --  <description>
 --  The Gtk.Accel_Label.Gtk_Accel_Label widget is a subclass of
 --  Gtk.Label.Gtk_Label that also displays an accelerator key on the right of
---  the label text, e.g. 'Ctl+S'. It is commonly used in menus to show the
+--  the label text, e.g. "Ctl+S". It is commonly used in menus to show the
 --  keyboard short-cuts for commands.
 --
 --  The accelerator key to display is not set explicitly. Instead, the
@@ -33,11 +33,11 @@
 --  Gtk.Accel_Label.Set_Accel_Widget.
 --
 --  For example, a Gtk.Menu_Item.Gtk_Menu_Item widget may have an accelerator
---  added to emit the "activate" signal when the 'Ctl+S' key combination is
+--  added to emit the "activate" signal when the "Ctl+S" key combination is
 --  pressed. A Gtk.Accel_Label.Gtk_Accel_Label is created and added to the
 --  Gtk.Menu_Item.Gtk_Menu_Item, and Gtk.Accel_Label.Set_Accel_Widget is called
 --  with the Gtk.Menu_Item.Gtk_Menu_Item as the second argument. The
---  Gtk.Accel_Label.Gtk_Accel_Label will now display 'Ctl+S' after its label.
+--  Gtk.Accel_Label.Gtk_Accel_Label will now display "Ctl+S" after its label.
 --
 --  Note that creating a Gtk.Menu_Item.Gtk_Menu_Item with
 --  Gtk.Menu_Item.Gtk_New_With_Label (or one of the similar functions for
@@ -52,24 +52,24 @@
 --  display multiple accelerators and even signal names, though it is almost
 --  always used to display just one accelerator key.
 --
---  == Creating a simple menu item with an accelerator key. ==
+--  ## Creating a simple menu item with an accelerator key.
 --
---    GtkWidget *save_item;
---    GtkAccelGroup *accel_group;
---    /<!---->* Create a GtkAccelGroup and add it to the window. *<!---->/
---    accel_group = gtk_accel_group_new (<!-- -->);
---       gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
---       /<!---->* Create the menu item using the convenience function. *<!---->/
---       save_item = gtk_menu_item_new_with_label ("Save");
---       gtk_widget_show (save_item);
---       gtk_container_add (GTK_CONTAINER (menu), save_item);
---       /<!---->* Now add the accelerator to the GtkMenuItem. Note that since we called
---          gtk_menu_item_new_with_label(<!-- -->) to create the GtkMenuItem the
---          GtkAccelLabel is automatically set up to display the GtkMenuItem
---          accelerators. We just need to make sure we use GTK_ACCEL_VISIBLE here. *<!---->/
---             gtk_widget_add_accelerator (save_item, "activate", accel_group,
---             GDK_KEY_s, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+--  |[<!-- language="C" --> GtkWidget *save_item; GtkAccelGroup *accel_group;
 --
+--  // Create a GtkAccelGroup and add it to the window. accel_group =
+--  gtk_accel_group_new (); gtk_window_add_accel_group (GTK_WINDOW (window),
+--  accel_group);
+--
+--  // Create the menu item using the convenience function. save_item =
+--  gtk_menu_item_new_with_label ("Save"); gtk_widget_show (save_item);
+--  gtk_container_add (GTK_CONTAINER (menu), save_item);
+--
+--  // Now add the accelerator to the GtkMenuItem. Note that since we //
+--  called Gtk.Menu_Item.Gtk_New_With_Label to create the GtkMenuItem // the
+--  GtkAccelLabel is automatically set up to display the // GtkMenuItem
+--  accelerators. We just need to make sure we use // GTK_ACCEL_VISIBLE here.
+--  gtk_widget_add_accelerator (save_item, "activate", accel_group, GDK_KEY_s,
+--  GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE); ]|
 --
 --  </description>
 pragma Ada_2005;
@@ -113,6 +113,28 @@ package Gtk.Accel_Label is
    -- Methods --
    -------------
 
+   procedure Get_Accel
+      (Accel_Label      : not null access Gtk_Accel_Label_Record;
+       Accelerator_Key  : out Gdk.Types.Gdk_Key_Type;
+       Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type);
+   --  Gets the keyval and modifier mask set with Gtk.Accel_Label.Set_Accel.
+   --  Since: gtk+ 3.12
+   --  "accelerator_key": return location for the keyval
+   --  "accelerator_mods": return location for the modifier mask
+
+   procedure Set_Accel
+      (Accel_Label      : not null access Gtk_Accel_Label_Record;
+       Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
+       Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type);
+   --  Manually sets a keyval and modifier mask as the accelerator rendered by
+   --  Accel_Label.
+   --  If a keyval and modifier are explicitly set then these values are used
+   --  regardless of any associated accel closure or widget.
+   --  Providing an Accelerator_Key of 0 removes the manual setting.
+   --  Since: gtk+ 3.6
+   --  "accelerator_key": a keyval, or 0
+   --  "accelerator_mods": the modifier mask for the accel
+
    function Get_Accel_Widget
       (Accel_Label : not null access Gtk_Accel_Label_Record)
        return Gtk.Widget.Gtk_Widget;
@@ -136,19 +158,6 @@ package Gtk.Accel_Label is
    --  Recreates the string representing the accelerator keys. This should not
    --  be needed since the string is automatically updated whenever
    --  accelerators are added or removed from the associated widget.
-
-   procedure Set_Accel
-      (Accel_Label      : not null access Gtk_Accel_Label_Record;
-       Accelerator_Key  : Guint;
-       Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type);
-   --  Manually sets a keyval and modifier mask as the accelerator rendered by
-   --  Accel_Label.
-   --  If a keyval and modifier are explicitly set then these values are used
-   --  regardless of any associated accel closure or widget.
-   --  Providing an Accelerator_Key of 0 removes the manual setting.
-   --  Since: gtk+ 3.6
-   --  "accelerator_key": a keyval, or 0
-   --  "accelerator_mods": the modifier mask for the accel
 
    procedure Set_Accel_Closure
       (Accel_Label   : not null access Gtk_Accel_Label_Record;

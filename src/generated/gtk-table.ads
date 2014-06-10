@@ -33,20 +33,19 @@
 --  convenient (but slightly less flexible) Gtk.Table.Attach_Defaults.
 --
 --  To alter the space next to a specific row, use Gtk.Table.Set_Row_Spacing,
---  and for a column, Gtk.Table.Set_Col_Spacing. The gaps between *all* rows or
+--  and for a column, Gtk.Table.Set_Col_Spacing. The gaps between all rows or
 --  columns can be changed by calling Gtk.Table.Set_Row_Spacings or
---  Gtk.Table.Set_Col_Spacings respectively. Note that spacing is added
---  *between* the children, while padding added by Gtk.Table.Attach is added
---  *on either side* of the widget it belongs to.
+--  Gtk.Table.Set_Col_Spacings respectively. Note that spacing is added between
+--  the children, while padding added by Gtk.Table.Attach is added on either
+--  side of the widget it belongs to.
 --
 --  Gtk.Table.Set_Homogeneous, can be used to set whether all cells in the
 --  table will resize themselves to the size of the largest widget in the
 --  table.
 --
---  Note: Gtk.Table.Gtk_Table has been deprecated. Use Gtk.Grid.Gtk_Grid
---  instead. It provides the same capabilities as GtkTable for arranging
---  widgets in a rectangular grid, but does support height-for-width geometry
---  management.
+--  > Gtk.Table.Gtk_Table has been deprecated. Use Gtk.Grid.Gtk_Grid instead.
+--  It provides the same > capabilities as GtkTable for arranging widgets in a
+--  rectangular grid, but > does support height-for-width geometry management.
 --
 --  </description>
 --  <group>Layout containers</group>
@@ -129,8 +128,7 @@ package Gtk.Table is
    --  resized (whether the child can shrink or expand). See the description in
    --  Gtk.Box for more information on the possible values. Xpadding and
    --  Ypadding are the amount of space left around the child.
-   --  Deprecated since 3.4, Use Gtk.Grid.Attach with Gtk.Grid.Gtk_Grid. Note
-   --  that the attach arguments differ between those two functions.
+   --  Deprecated since 3.4, 1
    --  "child": The widget to add.
    --  "left_attach": the column number to attach the left side of a child
    --  widget to.
@@ -159,8 +157,7 @@ package Gtk.Table is
    --  put around the child, and the options are set to Expand and Fill. This
    --  call is similar to Attach with default values and is only provided for
    --  compatibility.
-   --  Deprecated since 3.4, Use Gtk.Grid.Attach with Gtk.Grid.Gtk_Grid. Note
-   --  that the attach arguments differ between those two functions.
+   --  Deprecated since 3.4, 1
    --  "widget": The child widget to add.
    --  "left_attach": The column number to attach the left side of the child
    --  widget to.
@@ -176,8 +173,7 @@ package Gtk.Table is
    pragma Obsolescent (Get_Col_Spacing);
    --  Gets the amount of space between column Col, and column Col + 1. See
    --  Gtk.Table.Set_Col_Spacing.
-   --  Deprecated since 3.4, Gtk.Grid.Gtk_Grid does not offer a replacement
-   --  for this functionality.
+   --  Deprecated since 3.4, 1
    --  "column": a column in the table, 0 indicates the first column
 
    procedure Set_Col_Spacing
@@ -186,10 +182,7 @@ package Gtk.Table is
        Spacing : Guint);
    pragma Obsolescent (Set_Col_Spacing);
    --  Set the spacing in pixels between Column and the next one.
-   --  Deprecated since 3.4, Use Gtk.Widget.Set_Margin_Left and
-   --  Gtk.Widget.Set_Margin_Right on the widgets contained in the row if you
-   --  need this functionality. Gtk.Grid.Gtk_Grid does not support per-row
-   --  spacing.
+   --  Deprecated since 3.4, 1
    --  "column": the column whose spacing should be changed.
    --  "spacing": number of pixels that the spacing should take up.
 
@@ -198,24 +191,21 @@ package Gtk.Table is
    pragma Obsolescent (Get_Default_Col_Spacing);
    --  Gets the default column spacing for the table. This is the spacing that
    --  will be used for newly added columns. (See Gtk.Table.Set_Col_Spacings)
-   --  Deprecated since 3.4, Use Gtk.Grid.Get_Column_Spacing with
-   --  Gtk.Grid.Gtk_Grid.
+   --  Deprecated since 3.4, 1
 
    function Get_Default_Row_Spacing
       (Table : not null access Gtk_Table_Record) return Guint;
    pragma Obsolescent (Get_Default_Row_Spacing);
    --  Gets the default row spacing for the table. This is the spacing that
    --  will be used for newly added rows. (See Gtk.Table.Set_Row_Spacings)
-   --  Deprecated since 3.4, Use Gtk.Grid.Get_Row_Spacing with
-   --  Gtk.Grid.Gtk_Grid.
+   --  Deprecated since 3.4, 1
 
    function Get_Homogeneous
       (Table : not null access Gtk_Table_Record) return Boolean;
    pragma Obsolescent (Get_Homogeneous);
    --  Returns whether the table cells are all constrained to the same width
-   --  and height. (See gtk_table_set_homogenous ())
-   --  Deprecated since 3.4, Use Gtk.Grid.Get_Row_Homogeneous and
-   --  Gtk.Grid.Get_Column_Homogeneous with Gtk.Grid.Gtk_Grid.
+   --  and height. (See gtk_table_set_homogeneous ())
+   --  Deprecated since 3.4, 1
 
    procedure Set_Homogeneous
       (Table       : not null access Gtk_Table_Record;
@@ -224,8 +214,7 @@ package Gtk.Table is
    --  Indicate the homogeneous status of the table. If Homogeneous is True,
    --  the rows and columns of the table will all be allocated the same width
    --  or height.
-   --  Deprecated since 3.4, Use Gtk.Grid.Set_Row_Homogeneous and
-   --  Gtk.Grid.Set_Column_Homogeneous with Gtk.Grid.Gtk_Grid.
+   --  Deprecated since 3.4, 1
    --  "homogeneous": Set to True to ensure all table cells are the same size.
    --  Set to False if this is not your desired behaviour.
 
@@ -235,8 +224,7 @@ package Gtk.Table is
    pragma Obsolescent (Get_Row_Spacing);
    --  Gets the amount of space between row Row, and row Row + 1. See
    --  Gtk.Table.Set_Row_Spacing.
-   --  Deprecated since 3.4, Gtk.Grid.Gtk_Grid does not offer a replacement
-   --  for this functionality.
+   --  Deprecated since 3.4, 1
    --  "row": a row in the table, 0 indicates the first row
 
    procedure Set_Row_Spacing
@@ -245,10 +233,7 @@ package Gtk.Table is
        Spacing : Guint);
    pragma Obsolescent (Set_Row_Spacing);
    --  Changes the space between a given table row and the subsequent row.
-   --  Deprecated since 3.4, Use Gtk.Widget.Set_Margin_Top and
-   --  Gtk.Widget.Set_Margin_Bottom on the widgets contained in the row if you
-   --  need this functionality. Gtk.Grid.Gtk_Grid does not support per-row
-   --  spacing.
+   --  Deprecated since 3.4, 1
    --  "row": row number whose spacing will be changed.
    --  "spacing": number of pixels that the spacing should take up.
 
@@ -259,8 +244,7 @@ package Gtk.Table is
    pragma Obsolescent (Get_Size);
    --  Gets the number of rows and columns in the table.
    --  Since: gtk+ 2.22
-   --  Deprecated since 3.4, Gtk.Grid.Gtk_Grid does not expose the number of
-   --  columns and rows.
+   --  Deprecated since 3.4, 1
    --  "rows": return location for the number of rows, or null
    --  "columns": return location for the number of columns, or null
 
@@ -269,9 +253,9 @@ package Gtk.Table is
        Rows    : Guint;
        Columns : Guint);
    pragma Obsolescent (Resize);
-   --  If you need to change a table's size *after* it has been created, this
+   --  If you need to change a table's size after it has been created, this
    --  function allows you to do so.
-   --  Deprecated since 3.4, Gtk.Grid.Gtk_Grid resizes automatically.
+   --  Deprecated since 3.4, 1
    --  "rows": The new number of rows.
    --  "columns": The new number of columns.
 
@@ -280,8 +264,7 @@ package Gtk.Table is
        Spacing : Guint);
    pragma Obsolescent (Set_Col_Spacings);
    --  Sets the space between every column in Table equal to Spacing.
-   --  Deprecated since 3.4, Use Gtk.Grid.Set_Column_Spacing with
-   --  Gtk.Grid.Gtk_Grid.
+   --  Deprecated since 3.4, 1
    --  "spacing": the number of pixels of space to place between every column
    --  in the table.
 
@@ -290,8 +273,7 @@ package Gtk.Table is
        Spacing : Guint);
    pragma Obsolescent (Set_Row_Spacings);
    --  Sets the space between every row in Table equal to Spacing.
-   --  Deprecated since 3.4, Use Gtk.Grid.Set_Row_Spacing with
-   --  Gtk.Grid.Gtk_Grid.
+   --  Deprecated since 3.4, 1
    --  "spacing": the number of pixels of space to place between every row in
    --  the table.
 

@@ -41,7 +41,7 @@
 --  predictable context it is therefore recommended that the GDK lock be held
 --  while invoking actions locally with Glib.Action_Group.Activate_Action. The
 --  same applies to actions associated with
---  Gtk.Application_Window.Gtk_Application_Window and to the 'activate' and
+--  Gtk.Application_Window.Gtk_Application_Window and to the "activate" and
 --  'open' Glib.Application.Gapplication methods.
 --
 --  To set an application menu for a GtkApplication, use
@@ -55,18 +55,11 @@
 --  GTK+ displays these menus as expected, depending on the platform the
 --  application is running on.
 --
---  <figure label="Menu integration in OS X"> <graphic
---  fileref="bloatpad-osx.png" format="PNG"/> </figure>
---  <figure label="Menu integration in GNOME"> <graphic
---  fileref="bloatpad-gnome.png" format="PNG"/> </figure>
---  <figure label="Menu integration in Xfce"> <graphic
---  fileref="bloatpad-xfce.png" format="PNG"/> </figure>
---  <example id="gtkapplication">
---  == A simple application ==
+--  ## A simple application ## {gtkapplication}
 --
---    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../examples/bloatpad.c">
---    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
---    </xi:include>
+--  [A simple
+--  example](https://git.gnome.org/browse/gtk+/tree/examples/bloatpad.c)
+--
 --  GtkApplication optionally registers with a session manager of the users
 --  session (if you set the Gtk.Application.Gtk_Application:register-session
 --  property) and offers various functionality related to the session
@@ -139,13 +132,14 @@ package Gtk.Application is
    --  Concretely, gtk_init is called in the default handler for the
    --  Glib.Application.Gapplication::startup signal. Therefore,
    --  Gtk.Application.Gtk_Application subclasses should chain up in their
-   --  Glib.Application.Gapplication:startup handler before using any GTK+ API.
+   --  Glib.Application.Gapplication::startup handler before using any GTK+
+   --  API.
    --  Note that commandline arguments are not passed to gtk_init. All GTK+
    --  functionality that is available via commandline arguments can also be
-   --  achieved by setting suitable environment variables such as
-   --  <envar>G_DEBUG</envar>, so this should not be a big problem. If you
-   --  absolutely must support GTK+ commandline arguments, you can explicitly
-   --  call gtk_init before creating the application instance.
+   --  achieved by setting suitable environment variables such as `G_DEBUG`, so
+   --  this should not be a big problem. If you absolutely must support GTK+
+   --  commandline arguments, you can explicitly call gtk_init before creating
+   --  the application instance.
    --  If non-null, the application ID must be valid. See
    --  Glib.Application.Id_Is_Valid.
    --  If no application ID is given then some features (most notably
@@ -166,13 +160,14 @@ package Gtk.Application is
    --  Concretely, gtk_init is called in the default handler for the
    --  Glib.Application.Gapplication::startup signal. Therefore,
    --  Gtk.Application.Gtk_Application subclasses should chain up in their
-   --  Glib.Application.Gapplication:startup handler before using any GTK+ API.
+   --  Glib.Application.Gapplication::startup handler before using any GTK+
+   --  API.
    --  Note that commandline arguments are not passed to gtk_init. All GTK+
    --  functionality that is available via commandline arguments can also be
-   --  achieved by setting suitable environment variables such as
-   --  <envar>G_DEBUG</envar>, so this should not be a big problem. If you
-   --  absolutely must support GTK+ commandline arguments, you can explicitly
-   --  call gtk_init before creating the application instance.
+   --  achieved by setting suitable environment variables such as `G_DEBUG`, so
+   --  this should not be a big problem. If you absolutely must support GTK+
+   --  commandline arguments, you can explicitly call gtk_init before creating
+   --  the application instance.
    --  If non-null, the application ID must be valid. See
    --  Glib.Application.Id_Is_Valid.
    --  If no application ID is given then some features (most notably
@@ -203,7 +198,7 @@ package Gtk.Application is
    --  app menu, i.e. actions that have been added to the application are
    --  referred to with an "app." prefix, and window-specific actions with a
    --  "win." prefix.
-   --  GtkApplication also extracts accelerators out of 'accel' attributes in
+   --  GtkApplication also extracts accelerators out of "accel" attributes in
    --  the GMenu_Models passed to Gtk.Application.Set_App_Menu and
    --  Gtk.Application.Set_Menubar, which is usually more convenient than
    --  calling this function for each accelerator.
@@ -225,6 +220,30 @@ package Gtk.Application is
    --  GTK+ will keep the application running as long as it has any windows.
    --  Since: gtk+ 3.0
    --  "window": a Gtk.Window.Gtk_Window
+
+   function Get_Accels_For_Action
+      (Self                 : not null access Gtk_Application_Record;
+       Detailed_Action_Name : UTF8_String) return GNAT.Strings.String_List;
+   --  Gets the accelerators that are currently associated with the given
+   --  action.
+   --  Since: gtk+ 3.12
+   --  "detailed_action_name": a detailed action name, specifying an action
+   --  and target to obtain accelerators for
+
+   procedure Set_Accels_For_Action
+      (Self                 : not null access Gtk_Application_Record;
+       Detailed_Action_Name : UTF8_String;
+       Accels               : GNAT.Strings.String_List);
+   --  Sets zero or more keyboard accelerators that will trigger the given
+   --  action. The first item in Accels will be the primary accelerator, which
+   --  may be displayed in the UI.
+   --  To remove all accelerators for an action, use an empty, zero-terminated
+   --  array for Accels.
+   --  Since: gtk+ 3.12
+   --  "detailed_action_name": a detailed action name, specifying an action
+   --  and target to associate accelerators with
+   --  "accels": a list of accelerators in the format understood by
+   --  Gtk.Accel_Group.Accelerator_Parse
 
    function Get_Active_Window
       (Self : not null access Gtk_Application_Record)
@@ -248,7 +267,7 @@ package Gtk.Application is
        App_Menu : access Glib.Menu_Model.Gmenu_Model_Record'Class);
    --  Sets or unsets the application menu for Application.
    --  This can only be done in the primary instance of the application, after
-   --  it has been registered. Glib.Application.Gapplication:startup is a good
+   --  it has been registered. Glib.Application.Gapplication::startup is a good
    --  place to call this.
    --  The application menu is a single menu containing items that typically
    --  impact the application as a whole, rather than acting on a specific
@@ -274,7 +293,7 @@ package Gtk.Application is
    --  Sets or unsets the menubar for windows of Application.
    --  This is a menubar in the traditional sense.
    --  This can only be done in the primary instance of the application, after
-   --  it has been registered. Glib.Application.Gapplication:startup is a good
+   --  it has been registered. Glib.Application.Gapplication::startup is a good
    --  place to call this.
    --  Depending on the desktop environment, this may appear at the top of
    --  each window, or at the top of the screen. In some environments, if both
@@ -343,6 +362,13 @@ package Gtk.Application is
    --  inhibited (possibly by another application).
    --  Since: gtk+ 3.4
    --  "flags": what types of actions should be queried
+
+   function List_Action_Descriptions
+      (Self : not null access Gtk_Application_Record)
+       return GNAT.Strings.String_List;
+   --  Lists the detailed action names which have associated accelerators. See
+   --  Gtk.Application.Set_Accels_For_Action.
+   --  Since: gtk+ 3.12
 
    procedure Remove_Accelerator
       (Self        : not null access Gtk_Application_Record;

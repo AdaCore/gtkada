@@ -29,7 +29,7 @@
 --
 --  When using an entry for passwords and other sensitive information, it can
 --  be put into "password mode" using Gtk.GEntry.Set_Visibility. In this mode,
---  entered text is displayed using a 'invisible' character. By default, GTK+
+--  entered text is displayed using a "invisible" character. By default, GTK+
 --  picks the best invisible character that is available in the current font,
 --  but it can be changed with Gtk.GEntry.Set_Invisible_Char. Since 2.16, GTK+
 --  displays a warning when Caps Lock or input methods might interfere with
@@ -94,6 +94,7 @@ with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Widget;              use Gtk.Widget;
 with Pango.Attributes;        use Pango.Attributes;
 with Pango.Layout;            use Pango.Layout;
+with Pango.Tabs;              use Pango.Tabs;
 
 package Gtk.GEntry is
 
@@ -355,10 +356,12 @@ package Gtk.GEntry is
    function Get_Icon_Stock
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position) return UTF8_String;
+   pragma Obsolescent (Get_Icon_Stock);
    --  Retrieves the stock id used for the icon, or null if there is no icon
    --  or if the icon was set by some other method (e.g., by pixbuf, icon name
    --  or gicon).
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
    --  "icon_pos": Icon position
 
    function Get_Icon_Storage_Type
@@ -383,8 +386,8 @@ package Gtk.GEntry is
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Tooltip   : UTF8_String := "");
    --  Sets Tooltip as the contents of the tooltip for the icon at the
-   --  specified position. Tooltip is assumed to be marked up with the <link
-   --  linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  specified position. Tooltip is assumed to be marked up with the [Pango
+   --  text markup language][PangoMarkupFormat].
    --  Use null for Tooltip to remove an existing tooltip.
    --  See also Gtk.Widget.Set_Tooltip_Markup and
    --  Gtk.GEntry.Set_Icon_Tooltip_Text.
@@ -420,16 +423,13 @@ package Gtk.GEntry is
    --  This function returns the entry's Gtk.GEntry.Gtk_Entry:inner-border
    --  property. See Gtk.GEntry.Set_Inner_Border for more information.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.4, Use the standard border and padding CSS
-   --  properties (through objects like Gtk.Style_Context.Gtk_Style_Context and
-   --  Gtk.Css_Provider.Gtk_Css_Provider); the value returned by this function
-   --  is ignored by Gtk.GEntry.Gtk_Entry.
+   --  Deprecated since 3.4, 1
 
    procedure Set_Inner_Border
       (The_Entry : not null access Gtk_Entry_Record;
        Border    : Gtk.Style.Gtk_Border);
    pragma Obsolescent (Set_Inner_Border);
-   --  Sets %entry's inner-border property to %border, or clears it if null is
+   --  Sets %entry's inner-border property to Border, or clears it if null is
    --  passed. The inner-border is the area around the entry's text, but inside
    --  its frame.
    --  If set, this property overrides the inner-border style property.
@@ -437,10 +437,7 @@ package Gtk.GEntry is
    --  in-place editing of some text in a canvas or list widget, where
    --  pixel-exact positioning of the entry is important.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.4, Use the standard border and padding CSS
-   --  properties (through objects like Gtk.Style_Context.Gtk_Style_Context and
-   --  Gtk.Css_Provider.Gtk_Css_Provider); the value set with this function is
-   --  ignored by Gtk.GEntry.Gtk_Entry.
+   --  Deprecated since 3.4, 1
    --  "border": a Gtk.Style.Gtk_Border, or null
 
    function Get_Input_Hints
@@ -529,7 +526,9 @@ package Gtk.GEntry is
    --  Retrieves the maximum allowed length of the text in Entry. See
    --  Gtk.GEntry.Set_Max_Length.
    --  This is equivalent to:
-   --    gtk_entry_buffer_get_max_length (gtk_entry_get_buffer (entry));
+   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
+   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_get_max_length (buffer);
+   --  ]|
 
    procedure Set_Max_Length
       (The_Entry : not null access Gtk_Entry_Record;
@@ -538,10 +537,25 @@ package Gtk.GEntry is
    --  current contents are longer than the given length, then they will be
    --  truncated to fit.
    --  This is equivalent to:
-   --    gtk_entry_buffer_set_max_length (gtk_entry_get_buffer (entry), max);
+   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
+   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_set_max_length (buffer,
+   --  max); ]|
    --  "max": the maximum length of the entry, or 0 for no maximum. (other
    --  than the maximum length of entries.) The value passed in will be clamped
    --  to the range 0-65536.
+
+   function Get_Max_Width_Chars
+      (The_Entry : not null access Gtk_Entry_Record) return Gint;
+   --  Retrieves the desired maximum width of Entry, in characters. See
+   --  Gtk.GEntry.Set_Max_Width_Chars.
+   --  Since: gtk+ 3.12
+
+   procedure Set_Max_Width_Chars
+      (The_Entry : not null access Gtk_Entry_Record;
+       N_Chars   : Gint);
+   --  Sets the desired maximum width in characters of Entry.
+   --  Since: gtk+ 3.12
+   --  "n_chars": the new desired maximum width, in characters
 
    function Get_Overwrite_Mode
       (The_Entry : not null access Gtk_Entry_Record) return Boolean;
@@ -603,12 +617,28 @@ package Gtk.GEntry is
    --  Since: gtk+ 2.16
    --  "fraction": fraction between 0.0 and 1.0
 
+   function Get_Tabs
+      (The_Entry : not null access Gtk_Entry_Record)
+       return Pango.Tabs.Pango_Tab_Array;
+   --  Gets the tabstops that were set on the entry using Gtk.GEntry.Set_Tabs,
+   --  if any.
+   --  Since: gtk+ 3.10
+
+   procedure Set_Tabs
+      (The_Entry : not null access Gtk_Entry_Record;
+       Tabs      : Pango.Tabs.Pango_Tab_Array);
+   --  Sets a Pango.Tabs.Pango_Tab_Array; the tabstops in the array are
+   --  applied to the entry text.
+   --  Since: gtk+ 3.10
+   --  "tabs": a Pango.Tabs.Pango_Tab_Array
+
    function Get_Text
       (The_Entry : not null access Gtk_Entry_Record) return UTF8_String;
    --  Retrieves the contents of the entry widget. See also
    --  Gtk.Editable.Get_Chars.
    --  This is equivalent to:
-   --    gtk_entry_buffer_get_text (gtk_entry_get_buffer (entry));
+   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
+   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_get_text (buffer); ]|
 
    procedure Set_Text
       (The_Entry : not null access Gtk_Entry_Record;
@@ -632,7 +662,8 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record) return Guint16;
    --  Retrieves the current length of the text in Entry.
    --  This is equivalent to:
-   --    gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
+   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
+   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_get_length (buffer); ]|
    --  Since: gtk+ 2.14
 
    function Get_Visibility
@@ -663,9 +694,9 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Width     : Gint);
    --  Changes the size request of the entry to be about the right size for
-   --  N_Chars characters. Note that it changes the size *request*, the size
-   --  can still be affected by how you pack the widget into containers. If
-   --  N_Chars is -1, the size reverts to the default entry size.
+   --  N_Chars characters. Note that it changes the size request, the size can
+   --  still be affected by how you pack the widget into containers. If N_Chars
+   --  is -1, the size reverts to the default entry size.
    --  "Width": width in chars
 
    function Im_Context_Filter_Keypress
@@ -767,10 +798,12 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Icon_Pos  : Gtk_Entry_Icon_Position;
        Stock_Id  : UTF8_String := "");
+   pragma Obsolescent (Set_Icon_From_Stock);
    --  Sets the icon shown in the entry at the specified position from a stock
    --  image.
    --  If Stock_Id is null, no icon will be shown in the specified position.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
    --  "icon_pos": Icon position
    --  "stock_id": The name of the stock item, or null
 
@@ -942,6 +975,10 @@ package Gtk.GEntry is
 
    Max_Length_Property : constant Glib.Properties.Property_Int;
 
+   Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
+   --  The desired maximum width of the entry, in characters. If this property
+   --  is set to -1, the width will be calculated automatically.
+
    Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean;
    --  If text is overwritten when typing in the Gtk.GEntry.Gtk_Entry.
 
@@ -950,6 +987,8 @@ package Gtk.GEntry is
    --  empty and unfocused.
 
    Populate_All_Property : constant Glib.Properties.Property_Boolean;
+   --  If :populate-all is True, the Gtk.GEntry.Gtk_Entry::populate-popup
+   --  signal is also emitted for touch popups.
 
    Primary_Icon_Activatable_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the primary icon is activatable.
@@ -991,8 +1030,7 @@ package Gtk.GEntry is
 
    Primary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  The contents of the tooltip on the primary icon, which is marked up
-   --  with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>.
+   --  with the [Pango text markup language][PangoMarkupFormat].
    --
    --  Also see Gtk.GEntry.Set_Icon_Tooltip_Markup.
 
@@ -1052,8 +1090,7 @@ package Gtk.GEntry is
 
    Secondary_Icon_Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  The contents of the tooltip on the secondary icon, which is marked up
-   --  with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>.
+   --  with the [Pango text markup language][PangoMarkupFormat].
    --
    --  Also see Gtk.GEntry.Set_Icon_Tooltip_Markup.
 
@@ -1067,6 +1104,9 @@ package Gtk.GEntry is
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
    --  Which kind of shadow to draw around the entry when
    --  Gtk.GEntry.Gtk_Entry:has-frame is set to True.
+
+   Tabs_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Pango.Tab_Array
 
    Text_Property : constant Glib.Properties.Property_String;
 
@@ -1105,9 +1145,9 @@ package Gtk.GEntry is
        After : Boolean := False);
    --  The ::activate signal is emitted when the user hits the Enter key.
    --
-   --  While this signal is used as a <link
-   --  linkend="keybinding-signals">keybinding signal</link>, it is also
-   --  commonly used by applications to intercept activation of entries.
+   --  While this signal is used as a [keybinding signal][GtkBindingSignal],
+   --  it is also commonly used by applications to intercept activation of
+   --  entries.
    --
    --  The default bindings for this signal are all forms of the Enter key.
 
@@ -1121,9 +1161,8 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::backspace signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user asks for it.
+   --  The ::backspace signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted when the user asks for it.
    --
    --  The default bindings for this signal are Backspace and Shift-Backspace.
 
@@ -1137,9 +1176,8 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::copy-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to copy the selection to the clipboard.
+   --  The ::copy-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to copy the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-c and Ctrl-Insert.
 
@@ -1153,9 +1191,8 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::cut-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cut the selection to the clipboard.
+   --  The ::cut-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to cut the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-x and Shift-Delete.
 
@@ -1179,9 +1216,9 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Gtk_Delete_Type_Gint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::delete-from-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates a text deletion.
+   --  The ::delete-from-cursor signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user initiates a
+   --  text deletion.
    --
    --  If the Type is Gtk.Enums.Delete_Chars, GTK+ deletes the selection if
    --  there is one, otherwise it deletes the requested number of characters.
@@ -1254,9 +1291,9 @@ package Gtk.GEntry is
        Call  : Cb_GObject_UTF8_String_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::insert-at-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates the insertion of a fixed string at the cursor.
+   --  The ::insert-at-cursor signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user initiates the
+   --  insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
 
@@ -1282,10 +1319,10 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates a cursor movement. If the cursor is not visible
-   --  in Entry, this signal causes the viewport to be moved instead.
+   --  The ::move-cursor signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a cursor movement. If the
+   --  cursor is not visible in Entry, this signal causes the viewport to be
+   --  moved instead.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control the cursor
@@ -1294,13 +1331,9 @@ package Gtk.GEntry is
    --  The default bindings for this signal come in two variants, the variant
    --  with the Shift modifier extends the selection, the variant without the
    --  Shift modifer does not. There are too many key combinations to list them
-   --  all here.
-   --
-   --     * Arrow keys move by individual characters/lines
-   --
-   --     * Ctrl-arrow key combinations move by words/paragraphs
-   --
-   --     * Home/End keys move to the ends of the buffer
+   --  all here. - Arrow keys move by individual characters/lines - Ctrl-arrow
+   --  key combinations move by words/paragraphs - Home/End keys move to the
+   --  ends of the buffer
    -- 
    --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
@@ -1317,9 +1350,9 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::paste-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to paste the contents of the clipboard into the text view.
+   --  The ::paste-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to paste the contents of the clipboard into the text
+   --  view.
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
 
@@ -1348,7 +1381,7 @@ package Gtk.GEntry is
    --  and append your items to the Widget, which will be a Gtk.Menu.Gtk_Menu
    --  in this case.
    --
-   --  If Gtk.GEntry.Gtk_Entry::populate-all is True, this signal will also be
+   --  If Gtk.GEntry.Gtk_Entry:populate-all is True, this signal will also be
    --  emitted to populate touch popups. In this case, Widget will be a
    --  different container, e.g. a Gtk.Toolbar.Gtk_Toolbar. The signal handler
    --  should not make assumptions about the type of Widget.
@@ -1377,9 +1410,9 @@ package Gtk.GEntry is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::toggle-overwrite signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to toggle the overwrite mode of the entry.
+   --  The ::toggle-overwrite signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted to toggle the overwrite
+   --  mode of the entry.
    --
    --  The default bindings for this signal is Insert.
 
@@ -1440,6 +1473,8 @@ private
      Glib.Properties.Build ("text-length");
    Text_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("text");
+   Tabs_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("tabs");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
    Selection_Bound_Property : constant Glib.Properties.Property_Int :=
@@ -1492,6 +1527,8 @@ private
      Glib.Properties.Build ("placeholder-text");
    Overwrite_Mode_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("overwrite-mode");
+   Max_Width_Chars_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-width-chars");
    Max_Length_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("max-length");
    Invisible_Char_Set_Property : constant Glib.Properties.Property_Boolean :=

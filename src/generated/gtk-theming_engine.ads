@@ -32,10 +32,10 @@
 --  the CSS file that will reference it, the theming engine would be created as
 --  an .so library, and installed in $(gtk-modules-dir)/theming-engines/.
 --
---  Gtk.Theming_Engine.Gtk_Theming_Engine<!-- -->s have limited access to the
---  object they are rendering, the Gtk.Theming_Engine.Gtk_Theming_Engine API
---  has read-only accessors to the style information contained in the rendered
---  object's Gtk.Style_Context.Gtk_Style_Context.
+--  Gtk_Theming_Engines have limited access to the object they are rendering,
+--  the Gtk.Theming_Engine.Gtk_Theming_Engine API has read-only accessors to
+--  the style information contained in the rendered object's
+--  Gtk.Style_Context.Gtk_Style_Context.
 --
 --  </description>
 pragma Ada_2005;
@@ -110,8 +110,7 @@ package Gtk.Theming_Engine is
    pragma Obsolescent (Get_Direction);
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use Gtk.Theming_Engine.Get_State and check for
-   --  GTK_STATE_FLAG_DIR_LTR and GTK_STATE_FLAG_DIR_RTL instead.
+   --  Deprecated since 3.8, 1
 
    function Get_Font
       (Self  : not null access Gtk_Theming_Engine_Record;
@@ -120,7 +119,7 @@ package Gtk.Theming_Engine is
    pragma Obsolescent (Get_Font);
    --  Returns the font description for a given state.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use gtk_theming_engine_get
+   --  Deprecated since 3.8, 1
    --  "state": state to retrieve the font for
 
    function Get_Junction_Sides
@@ -228,7 +227,7 @@ package Gtk.Theming_Engine is
    --  to 1 when State is being set to True and from 1 to 0 when it's being set
    --  to False.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, Always returns False
+   --  Deprecated since 3.6, 1
    --  "state": a widget state
    --  "progress": return location for the transition progress
 
@@ -252,7 +251,7 @@ package Gtk.Theming_Engine is
    --  properties, for a theming engine named "Clearlooks" registering a
    --  "glossy" custom property, it could be referenced in the CSS file as
    --
-   --    -Clearlooks-glossy: true;
+   --  |[ -Clearlooks-glossy: true; ]|
 
 private
    Name_Property : constant Glib.Properties.Property_String :=

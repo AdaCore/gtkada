@@ -21,6 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Language.Pango_Language structure is used to represent a
+--  language.
+--
+--  Pango.Language.Pango_Language pointers can be efficiently copied and
+--  compared with each other.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -127,7 +135,13 @@ package Pango.Language is
       Pango_Script_Sora_Sompeng,
       Pango_Script_Takri);
    pragma Convention (C, Pango_Script);
-
+   --  The Pango.Language.Pango_Script enumeration identifies different
+   --  writing systems. The values correspond to the names as defined in the
+   --  Unicode standard. Note that new types may be added in the future.
+   --  Applications should be ready to handle unknown values. This enumeration
+   --  is interchangeable with GUnicode_Script. See <ulink
+   --  url="http://www.unicode.org/reports/tr24/">Unicode Standard Annex 24:
+   --  Script names</ulink>.
 
    for Pango_Script use (
       Pango_Script_Invalid_Code => -1,

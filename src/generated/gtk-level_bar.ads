@@ -32,32 +32,31 @@
 --  default on the level bar: GTK_LEVEL_BAR_OFFSET_LOW and
 --  GTK_LEVEL_BAR_OFFSET_HIGH, with values 0.25 and 0.75 respectively.
 --
---  == Adding a custom offset on the bar ==
+--  ## Adding a custom offset on the bar
 --
---    static GtkWidget *
---    create_level_bar (void)
---    {
---       GtkWidget *level_bar;
---       level_bar = gtk_level_bar_new ();
---       /<!---->* This changes the value of the default low offset *<!---->/
---       gtk_level_bar_add_offset_value (GTK_LEVEL_BAR (level_bar),
---          GTK_LEVEL_BAR_OFFSET_LOW, 0.10);
---       /<!---->* This adds a new offset to the bar; the application will
---       * be able to change its color by using the following selector,
---       * either by adding it to its CSS file or using
---       * Gtk.Css_Provider.Load_From_Data and Gtk.Style_Context.Add_Provider
---       *
---       * .level-bar.fill-block.level-my-offset {
---          *   background-color: green;
---          *   border-style: solid;
---          *   border-color: black;
---          *   border-style: 1px;
---          * }
---          *<!---->/
---          gtk_level_bar_add_offset_value (GTK_LEVEL_BAR (level_bar),
---             "my-offset", 0.60);
---          return level_bar;
---       }
+--  |[<!-- language="C" -->
+--
+--  static GtkWidget * create_level_bar (void) { GtkWidget *widget;
+--  GtkLevelBar *bar;
+--
+--  widget = gtk_level_bar_new (); bar = GTK_LEVEL_BAR (widget);
+--
+--  /<!---->* This changes the value of the default low offset *<!---->/
+--
+--  gtk_level_bar_add_offset_value (bar, GTK_LEVEL_BAR_OFFSET_LOW, 0.10);
+--
+--  /<!---->* This adds a new offset to the bar; the application will be able
+--  to change its color by using the following selector, either by adding it to
+--  its CSS file or using Gtk.Css_Provider.Load_From_Data and
+--  Gtk.Style_Context.Add_Provider
+--
+--     * .level-bar.fill-block.level-my-offset { * background-color: green; *
+--  border-style: solid; * border-color: black; * border-style: 1px; * }
+--  *<!---->/
+--
+--  gtk_level_bar_add_offset_value (bar, "my-offset", 0.60);
+--
+--  return widget; } ]|
 --
 --  The default interval of values is between zero and one, but it's possible
 --  to modify the interval using Gtk.Level_Bar.Set_Min_Value and
@@ -139,7 +138,7 @@ package Gtk.Level_Bar is
    --  Adds a new offset marker on Self at the position specified by Value.
    --  When the bar value is in the interval topped by Value (or between Value
    --  and Gtk.Level_Bar.Gtk_Level_Bar:max-value in case the offset is the last
-   --  one on the bar) a style class named 'level-'Name will be applied when
+   --  one on the bar) a style class named `level-`Name will be applied when
    --  rendering the level bar fill. If another offset marker named Name
    --  exists, its value will be replaced by Value.
    --  Since: gtk+ 3.6
@@ -265,7 +264,7 @@ package Gtk.Level_Bar is
    --  minimum value of the interval that can be displayed by the bar.
 
    Mode_Property : constant Gtk.Enums.Property_Gtk_Level_Bar_Mode;
-   --  The Gtk.Level_Bar.Gtk_Level_Bar:bar-mode property determines the way
+   --  The Gtk.Level_Bar.Gtk_Level_Bar:mode property determines the way
    --  Gtk.Level_Bar.Gtk_Level_Bar interprets the value properties to draw the
    --  level fill area. Specifically, when the value is
    --  GTK_LEVEL_BAR_MODE_CONTINUOUS, Gtk.Level_Bar.Gtk_Level_Bar will draw a

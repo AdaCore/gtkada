@@ -22,12 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.Tool_Button.Gtk_Tool_Button<!-- -->s are Gtk_Tool_Items containing
---  buttons.
+--  Gtk_Tool_Buttons are Gtk_Tool_Items containing buttons.
 --
 --  Use Gtk.Tool_Button.Gtk_New to create a new
---  Gtk.Tool_Button.Gtk_Tool_Button. Use Gtk.Tool_Button.Gtk_New_From_Stock to
---  create a Gtk.Tool_Button.Gtk_Tool_Button containing a stock item.
+--  Gtk.Tool_Button.Gtk_Tool_Button.
 --
 --  The label of a Gtk.Tool_Button.Gtk_Tool_Button is determined by the
 --  properties Gtk.Tool_Button.Gtk_Tool_Button:label-widget,
@@ -196,18 +194,22 @@ package Gtk.Tool_Button is
 
    function Get_Stock_Id
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
+   pragma Obsolescent (Get_Stock_Id);
    --  Returns the name of the stock item. See Gtk.Tool_Button.Set_Stock_Id.
    --  The returned string is owned by GTK+ and must not be freed or modifed.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    procedure Set_Stock_Id
       (Button   : not null access Gtk_Tool_Button_Record;
        Stock_Id : UTF8_String := "");
+   pragma Obsolescent (Set_Stock_Id);
    --  Sets the name of the stock item. See
    --  Gtk.Tool_Button.Gtk_New_From_Stock. The stock_id property only has an
    --  effect if not overridden by non-null "label" and "icon_widget"
    --  properties.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "stock_id": a name of a stock item, or null
 
    function Get_Use_Underline
@@ -224,7 +226,7 @@ package Gtk.Tool_Button is
    --  character should be used for the mnemonic accelerator key in the
    --  overflow menu. For example, if the label property is "_Open" and
    --  Use_Underline is True, the label on the tool button will be "Open" and
-   --  the item on the overflow menu will have an underlined 'O'.
+   --  the item on the overflow menu will have an underlined "O".
    --  Labels shown on tool buttons never have mnemonics on them; this
    --  property only affects the menu item on the overflow menu.
    --  Since: gtk+ 2.4
@@ -259,25 +261,31 @@ package Gtk.Tool_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Tool_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tool_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Tool_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Tool_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

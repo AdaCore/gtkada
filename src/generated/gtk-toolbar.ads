@@ -125,8 +125,8 @@ package Gtk.Toolbar is
    function Get_Nth_Item
       (Toolbar : not null access Gtk_Toolbar_Record;
        N       : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
-   --  Returns the N<!-- -->'th item on Toolbar, or null if the toolbar does
-   --  not contain an N<!-- -->'th item.
+   --  Returns the N'th item on Toolbar, or null if the toolbar does not
+   --  contain an N'th item.
    --  Since: gtk+ 2.4
    --  "n": A position on the toolbar
 
@@ -237,7 +237,7 @@ package Gtk.Toolbar is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Icon_Size_Property : constant Glib.Properties.Property_Int;
+   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The size of the icons in a toolbar is normally determined by the
    --  toolbar-icon-size setting. When this property is set, it overrides the
    --  setting.
@@ -410,6 +410,6 @@ private
      Glib.Properties.Build ("show-arrow");
    Icon_Size_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("icon-size-set");
-   Icon_Size_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("icon-size");
+   Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
+     Gtk.Enums.Build ("icon-size");
 end Gtk.Toolbar;

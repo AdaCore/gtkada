@@ -57,8 +57,8 @@ package Gtk.Tree_Sortable is
    --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
    --  must be reflexive, antisymmetric and transitive.
    --  For example, if Model is a product catalogue, then a compare function
-   --  for the "price" column could be one which returns 'price_of(A) -
-   --  price_of(B)'.
+   --  for the "price" column could be one which returns `price_of(A) -
+   --  price_of(B)`.
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -96,10 +96,9 @@ package Gtk.Tree_Sortable is
    --  Gtk.Tree_Sortable.Gtk_Tree_Sortable::sort-column-changed signal.
    --  Sort_Column_Id may either be a regular column id, or one of the
    --  following special values:
-   --  'GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID'
-   --     * the default sort function will be used, if it is set
-   --  'GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID'
-   --     * no sorting will occur
+   --  - GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID: the default sort function
+   --  will be used, if it is set
+   --  - GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID: no sorting will occur
    --  "sort_column_id": the sort column id to set
    --  "order": The sort order of the column
 
@@ -141,8 +140,8 @@ package Gtk.Tree_Sortable is
       --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
       --  must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare function
-      --  for the "price" column could be one which returns 'price_of(A) -
-      --  price_of(B)'.
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -195,8 +194,8 @@ package Gtk.Tree_Sortable is
       --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
       --  must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare function
-      --  for the "price" column could be one which returns 'price_of(A) -
-      --  price_of(B)'.
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -314,10 +313,9 @@ package Gtk.Tree_Sortable is
    --  Gtk.Tree_Sortable.Gtk_Tree_Sortable::sort-column-changed signal.
    --  Sort_Column_Id may either be a regular column id, or one of the
    --  following special values:
-   --  'GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID'
-   --     * the default sort function will be used, if it is set
-   --  'GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID'
-   --     * no sorting will occur
+   --  - GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID: the default sort function
+   --  will be used, if it is set
+   --  - GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID: no sorting will occur
    --  "sort_column_id": the sort column id to set
    --  "order": The sort order of the column
 

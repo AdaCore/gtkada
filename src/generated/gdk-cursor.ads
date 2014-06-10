@@ -22,13 +22,13 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gdk.Gdk_Cursor structure represents a cursor. Its contents are
---  private.
+--  A Gdk.Gdk_Cursor represents a cursor. Its contents are private.
 --
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
+with Cairo;                   use Cairo;
 with Gdk.Display;             use Gdk.Display;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -232,52 +232,22 @@ package Gdk.Cursor is
        Display     : not null access Gdk.Display.Gdk_Display_Record'Class;
        Cursor_Type : Gdk_Cursor_Type);
    --  Creates a new cursor from the set of builtin cursors. Some useful ones
-   --  are:
-   --     * <inlinegraphic format="PNG"
-   --  fileref="right_ptr.png"></inlinegraphic> GDK_RIGHT_PTR (right-facing
-   --  arrow)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="crosshair.png"></inlinegraphic> GDK_CROSSHAIR (crosshair)
-   --     * <inlinegraphic format="PNG" fileref="xterm.png"></inlinegraphic>
-   --  GDK_XTERM (I-beam)
-   --     * <inlinegraphic format="PNG" fileref="watch.png"></inlinegraphic>
-   --  GDK_WATCH (busy)
-   --     * <inlinegraphic format="PNG" fileref="fleur.png"></inlinegraphic>
-   --  GDK_FLEUR (for moving objects)
-   --     * <inlinegraphic format="PNG" fileref="hand1.png"></inlinegraphic>
-   --  GDK_HAND1 (a right-pointing hand)
-   --     * <inlinegraphic format="PNG" fileref="hand2.png"></inlinegraphic>
-   --  GDK_HAND2 (a left-pointing hand)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="left_side.png"></inlinegraphic> GDK_LEFT_SIDE (resize left
-   --  side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="right_side.png"></inlinegraphic> GDK_RIGHT_SIDE (resize right
-   --  side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="top_left_corner.png"></inlinegraphic> GDK_TOP_LEFT_CORNER
-   --  (resize northwest corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="top_right_corner.png"></inlinegraphic> GDK_TOP_RIGHT_CORNER
-   --  (resize northeast corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="bottom_left_corner.png"></inlinegraphic> GDK_BOTTOM_LEFT_CORNER
-   --  (resize southwest corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="bottom_right_corner.png"></inlinegraphic>
-   --  GDK_BOTTOM_RIGHT_CORNER (resize southeast corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="top_side.png"></inlinegraphic> GDK_TOP_SIDE (resize top side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="bottom_side.png"></inlinegraphic> GDK_BOTTOM_SIDE (resize
-   --  bottom side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="sb_h_double_arrow.png"></inlinegraphic> GDK_SB_H_DOUBLE_ARROW
-   --  (move vertical splitter)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="sb_v_double_arrow.png"></inlinegraphic> GDK_SB_V_DOUBLE_ARROW
-   --  (move horizontal splitter)
-   --     * GDK_BLANK_CURSOR (Blank cursor). Since 2.16
+   --  are: - ![](right_ptr.png) GDK_RIGHT_PTR (right-facing arrow) -
+   --  ![](crosshair.png) GDK_CROSSHAIR (crosshair) - ![](xterm.png) GDK_XTERM
+   --  (I-beam) - ![](watch.png) GDK_WATCH (busy) - ![](fleur.png) GDK_FLEUR
+   --  (for moving objects) - ![](hand1.png) GDK_HAND1 (a right-pointing hand)
+   --  - ![](hand2.png) GDK_HAND2 (a left-pointing hand) - ![](left_side.png)
+   --  GDK_LEFT_SIDE (resize left side) - ![](right_side.png) GDK_RIGHT_SIDE
+   --  (resize right side) - ![](top_left_corner.png) GDK_TOP_LEFT_CORNER
+   --  (resize northwest corner) - ![](top_right_corner.png)
+   --  GDK_TOP_RIGHT_CORNER (resize northeast corner) -
+   --  ![](bottom_left_corner.png) GDK_BOTTOM_LEFT_CORNER (resize southwest
+   --  corner) - ![](bottom_right_corner.png) GDK_BOTTOM_RIGHT_CORNER (resize
+   --  southeast corner) - ![](top_side.png) GDK_TOP_SIDE (resize top side) -
+   --  ![](bottom_side.png) GDK_BOTTOM_SIDE (resize bottom side) -
+   --  ![](sb_h_double_arrow.png) GDK_SB_H_DOUBLE_ARROW (move vertical
+   --  splitter) - ![](sb_v_double_arrow.png) GDK_SB_V_DOUBLE_ARROW (move
+   --  horizontal splitter) - GDK_BLANK_CURSOR (Blank cursor). Since 2.16
    --  Since: gtk+ 2.2
    --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
@@ -287,52 +257,22 @@ package Gdk.Cursor is
       (Display     : not null access Gdk.Display.Gdk_Display_Record'Class;
        Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
    --  Creates a new cursor from the set of builtin cursors. Some useful ones
-   --  are:
-   --     * <inlinegraphic format="PNG"
-   --  fileref="right_ptr.png"></inlinegraphic> GDK_RIGHT_PTR (right-facing
-   --  arrow)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="crosshair.png"></inlinegraphic> GDK_CROSSHAIR (crosshair)
-   --     * <inlinegraphic format="PNG" fileref="xterm.png"></inlinegraphic>
-   --  GDK_XTERM (I-beam)
-   --     * <inlinegraphic format="PNG" fileref="watch.png"></inlinegraphic>
-   --  GDK_WATCH (busy)
-   --     * <inlinegraphic format="PNG" fileref="fleur.png"></inlinegraphic>
-   --  GDK_FLEUR (for moving objects)
-   --     * <inlinegraphic format="PNG" fileref="hand1.png"></inlinegraphic>
-   --  GDK_HAND1 (a right-pointing hand)
-   --     * <inlinegraphic format="PNG" fileref="hand2.png"></inlinegraphic>
-   --  GDK_HAND2 (a left-pointing hand)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="left_side.png"></inlinegraphic> GDK_LEFT_SIDE (resize left
-   --  side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="right_side.png"></inlinegraphic> GDK_RIGHT_SIDE (resize right
-   --  side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="top_left_corner.png"></inlinegraphic> GDK_TOP_LEFT_CORNER
-   --  (resize northwest corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="top_right_corner.png"></inlinegraphic> GDK_TOP_RIGHT_CORNER
-   --  (resize northeast corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="bottom_left_corner.png"></inlinegraphic> GDK_BOTTOM_LEFT_CORNER
-   --  (resize southwest corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="bottom_right_corner.png"></inlinegraphic>
-   --  GDK_BOTTOM_RIGHT_CORNER (resize southeast corner)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="top_side.png"></inlinegraphic> GDK_TOP_SIDE (resize top side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="bottom_side.png"></inlinegraphic> GDK_BOTTOM_SIDE (resize
-   --  bottom side)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="sb_h_double_arrow.png"></inlinegraphic> GDK_SB_H_DOUBLE_ARROW
-   --  (move vertical splitter)
-   --     * <inlinegraphic format="PNG"
-   --  fileref="sb_v_double_arrow.png"></inlinegraphic> GDK_SB_V_DOUBLE_ARROW
-   --  (move horizontal splitter)
-   --     * GDK_BLANK_CURSOR (Blank cursor). Since 2.16
+   --  are: - ![](right_ptr.png) GDK_RIGHT_PTR (right-facing arrow) -
+   --  ![](crosshair.png) GDK_CROSSHAIR (crosshair) - ![](xterm.png) GDK_XTERM
+   --  (I-beam) - ![](watch.png) GDK_WATCH (busy) - ![](fleur.png) GDK_FLEUR
+   --  (for moving objects) - ![](hand1.png) GDK_HAND1 (a right-pointing hand)
+   --  - ![](hand2.png) GDK_HAND2 (a left-pointing hand) - ![](left_side.png)
+   --  GDK_LEFT_SIDE (resize left side) - ![](right_side.png) GDK_RIGHT_SIDE
+   --  (resize right side) - ![](top_left_corner.png) GDK_TOP_LEFT_CORNER
+   --  (resize northwest corner) - ![](top_right_corner.png)
+   --  GDK_TOP_RIGHT_CORNER (resize northeast corner) -
+   --  ![](bottom_left_corner.png) GDK_BOTTOM_LEFT_CORNER (resize southwest
+   --  corner) - ![](bottom_right_corner.png) GDK_BOTTOM_RIGHT_CORNER (resize
+   --  southeast corner) - ![](top_side.png) GDK_TOP_SIDE (resize top side) -
+   --  ![](bottom_side.png) GDK_BOTTOM_SIDE (resize bottom side) -
+   --  ![](sb_h_double_arrow.png) GDK_SB_H_DOUBLE_ARROW (move vertical
+   --  splitter) - ![](sb_v_double_arrow.png) GDK_SB_V_DOUBLE_ARROW (move
+   --  horizontal splitter) - GDK_BLANK_CURSOR (Blank cursor). Since 2.16
    --  Since: gtk+ 2.2
    --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
@@ -357,6 +297,49 @@ package Gdk.Cursor is
    --  created
    --  "name": the name of the cursor
 
+   procedure Gdk_New_From_Surface
+      (Self    : out Gdk_Cursor;
+       Display : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Surface : Cairo.Cairo_Surface;
+       X       : Gdouble;
+       Y       : Gdouble);
+   --  Creates a new cursor from a cairo image surface.
+   --  Not all GDK backends support RGBA cursors. If they are not supported, a
+   --  monochrome approximation will be displayed. The functions
+   --  Gdk.Display.Supports_Cursor_Alpha and Gdk.Display.Supports_Cursor_Color
+   --  can be used to determine whether RGBA cursors are supported;
+   --  Gdk.Display.Get_Default_Cursor_Size and
+   --  Gdk.Display.Get_Maximal_Cursor_Size give information about cursor sizes.
+   --  On the X backend, support for RGBA cursors requires a sufficently new
+   --  version of the X Render extension.
+   --  Since: gtk+ 3.10
+   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  created
+   --  "surface": the cairo image surface containing the cursor pixel data
+   --  "x": the horizontal offset of the "hotspot" of the cursor
+   --  "y": the vertical offset of the "hotspot" of the cursor
+
+   function Gdk_Cursor_New_From_Surface
+      (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
+       Surface : Cairo.Cairo_Surface;
+       X       : Gdouble;
+       Y       : Gdouble) return Gdk_Cursor;
+   --  Creates a new cursor from a cairo image surface.
+   --  Not all GDK backends support RGBA cursors. If they are not supported, a
+   --  monochrome approximation will be displayed. The functions
+   --  Gdk.Display.Supports_Cursor_Alpha and Gdk.Display.Supports_Cursor_Color
+   --  can be used to determine whether RGBA cursors are supported;
+   --  Gdk.Display.Get_Default_Cursor_Size and
+   --  Gdk.Display.Get_Maximal_Cursor_Size give information about cursor sizes.
+   --  On the X backend, support for RGBA cursors requires a sufficently new
+   --  version of the X Render extension.
+   --  Since: gtk+ 3.10
+   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  created
+   --  "surface": the cairo image surface containing the cursor pixel data
+   --  "x": the horizontal offset of the "hotspot" of the cursor
+   --  "y": the vertical offset of the "hotspot" of the cursor
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gdk_cursor_get_type");
 
@@ -373,6 +356,20 @@ package Gdk.Cursor is
       (Self : Gdk.Gdk_Cursor) return Gdk.Display.Gdk_Display;
    --  Returns the display on which the Gdk.Gdk_Cursor is defined.
    --  Since: gtk+ 2.2
+
+   procedure Get_Surface
+      (Self    : Gdk.Gdk_Cursor;
+       X_Hot   : in out Gdouble;
+       Y_Hot   : in out Gdouble;
+       Surface : out Cairo.Cairo_Surface);
+   --  Returns a cairo image surface with the image used to display the
+   --  cursor.
+   --  Note that depending on the capabilities of the windowing system and on
+   --  the cursor, GDK may not be able to obtain the image data. In this case,
+   --  null is returned.
+   --  Since: gtk+ 3.10
+   --  "x_hot": Location to store the hotspot x position, or null
+   --  "y_hot": Location to store the hotspot y position, or null
 
    ----------------------
    -- GtkAda additions --

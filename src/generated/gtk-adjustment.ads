@@ -246,7 +246,7 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record;
        Upper      : Gdouble);
    --  Sets the maximum value of the adjustment.
-   --  Note that values will be restricted by 'upper - page-size' if the
+   --  Note that values will be restricted by `upper - page-size` if the
    --  page-size property is nonzero.
    --  See Gtk.Adjustment.Set_Lower about how to compress multiple emissions
    --  of the Gtk.Adjustment.Gtk_Adjustment::changed signal when setting
@@ -306,7 +306,7 @@ package Gtk.Adjustment is
    Upper_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
    --  The maximum value of the adjustment. Note that values will be
-   --  restricted by 'upper - page-size' if the page-size property is nonzero.
+   --  restricted by `upper - page-size` if the page-size property is nonzero.
 
    Value_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble

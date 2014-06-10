@@ -31,6 +31,24 @@
 --  functions. A Gtk.Menu_Item.Gtk_Menu_Item can have a submenu associated with
 --  it, allowing for nested hierarchical menus.
 --
+--  # Terminology
+--
+--  A menu item can be "selected", this means that it is displayed in the
+--  prelight state, and if it has a submenu, that submenu will be popped up.
+--
+--  A menu is "active" when it is visible onscreen and the user is selecting
+--  from it. A menubar is not active until the user clicks on one of its
+--  menuitems. When a menu is active, passing the mouse over a submenu will pop
+--  it up.
+--
+--  There is also is a concept of the current menu and a current menu item.
+--  The current menu item is the selected menu item that is furthest down in
+--  the hierarchy. (Every active menu shell does not necessarily contain a
+--  selected menu item, but if it does, then the parent menu shell must also
+--  contain a selected menu item.) The current menu is the menu that contains
+--  the current menu item. It will always have a GTK grab and receive all key
+--  presses.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -96,10 +114,20 @@ package Gtk.Menu_Shell is
    --  mentioned in the Model have their names prefixed with the namespace,
    --  plus a dot. For example, if the action "quit" is mentioned and
    --  Action_Namespace is "app" then the effective action name is "app.quit".
+   --  This function uses Gtk.Actionable.Gtk_Actionable to define the action
+   --  name and target values on the created menu items. If you want to use an
+   --  action group other than "app" and "win", or if you want to use a
+   --  Gtk.Menu_Shell.Gtk_Menu_Shell outside of a
+   --  Gtk.Application_Window.Gtk_Application_Window, then you will need to
+   --  attach your own action group to the widget hierarchy using
+   --  gtk_widget_insert_action_group. As an example, if you created a group
+   --  with a "quit" action and inserted it with the name "mygroup" then you
+   --  would use the action name "mygroup.quit" in your
+   --  Glib.Menu_Model.Gmenu_Model.
    --  For most cases you are probably better off using
    --  Gtk.Menu.Gtk_New_From_Model or Gtk.Menu_Bar.Gtk_New_From_Model or just
    --  directly passing the Glib.Menu_Model.Gmenu_Model to
-   --  Gtk.Application.Set_App_Menu or gtk_application_set_menu_bar.
+   --  Gtk.Application.Set_App_Menu or Gtk.Application.Set_Menubar.
    --  Since: gtk+ 3.6
    --  "model": the Glib.Menu_Model.Gmenu_Model to bind to or null to remove
    --  binding
@@ -150,7 +178,7 @@ package Gtk.Menu_Shell is
    --  to submenus whenever a submenu is popped up, so you don't have to worry
    --  about recursively setting it for your entire menu hierarchy. Only when
    --  programmatically picking a submenu and popping it up manually, the
-   --  Take_Focus property of the submenu needs to be set explicitely.
+   --  Take_Focus property of the submenu needs to be set explicitly.
    --  Note that setting it to False has side-effects:
    --  If the focus is in some other app, it keeps the focus and keynav in the
    --  menu doesn't work. Consequently, keynav on the menu will only work if

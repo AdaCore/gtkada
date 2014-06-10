@@ -92,32 +92,42 @@ package Gtk.Toggle_Action is
 
    function Get_Active
       (Action : not null access Gtk_Toggle_Action_Record) return Boolean;
+   pragma Obsolescent (Get_Active);
    --  Returns the checked state of the toggle action.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    procedure Set_Active
       (Action    : not null access Gtk_Toggle_Action_Record;
        Is_Active : Boolean);
+   pragma Obsolescent (Set_Active);
    --  Sets the checked state on the toggle action.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "is_active": whether the action should be checked or not
 
    function Get_Draw_As_Radio
       (Action : not null access Gtk_Toggle_Action_Record) return Boolean;
+   pragma Obsolescent (Get_Draw_As_Radio);
    --  Returns whether the action should have proxies like a radio action.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    procedure Set_Draw_As_Radio
       (Action        : not null access Gtk_Toggle_Action_Record;
        Draw_As_Radio : Boolean);
+   pragma Obsolescent (Set_Draw_As_Radio);
    --  Sets whether the action should have proxies like a radio action.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "draw_as_radio": whether the action should have proxies like a radio
    --  action
 
    procedure Toggled (Action : not null access Gtk_Toggle_Action_Record);
+   pragma Obsolescent (Toggled);
    --  Emits the "toggled" signal on the toggle action.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
 
    ----------------
    -- Properties --

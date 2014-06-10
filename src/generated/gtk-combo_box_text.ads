@@ -33,29 +33,26 @@
 --  Gtk.Combo_Box_Text.Prepend_Text and remove options with
 --  Gtk.Combo_Box_Text.Remove.
 --
---  If the GtkComboBoxText contains an entry (via the 'has-entry' property),
+--  If the GtkComboBoxText contains an entry (via the "has-entry" property),
 --  its contents can be retrieved using Gtk.Combo_Box_Text.Get_Active_Text. The
 --  entry itself can be accessed by calling Gtk.Bin.Get_Child on the combo box.
 --
 --  You should not call Gtk.Combo_Box.Set_Model or attempt to pack more cells
 --  into this combo box via its GtkCellLayout interface.
 --
---  == GtkComboBoxText as GtkBuildable ==
+--  # GtkComboBoxText as GtkBuildable
 --
 --  The GtkComboBoxText implementation of the GtkBuildable interface supports
 --  adding items directly using the <items> element and specifying <item>
---  elements for each item. Each <item> element supports the regular
+--  elements for each item. Each <item> element can specify the "id"
+--  corresponding to the appended text and also supports the regular
 --  translation attributes "translatable", "context" and "comments".
 --
---  == A UI definition fragment specifying GtkComboBoxText items ==
+--  Here is a UI definition fragment specifying GtkComboBoxText items: |[
+--  <object class="GtkComboBoxText"> <items> <item translatable="yes"
+--  id="factory">Factory</item> <item translatable="yes" id="home">Home</item>
+--  <item translatable="yes" id="subway">Subway</item> </items> </object> ]|
 --
---    <object class="GtkComboBoxText">
---    <items>
---    <item translatable="yes">Factory</item>
---    <item translatable="yes">Home</item>
---    <item translatable="yes">Subway</item>
---    </items>
---    </object>
 --  </description>
 --  <group>Numeric/Text Data Entry</group>
 pragma Ada_2005;

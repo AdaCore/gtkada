@@ -129,7 +129,9 @@ package body Gtk.UI_Manager is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Filename, Acc_Error'Access);
       Free (Tmp_Filename);
-      Error.all := Acc_Error;
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Tmp_Return;
    end Add_UI_From_File;
 
@@ -153,7 +155,9 @@ package body Gtk.UI_Manager is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path, Acc_Error'Access);
       Free (Tmp_Resource_Path);
-      Error.all := Acc_Error;
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Tmp_Return;
    end Add_UI_From_Resource;
 
@@ -178,7 +182,9 @@ package body Gtk.UI_Manager is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1, Acc_Error'Access);
       Free (Tmp_Buffer);
-      Error.all := Acc_Error;
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Tmp_Return;
    end Add_UI_From_String;
 

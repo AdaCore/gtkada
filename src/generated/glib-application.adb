@@ -327,6 +327,17 @@ package body Glib.Application is
       Internal (Get_Object (Self));
    end Hold;
 
+   ---------------
+   -- Mark_Busy --
+   ---------------
+
+   procedure Mark_Busy (Self : not null access Gapplication_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_application_mark_busy");
+   begin
+      Internal (Get_Object (Self));
+   end Mark_Busy;
+
    ----------
    -- Quit --
    ----------
@@ -479,6 +490,17 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self), Inactivity_Timeout);
    end Set_Inactivity_Timeout;
+
+   -----------------
+   -- Unmark_Busy --
+   -----------------
+
+   procedure Unmark_Busy (Self : not null access Gapplication_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_application_unmark_busy");
+   begin
+      Internal (Get_Object (Self));
+   end Unmark_Busy;
 
    ------------------
    -- Action_Added --

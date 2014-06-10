@@ -22,24 +22,20 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  You may wish to begin by reading the <link linkend="TextWidget">text
---  widget conceptual overview</link> which gives an overview of all the
---  objects and data types related to the text widget and how they work
---  together.
+--  You may wish to begin by reading the [text widget conceptual
+--  overview][TextWidget] which gives an overview of all the objects and data
+--  types related to the text widget and how they work together.
 --
---  == GtkTextTagTables as GtkBuildable ==
+--  # GtkTextTagTables as GtkBuildable
 --
 --  The GtkTextTagTable implementation of the GtkBuildable interface supports
 --  adding tags by specifying "tag" as the "type" attribute of a <child>
 --  element.
 --
---  == A UI definition fragment specifying tags ==
+--  An example of a UI definition fragment specifying tags: |[ <object
+--  class="GtkTextTagTable"> <child type="tag"> <object class="GtkTextTag"/>
+--  </child> </object> ]|
 --
---    <object class="GtkTextTagTable">
---    <child type="tag">
---    <object class="GtkTextTag"/>
---    </child>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -134,9 +130,10 @@ package Gtk.Text_Tag_Table is
    procedure Remove
       (Table : not null access Gtk_Text_Tag_Table_Record;
        Tag   : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-   --  Remove a tag from the table. This will remove the table's reference to
-   --  the tag, so be careful - the tag will end up destroyed if you don't have
-   --  a reference to it.
+   --  Remove a tag from the table. If a Gtk.Text_Buffer.Gtk_Text_Buffer has
+   --  Table as its tag table, the tag is removed from the buffer. The table's
+   --  reference to the tag is removed, so the tag will end up destroyed if you
+   --  don't have a reference to it.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag
 
    -------------

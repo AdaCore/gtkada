@@ -155,17 +155,21 @@ package Gtk.Recent_Action is
 
    function Get_Show_Numbers
       (Widget : not null access Gtk_Recent_Action_Record) return Boolean;
+   pragma Obsolescent (Get_Show_Numbers);
    --  Returns the value set by Gtk.Recent_Chooser_Menu.Set_Show_Numbers.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.10, 1
 
    procedure Set_Show_Numbers
       (Widget       : not null access Gtk_Recent_Action_Record;
        Show_Numbers : Boolean);
+   pragma Obsolescent (Set_Show_Numbers);
    --  Sets whether a number should be added to the items shown by the widgets
    --  representing Action. The numbers are shown to provide a unique character
    --  for a mnemonic to be used inside the menu item's label. Only the first
    --  ten items get a number to avoid clashes.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.10, 1
    --  "show_numbers": True if the shown items should be numbered
 
    procedure Set_Sort_Func
@@ -243,7 +247,7 @@ package Gtk.Recent_Action is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Action_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
+       Filter  : access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Action_Record)
@@ -334,6 +338,7 @@ package Gtk.Recent_Action is
    --  Glib.Properties for more information on properties)
 
    Show_Numbers_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the items should be displayed with a number.
 
    ----------------
    -- Interfaces --

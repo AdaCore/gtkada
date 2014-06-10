@@ -341,6 +341,20 @@ package body Gtk.Tree_Model is
       return Boolean'Pos (Func (Model, From_Object (Path), Iter.all));
    end Internal_Gtk_Tree_Model_Foreach_Func;
 
+   --------------------
+   -- Gtk_Filter_New --
+   --------------------
+
+   procedure Gtk_Filter_New
+      (Tree_Model : out Gtk_Tree_Model;
+       Root       : Gtk_Tree_Path)
+   is
+      function Internal (Root : System.Address) return Gtk_Tree_Model;
+      pragma Import (C, Internal, "gtk_tree_model_filter_new");
+   begin
+      Tree_Model := Internal (Get_Object (Root));
+   end Gtk_Filter_New;
+
    -------------
    -- Gtk_New --
    -------------
@@ -379,6 +393,38 @@ package body Gtk.Tree_Model is
       Path.Set_Object (Internal);
    end Gtk_New_First;
 
+   ---------------------------
+   -- Gtk_New_From_Indicesv --
+   ---------------------------
+
+   procedure Gtk_New_From_Indicesv
+      (Path    : out Gtk_Tree_Path;
+       Indices : Gint_Array;
+       Length  : Gsize)
+   is
+      function Internal
+         (Indices : System.Address;
+          Length  : Gsize) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_path_new_from_indicesv");
+   begin
+      Path.Set_Object (Internal (Indices (Indices'First)'Address, Length));
+   end Gtk_New_From_Indicesv;
+
+   -------------------------------
+   -- Gtk_Tree_Model_Filter_New --
+   -------------------------------
+
+   function Gtk_Tree_Model_Filter_New
+      (Root : Gtk_Tree_Path) return Gtk_Tree_Model
+   is
+      function Internal (Root : System.Address) return Gtk_Tree_Model;
+      pragma Import (C, Internal, "gtk_tree_model_filter_new");
+      Tree_Model : Gtk_Tree_Model;
+   begin
+      Tree_Model := Internal (Get_Object (Root));
+      return Tree_Model;
+   end Gtk_Tree_Model_Filter_New;
+
    -----------------------
    -- Gtk_Tree_Path_New --
    -----------------------
@@ -404,6 +450,24 @@ package body Gtk.Tree_Model is
       Path.Set_Object (Internal);
       return Path;
    end Gtk_Tree_Path_New_First;
+
+   -------------------------------------
+   -- Gtk_Tree_Path_New_From_Indicesv --
+   -------------------------------------
+
+   function Gtk_Tree_Path_New_From_Indicesv
+      (Indices : Gint_Array;
+       Length  : Gsize) return Gtk_Tree_Path
+   is
+      function Internal
+         (Indices : System.Address;
+          Length  : Gsize) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_path_new_from_indicesv");
+      Path : Gtk_Tree_Path;
+   begin
+      Path.Set_Object (Internal (Indices (Indices'First)'Address, Length));
+      return Path;
+   end Gtk_Tree_Path_New_From_Indicesv;
 
    -----------------------------------
    -- Gtk_Tree_Path_New_From_String --
@@ -973,6 +1037,28 @@ package body Gtk.Tree_Model is
    begin
       Internal (Tree_Model, Get_Object (Path), Iter, New_Order);
    end Rows_Reordered;
+
+   --------------------------------
+   -- Rows_Reordered_With_Length --
+   --------------------------------
+
+   procedure Rows_Reordered_With_Length
+      (Tree_Model : Gtk_Tree_Model;
+       Path       : Gtk_Tree_Path;
+       Iter       : Gtk_Tree_Iter;
+       New_Order  : Gint_Array;
+       Length     : Gint)
+   is
+      procedure Internal
+         (Tree_Model : Gtk_Tree_Model;
+          Path       : System.Address;
+          Iter       : System.Address;
+          New_Order  : System.Address;
+          Length     : Gint);
+      pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
+   begin
+      Internal (Tree_Model, Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);
+   end Rows_Reordered_With_Length;
 
    ---------------
    -- To_String --

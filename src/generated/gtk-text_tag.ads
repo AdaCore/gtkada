@@ -22,16 +22,15 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  You may wish to begin by reading the <link linkend="TextWidget">text
---  widget conceptual overview</link> which gives an overview of all the
---  objects and data types related to the text widget and how they work
---  together.
+--  You may wish to begin by reading the [text widget conceptual
+--  overview][TextWidget] which gives an overview of all the objects and data
+--  types related to the text widget and how they work together.
 --
 --  Tags should be in the Gtk.Text_Tag_Table.Gtk_Text_Tag_Table for a given
 --  Gtk.Text_Buffer.Gtk_Text_Buffer before using them with that buffer.
 --
---  gtk_text_buffer_create_tag is the best way to create tags. See
---  <application>gtk3-demo</application> for numerous examples.
+--  gtk_text_buffer_create_tag is the best way to create tags. See "gtk3-demo"
+--  for numerous examples.
 --
 --  For each property of Gtk.Text_Tag.Gtk_Text_Tag, there is a "set" property,
 --  e.g. "font-set" corresponds to "font". These "set" properties reflect
@@ -100,7 +99,7 @@ package Gtk.Text_Tag is
    procedure Set_Priority
       (Tag      : not null access Gtk_Text_Tag_Record;
        Priority : Gint);
-   --  Sets the priority of a Gtk.Text_Tag.Gtk_Text_Tag. Valid priorities are
+   --  Sets the priority of a Gtk.Text_Tag.Gtk_Text_Tag. Valid priorities
    --  start at 0 and go to one less than Gtk.Text_Tag_Table.Get_Size. Each tag
    --  in a table has a unique priority; setting the priority of one tag shifts
    --  the priorities of all the other tags in the table to maintain a unique
@@ -213,11 +212,11 @@ package Gtk.Text_Tag is
 
    Paragraph_Background_Gdk_Property : constant Gdk.Color.Property_Gdk_Color;
    --  Type: Gdk.Color.Gdk_Color
-   --  The paragraph background color as a as a Gdk.Color.Gdk_Color.
+   --  The paragraph background color as a Gdk.Color.Gdk_Color.
 
    Paragraph_Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
-   --  The paragraph background color as a as a Gdk.RGBA.Gdk_RGBA.
+   --  The paragraph background color as a Gdk.RGBA.Gdk_RGBA.
 
    Paragraph_Background_Set_Property : constant Glib.Properties.Property_Boolean;
 
@@ -310,7 +309,8 @@ package Gtk.Text_Tag is
    --    --  "event": the event which triggered the signal
    --    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
    --    --  event occured
-   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
+   --    --  Returns True to stop other handlers from being invoked for the
+   -- event. False to propagate the event further.
 
 private
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean :=

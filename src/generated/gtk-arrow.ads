@@ -25,8 +25,8 @@
 --  GtkArrow should be used to draw simple arrows that need to point in one of
 --  the four cardinal directions (up, down, left, or right). The style of the
 --  arrow can be one of shadow in, shadow out, etched in, or etched out. Note
---  that these directions and style types may be ammended in versions of GTK+
---  to come.
+--  that these directions and style types may be amended in versions of GTK+ to
+--  come.
 --
 --  GtkArrow will fill any space alloted to it, but since it is inherited from
 --  Gtk.Misc.Gtk_Misc, it can be padded and/or aligned, to fill exactly the

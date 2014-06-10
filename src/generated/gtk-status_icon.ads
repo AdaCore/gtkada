@@ -36,15 +36,14 @@
 --  it may not be visible (e.g. when the user doesn't have a notification area
 --  on his panel). This can be checked with Gtk.Status_Icon.Is_Embedded.
 --
---  On X11, the implementation follows the freedesktop.org "System Tray"
---  <ulink
---  url="http://www.freedesktop.org/wiki/Specifications/systemtray-spec">specification</ulink>.
+--  On X11, the implementation follows the [FreeDesktop System Tray
+--  Specification](http://www.freedesktop.org/wiki/Specifications/systemtray-spec).
 --  Implementations of the "tray" side of this specification can be found e.g.
 --  in the GNOME 2 and KDE panel applications.
 --
---  Note that a GtkStatusIcon is *not* a widget, but just a
---  Glib.Object.GObject. Making it a widget would be impractical, since the
---  system tray on Win32 doesn't allow to embed arbitrary widgets.
+--  Note that a GtkStatusIcon is not a widget, but just a Glib.Object.GObject.
+--  Making it a widget would be impractical, since the system tray on Win32
+--  doesn't allow to embed arbitrary widgets.
 --
 --  </description>
 pragma Ada_2005;
@@ -284,19 +283,23 @@ package Gtk.Status_Icon is
    function Get_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   pragma Obsolescent (Get_Stock);
    --  Gets the id of the stock icon being displayed by the
    --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Stock (see
    --  Gtk.Status_Icon.Get_Storage_Type). The returned string is owned by the
    --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.10, 1
 
    procedure Set_From_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Stock_Id    : UTF8_String);
+   pragma Obsolescent (Set_From_Stock);
    --  Makes Status_Icon display the stock icon with the id Stock_Id. See
    --  Gtk.Status_Icon.Gtk_New_From_Stock for details.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.10, 1
    --  "stock_id": a stock icon id
 
    function Get_Storage_Type
@@ -333,7 +336,7 @@ package Gtk.Status_Icon is
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Markup      : UTF8_String := "");
    --  Sets Markup as the contents of the tooltip, which is marked up with the
-   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  [Pango text markup language][PangoMarkupFormat].
    --  This function will take care of setting
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to True and of the default
    --  handler for the Gtk.Status_Icon.Gtk_Status_Icon::query-tooltip signal.
@@ -488,8 +491,8 @@ package Gtk.Status_Icon is
 
    Tooltip_Markup_Property : constant Glib.Properties.Property_String;
    --  Sets the text of tooltip to be the given string, which is marked up
-   --  with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>. Also see Gtk.Tooltip.Set_Markup.
+   --  with the [Pango text markup language][PangoMarkupFormat]. Also see
+   --  Gtk.Tooltip.Set_Markup.
    --
    --  This is a convenience property which will take care of getting the
    --  tooltip shown if the given string is not null.
@@ -570,7 +573,8 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
+   --    --  Returns True to stop other handlers from being invoked
+   -- for the event. False to propagate the event further.
 
    Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    procedure On_Button_Release_Event
@@ -590,7 +594,8 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
+   --    --  Returns True to stop other handlers from being invoked
+   -- for the event. False to propagate the event further.
 
    type Cb_Gtk_Status_Icon_Guint_Guint_Void is not null access procedure
      (Self          : access Gtk_Status_Icon_Record'Class;
@@ -654,9 +659,9 @@ package Gtk.Status_Icon is
        Call  : Cb_GObject_Gint_Gint_Boolean_Gtk_Tooltip_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  Emitted when the Gtk.Settings.Gtk_Settings:gtk-tooltip-timeout has
-   --  expired with the cursor hovering above Status_Icon; or emitted when
-   --  Status_Icon got focus in keyboard mode.
+   --  Emitted when the hover timeout has expired with the cursor hovering
+   --  above Status_Icon; or emitted when Status_Icon got focus in keyboard
+   --  mode.
    --
    --  Using the given coordinates, the signal handler should determine
    --  whether a tooltip should be shown for Status_Icon. If this is the case
@@ -705,7 +710,8 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event. False to propagate the event further.
+   --    --  Returns True to stop other handlers from being invoked for the event.
+   --   False to propagate the event further.
 
    type Cb_Gtk_Status_Icon_Gint_Boolean is not null access function
      (Self : access Gtk_Status_Icon_Record'Class;
@@ -730,7 +736,8 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  "size": the new size
-   --    --  Returns True if the icon was updated for the new size. Otherwise, GTK+ will scale the icon as necessary.
+   --    --  Returns True if the icon was updated for the new
+   -- size. Otherwise, GTK+ will scale the icon as necessary.
 
 private
    Visible_Property : constant Glib.Properties.Property_Boolean :=

@@ -120,7 +120,7 @@ package Gtk.Color_Button is
    pragma Obsolescent (Get_Alpha);
    --  Returns the current alpha value.
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.4, Use Gtk.Color_Chooser.Get_Rgba instead.
+   --  Deprecated since 3.4, 1
 
    procedure Set_Alpha
       (Button : not null access Gtk_Color_Button_Record;
@@ -128,7 +128,7 @@ package Gtk.Color_Button is
    pragma Obsolescent (Set_Alpha);
    --  Sets the current opacity to be Alpha.
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.4, Use Gtk.Color_Chooser.Set_Rgba instead.
+   --  Deprecated since 3.4, 1
    --  "alpha": an integer between 0 and 65535
 
    procedure Get_Color
@@ -138,7 +138,7 @@ package Gtk.Color_Button is
    --  Sets Color to be the current color in the
    --  Gtk.Color_Button.Gtk_Color_Button widget.
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.4, Use Gtk.Color_Chooser.Get_Rgba instead.
+   --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color to fill in with the current color
 
    procedure Set_Color
@@ -147,7 +147,7 @@ package Gtk.Color_Button is
    pragma Obsolescent (Set_Color);
    --  Sets the current color to be Color.
    --  Since: gtk+ 2.4
-   --  Deprecated since None, Use Gtk.Color_Chooser.Set_Rgba instead.
+   --  Deprecated since None, 1
    --  "color": A Gdk.Color.Gdk_Color to set the current color with
 
    function Get_Title
@@ -191,25 +191,31 @@ package Gtk.Color_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Color_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Color_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Color_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Color_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Color_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Color_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    procedure Add_Palette
       (Self            : not null access Gtk_Color_Button_Record;
@@ -282,9 +288,9 @@ package Gtk.Color_Button is
    --  handling this signal, use gtk_color_button_get_rgba to find out which
    --  color was just selected.
    --
-   --  Note that this signal is only emitted when the *user* changes the
-   --  color. If you need to react to programmatic color changes as well, use
-   --  the notify::color signal.
+   --  Note that this signal is only emitted when the user changes the color.
+   --  If you need to react to programmatic color changes as well, use the
+   --  notify::color signal.
 
    ----------------
    -- Interfaces --

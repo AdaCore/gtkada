@@ -46,7 +46,7 @@
 --  Gtk.Settings.Gtk_Settings:gtk-theme-name setting or a hierarchy change in
 --  the rendered widget.
 --
---  == Transition animations ==
+--  # Transition Animations
 --
 --  Gtk.Style_Context.Gtk_Style_Context has built-in support for state change
 --  transitions. Note that these animations respect the
@@ -66,146 +66,81 @@
 --  widgets with a fixed set of animatable regions, using an enumeration works
 --  well:
 --
---  == Using an enumeration to identify animatable regions ==
+--  An example for Using an enumeration to identify animatable regions:
 --
---    enum {
---       REGION_ENTRY,
---       REGION_BUTTON_UP,
---       REGION_BUTTON_DOWN
---    };
---    ...
---    gboolean
---    spin_button_draw (GtkWidget *widget,
---       cairo_t   *cr)
---    {
---       GtkStyleContext *context;
---       context = gtk_widget_get_style_context (widget);
---       gtk_style_context_push_animatable_region (context,
---          GUINT_TO_POINTER (REGION_ENTRY));
---       gtk_render_background (cr, 0, 0, 100, 30);
---       gtk_render_frame (cr, 0, 0, 100, 30);
---       gtk_style_context_pop_animatable_region (context);
---       ...
---    }
+--  |[<!-- language="C" --> enum { REGION_ENTRY, REGION_BUTTON_UP,
+--  REGION_BUTTON_DOWN };
+--
+--  ...
+--
+--  gboolean spin_button_draw (GtkWidget *widget, cairo_t *cr) {
+--  GtkStyleContext *context;
+--
+--  context = gtk_widget_get_style_context (widget);
+--
+--  gtk_style_context_push_animatable_region (context, GUINT_TO_POINTER
+--  (REGION_ENTRY));
+--
+--  gtk_render_background (cr, 0, 0, 100, 30); gtk_render_frame (cr, 0, 0,
+--  100, 30);
+--
+--  gtk_style_context_pop_animatable_region (context);
+--
+--  ... } ]|
 --
 --  For complex widgets with an arbitrary number of animatable regions, it is
 --  up to the implementation to come up with a way to uniquely identify each
 --  animatable region. Using pointers to internal structs is one way to achieve
 --  this:
 --
---  == Using struct pointers to identify animatable regions ==
---
---    void
---    notebook_draw_tab (GtkWidget    *widget,
---       NotebookPage *page,
---       cairo_t      *cr)
---    {
---       gtk_style_context_push_animatable_region (context, page);
---       gtk_render_extension (cr, page->x, page->y, page->width, page->height);
---       gtk_style_context_pop_animatable_region (context);
---    }
+--  An example for using struct pointers to identify animatable regions:
+--  |[<!-- language="C" --> void notebook_draw_tab (GtkWidget *widget,
+--  NotebookPage *page, cairo_t *cr) { gtk_style_context_push_animatable_region
+--  (context, page); gtk_render_extension (cr, page->x, page->y, page->width,
+--  page->height); gtk_style_context_pop_animatable_region (context); } ]|
 --
 --  The widget also needs to notify the style context about a state change for
 --  a given animatable region so the animation is triggered.
 --
---  == Triggering a state change animation on a region ==
+--  An example for triggering a state change animation on a region: |[<!--
+--  language="C" --> gboolean notebook_motion_notify (GtkWidget *widget,
+--  GdkEventMotion *event) { GtkStyleContext *context; NotebookPage *page;
 --
---    gboolean
---    notebook_motion_notify (GtkWidget      *widget,
---       GdkEventMotion *event)
---    {
---       GtkStyleContext *context;
---       NotebookPage *page;
---       context = gtk_widget_get_style_context (widget);
---       page = find_page_under_pointer (widget, event);
---       gtk_style_context_notify_state_change (context,
---          gtk_widget_get_window (widget),
---          page,
---          GTK_STATE_PRELIGHT,
---          TRUE);
---       ...
---    }
+--  context = gtk_widget_get_style_context (widget); page =
+--  find_page_under_pointer (widget, event);
+--  gtk_style_context_notify_state_change (context, gtk_widget_get_window
+--  (widget), page, GTK_STATE_PRELIGHT, TRUE); ... } ]|
 --
 --  Gtk.Style_Context.Notify_State_Change accepts null region IDs as a special
 --  value, in this case, the whole widget area will be updated by the
 --  animation.
 --
---  == Style classes and regions ==
+--  # Style Classes and Regions # {gtkstylecontext-classes}
 --
 --  Widgets can add style classes to their context, which can be used to
---  associate different styles by class (see <xref
---  linkend="gtkcssprovider-selectors"/>). Theme engines can also use style
---  classes to vary their rendering. GTK+ has a number of predefined style
---  classes: GTK_STYLE_CLASS_CELL, GTK_STYLE_CLASS_ENTRY,
---  GTK_STYLE_CLASS_BUTTON, GTK_STYLE_CLASS_COMBOBOX_ENTRY,
---  GTK_STYLE_CLASS_CALENDAR, GTK_STYLE_CLASS_SLIDER,
---  GTK_STYLE_CLASS_BACKGROUND, GTK_STYLE_CLASS_RUBBERBAND,
---  GTK_STYLE_CLASS_TOOLTIP, GTK_STYLE_CLASS_MENU, GTK_STYLE_CLASS_MENUBAR,
---  GTK_STYLE_CLASS_MENUITEM, GTK_STYLE_CLASS_TOOLBAR,
---  GTK_STYLE_CLASS_PRIMARY_TOOLBAR, GTK_STYLE_CLASS_INLINE_TOOLBAR,
---  GTK_STYLE_CLASS_RADIO, GTK_STYLE_CLASS_CHECK, GTK_STYLE_CLASS_TROUGH,
---  GTK_STYLE_CLASS_SCROLLBAR, GTK_STYLE_CLASS_SCALE,
---  GTK_STYLE_CLASS_SCALE_HAS_MARKS_ABOVE,
---  GTK_STYLE_CLASS_SCALE_HAS_MARKS_BELOW, GTK_STYLE_CLASS_HEADER,
---  GTK_STYLE_CLASS_ACCELERATOR, GTK_STYLE_CLASS_GRIP, GTK_STYLE_CLASS_DOCK,
---  GTK_STYLE_CLASS_PROGRESSBAR, GTK_STYLE_CLASS_SPINNER,
---  GTK_STYLE_CLASS_EXPANDER, GTK_STYLE_CLASS_SPINBUTTON,
---  GTK_STYLE_CLASS_NOTEBOOK, GTK_STYLE_CLASS_VIEW, GTK_STYLE_CLASS_SIDEBAR,
---  GTK_STYLE_CLASS_IMAGE, GTK_STYLE_CLASS_HIGHLIGHT, GTK_STYLE_CLASS_FRAME,
---  GTK_STYLE_CLASS_DND, GTK_STYLE_CLASS_PANE_SEPARATOR,
---  GTK_STYLE_CLASS_SEPARATOR, GTK_STYLE_CLASS_INFO, GTK_STYLE_CLASS_WARNING,
---  GTK_STYLE_CLASS_QUESTION, GTK_STYLE_CLASS_ERROR,
---  GTK_STYLE_CLASS_HORIZONTAL, GTK_STYLE_CLASS_VERTICAL, GTK_STYLE_CLASS_TOP,
---  GTK_STYLE_CLASS_BOTTOM, GTK_STYLE_CLASS_LEFT, GTK_STYLE_CLASS_RIGHT,
+--  associate different styles by class (see
+--  [Selectors][gtkcssprovider-selectors]). Theme engines can also use style
+--  classes to vary their rendering.
 --
---  Widgets can also add regions with flags to their context. The regions used
---  by GTK+ widgets are:
+--  Widgets can also add regions with flags to their context.
 --
---  <thead>
---  Region
+--  The regions used by GTK+ widgets are:
 --
---  Flags
+--  ## row Used by Gtk.Tree_View.Gtk_Tree_View. Can be used with the flags:
+--  `even`, `odd`.
 --
---  Macro
+--  ## column Used by Gtk.Tree_View.Gtk_Tree_View. Can be used with the flags:
+--  `first`, `last`, `sorted`.
 --
---  Used by </thead>
+--  ## column-header Used by Gtk.Tree_View.Gtk_Tree_View.
 --
---  row
+--  ## tab Used by Gtk.Notebook.Gtk_Notebook. Can be used with the flags:
+--  `even`, `odd`, `first`, `last`.
 --
---  even, odd
+--  # Custom styling in UI libraries and applications
 --
---  GTK_STYLE_REGION_ROW
---
---  Gtk.Tree_View.Gtk_Tree_View
---
---  column
---
---  first, last, sorted
---
---  GTK_STYLE_REGION_COLUMN
---
---  Gtk.Tree_View.Gtk_Tree_View
---
---  column-header
---
--- 
---
---  GTK_STYLE_REGION_COLUMN_HEADER
---
--- 
---
---  tab
---
---  even, odd, first, last
---
---  GTK_STYLE_REGION_TAB
---
---  Gtk.Notebook.Gtk_Notebook
---
---  == Custom styling in UI libraries and applications ==
---
---  If you are developing a library with custom Gtk.Widget.Gtk_Widget<!-- -->s
---  that render differently than standard components, you may need to add a
+--  If you are developing a library with custom Gtk_Widgets that render
+--  differently than standard components, you may need to add a
 --  Gtk.Style_Provider.Gtk_Style_Provider yourself with the
 --  GTK_STYLE_PROVIDER_PRIORITY_FALLBACK priority, either a
 --  Gtk.Css_Provider.Gtk_Css_Provider or a custom object implementing the
@@ -217,9 +152,8 @@
 --  to make your style information prevail to the theme's, so you must use a
 --  Gtk.Style_Provider.Gtk_Style_Provider with the
 --  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION priority, keep in mind that the
---  user settings in
---  '<replaceable>XDG_CONFIG_HOME</replaceable>/gtk-3.0/gtk.css' will still
---  take precedence over your changes, as it uses the
+--  user settings in `XDG_CONFIG_HOME/gtk-3.0/gtk.css` will still take
+--  precedence over your changes, as it uses the
 --  GTK_STYLE_PROVIDER_PRIORITY_USER priority.
 --
 --  If a custom theming engine is needed, you probably want to implement a
@@ -227,7 +161,6 @@
 --  Gtk.Theming_Engine.Gtk_Theming_Engine implementation, as
 --  Gtk.Css_Provider.Gtk_Css_Provider uses Gtk.Theming_Engine.Load which loads
 --  the theming engine module from the standard paths.
---
 --
 --  </description>
 pragma Ada_2005;
@@ -266,21 +199,19 @@ package Gtk.Style_Context is
    --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style
    --  context won't be attached to any widget, so you may want to call
    --  Gtk.Style_Context.Set_Path yourself.
-   --  Note: This function is only useful when using the theming layer
-   --  separated from GTK+, if you are using
-   --  Gtk.Style_Context.Gtk_Style_Context to theme Gtk.Widget.Gtk_Widget<!--
-   --  -->s, use gtk_widget_get_style_context in order to get a style context
-   --  ready to theme the widget.
+   --  This function is only useful when using the theming layer separated
+   --  from GTK+, if you are using Gtk.Style_Context.Gtk_Style_Context to theme
+   --  Gtk_Widgets, use gtk_widget_get_style_context in order to get a style
+   --  context ready to theme the widget.
 
    function Gtk_Style_Context_New return Gtk_Style_Context;
    --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style
    --  context won't be attached to any widget, so you may want to call
    --  Gtk.Style_Context.Set_Path yourself.
-   --  Note: This function is only useful when using the theming layer
-   --  separated from GTK+, if you are using
-   --  Gtk.Style_Context.Gtk_Style_Context to theme Gtk.Widget.Gtk_Widget<!--
-   --  -->s, use gtk_widget_get_style_context in order to get a style context
-   --  ready to theme the widget.
+   --  This function is only useful when using the theming layer separated
+   --  from GTK+, if you are using Gtk.Style_Context.Gtk_Style_Context to theme
+   --  Gtk_Widgets, use gtk_widget_get_style_context in order to get a style
+   --  context ready to theme the widget.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_style_context_get_type");
@@ -297,9 +228,9 @@ package Gtk.Style_Context is
    --  of this new class for styling.
    --  In the CSS file format, a Gtk.GEntry.Gtk_Entry defining an "entry"
    --  class, would be matched by:
-   --    GtkEntry.entry { ... }
-   --  While any widget defining an "entry" class would be matched by:
-   --    .entry { ... }
+   --  |[ GtkEntry.entry { ... } ]|
+   --  While any widget defining an "entry" class would be matched by: |[
+   --  .entry { ... } ]|
    --  Since: gtk+ 3.0
    --  "class_name": class name to use in styling
 
@@ -311,8 +242,7 @@ package Gtk.Style_Context is
    --  Note that a style provider added by this function only affects the style
    --  of the widget to which Context belongs. If you want to affect the style
    --  of all widgets, use Gtk.Style_Context.Add_Provider_For_Screen.
-   --  Note:
-   --  If both priorities are the same, A
+   --  Note: If both priorities are the same, a
    --  Gtk.Style_Provider.Gtk_Style_Provider added through this function takes
    --  precedence over another added through
    --  Gtk.Style_Context.Add_Provider_For_Screen.
@@ -332,13 +262,12 @@ package Gtk.Style_Context is
    --  for styling.
    --  In the CSS file format, a Gtk.Tree_View.Gtk_Tree_View defining a "row"
    --  region, would be matched by:
-   --    GtkTreeView row { ... }
+   --  |[ GtkTreeView row { ... } ]|
    --  Pseudo-classes are used for matching Flags, so the two following rules:
-   --    GtkTreeView row:nth-child(even) { ... }
-   --    GtkTreeView row:nth-child(odd) { ... }
+   --  |[ GtkTreeView row:nth-child(even) { ... } GtkTreeView
+   --  row:nth-child(odd) { ... } ]|
    --  would apply to even and odd rows, respectively.
-   --  Note:
-   --  Region names must only contain lowercase letters and '-', starting
+   --  Region names must only contain lowercase letters and "-", starting
    --  always with a lowercase letter.
    --  Since: gtk+ 3.0
    --  "region_name": region name to use in styling
@@ -356,7 +285,7 @@ package Gtk.Style_Context is
    --  circumstances you would expect all widget to be stopped, so this should
    --  be only used in complex widgets with different animatable regions.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, This function does nothing.
+   --  Deprecated since 3.6, 1
    --  "region_id": animatable region to stop, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
 
@@ -403,8 +332,7 @@ package Gtk.Style_Context is
    pragma Obsolescent (Get_Direction);
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use Gtk.Style_Context.Get_State and check for
-   --  GTK_STATE_FLAG_DIR_LTR and GTK_STATE_FLAG_DIR_RTL instead.
+   --  Deprecated since 3.8, 1
 
    procedure Set_Direction
       (Self      : not null access Gtk_Style_Context_Record;
@@ -414,8 +342,7 @@ package Gtk.Style_Context is
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use Gtk.Style_Context.Set_State with
-   --  GTK_STATE_FLAG_DIR_LTR and GTK_STATE_FLAG_DIR_RTL instead.
+   --  Deprecated since 3.8, 1
    --  "direction": the new direction.
 
    function Get_Font
@@ -427,8 +354,7 @@ package Gtk.Style_Context is
    --  const and will remain valid until the
    --  Gtk.Style_Context.Gtk_Style_Context::changed signal happens.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use gtk_style_context_get for "font" or
-   --  subproperties instead.
+   --  Deprecated since 3.8, 1
    --  "state": state to retrieve the font for
 
    function Get_Frame_Clock
@@ -500,9 +426,9 @@ package Gtk.Style_Context is
       (Self   : not null access Gtk_Style_Context_Record;
        Parent : access Gtk_Style_Context_Record'Class);
    --  Sets the parent style context for Context. The parent style context is
-   --  used to implement <ulink
-   --  url="http://www.w3.org/TR/css3-cascade/inheritance">inheritance</ulink>
-   --  of properties.
+   --  used to implement
+   --  [inheritance](http://www.w3.org/TR/css3-cascade/inheritance) of
+   --  properties.
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, the parent will be set for you.
    --  Since: gtk+ 3.4
@@ -537,6 +463,18 @@ package Gtk.Style_Context is
    --  "state": state to retrieve the property value for
    --  "value": return location for the style property value
 
+   function Get_Scale
+      (Self : not null access Gtk_Style_Context_Record) return Gint;
+   --  Returns the scale used for assets.
+   --  Since: gtk+ 3.10
+
+   procedure Set_Scale
+      (Self  : not null access Gtk_Style_Context_Record;
+       Scale : Gint);
+   --  Sets the scale to use when getting image assets for the style .
+   --  Since: gtk+ 3.10
+   --  "scale": scale
+
    function Get_Screen
       (Self : not null access Gtk_Style_Context_Record)
        return Gdk.Screen.Gdk_Screen;
@@ -546,7 +484,7 @@ package Gtk.Style_Context is
       (Self   : not null access Gtk_Style_Context_Record;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
    --  Attaches Context to the given screen.
-   --  The screen is used to add style information from 'global' style
+   --  The screen is used to add style information from "global" style
    --  providers, such as the screens Gtk.Settings.Gtk_Settings instance.
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
@@ -610,11 +548,12 @@ package Gtk.Style_Context is
    --  "flags_return": return location for region flags
 
    procedure Invalidate (Self : not null access Gtk_Style_Context_Record);
+   pragma Obsolescent (Invalidate);
    --  Invalidates Context style information, so it will be reconstructed
-   --  again.
-   --  If you're using a Gtk.Style_Context.Gtk_Style_Context returned from
-   --  gtk_widget_get_style_context, you do not need to call this yourself.
+   --  again. It is useful if you modify the Context and need the new
+   --  information immediately.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.12, 1
 
    function List_Classes
       (Self : not null access Gtk_Style_Context_Record)
@@ -654,27 +593,19 @@ package Gtk.Style_Context is
    --  If Region_Id is null, all rendered elements using Context will be
    --  affected by this state transition.
    --  As a practical example, a Gtk.Button.Gtk_Button notifying a state
-   --  transition on the prelight state:
-   --    gtk_style_context_notify_state_change (context,
-   --       gtk_widget_get_window (widget),
-   --       NULL,
-   --       GTK_STATE_PRELIGHT,
-   --       button->in_button);
-   --  Can be handled in the CSS file like this:
-   --    GtkButton {
-   --       background-color: &num;f00
-   --    }
-   --    GtkButton:hover {
-   --       background-color: &num;fff;
-   --       transition: 200ms linear
-   --    }
+   --  transition on the prelight state: |[<!-- language="C" -->
+   --  gtk_style_context_notify_state_change (context, gtk_widget_get_window
+   --  (widget), NULL, GTK_STATE_PRELIGHT, button->in_button); ]|
+   --  Can be handled in the CSS file like this: |[ GtkButton {
+   --  background-color: f00 }
+   --  GtkButton:hover { background-color: fff; transition: 200ms linear } ]|
    --  This combination will animate the button background from red to white
    --  if a pointer enters the button, and back to red if the pointer leaves
    --  the button.
    --  Note that State is used when finding the transition parameters, which
    --  is why the style places the transition under the :hover pseudo-class.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, This function does nothing.
+   --  Deprecated since 3.6, 1
    --  "window": a Gdk.Gdk_Window
    --  "region_id": animatable region to notify on, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
@@ -688,7 +619,7 @@ package Gtk.Style_Context is
    --  Pops an animatable region from Context. See
    --  Gtk.Style_Context.Push_Animatable_Region.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, This function does nothing.
+   --  Deprecated since 3.6, 1
 
    procedure Push_Animatable_Region
       (Self      : not null access Gtk_Style_Context_Record;
@@ -702,7 +633,7 @@ package Gtk.Style_Context is
    --  The Region_Id used must be unique in Context so the theming engine can
    --  uniquely identify rendered elements subject to a state transition.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, This function does nothing.
+   --  Deprecated since 3.6, 1
    --  "region_id": unique identifier for the animatable region
 
    procedure Remove_Class
@@ -748,7 +679,7 @@ package Gtk.Style_Context is
    --  together with it so the invalidation areas for any ongoing animation are
    --  scrolled together with it.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, This function does nothing.
+   --  Deprecated since 3.6, 1
    --  "window": a Gdk.Gdk_Window used previously in
    --  Gtk.Style_Context.Notify_State_Change
    --  "dx": Amount to scroll in the X axis
@@ -775,7 +706,7 @@ package Gtk.Style_Context is
    --  closest to being set. This means transition animation will run from 0 to
    --  1 when State is being set and from 1 to 0 when it's being unset.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, This function always returns False
+   --  Deprecated since 3.6, 1
    --  "state": a widget state
    --  "progress": return location for the transition progress
 
@@ -801,8 +732,7 @@ package Gtk.Style_Context is
    --  construction for all Gtk_Style_Contexts under Screen.
    --  GTK+ uses this to make styling information from
    --  Gtk.Settings.Gtk_Settings available.
-   --  Note:
-   --  If both priorities are the same, A
+   --  Note: If both priorities are the same, A
    --  Gtk.Style_Provider.Gtk_Style_Provider added through
    --  Gtk.Style_Context.Add_Provider takes precedence over another added
    --  through this function.
@@ -841,10 +771,10 @@ package Gtk.Style_Context is
        Width   : Gdouble;
        Height  : Gdouble);
    --  Renders a handle (as in Gtk.Handle_Box.Gtk_Handle_Box,
-   --  Gtk.Paned.Gtk_Paned and Gtk.Window.Gtk_Window<!-- -->'s resize grip), in
-   --  the rectangle determined by X, Y, Width, Height.
-   --  == Handles rendered for the paned and grip classes ==
-   --  <inlinegraphic fileref="handles.png" format="PNG"/>
+   --  Gtk.Paned.Gtk_Paned and Gtk.Window.Gtk_Window's resize grip), in the
+   --  rectangle determined by X, Y, Width, Height.
+   --  Handles rendered for the paned and grip classes:
+   --  ![](handles.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -864,8 +794,8 @@ package Gtk.Style_Context is
    --  The Gtk.Enums.Gtk_State_Flag_Active state determines whether the check
    --  is on or off, and Gtk.Enums.Gtk_State_Flag_Inconsistent determines
    --  whether it should be marked as undefined.
-   --  == Typical checkmark rendering ==
-   --  <inlinegraphic fileref="checks.png" format="PNG"/>
+   --  Typical checkmark rendering:
+   --  ![](checks.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -885,8 +815,8 @@ package Gtk.Style_Context is
    --  Gtk.Enums.Gtk_State_Flag_Active state will determine whether the option
    --  is on or off, and Gtk.Enums.Gtk_State_Flag_Inconsistent whether it
    --  should be marked as undefined.
-   --  == Typical option mark rendering ==
-   --  <inlinegraphic fileref="options.png" format="PNG"/>
+   --  Typical option mark rendering:
+   --  ![](options.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -903,9 +833,9 @@ package Gtk.Style_Context is
        Y       : Gdouble;
        Size    : Gdouble);
    --  Renders an arrow pointing to Angle.
-   --  == Typical arrow rendering at 0, 1&solidus;2 &pi;, &pi; and 3&solidus;2
-   --  &pi; ==
-   --  <inlinegraphic fileref="arrows.png" format="PNG"/>
+   --  Typical arrow rendering at 0, 1&solidus;2 &pi;, &pi; and 3&solidus;2
+   --  &pi;:
+   --  ![](arrows.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -923,9 +853,9 @@ package Gtk.Style_Context is
        Width   : Gdouble;
        Height  : Gdouble);
    --  Renders the background of an element.
-   --  <title>Typical background rendering, showing the effect of
-   --  'background-image', 'border-width' and 'border-radius'</title>
-   --  <inlinegraphic fileref="background.png" format="PNG"/>
+   --  Typical background rendering, showing the effect of `background-image`,
+   --  `border-width` and `border-radius`:
+   --  ![](background.png)
    --  Since: gtk+ 3.0.
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -942,9 +872,9 @@ package Gtk.Style_Context is
        Width   : Gdouble;
        Height  : Gdouble);
    --  Renders a frame around the rectangle defined by X, Y, Width, Height.
-   --  <title>Examples of frame rendering, showing the effect of
-   --  'border-image', 'border-color', 'border-width', 'border-radius' and
-   --  junctions</title> <inlinegraphic fileref="frames.png" format="PNG"/>
+   --  Examples of frame rendering, showing the effect of `border-image`,
+   --  `border-color`, `border-width`, `border-radius` and junctions:
+   --  ![](frames.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -964,8 +894,8 @@ package Gtk.Style_Context is
    --  Gtk.Expander.Gtk_Expander) in the area defined by X, Y, Width, Height.
    --  The state Gtk.Enums.Gtk_State_Flag_Active determines whether the
    --  expander is collapsed or expanded.
-   --  == Typical expander rendering ==
-   --  <inlinegraphic fileref="expanders.png" format="PNG"/>
+   --  Typical expander rendering:
+   --  ![](expanders.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -983,8 +913,8 @@ package Gtk.Style_Context is
        Height  : Gdouble);
    --  Renders a focus indicator on the rectangle determined by X, Y, Width,
    --  Height.
-   --  == Typical focus rendering ==
-   --  <inlinegraphic fileref="focus.png" format="PNG"/>
+   --  Typical focus rendering:
+   --  ![](focus.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -1034,8 +964,8 @@ package Gtk.Style_Context is
    --  Renders a slider (as in Gtk.Scale.Gtk_Scale) in the rectangle defined
    --  by X, Y, Width, Height. Orientation defines whether the slider is
    --  vertical or horizontal.
-   --  == Typical slider rendering ==
-   --  <inlinegraphic fileref="sliders.png" format="PNG"/>
+   --  Typical slider rendering:
+   --  ![](sliders.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -1059,8 +989,8 @@ package Gtk.Style_Context is
    --  leaving a gap on one side. Xy0_Gap and Xy1_Gap will mean X coordinates
    --  for Gtk.Enums.Pos_Top and Gtk.Enums.Pos_Bottom gap sides, and Y
    --  coordinates for Gtk.Enums.Pos_Left and Gtk.Enums.Pos_Right.
-   --  == Typical rendering of a frame with a gap ==
-   --  <inlinegraphic fileref="frame-gap.png" format="PNG"/>
+   --  Typical rendering of a frame with a gap:
+   --  ![](frame-gap.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -1084,8 +1014,8 @@ package Gtk.Style_Context is
    --  Renders a extension (as in a Gtk.Notebook.Gtk_Notebook tab) in the
    --  rectangle defined by X, Y, Width, Height. The side where the extension
    --  connects to is defined by Gap_Side.
-   --  == Typical extension rendering ==
-   --  <inlinegraphic fileref="extensions.png" format="PNG"/>
+   --  Typical extension rendering:
+   --  ![](extensions.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t

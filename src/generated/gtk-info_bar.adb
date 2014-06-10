@@ -158,6 +158,19 @@ package body Gtk.Info_Bar is
       return Internal (Get_Object (Self));
    end Get_Message_Type;
 
+   ---------------------------
+   -- Get_Show_Close_Button --
+   ---------------------------
+
+   function Get_Show_Close_Button
+      (Self : not null access Gtk_Info_Bar_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_info_bar_get_show_close_button");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Show_Close_Button;
+
    --------------
    -- Response --
    --------------
@@ -219,6 +232,20 @@ package body Gtk.Info_Bar is
    begin
       Internal (Get_Object (Self), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
+
+   ---------------------------
+   -- Set_Show_Close_Button --
+   ---------------------------
+
+   procedure Set_Show_Close_Button
+      (Self    : not null access Gtk_Info_Bar_Record;
+       Setting : Boolean)
+   is
+      procedure Internal (Self : System.Address; Setting : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_info_bar_set_show_close_button");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Setting));
+   end Set_Show_Close_Button;
 
    ---------------------
    -- Get_Orientation --

@@ -23,7 +23,10 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -193,6 +196,21 @@ package body Gtk.File_Chooser_Widget is
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
    end Get_Current_Folder_Uri;
+
+   ----------------------
+   -- Get_Current_Name --
+   ----------------------
+
+   function Get_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record)
+       return UTF8_String
+   is
+      function Internal
+         (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_file_chooser_get_current_name");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
+   end Get_Current_Name;
 
    -----------------------------------
    -- Get_Do_Overwrite_Confirmation --
@@ -919,5 +937,667 @@ package body Gtk.File_Chooser_Widget is
       Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
    end Unselect_Uri;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_File_Chooser_Widget_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_File_Chooser_Widget_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_File_Chooser_Widget_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_File_Chooser_Widget_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_UTF8_String_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_UTF8_String_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_File_Chooser_Widget_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_File_Chooser_Widget_Gint_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gint_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gint_Void);
+
+   procedure Connect
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_File_Chooser_Widget_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_File_Chooser_Widget_UTF8_String_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_File_Chooser_Widget_Gint_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gint_Void);
+
+   procedure Marsh_GObject_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Void);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_File_Chooser_Widget_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_File_Chooser_Widget_Gint_Void);
+
+   procedure Marsh_Gtk_File_Chooser_Widget_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_File_Chooser_Widget_UTF8_String_Void);
+
+   procedure Marsh_Gtk_File_Chooser_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_File_Chooser_Widget_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_File_Chooser_Widget_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_File_Chooser_Widget_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_File_Chooser_Widget_UTF8_String_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_File_Chooser_Widget_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_File_Chooser_Widget_Gint_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_File_Chooser_Widget_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_UTF8_String_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_File_Chooser_Widget_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   -----------------------------
+   -- Marsh_GObject_Gint_Void --
+   -----------------------------
+
+   procedure Marsh_GObject_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Gint (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gint_Void;
+
+   ------------------------------------
+   -- Marsh_GObject_UTF8_String_Void --
+   ------------------------------------
+
+   procedure Marsh_GObject_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_UTF8_String_Void;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ---------------------------------------------
+   -- Marsh_Gtk_File_Chooser_Widget_Gint_Void --
+   ---------------------------------------------
+
+   procedure Marsh_Gtk_File_Chooser_Widget_Gint_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_File_Chooser_Widget_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_File_Chooser_Widget := Gtk_File_Chooser_Widget (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gint (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_File_Chooser_Widget_Gint_Void;
+
+   ----------------------------------------------------
+   -- Marsh_Gtk_File_Chooser_Widget_UTF8_String_Void --
+   ----------------------------------------------------
+
+   procedure Marsh_Gtk_File_Chooser_Widget_UTF8_String_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_File_Chooser_Widget_UTF8_String_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_File_Chooser_Widget := Gtk_File_Chooser_Widget (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_UTF8_String (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_File_Chooser_Widget_UTF8_String_Void;
+
+   ----------------------------------------
+   -- Marsh_Gtk_File_Chooser_Widget_Void --
+   ----------------------------------------
+
+   procedure Marsh_Gtk_File_Chooser_Widget_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_File_Chooser_Widget_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_File_Chooser_Widget := Gtk_File_Chooser_Widget (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_File_Chooser_Widget_Void;
+
+   -----------------------
+   -- On_Desktop_Folder --
+   -----------------------
+
+   procedure On_Desktop_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "desktop-folder" & ASCII.NUL, Call, After);
+   end On_Desktop_Folder;
+
+   -----------------------
+   -- On_Desktop_Folder --
+   -----------------------
+
+   procedure On_Desktop_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "desktop-folder" & ASCII.NUL, Call, After, Slot);
+   end On_Desktop_Folder;
+
+   --------------------
+   -- On_Down_Folder --
+   --------------------
+
+   procedure On_Down_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "down-folder" & ASCII.NUL, Call, After);
+   end On_Down_Folder;
+
+   --------------------
+   -- On_Down_Folder --
+   --------------------
+
+   procedure On_Down_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "down-folder" & ASCII.NUL, Call, After, Slot);
+   end On_Down_Folder;
+
+   --------------------
+   -- On_Home_Folder --
+   --------------------
+
+   procedure On_Home_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "home-folder" & ASCII.NUL, Call, After);
+   end On_Home_Folder;
+
+   --------------------
+   -- On_Home_Folder --
+   --------------------
+
+   procedure On_Home_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "home-folder" & ASCII.NUL, Call, After, Slot);
+   end On_Home_Folder;
+
+   -----------------------
+   -- On_Location_Popup --
+   -----------------------
+
+   procedure On_Location_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_UTF8_String_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "location-popup" & ASCII.NUL, Call, After);
+   end On_Location_Popup;
+
+   -----------------------
+   -- On_Location_Popup --
+   -----------------------
+
+   procedure On_Location_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "location-popup" & ASCII.NUL, Call, After, Slot);
+   end On_Location_Popup;
+
+   --------------------------------
+   -- On_Location_Popup_On_Paste --
+   --------------------------------
+
+   procedure On_Location_Popup_On_Paste
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "location-popup-on-paste" & ASCII.NUL, Call, After);
+   end On_Location_Popup_On_Paste;
+
+   --------------------------------
+   -- On_Location_Popup_On_Paste --
+   --------------------------------
+
+   procedure On_Location_Popup_On_Paste
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "location-popup-on-paste" & ASCII.NUL, Call, After, Slot);
+   end On_Location_Popup_On_Paste;
+
+   ------------------------------
+   -- On_Location_Toggle_Popup --
+   ------------------------------
+
+   procedure On_Location_Toggle_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "location-toggle-popup" & ASCII.NUL, Call, After);
+   end On_Location_Toggle_Popup;
+
+   ------------------------------
+   -- On_Location_Toggle_Popup --
+   ------------------------------
+
+   procedure On_Location_Toggle_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "location-toggle-popup" & ASCII.NUL, Call, After, Slot);
+   end On_Location_Toggle_Popup;
+
+   -----------------------
+   -- On_Quick_Bookmark --
+   -----------------------
+
+   procedure On_Quick_Bookmark
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Gint_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "quick-bookmark" & ASCII.NUL, Call, After);
+   end On_Quick_Bookmark;
+
+   -----------------------
+   -- On_Quick_Bookmark --
+   -----------------------
+
+   procedure On_Quick_Bookmark
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "quick-bookmark" & ASCII.NUL, Call, After, Slot);
+   end On_Quick_Bookmark;
+
+   ------------------------
+   -- On_Recent_Shortcut --
+   ------------------------
+
+   procedure On_Recent_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "recent-shortcut" & ASCII.NUL, Call, After);
+   end On_Recent_Shortcut;
+
+   ------------------------
+   -- On_Recent_Shortcut --
+   ------------------------
+
+   procedure On_Recent_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "recent-shortcut" & ASCII.NUL, Call, After, Slot);
+   end On_Recent_Shortcut;
+
+   ------------------------
+   -- On_Search_Shortcut --
+   ------------------------
+
+   procedure On_Search_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "search-shortcut" & ASCII.NUL, Call, After);
+   end On_Search_Shortcut;
+
+   ------------------------
+   -- On_Search_Shortcut --
+   ------------------------
+
+   procedure On_Search_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "search-shortcut" & ASCII.NUL, Call, After, Slot);
+   end On_Search_Shortcut;
+
+   --------------------
+   -- On_Show_Hidden --
+   --------------------
+
+   procedure On_Show_Hidden
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "show-hidden" & ASCII.NUL, Call, After);
+   end On_Show_Hidden;
+
+   --------------------
+   -- On_Show_Hidden --
+   --------------------
+
+   procedure On_Show_Hidden
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "show-hidden" & ASCII.NUL, Call, After, Slot);
+   end On_Show_Hidden;
+
+   ------------------
+   -- On_Up_Folder --
+   ------------------
+
+   procedure On_Up_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "up-folder" & ASCII.NUL, Call, After);
+   end On_Up_Folder;
+
+   ------------------
+   -- On_Up_Folder --
+   ------------------
+
+   procedure On_Up_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "up-folder" & ASCII.NUL, Call, After, Slot);
+   end On_Up_Folder;
 
 end Gtk.File_Chooser_Widget;

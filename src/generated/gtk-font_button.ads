@@ -250,25 +250,31 @@ package Gtk.Font_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Font_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Font_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Font_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Font_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Font_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Font_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    function Get_Font
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String;
@@ -364,7 +370,7 @@ package Gtk.Font_Button is
    --  handling this signal, use Gtk.Font_Button.Get_Font_Name to find out
    --  which font was just selected.
    --
-   --  Note that this signal is only emitted when the *user* changes the font.
+   --  Note that this signal is only emitted when the user changes the font.
    --  If you need to react to programmatic font changes as well, use the
    --  notify::font-name signal.
 

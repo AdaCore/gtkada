@@ -25,18 +25,17 @@
 --  The Gtk.Cell_Area_Box.Gtk_Cell_Area_Box renders cell renderers into a row
 --  or a column depending on its Gtk.Enums.Gtk_Orientation.
 --
---  GtkCellAreaBox uses a notion of *packing*. Packing refers to adding cell
+--  GtkCellAreaBox uses a notion of packing. Packing refers to adding cell
 --  renderers with reference to a particular position in a
 --  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box. There are two reference positions: the
---  *start* and the *end* of the box. When the
---  Gtk.Cell_Area_Box.Gtk_Cell_Area_Box is oriented in the
---  Gtk.Enums.Orientation_Vertical orientation, the start is defined as the top
---  of the box and the end is defined as the bottom. In the
+--  start and the end of the box. When the Gtk.Cell_Area_Box.Gtk_Cell_Area_Box
+--  is oriented in the Gtk.Enums.Orientation_Vertical orientation, the start is
+--  defined as the top of the box and the end is defined as the bottom. In the
 --  Gtk.Enums.Orientation_Horizontal orientation start is defined as the left
 --  side and the end is defined as the right side.
 --
 --  Alignments of Gtk_Cell_Renderers rendered in adjacent rows can be
---  configured by configuring the Gtk.Cell_Area_Box.Gtk_Cell_Area_Box:align
+--  configured by configuring the Gtk.Cell_Area_Box.Gtk_Cell_Area_Box align
 --  child cell property with Gtk.Cell_Area.Cell_Set_Property or by specifying
 --  the "align" argument to Gtk.Cell_Area_Box.Pack_Start and
 --  Gtk.Cell_Area_Box.Pack_End.

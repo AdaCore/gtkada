@@ -50,19 +50,21 @@
 --  The application can set the position of the slider as if it were set by
 --  the user, by calling Gtk.Paned.Set_Position.
 --
---  == Creating a paned widget with minimum sizes. ==
+--  ## Creating a paned widget with minimum sizes.
 --
---    GtkWidget *hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
---    GtkWidget *frame1 = gtk_frame_new (NULL);
---    GtkWidget *frame2 = gtk_frame_new (NULL);
---    gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
---    gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
---    gtk_widget_set_size_request (hpaned, 200, -1);
---    gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
---    gtk_widget_set_size_request (frame1, 50, -1);
---    gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
---    gtk_widget_set_size_request (frame2, 50, -1);
+--  |[<!-- language="C" --> GtkWidget *hpaned = gtk_paned_new
+--  (GTK_ORIENTATION_HORIZONTAL); GtkWidget *frame1 = gtk_frame_new (NULL);
+--  GtkWidget *frame2 = gtk_frame_new (NULL); gtk_frame_set_shadow_type
+--  (GTK_FRAME (frame1), GTK_SHADOW_IN); gtk_frame_set_shadow_type (GTK_FRAME
+--  (frame2), GTK_SHADOW_IN);
 --
+--  gtk_widget_set_size_request (hpaned, 200, -1);
+--
+--  gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
+--  gtk_widget_set_size_request (frame1, 50, -1);
+--
+--  gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
+--  gtk_widget_set_size_request (frame2, 50, -1); ]|
 --
 --  </description>
 --  <screenshot>gtk-paned</screenshot>
@@ -268,10 +270,9 @@ package Gtk.Paned is
        Call  : Cb_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::accept-position signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to accept the current position of the handle when moving it using key
-   --  bindings.
+   --  The ::accept-position signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to accept the current position of the handle when
+   --  moving it using key bindings.
    --
    --  The default binding for this signal is Return or Space.
 
@@ -285,10 +286,10 @@ package Gtk.Paned is
        Call  : Cb_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::cancel-position signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cancel moving the position of the handle using key bindings. The
-   --  position of the handle will be reset to the value prior to moving it.
+   --  The ::cancel-position signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to cancel moving the position of the handle using key
+   --  bindings. The position of the handle will be reset to the value prior to
+   --  moving it.
    --
    --  The default binding for this signal is Escape.
 
@@ -310,9 +311,9 @@ package Gtk.Paned is
        Call  : Cb_GObject_Boolean_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::cycle-child-focus signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle the focus between the children of the paned.
+   --  The ::cycle-child-focus signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted to cycle the focus between
+   --  the children of the paned.
    --
    --  The default binding is f6.
 
@@ -326,10 +327,10 @@ package Gtk.Paned is
        Call  : Cb_GObject_Boolean_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::cycle-handle-focus signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cycle whether the paned should grab focus to allow the user to change
-   --  position of the handle by using key bindings.
+   --  The ::cycle-handle-focus signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted to cycle whether the paned
+   --  should grab focus to allow the user to change position of the handle by
+   --  using key bindings.
    --
    --  The default binding for this signal is f8.
 
@@ -351,9 +352,9 @@ package Gtk.Paned is
        Call  : Cb_GObject_Gtk_Scroll_Type_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-handle signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to move the handle when the user is using key bindings to move it.
+   --  The ::move-handle signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to move the handle when the user is using key
+   --  bindings to move it.
 
    Signal_Toggle_Handle_Focus : constant Glib.Signal_Name := "toggle-handle-focus";
    procedure On_Toggle_Handle_Focus
@@ -365,10 +366,9 @@ package Gtk.Paned is
        Call  : Cb_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::toggle-handle-focus is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to accept the current position of the handle and then move focus to the
-   --  next widget in the focus chain.
+   --  The ::toggle-handle-focus is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to accept the current position of the handle and then
+   --  move focus to the next widget in the focus chain.
    --
    --  The default binding is Tab.
 

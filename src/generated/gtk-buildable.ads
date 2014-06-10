@@ -23,20 +23,18 @@
 
 --  <description>
 --  GtkBuildable allows objects to extend and customize their deserialization
---  from <link linkend="BUILDER-UI">GtkBuilder UI descriptions</link>. The
---  interface includes methods for setting names and properties of objects,
---  parsing custom tags and constructing child objects.
+--  from [GtkBuilder UI descriptions][BUILDER-UI]. The interface includes
+--  methods for setting names and properties of objects, parsing custom tags
+--  and constructing child objects.
 --
 --  The GtkBuildable interface is implemented by all widgets and many of the
 --  non-widget objects that are provided by GTK+. The main user of this
 --  interface is Gtk.Builder.Gtk_Builder. There should be very little need for
---  applications to call any <function>gtk_buildable_...</function> functions.
---
---  Note:
+--  applications to call any of these functions directly.
 --
 --  An object only needs to implement this interface if it needs to extend the
 --  Gtk.Builder.Gtk_Builder format or run any extra routines at deserialization
---  time
+--  time.
 --
 --  </description>
 pragma Ada_2005;
@@ -126,9 +124,8 @@ package Gtk.Buildable is
 
    function Get_Name (Self : Gtk_Buildable) return UTF8_String;
    --  Gets the name of the Buildable object.
-   --  Gtk.Builder.Gtk_Builder sets the name based on the <link
-   --  linkend="BUILDER-UI">GtkBuilder UI definition</link> used to construct
-   --  the Buildable.
+   --  Gtk.Builder.Gtk_Builder sets the name based on the [GtkBuilder UI
+   --  definition][BUILDER-UI] used to construct the Buildable.
    --  Since: gtk+ 2.12
 
    procedure Set_Name (Self : Gtk_Buildable; Name : UTF8_String);
@@ -139,10 +136,10 @@ package Gtk.Buildable is
    procedure Parser_Finished
       (Self    : Gtk_Buildable;
        Builder : not null access Gtk.Builder.Gtk_Builder_Record'Class);
-   --  Called when the builder finishes the parsing of a <link
-   --  linkend="BUILDER-UI">GtkBuilder UI definition</link>. Note that this
-   --  will be called once for each time Gtk.Builder.Add_From_File or
-   --  Gtk.Builder.Add_From_String is called on a builder.
+   --  Called when the builder finishes the parsing of a [GtkBuilder UI
+   --  definition][BUILDER-UI]. Note that this will be called once for each
+   --  time Gtk.Builder.Add_From_File or Gtk.Builder.Add_From_String is called
+   --  on a builder.
    --  Since: gtk+ 2.12
    --  "builder": a Gtk.Builder.Gtk_Builder
 

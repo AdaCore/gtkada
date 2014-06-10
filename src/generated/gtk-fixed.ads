@@ -31,18 +31,16 @@
 --  broken applications. With Gtk.Fixed.Gtk_Fixed, the following things will
 --  result in truncated text, overlapping widgets, and other display bugs:
 --
--- 
+--  - Themes, which may change widget sizes.
 --
---     * Themes, which may change widget sizes.
---
---     * Fonts other than the one you used to write the app will of course
---  change the size of widgets containing text; keep in mind that users may use
---  a larger font because of difficulty reading the default, or they may be
---  using Windows or the framebuffer port of GTK+, where different fonts are
+--  - Fonts other than the one you used to write the app will of course change
+--  the size of widgets containing text; keep in mind that users may use a
+--  larger font because of difficulty reading the default, or they may be using
+--  Windows or the framebuffer port of GTK+, where different fonts are
 --  available.
 --
---     * Translation of text into other languages changes its size. Also,
---  display of non-English text will use a different font in many cases.
+--  - Translation of text into other languages changes its size. Also, display
+--  of non-English text will use a different font in many cases.
 --
 --  In addition, the fixed widget can't properly be mirrored in right-to-left
 --  languages such as Hebrew and Arabic. i.e. normally GTK+ will flip the

@@ -118,7 +118,9 @@ package body Gtk.Css_Provider is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Acc_Error'Access);
       Free (Tmp_Path);
-      Error.all := Acc_Error;
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Tmp_Return /= 0;
    end Load_From_Path;
 

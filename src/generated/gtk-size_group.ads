@@ -71,23 +71,19 @@
 --  static sizes as well as widgets that grow (such as ellipsizing text) need
 --  no such considerations.
 --
---  == GtkSizeGroup as GtkBuildable ==
+--  # GtkSizeGroup as GtkBuildable
 --
 --  Size groups can be specified in a UI definition by placing an <object>
---  element with 'class="GtkSizeGroup"' somewhere in the UI definition. The
+--  element with `class="GtkSizeGroup"` somewhere in the UI definition. The
 --  widgets that belong to the size group are specified by a <widgets> element
 --  that may contain multiple <widget> elements, one for each member of the
---  size group. The name attribute gives the id of the widget.
+--  size group. The "name" attribute gives the id of the widget.
 --
---  == A UI definition fragment with GtkSizeGroup ==
+--  An example of a UI definition fragment with GtkSizeGroup: |[ <object
+--  class="GtkSizeGroup"> <property
+--  name="mode">GTK_SIZE_GROUP_HORIZONTAL</property> <widgets> <widget
+--  name="radio1"/> <widget name="radio2"/> </widgets> </object> ]|
 --
---    <object class="GtkSizeGroup">
---    <property name="mode">GTK_SIZE_GROUP_HORIZONTAL</property>
---    <widgets>
---    <widget name="radio1"/>
---    <widget name="radio2"/>
---    </widgets>
---    </object>
 --  </description>
 --  <testgtk>create_size_groups.adb</testgtk>
 pragma Ada_2005;

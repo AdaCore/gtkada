@@ -33,26 +33,22 @@
 --  Gtk.Editable.Gtk_Editable::insert-text, an application can convert all
 --  entry into a widget into uppercase.
 --
---  == Forcing entry to uppercase. ==
+--  ## Forcing entry to uppercase.
 --
---    include <ctype.h>
---    void
---    insert_text_handler (GtkEditable *editable,
---       const gchar *text,
---       gint         length,
---       gint        *position,
---       gpointer     data)
---    {
---       gchar *result = g_utf8_strup (text, length);
---       g_signal_handlers_block_by_func (editable,
---            (gpointer) insert_text_handler, data);
---       gtk_editable_insert_text (editable, result, length, position);
---       g_signal_handlers_unblock_by_func (editable,
---            (gpointer) insert_text_handler, data);
---       g_signal_stop_emission_by_name (editable, "insert_text");
---       g_free (result);
---    }
+--  |[<!-- language="C" --> include <ctype.h>;
 --
+--  void insert_text_handler (GtkEditable *editable, const gchar *text, gint
+--  length, gint *position, gpointer data) { gchar *result = g_utf8_strup
+--  (text, length);
+--
+--  g_signal_handlers_block_by_func (editable, (gpointer) insert_text_handler,
+--  data); gtk_editable_insert_text (editable, result, length, position);
+--  g_signal_handlers_unblock_by_func (editable, (gpointer)
+--  insert_text_handler, data);
+--
+--  g_signal_stop_emission_by_name (editable, "insert_text");
+--
+--  g_free (result); } ]|
 --
 --  </description>
 pragma Ada_2005;

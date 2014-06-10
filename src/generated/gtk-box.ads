@@ -29,9 +29,9 @@
 --  children of a GtkBox are allocated one dimension in common, which is the
 --  height of a row, or the width of a column.
 --
---  GtkBox uses a notion of *packing*. Packing refers to adding widgets with
+--  GtkBox uses a notion of packing. Packing refers to adding widgets with
 --  reference to a particular position in a Gtk.Container.Gtk_Container. For a
---  GtkBox, there are two reference positions: the *start* and the *end* of the
+--  GtkBox, there are two reference positions: the start and the end of the
 --  box. For a vertical Gtk.Box.Gtk_Box, the start is defined as the top of the
 --  box and the end is defined as the bottom. For a horizontal Gtk.Box.Gtk_Box
 --  the start is defined as the left side and the end is defined as the right
@@ -44,26 +44,22 @@
 --
 --  Because GtkBox is a Gtk.Container.Gtk_Container, you may also use
 --  Gtk.Container.Add to insert widgets into the box, and they will be packed
---  with the default values for Gtk.Box.Gtk_Box:expand and
---  Gtk.Box.Gtk_Box:fill. Use Gtk.Container.Remove to remove widgets from the
---  GtkBox.
+--  with the default values for expand and fill child properties. Use
+--  Gtk.Container.Remove to remove widgets from the GtkBox.
 --
 --  Use Gtk.Box.Set_Homogeneous to specify whether or not all children of the
 --  GtkBox are forced to get the same amount of space.
 --
 --  Use Gtk.Box.Set_Spacing to determine how much space will be minimally
 --  placed between all children in the GtkBox. Note that spacing is added
---  *between* the children, while padding added by Gtk.Box.Pack_Start or
---  Gtk.Box.Pack_End is added *on either side* of the widget it belongs to.
+--  between the children, while padding added by Gtk.Box.Pack_Start or
+--  Gtk.Box.Pack_End is added on either side of the widget it belongs to.
 --
 --  Use Gtk.Box.Reorder_Child to move a GtkBox child to a different place in
 --  the box.
 --
---  Use Gtk.Box.Set_Child_Packing to reset the Gtk.Box.Gtk_Box:expand,
---  Gtk.Box.Gtk_Box:fill and Gtk.Box.Gtk_Box:padding child properties. Use
---  Gtk.Box.Query_Child_Packing to query these fields.
---
---  Note:
+--  Use Gtk.Box.Set_Child_Packing to reset the expand, fill and padding child
+--  properties. Use Gtk.Box.Query_Child_Packing to query these fields.
 --
 --  Note that a single-row or single-column Gtk.Grid.Gtk_Grid provides exactly
 --  the same functionality as Gtk.Box.Gtk_Box.
@@ -180,6 +176,37 @@ package Gtk.Box is
    -- Methods --
    -------------
 
+   function Get_Baseline_Position
+      (Box : not null access Gtk_Box_Record)
+       return Gtk.Enums.Gtk_Baseline_Position;
+   --  Gets the value set by Gtk.Box.Set_Baseline_Position.
+   --  Since: gtk+ 3.10
+
+   procedure Set_Baseline_Position
+      (Box      : not null access Gtk_Box_Record;
+       Position : Gtk.Enums.Gtk_Baseline_Position);
+   --  Sets the baseline position of a box. This affects only horizontal boxes
+   --  with at least one baseline aligned child. If there is more vertical
+   --  space available than requested, and the baseline is not allocated by the
+   --  parent then Position is used to allocate the baseline wrt the extra
+   --  space available.
+   --  Since: gtk+ 3.10
+   --  "position": a Gtk.Enums.Gtk_Baseline_Position
+
+   function Get_Center_Widget
+      (Box : not null access Gtk_Box_Record) return Gtk.Widget.Gtk_Widget;
+   --  Retrieves the center widget of the box.
+   --  Since: gtk+ 3.12
+
+   procedure Set_Center_Widget
+      (Box    : not null access Gtk_Box_Record;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Sets a center widget; that is a child widget that will be centered with
+   --  respect to the full width of the box, even if the children at either
+   --  side take up different amounts of space.
+   --  Since: gtk+ 3.12
+   --  "widget": the widget to center
+
    function Get_Homogeneous
       (Box : not null access Gtk_Box_Record) return Boolean;
    --  Returns whether the box is homogeneous (all children are the same
@@ -260,14 +287,10 @@ package Gtk.Box is
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
    --  Obtains information about how Child is packed into Box.
    --  "child": the Gtk.Widget.Gtk_Widget of the child to query
-   --  "expand": pointer to return location for Gtk.Box.Gtk_Box:expand child
-   --  property
-   --  "fill": pointer to return location for Gtk.Box.Gtk_Box:fill child
-   --  property
-   --  "padding": pointer to return location for Gtk.Box.Gtk_Box:padding child
-   --  property
-   --  "pack_type": pointer to return location for Gtk.Box.Gtk_Box:pack-type
-   --  child property
+   --  "expand": pointer to return location for expand child property
+   --  "fill": pointer to return location for fill child property
+   --  "padding": pointer to return location for padding child property
+   --  "pack_type": pointer to return location for pack-type child property
 
    procedure Set_Child_Packing
       (Box       : not null access Gtk_Box_Record;
@@ -278,20 +301,18 @@ package Gtk.Box is
        Pack_Type : Gtk.Enums.Gtk_Pack_Type);
    --  Sets the way Child is packed into Box.
    --  "child": the Gtk.Widget.Gtk_Widget of the child to set
-   --  "expand": the new value of the Gtk.Box.Gtk_Box:expand child property
-   --  "fill": the new value of the Gtk.Box.Gtk_Box:fill child property
-   --  "padding": the new value of the Gtk.Box.Gtk_Box:padding child property
-   --  "pack_type": the new value of the Gtk.Box.Gtk_Box:pack-type child
-   --  property
+   --  "expand": the new value of the expand child property
+   --  "fill": the new value of the fill child property
+   --  "padding": the new value of the padding child property
+   --  "pack_type": the new value of the pack-type child property
 
    procedure Reorder_Child
       (Box      : not null access Gtk_Box_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint);
-   --  Moves Child to a new Position in the list of Box children. The list is
-   --  the <structfield>children</structfield> field of Gtk.Box.Gtk_Box-struct,
-   --  and contains both widgets packed GTK_PACK_START as well as widgets
-   --  packed GTK_PACK_END, in the order that these widgets were added to Box.
+   --  Moves Child to a new Position in the list of Box children. The list
+   --  contains widgets packed GTK_PACK_START as well as widgets packed
+   --  GTK_PACK_END, in the order that these widgets were added to Box.
    --  A widget's position in the Box children list determines where the
    --  widget is packed into Box. A child widget at some position in the list
    --  will be packed just after all other widgets of the same packing type
@@ -326,6 +347,8 @@ package Gtk.Box is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
+
+   Baseline_Position_Property : constant Gtk.Enums.Property_Gtk_Baseline_Position;
 
    Homogeneous_Property : constant Glib.Properties.Property_Boolean;
 
@@ -367,4 +390,6 @@ private
      Glib.Properties.Build ("spacing");
    Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
+   Baseline_Position_Property : constant Gtk.Enums.Property_Gtk_Baseline_Position :=
+     Gtk.Enums.Build ("baseline-position");
 end Gtk.Box;

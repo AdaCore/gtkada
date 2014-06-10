@@ -21,6 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  A Pango.Tabs.Pango_Tab_Array struct contains an array of tab stops. Each
+--  tab stop has an alignment and a position.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -39,6 +44,8 @@ package Pango.Tabs is
    type Pango_Tab_Align is (
       Pango_Tab_Left);
    pragma Convention (C, Pango_Tab_Align);
+   --  A Pango.Tabs.Pango_Tab_Align specifies where a tab stop appears
+   --  relative to the text.
 
    ----------------------------
    -- Enumeration Properties --

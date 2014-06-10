@@ -661,6 +661,17 @@ package body Glib.Menu is
       Internal (Get_Object (Self), Position);
    end Remove;
 
+   ----------------
+   -- Remove_All --
+   ----------------
+
+   procedure Remove_All (Self : not null access Gmenu_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_menu_remove_all");
+   begin
+      Internal (Get_Object (Self));
+   end Remove_All;
+
    ---------------------------------
    -- Set_Action_And_Target_Value --
    ---------------------------------
@@ -723,6 +734,20 @@ package body Glib.Menu is
       Internal (Get_Object (Self), Tmp_Detailed_Action);
       Free (Tmp_Detailed_Action);
    end Set_Detailed_Action;
+
+   --------------
+   -- Set_Icon --
+   --------------
+
+   procedure Set_Icon
+      (Self : not null access Gmenu_Item_Record;
+       Icon : Glib.G_Icon.G_Icon)
+   is
+      procedure Internal (Self : System.Address; Icon : Glib.G_Icon.G_Icon);
+      pragma Import (C, Internal, "g_menu_item_set_icon");
+   begin
+      Internal (Get_Object (Self), Icon);
+   end Set_Icon;
 
    ---------------
    -- Set_Label --

@@ -351,6 +351,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkPaned",
            "GtkPageSetup",
            "GtkPaperSize",
+           "GtkPopover",
            "GtkPrintContext",
            "GtkPrintOperation",
            "GtkPrintSettings",
@@ -596,6 +597,7 @@ naming.type_exceptions = {
     "GdkEvent*": Proxy("Gdk.Event.Gdk_Event", ""),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
+    "cairo_format_t":        Proxy("Cairo.Cairo_Format"),
     "cairo_rectangle_int_t*": Proxy("Cairo.Region.Cairo_Rectangle_Int"),
     "cairo_content_t":       Proxy("Cairo.Cairo_Content"),
     "cairo_pattern_t*":      Proxy("Cairo.Cairo_Pattern"),
@@ -603,7 +605,8 @@ naming.type_exceptions = {
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
-    "GtkWidgetClass": Proxy("Glib.Object.GObject_Class"),
+    "GtkWidgetClass":    Proxy("Glib.Object.GObject_Class"),
+    "GtkWidgetClass*":   Proxy("Glib.Object.GObject_Class"),
 
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
     "PangoFontDescription": Proxy("Pango.Font.Pango_Font_Description",

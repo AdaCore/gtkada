@@ -31,7 +31,7 @@
 --  add it to the expander. When the expander is toggled, it will take care of
 --  showing and hiding the child automatically.
 --
---  == Special Usage ==
+--  # Special Usage
 --
 --  There are situations in which you may prefer to show and hide the expanded
 --  widget yourself, such as when you want to actually create the widget at
@@ -41,9 +41,10 @@
 --  its expansion state. You should watch this property with a signal
 --  connection as follows:
 --
---  <programlisting id="expander-callback-example"> expander =
---  gtk_expander_new_with_mnemonic ("_More Options"); g_signal_connect
---  (expander, "notify::expanded", G_CALLBACK (expander_callback), NULL);
+--  |[<!-- language="C" --> expander = gtk_expander_new_with_mnemonic ("_More
+--  Options"); g_signal_connect (expander, "notify::expanded", G_CALLBACK
+--  (expander_callback), NULL);
+--
 --  ...
 --
 --  static void expander_callback (GObject *object, GParamSpec *param_spec,
@@ -51,26 +52,21 @@
 --
 --  expander = GTK_EXPANDER (object);
 --
---  if (gtk_expander_get_expanded (expander)) { /* Show or create widgets */ }
---  else { /* Hide or destroy widgets */ } } </programlisting>
+--  if (gtk_expander_get_expanded (expander)) { // Show or create widgets }
+--  else { // Hide or destroy widgets } } ]|
 --
---  == GtkExpander as GtkBuildable ==
+--  # GtkExpander as GtkBuildable
 --
 --  The GtkExpander implementation of the GtkBuildable interface supports
 --  placing a child in the label position by specifying "label" as the "type"
 --  attribute of a <child> element. A normal content child can be specified
 --  without specifying a <child> type attribute.
 --
---  == A UI definition fragment with GtkExpander ==
+--  An example of a UI definition fragment with GtkExpander: |[ <object
+--  class="GtkExpander"> <child type="label"> <object class="GtkLabel"
+--  id="expander-label"/> </child> <child> <object class="GtkEntry"
+--  id="expander-content"/> </child> </object> ]|
 --
---    <object class="GtkExpander">
---    <child type="label">
---    <object class="GtkLabel" id="expander-label"/>
---    </child>
---    <child>
---    <object class="GtkEntry" id="expander-content"/>
---    </child>
---    </object>
 --  </description>
 --  <screenshot>gtk-expanded</screenshot>
 --  <group>Layout containers</group>
@@ -115,7 +111,7 @@ package Gtk.Expander is
        Label    : UTF8_String := "");
    --  Creates a new expander using Label as the text of the label. If
    --  characters in Label are preceded by an underscore, they are underlined.
-   --  If you need a literal underscore character in a label, use '__' (two
+   --  If you need a literal underscore character in a label, use "__" (two
    --  underscores). The first underlined character represents a keyboard
    --  accelerator called a mnemonic. Pressing Alt and that key activates the
    --  button.
@@ -127,7 +123,7 @@ package Gtk.Expander is
       (Label : UTF8_String := "") return Gtk_Expander;
    --  Creates a new expander using Label as the text of the label. If
    --  characters in Label are preceded by an underscore, they are underlined.
-   --  If you need a literal underscore character in a label, use '__' (two
+   --  If you need a literal underscore character in a label, use "__" (two
    --  underscores). The first underlined character represents a keyboard
    --  accelerator called a mnemonic. Pressing Alt and that key activates the
    --  button.
@@ -239,16 +235,15 @@ package Gtk.Expander is
    function Get_Use_Markup
       (Expander : not null access Gtk_Expander_Record) return Boolean;
    --  Returns whether the label's text is interpreted as marked up with the
-   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>. See
+   --  [Pango text markup language][PangoMarkupFormat]. See
    --  Gtk.Expander.Set_Use_Markup.
    --  Since: gtk+ 2.4
 
    procedure Set_Use_Markup
       (Expander   : not null access Gtk_Expander_Record;
        Use_Markup : Boolean);
-   --  Sets whether the text of the label contains markup in <link
-   --  linkend="PangoMarkupFormat">Pango's text markup language</link>. See
-   --  Gtk.Label.Set_Markup.
+   --  Sets whether the text of the label contains markup in [Pango's text
+   --  markup language][PangoMarkupFormat]. See Gtk.Label.Set_Markup.
    --  Since: gtk+ 2.4
    --  "use_markup": True if the label's text should be parsed for markup
 

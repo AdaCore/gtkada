@@ -26,9 +26,7 @@
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a toggle button.
 --
 --  Use Gtk.Toggle_Tool_Button.Gtk_New to create a new
---  Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button. Use
---  Gtk.Toggle_Tool_Button.Gtk_New_From_Stock to create a new
---  Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button containing a stock item.
+--  Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button.
 --
 --  </description>
 pragma Ada_2005;
@@ -105,7 +103,7 @@ package Gtk.Toggle_Tool_Button is
       (Button    : not null access Gtk_Toggle_Tool_Button_Record;
        Is_Active : Boolean);
    --  Sets the status of the toggle tool button. Set to True if you want the
-   --  GtkToggleButton to be 'pressed in', and False to raise it. This action
+   --  GtkToggleButton to be "pressed in", and False to raise it. This action
    --  causes the toggled signal to be emitted.
    --  Since: gtk+ 2.4
    --  "is_active": whether Button should be active
@@ -140,25 +138,31 @@ package Gtk.Toggle_Tool_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Toggle_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Toggle_Tool_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Toggle_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Toggle_Tool_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Toggle_Tool_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Toggle_Tool_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

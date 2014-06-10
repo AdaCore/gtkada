@@ -29,20 +29,19 @@
 --  GTK+ treats a dialog as a window split vertically. The top section is a
 --  Gtk.Box.Gtk_Vbox, and is where widgets such as a Gtk.Label.Gtk_Label or a
 --  Gtk.GEntry.Gtk_Entry should be packed. The bottom area is known as the
---  <structfield>action_area</structfield>. This is generally used for packing
---  buttons into the dialog which may perform functions such as cancel, ok, or
---  apply.
+--  "action area". This is generally used for packing buttons into the dialog
+--  which may perform functions such as cancel, ok, or apply.
 --
 --  Gtk.Dialog.Gtk_Dialog boxes are created with a call to Gtk.Dialog.Gtk_New
 --  or gtk_dialog_new_with_buttons. gtk_dialog_new_with_buttons is recommended;
 --  it allows you to set the dialog title, some convenient flags, and add
 --  simple buttons.
 --
---  If 'dialog' is a newly created dialog, the two primary areas of the window
+--  If "dialog" is a newly created dialog, the two primary areas of the window
 --  can be accessed through Gtk.Dialog.Get_Content_Area and
 --  Gtk.Dialog.Get_Action_Area, as can be seen from the example below.
 --
---  A 'modal' dialog (that is, one which freezes the rest of the application
+--  A "modal" dialog (that is, one which freezes the rest of the application
 --  from user input), can be created by calling Gtk.Window.Set_Modal on the
 --  dialog. Use the GTK_WINDOW macro to cast the widget returned from
 --  Gtk.Dialog.Gtk_New into a Gtk.Window.Gtk_Window. When using
@@ -71,33 +70,27 @@
 --  you'd need to create the dialog contents manually if you had more than a
 --  simple message in the dialog.
 --
---  == Simple GtkDialog usage ==
+--  An example for simple GtkDialog usage: |[<!-- language="C" --> // Function
+--  to open a dialog box with a message void quick_message (GtkWindow *parent,
+--  gchar *message) { GtkWidget *dialog, *label, *content_area; GtkDialogFlags
+--  flags;
 --
---    /* Function to open a dialog box displaying the message provided. */
---    void
---    quick_message (gchar *message)
---    {
---       GtkWidget *dialog, *label, *content_area;
---       /* Create the widgets */
---       dialog = gtk_dialog_new_with_buttons ("Message",
---          main_application_window,
---          GTK_DIALOG_DESTROY_WITH_PARENT,
---          GTK_STOCK_OK,
---          GTK_RESPONSE_NONE,
---          NULL);
---       content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
---       label = gtk_label_new (message);
---       /* Ensure that the dialog box is destroyed when the user responds */
---       g_signal_connect_swapped (dialog,
---          "response",
---          G_CALLBACK (gtk_widget_destroy),
---          dialog);
---       /* Add the label, and show everything we've added to the dialog */
---       gtk_container_add (GTK_CONTAINER (content_area), label);
---       gtk_widget_show_all (dialog);
---    }
+--  // Create the widgets flags = GTK_DIALOG_DESTROY_WITH_PARENT; dialog =
+--  gtk_dialog_new_with_buttons ("Message", parent, flags, _("_OK"),
+--  GTK_RESPONSE_NONE, NULL); content_area = gtk_dialog_get_content_area
+--  (GTK_DIALOG (dialog)); label = gtk_label_new (message);
 --
---  == GtkDialog as GtkBuildable ==
+--  // Ensure that the dialog box is destroyed when the user responds
+--
+--  g_signal_connect_swapped (dialog, "response", G_CALLBACK
+--  (gtk_widget_destroy), dialog);
+--
+--  // Add the label, and show everything we've added
+--
+--  gtk_container_add (GTK_CONTAINER (content_area), label);
+--  gtk_widget_show_all (dialog); } ]|
+--
+--  # GtkDialog as GtkBuildable
 --
 --  The GtkDialog implementation of the Gtk.Buildable.Gtk_Buildable interface
 --  exposes the Vbox and Action_Area as internal children with the names "vbox"
@@ -108,28 +101,16 @@
 --  numeric response, and the content of the element is the id of widget (which
 --  should be a child of the dialogs Action_Area).
 --
---  == A <structname>GtkDialog</structname> UI definition fragment. ==
+--  An example of a Gtk.Dialog.Gtk_Dialog UI definition fragment: |[ <object
+--  class="GtkDialog" id="dialog1"> <child internal-child="vbox"> <object
+--  class="GtkVBox" id="vbox"> <child internal-child="action_area"> <object
+--  class="GtkHButtonBox" id="button_box"> <child> <object class="GtkButton"
+--  id="button_cancel"/> </child> <child> <object class="GtkButton"
+--  id="button_ok"/> </child> </object> </child> </object> </child>
+--  <action-widgets> <action-widget response="ok">button_ok</action-widget>
+--  <action-widget response="cancel">button_cancel</action-widget>
+--  </action-widgets> </object> ]|
 --
---    <object class="GtkDialog" id="dialog1">
---    <child internal-child="vbox">"
---    <object class="GtkVBox" id="vbox">
---    <child internal-child="action_area">
---    <object class="GtkHButtonBox" id="button_box">
---    <child>
---    <object class="GtkButton" id="button_cancel"/>
---    </child>
---    <child>
---    <object class="GtkButton" id="button_ok"/>
---    </child>
---    </object>
---    </child>
---    </object>
---    </child>
---    <action-widgets>
---    <action-widget response="3">button_ok</action-widget>
---    <action-widget response="-5">button_cancel</action-widget>
---    </action-widgets>
---    </object>
 --  </description>
 --  <description>
 --  See Gtkada.Dialogs for a higher level dialog interface.
@@ -141,14 +122,15 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Screen;    use Gdk.Screen;
-with Glib;          use Glib;
-with Glib.Object;   use Glib.Object;
-with Glib.Types;    use Glib.Types;
-with Gtk.Box;       use Gtk.Box;
-with Gtk.Buildable; use Gtk.Buildable;
-with Gtk.Widget;    use Gtk.Widget;
-with Gtk.Window;    use Gtk.Window;
+with Gdk.Screen;      use Gdk.Screen;
+with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Box;         use Gtk.Box;
+with Gtk.Buildable;   use Gtk.Buildable;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtk.Window;      use Gtk.Window;
 
 package Gtk.Dialog is
 
@@ -269,23 +251,33 @@ package Gtk.Dialog is
       (Dialog      : not null access Gtk_Dialog_Record;
        Text        : UTF8_String;
        Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget;
-   --  Adds a button with the given text (or a stock button, if Button_Text is
-   --  a stock ID) and sets things up so that clicking the button will emit the
-   --  Gtk.Dialog.Gtk_Dialog::response signal with the given Response_Id. The
-   --  button is appended to the end of the dialog's action area. The button
-   --  widget is returned, but usually you don't need it.
-   --  "text": text of button, or stock ID
+   --  Adds a button with the given text and sets things up so that clicking
+   --  the button will emit the Gtk.Dialog.Gtk_Dialog::response signal with the
+   --  given Response_Id. The button is appended to the end of the dialog's
+   --  action area. The button widget is returned, but usually you don't need
+   --  it.
+   --  "text": text of button
    --  "response_id": response ID for the button
 
    function Get_Action_Area
       (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+   pragma Obsolescent (Get_Action_Area);
    --  Returns the action area of Dialog.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.12, 1
 
    function Get_Content_Area
       (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Returns the content area of Dialog.
    --  Since: gtk+ 2.14
+
+   function Get_Header_Bar
+      (Dialog : not null access Gtk_Dialog_Record)
+       return Gtk.Widget.Gtk_Widget;
+   --  Returns the header bar of Dialog. Note that the headerbar is only used
+   --  by the dialog if the Gtk.Dialog.Gtk_Dialog:use-header-bar property is
+   --  True.
+   --  Since: gtk+ 3.12
 
    function Get_Response_For_Widget
       (Dialog : not null access Gtk_Dialog_Record;
@@ -333,16 +325,16 @@ package Gtk.Dialog is
    --  or not.
    --  After Gtk.Dialog.Run returns, you are responsible for hiding or
    --  destroying the dialog if you wish to do so.
-   --  Typical usage of this function might be: |[ gint result =
-   --  gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) { case
+   --  Typical usage of this function might be: |[<!-- language="C" --> gint
+   --  result = gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) { case
    --  GTK_RESPONSE_ACCEPT: do_application_specific_something (); break;
    --  default: do_nothing_since_dialog_was_cancelled (); break; }
    --  gtk_widget_destroy (dialog); ]|
    --  Note that even though the recursive main loop gives the effect of a
    --  modal dialog (it prevents the user from interacting with other windows
    --  in the same window group while the dialog is run), callbacks such as
-   --  timeouts, IO channel watches, DND drops, etc, *will* be triggered during
-   --  a Gtk.Dialog.Run call.
+   --  timeouts, IO channel watches, DND drops, etc, will be triggered during a
+   --  Gtk.Dialog.Run call.
 
    procedure Set_Default_Response
       (Dialog      : not null access Gtk_Dialog_Record;
@@ -356,7 +348,7 @@ package Gtk.Dialog is
       (Dialog      : not null access Gtk_Dialog_Record;
        Response_Id : Gtk_Response_Type;
        Setting     : Boolean);
-   --  Calls 'gtk_widget_set_sensitive (widget, Setting)' for each widget in
+   --  Calls `gtk_widget_set_sensitive (widget, Setting)` for each widget in
    --  the dialog's action area with the given Response_Id. A convenient way to
    --  sensitize/desensitize dialog buttons.
    --  "response_id": a response ID
@@ -395,6 +387,19 @@ package Gtk.Dialog is
    --
    --  Returns: Whether the alternative button order should be used
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Use_Header_Bar_Property : constant Glib.Properties.Property_Int;
+   --  True if the dialog uses a Gtk.Header_Bar.Gtk_Header_Bar for action
+   --  buttons instead of the action-area.
+   --
+   --  For technical reasons, this property is declared as an integer
+   --  property, but you should only set it to True or False.
+
    -------------
    -- Signals --
    -------------
@@ -414,9 +419,8 @@ package Gtk.Dialog is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted when the user uses a keybinding to
-   --  close the dialog.
+   --  The ::close signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted when the user uses a keybinding to close the dialog.
    --
    --  The default binding for this signal is the Escape key.
 
@@ -461,4 +465,7 @@ package Gtk.Dialog is
    return Gtk_Dialog
    renames Implements_Gtk_Buildable.To_Object;
 
+private
+   Use_Header_Bar_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("use-header-bar");
 end Gtk.Dialog;

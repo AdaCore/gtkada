@@ -29,7 +29,7 @@
 --  not use this class outside of a higher level framework.
 --
 --  GApplication provides convenient life cycle management by maintaining a
---  'use count' for the primary application instance. The use count can be
+--  "use count" for the primary application instance. The use count can be
 --  changed using Glib.Application.Hold and Glib.Application.Release. If it
 --  drops to zero, the application exits. Higher-level classes such as
 --  Gtk.Application.Gtk_Application employ the use count to ensure that the
@@ -42,14 +42,14 @@
 --  but corresponds roughly to a graphical desktop login. When your application
 --  is launched again, its arguments are passed through platform communication
 --  to the already running program. The already running instance of the program
---  is called the 'primary instance'; for non-unique applications this is the
+--  is called the "primary instance"; for non-unique applications this is the
 --  always the current instance. On Linux, the D-Bus session bus is used for
 --  communication.
 --
 --  The use of Glib.Application.Gapplication differs from some other
 --  commonly-used uniqueness libraries (such as libunique) in important ways.
 --  The application is not expected to manually register itself and check if it
---  is the primary instance. Instead, the <code>main</code> function of a
+--  is the primary instance. Instead, the main function of a
 --  Glib.Application.Gapplication should do very little more than instantiating
 --  the application instance, possibly connecting signal handlers, then calling
 --  Glib.Application.Run. All checks for uniqueness are done internally. If the
@@ -59,9 +59,9 @@
 --  returns. See the code examples below.
 --
 --  If used, the expected form of an application identifier is very close to
---  that of of a <ulink
---  url="http://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-interface">DBus
---  bus name</ulink>. Examples include: "com.example.MyApp",
+--  that of of a [DBus bus
+--  name](http://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-interface).
+--  Examples include: "com.example.MyApp",
 --  "org.example.internal-apps.Calculator". For details on valid application
 --  identifiers, see Glib.Application.Id_Is_Valid.
 --
@@ -91,27 +91,26 @@
 --
 --  There is a number of different entry points into a GApplication:
 --
---     * via 'Activate' (i.e. just starting the application)
+--  - via 'Activate' (i.e. just starting the application)
 --
---     * via 'Open' (i.e. opening some files)
+--  - via 'Open' (i.e. opening some files)
 --
---     * by handling a command-line
+--  - by handling a command-line
 --
---     * via activating an action
+--  - via activating an action
 --
 --  The Glib.Application.Gapplication::startup signal lets you handle the
 --  application initialization for all of these in a single place.
 --
 --  Regardless of which of these entry points is used to start the
---  application, GApplication passes some <firstterm
---  id="platform-data">platform data' from the launching instance to the
---  primary instance, in the form of a Glib.Variant.Gvariant dictionary mapping
---  strings to variants. To use platform data, override the Before_Emit or
---  After_Emit virtual functions in your Glib.Application.Gapplication
---  subclass. When dealing with Glib.Application.Gapplication_Command_Line
---  objects, the platform data is directly available via
---  Glib.Application.Get_Cwd, Glib.Application.Get_Environ and
---  Glib.Application.Get_Platform_Data.
+--  application, GApplication passes some "platform data from the launching
+--  instance to the primary instance, in the form of a Glib.Variant.Gvariant
+--  dictionary mapping strings to variants. To use platform data, override the
+--  Before_Emit or After_Emit virtual functions in your
+--  Glib.Application.Gapplication subclass. When dealing with
+--  Glib.Application.Gapplication_Command_Line objects, the platform data is
+--  directly available via Glib.Application.Get_Cwd,
+--  Glib.Application.Get_Environ and Glib.Application.Get_Platform_Data.
 --
 --  As the name indicates, the platform data may vary depending on the
 --  operating system, but it always includes the current directory (key "cwd"),
@@ -128,30 +127,15 @@
 --  local_command_line vfunc, to parse them in either the primary instance or
 --  the local instance, respectively.
 --
---  <example id="gapplication-example-open">
---  == Opening files with a GApplication ==
+--  For an example of opening files with a GApplication, see
+--  [gapplication-example-open.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-open.c).
 --
---    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../gio/tests/gapplication-example-open.c">
---    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
---    </xi:include>
---  <example id="gapplication-example-actions">
---  == A GApplication with actions ==
+--  For an example of using actions with GApplication, see
+--  [gapplication-example-actions.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-actions.c).
 --
---    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../gio/tests/gapplication-example-actions.c">
---    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
---    </xi:include>
---  <example id="gapplication-example-menu">
---  == A GApplication with menus ==
+--  For an example of using extra D-Bus hooks with GApplication, see
+--  [gapplication-example-dbushooks.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-dbushooks.c).
 --
---    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../gio/tests/gapplication-example-menu.c">
---    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
---    </xi:include>
---  <example id="gapplication-example-dbushooks">
---  == Using extra D-Bus hooks with a GApplication ==
---
---    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../gio/tests/gapplication-example-dbushooks.c">
---    <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
---    </xi:include>
 --  </description>
 pragma Ada_2005;
 
@@ -354,6 +338,16 @@ package Glib.Application is
    --  when a toplevel window is on the screen.
    --  To cancel the hold, call Glib.Application.Release.
 
+   procedure Mark_Busy (Self : not null access Gapplication_Record);
+   --  Increases the busy count of Application.
+   --  Use this function to indicate that the application is busy, for
+   --  instance while a long running operation is pending.
+   --  The busy state will be exposed to other processes, so a session shell
+   --  will use that information to indicate the state to the user (e.g. with a
+   --  spinner).
+   --  To cancel the busy indication, use Glib.Application.Unmark_Busy.
+   --  Since: gtk+ 2.38
+
    procedure Quit (Self : not null access Gapplication_Record);
    --  Immediately quits the application.
    --  Upon return to the mainloop, Glib.Application.Run will return, calling
@@ -409,50 +403,38 @@ package Glib.Application is
    --  intended to be returned by main. Although you are expected to pass the
    --  Argc, Argv parameters from main to this function, it is possible to pass
    --  null if Argv is not available or commandline handling is not required.
-   --  First, the local_command_line virtual function is invoked. This
-   --  function always runs on the local instance. It gets passed a pointer to
-   --  a null-terminated copy of Argv and is expected to remove the arguments
-   --  that it handled (shifting up remaining arguments). See <xref
-   --  linkend="gapplication-example-cmdline2"/> for an example of parsing Argv
-   --  manually. Alternatively, you may use the Glib.Option.Goption_Context
-   --  API, after setting 'argc = g_strv_length (argv);'.
-   --  The last argument to local_command_line is a pointer to the Status
-   --  variable which can used to set the exit status that is returned from
-   --  Glib.Application.Run.
-   --  If local_command_line returns True, the command line is expected to be
-   --  completely handled, including possibly registering as the primary
-   --  instance, calling Glib.Application.Activate or g_application_open, etc.
-   --  If local_command_line returns False then the application is registered
-   --  and the Glib.Application.Gapplication::command-line signal is emitted in
-   --  the primary instance (which may or may not be this instance). The signal
-   --  handler gets passed a Glib.Application.Gapplication_Command_Line object
-   --  that (among other things) contains the remaining commandline arguments
-   --  that have not been handled by local_command_line.
-   --  If the application has the
-   --  Glib.Application.G_Application_Handles_Command_Line flag set then the
-   --  default implementation of local_command_line always returns False
-   --  immediately, resulting in the commandline always being handled in the
-   --  primary instance.
-   --  Otherwise, the default implementation of local_command_line tries to do
-   --  a couple of things that are probably reasonable for most applications.
-   --  First, Glib.Application.Register is called to attempt to register the
-   --  application. If that works, then the command line arguments are
-   --  inspected. If no commandline arguments are given, then
-   --  Glib.Application.Activate is called. If commandline arguments are given
-   --  and the Glib.Application.G_Application_Handles_Open flag is set then
-   --  they are assumed to be filenames and g_application_open is called.
-   --  If you need to handle commandline arguments that are not filenames, and
-   --  you don't mind commandline handling to happen in the primary instance,
-   --  you should set Glib.Application.G_Application_Handles_Command_Line and
-   --  process the commandline arguments in your
-   --  Glib.Application.Gapplication::command-line signal handler, either
-   --  manually or using the Glib.Option.Goption_Context API.
+   --  Note that on Windows, Argc and Argv are ignored, and
+   --  g_win32_get_command_line is called internally (for proper support of
+   --  Unicode commandline arguments).
+   --  Glib.Application.Gapplication will attempt to parse the commandline
+   --  arguments. You can add commandline flags to the list of recognised
+   --  options by way of g_application_add_main_option_entries. After this, the
+   --  Glib.Application.Gapplication::handle-local-options signal is emitted,
+   --  from which the application can inspect the values of its GOption_Entrys.
+   --  Glib.Application.Gapplication::handle-local-options is a good place to
+   --  handle options such as `--version`, where an immediate reply from the
+   --  local process is desired (instead of communicating with an
+   --  already-running instance). A
+   --  Glib.Application.Gapplication::handle-local-options handler can stop
+   --  further processing by returning a non-negative value, which then becomes
+   --  the exit status of the process.
+   --  What happens next depends on the flags: if
+   --  Glib.Application.G_Application_Handles_Command_Line was specified then
+   --  the remaining commandline arguments are sent to the primary instance,
+   --  where a Glib.Application.Gapplication::command-line signal is emitted.
+   --  Otherwise, the remaining commandline arguments are assumed to be a list
+   --  of files. If there are no files listed, the application is activated via
+   --  the Glib.Application.Gapplication::activate signal. If there are one or
+   --  more files, and Glib.Application.G_Application_Handles_Open was
+   --  specified then the files are opened via the
+   --  Glib.Application.Gapplication::open signal.
    --  If you are interested in doing more complicated local handling of the
    --  commandline then you should implement your own
    --  Glib.Application.Gapplication subclass and override local_command_line.
    --  In this case, you most likely want to return True from your
    --  local_command_line implementation to suppress the default handling. See
-   --  <xref linkend="gapplication-example-cmdline2"/> for an example.
+   --  [gapplication-example-cmdline2.c][gapplication-example-cmdline2] for an
+   --  example.
    --  If, after the above is done, the use count of the application is zero
    --  then the exit status is returned immediately. If the use count is
    --  non-zero then the default main context is iterated until the use count
@@ -463,6 +445,28 @@ package Glib.Application is
    --  After that, if the use count falls to zero the application will exit
    --  immediately, except in the case that
    --  Glib.Application.Set_Inactivity_Timeout is in use.
+   --  This function sets the prgname (g_set_prgname), if not already set, to
+   --  the basename of argv[0]. Since 2.38, if
+   --  Glib.Application.G_Application_Is_Service is specified, the prgname is
+   --  set to the application ID. The main impact of this is is that the
+   --  wmclass of windows created by Gtk+ will be set accordingly, which helps
+   --  the window manager determine which application is showing the window.
+   --  Since 2.40, applications that are not explicitly flagged as services or
+   --  launchers (ie: neither Glib.Application.G_Application_Is_Service or
+   --  Glib.Application.G_Application_Is_Launcher are given as flags) will
+   --  check (from the default handler for local_command_line) if
+   --  "--gapplication-service" was given in the command line. If this flag is
+   --  present then normal commandline processing is interrupted and the
+   --  Glib.Application.G_Application_Is_Service flag is set. This provides a
+   --  "compromise" solution whereby running an application directly from the
+   --  commandline will invoke it in the normal way (which can be useful for
+   --  debugging) while still allowing applications to be D-Bus activated in
+   --  service mode. The D-Bus service file should invoke the executable with
+   --  "--gapplication-service" as the sole commandline argument. This approach
+   --  is suitable for use by most graphical applications but should not be
+   --  used from applications like editors that need precise control over when
+   --  processes invoked via the commandline will exit and what their exit
+   --  status will be.
    --  Since: gtk+ 2.28
    --  "argc": the argc from main (or 0 if Argv is null)
    --  "argv": the argv from main, or null
@@ -475,12 +479,7 @@ package Glib.Application is
    --  Glib.Application.Gapplication. Now there is Glib.Action_Map.Gaction_Map
    --  for that.
    --  Since: gtk+ 2.28
-   --  Deprecated since 2.32:Use the Glib.Action_Map.Gaction_Map interface
-   --  instead. Never ever mix use of this API with use of
-   --  Glib.Action_Map.Gaction_Map on the same Application or things will go
-   --  very badly wrong. This function is known to introduce buggy behaviour
-   --  (ie, signals not emitted on changes to the action group), so you should
-   --  really use Glib.Action_Map.Gaction_Map instead.
+   --  Deprecated since 2.32, 1
    --  "action_group": a Glib.Action_Group.Gaction_Group, or null
 
    procedure Set_Default (Self : not null access Gapplication_Record);
@@ -491,11 +490,23 @@ package Glib.Application is
    --  to null.
    --  Since: gtk+ 2.32
 
+   procedure Unmark_Busy (Self : not null access Gapplication_Record);
+   --  Decreases the busy count of Application.
+   --  When the busy count reaches zero, the new state will be propagated to
+   --  other processes.
+   --  This function must only be called to cancel the effect of a previous
+   --  call to Glib.Application.Mark_Busy.
+   --  Since: gtk+ 2.38
+
    function Get_Arguments
       (Self : not null access Gapplication_Command_Line_Record)
        return GNAT.Strings.String_List;
    --  Gets the list of arguments that was passed on the command line.
-   --  The strings in the array may contain non-utf8 data.
+   --  The strings in the array may contain non-UTF-8 data on UNIX (such as
+   --  filenames or arguments given in the system locale) but are always in
+   --  UTF-8 on Windows.
+   --  If you wish to use the return value with Glib.Option.Goption_Context,
+   --  you must use g_option_context_parse_strv.
    --  The return value is null-terminated and should be freed using
    --  g_strfreev.
    --  Since: gtk+ 2.28
@@ -696,16 +707,15 @@ package Glib.Application is
    --  Glib.Application.Set_Application_Id.
    --  For convenience, the restrictions on application identifiers are
    --  reproduced here:
-   -- 
-   --     * Application identifiers must contain only the ASCII characters
+   --  - Application identifiers must contain only the ASCII characters
    --  "[A-Z][a-z][0-9]_-." and must not begin with a digit.
-   --     * Application identifiers must contain at least one '.' (period)
+   --  - Application identifiers must contain at least one '.' (period)
    --  character (and thus at least three elements).
-   --     * Application identifiers must not begin or end with a '.' (period)
+   --  - Application identifiers must not begin or end with a '.' (period)
    --  character.
-   --     * Application identifiers must not contain consecutive '.' (period)
+   --  - Application identifiers must not contain consecutive '.' (period)
    --  characters.
-   --     * Application identifiers must not exceed 255 characters.
+   --  - Application identifiers must not exceed 255 characters.
    --  "application_id": a potential application identifier
 
    ----------------
@@ -789,7 +799,8 @@ package Glib.Application is
    --  Callback parameters:
    --    --  "command_line": a Glib.Application.Gapplication_Command_Line
    --    --  representing the passed commandline
-   --    --  Returns An integer that is set as the exit status for the calling process. See Glib.Application.Set_Exit_Status.
+   --    --  Returns An integer that is set as the exit status for the calling
+   --   process. See Glib.Application.Set_Exit_Status.
 
    Signal_Open : constant Glib.Signal_Name := "open";
    --  The ::open signal is emitted on the primary instance when there are

@@ -611,8 +611,8 @@ package body Gtk.Entry_Completion is
       --  given Key, and should be displayed as a possible completion for Key.
       --  Note that Key is normalized and case-folded (see g_utf8_normalize and
       --  g_utf8_casefold). If this is not appropriate, match functions have
-      --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
-      --  (gtk_entry_completion_get_entry (<!-- -->)))'.
+      --  access to the unmodified key via `gtk_entry_get_text (GTK_ENTRY
+      --  (gtk_entry_completion_get_entry ()))`.
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
       --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match

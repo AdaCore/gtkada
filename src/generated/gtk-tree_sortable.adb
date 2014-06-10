@@ -152,7 +152,7 @@ package body Gtk.Tree_Sortable is
       --  it must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
-      --  'price_of(A) - price_of(B)'.
+      --  `price_of(A) - price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -236,7 +236,7 @@ package body Gtk.Tree_Sortable is
       --  it must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
-      --  'price_of(A) - price_of(B)'.
+      --  `price_of(A) - price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model

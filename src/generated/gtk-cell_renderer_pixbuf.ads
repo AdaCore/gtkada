@@ -26,8 +26,8 @@
 --  an image in a cell. It allows to render either a given
 --  Gdk.Pixbuf.Gdk_Pixbuf (set via the
 --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf:pixbuf property) or a
---  stock icon (set via the
---  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf:stock-id property).
+--  named icon (set via the
+--  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf:icon-name property).
 --
 --  To support the tree view,
 --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf also supports rendering
@@ -116,7 +116,12 @@ package Gtk.Cell_Renderer_Pixbuf is
 
    Stock_Size_Property : constant Glib.Properties.Property_Uint;
 
+   Surface_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Cairo.Cairo_Surface
+
 private
+   Surface_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("surface");
    Stock_Size_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("stock-size");
    Stock_Id_Property : constant Glib.Properties.Property_String :=

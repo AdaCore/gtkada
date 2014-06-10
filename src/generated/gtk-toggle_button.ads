@@ -23,7 +23,7 @@
 
 --  <description>
 --  A Gtk.Toggle_Button.Gtk_Toggle_Button is a Gtk.Button.Gtk_Button which
---  will remain 'pressed-in' when clicked. Clicking again will cause the toggle
+--  will remain "pressed-in" when clicked. Clicking again will cause the toggle
 --  button to return to its normal state.
 --
 --  A toggle button is created by calling either gtk_toggle_button_new or
@@ -39,27 +39,30 @@
 --  To simply switch the state of a toggle button, use
 --  Gtk.Toggle_Button.Toggled.
 --
---  == Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets. ==
+--  ## Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets.
 --
---    void make_toggles (void) {
---       GtkWidget *dialog, *toggle1, *toggle2;
---       dialog = gtk_dialog_new (<!-- -->);
---          toggle1 = gtk_toggle_button_new_with_label ("Hi, i'm a toggle button.");
---          // Makes this toggle button invisible
---          gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle1), TRUE);
---             g_signal_connect (toggle1, "toggled",
---             G_CALLBACK (output_state), NULL);
---             gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
---             toggle1, FALSE, FALSE, 2);
---          toggle2 = gtk_toggle_button_new_with_label ("Hi, i'm another toggle button.");
---          gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle2), FALSE);
---             g_signal_connect (toggle2, "toggled",
---             G_CALLBACK (output_state), NULL);
---             gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
---             toggle2, FALSE, FALSE, 2);
---          gtk_widget_show_all (dialog);
---       }
+--  |[<!-- language="C" --> void make_toggles (void) { GtkWidget *dialog,
+--  *toggle1, *toggle2; GtkWidget *content_area; const char *text;
 --
+--  dialog = gtk_dialog_new (text); content_area = gtk_dialog_get_content_area
+--  ();
+--
+--  text = "Hi, i'm a toggle button."; toggle1 =
+--  gtk_toggle_button_new_with_label (text);
+--
+--  // Makes this toggle button invisible gtk_toggle_button_set_mode
+--  (GTK_TOGGLE_BUTTON (toggle1), TRUE);
+--
+--  g_signal_connect (toggle1, "toggled", G_CALLBACK (output_state), NULL);
+--  gtk_box_pack_start (GTK_BOX (content_area), toggle1, FALSE, FALSE, 2);
+--
+--  text = "Hi, i'm a toggle button."; toggle2 =
+--  gtk_toggle_button_new_with_label (text); gtk_toggle_button_set_mode
+--  (GTK_TOGGLE_BUTTON (toggle2), FALSE); g_signal_connect (toggle2, "toggled",
+--  G_CALLBACK (output_state), NULL); gtk_box_pack_start (GTK_BOX
+--  (content_area), toggle2, FALSE, FALSE, 2);
+--
+--  gtk_widget_show_all (dialog); } ]|
 --
 --  </description>
 --  <description>
@@ -228,25 +231,31 @@ package Gtk.Toggle_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Toggle_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Toggle_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Toggle_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Toggle_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Toggle_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Toggle_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

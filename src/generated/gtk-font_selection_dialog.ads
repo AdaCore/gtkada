@@ -72,10 +72,9 @@ package Gtk.Font_Selection_Dialog is
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Cancel_Button);
-   --  Gets the 'Cancel' button.
+   --  Gets the "Cancel" button.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
 
    function Get_Font_Name
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
@@ -88,16 +87,14 @@ package Gtk.Font_Selection_Dialog is
    --  structure. For example, "Helvetica Italic Bold 12" could be normalized
    --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
    --  compare two font descriptions.
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
 
    function Set_Font_Name
       (Dialog   : not null access Gtk_Font_Selection_Dialog_Record;
        Fontname : UTF8_String) return Boolean;
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Font_Selection
@@ -107,33 +104,29 @@ package Gtk.Font_Selection_Dialog is
    --  Retrieves the Gtk.Font_Selection.Gtk_Font_Selection widget embedded in
    --  the dialog.
    --  Since: gtk+ 2.22
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
 
    function Get_Ok_Button
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Ok_Button);
-   --  Gets the 'OK' button.
+   --  Gets the "OK" button.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
 
    function Get_Preview_Text
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
        return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
    --  Gets the text displayed in the preview area.
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
 
    procedure Set_Preview_Text
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record;
        Text   : UTF8_String);
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area.
-   --  Deprecated since 3.2, Use
-   --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog
+   --  Deprecated since 3.2, 1
    --  "text": the text to display in the preview area
 
    ----------------

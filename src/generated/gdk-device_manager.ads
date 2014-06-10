@@ -52,7 +52,7 @@
 --  used.
 --
 --  For simple applications that don't have any special interest in input
---  devices, the so-called 'client pointer' provides a reasonable approximation
+--  devices, the so-called "client pointer" provides a reasonable approximation
 --  to a simple setup with a single pointer and keyboard. The device that has
 --  been set as the client pointer can be accessed via
 --  Gdk.Device_Manager.Get_Client_Pointer.
@@ -71,20 +71,21 @@
 --  be controlling each of these virtual devices. Physical devices may also be
 --  "floating", which means they are not attached to any virtual device.
 --
---  == Master and slave devices ==
+--  # Master and slave devices
 --
---  <screen> carlosSacarino:~$ xinput list Virtual core pointer id=2 [master
---  pointer (3)] - Virtual core XTEST pointer id=4 [slave pointer (2)] - Wacom
---  ISDv4 E6 Pen stylus id=10 [slave pointer (2)] - Wacom ISDv4 E6 Finger touch
---  id=11 [slave pointer (2)] - SynPS/2 Synaptics TouchPad id=13 [slave pointer
---  (2)] - TPPS/2 IBM TrackPoint id=14 [slave pointer (2)] - Wacom ISDv4 E6 Pen
+--  |[ carlosSacarino:~$ xinput list Virtual core pointer id=2 [master pointer
+--  (3)] - Virtual core XTEST pointer id=4 [slave pointer (2)] - Wacom ISDv4 E6
+--  Pen stylus id=10 [slave pointer (2)] - Wacom ISDv4 E6 Finger touch id=11
+--  [slave pointer (2)] - SynPS/2 Synaptics TouchPad id=13 [slave pointer (2)]
+--  - TPPS/2 IBM TrackPoint id=14 [slave pointer (2)] - Wacom ISDv4 E6 Pen
 --  eraser id=16 [slave pointer (2)]
+--
 --  Virtual core keyboard id=3 [master keyboard (2)] - Virtual core XTEST
 --  keyboard id=5 [slave keyboard (3)] - Power button id=6 [slave keyboard (3)]
 --  - Video bus id=7 [slave keyboard (3)] - Sleep button id=8 [slave keyboard
 --  (3)] - Integrated Camera id=9 [slave keyboard (3)] - AT Translated Set 2
 --  keyboard id=12 [slave keyboard (3)] - Thinkpad Extra Buttons id=15 [slave
---  keyboard (3)] </screen>
+--  keyboard (3)] ]|
 --
 --  By default, GDK will automatically listen for events coming from all
 --  master devices, setting the Gdk.Device.Gdk_Device for all events coming
@@ -111,7 +112,7 @@
 --  Gdk.Device.Gdk_Device:n-axes property will be notified, and
 --  gdk_device_list_axes will return the new device axes.
 --
---  Devices may also have associated 'keys' or macro buttons. Such keys can be
+--  Devices may also have associated "keys" or macro buttons. Such keys can be
 --  globally set to map into normal X keyboard events. The mapping is set using
 --  Gdk.Device.Set_Key.
 --
@@ -148,7 +149,7 @@ package Gdk.Device_Manager is
    --  the core pointer for this application. In X11, window managers may
    --  change this depending on the interaction pattern under the presence of
    --  several pointers.
-   --  You should use this function sheldomly, only in code that isn't
+   --  You should use this function seldomly, only in code that isn't
    --  triggered by a Gdk.Event.Gdk_Event and there aren't other means to get a
    --  meaningful Gdk.Device.Gdk_Device to operate on.
    --  Since: gtk+ 3.0

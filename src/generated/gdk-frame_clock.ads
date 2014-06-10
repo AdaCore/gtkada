@@ -73,7 +73,8 @@ package Gdk.Frame_Clock is
    pragma Convention (C, Gdk_Frame_Clock_Phase);
    --  Gdk.Frame_Clock.Gdk_Frame_Clock_Phase is used to represent the
    --  different paint clock phases that can be requested. The elements of the
-   --  enumeration correspond to the signals of Gdk_Paint_Clock.
+   --  enumeration correspond to the signals of
+   --  Gdk.Frame_Clock.Gdk_Frame_Clock.
 
    Gdk_Frame_Clock_Phase_None : constant Gdk_Frame_Clock_Phase := 0;
    Gdk_Frame_Clock_Phase_Flush_Events : constant Gdk_Frame_Clock_Phase := 1;
@@ -141,10 +142,11 @@ package Gdk.Frame_Clock is
    function Get_History_Start
       (Self : not null access Gdk_Frame_Clock_Record) return Gint64;
    --  Gdk.Frame_Clock.Gdk_Frame_Clock internally keeps a history of
-   --  Gdk_Frame_Timing objects for recent frames that can be retrieved with
-   --  Gdk.Frame_Clock.Get_Timings. The set of stored frames is the set from
-   --  the counter values given by Gdk.Frame_Clock.Get_History_Start and
-   --  Gdk.Frame_Clock.Get_Frame_Counter, inclusive.
+   --  Gdk.Frame_Timings.Gdk_Frame_Timings objects for recent frames that can
+   --  be retrieved with Gdk.Frame_Clock.Get_Timings. The set of stored frames
+   --  is the set from the counter values given by
+   --  Gdk.Frame_Clock.Get_History_Start and Gdk.Frame_Clock.Get_Frame_Counter,
+   --  inclusive.
    --  Since: gtk+ 3.8
 
    procedure Get_Refresh_Info

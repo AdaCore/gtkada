@@ -113,15 +113,15 @@ package Gtk.Link_Button is
       (Widget : not null access Gtk_Link_Button_Record;
        URI    : UTF8_String);
    --  Sets Uri as the URI where the Gtk.Link_Button.Gtk_Link_Button points.
-   --  As a side-effect this unsets the 'visited' state of the button.
+   --  As a side-effect this unsets the "visited" state of the button.
    --  Since: gtk+ 2.10
    --  "uri": a valid URI
 
    function Get_Visited
       (Widget : not null access Gtk_Link_Button_Record) return Boolean;
-   --  Retrieves the 'visited' state of the URI where the
+   --  Retrieves the "visited" state of the URI where the
    --  Gtk.Link_Button.Gtk_Link_Button points. The button becomes visited when
-   --  it is clicked. If the URI is changed on the button, the 'visited' state
+   --  it is clicked. If the URI is changed on the button, the "visited" state
    --  is unset again.
    --  The state may also be changed using Gtk.Link_Button.Set_Visited.
    --  Since: gtk+ 2.14
@@ -129,11 +129,11 @@ package Gtk.Link_Button is
    procedure Set_Visited
       (Widget  : not null access Gtk_Link_Button_Record;
        Visited : Boolean);
-   --  Sets the 'visited' state of the URI where the
+   --  Sets the "visited" state of the URI where the
    --  Gtk.Link_Button.Gtk_Link_Button points. See Gtk.Link_Button.Get_Visited
    --  for more details.
    --  Since: gtk+ 2.14
-   --  "visited": the new 'visited' state
+   --  "visited": the new "visited" state
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -164,25 +164,31 @@ package Gtk.Link_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Link_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Link_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Link_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Link_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Link_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Link_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

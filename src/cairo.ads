@@ -130,6 +130,45 @@ package Cairo is
    procedure Unchecked_Free is new Ada.Unchecked_Deallocation
      (Cairo_Matrix, Cairo_Matrix_Access);
 
+   type Cairo_Format is (
+      Format_Invalid,
+      Format_ARGB32,
+      Format_RGB24,
+      Format_A8,
+      Format_A1,
+      Format_RGB16_565,
+      Format_RGB30);
+   for Cairo_Format use (
+      Format_Invalid   => -1,
+      Format_ARGB32    => 0,
+      Format_RGB24     => 1,
+      Format_A8        => 2,
+      Format_A1        => 3,
+      Format_RGB16_565 => 4,
+      Format_RGB30     => 5);
+   --  Used to identify the memory format of image data
+   --
+   --  Format_ARGB32: each pixel is a 32-bit quantity, with
+   --    alpha in the upper 8 bits, then red, then green, then blue.
+   --    The 32-bit quantities are stored native-endian. Pre-multiplied
+   --    alpha is used. (That is, 50% transparent red is 0x80800000,
+   --    not 0x80ff0000.) (Since 1.0)
+   --  Format_RGB_24: each pixel is a 32-bit quantity, with
+   --    the upper 8 bits unused. Red, Green, and Blue are stored
+   --    in the remaining 24 bits in that order. (Since 1.0)
+   --  Format_A8: each pixel is a 8-bit quantity holding
+   --    an alpha value. (Since 1.0)
+   --  Format_A1: each pixel is a 1-bit quantity holding
+   --    an alpha value. Pixels are packed together into 32-bit
+   --    quantities. The ordering of the bits matches the
+   --    endianess of the platform. On a big-endian machine, the
+   --    first pixel is in the uppermost bit, on a little-endian
+   --    machine the first pixel is in the least-significant bit. (Since 1.0)
+   --  Format_RGB16_565: each pixel is a 16-bit quantity
+   --    with red in the upper 5 bits, then green in the middle
+   --    6 bits, and blue in the lower 5 bits. (Since 1.2)
+   --  Format_RGB30: like RGB24 but with 10bpc. (Since 1.12)
+
    type Cairo_Pattern is private;
    --  A Cairo_Pattern represents a source when drawing onto a
    --  surface. There are different subtypes of Cairo_Pattern,

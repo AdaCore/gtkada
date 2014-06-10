@@ -115,9 +115,7 @@ package Glib.String is
    pragma Import (C, Down, "g_string_down");
    pragma Obsolescent (Down);
    --  Converts a Glib.String.Gstring to lowercase.
-   --  Deprecated since 2.2, This function uses the locale-specific tolower
-   --  function, which is almost never the right thing. Use
-   --  Glib.String.Ascii_Down or g_utf8_strdown instead.
+   --  Deprecated since 2.2, 1
 
    function Equal (Self : Gstring; V2 : Gstring) return Boolean;
    --  Compares two strings for equality, returning True if they are equal.
@@ -255,8 +253,6 @@ package Glib.String is
    pragma Import (C, Up, "g_string_up");
    pragma Obsolescent (Up);
    --  Converts a Glib.String.Gstring to uppercase.
-   --  Deprecated since 2.2, This function uses the locale-specific toupper
-   --  function, which is almost never the right thing. Use
-   --  Glib.String.Ascii_Up or g_utf8_strup instead.
+   --  Deprecated since 2.2, 1
 
 end Glib.String;

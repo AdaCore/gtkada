@@ -21,6 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Coverage.Pango_Coverage structure represents a map from Unicode
+--  characters to Pango.Enums.Coverage_Level. It is an opaque structure with no
+--  public fields.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");

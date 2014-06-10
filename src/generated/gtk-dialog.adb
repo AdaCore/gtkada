@@ -220,6 +220,21 @@ package body Gtk.Dialog is
       return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Content_Area;
 
+   --------------------
+   -- Get_Header_Bar --
+   --------------------
+
+   function Get_Header_Bar
+      (Dialog : not null access Gtk_Dialog_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Dialog : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_dialog_get_header_bar");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
+   end Get_Header_Bar;
+
    -----------------------------
    -- Get_Response_For_Widget --
    -----------------------------

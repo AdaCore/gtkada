@@ -22,10 +22,8 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk.Target_List.Gtk_Target_List structure is a reference counted list of
---  Gtk_Target_Pair. It is used to represent the same information as a table of
---  Gtk.Target_Entry.Gtk_Target_Entry, but in an efficient form. This structure
---  should be treated as opaque.
+--  A Gtk.Target_List.Gtk_Target_List-struct is a reference counted list of
+--  Gtk_Target_Pair and should be treated as opaque.
 --
 --  </description>
 pragma Ada_2005;
@@ -47,7 +45,7 @@ package Gtk.Target_List is
 
    type Gtk_Accel_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Accel_Flags);
-
+   --  Accelerator flags used with Gtk.Accel_Group.Connect.
 
    Accel_Visible : constant Gtk_Accel_Flags := 1;
    Accel_Locked : constant Gtk_Accel_Flags := 2;
@@ -86,29 +84,32 @@ package Gtk.Target_List is
       (List     : Gtk_Target_List;
        Info     : Guint;
        Writable : Boolean);
-   --  Appends the image targets supported by Gtk_Selection to the target
-   --  list. All targets are added with the same Info.
+   --  Appends the image targets supported by
+   --  Gtk.Selection_Data.Gtk_Selection_Data to the target list. All targets
+   --  are added with the same Info.
    --  Since: gtk+ 2.6
    --  "info": an ID that will be passed back to the application
    --  "writable": whether to add only targets for which GTK+ knows how to
    --  convert a pixbuf into the format
 
    procedure Add_Text_Targets (List : Gtk_Target_List; Info : Guint);
-   --  Appends the text targets supported by Gtk_Selection to the target list.
-   --  All targets are added with the same Info.
+   --  Appends the text targets supported by
+   --  Gtk.Selection_Data.Gtk_Selection_Data to the target list. All targets
+   --  are added with the same Info.
    --  Since: gtk+ 2.6
    --  "info": an ID that will be passed back to the application
 
    procedure Add_Uri_Targets (List : Gtk_Target_List; Info : Guint);
-   --  Appends the URI targets supported by Gtk_Selection to the target list.
-   --  All targets are added with the same Info.
+   --  Appends the URI targets supported by
+   --  Gtk.Selection_Data.Gtk_Selection_Data to the target list. All targets
+   --  are added with the same Info.
    --  Since: gtk+ 2.6
    --  "info": an ID that will be passed back to the application
 
    procedure Find
       (List   : Gtk_Target_List;
        Target : Gdk.Types.Gdk_Atom;
-       Info   : in out Guint;
+       Info   : out Guint;
        Found  : out Boolean);
    --  Looks up a given target in a Gtk.Target_List.Gtk_Target_List.
    --  "target": an interned atom representing the target to search for

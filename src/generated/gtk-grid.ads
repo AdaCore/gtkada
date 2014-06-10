@@ -26,8 +26,8 @@
 --  columns. It is a very similar to Gtk.Table.Gtk_Table and Gtk.Box.Gtk_Box,
 --  but it consistently uses Gtk.Widget.Gtk_Widget's
 --  Gtk.Widget.Gtk_Widget:margin and Gtk.Widget.Gtk_Widget:expand properties
---  instead of custom child properties, and it fully supports <link
---  linkend="geometry-management">height-for-width geometry management</link>.
+--  instead of custom child properties, and it fully supports [height-for-width
+--  geometry management][geometry-management].
 --
 --  Children are added using Gtk.Grid.Attach. They can span multiple rows or
 --  columns. It is also possible to add a child next to an existing child,
@@ -84,7 +84,7 @@ package Gtk.Grid is
        Height : Gint := 1);
    --  Adds a widget to the grid.
    --  The position of Child is determined by Left and Top. The number of
-   --  'cells' that Child will occupy is determined by Width and Height.
+   --  "cells" that Child will occupy is determined by Width and Height.
    --  "child": the widget to add
    --  "left": the column number to attach the left side of Child to
    --  "top": the row number to attach the top side of Child to
@@ -111,6 +111,20 @@ package Gtk.Grid is
    --  "side": the side of Sibling that Child is positioned next to
    --  "width": the number of columns that Child will span
    --  "height": the number of rows that Child will span
+
+   function Get_Baseline_Row
+      (Self : not null access Gtk_Grid_Record) return Gint;
+   --  Returns which row defines the global baseline of Grid.
+   --  Since: gtk+ 3.10
+
+   procedure Set_Baseline_Row
+      (Self : not null access Gtk_Grid_Record;
+       Row  : Gint);
+   --  Sets which row defines the global baseline for the entire grid. Each
+   --  row in the grid can have its own local baseline, but only one of those
+   --  is global, meaning it will be the baseline in the parent of the Grid.
+   --  Since: gtk+ 3.10
+   --  "row": the row index
 
    function Get_Child_At
       (Self : not null access Gtk_Grid_Record;
@@ -141,6 +155,25 @@ package Gtk.Grid is
        Spacing : Guint);
    --  Sets the amount of space between columns of Grid.
    --  "spacing": the amount of space to insert between columns
+
+   function Get_Row_Baseline_Position
+      (Self : not null access Gtk_Grid_Record;
+       Row  : Gint) return Gtk.Enums.Gtk_Baseline_Position;
+   --  Returns the baseline position of Row as set by
+   --  Gtk.Grid.Set_Row_Baseline_Position or the default value
+   --  Gtk.Enums.Baseline_Position_Center.
+   --  Since: gtk+ 3.10
+   --  "row": a row index
+
+   procedure Set_Row_Baseline_Position
+      (Self : not null access Gtk_Grid_Record;
+       Row  : Gint;
+       Pos  : Gtk.Enums.Gtk_Baseline_Position);
+   --  Sets how the baseline should be positioned on Row of the grid, in case
+   --  that row is assigned more space than is requested.
+   --  Since: gtk+ 3.10
+   --  "row": a row index
+   --  "pos": a Gtk.Enums.Gtk_Baseline_Position
 
    function Get_Row_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean;
@@ -196,6 +229,26 @@ package Gtk.Grid is
    --  Since: gtk+ 3.2
    --  "position": the position to insert the row at
 
+   procedure Remove_Column
+      (Self     : not null access Gtk_Grid_Record;
+       Position : Gint);
+   --  Removes a column from the grid.
+   --  Children that are placed in this column are removed, spanning children
+   --  that overlap this column have their width reduced by one, and children
+   --  after the column are moved to the left.
+   --  Since: gtk+ 3.10
+   --  "position": the position of the column to remove
+
+   procedure Remove_Row
+      (Self     : not null access Gtk_Grid_Record;
+       Position : Gint);
+   --  Removes a row from the grid.
+   --  Children that are placed in this row are removed, spanning children
+   --  that overlap this row have their height reduced by one, and children
+   --  below the row are moved up.
+   --  Since: gtk+ 3.10
+   --  "position": the position of the row to remove
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -216,6 +269,8 @@ package Gtk.Grid is
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
+
+   Baseline_Row_Property : constant Glib.Properties.Property_Int;
 
    Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean;
 
@@ -265,4 +320,6 @@ private
      Glib.Properties.Build ("column-spacing");
    Column_Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("column-homogeneous");
+   Baseline_Row_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("baseline-row");
 end Gtk.Grid;

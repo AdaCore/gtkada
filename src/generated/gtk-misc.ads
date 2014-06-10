@@ -34,8 +34,8 @@
 --  container in such a way that it expands automatically to fill its allocated
 --  area, the alignment settings will not alter the widgets position.
 --
---  Note: Note that the desired effect can in most cases be achieved by using
---  the Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
+--  Note that the desired effect can in most cases be achieved by using the
+--  Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
 --  Gtk.Widget.Gtk_Widget:margin properties on the child widget, so GtkMisc
 --  should not be used in new code.
 --
