@@ -470,6 +470,75 @@ package Glib.Object is
    --  Info should be allocated in this call, and is never freed in the
    --  lifetime of the application.
 
+   --------------
+   -- Bindings --
+   --------------
+
+   type G_Binding_Record is new GObject_Record with private;
+   type G_Binding is access all G_Binding_Record'Class;
+   --  A binding is the representation of a binding between a property on a
+   --  source object and another property on a target project. Whenever the
+   --  source property changes, the same value is applied to the target
+   --  property.
+   --  It is possible to create a bidirectional binding between two properties
+   --  so that if either property change, the other is updated as well (see
+   --  the use of Binding_Bidirectional).
+   --  It is also possible to set a custom transformation function (in both
+   --  directions in case of a bidirectional binding) to apply a custom
+   --  transformation from the source value to the target value before
+   --  applying it.
+
+   type Binding_Flags is mod Integer'Last;
+   Binding_Default        : constant Binding_Flags := 0;
+   Binding_Bidirectional  : constant Binding_Flags := 1;
+   Binding_Sync_Create    : constant Binding_Flags := 2;
+   Binding_Invert_Boolean : constant Binding_Flags := 4;
+   --  Binding_Default is the default binding: if the source property changes,
+   --     the target property is updated with its value.
+   --  Binding_Bidirectional: if either property changes, the other property
+   --     is updated.
+   --  Binding_Sync_Create: synchronizes the values of the source and target
+   --     properties when creating the binding; the direction of the
+   --     synchronization is always from the source to the target.
+   --  Binding_Invert_Boolean: if the two properties being bound are booleans
+   --     setting one to True will result in the other being set to False and
+   --     vice versa. The flag cannot be used when passing custom
+   --     transformation functions.
+
+   procedure Bind_Property
+      (Source          : not null access GObject_Record'Class;
+       Source_Property : String;
+       Target          : not null access GObject_Record'Class;
+       Target_Property : String;
+       Flags           : Binding_Flags := Binding_Default);
+   function Bind_Property
+      (Source          : not null access GObject_Record'Class;
+       Source_Property : String;
+       Target          : not null access GObject_Record'Class;
+       Target_Property : String;
+       Flags           : Binding_Flags := Binding_Default)
+       return G_Binding;
+   --  Creates a binding between the source property and the target
+   --  property on the two objects. Whenever the source property is changed,
+   --  the target property is updated using the same value.
+   --  For instance:
+   --      Bind_Property (Action, "active", Widget, "sensitive");
+   --  will result in the "sensitive" property of the widget instance to be
+   --  updated with the same value of the "active" property of the action.
+   --
+   --  The binding is automatically removed when either the source or the
+   --  target instances are finalized.
+   --
+   --  To remove the binding without affecting the source and target, you
+   --  can just call Unref on the returned Binding.
+
+   procedure Unbind (Self : not null access G_Binding_Record'Class);
+   --  Explicitly releases the binding between the source and the target
+   --  property.
+   --  This function will release the reference that is being helf on the
+   --  binding instance; if you want to hold on to the instance, you will
+   --  need to hold a reference to it.
+
    ------------------------------
    -- Properties introspection --
    ------------------------------
@@ -645,6 +714,8 @@ private
    type GObject_Record is tagged record
       Ptr : System.Address := System.Null_Address;
    end record;
+
+   type G_Binding_Record is new GObject_Record with null record;
 
    type Interface_Vtable is new Glib.C_Proxy;
 

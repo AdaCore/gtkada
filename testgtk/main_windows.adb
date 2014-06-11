@@ -93,6 +93,7 @@ with Create_Frame;
 with Create_File_Chooser;
 with Create_File_Selection;
 with Create_Fixed;
+with Create_Flow_Box;
 with Create_Font_Selection;
 with Create_Icon_View;
 with Create_Label;
@@ -110,9 +111,11 @@ with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
 with Create_Reparent;
+with Create_Revealer;
 with Create_Scrolled;
 with Create_Selection;
 with Create_Size_Groups;
+with Create_Stack;
 with Create_Sources;
 with Create_Spin;
 with Create_Spinners;
@@ -143,7 +146,7 @@ package body Main_Windows is
       Pixbuf_Demos : Boolean := False);
    --  Creates the tree that contains the list of gtk demos available
 
-   procedure Display_Help (Button : access Gtk_Widget_Record'Class);
+   procedure Display_Help (Window : access Gtk_Widget_Record'Class);
    --  Display an Help window for the current demo
 
    package Notebook_Cb is new Gtk.Handlers.Callback (Gtk_Notebook_Record);
@@ -340,6 +343,8 @@ package body Main_Windows is
                                          Create_File_Selection.Help'Access),
       (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
                                          Create_Fixed.Help'Access),
+      (NS ("flow box"), Box,
+       Create_Flow_Box.Run'Access, Create_Flow_Box.Help'Access),
       (NS ("font selection"),   Colors_And_Fonts,
                                          Create_Font_Selection.Run'Access,
                                          Create_Font_Selection.Help'Access),
@@ -394,10 +399,13 @@ package body Main_Windows is
                                          Create_Size_Groups.Help'Access),
       (NS ("event sources"),    Misc,    Create_Sources.Run'Access,
                                          Create_Sources.Help'Access),
+      (NS ("revealer"), Box,
+       Create_Revealer.Run'Access, Create_Revealer.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
                                          Create_Spin.Help'Access),
       (NS ("spinner"),          Base,    Create_Spinners.Run'Access,
                                          Create_Spinners.Help'Access),
+      (NS ("stack"), Box, Create_Stack.Run'Access, Create_Stack.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
                                          Create_Status.Help'Access),
       (NS ("status icons"),     Base,    Create_Status_Icons.Run'Access,
@@ -513,7 +521,7 @@ package body Main_Windows is
    -- Display_Help --
    ------------------
 
-   procedure Display_Help (Button : access Gtk_Widget_Record'Class) is
+   procedure Display_Help (Window : access Gtk_Widget_Record'Class) is
       Close     : Gtk.Button.Gtk_Button;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
@@ -521,7 +529,6 @@ package body Main_Windows is
       Iter, Last : Gtk_Text_Iter;
       Blue_Tag, Tag  : Gtk_Text_Tag;
       Mark       : Gtk_Text_Mark;
-      pragma Unreferenced (Button);
 
       procedure Show_Text_With_Tag
         (Iter : in out Gtk_Text_Iter; Text : String);
@@ -547,10 +554,12 @@ package body Main_Windows is
 
    begin
       if Help_Dialog = null then
-         Gtk_New (Help_Dialog);
+         Gtk_New (Help_Dialog,
+                  Title  => "Help on current demo",
+                  Parent => Gtk_Window (Window),
+                  Flags  => Destroy_With_Parent);
          Help_Dialog.Set_Resizable (True);
-         Set_Title (Help_Dialog, "testgtk help");
-         Set_Default_Size (Help_Dialog, 640, 450);
+         Help_Dialog.Set_Default_Size (640, 450);
          Destroy_Dialog_Handler.Connect
            (Help_Dialog, "destroy",
             Destroy_Dialog_Handler.To_Marshaller (Destroy_Dialog'Access),
@@ -699,11 +708,7 @@ package body Main_Windows is
    begin
       Current_Help := Func;
       if Help_Dialog /= null then
-         declare
-            W : aliased Gtk_Widget_Record;
-         begin
-            Display_Help (W'Access);
-         end;
+         Display_Help (null);
       end if;
    end Set_Help;
 
@@ -905,9 +910,9 @@ package body Main_Windows is
 
       Gtk_New (Button, "Help on current demo");
       Pack_Start (Bbox, Button, Expand => True, Fill => False);
-      Widget_Handler.Connect
+      Widget_Handler.Object_Connect
         (Button, "clicked",
-         Widget_Handler.To_Marshaller (Display_Help'Access));
+         Widget_Handler.To_Marshaller (Display_Help'Access), Win);
 
       Gtk_New (Button, "Quit");
       Pack_Start (Bbox, Button, Expand => True, Fill => False);

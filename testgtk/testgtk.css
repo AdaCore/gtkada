@@ -13,3 +13,8 @@ GtkTreeView *:hover {
 .notebook :active {
    background-image:none;
 }
+
+/* For the stack switch, to call attention to a child */
+.needs-attention {
+   color: red;
+}

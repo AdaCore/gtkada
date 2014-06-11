@@ -916,4 +916,69 @@ package body Glib.Object is
 --      G_Free (Output);
       return Result;
    end Class_List_Properties;
+
+   ------------
+   -- Unbind --
+   ------------
+
+   procedure Unbind (Self : not null access G_Binding_Record'Class) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_binding_unbind");
+   begin
+      Internal (Self.Get_Object);
+   end Unbind;
+
+   -------------------
+   -- Bind_Property --
+   -------------------
+
+   procedure Bind_Property
+      (Source          : not null access GObject_Record'Class;
+       Source_Property : String;
+       Target          : not null access GObject_Record'Class;
+       Target_Property : String;
+       Flags           : Binding_Flags := Binding_Default)
+   is
+      Result : G_Binding;
+      pragma Unreferenced (Result);
+   begin
+      Result := Bind_Property
+         (Source, Source_Property, Target, Target_Property, Flags);
+   end Bind_Property;
+
+   -------------------
+   -- Bind_Property --
+   -------------------
+
+   function Bind_Property
+      (Source          : not null access GObject_Record'Class;
+       Source_Property : String;
+       Target          : not null access GObject_Record'Class;
+       Target_Property : String;
+       Flags           : Binding_Flags := Binding_Default)
+       return G_Binding
+   is
+      function Internal
+         (Source : System.Address;
+          SP     : String;
+          Target : System.Address;
+          TP     : String;
+          Flags  : Binding_Flags) return System.Address;
+      pragma Import (C, Internal, "g_object_bind_property");
+
+      R : System.Address;
+      Result : G_Binding;
+   begin
+      R := Internal (Source.Get_Object, Source_Property & ASCII.NUL,
+                     Target.Get_Object, Target_Property & ASCII.NUL,
+                     Flags);
+      if R = System.Null_Address then
+         return null;
+      else
+         Result := new G_Binding_Record;
+         Result.Set_Object (R);
+         return Result;
+      end if;
+   end Bind_Property;
+
 end Glib.Object;
