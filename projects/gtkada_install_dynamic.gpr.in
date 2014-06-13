@@ -64,17 +64,4 @@ project GtkAda_Install_Dynamic is
       for Default_Switches ("Ada") use ("-O2", "-gnat05");
    end Compiler;
 
-   type OS_Type is ("unix", "Windows_NT");
-   OS : OS_Type := External ("OS", "unix");
-
-   package Naming is
-      for Body_Suffix ("Objective-C") use ".m";
-      case OS is
-         when "Windows_NT" =>
-            for Body ("Glib.Module") use "glib-module__windows.adb";
-            for Body ("Glib.Convert") use "glib-convert__windows.adb";
-            for Body ("Gdk.Pixbuf") use "gdk-pixbuf__windows.adb";
-      end case;
-   end Naming;
-
 end GtkAda_Install_Dynamic;

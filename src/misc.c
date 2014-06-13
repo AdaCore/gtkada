@@ -74,6 +74,175 @@ ada_gtk_micro_version ()
 }
 
 /********************************************************************
+ **  wrappers for functions which vary on Windows
+ ********************************************************************/
+
+gchar *
+ada_g_filename_from_uri (const gchar *uri,
+			 gchar **hostname,
+			 GError **error) {
+#ifdef GDK_WINDOWING_WIN32
+  return g_filename_from_uri_utf8 (uri, hostname, error);
+#else
+  return g_filename_from_uri (uri, hostname, error);
+#endif
+}
+
+gchar *
+ada_g_filename_from_utf8 (const gchar *utf8string,
+		      gssize len,
+		      gsize *bytes_read,
+		      gsize *bytes_written,
+			  GError **error)
+{
+#ifdef GDK_WINDOWING_WIN32
+  return g_filename_from_utf8_utf8
+    (utf8string, len, bytes_read, bytes_written, error);
+#else
+  return g_filename_from_utf8
+    (utf8string, len, bytes_read, bytes_written, error);
+#endif
+}
+
+gchar *
+ada_g_filename_to_uri (const gchar *filename,
+		       const gchar *hostname,
+		       GError **error)
+{
+#ifdef GDK_WINDOWING_WIN32
+  return g_filename_to_uri_utf8 (filename, hostname, error);
+#else
+  return g_filename_to_uri (filename, hostname, error);
+#endif
+}
+
+gchar *
+ada_g_filename_to_utf8 (const gchar *opsysstring,
+			gssize len,
+			gsize *bytes_read,
+			gsize *bytes_written,
+			GError **error)
+{
+#ifdef GDK_WINDOWING_WIN32
+  return g_filename_to_utf8_utf8
+    (opsysstring, len, bytes_read, bytes_written, error);
+#else
+  return g_filename_to_utf8
+    (opsysstring, len, bytes_read, bytes_written, error);
+#endif
+}
+
+GdkPixbuf *
+ada_gdk_pixbuf_new_from_file (const char *filename,
+			      GError **error)
+{
+#ifdef GDK_WINDOWING_WIN32
+  return gdk_pixbuf_new_from_file_utf8 (filename, error);
+#else
+  return gdk_pixbuf_new_from_file (filename, error);
+#endif
+}
+
+GdkPixbufAnimation *
+ada_gdk_pixbuf_animation_new_from_file (const char *filename,
+					GError **error)
+{
+#ifdef GDK_WINDOWING_WIN32
+  return gdk_pixbuf_animation_new_from_file_utf8 (filename, error);
+#else
+  return gdk_pixbuf_animation_new_from_file (filename, error);
+#endif
+}
+
+/********************************************************************
+ ** gmodule wrappers, deactivated under Windows
+ ********************************************************************/
+
+#ifdef GDK_WINDOWING_WIN32
+gboolean ada_g_module_supported (void) { return FALSE; };
+
+gchar*
+ada_g_module_build_path (const gchar *directory,
+			 const gchar *module_name)
+{
+  return "";
+}
+GModule*
+ada_g_module_open (const gchar *file_name,
+	       GModuleFlags flags)
+{
+  return 0;
+}
+
+gboolean
+ada_g_module_close (GModule *module)
+{
+  return TRUE;
+}
+
+gboolean
+ada_g_module_symbol (GModule *module,
+		 const gchar *symbol_name,
+		 gpointer *symbol)
+{
+  return FALSE;
+}
+
+const gchar*
+ada_g_module_name (GModule *module)
+{
+  return "";
+}
+
+const gchar*
+ada_g_module_error (void)
+{
+  return "modules not supported under Windows";
+}
+#else
+gboolean ada_g_module_supported (void) { return g_module_supported() };
+
+gchar*
+ada_g_module_build_path (const gchar *directory,
+			 const gchar *module_name)
+{
+  return g_module_build_path (directory, module_name);
+}
+GModule*
+ada_g_module_open (const gchar *file_name,
+	       GModuleFlags flags)
+{
+  return g_module_open (file_name, flags);
+}
+
+gboolean
+ada_g_module_close (GModule *module)
+{
+  return g_module_close (module);
+}
+
+gboolean
+ada_g_module_symbol (GModule *module,
+		 const gchar *symbol_name,
+		 gpointer *symbol)
+{
+  return g_module_symbol (module, symbol_name, symbol);
+}
+
+const gchar*
+ada_g_module_name (GModule *module)
+{
+  return g_module_name (module);
+}
+
+const gchar*
+ada_g_module_error (void)
+{
+  return g_module_error ();
+}
+#endif
+
+/********************************************************************
  **  var_arg wrappers.
  ********************************************************************/
 

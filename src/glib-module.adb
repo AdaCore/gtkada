@@ -31,7 +31,7 @@ package body Glib.Module is
 
    function Module_Supported return Boolean is
       function Internal return Gint;
-      pragma Import (C, Internal, "g_module_supported");
+      pragma Import (C, Internal, "ada_g_module_supported");
 
    begin
       return Internal /= 0;
@@ -48,7 +48,7 @@ package body Glib.Module is
       function Internal
         (File_Name : String;
          Flags     : Module_Flags) return G_Module;
-      pragma Import (C, Internal, "g_module_open");
+      pragma Import (C, Internal, "ada_g_module_open");
 
    begin
       return Internal (File_Name & ASCII.NUL, Flags);
@@ -60,7 +60,7 @@ package body Glib.Module is
 
    function Module_Close (Module : G_Module) return Boolean is
       function Internal (Module : G_Module) return Gint;
-      pragma Import (C, Internal, "g_module_close");
+      pragma Import (C, Internal, "ada_g_module_close");
 
    begin
       return Internal (Module) /= 0;
@@ -72,7 +72,7 @@ package body Glib.Module is
 
    function Module_Error return String is
       function Internal return chars_ptr;
-      pragma Import (C, Internal, "g_module_error");
+      pragma Import (C, Internal, "ada_g_module_error");
 
    begin
       return Value (Internal);
@@ -92,7 +92,7 @@ package body Glib.Module is
         (Module      : G_Module;
          Symbol_Name : String;
          Symbol      : System.Address) return Gint;
-      pragma Import (C, Internal, "g_module_symbol");
+      pragma Import (C, Internal, "ada_g_module_symbol");
 
       Tmp : aliased Pointer;
 
@@ -107,7 +107,7 @@ package body Glib.Module is
 
    function Module_Name (Module : G_Module) return String is
       function Internal (Module : G_Module) return chars_ptr;
-      pragma Import (C, Internal, "g_module_name");
+      pragma Import (C, Internal, "ada_g_module_name");
 
    begin
       return Value (Internal (Module));
@@ -123,7 +123,7 @@ package body Glib.Module is
    is
       function Internal
         (Directory : String; Module_Name : String) return chars_ptr;
-      pragma Import (C, Internal, "g_module_build_path");
+      pragma Import (C, Internal, "ada_g_module_build_path");
 
    begin
       return Value (Internal (Directory & ASCII.NUL, Module_Name & ASCII.NUL));

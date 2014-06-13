@@ -195,7 +195,7 @@ package body Glib.Convert is
         (URI      : String;
          Hostname : access chars_ptr;
          Error    : GError_Access) return chars_ptr;
-      pragma Import (C, Internal, "g_filename_from_uri");
+      pragma Import (C, Internal, "ada_g_filename_from_uri");
 
       S   : constant chars_ptr := Internal (URI & ASCII.NUL, Hostname, Error);
       Str : constant String := Value (S);
@@ -219,7 +219,7 @@ package body Glib.Convert is
          Bytes_Read    : System.Address := System.Null_Address;
          Bytes_Written : System.Address := System.Null_Address;
          Error         : GError_Access) return chars_ptr;
-      pragma Import (C, Internal, "g_filename_from_utf8");
+      pragma Import (C, Internal, "ada_g_filename_from_utf8");
 
       S   : constant chars_ptr := Internal
         (UTF8_String, UTF8_String'Length, Error => Error);
@@ -243,7 +243,7 @@ package body Glib.Convert is
         (URI      : String;
          Hostname : System.Address;
          Error    : GError_Access) return chars_ptr;
-      pragma Import (C, Internal, "g_filename_to_uri");
+      pragma Import (C, Internal, "ada_g_filename_to_uri");
 
       S    : chars_ptr;
       Host : aliased constant String := Hostname & ASCII.NUL;
@@ -277,7 +277,7 @@ package body Glib.Convert is
          Bytes_Read    : System.Address := System.Null_Address;
          Bytes_Written : System.Address := System.Null_Address;
          Error         : GError_Access) return chars_ptr;
-      pragma Import (C, Internal, "g_filename_to_utf8");
+      pragma Import (C, Internal, "ada_g_filename_to_utf8");
 
       S   : constant chars_ptr := Internal
         (OS_String, OS_String'Length, Error => Error);
