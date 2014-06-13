@@ -139,6 +139,20 @@ EOF
    package Linker is
      for Linker_Options use Project'Library_Options;
    end Linker;
+
+   type OS_Type is ("unix", "Windows_NT");
+   OS : OS_Type := External ("OS", "unix");
+
+   package Naming is
+      for Body_Suffix ("Objective-C") use ".m";
+      case OS is
+         when "Windows_NT" =>
+            for Body ("Glib.Module") use "glib-module__windows.adb";
+            for Body ("Glib.Convert") use "glib-convert__windows.adb";
+            for Body ("Gdk.Pixbuf") use "gdk-pixbuf__windows.adb";
+      end case;
+   end Naming;
+
 end ${uc};
 EOF
 }
