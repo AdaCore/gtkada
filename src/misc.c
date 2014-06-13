@@ -200,7 +200,10 @@ ada_g_module_error (void)
   return "modules not supported under Windows";
 }
 #else
-gboolean ada_g_module_supported (void) { return g_module_supported() };
+gboolean ada_g_module_supported (void)
+{
+  return g_module_supported();
+};
 
 gchar*
 ada_g_module_build_path (const gchar *directory,
@@ -509,7 +512,8 @@ GType ada_type_from_class (GObjectClass* klass)
  *  do pointer arithmetics to find the pointer on the class structure.
  */
 #define ADA_CLASS_FROM_C_CLASS(class) (AdaGObjectClass)(class->pdummy[0])
-#define SET_ADA_CLASS_FROM_C_CLASS(class, adaclass) (class->pdummy[0] = (gpointer)adaclass)
+#define SET_ADA_CLASS_FROM_C_CLASS(class, adaclass) \
+   (class->pdummy[0] = (gpointer)adaclass)
 
 AdaGObjectClass ada_gobject_class_from_object(GObject* object) {
    return ADA_CLASS_FROM_C_CLASS(G_OBJECT_GET_CLASS(object));
@@ -574,9 +578,9 @@ ada_initialize_class_record
        g_type_query (ancestor, &query);
 
        /*************************
-        * This code is the equivalent of type_name@@_get_type in C.  In Ada, the
-        * type will be accessible only once at least one instance of it has been
-        * created (whereas in C the GType is created at elaboration time.
+        * This code is the equivalent of type_name@@_get_type in C. In Ada, the
+        * type will be accessible only once at least one instance of it has
+        * been created (whereas in C the GType is created at elaboration time).
         *************************/
 
        GTypeInfo info;
@@ -701,7 +705,8 @@ void ada_inherited_WIDGET_CLASS_get_preferred_height (
 {
    GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->get_preferred_height (widget, min, natural);
+   GTK_WIDGET_CLASS (parent_class)->get_preferred_height
+     (widget, min, natural);
    g_type_class_unref (objklass);
 }
 
@@ -1896,7 +1901,8 @@ ada_gtk_application_open_files (gpointer ptr)
 }
 
 #ifdef GDK_WINDOWING_QUARTZ
-void ada_gtk_quartz_application_open_files (GFile** files, gint n_files, gpointer user_data)
+void ada_gtk_quartz_application_open_files
+  (GFile** files, gint n_files, gpointer user_data)
 {
   ada_gtk_open_data *data = malloc (sizeof (ada_gtk_open_data));
 
