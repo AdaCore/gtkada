@@ -10,7 +10,19 @@ project GtkAda_Src is
 
    for Object_Dir use "lib-obj";
 
-   package Naming   renames Shared.Naming;
+   type OS_Type is ("unix", "Windows_NT");
+   OS : OS_Type := External ("OS", "unix");
+
+   package Naming is
+      for Body_Suffix ("Objective-C") use ".m";
+      case OS is
+         when "Windows_NT" =>
+            for Body ("Glib.Module") use "glib-module__windows.adb";
+            for Body ("Glib.Convert") use "glib-convert__windows.adb";
+            for Body ("Gdk.Pixbuf") use "gdk-pixbuf__windows.adb";
+      end case;
+   end Naming;
+
    package Builder  renames Shared.Builder;
    package Compiler renames Shared.Compiler;
    package Binder   renames Shared.Binder;
