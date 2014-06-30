@@ -696,6 +696,7 @@ package body Gtkada.Canvas_View is
                   --  Do not spend time recomputing
                   Details.Toplevel_Item :=
                     Self.Last_Button_Press.Toplevel_Item;
+                  Details.Item := Self.Last_Button_Press.Item;
                else
                   Compute_Item (Self, Details);
                end if;
@@ -2169,12 +2170,12 @@ package body Gtkada.Canvas_View is
       It : Abstract_Item := Abstract_Item (Item);
       C  : Items_Lists.Cursor := Self.Items.Find (Abstract_Item (Item));
    begin
+      --  Will only remove toplevel items
       if Has_Element (C) then
          Self.Items.Delete (C);
+         Free (It, In_Model => Self);
+         Self.Layout_Changed;
       end if;
-
-      Free (It, In_Model => Self);
-      Self.Layout_Changed;
    end Remove;
 
    -----------
