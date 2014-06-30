@@ -320,6 +320,9 @@ package Gtkada.Style is
    --   of its children, and pattern is a gradient, it should be defined in
    --   the 0.0 .. 1.0 pattern space, and will be resized automatically based
    --   on the computed size of the item.
+   --
+   --  The style will free the Font.Name object, so you will need to pass the
+   --  result of either Pango.Font.Copy or Pango.Font.From_String.
 
    procedure Draw_Rect
       (Self          : Drawing_Style;

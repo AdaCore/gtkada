@@ -1557,7 +1557,10 @@ package body Gtkada.Style is
 
       Layout.Set_Attributes (Attr);
       Layout.Set_Alignment (Self.Halign);
-      Layout.Set_Font_Description (Self.Name);
+
+      if Self.Name /= null then
+         Layout.Set_Font_Description (Self.Name);
+      end if;
 
       if Max_Height > 0.0 then
          Layout.Set_Height (Gint (Max_Height + 1.0) * Pango_Scale);
@@ -1571,9 +1574,7 @@ package body Gtkada.Style is
          Layout.Set_Width (-1);
       end if;
 
-      --  Layout.Set_Justify (False);
       Layout.Set_Spacing (Self.Line_Spacing);   --  spacing between lines
-      --  Layout.Set_Wrap (Pango_Wrap_Word);
 
       Unref (Attr);
 
@@ -1593,7 +1594,7 @@ package body Gtkada.Style is
    is
       Ink_Rect, Logical_Rect : Pango_Rectangle;
    begin
-      if Self.Data /= null then
+      if Self.Data /= null and then Self.Data.Font.Name /= null then
          Setup_Layout (Self.Data.Font, Layout);
          Layout.Set_Ellipsize (Ellipsize_None);
          Layout.Set_Text (Text);
@@ -1620,7 +1621,7 @@ package body Gtkada.Style is
       Max_Height : Glib.Gdouble := Glib.Gdouble'First)
    is
    begin
-      if Self.Data /= null then
+      if Self.Data /= null and then Self.Data.Font.Name /= null then
          Setup_Layout (Self.Data.Font, Layout, Max_Width, Max_Height);
          Layout.Set_Ellipsize (Ellipsize_End);
          Layout.Set_Text (Text);
