@@ -1348,15 +1348,9 @@ package body Gtkada.Canvas_View is
       Cr     : Cairo.Cairo_Context;
       Item : access Abstract_Item_Record'Class := null)
    is
-      M       : aliased Cairo_Matrix;
       Model_P : Model_Point;
       P       : View_Point;
    begin
-      M.Xx := Self.Scale;
-      M.Xy := 0.0;
-      M.Yx := 0.0;
-      M.Yy := Self.Scale;
-
       if Item /= null then
          Model_P := Item.Item_To_Model ((0.0, 0.0));
       else
@@ -1364,9 +1358,8 @@ package body Gtkada.Canvas_View is
       end if;
 
       P := Self.Model_To_View (Model_P);
-      M.X0 := P.X;
-      M.Y0 := P.Y;
-      Set_Matrix (Cr, M'Access);
+      Translate (Cr, P.X, P.Y);
+      Scale (Cr, Self.Scale, Self.Scale);
    end Set_Transform;
 
    -------------------
