@@ -439,7 +439,7 @@ package body Gtkada.Canvas_View.Views is
 
             case Event.Event_Type is
                when Button_Press =>
-                  if Self.Model.Is_Selected (Event.Item) then
+                  if Self.Model.Is_Selected (Event.Toplevel_Item) then
                      if Event.State = 0 then
                         null;   --  do nothing, preserve current selection
 

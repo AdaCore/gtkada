@@ -153,24 +153,27 @@ package body Gtkada.Canvas_View.Models is
          C     : Items_Lists.Cursor;
          It    : Abstract_Item;
       begin
+         --  Drawing uses the same results, but from First to Last. Here we
+         --  look from last to first
+
          Items := Self.Items_Tree.Find (R);
-         C := Items.First;
+         C := Items.Last;
          while Has_Element (C) loop
             It := Element (C);
             if It.Contains (Model_To_Item (It, Point), Context) then
                return It;
             end if;
-            Next (C);
+            Previous (C);
          end loop;
 
          Items := Self.Links_Tree.Find (R);
-         C := Items.First;
+         C := Items.Last;
          while Has_Element (C) loop
             It := Element (C);
             if It.Contains (Model_To_Item (It, Point), Context) then
                return It;
             end if;
-            Next (C);
+            Previous (C);
          end loop;
 
          return null;

@@ -2390,8 +2390,6 @@ package body Gtkada.Canvas_View is
         (Item : not null access Abstract_Item_Record'Class);
       From_Or_To : Item_Sets.Set)
    is
-      pragma Unreferenced (From_Or_To);
-
       function Matches
         (It : not null access Abstract_Item_Record'Class) return Boolean;
       pragma Inline (Matches);
@@ -2437,7 +2435,6 @@ package body Gtkada.Canvas_View is
      (Model : not null access Canvas_Model_Record'Class;
       Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map)
    is
-      pragma Unreferenced (Items);
       S : Item_Sets.Set;
       Context : constant Draw_Context :=
         (Cr => <>, Layout => Model.Layout, View => null);
@@ -2537,9 +2534,8 @@ package body Gtkada.Canvas_View is
       procedure Check_Item
         (Item : not null access Abstract_Item_Record'Class) is
       begin
-         if Found = null
-           and then Item.Contains (Model_To_Item (Item, Point), Context)
-         then
+         --  topmost items always occur later in the list.
+         if Item.Contains (Model_To_Item (Item, Point), Context) then
             Found := Abstract_Item (Item);
          end if;
       end Check_Item;
@@ -2547,6 +2543,29 @@ package body Gtkada.Canvas_View is
    begin
       Canvas_Model_Record'Class (Self.all).For_Each_Item (Check_Item'Access);
       return Found;
+   end Toplevel_Item_At;
+
+   ----------------------
+   -- Toplevel_Item_At --
+   ----------------------
+
+   overriding function Toplevel_Item_At
+     (Self    : not null access List_Canvas_Model_Record;
+      Point   : Model_Point;
+      Context : Draw_Context) return Abstract_Item
+   is
+      use Items_Lists;
+      C : Items_Lists.Cursor := Self.Items.Last;
+      Item : Abstract_Item;
+   begin
+      while Has_Element (C) loop
+         Item := Element (C);
+         if Item.Contains (Model_To_Item (Item, Point), Context) then
+            return Item;
+         end if;
+         Previous (C);
+      end loop;
+      return null;
    end Toplevel_Item_At;
 
    -----------
