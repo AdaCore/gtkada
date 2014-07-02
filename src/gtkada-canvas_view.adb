@@ -2380,6 +2380,55 @@ package body Gtkada.Canvas_View is
       end case;
    end Refresh_Layout;
 
+   -------------------
+   -- For_Each_Link --
+   -------------------
+
+   procedure For_Each_Link
+     (Self       : not null access Canvas_Model_Record;
+      Callback   : not null access procedure
+        (Item : not null access Abstract_Item_Record'Class);
+      From_Or_To : Item_Sets.Set)
+   is
+      pragma Unreferenced (From_Or_To);
+
+      function Matches
+        (It : not null access Abstract_Item_Record'Class) return Boolean;
+      pragma Inline (Matches);
+      --  Whether the corresponding link should be returned
+
+      function Matches
+        (It : not null access Abstract_Item_Record'Class) return Boolean
+      is
+         L : Canvas_Link;
+      begin
+         --  A custom link ? We don't know how to check its ends, so always
+         --  return it.
+         if It.all not in Canvas_Link_Record'Class then
+            return True;
+         end if;
+
+         L := Canvas_Link (It);
+
+         return From_Or_To.Contains (L.From)
+           or else (L.From.Is_Link and then Matches (L.From))
+           or else From_Or_To.Contains (L.To)
+           or else (L.To.Is_Link and then Matches (L.To));
+      end Matches;
+
+      procedure Local (It : not null access Abstract_Item_Record'Class);
+      procedure Local (It : not null access Abstract_Item_Record'Class) is
+      begin
+         if Matches (It) then
+            Callback (It);
+         end if;
+      end Local;
+
+   begin
+      Canvas_Model_Record'Class (Self.all).For_Each_Item
+        (Local'Access, Filter => Kind_Link);
+   end For_Each_Link;
+
    -------------------------
    -- Refresh_Link_Layout --
    -------------------------
@@ -2389,6 +2438,7 @@ package body Gtkada.Canvas_View is
       Items : Item_Drag_Infos.Map := Item_Drag_Infos.Empty_Map)
    is
       pragma Unreferenced (Items);
+      S : Item_Sets.Set;
       Context : constant Draw_Context :=
         (Cr => <>, Layout => Model.Layout, View => null);
 
@@ -2404,10 +2454,6 @@ package body Gtkada.Canvas_View is
       procedure Reset_Link_Layout
         (It : not null access Abstract_Item_Record'Class) is
       begin
-         --  ??? Should only reset layout for the links to any of items, or
-         --  links to those links.
-         --  This is inefficient to compute in general, so perhaps we should
-         --  instead provide an overridable primitive operation on the model.
          Unchecked_Free (Canvas_Link_Record'Class (It.all).Points);
       end Reset_Link_Layout;
 
@@ -2421,15 +2467,31 @@ package body Gtkada.Canvas_View is
          end if;
       end Do_Link_Layout;
 
+      use Item_Drag_Infos;
+      C : Item_Drag_Infos.Cursor;
+
    begin
-      --  To properly do the layout of links, we must first compute the layout
-      --  of any item they are linked to, including other links. So we do the
-      --  following:
+      --  To properly do the layout of links, we must first compute the
+      --  layout of any item they are linked to, including other links.
+      --  So we do the following:
       --     reset all previous layout computation
       --     when we layout a link, we first layout its end
 
-      Model.For_Each_Item (Reset_Link_Layout'Access, Filter => Kind_Link);
-      Model.For_Each_Item (Do_Link_Layout'Access, Filter => Kind_Link);
+      if Items.Is_Empty then
+         Model.For_Each_Item
+           (Reset_Link_Layout'Access, Filter => Kind_Link);
+         Model.For_Each_Item (Do_Link_Layout'Access, Filter => Kind_Link);
+
+      else
+         C := Items.First;
+         while Has_Element (C) loop
+            S.Include (Element (C).Item);
+            Next (C);
+         end loop;
+
+         Model.For_Each_Link (Reset_Link_Layout'Access, From_Or_To => S);
+         Model.For_Each_Link (Do_Link_Layout'Access, From_Or_To => S);
+      end if;
    end Refresh_Link_Layout;
 
    --------------------

@@ -76,8 +76,9 @@ package Gtkada.Canvas_View.Models is
 
    private
       type Rtree_Model_Record is new Base_Model_Record with record
-         Tree : Rtree (Min_Children => Default_Min_Children,
-                       Max_Children => Default_Max_Children);
+         Items_Tree, Links_Tree : Rtree
+           (Min_Children => Default_Min_Children,
+            Max_Children => Default_Max_Children);
       end record;
    end Rtree_Models;
 end Gtkada.Canvas_View.Models;

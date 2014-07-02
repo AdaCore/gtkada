@@ -73,7 +73,6 @@ private
    type Box is tagged;
    type Box_Access is access all Box'Class;
    type Box_Array is array (Natural range <>) of Box_Access;
-
    type Box (Max_Children_Plus_1 : Natural) is tagged record
       Rect     : Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
       Object   : Abstract_Item;  --  leaf nodes only
@@ -81,9 +80,8 @@ private
       Children : Box_Array (1 .. Max_Children_Plus_1);
    end record;
 
-   type Rtree (Min_Children, Max_Children : Positive) is
-      tagged record
-         Root : Box_Access;
-      end record;
+   type Rtree (Min_Children, Max_Children : Positive) is tagged record
+      Root : Box_Access;
+   end record;
 
 end Gtkada.Canvas_View.Rtrees;

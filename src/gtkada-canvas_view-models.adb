@@ -56,11 +56,16 @@ package body Gtkada.Canvas_View.Models is
          procedure On_Item (It : not null access Abstract_Item_Record'Class);
          procedure On_Item (It : not null access Abstract_Item_Record'Class) is
          begin
-            Self.Tree.Insert (It);
+            if It.Is_Link then
+               Self.Links_Tree.Insert (It);
+            else
+               Self.Items_Tree.Insert (It);
+            end if;
          end On_Item;
       begin
          Base_Model_Record (Self.all).Refresh_Layout;   --  inherited
-         Self.Tree.Clear;
+         Self.Items_Tree.Clear;
+         Self.Links_Tree.Clear;
          Self.For_Each_Item (On_Item'Access, In_Area => No_Rectangle);
       end Refresh_Layout;
 
@@ -79,11 +84,7 @@ package body Gtkada.Canvas_View.Models is
          procedure Local (It : not null access Abstract_Item_Record'Class);
          procedure Local (It : not null access Abstract_Item_Record'Class) is
          begin
-            if (Filter = Kind_Any
-                or else (Filter = Kind_Item and then not It.Is_Link)
-                or else (Filter = Kind_Link and then It.Is_Link))
-              and then (not Selected_Only or else Self.Is_Selected (It))
-            then
+            if not Selected_Only or else Self.Is_Selected (It) then
                Callback (It);
             end if;
          end Local;
@@ -93,9 +94,18 @@ package body Gtkada.Canvas_View.Models is
             --  use the base model: this is faster, and more importantly needed
             --  in Refresh_Layout, when the tree has not been filled yet.
             Base_Model_Record (Self.all).For_Each_Item
-               (Callback, Selected_Only, Filter, In_Area);
+              (Callback, Selected_Only, Filter, In_Area);
+
          else
-            Self.Tree.For_Each_Object (Local'Access, In_Area);
+            case Filter is
+               when Kind_Any =>
+                  Self.Items_Tree.For_Each_Object (Local'Access, In_Area);
+                  Self.Links_Tree.For_Each_Object (Local'Access, In_Area);
+               when Kind_Item =>
+                  Self.Items_Tree.For_Each_Object (Local'Access, In_Area);
+               when Kind_Link =>
+                  Self.Links_Tree.For_Each_Object (Local'Access, In_Area);
+            end case;
          end if;
       end For_Each_Item;
 
@@ -108,13 +118,18 @@ package body Gtkada.Canvas_View.Models is
          Margin : Model_Coordinate := 0.0)
          return Model_Rectangle
       is
-         M : constant Model_Rectangle := Self.Tree.Bounding_Box;
+         ItB : Model_Rectangle := Self.Items_Tree.Bounding_Box;
+         ItL : constant Model_Rectangle := Self.Links_Tree.Bounding_Box;
       begin
-         if M.Width = 0.0 then
-            return M;
+         Union (ItB, ItL);
+
+         if ItB.Width = 0.0 then
+            return ItB;  --  null record
          else
-            return (M.X - Margin, M.Y - Margin,
-                    M.Width + 2.0 * Margin, M.Height + 2.0 * Margin);
+            return (ItB.X - Margin,
+                    ItB.Y - Margin,
+                    ItB.Width + 2.0 * Margin,
+                    ItB.Height + 2.0 * Margin);
          end if;
       end Bounding_Box;
 
@@ -134,11 +149,12 @@ package body Gtkada.Canvas_View.Models is
          --  Compute the list of items whose bounding box contains Point.
          --  We will need to filter this list by checking the actual item
          --  border.
-         Items : constant Items_Lists.List := Self.Tree.Find (R);
-
-         C : Items_Lists.Cursor := Items.First;
-         It : Abstract_Item;
+         Items : Items_Lists.List;
+         C     : Items_Lists.Cursor;
+         It    : Abstract_Item;
       begin
+         Items := Self.Items_Tree.Find (R);
+         C := Items.First;
          while Has_Element (C) loop
             It := Element (C);
             if It.Contains (Model_To_Item (It, Point), Context) then
@@ -146,6 +162,17 @@ package body Gtkada.Canvas_View.Models is
             end if;
             Next (C);
          end loop;
+
+         Items := Self.Links_Tree.Find (R);
+         C := Items.First;
+         while Has_Element (C) loop
+            It := Element (C);
+            if It.Contains (Model_To_Item (It, Point), Context) then
+               return It;
+            end if;
+            Next (C);
+         end loop;
+
          return null;
       end Toplevel_Item_At;
 

@@ -141,7 +141,7 @@ pragma Ada_2012;
 
 with Ada.Containers.Doubly_Linked_Lists;
 private with Ada.Containers.Hashed_Maps;
-private with Ada.Containers.Hashed_Sets;
+with Ada.Containers.Hashed_Sets;
 private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
 with Cairo;
@@ -583,6 +583,26 @@ package Gtkada.Canvas_View is
    --  Items are returned in z-layer order: lowest items first, highest items
    --  last.
 
+   function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type;
+   package Item_Sets is new Ada.Containers.Hashed_Sets
+     (Element_Type        => Abstract_Item,
+      Hash                => Hash,
+      Equivalent_Elements => "=",
+      "="                 => "=");
+
+   procedure For_Each_Link
+     (Self       : not null access Canvas_Model_Record;
+      Callback   : not null access procedure
+        (Item : not null access Abstract_Item_Record'Class);
+      From_Or_To : Item_Sets.Set);
+   --  This iterator should return all the links in the model.
+   --  If possible, it should restrict itself to the links with at least one
+   --  end on an item in From_Or_To (or on a link to such an item).
+   --  This function is important for performance when draggin items in a
+   --  large model (tens of thousands of items). The default implementation
+   --  simply calls For_Each_Item.
+   --  From_Or_To is never empty.
+
    function Bounding_Box
      (Self   : not null access Canvas_Model_Record;
       Margin : Model_Coordinate := 0.0)
@@ -716,7 +736,10 @@ package Gtkada.Canvas_View is
    type List_Canvas_Model_Record is new Canvas_Model_Record with private;
    type List_Canvas_Model is access all List_Canvas_Model_Record'Class;
    --  A very simple-minded concrete implementation for a model.
-   --  Not efficient, do not use in your code.
+   --  This model is suitable for most cases where only a few thousands items
+   --  are displayed. If you have tens of thousands, you should consider
+   --  wrapping this model with a Gtkada.Canvas_View.Models.Rtree_Model to
+   --  speed things up.
 
    procedure Gtk_New (Self : out List_Canvas_Model);
    --  Create a new model
@@ -1616,14 +1639,6 @@ package Gtkada.Canvas_View is
 private
    procedure Unchecked_Free is new Ada.Unchecked_Deallocation
      (Gtkada.Style.Point_Array, Gtkada.Style.Point_Array_Access);
-
-   function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type;
-
-   package Item_Sets is new Ada.Containers.Hashed_Sets
-     (Element_Type        => Abstract_Item,
-      Hash                => Hash,
-      Equivalent_Elements => "=",
-      "="                 => "=");
 
    type Canvas_Model_Record is abstract new Glib.Object.GObject_Record
    with record
