@@ -1775,7 +1775,8 @@ private
 
       Id_Layout_Changed,
       Id_Item_Contents_Changed,
-      Id_Selection_Changed : Gtk.Handlers.Handler_Id;
+      Id_Selection_Changed : Gtk.Handlers.Handler_Id :=
+         (Gtk.Handlers.Null_Handler_Id, null);
       --  Connections to model signals
 
       Layout     : Pango.Layout.Pango_Layout;

@@ -77,6 +77,7 @@ with Create_Canvas_View_Items;
 with Create_Canvas_View_Links;
 with Create_Canvas_View_Minimap;
 with Create_Canvas_View_Routes;
+with Create_Canvas_View_Rtrees;
 with Create_Cell_View;
 with Create_Check_Buttons;
 with Create_Clipboard;
@@ -302,6 +303,9 @@ package body Main_Windows is
       (NS ("canvas view (editing)"),     Gtkada,
        Create_Canvas_View_Edit.Run'Access,
        Create_Canvas_View_Edit.Help'Access),
+      (NS ("canvas view (large)"),     Gtkada,
+       Create_Canvas_View_RTrees.Run'Access,
+       Create_Canvas_View_RTrees.Help'Access),
       (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
                                          Create_Cell_View.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,

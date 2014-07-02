@@ -41,6 +41,7 @@ testgtk.exe
 testgtk/obj
 testgtk/opengl/view_gl.adb
 testgtk/testgtk
+testgtk/test_rtree
 testgtk/testcairo
 testgtk/application
 testgtk/try.png
