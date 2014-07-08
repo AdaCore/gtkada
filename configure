@@ -620,6 +620,7 @@ CPPFLAGS
 LDFLAGS
 CFLAGS
 CC
+NEED_OBJECTIVE_C
 TARGET_LFLAGS
 FPIC
 SO_OPTS
@@ -2092,6 +2093,7 @@ fi
    FPIC=-fPIC
    TARGET_LFLAGS=
    DEFAULT_LIBRARY_TYPE=static
+   NEED_OBJECTIVE_C=no
 
    # Check whether --enable-static was given.
 if test "${enable_static+set}" = set; then :
@@ -2163,6 +2165,7 @@ fi
       ;;
    *darwin*)
       SO_EXT=.dylib
+      NEED_OBJECTIVE_C=yes
       if test x$CAN_BUILD_SHARED = xyes ; then
          BUILD_SHARED=yes
       fi
@@ -2188,6 +2191,7 @@ fi
   if test x$BUILD_SHARED = xno ; then
      DEFAULT_LIBRARY_TYPE=static
   fi
+
 
 
 

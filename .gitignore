@@ -19,8 +19,10 @@ po/Makefile
 b~*.ad*
 config.log
 config.status
+shared.gpr
 contrib/generated/*.ad?
 contrib/generated/tmp.ada
+projects/Makefile
 projects/gtkada.gpr
 projects/gtkada_gl.gpr
 projects/gtkada.pc

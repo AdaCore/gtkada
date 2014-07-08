@@ -10,7 +10,7 @@ project Shared is
    Build_Opengl : Boolean_Type := "@HAVE_OPENGL@";
 
    type Yes_No is ("yes", "no");
-   Build_Extra  : Yes_No := external ("EXTRA",  "no");
+   Need_Objective_C : Yes_No := "@NEED_OBJECTIVE_C@";
 
    for Source_Files use ();
 

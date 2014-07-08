@@ -1,7 +1,10 @@
 with "../shared";
 
 library project GtkAda_Src is
-   for Languages use ("C", "Ada", "Objective-C");
+   case Shared.Need_Objective_C is
+      when "yes" => for Languages use ("C", "Ada", "Objective-C");
+      when "no"  => for Languages use ("C", "Ada");
+   end case;
 
    --  Put "generated" first, so that files are preferably taken from there
    --  even if they still exist in "."

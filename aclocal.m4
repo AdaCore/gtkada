@@ -11,6 +11,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    FPIC=-fPIC
    TARGET_LFLAGS=
    DEFAULT_LIBRARY_TYPE=static
+   NEED_OBJECTIVE_C=no
 
    AC_ARG_ENABLE(static,
      [AC_HELP_STRING(
@@ -87,6 +88,7 @@ make them preselected in project files (static libraries are preselected by defa
       ;;
    *darwin*)
       SO_EXT=.dylib
+      NEED_OBJECTIVE_C=yes
       if test x$CAN_BUILD_SHARED = xyes ; then
          BUILD_SHARED=yes
       fi
@@ -122,6 +124,7 @@ make them preselected in project files (static libraries are preselected by defa
   AC_SUBST(SO_OPTS)
   AC_SUBST(FPIC)
   AC_SUBST(TARGET_LFLAGS)
+  AC_SUBST(NEED_OBJECTIVE_C)
 
 ]
 )
