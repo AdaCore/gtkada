@@ -3,10 +3,10 @@ with "../../shared";
 
 project Tools is
    for Main use ("gdialog.adb");
-   for Object_Dir use "obj";
+   for Object_Dir use "../obj/tools/";
 
    package Builder  is
-      for Default_Switches ("Ada") use Shared.Builder'Default_Switches ("Ada");
+      for Switches ("Ada") use Shared.Builder'Switches ("Ada");
       for Executable ("gdialog.adb") use "gtkada-dialog";
    end Builder;
 

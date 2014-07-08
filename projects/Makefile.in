@@ -1,8 +1,10 @@
-include ../src/Makefile.common
-
 MKDIR = mkdir -p
-
-SOVER=${MAJOR}.${MINOR}
+DESTDIR=
+prefix = @prefix@
+libdir = @libdir@
+incdir = @includedir@/gtkada
+CP = cp
+DEFAULT_LIBRARY_TYPE = @DEFAULT_LIBRARY_TYPE@
 
 # We want users to be able to override the projects installation directory
 # from the command line, so we cannot include DESTDIR directly here
@@ -15,15 +17,9 @@ install: force
 	$(MKDIR) "${DESTDIR}$(libdir)/pkgconfig/"
 	${CP} gtkada.pc "${DESTDIR}$(libdir)/pkgconfig/"
 	-${RM} "${DESTDIR}${prefix}"/projects/gtkada*
-
-	@# We must pass ${libdir} and not ${DESTDIR}${libdir}, since DESTDIR is
-	@# really only a temporary directory for packagers, but the package will
-	@# eventually be installed in ${libdir}.
-	./generate_prj.sh GtkAda ${DEFAULT_LIBRARY_TYPE} ${SOVER} "" "${libdir}"
 	${CP} gtkada.gpr "${DESTDIR}${PRJDIR}"
 
 ifeq ($(HAVE_OPENGL), True)
-	./generate_prj.sh GtkAda_GL ${DEFAULT_LIBRARY_TYPE} ${SOVER} opengl "${libdir}"
 	${CP} gtkada_gl.gpr "${DESTDIR}${PRJDIR}"
 endif	
 
@@ -32,7 +28,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 clean: force
-	$(RM) gtkada_install_dynamic_gl.gpr gtkada_install_dynamic.gpr gtkada.pc
+	$(RM) gtkada_install_dynamic_gl.gpr gtkada_install_dynamic.gpr gtkada.pc gtkada.gpr gtkada_gl.gpr
 
 distclean: clean
 

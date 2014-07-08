@@ -31,7 +31,8 @@ src/Makefile.common
 src/config.h
 src/gtkada-intl.adb
 src/gtkextra/obj
-src/lib-obj
+src/lib
+src/obj
 src/gnome/obj/libgnomeada-*
 src/opengl/obj/libgtkada_gl-*
 src/tools/gate

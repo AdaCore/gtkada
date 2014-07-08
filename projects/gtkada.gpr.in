@@ -1,0 +1,31 @@
+project GtkAda is
+   type Library_Types is ("static", "relocatable");
+   Gtkada_Kind : Library_Types := external ("LIBRARY_TYPE", "@DEFAULT_LIBRARY_TYPE@");
+
+   So_Ext := ".@SO_EXT@";
+   Version := "@PACKAGE_VERSION@";
+
+   for Source_Dirs use ("../../include/gtkada/");
+   for Source_Files use "gtkada/gtkada.lgpr";
+   for Library_Kind use Gtkada_Kind;
+   for Library_Name use "gtkada";
+   for Library_Dir use "../../lib/gtkada/" & Project'Library_Kind;
+   for Library_Version use "lib" & Project'Library_Name & So_Ext & "." & Version;
+   for Externally_Built use "true";
+
+   Gtk_Libs := (@GTK_LIBS_GPR@);
+
+   case Gtkada_Kind is
+      when "static" =>
+         for Library_Options use
+            ("-L" & Project'Project_Dir & "../../lib/gtkada/static") & Gtk_Libs;
+      when "relocatable" =>
+         for Library_Options use
+            ("-L" & Project'Project_Dir & "../../lib/gtkada/relocatable") & Gtk_Libs;
+   end case;
+
+   package Linker is
+     for Linker_Options use Project'Library_Options;
+   end Linker;
+
+end GtkAda;

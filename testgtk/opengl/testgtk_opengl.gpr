@@ -5,14 +5,14 @@ project TestGTK_OpenGL is
    for Object_Dir use "../obj";
    for Source_Dirs use (".");
 
-   for Languages use ("Ada", "C");
+   case Shared.Build_Opengl is
+      when "True" =>
+         for Languages use ("Ada", "C");
+      when "False" =>
+         for Source_Files use ("view_gl.adb", "view_gl.ads");
+   end case;
 
-   package Compiler is
-      for Default_Switches ("Ada") use
-         ("-gnatQ", "-gnatwa",  "-gnatay3abcefhiklmnprt", "-g", "-O1",
-          "-gnat05");
-   end Compiler;
-
+   package Compiler renames Shared.Compiler;
    package IDE      renames Shared.IDE;
 
 end TestGTK_OpenGL;

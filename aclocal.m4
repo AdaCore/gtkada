@@ -138,8 +138,38 @@ AC_DEFUN(CHECK_BUILD_TYPE,
           [Default build type for the library (Debug, Production)])],
        BUILD_TYPE=$enableval,
        BUILD_TYPE=Production)
+   AC_SUBST(BUILD_TYPE)
 ]
 )
+
+##########################################################################
+## Converts a list of space-separated words into a list suitable for
+## inclusion in .gpr files
+##   $1=the list
+##   $2=exported name
+##########################################################################
+
+AC_DEFUN(AM_TO_GPR,
+[
+   value=[$1]
+
+   # Special handling on darwin for gcc 4.5 and 4.7
+   case "$build_os" in
+      *darwin*)
+         value=`echo $value | sed -e "s/-framework \([[^ ]]*\)/-Wl,-framework -Wl,\1/g"`
+   esac
+
+   output=$2
+   result=""
+   for v in $value; do
+      if test "$result" != ""; then
+         result="$result, "
+      fi
+      result="$result\"$v\""
+   done
+   $2=$result
+   AC_SUBST($2)
+])
 
 #############################################################
 #
@@ -225,97 +255,47 @@ AC_DEFUN(AM_PATH_PERL,
 #############################################################
 #
 # Configure paths for GTK+
-# Extracted from the aclocal.m4 file of gimp-1.0.0
+# Input:
+#    $1=minimal version of gtk+ needed
 #
 #############################################################
 
-dnl AM_PATH_GTK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for GTK, and define GTK_CFLAGS and GTK_LIBS
-dnl
 AC_DEFUN(AM_PATH_GTK,
-[dnl
-dnl Get the cflags and libraries from the pkg-config script
-dnl
+[
   AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-  min_gtk_version=ifelse([$1], ,1.3.0,$1)
+  min_gtk_version=[$1]
   AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
   no_gtk=""
   GTK="gtk+-3.0"
   if test "$PKG_CONFIG" = "no" ; then
-    no_gtk=yes
+     AC_MSG_ERROR([pkg-config not found])
   else
+    $PKG_CONFIG $GTK --atleast-version=$min_gtk_version
+    if test $? != 0 ; then
+       AC_MSG_ERROR([old version detected])
+    fi
+    
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
     GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
-    gtk_config_major_version=`$PKG_CONFIG $GTK --modversion | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    gtk_config_minor_version=`$PKG_CONFIG $GTK --modversion | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    gtk_config_micro_version=`$PKG_CONFIG $GTK --modversion | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
 
-    GTK_LIBS_FOR_GNATMAKE=`echo $GTK_LIBS | sed -e 's/-framework \([[^ ]]*\)/-Wl,-framework -Wl,\1/g'`
-
+    dnl
+    dnl Now check if the installed GTK is sufficiently new. (Also sanity
+    dnl checks the results of pkg-config to some extent
+    dnl
     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
     CFLAGS="$CFLAGS $GTK_CFLAGS"
     LIBS="$LIBS $GTK_LIBS"
-dnl
-dnl Now check if the installed GTK is sufficiently new. (Also sanity
-dnl checks the results of pkg-config to some extent
-dnl
-      rm -f conf.gtktest
-      AC_TRY_RUN([
+    rm -f conf.gtktest
+    AC_TRY_RUN([
 #include <gtk/gtk.h>
 #include <stdio.h>
-
 int
-main ()
+main (int argc, char** argv)
 {
-  int major, minor, micro;
-  char *tmp_version;
-
-  system ("touch conf.gtktest");
-
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = g_strdup("$min_gtk_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_gtk_version");
-     exit(1);
-   }
-
-  if ((gtk_major_version != $gtk_config_major_version) ||
-      (gtk_minor_version != $gtk_config_minor_version) ||
-      (gtk_micro_version != $gtk_config_micro_version))
-    {
-      printf("\n*** 'pkg-config --modversion' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n",
-             $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
-             gtk_major_version, gtk_minor_version, gtk_micro_version);
-      printf ("*** was found! If pkg-config was correct, then it is best\n");
-      printf ("*** to remove the old version of GTK+. You may also be able to fix the error\n");
-      printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
-      printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
-      printf("*** required on your system.\n");
-    }
-  else
-    {
-      if ((gtk_major_version > major) ||
-        ((gtk_major_version == major) && (gtk_minor_version > minor)) ||
-        ((gtk_major_version == major) && (gtk_minor_version == minor) && (gtk_micro_version >= micro)))
-      {
-        return 0;
-       }
-     else
-      {
-        printf("\n*** An old version of GTK+ (%d.%d.%d) was found.\n",
-               gtk_major_version, gtk_minor_version, gtk_micro_version);
-        printf("*** You need a version of GTK+ newer than %d.%d.%d. The latest version of\n",
-	       major, minor, micro);
-        printf("*** GTK+ is always available from ftp://ftp.gtk.org.\n");
-        printf("***\n");
-      }
-    }
-  return 1;
+  gtk_init(&argc, &argv);
+  return 0;
 }
 ],, no_gtk=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
 
@@ -325,53 +305,14 @@ main ()
 
   if test "x$no_gtk" = x ; then
      AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])
   else
-     AC_MSG_RESULT(no)
-     if test "$GTK_CONFIG" = "no" ; then
-       echo "*** The pkg-config script could not be found"
-       echo "*** If GTK was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path."
-     else
-       if test -f conf.gtktest ; then
-        :
-       else
-          echo "*** Could not run GTK test program, checking why..."
-          CFLAGS="$CFLAGS $GTK_CFLAGS"
-          LIBS="$LIBS $GTK_LIBS"
-          AC_TRY_LINK([
-#include <gtk/gtk.h>
-#include <stdio.h>
-],      [ return ((gtk_major_version) || (gtk_minor_version) || (gtk_micro_version)); ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding GTK or finding the wrong"
-          echo "*** version of GTK. If it is not finding GTK, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
-          echo "***"
-          echo "*** If you have a RedHat 5.0 system, you should remove the GTK package that"
-          echo "*** came with the system with the command"
-          echo "***"
-          echo "***    rpm --erase --nodeps gtk gtk-devel" ],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means GTK was incorrectly installed"
-          echo "*** or that you have moved GTK since it was installed." ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
-     fi
-     GTK_CFLAGS=""
-     GTK_LIBS=""
-     ifelse([$3], , :, [$3])
+     AC_MSG_ERROR(no)
   fi
   AC_SUBST(GTK_PREFIX)
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
-  AC_SUBST(GTK_LIBS_FOR_GNATMAKE)
+  AM_TO_GPR($GTK_CFLAGS, GTK_CFLAGS_GPR)
+  AM_TO_GPR($GTK_LIBS,  GTK_LIBS_GPR)
   rm -f conf.gtktest
 ])
 
@@ -487,15 +428,11 @@ AC_DEFUN(AM_CHECK_OPENGL,
       ;;
    esac
 
-   if test "x$HAVE_OPENGL" = "xFalse"; then
-      AC_MSG_RESULT([*** OpenGL support will not be integrated into GtkAda ***])
-   fi
-
-
    AC_SUBST(GL_LIBS)
    AC_SUBST(GL_CFLAGS)
    AC_SUBST(HAVE_OPENGL)
-
+   AM_TO_GPR($GL_LIBS, GL_LIBS_GPR)
+   AM_TO_GPR($GL_CFLAGS, GL_CFLAGS_GPR)
 ])
 
 #############################################################

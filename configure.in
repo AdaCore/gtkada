@@ -1,14 +1,12 @@
-AC_REVISION($Revision$)
-AC_PREREQ(2.50)
-AC_INIT(src/glib.ads)
-
-# Current release settings
-GTKADA_MAJOR_VERSION=3
-GTKADA_MINOR_VERSION=8
-GTKADA_MICRO_VERSION=3
-GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
-
+AC_INIT(gtkada,3.8.3,report@adacore.com,gtkada)
 AC_CANONICAL_SYSTEM
+
+TARGET=""
+if test x$host != x$target ; then
+   TARGET=${target}
+fi
+AC_SUBST(TARGET)
+
 AM_ADD_OS_SPECIFIC_FLAGS
 
 # checking for local tools
@@ -20,15 +18,14 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-# Are we in devel mode ?
-CHECK_BUILD_TYPE
-
-# checking for gtk
-AM_PATH_GTK(3.8.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+CHECK_BUILD_TYPE     # are we in devel mode ?
 
 # Gettext stuff
-ALL_LINGUAS="fr"
+ALL_LINGUAS="en"
 AM_GNU_GETTEXT([external])
+
+# checking for gtk
+AM_PATH_GTK(3.8.3)
 
 # Should we compile with gtkextra ?
 AC_MSG_CHECKING(for gtkextra)
@@ -44,13 +41,6 @@ AC_SUBST(HAVE_GTKEXTRA)
 # try to find OpenGL if present
 AM_CHECK_OPENGL
 
-# Set the version number of GtkAda
-AC_SUBST(GTKADA_VERSION)
-AC_SUBST(GTKADA_MAJOR_VERSION)
-AC_SUBST(GTKADA_MINOR_VERSION)
-AC_SUBST(GTKADA_MICRO_VERSION)
-AC_SUBST(BUILD_TYPE)
-
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
@@ -59,4 +49,10 @@ AC_SUBST(EXEC_PREFIX)
 
 libdir='${prefix}/lib'
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/tools/gtkada-config src/tools/Makefile testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)
+AC_OUTPUT(Makefile shared.gpr src/tools/gtkada-config projects/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.gpr projects/gtkada_gl.gpr projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)
+
+AC_MSG_NOTICE([--------- Summary for Gtkada $PACKAGE_VERSION -----------------])
+AC_MSG_NOTICE(AC_HELP_STRING(
+              [Shared libraries:],[$CAN_BUILD_SHARED (default: $DEFAULT_LIBRARY_TYPE)]))
+AC_MSG_NOTICE(AC_HELP_STRING([OpenGL:],[$HAVE_OPENGL]))
+AC_MSG_NOTICE([--------------------------------------------])

@@ -104,9 +104,6 @@ with Create_Notebook;
 with Create_Opacity;
 with Create_Paned;
 with Create_Pixbuf;
---  with Create_Plot;
---  with Create_Plot_3D;
---  with Create_Plot_Realtime;
 with Create_Print;
 with Create_Progress;
 with Create_Radio_Button;
@@ -115,7 +112,6 @@ with Create_Reparent;
 with Create_Scrolled;
 with Create_Selection;
 with Create_Size_Groups;
---  with Create_Sheet;
 with Create_Sources;
 with Create_Spin;
 with Create_Spinners;
@@ -304,8 +300,8 @@ package body Main_Windows is
        Create_Canvas_View_Edit.Run'Access,
        Create_Canvas_View_Edit.Help'Access),
       (NS ("canvas view (large)"),     Gtkada,
-       Create_Canvas_View_RTrees.Run'Access,
-       Create_Canvas_View_RTrees.Help'Access),
+       Create_Canvas_View_Rtrees.Run'Access,
+       Create_Canvas_View_Rtrees.Help'Access),
       (NS ("cell view"),        Complex, Create_Cell_View.Run'Access,
                                          Create_Cell_View.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
@@ -369,12 +365,6 @@ package body Main_Windows is
                                          Create_Opacity.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
                                          Create_Paned.Help'Access),
-      --  (NS ("plot"),             Complex, Create_Plot.Run'Access,
-      --                                     Create_Plot.Help'Access),
-      --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
-      --                                     Create_Plot_3D.Help'Access),
-      --  (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
-      --                                     Create_Plot_Realtime.Help'Access),
       (NS ("properties"),       Misc,    null, null),
       (NS ("printing"),         Base,    Create_Print.Run'Access,
                                          Create_Print.Help'Access),
@@ -396,8 +386,6 @@ package body Main_Windows is
       (NS ("selection"),        Complex, Create_Selection.Run'Access,
                                          Create_Selection.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
-      --  (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
-      --                                     Create_Sheet.Help'Access),
       (NS ("size groups"),      Box,     Create_Size_Groups.Run'Access,
                                          Create_Size_Groups.Help'Access),
       (NS ("event sources"),    Misc,    Create_Sources.Run'Access,

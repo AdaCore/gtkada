@@ -3,36 +3,52 @@ project Shared is
    type Build_Type is ("Debug", "Production");
    Build : Build_Type := external ("BUILD", "Production");
 
-   Processors := external ("PROCESSORS", "1");
+   Processors := external ("PROCESSORS", "0");
    --  Number of parallel compilations that should be performed
 
    type Boolean_Type is ("True", "False");
-   Build_Gnome  : Boolean_Type := external ("GNOME",  "True");
-   Build_Opengl : Boolean_Type := external ("OPENGL", "True");
+   Build_Opengl : Boolean_Type := "@HAVE_OPENGL@";
 
    type Yes_No is ("yes", "no");
    Build_Extra  : Yes_No := external ("EXTRA",  "no");
 
    for Source_Files use ();
 
+   type Library_Kinds is ("relocatable", "static");
+   Library_Kind : Library_Kinds := external ("LIBRARY_TYPE", "@DEFAULT_LIBRARY_TYPE@");
+
+   So_Ext := "@SO_EXT@";
+   Version := "@PACKAGE_VERSION@";
+   Gtk_Include := (@GTK_CFLAGS_GPR@);
+   Gtk_Libs    := (@GTK_LIBS_GPR@);
+   GL_Include  := (@GL_CFLAGS_GPR@);
+   GL_Libs     := (@GL_LIBS_GPR@);
+
    package Naming is
       for Body_Suffix ("Objective-C") use ".m";
    end Naming;
 
    package Compiler is
+      for Driver ("Objective-C") use "clang";
+      for Leading_Required_Switches ("Objective-C") use ("-c");
+
       case Build is
          when "Debug" =>
-             for Default_Switches ("Ada") use
+             for Switches ("Ada") use
                 ("-gnat05", "-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0");
+             for Switches ("C") use ("-g", "-O0");
          when "Production" =>
-             for Default_Switches ("Ada") use
+             for Switches ("Ada") use
                 ("-gnat05", "-gnatQ", "-O2", "-gnatn", "-gnatws");
+             for Switches ("C") use ("-O2");
       end case;
-      for Local_Configuration_Pragmas use "src/gnat.adc";
+
+      for Switches ("C") use Compiler'Switches ("C") & Gtk_Include;
+      for Switches ("Objective-C") use Compiler'Switches ("Objective-C") & Gtk_Include;
    end Compiler;
 
    package Builder is
-      for Default_Switches ("Ada") use ("-m", "-j" & Processors);
+      for Switches ("Ada") use ("-m", "-j" & Processors);
 
       case Build is
          when "Debug" =>
@@ -52,9 +68,7 @@ project Shared is
    end Binder;
 
    package IDE is
-      for VCS_Kind use "subversion";
-      for VCS_Log_Check use "log_check";
-      for VCS_File_Check use "ci_check";
+      for VCS_Kind use "auto";
       for Documentation_Dir use "html";
    end IDE;
 

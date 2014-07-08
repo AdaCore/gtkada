@@ -47,15 +47,10 @@ project = u'GtkAda'
 copyright = get_copyright()
 
 def get_version():
-    major = minor = micro = ""
     for line in file("../../configure.in").readlines():
-        if line.startswith("GTKADA_MAJOR_VERSION"):
-            major = line.rstrip().split('=')[1]
-        elif line.startswith("GTKADA_MINOR_VERSION"):
-            minor = line.rstrip().split('=')[1]
-        elif line.startswith("GTKADA_MICRO_VERSION"):
-            micro = line.rstrip().split('=')[1]
-    return "%s.%s.%s" % (major, minor, micro)
+        if line.startswith("AC_INIT"):
+            return line.split(",")[1]
+    raise Exception("Cannot find version number")
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

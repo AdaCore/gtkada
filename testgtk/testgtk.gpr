@@ -5,13 +5,13 @@ with "opengl/testgtk_opengl";
 project TestGtk is
 
    for Languages use ("Ada");
-   for Main use ("testgtk.adb", "test_rtree.adb");
+   for Main use ("testgtk.adb", "test_rtree.adb", "test_graph.adb");
    for Source_Dirs use ("./");
    for Object_Dir use "obj/";
    for Exec_Dir use ".";
 
    package Builder is
-      for Default_Switches ("Ada") use Shared.Builder'Default_Switches ("Ada");
+      for Switches ("Ada") use Shared.Builder'Switches ("Ada");
 
       case Shared.Build is
          when "Debug" =>
@@ -21,12 +21,10 @@ project TestGtk is
          when "Production" =>
             null;
       end case;
+
    end Builder;
 
-   package Compiler is
-      for Switches ("ada") use Shared.Compiler'Switches ("ada");
-   end Compiler;
-
+   package Compiler renames Shared.Compiler;
    package Binder   renames Shared.Binder;
    package IDE      renames Shared.IDE;
 
