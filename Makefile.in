@@ -19,7 +19,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
 ifeq (${OS}, Windows_NT)
 LN_S         = ${CP}
-EXEEXT       = .ext
+EXEEXT       = .exe
 else
 LN_S         = ln -s
 EXEEXT       =
