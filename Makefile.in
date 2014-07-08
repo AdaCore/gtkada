@@ -3,7 +3,7 @@ SHELL=/bin/sh
 .SUFFIXES:
 .PHONY: clean-generic mostlyclean-generic \
 	clean distclean mostlyclean maintainer-clean \
-	install src tests
+	install src tests docs generate tools
 
 doc_dir     = docs
 projects_dir = projects
@@ -91,8 +91,6 @@ tests: testgtk/opengl/view_gl.adb static
 	@echo "====== Building tests ====="
 	${GPRBUILD_FULL} -XLIBRARY_TYPE=static -Ptestgtk/testgtk.gpr
 
-SRCDIRS=src/ src/generated/
-
 install/static/%: force
 	@${MKDIR} ${libdir}/${TARNAME}/static/
 	${CP} src/lib/$(@F)/static/* ${libdir}/${TARNAME}/static/
@@ -129,6 +127,8 @@ install_dirs:
 	${MKDIR} ${gpsdir}
 	${MKDIR} ${exampledir}
 
+SRCDIRS=src/ src/generated/
+
 install:
 	@${CP} ${wildcard ${addsuffix *.ad[bs], ${SRCDIRS}}} ${includedir}/${TARNAME}
 	@cd ${includedir}/${TARNAME}; ls ${notdir ${wildcard ${addsuffix *.ad[bs], ${SRCDIRS}}}} > ${DESTDIR}${prefix}/lib/gnat/${TARNAME}/gtkada.lgpr
@@ -152,19 +152,19 @@ endif
 	@# install GPS support
 	${CP} xml/gtkada.xml ${gpsdir}
 
-	@echo '------------------------------------------------------------------'
-	@echo '--  GtkAda has now been installed.                              --'
-	@echo '--  To be able to use the library, you may need to update your  --'
-	@echo '--  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --'
-	@echo '--  update your PATH to include gtkada-config in it.            --'
-	@echo '------------------------------------------------------------------'
+	@echo '-----------------------------------------------------------------------'
+	@echo '--  GtkAda has now been installed.                                   --'
+	@echo '--  To use the library, you may need to update LD_LIBRARY_PATH       --'
+	@echo '--  or to run ldconfig. You may also need to update GPR_PROJECT_PATH --'
+	@echo '--  to include                                                       --'
+	@echo '--  ${prefix}/lib/gnat'
+	@echo '-----------------------------------------------------------------------'
 
-.PHONY: docs
 docs:
 	$(MAKE) -C docs
 
 # Generate the binding automatically, through a python script
-generate: force
+generate:
 	${RM} src/generated/*.ad?
 	${PYTHON} contrib/binding.py \
 	   --gir-file=contrib/GLib-2.0.gir \
