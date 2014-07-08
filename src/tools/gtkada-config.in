@@ -63,7 +63,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     --version|-v)
-      echo @GTKADA_VERSION@
+      echo @PACKAGE_VERSION@
       exit 0
       ;;
     --libs)

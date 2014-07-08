@@ -51,6 +51,7 @@ includedir=${DESTDIR}@includedir@
 libdir=${DESTDIR}@libdir@
 bindir=${DESTDIR}@bindir@
 datadir=${DESTDIR}@datadir@
+datarootdir=${DESTDIR}@datarootdir@
 exampledir=${DESTDIR}${prefix}/share/examples/gtkada/testgtk
 gpsdir=${DESTDIR}${prefix}/share/gps/plug-ins/
 
