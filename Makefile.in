@@ -126,7 +126,7 @@ install/relocatable: install/relocatable/gtkada
 
 install_dirs:
 	${MKDIR} ${includedir}/${TARNAME}
-	${MKDIR} ${DESTDIR}/${prefix}/lib/gnat/${TARNAME}
+	${MKDIR} ${DESTDIR}${prefix}/lib/gnat/${TARNAME}
 	${MKDIR} ${bindir}
 	${MKDIR} ${gpsdir}
 	${MKDIR} ${exampledir}
