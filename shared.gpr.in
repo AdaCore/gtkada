@@ -29,7 +29,7 @@ project Shared is
    end Naming;
 
    package Compiler is
-      for Driver ("Objective-C") use "clang";
+      for Driver ("Objective-C") use "@OBJC@";
       for Leading_Required_Switches ("Objective-C") use ("-c");
 
       case Build is

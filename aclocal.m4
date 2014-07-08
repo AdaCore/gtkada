@@ -8,7 +8,6 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 [
    SO_EXT=.so
    SO_OPTS=-Wl,-soname,
-   FPIC=-fPIC
    TARGET_LFLAGS=
    DEFAULT_LIBRARY_TYPE=static
    NEED_OBJECTIVE_C=no
@@ -45,7 +44,6 @@ make them preselected in project files (static libraries are preselected by defa
    case $build_os in
    aix*)
       BUILD_SHARED=no
-      FPIC=
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
       TARGET_LFLAGS=-Wl,-bbigtoc
       SO_OPTS="-o "
@@ -58,13 +56,11 @@ make them preselected in project files (static libraries are preselected by defa
    *sysv4uw* | *sysv5uw*)
       SO_OPTS=-Wl,-h,
       BUILD_SHARED=no
-      FPIC=
       ;;
    *solaris*)
       SO_OPTS=-Wl,-h,
       ;;
    *irix*)
-      FPIC=
       ;;
    *osf*)
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-expect_unresolved,\*
@@ -74,7 +70,6 @@ make them preselected in project files (static libraries are preselected by defa
          BUILD_SHARED=yes
       fi
       SO_EXT=.dll
-      FPIC=
       ac_tmp_GNATDIR=`which gcc | sed 's,/gcc$,,'`
       ac_GNATDIR=`cygpath --mixed $ac_tmp_GNATDIR`
       count=`cd $ac_GNATDIR; ls libgnat-*.dll | wc -l`
@@ -92,9 +87,7 @@ make them preselected in project files (static libraries are preselected by defa
       if test x$CAN_BUILD_SHARED = xyes ; then
          BUILD_SHARED=yes
       fi
-      BUILD_OBJC=yes
       SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
-      FPIC=-fPIC
       LDFLAGS="-Wl,-framework,Cocoa"
       TARGET_LFLAGS="-Wl,-framework,Cocoa"
       ;;
@@ -105,7 +98,6 @@ make them preselected in project files (static libraries are preselected by defa
       case $build_cpu in
       *ia64*)
          BUILD_SHARED=no
-         FPIC=
          ;;
       esac
       ;;
@@ -119,10 +111,8 @@ make them preselected in project files (static libraries are preselected by defa
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
   AC_SUBST(BUILD_STATIC)
   AC_SUBST(BUILD_SHARED)
-  AC_SUBST(BUILD_OBJC)
   AC_SUBST(SO_EXT)
   AC_SUBST(SO_OPTS)
-  AC_SUBST(FPIC)
   AC_SUBST(TARGET_LFLAGS)
   AC_SUBST(NEED_OBJECTIVE_C)
 
@@ -184,10 +174,10 @@ conftest_ok="conftest.ok"
 
 AC_DEFUN(AM_PATH_GNAT,
 [
-   AC_PATH_PROG(GNATMAKE, gnatmake, no)
+   AC_PATH_PROG(GPRBUILD, gprbuild, no)
 
-   if test x$GNATMAKE = xno ; then
-      AC_MSG_ERROR(I could not find gnatmake. See the file 'INSTALL' for more details.)
+   if test x$GPRBUILD = xno ; then
+      AC_MSG_ERROR(I could not find gprbuild. See the file 'INSTALL' for more details.)
    fi
 
    AC_MSG_CHECKING(that your gnat compiler works with a simple example)
@@ -204,19 +194,25 @@ begin
    Ada.Text_IO.Close (Conftest_Ok);
 end Conftest;
 EOF
+   cat <<EOF > conftest.gpr
+project Conftest is
+   for Main use ("conftest.adb");
+   for Source_Files use ("conftest.adb");
+end Conftest;
+EOF
 
-   $GNATMAKE -q conftest > /dev/null
+   $GPRBUILD -q -P conftest.gpr > /dev/null
 
    if ( test ! -x conftest ) then
       AC_MSG_RESULT(no)
-      AC_MSG_ERROR($GNATMAKE test failed at compile time! Check your configuration.)
+      AC_MSG_ERROR($GPRBUILD test failed at compile time! Check your configuration.)
    fi
 
    ./conftest
 
    if ( test ! -f $conftest_ok ) then
       AC_MSG_RESULT(no)
-      AC_MSG_ERROR($GNATMAKE test failed at run time! Check your configuration.)
+      AC_MSG_ERROR($GPRBUILD test failed at run time! Check your configuration.)
    fi
 
    AC_MSG_RESULT(yes)

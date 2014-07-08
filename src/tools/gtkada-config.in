@@ -9,7 +9,7 @@ gtk_libs="@GTK_LIBS@"
 
 # OS Specific relocatable settings
 if [ "$OS" = "Windows_NT" ]; then
-    os_reloc="-L${prefix}/bin -lgtkada-@PACKAGE_VERSION@
+    os_reloc="-L${prefix}/bin -lgtkada-@PACKAGE_VERSION@"
 else
     os_reloc="-L${libdir}/relocatable -lgtkada"
 fi

@@ -27,9 +27,9 @@ endif
 
 TARGET=@TARGET@
 ifeq ($(TARGET),)
-GPRBUILD=gprbuild
+GPRBUILD=@GPRBUILD@
 else
-GPRBUILD=gprbuild --target=${TARGET}
+GPRBUILD=@GPRBUILD@ --target=${TARGET}
 endif
 
 # Number of parallel compilation

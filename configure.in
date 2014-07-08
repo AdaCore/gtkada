@@ -11,12 +11,14 @@ AM_ADD_OS_SPECIFIC_FLAGS
 
 # checking for local tools
 AC_PROG_CC
-AC_PROG_OBJC(clang gcc CC)
+
+case $build_os in
+   *darwin*) AC_PROG_OBJC(clang gcc CC) ;;
+   *) OBJC=""; AC_SUBST(OBJC) ;;
+esac
+
 AM_PATH_GNAT
-AM_PATH_PERL
-AC_PROG_MAKE_SET
 AC_PROG_INSTALL
-AC_PROG_RANLIB
 
 CHECK_BUILD_TYPE     # are we in devel mode ?
 
@@ -27,22 +29,8 @@ AM_GNU_GETTEXT([external])
 # checking for gtk
 AM_PATH_GTK(3.8.3)
 
-# Should we compile with gtkextra ?
-AC_MSG_CHECKING(for gtkextra)
-AC_ARG_ENABLE(gtkextra,
-  [AC_HELP_STRING(
-    [--enable-gtkextra],
-    [Build the gtkextra widgets])],
-  HAVE_GTKEXTRA=$enableval,
-  HAVE_GTKEXTRA=no)
-AC_MSG_RESULT($HAVE_GTKEXTRA)
-AC_SUBST(HAVE_GTKEXTRA)
-
 # try to find OpenGL if present
 AM_CHECK_OPENGL
-
-EXEC_PREFIX="$prefix"
-AC_SUBST(EXEC_PREFIX)
 
 # Ignore user's choice of libdir, as well as configure's own default,
 # because we want GtkAda to always install in /lib (backward compatibility)
