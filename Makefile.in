@@ -5,11 +5,8 @@ SHELL=/bin/sh
 	clean distclean mostlyclean maintainer-clean \
 	install src tests
 
-testgtk_dir = testgtk
 doc_dir     = docs
-example_dir = examples
 projects_dir = projects
-xml_dir      = xml
 PYTHON       = python
 CP           = cp -p -f
 MKDIR        = mkdir -p

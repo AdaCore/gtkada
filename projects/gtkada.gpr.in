@@ -6,7 +6,7 @@ project GtkAda is
    Version := "@PACKAGE_VERSION@";
 
    for Source_Dirs use ("../../include/gtkada/");
-   for Source_Files use "gtkada/gtkada.lgpr";
+   for Source_List_File use "gtkada/gtkada.lgpr";
    for Library_Kind use Gtkada_Kind;
    for Library_Name use "gtkada";
    for Library_Dir use "../../lib/gtkada/" & Project'Library_Kind;

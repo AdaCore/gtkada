@@ -2,7 +2,7 @@ with "gtkada";
 
 project GtkAda_GL is
    for Source_Dirs use ("../../include/gtkada/");
-   for Source_Files use "gtkada/gtkada_gl.lgpr";
+   for Source_List_File use "gtkada/gtkada_gl.lgpr";
    for Library_Kind use Gtkada'Gtkada_Kind;
    for Library_Name use "gtkada_gl";
    for Library_Dir use "../../lib/gtkada/" & Project'Library_Kind;
