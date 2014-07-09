@@ -287,7 +287,7 @@ AC_DEFUN(AM_PATH_GTK,
     CFLAGS="$CFLAGS $GTK_CFLAGS"
     LIBS="$LIBS $GTK_LIBS"
     rm -f conf.gtktest
-    AC_TRY_RUN([
+    AC_TRY_LINK([
 #include <gtk/gtk.h>
 #include <stdio.h>
 int
@@ -296,7 +296,7 @@ main (int argc, char** argv)
   gtk_init(&argc, &argv);
   return 0;
 }
-],, no_gtk=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+],, no_gtk=yes)
 
     CFLAGS="$ac_save_CFLAGS"
     LIBS="$ac_save_LIBS"
