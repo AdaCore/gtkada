@@ -66,7 +66,7 @@ package body Glib.Graphs is
 
    function Max_Index (G : Graph) return Natural is
    begin
-      return G.Last_Vertex_Index;
+      return G.Last_Vertex_Index - 1;
    end Max_Index;
 
    ----------------
@@ -97,6 +97,19 @@ package body Glib.Graphs is
       E.Dest := Vertex_Access (Dest);
       Add (Source.Out_Edges, E);
       Add (Dest.In_Edges, E);
+   end Add_Edge;
+
+   --------------
+   -- Add_Edge --
+   --------------
+
+   procedure Add_Edge
+     (G            : in out Graph;
+      Source, Dest : access Vertex'Class)
+   is
+      E : constant Edge_Access := new Edge;
+   begin
+      Add_Edge (G, E, Source, Dest);
    end Add_Edge;
 
    ------------
@@ -569,27 +582,34 @@ package body Glib.Graphs is
    function Depth_First_Search
      (G : Graph;
       Acyclic : access Boolean;
-      Reverse_Edge_Cb : Reverse_Edge_Callback := null)
+      Reverse_Edge_Cb : Reverse_Edge_Callback := null;
+      Force_Undirected : Boolean := False)
       return Depth_Vertices_Array
    is
       Colors : Color_Array (0 .. G.Last_Vertex_Index - 1) := (others => White);
-      Predecessors : Vertices_Array (0 .. G.Last_Vertex_Index - 1);
-      Start : array (0 .. G.Last_Vertex_Index - 1) of Natural;
       Result : Depth_Vertices_Array (0 .. G.Num_Vertices - 1);
       Result_Index : Integer := Result'Last;
       Time : Natural := 0;
 
-      procedure Depth_First_Visit (U : Vertex_Access);
+      procedure Depth_First_Visit
+        (U            : Vertex_Access;
+         Predecessor  : Vertex_Access;
+         Edge         : Edge_Access);
       --  Process the node U
 
-      procedure Depth_First_Visit (U : Vertex_Access) is
+      procedure Depth_First_Visit
+        (U            : Vertex_Access;
+         Predecessor  : Vertex_Access;
+         Edge         : Edge_Access)
+      is
          V : Vertex_Access;
          Eit : Edge_Iterator;
+         Start_Search : constant Integer := Time + 1;
       begin
          Colors (U.Index) := Gray;
          Time := Time + 1;
-         Start (U.Index) := Time;
-         Eit := First (G, Src => U);
+         Eit  := First (G, Src => U, Directed => not Force_Undirected);
+
          while not At_End (Eit) loop
             V := Get_Dest (Get (Eit));
             if V = U then
@@ -597,13 +617,12 @@ package body Glib.Graphs is
             end if;
 
             if Colors (V.Index) = White then
-               Predecessors (V.Index) := U;
                --  ??? Would be nice to have a non-recursive implementation, to
                --  ??? support larger graphs
-               Depth_First_Visit (V);
+               Depth_First_Visit (V, Predecessor => U, Edge => Get (Eit));
                Next (Eit);
 
-            elsif Colors (V.Index) = Gray then
+            elsif not Force_Undirected and then Colors (V.Index) = Gray then
                --  Make the graph acyclic by reversing the edge.
                if Reverse_Edge_Cb /= null then
                   declare
@@ -623,10 +642,15 @@ package body Glib.Graphs is
                Next (Eit);
             end if;
          end loop;
+
          Colors (U.Index) := Black;
          Time := Time + 1;
          Result (Result_Index) :=
-           (U, Start (U.Index), Time, Predecessors (U.Index));
+           (U,
+            First_Discovered => Start_Search,
+            End_Search       => Time,
+            Predecessor      => Predecessor,
+            Edge             => Edge);
          Result_Index := Result_Index - 1;
       end Depth_First_Visit;
 
@@ -636,7 +660,7 @@ package body Glib.Graphs is
       U := G.Vertices;
       while U /= null loop
          if Colors (U.V.Index) = White then
-            Depth_First_Visit (U.V);
+            Depth_First_Visit (U.V, Predecessor => null, Edge => null);
          end if;
          U := U.Next;
       end loop;
@@ -789,7 +813,7 @@ package body Glib.Graphs is
 
       Sets : array (0 .. G.Last_Vertex_Index - 1) of Natural;
       --  This is used to represent the sets that will contain the
-      --  vertices. Probably not the faster method (the union operation is
+      --  vertices. Probably not the fastest method (the union operation is
       --  quite slow), but the easiest to implement.
 
       V_Set : Natural;

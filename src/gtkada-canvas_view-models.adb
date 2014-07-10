@@ -21,6 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gtkada.Canvas_View.Models.Layers;
+
 package body Gtkada.Canvas_View.Models is
 
    package body Rtree_Models is
@@ -178,7 +180,14 @@ package body Gtkada.Canvas_View.Models is
 
          return null;
       end Toplevel_Item_At;
-
    end Rtree_Models;
+
+   ------------------
+   -- Layer_Layout --
+   ------------------
+
+   procedure Layer_Layout
+     (Self : not null access Canvas_Model_Record'Class)
+      renames Gtkada.Canvas_View.Models.Layers.Layout;
 
 end Gtkada.Canvas_View.Models;

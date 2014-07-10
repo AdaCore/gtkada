@@ -1814,7 +1814,10 @@ package body Gtkada.Canvas_View is
               (Self, Context, Element (Self.Dragged_Items.First).Item);
          end if;
 
-         Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area);
+         Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area,
+                                   Filter => Kind_Link);
+         Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area,
+                                   Filter => Kind_Item);
       end if;
    end Draw_Internal;
 
@@ -2408,9 +2411,9 @@ package body Gtkada.Canvas_View is
 
          L := Canvas_Link (It);
 
-         return From_Or_To.Contains (L.From)
+         return From_Or_To.Contains (L.From.Get_Toplevel_Item)
+           or else From_Or_To.Contains (L.To.Get_Toplevel_Item)
            or else (L.From.Is_Link and then Matches (L.From))
-           or else From_Or_To.Contains (L.To)
            or else (L.To.Is_Link and then Matches (L.To));
       end Matches;
 
@@ -2482,7 +2485,7 @@ package body Gtkada.Canvas_View is
       else
          C := Items.First;
          while Has_Element (C) loop
-            S.Include (Element (C).Item);
+            S.Include (Element (C).Item);  --  toplevel items
             Next (C);
          end loop;
 

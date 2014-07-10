@@ -27,29 +27,33 @@ with Gtkada.Canvas_View.Rtrees;   use Gtkada.Canvas_View.Rtrees;
 
 package Gtkada.Canvas_View.Models is
 
+   ------------
+   -- Rtrees --
+   ------------
+   --  A wrapper around another model, which provides efficient geospatial
+   --  queries, like finding the smaller enclosing rectangle for all the
+   --  items, or all the items within a given region.
+   --  The items are stored in the base model, and the Rtree model adds
+   --  an extra data structure on top of it to speed up the queries.
+   --  When new items are added to the model, Refresh_Layout *must* be
+   --  called to refresh the internal cache (but this should always be done
+   --  in any case to refresh the display of links for instance).
+   --
+   --  Wrapping a model in a Rtree means that the speed of displaying the
+   --  canvas (and more importantly scrolling it) now depends on the number
+   --  of items on the screen, not the total number of items in the model).
+   --  As a result, it is possible to have models with hundreds of
+   --  thousands of items.
+
    generic
       type Base_Model_Record is new Canvas_Model_Record with private;
       --  The underlying implementation of the model (which for instance
       --  provides support for Add and Remove), and for which the Rtree
-      --  is used as a wrapper (see below).
+      --  is used as a wrapper.
 
    package Rtree_Models is
       type Rtree_Model_Record is new Base_Model_Record with private;
       type Rtree_Model is access all Rtree_Model_Record'Class;
-      --  A wrapper around another model, which provides efficient geospatial
-      --  queries, like finding the smaller enclosing rectangle for all the
-      --  items, or all the items within a given region.
-      --  The items are stored in the base model, and the Rtree model adds
-      --  an extra data structure on top of it to speed up the queries.
-      --  When new items are added to the model, Refresh_Layout *must* be
-      --  called to refresh the internal cache (but this should always be done
-      --  in any case to refresh the display of links for instance).
-      --
-      --  Wrapping a model in a Rtree means that the speed of displaying the
-      --  canvas (and more importantly scrolling it) now depends on the number
-      --  of items on the screen, not the total number of items in the model).
-      --  As a result, it is possible to have models with hundreds of
-      --  thousands of items.
 
       procedure Gtk_New (Self : out Rtree_Model);
       procedure Initialize
@@ -81,4 +85,22 @@ package Gtkada.Canvas_View.Models is
             Max_Children => Default_Max_Children);
       end record;
    end Rtree_Models;
+
+   -----------------------
+   -- layout algorithms --
+   -----------------------
+   --  This section provides a number of algorithms to recompute the position
+   --  of the items in the model. Some algorithms can preserve the current
+   --  position of some items, whereas others have to recompute the whole
+   --  layout.
+   --  Most of those algorithms use a graph structure internally to perform
+   --  queries such as depth-first-search.
+
+   procedure Layer_Layout
+     (Self : not null access Canvas_Model_Record'Class);
+   --  Organize the items into layers: items in layer n never have an out-link
+   --  to any item in a layer 1 .. (n - 1).
+   --  Within a layer, the items are then reorganized to try and minimize the
+   --  edge crossings.
+
 end Gtkada.Canvas_View.Models;

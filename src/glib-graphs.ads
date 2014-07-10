@@ -33,8 +33,8 @@
 package Glib.Graphs is
 
    type Graph  is private;
-   type Vertex is abstract tagged private;
-   type Edge   is abstract tagged private;
+   type Vertex is tagged private;
+   type Edge   is tagged private;
 
    type Vertex_Access is access all Vertex'Class;
    type Edge_Access   is access all Edge'Class;
@@ -50,6 +50,9 @@ package Glib.Graphs is
    type Vertices_Array is array (Natural range <>) of Vertex_Access;
    type Edges_Array    is array (Natural range <>) of Edge_Access;
 
+   Min_Vertex_Index : constant := 0;
+   --  indexes for vertices go from Min_Vertex_Index .. Max_Index (Graph)
+
    -----------------------
    -- Modifying a graph --
    -----------------------
@@ -61,21 +64,25 @@ package Glib.Graphs is
    --  Return True if the graph is oriented
 
    procedure Add_Vertex (G : in out Graph; V : access Vertex'Class);
-   --  Add a new vertex to the graph.
+   --  Add a new vertex to the graph
 
    procedure Add_Edge
      (G            : in out Graph;
       E            : access Edge'Class;
       Source, Dest : access Vertex'Class);
+   procedure Add_Edge
+     (G            : in out Graph;
+      Source, Dest : access Vertex'Class);
    --  Add a new edge to the graph.
+   --  The edge is allocated automatically if needed
 
-   procedure Destroy (E : in out Edge) is abstract;
+   procedure Destroy (E : in out Edge) is null;
    --  Destroy the memory occupied by the edge. This doesn't remove the edge
    --  from the graph. You should override this subprogram for the specific
    --  edge type you are using.
    --  This subprogram shouldn't (and in fact can't) free E itself.
 
-   procedure Destroy (V : in out Vertex) is abstract;
+   procedure Destroy (V : in out Vertex) is null;
    --  Destroy the memory occupied by the vertex. This doesn't remove the
    --  vertex from the graph. This subprogram must be overriden.
    --  This subprogram shouldn't (and in fact can't) free V itself.
@@ -125,7 +132,7 @@ package Glib.Graphs is
 
    function Get_Index (V : access Vertex) return Natural;
    --  Return the uniq index associated with the vertex. Each vertex has a
-   --  different index from 0 to Max_Index (Graph)
+   --  different index from Min_Vertex_Index to Max_Index (Graph)
 
    function Max_Index (G : Graph) return Natural;
    --  Return the maximum index used for vertices in the graph.
@@ -174,6 +181,7 @@ package Glib.Graphs is
       Vertex : Vertex_Access;
       First_Discovered, End_Search : Natural;
       Predecessor : Vertex_Access;
+      Edge : Edge_Access;
    end record;
    --  First_Discovered and End_Search are the two timestamps computed during
    --  the search. The former is the time Vertex was first discovered. The
@@ -198,7 +206,8 @@ package Glib.Graphs is
    function Depth_First_Search
      (G : Graph;
       Acyclic : access Boolean;
-      Reverse_Edge_Cb : Reverse_Edge_Callback := null)
+      Reverse_Edge_Cb : Reverse_Edge_Callback := null;
+      Force_Undirected : Boolean := False)
       return Depth_Vertices_Array;
    --  Same as above, but Acyclic is also modified to indicate whether G is
    --  acyclic.
@@ -210,6 +219,11 @@ package Glib.Graphs is
    --
    --  If Reverse_Edge_Cb is null, no edge is reverted, and the graph is
    --  unmodified.
+   --
+   --  If Force_Undirected is True, then a directed graph is temporarily
+   --  considered as undirected, and reverse edges will be returned. In this
+   --  case, Reverse_Edge_Cb will never be called (and the graph never
+   --  considered as acyclic).
 
    -----------------------------------
    -- Strongly connected components --
@@ -340,17 +354,17 @@ private
       Vertices          : Vertex_List;
       Num_Vertices      : Natural := 0;
       Directed          : Boolean := False;
-      Last_Vertex_Index : Natural := 0;
+      Last_Vertex_Index : Natural := Min_Vertex_Index;
    end record;
 
    procedure Add    (List : in out Vertex_List; V : access Vertex'Class);
    procedure Internal_Remove (G : in out Graph; V : access Vertex'Class);
 
-   type Edge is abstract tagged record
+   type Edge is tagged record
       Src, Dest : Vertex_Access;
    end record;
 
-   type Vertex is abstract tagged record
+   type Vertex is tagged record
       Index               : Natural; --  Internal unique index for the vertex
       In_Edges, Out_Edges : Edge_List;
    end record;
