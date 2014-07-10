@@ -29,7 +29,10 @@ with System;
 with Cairo;                              use Cairo;
 with Cairo.Matrix;                       use Cairo.Matrix;
 with Cairo.Pattern;                      use Cairo.Pattern;
+with Cairo.Png;
 with Cairo.PDF;                          use Cairo.PDF;
+with Cairo.Surface;
+with Cairo.SVG;
 with Glib.Main;                          use Glib.Main;
 with Glib.Properties.Creation;           use Glib.Properties.Creation;
 with Glib.Values;                        use Glib.Values;
@@ -4041,27 +4044,41 @@ package body Gtkada.Canvas_View is
       end if;
    end Hash;
 
-   -------------------
-   -- Export_To_PDF --
-   -------------------
+   ------------
+   -- Export --
+   ------------
 
-   procedure Export_To_PDF
+   function Export
      (Self              : not null access Canvas_View_Record;
       Filename          : String;
-      Format            : Page_Format;
+      Page              : Page_Format;
+      Format            : Export_Format := Export_PDF;
       Visible_Area_Only : Boolean := True)
+      return Boolean
    is
-      W : constant Gdouble := Format.Width_In_Inches * 72.0;  --  in points
-      H : constant Gdouble := Format.Height_In_Inches * 72.0;
-      Surf : constant Cairo_Surface := Cairo.PDF.Create
-        (Filename         => Filename,
-         Width_In_Points  => W,
-         Height_In_Points => H);
+      W : constant Gdouble := Page.Width_In_Inches * 72.0;  --  in points
+      H : constant Gdouble := Page.Height_In_Inches * 72.0;
+      Surf : Cairo_Surface;
       Context : Draw_Context;
       Old_Scale : constant Gdouble := Self.Scale;
       Topleft   : constant Model_Point := Self.Topleft;
       Box       : Model_Rectangle;
+      Status    : Cairo_Status;
    begin
+      case Format is
+         when Export_PDF =>
+            Surf := Cairo.PDF.Create
+              (Filename         => Filename,
+               Width_In_Points  => W,
+               Height_In_Points => H);
+         when Export_SVG =>
+            Surf := Cairo.SVG.Create (Filename, W, H);
+         when Export_PNG =>
+            Surf := Create_Similar_Surface
+              (Get_Window (Self),
+               Cairo.Cairo_Content_Color_Alpha, Gint (W), Gint (H));
+      end case;
+
       Context := (Cr     => Create (Surf),
                   Layout => Self.Layout,
                   View   => Canvas_View (Self));
@@ -4097,10 +4114,19 @@ package body Gtkada.Canvas_View is
       end if;
 
       Destroy (Context.Cr);
+
+      if Format = Export_PNG then
+         Status := Cairo.Png.Write_To_Png (Surf, Filename);
+      else
+         Status := Cairo.Surface.Status (Surf);
+      end if;
+
       Surface_Destroy (Surf);
       Self.Scale := Old_Scale;
       Self.Topleft := Topleft;
-   end Export_To_PDF;
+
+      return Status = Cairo_Status_Success;
+   end Export;
 
    ------------------------
    -- Set_Selection_Mode --

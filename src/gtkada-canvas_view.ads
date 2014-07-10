@@ -983,13 +983,18 @@ package Gtkada.Canvas_View is
    Letter_Portrait  : constant Page_Format := (8.5, 11.0);
    Letter_Landscape : constant Page_Format := (11.0, 8.5);
 
-   procedure Export_To_PDF
+   type Export_Format is (Export_PDF, Export_SVG, Export_PNG);
+
+   function Export
      (Self              : not null access Canvas_View_Record;
       Filename          : String;
-      Format            : Page_Format;
-      Visible_Area_Only : Boolean := True);
-   --  Create a PDF file with the contents of the view (or the whole model
+      Page              : Page_Format;
+      Format            : Export_Format := Export_PDF;
+      Visible_Area_Only : Boolean := True)
+     return Boolean;
+   --  Create a file with the contents of the view (or the whole model
    --  if Visible_Area_Only is False).
+   --  True is returned if the file was created successfully, False otherwise
 
    No_Drag_Allowed : constant Model_Rectangle := (0.0, 0.0, 0.0, 0.0);
    Drag_Anywhere   : constant Model_Rectangle :=
