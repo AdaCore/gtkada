@@ -687,6 +687,13 @@ package Gtkada.Canvas_View is
    --  Whenever the selection is changed, the signal "selection_changed" is
    --  emitted.
 
+   function Is_Selectable
+     (Self : not null access Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class)
+      return Boolean is (True);
+   --  Whether the given item is selectable. By default, all items are
+   --  selectable.
+
    procedure Selection_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Item : access Abstract_Item_Record'Class := null);

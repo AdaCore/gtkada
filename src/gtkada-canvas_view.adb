@@ -4205,13 +4205,17 @@ package body Gtkada.Canvas_View is
             null;
 
          when Selection_Single =>
-            Canvas_Model_Record'Class (Self.all).Clear_Selection;
-            Self.Selection.Include (Abstract_Item (Item));
-            Self.Selection_Changed (Item);
+            if Self.Is_Selectable (Item) then
+               Canvas_Model_Record'Class (Self.all).Clear_Selection;
+               Self.Selection.Include (Abstract_Item (Item));
+               Self.Selection_Changed (Item);
+            end if;
 
          when Selection_Multiple =>
-            Self.Selection.Include (Abstract_Item (Item));
-            Self.Selection_Changed (Item);
+            if Self.Is_Selectable (Item) then
+               Self.Selection.Include (Abstract_Item (Item));
+               Self.Selection_Changed (Item);
+            end if;
       end case;
    end Add_To_Selection;
 

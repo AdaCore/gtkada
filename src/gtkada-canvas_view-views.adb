@@ -421,7 +421,9 @@ package body Gtkada.Canvas_View.Views is
       Self : constant Canvas_View := Canvas_View (View);
    begin
       if Self.Model /= null then
-         if Event.Item = null then
+         if Event.Item = null
+           or else not Self.Model.Is_Selectable (Event.Toplevel_Item)
+         then
             case Event.Event_Type is
                when Button_Press =>
                   if Event.State = 0 then
