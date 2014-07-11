@@ -367,8 +367,6 @@ package body Gtkada.Canvas_View.Views is
             Cancel_Continuous_Scrolling (Self);
          end if;
 
-         --  Should redo the layout for links, but this might be
-         --  expensive.
          Self.Queue_Draw;
 
       elsif Event.Event_Type = Button_Press

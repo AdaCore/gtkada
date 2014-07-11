@@ -1796,17 +1796,46 @@ package body Gtkada.Canvas_View is
       Context : Draw_Context;
       Area    : Model_Rectangle)
    is
+      S  : Item_Sets.Set;
+
       procedure Draw_Item
         (Item : not null access Abstract_Item_Record'Class);
       procedure Draw_Item
         (Item : not null access Abstract_Item_Record'Class) is
       begin
-         Translate_And_Draw_Item (Item, Context);
+         --  If the item is not displayed explicitly afterwards.
+         if not Self.In_Drag
+           or else not S.Contains (Abstract_Item (Item))
+         then
+            Translate_And_Draw_Item (Item, Context);
+         end if;
       end Draw_Item;
 
-      use Item_Drag_Infos;
+      procedure Add_To_Set (Item : not null access Abstract_Item_Record'Class);
+      procedure Add_To_Set
+        (Item : not null access Abstract_Item_Record'Class) is
+      begin
+         S.Include (Abstract_Item (Item));
+      end Add_To_Set;
+
+      use Item_Drag_Infos, Item_Sets;
+      C  : Item_Drag_Infos.Cursor;
+      C2 : Item_Sets.Cursor;
    begin
       if Self.Model /= null then
+         --  We must always draw the selected items and their links explicitly
+         --  (since the model might not have been updated yet if we are during
+         --  an automatic scrolling for instance, using a RTree).
+
+         if Self.In_Drag then
+            C := Self.Dragged_Items.First;
+            while Has_Element (C) loop
+               S.Include (Element (C).Item);  --  toplevel items
+               Next (C);
+            end loop;
+            Self.Model.For_Each_Link (Add_To_Set'Access, From_Or_To => S);
+         end if;
+
          --  Draw the active smart guides if needed
          if Self.In_Drag
            and then Self.Last_Button_Press.Allow_Snapping
@@ -1817,10 +1846,18 @@ package body Gtkada.Canvas_View is
               (Self, Context, Element (Self.Dragged_Items.First).Item);
          end if;
 
-         Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area,
-                                   Filter => Kind_Link);
-         Self.Model.For_Each_Item (Draw_Item'Access, In_Area => Area,
-                                   Filter => Kind_Item);
+         Self.Model.For_Each_Item
+           (Draw_Item'Access, In_Area => Area, Filter => Kind_Link);
+         Self.Model.For_Each_Item
+           (Draw_Item'Access, In_Area => Area, Filter => Kind_Item);
+
+         if Self.In_Drag then
+            C2 := S.First;
+            while Has_Element (C2) loop
+               Translate_And_Draw_Item (Element (C2), Context);
+               Next (C2);
+            end loop;
+         end if;
       end if;
    end Draw_Internal;
 
