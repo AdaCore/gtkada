@@ -432,11 +432,17 @@ package Gtkada.Canvas_View is
    --  Translate the transformation matrix and draw the item.
    --  This procedure should be used instead of calling Draw directly.
 
+   procedure Draw_Outline
+     (Self    : not null access Abstract_Item_Record;
+      Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context) is null;
+   --  Draw an outline for Self (which is used for the selection for instance)
+
    procedure Draw_As_Selected
      (Self    : not null access Abstract_Item_Record;
       Context : Draw_Context) is abstract;
-      --  Draw the item when it is selected.
-      --  The default is to draw the item and then highlight its bounding box
+   --  Draw the item when it is selected.
+   --  The default is to draw both the item and its outline.
 
    function Contains
      (Self    : not null access Abstract_Item_Record;
@@ -547,6 +553,10 @@ package Gtkada.Canvas_View is
       return Gtk.Widget.Gtk_Widget;
    overriding procedure Draw_As_Selected
      (Self    : not null access Canvas_Item_Record;
+      Context : Draw_Context);
+   overriding procedure Draw_Outline
+     (Self    : not null access Canvas_Item_Record;
+      Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context);
 
    overriding procedure Set_Position
@@ -1322,6 +1332,10 @@ package Gtkada.Canvas_View is
 
    overriding procedure Draw
      (Self    : not null access Rect_Item_Record;
+      Context : Draw_Context);
+   overriding procedure Draw_Outline
+     (Self    : not null access Rect_Item_Record;
+      Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context);
 
    --------------

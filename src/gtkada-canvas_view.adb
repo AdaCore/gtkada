@@ -1721,30 +1721,39 @@ package body Gtkada.Canvas_View is
 
    overriding procedure Draw_As_Selected
      (Self            : not null access Canvas_Item_Record;
-      Context         : Draw_Context)
+      Context         : Draw_Context) is
+   begin
+      if Context.View /= null then
+         Canvas_Item (Self).Draw_Outline
+           (Style   => Context.View.Selection_Style,
+            Context => Context);
+      end if;
+      Canvas_Item_Record'Class (Self.all).Draw (Context);
+   end Draw_As_Selected;
+
+   ------------------
+   -- Draw_Outline --
+   ------------------
+
+   procedure Draw_Outline
+     (Self    : not null access Canvas_Item_Record;
+      Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context)
    is
       Box : constant Item_Rectangle :=
         Canvas_Item_Record'Class (Self.all).Bounding_Box;
-
       Margin_Pixels : constant View_Coordinate := 2.0;
-      Margin : Model_Coordinate;
+      Margin        : Model_Coordinate;
    begin
-      --  So that any clip done by Draw doesn't impact drawing the selection
-
-      Save (Context.Cr);
-      Canvas_Item_Record'Class (Self.all).Draw (Context);
-      Restore (Context.Cr);
-
       if Context.View /= null then
          Margin := Margin_Pixels / Context.View.Scale;
-
-         Context.View.Selection_Style.Draw_Rect
+         Style.Draw_Rect
            (Context.Cr,
             (Box.X - Margin, Box.Y - Margin),
             Box.Width + 2.0 * Margin,
             Box.Height + 2.0 * Margin);
       end if;
-   end Draw_As_Selected;
+   end Draw_Outline;
 
    -----------------------------
    -- Translate_And_Draw_Item --
@@ -3275,6 +3284,27 @@ package body Gtkada.Canvas_View is
          end case;
       end if;
    end Resize_Fill_Pattern;
+
+   ------------------
+   -- Draw_Outline --
+   ------------------
+
+   overriding procedure Draw_Outline
+     (Self    : not null access Rect_Item_Record;
+      Style   : Gtkada.Style.Drawing_Style;
+      Context : Draw_Context)
+   is
+      Margin_Pixels : constant View_Coordinate := 2.0;
+      Margin        : Model_Coordinate;
+   begin
+      if Context.View /= null then
+         Margin := Margin_Pixels / Context.View.Scale;
+         Style.Draw_Rect
+           (Context.Cr, (-Margin, -Margin),
+            Self.Width + 2.0 * Margin, Self.Height + 2.0 * Margin,
+            Radius => Self.Radius);
+      end if;
+   end Draw_Outline;
 
    ----------
    -- Draw --
