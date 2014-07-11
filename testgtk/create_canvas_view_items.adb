@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
 with Ada.Text_IO;         use Ada.Text_IO;
 with Cairo.Pattern;       use Cairo, Cairo.Pattern;
 with Gdk.Pixbuf;          use Gdk.Pixbuf;
@@ -30,11 +31,16 @@ with Glib.Error;          use Glib.Error;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtkada.Canvas_View;  use Gtkada.Canvas_View;
+with Gtkada.Canvas_View.Views; use Gtkada.Canvas_View.Views;
 with Gtkada.Style;        use Gtkada.Style;
 with Pango.Enums;         use Pango.Enums;
 with Pango.Font;          use Pango.Font;
 
 package body Create_Canvas_View_Items is
+
+   package Gdouble_Elementary_Functions is new
+     Ada.Numerics.Generic_Elementary_Functions (Gdouble);
+   use Gdouble_Elementary_Functions;
 
    Left_Pointing_Double_Angle_Quotation_Mark : constant String :=
      Character'Val (16#C2#) & Character'Val (16#AB#);  --  unicode \u00ab
@@ -46,6 +52,13 @@ package body Create_Canvas_View_Items is
      Character'Val (16#E2#)   --  unicode \u2211
      & Character'Val (16#88#)
      & Character'Val (16#91#);
+
+   type Polygon_Item_Record is new Polyline_Item_Record with null record;
+   type Polygon_Item is access all Polygon_Item_Record'Class;
+   function Gtk_New_Polygon
+     (Style  : Gtkada.Style.Drawing_Style;
+      Sides  : Positive;
+      Radius : Gdouble) return Polygon_Item;
 
    ----------
    -- Help --
@@ -62,13 +75,32 @@ package body Create_Canvas_View_Items is
         & " had been drawn manually.";
    end Help;
 
+   ---------------------
+   -- Gtk_New_Polygon --
+   ---------------------
+
+   function Gtk_New_Polygon
+     (Style  : Gtkada.Style.Drawing_Style;
+      Sides  : Positive;
+      Radius : Gdouble) return Polygon_Item
+   is
+      R : constant Polygon_Item := new Polygon_Item_Record;
+      Points : Point_Array (0 .. Sides - 1);
+   begin
+      for P in Points'Range loop
+         Points (P) :=
+           (Radius + Radius * Cos (2.0 * Pi * Gdouble (P) / Gdouble (Sides)),
+            Radius + Radius * Sin (2.0 * Pi * Gdouble (P) / Gdouble (Sides)));
+      end loop;
+      Initialize_Polyline (R, Style, Points, Close => True);
+      return R;
+   end Gtk_New_Polygon;
+
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      S : constant Gdouble := 0.86602540378443864676;  --  sqrt(3) / 2
-      L : Gdouble;
       Canvas        : Canvas_View;
       Model         : List_Canvas_Model;
 
@@ -287,7 +319,7 @@ package body Create_Canvas_View_Items is
 
       Scrolled      : Gtk_Scrolled_Window;
       Filled, Font  : Drawing_Style;
-      Hexa          : Polyline_Item;
+      Polygon       : Polygon_Item;
       Ellipse       : Ellipse_Item;
       Text          : Text_Item;
       Pattern       : Cairo_Pattern;
@@ -311,22 +343,16 @@ package body Create_Canvas_View_Items is
 
       --  A drawing of a hexagone.
 
-      L := 30.0;
-      Hexa := Gtk_New_Polyline
-        (Filled,
-         ((2.0 * L, L * S),
-          (1.5 * L, L * S * 2.0),
-          (0.5 * L, L * S * 2.0),
-          (0.0,     L * S),
-          (0.5 * L, 0.0),
-          (1.5 * L, 0.0)),
-         Close => True);
-      Hexa.Set_Position ((0.0, 0.0));
-      Model.Add (Hexa);
-
-      Text := Gtk_New_Text (Font, "Hexa");
+      Polygon := Gtk_New_Polygon (Filled, Sides => 6, Radius => 30.0);
+      Polygon.Set_Position ((0.0, 0.0));
+      Model.Add (Polygon);
+      Text := Gtk_New_Text (Font, "hexa");
       Text.Set_Position ((12.0, 15.0));
-      Hexa.Add_Child (Text);
+      Polygon.Add_Child (Text);
+
+      Polygon := Gtk_New_Polygon (Filled, Sides => 10, Radius => 50.0);
+      Polygon.Set_Position ((100.0, 0.0));
+      Model.Add (Polygon);
 
       --  A simple ellipse
 
@@ -407,6 +433,7 @@ package body Create_Canvas_View_Items is
       Frame.Add (Scrolled);
 
       Gtk_New (Canvas, Model);
+      Canvas.On_Item_Event (On_Item_Event_Move_Item'Access);
       Unref (Model);
       Scrolled.Add (Canvas);
 
