@@ -182,12 +182,4 @@ package body Gtkada.Canvas_View.Models is
       end Toplevel_Item_At;
    end Rtree_Models;
 
-   ------------------
-   -- Layer_Layout --
-   ------------------
-
-   procedure Layer_Layout
-     (Self : not null access Canvas_Model_Record'Class)
-      renames Gtkada.Canvas_View.Models.Layers.Layout;
-
 end Gtkada.Canvas_View.Models;

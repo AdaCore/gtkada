@@ -21,10 +21,20 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-private package Gtkada.Canvas_View.Models.Layers is
+package Gtkada.Canvas_View.Models.Layers is
 
    procedure Layout
-     (Self : not null access Canvas_Model_Record'Class);
-   --  Layer layout for items
+     (Self                 : not null access Canvas_Model_Record'Class;
+      Horizontal           : Boolean := True;
+      Space_Between_Items  : Gdouble := 10.0;
+      Space_Between_Layers : Gdouble := 20.0);
+   --  This algorithm is a wrapper for Glib.Graphs.Layouts.Layer_Layout.
+   --
+   --  It Organizes the items into layers: items in layer n never have an
+   --  out-link to any item in a layer 1 .. (n - 1). Within a layer, the
+   --  items are then reorganized to try and minimize the edge crossings.
+   --
+   --  It is provided as an example, and might be changed or removed in the
+   --  future.
 
 end Gtkada.Canvas_View.Models.Layers;

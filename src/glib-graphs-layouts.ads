@@ -31,9 +31,20 @@ generic
 package Glib.Graphs.Layouts is
 
    procedure Layer_Layout
-     (G          : in out Graph;
-      Horizontal : Boolean := True);
-   --  Internal implementation for layer layout.
-   --  The graph must be directed.
+     (G                    : in out Graph;
+      Horizontal           : Boolean := True;
+      Space_Between_Layers : Gdouble := 20.0;
+      Space_Between_Items  : Gdouble := 10.0);
+   --  Set the position of the vertices so that they are organized into
+   --  layers.
+   --  For a horizontal layout, a vertex will always be in a column to the
+   --  right of all its ancestor vertices.
+   --  For a vertical layout, a vertex will always be in a row below all its
+   --  ancestor vertices.
+   --
+   --  This code is provided as an example. It might be changed (or even
+   --  removed) in the future.
+   --  Such layout algorithms are heuristics, there is no exact algorithm that
+   --  would give the perfect layout.
 
 end Glib.Graphs.Layouts;

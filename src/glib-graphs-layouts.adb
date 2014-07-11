@@ -31,15 +31,11 @@ package body Glib.Graphs.Layouts is
    --  Number of layers between edge ends (this is for future extension, so
    --  that some edges might be forced to span layers.
 
-   Space_Between_Layers : constant Gdouble := 20.0;
-   Space_Between_Items : constant Gdouble := 10.0;
-   --  Amount of space between each layer and item within layers
-
    Add_Dummy_Nodes : constant Boolean := True;
    --  Whether to add dummy (invisible node) for edges that span multiple
    --  layers.
 
-   Dummy_Node_Size : constant Gdouble := 1.0;
+   Dummy_Node_Size : constant Gdouble := 4.0;
    --  Size of the dummy nodes (since we also have margins, we might as well
    --  keep those nodes small).
 
@@ -64,8 +60,9 @@ package body Glib.Graphs.Layouts is
    type Layer_Info_Array_Access is access Layer_Info_Array;
 
    type Layout_Info is record
-      Horizontal : Boolean;
-      --  Whether we are doing a vertical or horizontal layout
+      Horizontal           : Boolean;
+      Space_Between_Layers : Gdouble;
+      Space_Between_Items  : Gdouble;
 
       In_Layers  : Layer_Info_Array_Access;
       --  The ordered list of items in each layer
@@ -392,7 +389,8 @@ package body Glib.Graphs.Layouts is
       Info       : Layout_Info)
    is
       type Box is record
-         X, Y, W, H : Gdouble;
+         X, Y, W, H  : Gdouble;
+         Space_After : Gdouble;  --  between item and the next
       end record;
       Boxes     : array (Min_Vertex_Index .. Max_Index (G)) of Box;
 
@@ -426,26 +424,30 @@ package body Glib.Graphs.Layouts is
             if V.all in Dummy_Vertex'Class then
                Current_B.W := Dummy_Node_Size;
                Current_B.H := Dummy_Node_Size;
+               Current_B.Space_After := 0.0;
             else
                Get_Size (V, Width => Current_B.W, Height => Current_B.H);
+               Current_B.Space_After := Info.Space_Between_Items;
             end if;
 
             if Info.Horizontal then
                Max_Size := Gdouble'Max (Max_Size, Current_B.W);
-               Boxes (Get_Index (V)) :=
-                 (X => Pos, Y => Lowest, W => Current_B.W, H => Current_B.H);
-               Lowest := Lowest + Current_B.H + Space_Between_Items;
+               Current_B.X := Pos;
+               Current_B.Y := Lowest;
+               Lowest := Lowest + Current_B.H + Current_B.Space_After;
             else
                Max_Size := Gdouble'Max (Max_Size, Current_B.H);
-               Boxes (Get_Index (V)) :=
-                 (X => Lowest, Y => Pos, W => Current_B.W, H => Current_B.H);
-               Lowest := Lowest + Current_B.W + Space_Between_Items;
+               Current_B.X := Lowest;
+               Current_B.Y := Pos;
+               Lowest := Lowest + Current_B.W + Current_B.Space_After;
             end if;
+
+            Boxes (Get_Index (V)) := Current_B;
 
             Next (C2);
          end loop;
 
-         Pos := Pos + Max_Size + Space_Between_Layers;
+         Pos := Pos + Max_Size + Info.Space_Between_Layers;
       end loop;
 
       --  Try to adjust position of nodes to align with parents and children
@@ -527,21 +529,35 @@ package body Glib.Graphs.Layouts is
                   New_Pos := Total / Gdouble (Count);
 
                   if Info.Horizontal then
+                     --  When we compute the highest possible position, we
+                     --  do not include space_between_items. This gives a
+                     --  chance to still move a vertex that would be blocked
+                     --  between two others (which will also move the next
+                     --  vertices)
+
                      New_Pos := New_Pos - Current_B.H / 2.0;
-                     New_Pos := Gdouble'Min
-                       (Gdouble'Max (Lowest + Space_Between_Items, New_Pos),
-                        Highest - Current_B.H - Space_Between_Items);
-                     Boxes (Get_Index (Current)).Y := New_Pos;
-                     Lowest := New_Pos + Current_B.H;
+                     New_Pos := Gdouble'Min (New_Pos, Highest - Current_B.H);
 
                   else
                      New_Pos := New_Pos - Current_B.W / 2.0;
-                     New_Pos := Gdouble'Min
-                       (Gdouble'Max (Lowest + Space_Between_Items, New_Pos),
-                        Highest - Current_B.W - Space_Between_Items);
-                     Boxes (Get_Index (Current)).X := New_Pos;
-                     Lowest := New_Pos + Current_B.W;
+                     New_Pos := Gdouble'Min (New_Pos, Highest - Current_B.W);
                   end if;
+               else
+                  if Info.Horizontal then
+                     New_Pos := Current_B.Y;
+                  else
+                     New_Pos := Current_B.X;
+                  end if;
+               end if;
+
+               New_Pos := Gdouble'Max (Lowest, New_Pos);
+
+               if Info.Horizontal then
+                  Boxes (Get_Index (Current)).Y := New_Pos;
+                  Lowest := New_Pos + Current_B.H + Current_B.Space_After;
+               else
+                  Boxes (Get_Index (Current)).X := New_Pos;
+                  Lowest := New_Pos + Current_B.W + Current_B.Space_After;
                end if;
             end loop;
          end loop;
@@ -983,12 +999,17 @@ package body Glib.Graphs.Layouts is
    ------------------
 
    procedure Layer_Layout
-     (G          : in out Graph;
-      Horizontal : Boolean := True)
+     (G                    : in out Graph;
+      Horizontal           : Boolean := True;
+      Space_Between_Layers : Gdouble := 20.0;
+      Space_Between_Items  : Gdouble := 10.0)
    is
       Info : Layout_Info;
    begin
-      Info.Horizontal := Horizontal;
+      Info.Horizontal           := Horizontal;
+      Info.Space_Between_Items  := Space_Between_Items;
+      Info.Space_Between_Layers := Space_Between_Layers;
+
       Info.Layers := new Integer_Array (Min_Vertex_Index .. Max_Index (G));
 
       if not Is_Directed (G) then

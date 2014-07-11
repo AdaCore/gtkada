@@ -64,7 +64,10 @@ package body Gtkada.Canvas_View.Models.Layers is
    ------------
 
    procedure Layout
-     (Self : not null access Canvas_Model_Record'Class)
+     (Self                 : not null access Canvas_Model_Record'Class;
+      Horizontal           : Boolean := True;
+      Space_Between_Items  : Gdouble := 10.0;
+      Space_Between_Layers : Gdouble := 20.0)
    is
       G : Graph;
 
@@ -117,7 +120,11 @@ package body Gtkada.Canvas_View.Models.Layers is
       Set_Directed (G, True);
       Self.For_Each_Item (On_Item'Access, Filter => Kind_Item);
       Self.For_Each_Item (On_Link'Access, Filter => Kind_Link);
-      Graph_Layouts.Layer_Layout (G, Horizontal => True);
+      Graph_Layouts.Layer_Layout
+        (G,
+         Horizontal           => Horizontal,
+         Space_Between_Layers => Space_Between_Layers,
+         Space_Between_Items  => Space_Between_Items);
       Destroy (G);
       Self.Refresh_Layout;  --  recompute the links, and refresh views
    end Layout;

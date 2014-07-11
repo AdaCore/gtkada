@@ -86,21 +86,4 @@ package Gtkada.Canvas_View.Models is
       end record;
    end Rtree_Models;
 
-   -----------------------
-   -- layout algorithms --
-   -----------------------
-   --  This section provides a number of algorithms to recompute the position
-   --  of the items in the model. Some algorithms can preserve the current
-   --  position of some items, whereas others have to recompute the whole
-   --  layout.
-   --  Most of those algorithms use a graph structure internally to perform
-   --  queries such as depth-first-search.
-
-   procedure Layer_Layout
-     (Self : not null access Canvas_Model_Record'Class);
-   --  Organize the items into layers: items in layer n never have an out-link
-   --  to any item in a layer 1 .. (n - 1).
-   --  Within a layer, the items are then reorganized to try and minimize the
-   --  edge crossings.
-
 end Gtkada.Canvas_View.Models;
