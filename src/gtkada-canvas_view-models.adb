@@ -21,8 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtkada.Canvas_View.Models.Layers;
-
 package body Gtkada.Canvas_View.Models is
 
    package body Rtree_Models is
@@ -53,7 +51,8 @@ package body Gtkada.Canvas_View.Models is
       --------------------
 
       overriding procedure Refresh_Layout
-        (Self   : not null access Rtree_Model_Record)
+        (Self        : not null access Rtree_Model_Record;
+         Send_Signal : Boolean := True)
       is
          procedure On_Item (It : not null access Abstract_Item_Record'Class);
          procedure On_Item (It : not null access Abstract_Item_Record'Class) is
@@ -65,10 +64,14 @@ package body Gtkada.Canvas_View.Models is
             end if;
          end On_Item;
       begin
-         Base_Model_Record (Self.all).Refresh_Layout;   --  inherited
          Self.Items_Tree.Clear;
          Self.Links_Tree.Clear;
+         Base_Model_Record (Self.all).Refresh_Layout   --  inherited
+           (Send_Signal => False);
          Self.For_Each_Item (On_Item'Access, In_Area => No_Rectangle);
+         if Send_Signal then
+            Self.Layout_Changed;
+         end if;
       end Refresh_Layout;
 
       -------------------
@@ -92,7 +95,9 @@ package body Gtkada.Canvas_View.Models is
          end Local;
 
       begin
-         if In_Area = No_Rectangle then
+         if In_Area = No_Rectangle
+           or else Self.Items_Tree.Is_Empty
+         then
             --  use the base model: this is faster, and more importantly needed
             --  in Refresh_Layout, when the tree has not been filled yet.
             Base_Model_Record (Self.all).For_Each_Item

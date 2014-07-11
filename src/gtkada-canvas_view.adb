@@ -661,7 +661,7 @@ package body Gtkada.Canvas_View is
 
    procedure Set_Details
      (Self    : not null access Canvas_View_Record'Class;
-      Details : in out Canvas_Event_Details;
+      Details : out Canvas_Event_Details;
       Event   : Gdk.Event.Gdk_Event_Button)
    is
    begin
@@ -2191,7 +2191,6 @@ package body Gtkada.Canvas_View is
    is
    begin
       Self.Items.Append (Abstract_Item (Item));
-      Self.Layout_Changed;
    end Add;
 
    ------------
@@ -2210,7 +2209,6 @@ package body Gtkada.Canvas_View is
       if Has_Element (C) then
          Self.Items.Delete (C);
          Free (It, In_Model => Self);
-         Self.Layout_Changed;
       end if;
    end Remove;
 
@@ -2221,16 +2219,16 @@ package body Gtkada.Canvas_View is
    procedure Clear
      (Self : not null access List_Canvas_Model_Record)
    is
-      use Items_Lists;
-      C  : Items_Lists.Cursor := Self.Items.First;
       It : Abstract_Item;
    begin
-      while Has_Element (C) loop
-         It := Element (C);
+      --  We can't iterate over the list, since freeing an item will also free
+      --  its links, and therefore the cursor might become invalid.
+
+      while not Self.Items.Is_Empty loop
+         It := Self.Items.First_Element;
+         Self.Items.Delete_First;
          Free (It, Self);
-         Next (C);
       end loop;
-      Self.Items.Clear;
    end Clear;
 
    ----------------
@@ -2310,7 +2308,7 @@ package body Gtkada.Canvas_View is
             if C /= Self.Items.Last then
                Self.Items.Delete (C);
                Self.Items.Append (Abstract_Item (Item));
-               Self.Layout_Changed;
+               List_Canvas_Model_Record'Class (Self.all).Layout_Changed;
             end if;
 
             return;
@@ -2342,7 +2340,7 @@ package body Gtkada.Canvas_View is
          if Element (C) = Abstract_Item (Item) then
             Self.Items.Delete (C);
             Self.Items.Prepend (Abstract_Item (Item));
-            Self.Layout_Changed;
+            List_Canvas_Model_Record'Class (Self.all).Layout_Changed;
             return;
          end if;
          Next (C);
@@ -2538,7 +2536,10 @@ package body Gtkada.Canvas_View is
    -- Refresh_Layout --
    --------------------
 
-   procedure Refresh_Layout (Self : not null access Canvas_Model_Record) is
+   procedure Refresh_Layout
+     (Self        : not null access Canvas_Model_Record;
+      Send_Signal : Boolean := True)
+   is
       Context : constant Draw_Context :=
         (Cr => <>, Layout => Self.Layout, View => null);
 
@@ -2558,7 +2559,9 @@ package body Gtkada.Canvas_View is
         (Do_Container_Layout'Access, Filter => Kind_Item);
       Refresh_Link_Layout (Self);
 
-      Self.Layout_Changed;
+      if Send_Signal then
+         Canvas_Model_Record'Class (Self.all).Layout_Changed;
+      end if;
    end Refresh_Layout;
 
    -----------------------

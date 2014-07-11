@@ -55,6 +55,9 @@ package Gtkada.Canvas_View.Rtrees is
    --  Remove all nodes from the tree.
    --  The objects are not destroyed.
 
+   function Is_Empty (Self : Rtree) return Boolean;
+   --  Whether the rtree is empty
+
    function Bounding_Box (Self : Rtree) return Model_Rectangle;
    --  Return the minimal rectangle that encloses all the elements in the tree
 

@@ -616,7 +616,9 @@ package Gtkada.Canvas_View is
    --  The default implementation is not efficient, since it will iterate all
    --  items one by one to compute the rectangle. No caching is done.
 
-   procedure Refresh_Layout (Self : not null access Canvas_Model_Record);
+   procedure Refresh_Layout
+     (Self        : not null access Canvas_Model_Record;
+      Send_Signal : Boolean := True);
    --  Refresh the layout of Self.
    --  This procedure should be called every time items are moved (because
    --  this impacts links to or from these items), or when they are added or
@@ -626,6 +628,10 @@ package Gtkada.Canvas_View is
    --  Container_Item below).
    --  The default implementation will simply iterate over all items, but it
    --  could be implemented more efficiently.
+   --
+   --  This procedure will in general send a Layout_Changed signal if
+   --  Send_Signal is true. This should in general always be left to True
+   --  unless you are writting your own model.
    --
    --  WARNING: this procedure must be called only once at least one view has
    --  been created for the model. This ensures that the necessary information
@@ -708,8 +714,7 @@ package Gtkada.Canvas_View is
    --  Item is set to null when the selection was cleared, otherwise it is
    --  set to the element that was just added or removed from the selection.
 
-   procedure Layout_Changed
-     (Self : not null access Canvas_Model_Record'Class);
+   procedure Layout_Changed (Self : not null access Canvas_Model_Record'Class);
    function On_Layout_Changed
      (Self : not null access Canvas_Model_Record'Class;
       Call : not null access procedure
@@ -756,7 +761,7 @@ package Gtkada.Canvas_View is
    procedure Add
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class);
-   --  Add a new item to the model
+   --  Add a new item to the model.
 
    overriding procedure Remove
      (Self : not null access List_Canvas_Model_Record;
@@ -1099,7 +1104,7 @@ package Gtkada.Canvas_View is
 
    procedure Set_Details
      (Self    : not null access Canvas_View_Record'Class;
-      Details : in out Canvas_Event_Details;
+      Details : out Canvas_Event_Details;
       Event   : Gdk.Event.Gdk_Event_Button);
    --  Set the details from a specific gtk+ event
 

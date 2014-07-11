@@ -422,6 +422,15 @@ package body Gtkada.Canvas_View.Rtrees is
       end if;
    end Clear;
 
+   --------------
+   -- Is_Empty --
+   --------------
+
+   function Is_Empty (Self : Rtree) return Boolean is
+   begin
+      return Self.Root = null;
+   end Is_Empty;
+
    ----------------
    -- Dump_Debug --
    ----------------
