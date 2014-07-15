@@ -278,6 +278,10 @@ AC_DEFUN(AM_PATH_GTK,
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
     GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
 
+    dnl force some explicit flags, like -framework Cocoa. On some machines,
+    dnl these are added automatically by pkg-config, but not systematically.
+    GTK_LIBS="$GTK_LIBS $LDFLAGS"
+
     dnl
     dnl Now check if the installed GTK is sufficiently new. (Also sanity
     dnl checks the results of pkg-config to some extent

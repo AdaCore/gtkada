@@ -3605,6 +3605,8 @@ $as_echo_n "checking for GTK - version >= $min_gtk_version... " >&6; }
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
     GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
 
+            GTK_LIBS="$GTK_LIBS $LDFLAGS"
+
                     ac_save_CFLAGS="$CFLAGS"
     ac_save_LIBS="$LIBS"
     CFLAGS="$CFLAGS $GTK_CFLAGS"
