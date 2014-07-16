@@ -26,7 +26,8 @@ project TestGtk is
 
    package Compiler is
       --  subprogram specs not required in testgtk
-      for Switches ("Ada") use Shared.Compiler'Switches ("Ada") & ("-gnaty-s");
+      for Switches ("Ada") use Shared.Compiler'Switches ("Ada")
+         & ("-gnaty-s", "-gnatwJ");
       for Switches ("C") use Shared.Compiler'Switches ("C");
    end Compiler;
    package Binder   renames Shared.Binder;

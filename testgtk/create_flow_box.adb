@@ -69,7 +69,6 @@ package body Create_Flow_Box is
        new String'("make sure we"),
        new String'("got something to work"),
        new String'("with here."));
-      
 
    Initial_Halign         : constant Gtk_Align := Align_Fill;
    Initial_Valign         : constant Gtk_Align := Align_Start;
@@ -93,9 +92,11 @@ package body Create_Flow_Box is
    procedure Populate_Items (Flow : not null access Gtk_Flow_Box_Record'Class);
    --   Add items to the flow box
 
-   procedure Populate_Simple (Flow : not null access Gtk_Flow_Box_Record'Class);
+   procedure Populate_Simple
+      (Flow : not null access Gtk_Flow_Box_Record'Class);
    procedure Populate_Focus (Flow : not null access Gtk_Flow_Box_Record'Class);
-   procedure Populate_Wrappy (Flow : not null access Gtk_Flow_Box_Record'Class);
+   procedure Populate_Wrappy
+      (Flow : not null access Gtk_Flow_Box_Record'Class);
    --  Add simple items to the flow box
 
    procedure Homogeneous_Toggled (Flow : access GObject_Record'Class);
@@ -321,7 +322,7 @@ package body Create_Flow_Box is
          (Guint (Gtk_Spin_Button (Spin).Get_Value_As_Int));
    end Max_Line_Length_Changed;
 
-    -------------------------
+   -------------------------
    -- Orientation_Changed --
    -------------------------
 
@@ -371,7 +372,7 @@ package body Create_Flow_Box is
       for J in 0 .. N_Items loop
          Gtk_New (Frame);
          Gtk_New (Box, Orientation_Horizontal, Spacing => 6);
-         Frame.add (Box);
+         Frame.Add (Box);
 
          Gtk_New (Label, "Item" & J'Img);
          Box.Add (Label);
@@ -623,7 +624,7 @@ package body Create_Flow_Box is
       Flow_Cb.Connect
          (Combo, Gtk.Combo_Box.Signal_Changed,
           Items_Changed'Access, Flow);
-      
+
       Gtk_New (Combo);
       Combo.Append_Text ("Horizontal");
       Combo.Append_Text ("Vertical");
@@ -636,7 +637,7 @@ package body Create_Flow_Box is
           Text_Orientation_Changed'Access, Flow);
 
       Populate_Items (Flow);
-      
+
       Frame.Show_All;
    end Run;
 

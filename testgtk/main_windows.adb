@@ -522,7 +522,7 @@ package body Main_Windows is
    ------------------
 
    procedure Display_Help (Window : access Gtk_Widget_Record'Class) is
-      Close     : Gtk.Button.Gtk_Button;
+      Close     : Gtk_Widget;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
       View      : Gtk_Text_View;
@@ -580,8 +580,7 @@ package body Main_Windows is
          Set_Editable (View, False);
          Set_Wrap_Mode (View, Wrap_Mode => Wrap_Word);
 
-         Gtk_New (Close, "Close");
-         Pack_Start (Get_Action_Area (Help_Dialog), Close, False, False);
+         Close := Help_Dialog.Add_Button (Text => "Close", Response_Id => 0);
          Widget_Handler.Object_Connect
            (Close, "clicked",
             Widget_Handler.To_Marshaller (Destroy_Help'Access),

@@ -111,7 +111,7 @@ package body Create_Dialog is
 
    procedure Basic_Dialog (Widget : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
-      Button : Gtk_Button;
+      Button : Gtk_Widget;
    begin
       if Dialog = null then
          Gtk_New (Dialog);
@@ -123,15 +123,13 @@ package body Create_Dialog is
          Set_Border_Width (Dialog, 0);
          Set_Size_Request (Dialog, 200, 110);
 
-         Gtk_New (Button, "OK");
+         Button := Dialog.Add_Button ("OK", Response_Id => 0);
          Button.Set_Can_Default (True);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Grab_Default (Button);
          Show (Button);
 
-         Gtk_New (Button, "Toggle");
+         Button := Dialog.Add_Button ("Toggle", Response_Id => 1);
          Widget_Handler.Connect (Button, "clicked", Label_Toggle'Access);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
          Show (Dialog);
       else
