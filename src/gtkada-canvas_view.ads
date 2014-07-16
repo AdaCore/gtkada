@@ -1609,6 +1609,12 @@ package Gtkada.Canvas_View is
    --  If the Label is directed, the direction of the arrow will be changed
    --  automatically to match the layout of the link.
 
+   function Get_From
+     (Self : not null access Canvas_Link_Record) return Abstract_Item;
+   function Get_To
+     (Self : not null access Canvas_Link_Record) return Abstract_Item;
+   --  Return both ends of the link
+
    procedure Set_Offset
      (Self    : not null access Canvas_Link_Record;
       Offset  : Gdouble);
@@ -1633,9 +1639,13 @@ package Gtkada.Canvas_View is
    --  the given points.
    --  Relative should be true if all
 
+   procedure Set_Style
+     (Self  : not null access Canvas_Link_Record;
+      Style : Drawing_Style);
    function Get_Style
      (Self : not null access Canvas_Link_Record) return Drawing_Style;
-   --  Return the style used for the drawingo of this link
+   --  Return the style used for the drawingo of this link.
+   --  When changing the style, you must force a refresh of the canvas.
 
    function Get_Points
      (Self : not null access Canvas_Link_Record)

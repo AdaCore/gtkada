@@ -1304,9 +1304,8 @@ package body Gtkada.Canvas_View is
       end if;
 
       --  Are we in the middle of inline-editing ?
-      Edit := Self.Get_Child;
-      if Edit /= null then
-
+      if Self.Inline_Edit.Item /= null then
+         Edit := Self.Get_Child;
          Box := Self.Model_To_View (Self.Inline_Edit.Item.Model_Bounding_Box);
 
          SAlloc.X := Alloc.X + Gint (Box.X);
@@ -2361,11 +2360,21 @@ package body Gtkada.Canvas_View is
    ---------------
 
    function Get_Style
-     (Self : not null access Canvas_Link_Record) return Drawing_Style
-   is
+     (Self : not null access Canvas_Link_Record) return Drawing_Style is
    begin
       return Self.Style;
    end Get_Style;
+
+   ---------------
+   -- Set_Style --
+   ---------------
+
+   procedure Set_Style
+     (Self  : not null access Canvas_Link_Record;
+      Style : Drawing_Style) is
+   begin
+      Self.Style := Style;
+   end Set_Style;
 
    ----------------
    -- Get_Points --
@@ -2373,8 +2382,7 @@ package body Gtkada.Canvas_View is
 
    function Get_Points
      (Self : not null access Canvas_Link_Record)
-      return Item_Point_Array_Access
-   is
+      return Item_Point_Array_Access is
    begin
       return Self.Points;
    end Get_Points;
@@ -2386,8 +2394,7 @@ package body Gtkada.Canvas_View is
    procedure Set_Waypoints
      (Self     : not null access Canvas_Link_Record;
       Points   : Item_Point_Array;
-      Relative : Boolean := False)
-   is
+      Relative : Boolean := False) is
    begin
       Unchecked_Free (Self.Waypoints);
       if Points'Length /= 0 then
@@ -4340,5 +4347,25 @@ package body Gtkada.Canvas_View is
    begin
       return Self.Selection_Style;
    end Get_Selection_Style;
+
+   --------------
+   -- Get_From --
+   --------------
+
+   function Get_From
+     (Self : not null access Canvas_Link_Record) return Abstract_Item is
+   begin
+      return Self.From;
+   end Get_From;
+
+   ------------
+   -- Get_To --
+   ------------
+
+   function Get_To
+     (Self : not null access Canvas_Link_Record) return Abstract_Item is
+   begin
+      return Self.To;
+   end Get_To;
 
 end Gtkada.Canvas_View;

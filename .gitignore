@@ -3,6 +3,8 @@
 *.o
 *.orig
 *.pyc
+b__conftest.ad?
+auto.cgpr
 /Makefile
 docs/gtkada_rm/Makefile
 docs/gtkada_rm/doc_obj/
