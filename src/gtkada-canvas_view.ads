@@ -367,8 +367,6 @@ package Gtkada.Canvas_View is
    --  Abstract_Item_Record which provides its own non-abstract handling for a
    --  number of subprograms below.
 
-   function Debug (Self : access Abstract_Item_Record) return String is ("");
-
    package Items_Lists is new Ada.Containers.Doubly_Linked_Lists
      (Abstract_Item);
 
