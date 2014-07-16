@@ -1,7 +1,7 @@
 project Shared is
 
    type Build_Type is ("Debug", "Production");
-   Build : Build_Type := external ("BUILD", "Production");
+   Build : Build_Type := external ("BUILD", "@BUILD_TYPE@");
 
    Processors := external ("PROCESSORS", "0");
    --  Number of parallel compilations that should be performed
