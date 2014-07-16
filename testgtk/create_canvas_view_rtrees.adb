@@ -21,22 +21,16 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo.Pattern;             use Cairo, Cairo.Pattern;
-with Gdk.Pixbuf;                use Gdk.Pixbuf;
 with Gdk.RGBA;                  use Gdk.RGBA;
 with Gdk.Types;                 use Gdk.Types;
 with Glib;                      use Glib;
-with Glib.Error;                use Glib.Error;
 with Gtk.Enums;                 use Gtk.Enums;
 with Gtk.Frame;                 use Gtk.Frame;
 with Gtk.Scrolled_Window;       use Gtk.Scrolled_Window;
-with Gtk.Paned;                 use Gtk.Paned;
 with Gtkada.Canvas_View;        use Gtkada.Canvas_View;
 with Gtkada.Canvas_View.Models; use Gtkada.Canvas_View.Models;
 with Gtkada.Canvas_View.Views;  use Gtkada.Canvas_View.Views;
 with Gtkada.Style;              use Gtkada.Style;
-with Pango.Enums;               use Pango.Enums;
-with Pango.Font;                use Pango.Font;
 
 package body Create_Canvas_View_Rtrees is
 

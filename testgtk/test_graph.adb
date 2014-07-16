@@ -1,28 +1,10 @@
 with Glib;                use Glib;
 with Glib.Graphs;         use Glib.Graphs;
-with Glib.Graphs.Layouts;
-with Ada.Text_IO;         use Ada.Text_IO;
+with Test_Graph_Support;  use Test_Graph_Support;
 
 procedure Test_Graph is
    Gr : Graph;
    A, B, C, D, E, F, G, H, I, J, K : Vertex_Access;
-
-   procedure Get_Size (V : Vertex_Access; W, H : out Gdouble);
-   procedure Set_Pos (V : Vertex_Access; X, Y : Gdouble);
-
-   procedure Get_Size (V : Vertex_Access; W, H : out Gdouble) is
-   begin
-      W := 20.0;
-      H := 20.0;
-   end Get_Size;
-
-   procedure Set_Pos (V : Vertex_Access; X, Y : Gdouble) is
-      pragma Unreferenced (V, X, Y);
-   begin
-      null;
-   end Set_Pos;
-
-   package Layout is new Glib.Graphs.Layouts (Get_Size, Set_Pos);
 begin
    Set_Directed (Gr, True);
 

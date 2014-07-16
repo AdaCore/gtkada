@@ -24,7 +24,11 @@ project TestGtk is
 
    end Builder;
 
-   package Compiler renames Shared.Compiler;
+   package Compiler is
+      --  subprogram specs not required in testgtk
+      for Switches ("Ada") use Shared.Compiler'Switches ("Ada") & ("-gnaty-s");
+      for Switches ("C") use Shared.Compiler'Switches ("C");
+   end Compiler;
    package Binder   renames Shared.Binder;
    package IDE      renames Shared.IDE;
 
