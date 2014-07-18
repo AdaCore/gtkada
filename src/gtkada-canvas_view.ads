@@ -592,6 +592,11 @@ package Gtkada.Canvas_View is
    --
    --  Items are returned in z-layer order: lowest items first, highest items
    --  last.
+   --
+   --  You should not remove items while iterating, since removing items might
+   --  end up removing other items (links to or from the original item for
+   --  instance). Instead, create a temporary structure via
+   --  Include_Related_Items and use Remove to remove them all at once.
 
    function Hash (Key : Abstract_Item) return Ada.Containers.Hash_Type;
    package Item_Sets is new Ada.Containers.Hashed_Sets
@@ -612,6 +617,14 @@ package Gtkada.Canvas_View is
    --  large model (tens of thousands of items). The default implementation
    --  simply calls For_Each_Item.
    --  From_Or_To is never empty.
+
+   procedure Include_Related_Items
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class;
+      Set  : in out Item_Sets.Set);
+   --  Append Item and all items and links related to Item (i.e. the links for
+   --  which one of the ends is Item, and then the links to these links, and so
+   --  on).
 
    function Bounding_Box
      (Self   : not null access Canvas_Model_Record;
@@ -661,9 +674,19 @@ package Gtkada.Canvas_View is
    procedure Remove
      (Self : not null access Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class) is null;
-   --  Remove item from the list of items.
-   --  This is called in particular when an item is freed, before it is
-   --  deallocated.
+   --  Remove an item to the model, and destroy it.
+   --  This also removes all links to and from the element, and links to
+   --  these links (and so on).
+
+   procedure Remove
+     (Self : not null access Canvas_Model_Record;
+      Set  : Item_Sets.Set);
+   --  Remove all elements in the set from the model.
+   --  It is expected that the set already contains related items (see
+   --  Include_Related_Items)
+   --  The default implementation is to call Remove for each of the element in
+   --  the set, so you will need to override this procedure if your
+   --  implementation of Remove calls this one.
 
    procedure Raise_Item
      (Self : not null access Canvas_Model_Record;
@@ -771,15 +794,16 @@ package Gtkada.Canvas_View is
       Item : not null access Abstract_Item_Record'Class);
    --  Add a new item to the model.
 
-   overriding procedure Remove
-     (Self : not null access List_Canvas_Model_Record;
-      Item : not null access Abstract_Item_Record'Class);
-   --  Remove an item to the model, and destroy it
-
    procedure Clear
      (Self : not null access List_Canvas_Model_Record);
    --  Remove all items from the model, and destroy them.
 
+   overriding procedure Remove
+     (Self : not null access List_Canvas_Model_Record;
+      Item : not null access Abstract_Item_Record'Class);
+   overriding procedure Remove
+     (Self : not null access List_Canvas_Model_Record;
+      Set  : Item_Sets.Set);
    overriding procedure For_Each_Item
      (Self     : not null access List_Canvas_Model_Record;
       Callback : not null access procedure

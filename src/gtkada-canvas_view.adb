@@ -168,7 +168,7 @@ package body Gtkada.Canvas_View is
    --  Resize the fill pattern so that it extends to the whole item, instead of
    --  just the 0.0 .. 1.0 pattern space.
 
-   procedure Free
+   procedure Destroy_And_Free
      (Self     : in out Abstract_Item;
       In_Model : not null access Canvas_Model_Record'Class);
    --  Free the memory used by Self
@@ -212,49 +212,22 @@ package body Gtkada.Canvas_View is
    procedure Cancel_Drag (Self : not null access Canvas_View_Record'Class);
    --  Cancel any drag currently in place.
 
-   ----------
-   -- Free --
-   ----------
+   ----------------------
+   -- Destroy_And_Free --
+   ----------------------
 
-   procedure Free
+   procedure Destroy_And_Free
      (Self     : in out Abstract_Item;
       In_Model : not null access Canvas_Model_Record'Class)
    is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Abstract_Item_Record'Class, Abstract_Item);
-
-      use Items_Lists;
-      To_Remove : Items_Lists.List;
-      C         : Items_Lists.Cursor;
-
-      procedure Remove_Link (C : not null access Abstract_Item_Record'Class);
-      procedure Remove_Link (C : not null access Abstract_Item_Record'Class) is
-      begin
-         if Canvas_Link (C).From = Self
-           or else Canvas_Link (C).To = Self
-         then
-            To_Remove.Append (Abstract_Item (C));
-         end if;
-      end Remove_Link;
-
    begin
       if Self /= null then
-         In_Model.Remove_From_Selection (Self);
-
-         --  Any link to or from this item should also be removed
-
-         In_Model.For_Each_Item (Remove_Link'Access, Filter => Kind_Link);
-
-         C := To_Remove.First;
-         while Has_Element (C) loop
-            In_Model.Remove (Element (C));
-            Next (C);
-         end loop;
-
          Destroy (Self, In_Model);
          Unchecked_Free (Self);
       end if;
-   end Free;
+   end Destroy_And_Free;
 
    -----------------------------
    -- GValue_To_Abstract_Item --
@@ -2044,9 +2017,9 @@ package body Gtkada.Canvas_View is
    begin
       Unchecked_Free (Self.Points);
       Unchecked_Free (Self.Waypoints);
-      Free (Abstract_Item (Self.Label), In_Model);
-      Free (Abstract_Item (Self.Label_From), In_Model);
-      Free (Abstract_Item (Self.Label_To), In_Model);
+      Destroy_And_Free (Abstract_Item (Self.Label), In_Model);
+      Destroy_And_Free (Abstract_Item (Self.Label_From), In_Model);
+      Destroy_And_Free (Abstract_Item (Self.Label_To), In_Model);
 
       --  Can't call destroy from the interface, this results in infinite loop
       --  Abstract_Item_Record (Self.all).Destroy (In_Model); --  inherited
@@ -2206,19 +2179,99 @@ package body Gtkada.Canvas_View is
    ------------
 
    procedure Remove
+     (Self : not null access Canvas_Model_Record;
+      Set  : Item_Sets.Set)
+   is
+      use Item_Sets;
+      C  : Item_Sets.Cursor := Set.First;
+   begin
+      while Has_Element (C) loop
+         Canvas_Model_Record'Class (Self.all).Remove (Element (C));
+         Next (C);
+      end loop;
+   end Remove;
+
+   ------------
+   -- Remove --
+   ------------
+
+   overriding procedure Remove
      (Self : not null access List_Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class)
    is
-      use Items_Lists;
-      It : Abstract_Item := Abstract_Item (Item);
-      C  : Items_Lists.Cursor := Self.Items.Find (Abstract_Item (Item));
+      To_Remove : Item_Sets.Set;
    begin
-      --  Will only remove toplevel items
-      if Has_Element (C) then
-         Self.Items.Delete (C);
-         Free (It, In_Model => Self);
-      end if;
+      Self.Include_Related_Items (Item, To_Remove);
+      Remove (Self, To_Remove);
    end Remove;
+
+   ------------
+   -- Remove --
+   ------------
+
+   procedure Remove
+     (Self : not null access List_Canvas_Model_Record;
+      Set  : Item_Sets.Set)
+   is
+      use Item_Sets, Items_Lists;
+      C2   : Item_Sets.Cursor := Set.First;
+      It   : Abstract_Item;
+      C    : Items_Lists.Cursor;
+   begin
+      --  First pass: remove the items from the list of items. This means
+      --  that when we later destroy the items (and thus in the case of
+      --  container_item we remove the link to their children), we will not
+      --  see these items again.
+
+      while Has_Element (C2) loop
+         It := Element (C2);
+         Next (C2);
+         Self.Remove_From_Selection (It);
+
+         C := Self.Items.Find (It);
+         if Has_Element (C) then
+            Self.Items.Delete (C);
+         end if;
+      end loop;
+
+      --  Now destroy the items
+
+      C2 := Set.First;
+      while Has_Element (C2) loop
+         It := Element (C2);
+         Next (C2);
+         Destroy_And_Free (It, In_Model => Self);
+      end loop;
+   end Remove;
+
+   ---------------------------
+   -- Include_Related_Items --
+   ---------------------------
+
+   procedure Include_Related_Items
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class;
+      Set  : in out Item_Sets.Set)
+   is
+      procedure Internal (C : not null access Abstract_Item_Record'Class);
+      procedure Internal (C : not null access Abstract_Item_Record'Class) is
+      begin
+         if C.all in Canvas_Link_Record'Class
+           and then (Canvas_Link (C).From = Abstract_Item (Item)
+                     or else Canvas_Link (C).To = Abstract_Item (Item))
+         then
+            Include_Related_Items (Self, C, Set);
+         end if;
+      end Internal;
+
+   begin
+      Self.For_Each_Item (Internal'Access, Filter => Kind_Link);
+
+      --  Removing the container items will call their destroy, and therefore
+      --  remove all links to their children.
+
+      Set.Include (Abstract_Item (Item));
+   end Include_Related_Items;
 
    -----------
    -- Clear --
@@ -2227,16 +2280,19 @@ package body Gtkada.Canvas_View is
    procedure Clear
      (Self : not null access List_Canvas_Model_Record)
    is
-      It : Abstract_Item;
+      use Items_Lists;
+      Items : constant Items_Lists.List := Self.Items;
+      C     : Items_Lists.Cursor := Items.First;
    begin
-      --  We can't iterate over the list, since freeing an item will also free
-      --  its links, and therefore the cursor might become invalid.
+      --  More efficient to clear the list first, so that 'Remove' finds no
+      --  related link (since we are going to free them anyway).
+      Self.Items.Clear;
 
-      while not Self.Items.Is_Empty loop
-         It := Self.Items.First_Element;
-         Self.Items.Delete_First;
-         Free (It, Self);
+      while Has_Element (C) loop
+         Canvas_Model_Record'Class (Self.all).Remove (Element (C));
+         Next (C);
       end loop;
+      Canvas_Model_Record'Class (Self.all).Refresh_Layout;
    end Clear;
 
    ----------------
@@ -2283,6 +2339,10 @@ package body Gtkada.Canvas_View is
    begin
       while Has_Element (C) loop
          Item := Element (C);
+
+         --  ??? Might not work when the Callback removes the item, which in
+         --  turn removes a link which might happen to be the next element
+         --  we were pointing to.
          Next (C);
 
          if (Filter = Kind_Any
@@ -2709,15 +2769,20 @@ package body Gtkada.Canvas_View is
      (Self     : not null access Container_Item_Record;
       In_Model : not null access Canvas_Model_Record'Class)
    is
+      use Item_Sets;
+      To_Remove : Item_Sets.Set;
+
       procedure Do_Child (C : not null access Container_Item_Record'Class);
       procedure Do_Child (C : not null access Container_Item_Record'Class) is
       begin
-         C.Destroy (In_Model);
+         In_Model.Include_Related_Items (C, To_Remove);
       end Do_Child;
 
    begin
+      --  Remove all links to any of the children
       Container_Item_Record'Class (Self.all).For_Each_Child (Do_Child'Access);
       Self.Children.Clear;
+      Remove (In_Model, To_Remove);
       Canvas_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
 
