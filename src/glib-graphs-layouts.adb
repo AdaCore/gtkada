@@ -827,7 +827,7 @@ package body Glib.Graphs.Layouts is
                            Min_Slack := Sl;
                            Vertex_To_Add := V;
                            Edge_To_Add := E;
-                           Layer_Delta := Sl;
+                           Layer_Delta := -Sl;
 
                            --  that will be the minimum anyway
                            exit For_Each_Vertex_Not_In_Tree when Sl = 1;
@@ -845,7 +845,7 @@ package body Glib.Graphs.Layouts is
                            Min_Slack := Sl;
                            Vertex_To_Add := V;
                            Edge_To_Add := E;
-                           Layer_Delta := -Sl;
+                           Layer_Delta := Sl;
 
                            --  that will be the minimum anyway
                            exit For_Each_Vertex_Not_In_Tree when Sl = 1;
@@ -861,8 +861,6 @@ package body Glib.Graphs.Layouts is
             --  Have we found an edge to tighten ?
 
             if Vertex_To_Add /= null then
-               Add_Edge (Spanning, Edge_To_Add);
-
                Vit := First (G);
                while not At_End (Vit) loop
                   V := Get (Vit);
@@ -878,8 +876,8 @@ package body Glib.Graphs.Layouts is
                   Next (Vit);
                end loop;
 
-               Info.Layers (Get_Index (Vertex_To_Add)) :=
-                 Info.Layers (Get_Index (Vertex_To_Add)) + Layer_Delta;
+               --  Add the edge only after we had adjusted layers
+               Add_Edge (Spanning, Edge_To_Add);
 
                Min_Layer :=
                  Integer'Min (Min_Layer, Min_Layer + Layer_Delta);
