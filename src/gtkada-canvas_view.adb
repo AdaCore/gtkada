@@ -1549,6 +1549,7 @@ package body Gtkada.Canvas_View is
 
    procedure Scale_To_Fit
      (Self      : not null access Canvas_View_Record;
+      Min_Scale : Gdouble := 1.0 / 4.0;
       Max_Scale : Gdouble := 4.0)
    is
       Box   : Model_Rectangle;
@@ -1576,6 +1577,7 @@ package body Gtkada.Canvas_View is
                Gdouble'Min
                  ((W - 2.0 * View_Margin - 1.0) / Box.Width,
                   (H - 2.0 * View_Margin - 1.0) / Box.Height));
+            Self.Scale := Gdouble'Max (Min_Scale, Self.Scale);
             Self.Topleft :=
               (X => Box.X - (W / Self.Scale - Box.Width) / 2.0,
                Y => Box.Y - (H / Self.Scale - Box.Height) / 2.0);

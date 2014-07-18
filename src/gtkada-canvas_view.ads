@@ -1008,6 +1008,7 @@ package Gtkada.Canvas_View is
 
    procedure Scale_To_Fit
      (Self      : not null access Canvas_View_Record;
+      Min_Scale : Gdouble := 1.0 / 4.0;
       Max_Scale : Gdouble := 4.0);
    --  Chose the scale and scroll position so that the whole model is visible.
    --  This procedure leaves a small margin on each sides of the model, since
