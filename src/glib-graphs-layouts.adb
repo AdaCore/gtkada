@@ -394,21 +394,131 @@ package body Glib.Graphs.Layouts is
       end record;
       Boxes     : array (Min_Vertex_Index .. Max_Index (G)) of Box;
 
-      C, C2    : Vertex_Lists.Cursor;
-      Pos      : Gdouble := 0.0;
-      Lowest   : Gdouble;
-      Highest  : Gdouble;
-      Max_Size : Gdouble;
-      V        : Vertex_Access;
-      Total    : Gdouble;
-      Count    : Integer;
-      New_Pos  : Gdouble;
-      Src      : Vertex_Access;
-      Eit      : Edge_Iterator;
-      Current, Next_Item : Vertex_Access;
-      Current_B            : Box;  --  size for Current
-      Next_B               : Box;  --  size for Next_Item
-      Child_B              : Box;
+      procedure Do_Iteration (Layer : Integer; Downward : Boolean);
+      procedure Do_Iteration (Layer : Integer; Downward : Boolean) is
+         C        : Vertex_Lists.Cursor := Info.In_Layers (Layer).First;
+         Lowest   : Gdouble := Gdouble'First;
+         Highest  : Gdouble;
+         Total    : Gdouble;
+         Count    : Integer;
+         New_Pos  : Gdouble;
+         Src      : Vertex_Access;
+         Eit      : Edge_Iterator;
+         Current, Next_Item : Vertex_Access;
+         Current_B            : Box;  --  size for Current
+         Next_B               : Box;  --  size for Next_Item
+         Child_B              : Box;
+      begin
+         if Has_Element (C) then
+            Next_Item := Element (C);
+            Next_B := Boxes (Get_Index (Next_Item));
+         end if;
+
+         while Next_Item /= null loop
+            Total := 0.0;
+            Count := 0;
+
+            --  Find the range of coordinates allowed for the current item
+
+            Current   := Next_Item;
+            Current_B := Next_B;
+
+            Next (C);
+            if Has_Element (C) then
+               Next_Item := Element (C);
+               Next_B := Boxes (Get_Index (Next_Item));
+
+               if Info.Horizontal then
+                  Highest := Next_B.Y;
+               else
+                  Highest := Next_B.X;
+               end if;
+            else
+               Next_Item := null;
+               Highest := Gdouble'Last;
+            end if;
+
+            --  Now take a look at all its neighbors, either in previous
+            --  or later layers, depending on the iteration
+
+            if Downward then
+               Eit := First (G, Src => Current);
+            else
+               Eit := First (G, Dest => Current);
+            end if;
+
+            while not At_End (Eit) loop
+               if Downward then
+                  Src := Get_Dest (Get (Eit));
+               else
+                  Src := Get_Src (Get (Eit));
+               end if;
+
+               --  ignore self-links.
+               --  Only take into account tight edges (where nodes are in
+               --  adjacent layers), which is the default if we added dummy
+               --  nodes.
+
+               if Src /= Current
+                 and then (Add_Dummy_Nodes
+                           or else Slack (Info, Get (Eit)) = 0)
+               then
+                  Child_B := Boxes (Get_Index (Src));
+                  Count := Count + 1;
+
+                  if Info.Horizontal then
+                     Total := Total + Child_B.Y + Child_B.H / 2.0;
+                  else
+                     Total := Total + Child_B.X + Child_B.W / 2.0;
+                  end if;
+               end if;
+
+               Next (Eit);
+            end loop;
+
+            if Count /= 0 then
+               New_Pos := Total / Gdouble (Count);
+
+               if Info.Horizontal then
+                  --  When we compute the highest possible position, we
+                  --  do not include space_between_items. This gives a
+                  --  chance to still move a vertex that would be blocked
+                  --  between two others (which will also move the next
+                  --  vertices)
+
+                  New_Pos := New_Pos - Current_B.H / 2.0;
+                  New_Pos := Gdouble'Min (New_Pos, Highest - Current_B.H);
+
+               else
+                  New_Pos := New_Pos - Current_B.W / 2.0;
+                  New_Pos := Gdouble'Min (New_Pos, Highest - Current_B.W);
+               end if;
+            else
+               if Info.Horizontal then
+                  New_Pos := Current_B.Y;
+               else
+                  New_Pos := Current_B.X;
+               end if;
+            end if;
+
+            New_Pos := Gdouble'Max (Lowest, New_Pos);
+
+            if Info.Horizontal then
+               Boxes (Get_Index (Current)).Y := New_Pos;
+               Lowest := New_Pos + Current_B.H + Current_B.Space_After;
+            else
+               Boxes (Get_Index (Current)).X := New_Pos;
+               Lowest := New_Pos + Current_B.W + Current_B.Space_After;
+            end if;
+         end loop;
+      end Do_Iteration;
+
+      C2        : Vertex_Lists.Cursor;
+      Pos       : Gdouble := 0.0;
+      Lowest    : Gdouble;
+      Max_Size  : Gdouble;
+      V         : Vertex_Access;
+      Current_B : Box;  --  size for Current
    begin
       --  Compute the coordinates for each layer, and an initial position for
       --  items within each layer.
@@ -453,114 +563,17 @@ package body Glib.Graphs.Layouts is
       --  Try to adjust position of nodes to align with parents and children
 
       for Iteration in 0 .. 8 loop
-         for P in Info.In_Layers'Range loop
-            C := Info.In_Layers (P).First;
-
-            Lowest := Gdouble'First;
-
-            if Has_Element (C) then
-               Next_Item := Element (C);
-               Next_B := Boxes (Get_Index (Next_Item));
-            end if;
-
-            while Next_Item /= null loop
-               Total := 0.0;
-               Count := 0;
-
-               --  Find the range of coordinates allowed for the current item
-
-               Current   := Next_Item;
-               Current_B := Next_B;
-
-               Next (C);
-               if Has_Element (C) then
-                  Next_Item := Element (C);
-                  Next_B := Boxes (Get_Index (Next_Item));
-
-                  if Info.Horizontal then
-                     Highest := Next_B.Y;
-                  else
-                     Highest := Next_B.X;
-                  end if;
-               else
-                  Next_Item := null;
-                  Highest := Gdouble'Last;
-               end if;
-
-               --  Now take a look at all its neighbors, either in previous
-               --  or later layers, depending on the iteration
-
-               if Iteration mod 2 = 0 then
-                  Eit := First (G, Dest => Current);
-               else
-                  Eit := First (G, Src => Current);
-               end if;
-
-               while not At_End (Eit) loop
-                  if Iteration mod 2 = 0 then
-                     Src := Get_Src (Get (Eit));
-                  else
-                     Src := Get_Dest (Get (Eit));
-                  end if;
-
-                  --  ignore self-links.
-                  --  Only take into account tight edges (where nodes are in
-                  --  adjacent layers), which is the default if we added dummy
-                  --  nodes.
-
-                  if Src /= Current
-                    and then (Add_Dummy_Nodes
-                              or else Slack (Info, Get (Eit)) = 0)
-                  then
-                     Child_B := Boxes (Get_Index (Src));
-                     Count := Count + 1;
-
-                     if Info.Horizontal then
-                        Total := Total + Child_B.Y + Child_B.H / 2.0;
-                     else
-                        Total := Total + Child_B.X + Child_B.W / 2.0;
-                     end if;
-                  end if;
-
-                  Next (Eit);
-               end loop;
-
-               if Count /= 0 then
-                  New_Pos := Total / Gdouble (Count);
-
-                  if Info.Horizontal then
-                     --  When we compute the highest possible position, we
-                     --  do not include space_between_items. This gives a
-                     --  chance to still move a vertex that would be blocked
-                     --  between two others (which will also move the next
-                     --  vertices)
-
-                     New_Pos := New_Pos - Current_B.H / 2.0;
-                     New_Pos := Gdouble'Min (New_Pos, Highest - Current_B.H);
-
-                  else
-                     New_Pos := New_Pos - Current_B.W / 2.0;
-                     New_Pos := Gdouble'Min (New_Pos, Highest - Current_B.W);
-                  end if;
-               else
-                  if Info.Horizontal then
-                     New_Pos := Current_B.Y;
-                  else
-                     New_Pos := Current_B.X;
-                  end if;
-               end if;
-
-               New_Pos := Gdouble'Max (Lowest, New_Pos);
-
-               if Info.Horizontal then
-                  Boxes (Get_Index (Current)).Y := New_Pos;
-                  Lowest := New_Pos + Current_B.H + Current_B.Space_After;
-               else
-                  Boxes (Get_Index (Current)).X := New_Pos;
-                  Lowest := New_Pos + Current_B.W + Current_B.Space_After;
-               end if;
+         if Iteration mod 2 = 0 then
+            for P in
+               reverse Info.In_Layers'First .. Info.In_Layers'Last - 1
+            loop
+               Do_Iteration (P, Downward => True);
             end loop;
-         end loop;
+         else
+            for P in Info.In_Layers'First + 1 .. Info.In_Layers'Last loop
+               Do_Iteration (P, Downward => False);
+            end loop;
+         end if;
       end loop;
 
       declare
