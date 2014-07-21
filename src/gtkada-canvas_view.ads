@@ -425,22 +425,30 @@ package Gtkada.Canvas_View is
    --  Translate_And_Draw_Item below.
 
    procedure Translate_And_Draw_Item
-     (Self    : not null access Abstract_Item_Record'Class;
-      Context : Draw_Context);
+     (Self          : not null access Abstract_Item_Record'Class;
+      Context       : Draw_Context;
+      As_Outline    : Boolean := False;
+      Outline_Style : Drawing_Style := No_Drawing_Style);
    --  Translate the transformation matrix and draw the item.
    --  This procedure should be used instead of calling Draw directly.
+   --  If As_Outline is true, then only the outline of the item is displayed,
+   --  using the provided style
 
    procedure Draw_Outline
      (Self    : not null access Abstract_Item_Record;
       Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context) is null;
-   --  Draw an outline for Self (which is used for the selection for instance)
+   --  Draw an outline for Self (which is used for the selection for instance).
+   --  Do not call this procedure directly, use Translate_And_Draw_Item
+   --  instead, unless called directly from an overriding of Draw.
 
    procedure Draw_As_Selected
      (Self    : not null access Abstract_Item_Record;
       Context : Draw_Context) is abstract;
    --  Draw the item when it is selected.
    --  The default is to draw both the item and its outline.
+   --  Do not call this procedure directly, use Translate_And_Draw_Item
+   --  instead, unless called directly from an overriding of Draw.
 
    function Contains
      (Self    : not null access Abstract_Item_Record;
@@ -519,6 +527,24 @@ package Gtkada.Canvas_View is
    --  True if Self has no filling or stroke information (and therefore is
    --  invisible even when displayed, although some of its children might be
    --  visible).
+   --  This function is independent of Set_Visibility_Threshold, Show or Hide.
+
+   procedure Set_Visibility_Threshold
+     (Self      : not null access Abstract_Item_Record;
+      Threshold : Gdouble) is null;
+   function Get_Visibility_Threshold
+     (Self : not null access Abstract_Item_Record) return Gdouble is (0.0);
+      --  When the items bounding box (on the screen) width or height are less
+   --  than Threshold pixels, the item is automatically hidden.
+   --  Making the item invisibile does not impact the visibility of links from
+   --  or to that item (but you could use Include_Related_Items to find these
+   --  related items.
+   --  You need to refresh the view afterwards
+
+   procedure Show (Self : not null access Abstract_Item_Record'Class);
+   procedure Hide (Self : not null access Abstract_Item_Record'Class);
+   --  Hide or show the item unconditionally. This overrides the settings
+   --  done by Set_Visibility_Threshold.
 
    -----------
    -- Items --
@@ -556,6 +582,11 @@ package Gtkada.Canvas_View is
      (Self    : not null access Canvas_Item_Record;
       Style   : Gtkada.Style.Drawing_Style;
       Context : Draw_Context);
+   overriding procedure Set_Visibility_Threshold
+     (Self      : not null access Canvas_Item_Record;
+      Threshold : Gdouble);
+   overriding function Get_Visibility_Threshold
+     (Self : not null access Canvas_Item_Record) return Gdouble;
 
    overriding procedure Set_Position
      (Self     : not null access Canvas_Item_Record;
@@ -1722,6 +1753,9 @@ private
       Position : Gtkada.Style.Point :=
         (Gdouble'First, Gdouble'First);
       --  Position within its parent or the canvas view.
+
+      Visibility_Threshold : Gdouble := 0.0;
+      --  See Set_Visibility_Threshold.
    end record;
 
    type Container_Item_Record is abstract new Canvas_Item_Record with record

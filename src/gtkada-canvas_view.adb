@@ -1734,16 +1734,32 @@ package body Gtkada.Canvas_View is
    -----------------------------
 
    procedure Translate_And_Draw_Item
-     (Self    : not null access Abstract_Item_Record'Class;
-      Context : Draw_Context)
+     (Self          : not null access Abstract_Item_Record'Class;
+      Context       : Draw_Context;
+      As_Outline    : Boolean := False;
+      Outline_Style : Drawing_Style := No_Drawing_Style)
    is
       Pos : Gtkada.Style.Point;
+      R   : View_Rectangle;
+      Threshold : constant Gdouble := Self.Get_Visibility_Threshold;
    begin
+      if Threshold = Gdouble'Last then
+         --  Always hidden
+         return;
+      elsif Threshold > 0.0 and then Context.View /= null then
+         R := Context.View.Model_To_View (Self.Model_Bounding_Box);
+         if R.Width < Threshold or else R.Height < Threshold then
+            return;
+         end if;
+      end if;
+
       Save (Context.Cr);
       Pos := Self.Position;
       Translate (Context.Cr, Pos.X, Pos.Y);
 
-      if Context.View /= null
+      if As_Outline then
+         Self.Draw_Outline (Outline_Style, Context);
+      elsif Context.View /= null
         and then Context.View.Model /= null
         and then Context.View.Model.Is_Selected (Self)
       then
@@ -2762,6 +2778,46 @@ package body Gtkada.Canvas_View is
       return Self.Style.Get_Stroke = Null_RGBA
         and then Self.Style.Get_Fill = Null_Pattern;
    end Is_Invisible;
+
+   ------------------------------
+   -- Set_Visibility_Threshold --
+   ------------------------------
+
+   procedure Set_Visibility_Threshold
+     (Self      : not null access Canvas_Item_Record;
+      Threshold : Gdouble)
+   is
+   begin
+      Self.Visibility_Threshold := Threshold;
+   end Set_Visibility_Threshold;
+
+   ------------------------------
+   -- Get_Visibility_Threshold --
+   ------------------------------
+
+   function Get_Visibility_Threshold
+     (Self : not null access Canvas_Item_Record) return Gdouble is
+   begin
+      return Self.Visibility_Threshold;
+   end Get_Visibility_Threshold;
+
+   ----------
+   -- Show --
+   ----------
+
+   procedure Show (Self : not null access Abstract_Item_Record'Class) is
+   begin
+      Self.Set_Visibility_Threshold (Threshold => 0.0);
+   end Show;
+
+   ----------
+   -- Hide --
+   ----------
+
+   procedure Hide (Self : not null access Abstract_Item_Record'Class) is
+   begin
+      Self.Set_Visibility_Threshold (Threshold => Gdouble'Last);
+   end Hide;
 
    -------------
    -- Destroy --
