@@ -163,6 +163,12 @@ package body Gtkada.Canvas_View is
       return String;
    --  Return the text to display for Self, including the directional arrow
 
+   function Size_Above_Threshold
+     (Self : not null access Abstract_Item_Record'Class;
+      View : access Canvas_View_Record'Class) return Boolean;
+   --  Whether the item's size is above the visibility threshold, i.e. whether
+   --  the item is visible.
+
    procedure Resize_Fill_Pattern
      (Self : not null access Container_Item_Record'Class);
    --  Resize the fill pattern so that it extends to the whole item, instead of
@@ -1729,6 +1735,29 @@ package body Gtkada.Canvas_View is
       end if;
    end Draw_Outline;
 
+   --------------------------
+   -- Size_Above_Threshold --
+   --------------------------
+
+   function Size_Above_Threshold
+     (Self : not null access Abstract_Item_Record'Class;
+      View : access Canvas_View_Record'Class) return Boolean
+   is
+      R   : View_Rectangle;
+      Threshold : constant Gdouble := Self.Get_Visibility_Threshold;
+   begin
+      if Threshold = Gdouble'Last then
+         --  Always hidden
+         return False;
+      elsif Threshold > 0.0 and then View /= null then
+         R := View.Model_To_View (Self.Model_Bounding_Box);
+         if R.Width < Threshold or else R.Height < Threshold then
+            return False;
+         end if;
+      end if;
+      return True;
+   end Size_Above_Threshold;
+
    -----------------------------
    -- Translate_And_Draw_Item --
    -----------------------------
@@ -1740,17 +1769,9 @@ package body Gtkada.Canvas_View is
       Outline_Style : Drawing_Style := No_Drawing_Style)
    is
       Pos : Gtkada.Style.Point;
-      R   : View_Rectangle;
-      Threshold : constant Gdouble := Self.Get_Visibility_Threshold;
    begin
-      if Threshold = Gdouble'Last then
-         --  Always hidden
+      if not Size_Above_Threshold (Self, Context.View) then
          return;
-      elsif Threshold > 0.0 and then Context.View /= null then
-         R := Context.View.Model_To_View (Self.Model_Bounding_Box);
-         if R.Width < Threshold or else R.Height < Threshold then
-            return;
-         end if;
       end if;
 
       Save (Context.Cr);
@@ -1952,7 +1973,9 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Canvas_Link_Record;
       Context : Draw_Context) is
    begin
-      Gtkada.Canvas_View.Links.Draw_Link (Self, Context, Selected => False);
+      if Size_Above_Threshold (Self, Context.View) then
+         Gtkada.Canvas_View.Links.Draw_Link (Self, Context, Selected => False);
+      end if;
    end Draw;
 
    ----------------------
@@ -1961,10 +1984,11 @@ package body Gtkada.Canvas_View is
 
    procedure Draw_As_Selected
      (Self    : not null access Canvas_Link_Record;
-      Context : Draw_Context)
-   is
+      Context : Draw_Context) is
    begin
-      Gtkada.Canvas_View.Links.Draw_Link (Self, Context, Selected => True);
+      if Size_Above_Threshold (Self, Context.View) then
+         Gtkada.Canvas_View.Links.Draw_Link (Self, Context, Selected => True);
+      end if;
    end Draw_As_Selected;
 
    --------------
@@ -2778,6 +2802,28 @@ package body Gtkada.Canvas_View is
       return Self.Style.Get_Stroke = Null_RGBA
         and then Self.Style.Get_Fill = Null_Pattern;
    end Is_Invisible;
+
+   ------------------------------
+   -- Set_Visibility_Threshold --
+   ------------------------------
+
+   overriding procedure Set_Visibility_Threshold
+     (Self      : not null access Canvas_Link_Record;
+      Threshold : Gdouble)
+   is
+   begin
+      Self.Visibility_Threshold := Threshold;
+   end Set_Visibility_Threshold;
+
+   ------------------------------
+   -- Get_Visibility_Threshold --
+   ------------------------------
+
+   overriding function Get_Visibility_Threshold
+     (Self : not null access Canvas_Link_Record) return Gdouble is
+   begin
+      return Self.Visibility_Threshold;
+   end Get_Visibility_Threshold;
 
    ------------------------------
    -- Set_Visibility_Threshold --

@@ -534,7 +534,7 @@ package Gtkada.Canvas_View is
       Threshold : Gdouble) is null;
    function Get_Visibility_Threshold
      (Self : not null access Abstract_Item_Record) return Gdouble is (0.0);
-      --  When the items bounding box (on the screen) width or height are less
+   --  When the items bounding box (on the screen) width or height are less
    --  than Threshold pixels, the item is automatically hidden.
    --  Making the item invisibile does not impact the visibility of links from
    --  or to that item (but you could use Include_Related_Items to find these
@@ -1707,6 +1707,11 @@ package Gtkada.Canvas_View is
    --  Return the computed points for the link.
    --  Do not free or store the result
 
+   overriding procedure Set_Visibility_Threshold
+     (Self      : not null access Canvas_Link_Record;
+      Threshold : Gdouble);
+   overriding function Get_Visibility_Threshold
+     (Self : not null access Canvas_Link_Record) return Gdouble;
    overriding procedure Destroy
      (Self     : not null access Canvas_Link_Record;
       In_Model : not null access Canvas_Model_Record'Class);
@@ -1937,6 +1942,8 @@ private
       Label        : Container_Item;
       Label_From   : Container_Item;
       Label_To     : Container_Item;
+
+      Visibility_Threshold : Gdouble := 0.0;
 
       Offset : Gdouble := 10.0;
       --  For arc links
