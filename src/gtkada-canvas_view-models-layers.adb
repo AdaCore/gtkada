@@ -28,7 +28,7 @@ with Glib.Graphs.Layouts;
 
 package body Gtkada.Canvas_View.Models.Layers is
 
-   Debug_Add_Waypoints : constant Boolean := True;
+   Debug_Add_Waypoints : constant Boolean := False;
    --  If true, add waypoints to long edges, going through the dummy vertices
    --  added by the algorithm.
 
