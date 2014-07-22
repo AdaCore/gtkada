@@ -22,16 +22,15 @@
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Hashed_Maps;
-with Gdk.RGBA;            use Gdk.RGBA;
+with Ada.Containers.Indefinite_Doubly_Linked_Lists;
 with Glib.Graphs;         use Glib.Graphs;
 with Glib.Graphs.Layouts;
 
 package body Gtkada.Canvas_View.Models.Layers is
 
-   Debug_Show_Dummies : constant Boolean := False;
-   --  If true, modifies the model to show the dummy vertices. This is useful
-   --  to debug the layout algorithm.
-   --  In this case, the model must be a List_Canvas_Model_Record'Class
+   Debug_Add_Waypoints : constant Boolean := True;
+   --  If true, add waypoints to long edges, going through the dummy vertices
+   --  added by the algorithm.
 
    type Canvas_Vertex is new Vertex with record
       Item  : Abstract_Item;
@@ -51,7 +50,7 @@ package body Gtkada.Canvas_View.Models.Layers is
       Set_Position => Set_Position);
 
    type Canvas_Dummy_Vertex is new Graph_Layouts.Base_Dummy_Vertex with record
-      Item  : Abstract_Item;
+      Pos   : Gtkada.Style.Point;
    end record;
 
    --------------
@@ -74,8 +73,8 @@ package body Gtkada.Canvas_View.Models.Layers is
    begin
       if V.all in Canvas_Vertex'Class then
          Canvas_Vertex_Access (V).Item.Set_Position ((X, Y));
-      elsif Debug_Show_Dummies then
-         Canvas_Dummy_Vertex (V.all).Item.Set_Position ((X, Y));
+      elsif Debug_Add_Waypoints then
+         Canvas_Dummy_Vertex (V.all).Pos := (X, Y);
       end if;
    end Set_Position;
 
@@ -97,6 +96,18 @@ package body Gtkada.Canvas_View.Models.Layers is
         (Dummy_Vertex                 => Canvas_Dummy_Vertex,
          Replaced_With_Dummy_Vertices => Replaced_With_Dummy_Vertices);
 
+      type Long_Edge (Size : Natural) is record
+         Edge : Canvas_Link;
+         Dummies : Vertices_Array (1 .. Size);
+         --  Set when the edge was split into smaller edges with dummy
+         --  vertices. This is used to create the waypoints for long edges.
+      end record;
+      package Long_Edge_Lists
+         is new Ada.Containers.Indefinite_Doubly_Linked_Lists (Long_Edge);
+      use Long_Edge_Lists;
+
+      Long_Edges : Long_Edge_Lists.List;
+
       ----------------------------------
       -- Replaced_With_Dummy_Vertices --
       ----------------------------------
@@ -105,59 +116,19 @@ package body Gtkada.Canvas_View.Models.Layers is
         (Replaced_Edge : Edge_Access;
          Dummies       : Vertices_Array)
       is
-         Style, R_Style, Edge_Style : Drawing_Style;
-         It    : Abstract_Item;
-         Prev  : Abstract_Item;
-         Link  : Canvas_Link;
+         E : constant Canvas_Edge_Access := Canvas_Edge_Access (Replaced_Edge);
       begin
-         if Debug_Show_Dummies then
-            Style := Gtk_New (Stroke => Null_RGBA, Line_Width => 1.0);
-            R_Style := Canvas_Edge_Access (Replaced_Edge).Item.Get_Style;
-            Edge_Style := Gtk_New
-              (Stroke => R_Style.Get_Stroke,
-               Arrow_From  => No_Arrow_Style,
-               Arrow_To    => No_Arrow_Style,
-               Symbol_From => No_Symbol,
-               Symbol_To   => No_Symbol);
-
-            Prev := Canvas_Vertex_Access (Get_Src (Replaced_Edge)).Item;
-
-            for D in Dummies'Range loop
-               It := Abstract_Item
-                 (Gtk_New_Ellipse (Style, Width => 1.0, Height => 1.0));
-               Canvas_Dummy_Vertex (Dummies (D).all).Item := It;
-               List_Canvas_Model (Self).Add (It);
-
-               Link := Gtk_New
-                 (Prev, It,
-                  Style       => Edge_Style,
-                  Anchor_From => (0.5, 0.5, No_Clipping, 0.0),
-                  Anchor_To   => (0.5, 0.5, No_Clipping, 0.0));
-               List_Canvas_Model (Self).Add (Link);
-
-               Prev := It;
-            end loop;
-
-            It := Canvas_Vertex_Access (Get_Dest (Replaced_Edge)).Item;
-            Link := Gtk_New
-              (Prev, It,
-               Style       => R_Style,
-               Anchor_From => (0.5, 0.5, No_Clipping, 0.0),
-               Anchor_To   => (0.5, 0.5, No_Clipping, 0.0));
-            List_Canvas_Model (Self).Add (Link);
-
-            Self.Remove (Canvas_Edge_Access (Replaced_Edge).Item);
-            Canvas_Edge_Access (Replaced_Edge).Item := null;  -- just in case
+         if Debug_Add_Waypoints then
+            Long_Edges.Append
+              (Long_Edge'(Size => Dummies'Length,
+                          Edge => E.Item,
+                          Dummies => Dummies));
          end if;
       end Replaced_With_Dummy_Vertices;
 
-      type Item_Info is record
-         Vertex : Vertex_Access;
-         --  The vertex or edge representing this item in the graph
-      end record;
       package Items_Maps is new Ada.Containers.Hashed_Maps
         (Key_Type        => Abstract_Item,
-         Element_Type    => Item_Info,
+         Element_Type    => Vertex_Access,
          Hash            => Gtkada.Canvas_View.Hash,
          Equivalent_Keys => "=");
       use Items_Maps;
@@ -173,7 +144,7 @@ package body Gtkada.Canvas_View.Models.Layers is
            (Vertex with Item => Abstract_Item (It));
       begin
          Add_Vertex (G, V);
-         Items.Include (Abstract_Item (It), Item_Info'(Vertex => V));
+         Items.Include (Abstract_Item (It), V);
       end On_Item;
 
       procedure On_Link (It : not null access Abstract_Item_Record'Class) is
@@ -193,12 +164,14 @@ package body Gtkada.Canvas_View.Models.Layers is
             return;
          end if;
 
-         V1 := Items.Element (Canvas_Link (It).From.Get_Toplevel_Item).Vertex;
-         V2 := Items.Element (Canvas_Link (It).To.Get_Toplevel_Item).Vertex;
+         V1 := Items.Element (Canvas_Link (It).From.Get_Toplevel_Item);
+         V2 := Items.Element (Canvas_Link (It).To.Get_Toplevel_Item);
          E := new Canvas_Edge;
          E.Item := Canvas_Link (It);
          Add_Edge (G, E, V1, V2);
       end On_Link;
+
+      C : Long_Edge_Lists.Cursor;
 
    begin
       Set_Directed (G, True);
@@ -209,6 +182,25 @@ package body Gtkada.Canvas_View.Models.Layers is
          Horizontal           => Horizontal,
          Space_Between_Layers => Space_Between_Layers,
          Space_Between_Items  => Space_Between_Items);
+
+      if Debug_Add_Waypoints then
+         C := Long_Edges.First;
+         while Has_Element (C) loop
+            declare
+               E : constant Long_Edge := Element (C);
+               WP : Item_Point_Array (E.Dummies'Range);
+            begin
+               for D in WP'Range loop
+                  WP (D) := Canvas_Dummy_Vertex (E.Dummies (D).all).Pos;
+               end loop;
+
+               E.Edge.Set_Waypoints (WP);
+            end;
+
+            Next (C);
+         end loop;
+      end if;
+
       Destroy (G);
       Self.Refresh_Layout;  --  recompute the links, and refresh views
    end Layout;
