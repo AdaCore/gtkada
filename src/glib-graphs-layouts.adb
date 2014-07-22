@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Tags;                            use Ada.Tags;
 with Ada.Unchecked_Deallocation;
 with GNAT.Heap_Sort_G;
 
@@ -41,11 +42,6 @@ package body Glib.Graphs.Layouts is
 
    Default_Layer : constant Integer := 0;
 
-   type Dummy_Vertex is new Vertex with record
-      Layer : Integer;
-   end record;
-   --  A vertex that is not part of the original graph
-
    type Integer_Array is array (Integer range <>) of Integer;
    type Integer_Array_Access is access Integer_Array;
    --  maps vertices to some data
@@ -64,6 +60,8 @@ package body Glib.Graphs.Layouts is
       Space_Between_Layers : Gdouble;
       Space_Between_Items  : Gdouble;
 
+      Min_Layer, Max_Layer : Integer;
+
       In_Layers  : Layer_Info_Array_Access;
       --  The ordered list of items in each layer
 
@@ -80,9 +78,6 @@ package body Glib.Graphs.Layouts is
 
    function Layer (Info : Layout_Info; V : Vertex_Access) return Integer;
    --  Return the layer for a vertex
-
-   procedure Rank_Items (G : in out Graph; Info : in out Layout_Info);
-   --  Compute the layer for each item
 
    procedure Adjust_Positions
      (G          : Graph;
@@ -119,6 +114,36 @@ package body Glib.Graphs.Layouts is
    --  sort the array by weight
    --  Precondition: W'First = 0
    --  Sorts 1 .. W'Last elements
+
+   procedure Init_Rank
+     (G         : Graph;
+      Info      : in out Layout_Info);
+   --  Computes an initial feasible ranking (i.e where nodes are
+   --  organized such that children nodes are in layers higher than their
+   --  parents). This always assigns root nodes (with no in-edges) to
+   --  layer 0. This might result in non-tight edges, for instance:
+   --       /--F
+   --     A -> B -> C -> D
+   --     E -----------/
+   --
+   --  ??? This algorithm requires computation of in-edges, which is
+   --  not always available for all types of graphs. Seems that we could
+   --  replace it with a DFS, where leaf nodes are assigned to layer 0
+   --  (so the ordering would be different, but since we are tightening
+   --  edges afterward it doesn't really matter).
+
+   procedure Organize_Nodes
+     (G    : Graph;
+      Info : in out Layout_Info);
+   --  Compute the position of nodes within each layer.
+   --  We provide an initial ordering for elements: starting from nodes
+   --  at the lowest layer (rightmost or topmost item depending on
+   --  layout), we do a breadth-first-search, and add each child in to
+   --  its respective layer. This ensures that for the spanning tree at
+   --  least there are no edge crossings.
+
+   procedure Rank_Items (G : in out Graph; Info : in out Layout_Info);
+   --  Compute the layer for each item
 
    ----------
    -- Tree --
@@ -158,6 +183,20 @@ package body Glib.Graphs.Layouts is
    --  Whether all nodes are in the tree (i.e we have a full spanning tree for
    --  the graph).
 
+   procedure Normalize_Layers (Spanning : Tree; Info : in out Layout_Info);
+   --  Normalize the layers so that each independenct component starts at
+   --  layer 0. This leads to nicer layout, since independent components
+   --  are aligned
+
+   procedure Feasible_Tree
+     (G        : Graph;
+      Info     : in out Layout_Info;
+      Spanning : out Tree);
+   --  Computes an initial feasible tree. This is a spanning tree for the
+   --  graph so that all of its edges are tight (which for instance will
+   --  tighten the link E->D in the example above).
+   --  This changes layer assignment for the vertices.
+
    ----------
    -- Free --
    ----------
@@ -190,8 +229,8 @@ package body Glib.Graphs.Layouts is
 
    function Layer (Info : Layout_Info; V : Vertex_Access) return Integer is
    begin
-      if V.all in Dummy_Vertex'Class then
-         return Dummy_Vertex (V.all).Layer;
+      if V.all in Base_Dummy_Vertex'Class then
+         return Base_Dummy_Vertex (V.all).Layer;
       else
          return Info.Layers (Get_Index (V));
       end if;
@@ -276,6 +315,29 @@ package body Glib.Graphs.Layouts is
    begin
       HS.Sort (W'Last);
    end Sort;
+
+   ----------------------
+   -- Normalize_Layers --
+   ----------------------
+
+   procedure Normalize_Layers (Spanning : Tree; Info : in out Layout_Info) is
+      Min_Layer : Integer_Array (1 .. Spanning.Disjoint_Components) :=
+        (others => Integer'Last);
+      --  The minimal layer used for each of the independent components
+
+      Component : Integer;
+   begin
+      for V in Spanning.Node_In_Tree'Range loop
+         Component := Spanning.Node_In_Tree (V);
+         Min_Layer (Component) :=
+           Integer'Min (Min_Layer (Component), Info.Layers (V));
+      end loop;
+
+      for V in Spanning.Node_In_Tree'Range loop
+         Component := Spanning.Node_In_Tree (V);
+         Info.Layers (V) := Info.Layers (V) - Min_Layer (Component);
+      end loop;
+   end Normalize_Layers;
 
    ------------------------------
    -- Sort_Nodes_Within_Layers --
@@ -536,7 +598,7 @@ package body Glib.Graphs.Layouts is
          while Has_Element (C2) loop
             V := Element (C2);
 
-            if V.all in Dummy_Vertex'Class then
+            if V.all in Base_Dummy_Vertex'Class then
                Current_B.W := Dummy_Node_Size;
                Current_B.H := Dummy_Node_Size;
                Current_B.Space_After := 0.0;
@@ -587,7 +649,7 @@ package body Glib.Graphs.Layouts is
       begin
          while not At_End (Vit) loop
             V := Get (Vit);
-            if V.all not in Dummy_Vertex'Class then
+            if V'Tag /= Base_Dummy_Vertex'Tag then
                Current_B := Boxes (Get_Index (V));
                Set_Position (V, Current_B.X, Current_B.Y);
             end if;
@@ -596,6 +658,305 @@ package body Glib.Graphs.Layouts is
       end;
    end Adjust_Positions;
 
+   ---------------
+   -- Init_Rank --
+   ---------------
+
+   procedure Init_Rank
+     (G         : Graph;
+      Info      : in out Layout_Info)
+   is
+      Max_I     : constant Integer := Max_Index (G);
+      Vit   : Vertex_Iterator := First (G);
+      Queue : array (0 .. Max_I) of Vertex_Access;
+      Q_Index : Integer := Queue'First;
+      Q_Last  : Integer := Queue'First;
+      --  The queue of nodes to visit
+
+      S, D    : Vertex_Access;
+      In_Degree : array (0 .. Max_I) of Integer := (others => 0);
+      --  Number of remaining in-edges that have not been analyzed for
+      --  each node.
+
+      Layer : Integer;
+      Eit   : Edge_Iterator;
+      Edge  : Edge_Access;
+      Deg   : Natural;
+   begin
+      Info.Min_Layer := Default_Layer;
+      Info.Max_Layer := Default_Layer;
+
+      while not At_End (Vit) loop
+         S := Get (Vit);
+
+         Deg := 0;
+         Eit := First (G, Dest => S);
+         while not At_End (Eit) loop
+            --  Ignore self links
+            if Get_Src (Get (Eit)) /= S then
+               Deg := Deg + 1;
+            end if;
+            Next (Eit);
+         end loop;
+
+         In_Degree (Get_Index (S)) := Deg;
+         if In_Degree (Get_Index (S)) = 0 then
+            Queue (Q_Last) := S;
+            Q_Last := Q_Last + 1;
+         end if;
+         Next (Vit);
+      end loop;
+
+      while Q_Index < Q_Last loop
+         S := Queue (Q_Index);
+         Q_Index := Q_Index + 1;
+
+         --  Compute layer based on ancestors' own layers
+
+         Layer := Default_Layer;
+         Eit := First (G, Dest => S);
+         while not At_End (Eit) loop
+            Edge := Get (Eit);
+            Layer := Integer'Max
+              (Layer,
+               Info.Layers (Get_Index (Get_Src (Edge)))
+               + Preferred_Length);
+            Next (Eit);
+         end loop;
+
+         Info.Layers (Get_Index (S)) := Layer;
+         Info.Max_Layer := Integer'Max (Info.Max_Layer, Layer);
+
+         --  Mark all outgoing edges as scanned, which might lead to new
+         --  nodes to analyze.
+
+         Eit := First (G, Src => S);
+         while not At_End (Eit) loop
+            Edge := Get (Eit);
+            D := Get_Dest (Edge);
+            In_Degree (Get_Index (D)) := In_Degree (Get_Index (D)) - 1;
+            if In_Degree (Get_Index (D)) = 0 then
+               Queue (Q_Last) := D;
+               Q_Last := Q_Last + 1;
+            end if;
+            Next (Eit);
+         end loop;
+      end loop;
+   end Init_Rank;
+
+   --------------------
+   -- Organize_Nodes --
+   --------------------
+
+   procedure Organize_Nodes
+     (G    : Graph;
+      Info : in out Layout_Info)
+   is
+      Nodes : constant Depth_Vertices_Array := Depth_First_Search (G);
+      V     : Vertex_Access;
+   begin
+      Info.In_Layers := new Layer_Info_Array
+        (Info.Min_Layer .. Info.Max_Layer);
+
+      for N in Nodes'Range loop
+         V := Nodes (N).Vertex;
+         Info.In_Layers (Layer (Info, V)).Append (V);
+      end loop;
+
+      Sort_Nodes_Within_Layers (G, Info);
+      Adjust_Positions (G,  Info);
+   end Organize_Nodes;
+
+   -------------------
+   -- Feasible_Tree --
+   -------------------
+
+   procedure Feasible_Tree
+     (G        : Graph;
+      Info     : in out Layout_Info;
+      Spanning : out Tree)
+   is
+      function Add_Edge_And_Recurse
+        (E : Edge_Access; V : Vertex_Access) return Boolean;
+      function Search (V : Vertex_Access) return Boolean;
+      --  These functions return True if the tree is complete at this
+      --  point, and therefore we should stop searching.
+
+      procedure Add_Adjacent_Edge;
+      --  Add one adjacent edge to the tree, and change vertex layers to
+      --  tighten that edge
+
+      --------------------------
+      -- Add_Edge_And_Recurse --
+      --------------------------
+
+      function Add_Edge_And_Recurse
+        (E : Edge_Access; V : Vertex_Access) return Boolean
+      is
+      begin
+         if not In_Tree (Spanning, V) and then Slack (Info, E) = 0 then
+            Add_Edge (Spanning, E);
+            if Is_Spanning (Spanning) or else Search (V) then
+               return True;
+            end if;
+         end if;
+         return False;
+      end Add_Edge_And_Recurse;
+
+      ------------
+      -- Search --
+      ------------
+
+      function Search (V : Vertex_Access) return Boolean is
+         Eit : Edge_Iterator;
+         E   : Edge_Access;
+      begin
+         Eit := First (G, Src => V);
+         while not At_End (Eit) loop
+            E := Get (Eit);
+            if Add_Edge_And_Recurse (E, Get_Dest (E)) then
+               return True;
+            end if;
+            Next (Eit);
+         end loop;
+
+         Eit := First (G, Dest => V);
+         while not At_End (Eit) loop
+            E := Get (Eit);
+            if Add_Edge_And_Recurse (E, Get_Src (E)) then
+               return True;
+            end if;
+            Next (Eit);
+         end loop;
+
+         --  We force the edge into the tree (it might have been an edge
+         --  with no in or out edges).
+         Add_Vertex (Spanning, V);
+         return Is_Spanning (Spanning);
+      end Search;
+
+      -----------------------
+      -- Add_Adjacent_Edge --
+      -----------------------
+
+      procedure Add_Adjacent_Edge is
+         Vit : Vertex_Iterator := First (G);
+         V   : Vertex_Access;
+         Eit : Edge_Iterator;
+         E   : Edge_Access;
+
+         Last_Vertex_Not_In_Tree : Vertex_Access;
+
+         Layer_Delta   : Integer;
+         Min_Slack     : Integer := Integer'Last;
+         Vertex_To_Add : Vertex_Access;
+         Edge_To_Add   : Edge_Access;
+         Sl            : Integer;
+
+         Dummy : Boolean;
+         pragma Unreferenced (Dummy);
+
+      begin
+         For_Each_Vertex_Not_In_Tree :
+         while not At_End (Vit) loop
+            V := Get (Vit);
+            if not In_Tree (Spanning, V) then
+               Last_Vertex_Not_In_Tree := V;
+
+               Eit := First (G, Src => V);
+               while not At_End (Eit) loop
+                  E := Get (Eit);
+                  if In_Tree (Spanning, Get_Dest (E)) then
+                     Sl := Slack (Info, E);
+                     if Sl < Min_Slack then
+                        Min_Slack := Sl;
+                        Vertex_To_Add := V;
+                        Edge_To_Add := E;
+                        Layer_Delta := -Sl;
+
+                        --  that will be the minimum anyway
+                        exit For_Each_Vertex_Not_In_Tree when Sl = 1;
+                     end if;
+                  end if;
+                  Next (Eit);
+               end loop;
+
+               Eit := First (G, Dest => V);
+               while not At_End (Eit) loop
+                  E := Get (Eit);
+                  if In_Tree (Spanning, Get_Src (E)) then
+                     Sl := Slack (Info, E);
+                     if Sl < Min_Slack then
+                        Min_Slack := Sl;
+                        Vertex_To_Add := V;
+                        Edge_To_Add := E;
+                        Layer_Delta := Sl;
+
+                        --  that will be the minimum anyway
+                        exit For_Each_Vertex_Not_In_Tree when Sl = 1;
+                     end if;
+                  end if;
+                  Next (Eit);
+               end loop;
+            end if;
+
+            Next (Vit);
+         end loop For_Each_Vertex_Not_In_Tree;
+
+         --  Have we found an edge to tighten ?
+
+         if Vertex_To_Add /= null then
+            Vit := First (G);
+            while not At_End (Vit) loop
+               V := Get (Vit);
+
+               --  If the node is in the current component
+               if Spanning.Node_In_Tree (Get_Index (V)) =
+                 Spanning.Disjoint_Components
+               then
+                  Info.Layers (Get_Index (V)) :=
+                    Info.Layers (Get_Index (V)) + Layer_Delta;
+               end if;
+
+               Next (Vit);
+            end loop;
+
+            --  Add the edge only after we had adjusted layers
+            Add_Edge (Spanning, Edge_To_Add);
+
+            Info.Min_Layer :=
+              Integer'Min (Info.Min_Layer, Info.Min_Layer + Layer_Delta);
+            Info.Max_Layer :=
+              Integer'Max (Info.Max_Layer, Info.Max_Layer + Layer_Delta);
+
+         elsif Last_Vertex_Not_In_Tree /= null then
+            --  No adjacent vertex, and yet the tree is not spanning. We
+            --  start from a new node.
+
+            Spanning.Disjoint_Components :=
+              Spanning.Disjoint_Components + 1;
+            Dummy := Search (Last_Vertex_Not_In_Tree);
+         end if;
+      end Add_Adjacent_Edge;
+
+      Vit   : constant Vertex_Iterator := First (G);
+      Dummy : Boolean;
+      pragma Unreferenced (Dummy);
+   begin
+      if At_End (Vit) then
+         --  No nodes in graph
+         return;
+      end if;
+
+      Spanning.Disjoint_Components := 1;
+
+      Dummy := Search (Get (Vit));  --  initial tree (non-spanning)
+
+      while not Is_Spanning (Spanning) loop
+         Add_Adjacent_Edge;
+      end loop;
+   end Feasible_Tree;
+
    ----------------
    -- Rank_Items --
    ----------------
@@ -603,364 +964,47 @@ package body Glib.Graphs.Layouts is
    procedure Rank_Items (G : in out Graph; Info : in out Layout_Info) is
       Max_I     : constant Integer := Max_Index (G);
 
-      Min_Layer : Integer := Default_Layer;
-      Max_Layer : Integer := Default_Layer;
       Spanning  : Tree (Max_I);
 
-      Dummy_Vertices_Count : Natural := 0;
+   begin
+      Init_Rank (G, Info);
 
-      procedure Init_Rank;
-      --  Computes an initial feasible ranking (i.e where nodes are organized
-      --  such that children nodes are in layers higher than their parents).
-      --  This always assigns root nodes (with no in-edges) to layer 0.
-      --  This might result in non-tight edges, for instance:
-      --       /--F
-      --     A -> B -> C -> D
-      --     E -----------/
-      --
-      --  ??? This algorithm requires computation of in-edges, which is not
-      --  always available for all types of graphs. Seems that we could replace
-      --  it with a DFS, where leaf nodes are assigned to layer 0 (so the
-      --  ordering would be different, but since we are tightening edges
-      --  afterward it doesn't really matter).
+      Feasible_Tree (G, Info, Spanning);
 
-      procedure Feasible_Tree;
-      --  Computes an initial feasible tree. This is a spanning tree for the
-      --  graph so that all of its edges are tight (which for instance will
-      --  tighten the link E->D in the example above).
-      --  This changes layer assignment for the vertices.
+      --  ??? Should now compute cut values, and adjust layers for edges
+      --  with negative cut values. The idea is that a node with for
+      --  instance more incoming edges than outgoing edges, should
+      --  preferably shorten the incoming edges
 
-      procedure Organize_Nodes;
-      --  Compute the position of nodes within each layer.
-      --  We provide an initial ordering for elements: starting from nodes at
-      --  the lowest layer (rightmost or topmost item depending on layout), we
-      --  do a breadth-first-search, and add each child in to its respective
-      --  layer. This ensures that for the spanning tree at least there are
-      --  no edge crossings.
+      Normalize_Layers (Spanning, Info);
 
-      procedure Normalize_Layers;
-      --  Normalize the layers so that each independenct component starts at
-      --  layer 0. This leads to nicer layout, since independent components
-      --  are aligned
+      --  ??? Could balance the layers: when a node can be in multiple
+      --  layers (same number of incomding and outgoing edges), it should be
+      --  moved to the layer which has the fewest nodes to reduce crowding.
 
-      procedure Insert_Dummy_Nodes;
+   end Rank_Items;
+
+   ---------------------
+   -- Layered_Layouts --
+   ---------------------
+
+   package body Layered_Layouts is
+
+      procedure Insert_Dummy_Nodes
+        (G : in out Graph; Info : in out Layout_Info);
       --  When an edge spans multiple layers, replace it with a chain of
       --  edges, each of which only connects adjacent layers
-
-      ---------------
-      -- Init_Rank --
-      ---------------
-
-      procedure Init_Rank is
-         Vit   : Vertex_Iterator := First (G);
-         Queue : array (0 .. Max_I) of Vertex_Access;
-         Q_Index : Integer := Queue'First;
-         Q_Last  : Integer := Queue'First;
-         --  The queue of nodes to visit
-
-         S, D    : Vertex_Access;
-         In_Degree : array (0 .. Max_I) of Integer := (others => 0);
-         --  Number of remaining in-edges that have not been analyzed for each
-         --  node.
-
-         Layer : Integer;
-         Eit   : Edge_Iterator;
-         Edge  : Edge_Access;
-         Deg   : Natural;
-      begin
-         while not At_End (Vit) loop
-            S := Get (Vit);
-
-            Deg := 0;
-            Eit := First (G, Dest => S);
-            while not At_End (Eit) loop
-               --  Ignore self links
-               if Get_Src (Get (Eit)) /= S then
-                  Deg := Deg + 1;
-               end if;
-               Next (Eit);
-            end loop;
-
-            In_Degree (Get_Index (S)) := Deg;
-            if In_Degree (Get_Index (S)) = 0 then
-               Queue (Q_Last) := S;
-               Q_Last := Q_Last + 1;
-            end if;
-            Next (Vit);
-         end loop;
-
-         while Q_Index < Q_Last loop
-            S := Queue (Q_Index);
-            Q_Index := Q_Index + 1;
-
-            --  Compute layer based on ancestors' own layers
-
-            Layer := Default_Layer;
-            Eit := First (G, Dest => S);
-            while not At_End (Eit) loop
-               Edge := Get (Eit);
-               Layer := Integer'Max
-                 (Layer,
-                  Info.Layers (Get_Index (Get_Src (Edge))) + Preferred_Length);
-               Next (Eit);
-            end loop;
-
-            Info.Layers (Get_Index (S)) := Layer;
-            Max_Layer := Integer'Max (Max_Layer, Layer);
-
-            --  Mark all outgoing edges as scanned, which might lead to new
-            --  nodes to analyze.
-
-            Eit := First (G, Src => S);
-            while not At_End (Eit) loop
-               Edge := Get (Eit);
-               D := Get_Dest (Edge);
-               In_Degree (Get_Index (D)) := In_Degree (Get_Index (D)) - 1;
-               if In_Degree (Get_Index (D)) = 0 then
-                  Queue (Q_Last) := D;
-                  Q_Last := Q_Last + 1;
-               end if;
-               Next (Eit);
-            end loop;
-         end loop;
-      end Init_Rank;
-
-      --------------------
-      -- Organize_Nodes --
-      --------------------
-
-      procedure Organize_Nodes is
-         Nodes : constant Depth_Vertices_Array := Depth_First_Search (G);
-         V     : Vertex_Access;
-      begin
-         Info.In_Layers := new Layer_Info_Array (Min_Layer .. Max_Layer);
-
-         for N in Nodes'Range loop
-            V := Nodes (N).Vertex;
-            Info.In_Layers (Layer (Info, V)).Append (V);
-         end loop;
-
-         Sort_Nodes_Within_Layers (G, Info);
-         Adjust_Positions (G,  Info);
-      end Organize_Nodes;
-
-      -------------------
-      -- Feasible_Tree --
-      -------------------
-
-      procedure Feasible_Tree is
-         function Add_Edge_And_Recurse
-           (E : Edge_Access; V : Vertex_Access) return Boolean;
-         function Search (V : Vertex_Access) return Boolean;
-         --  These functions return True if the tree is complete at this
-         --  point, and therefore we should stop searching.
-
-         procedure Add_Adjacent_Edge;
-         --  Add one adjacent edge to the tree, and change vertex layers to
-         --  tighten that edge
-
-         --------------------------
-         -- Add_Edge_And_Recurse --
-         --------------------------
-
-         function Add_Edge_And_Recurse
-           (E : Edge_Access; V : Vertex_Access) return Boolean
-         is
-         begin
-            if not In_Tree (Spanning, V) and then Slack (Info, E) = 0 then
-               Add_Edge (Spanning, E);
-               if Is_Spanning (Spanning) or else Search (V) then
-                  return True;
-               end if;
-            end if;
-            return False;
-         end Add_Edge_And_Recurse;
-
-         ------------
-         -- Search --
-         ------------
-
-         function Search (V : Vertex_Access) return Boolean is
-            Eit : Edge_Iterator;
-            E   : Edge_Access;
-         begin
-            Eit := First (G, Src => V);
-            while not At_End (Eit) loop
-               E := Get (Eit);
-               if Add_Edge_And_Recurse (E, Get_Dest (E)) then
-                  return True;
-               end if;
-               Next (Eit);
-            end loop;
-
-            Eit := First (G, Dest => V);
-            while not At_End (Eit) loop
-               E := Get (Eit);
-               if Add_Edge_And_Recurse (E, Get_Src (E)) then
-                  return True;
-               end if;
-               Next (Eit);
-            end loop;
-
-            --  We force the edge into the tree (it might have been an edge
-            --  with no in or out edges).
-            Add_Vertex (Spanning, V);
-            return Is_Spanning (Spanning);
-         end Search;
-
-         -----------------------
-         -- Add_Adjacent_Edge --
-         -----------------------
-
-         procedure Add_Adjacent_Edge is
-            Vit : Vertex_Iterator := First (G);
-            V   : Vertex_Access;
-            Eit : Edge_Iterator;
-            E   : Edge_Access;
-
-            Last_Vertex_Not_In_Tree : Vertex_Access;
-
-            Layer_Delta   : Integer;
-            Min_Slack     : Integer := Integer'Last;
-            Vertex_To_Add : Vertex_Access;
-            Edge_To_Add   : Edge_Access;
-            Sl            : Integer;
-
-            Dummy : Boolean;
-            pragma Unreferenced (Dummy);
-
-         begin
-            For_Each_Vertex_Not_In_Tree :
-            while not At_End (Vit) loop
-               V := Get (Vit);
-               if not In_Tree (Spanning, V) then
-                  Last_Vertex_Not_In_Tree := V;
-
-                  Eit := First (G, Src => V);
-                  while not At_End (Eit) loop
-                     E := Get (Eit);
-                     if In_Tree (Spanning, Get_Dest (E)) then
-                        Sl := Slack (Info, E);
-                        if Sl < Min_Slack then
-                           Min_Slack := Sl;
-                           Vertex_To_Add := V;
-                           Edge_To_Add := E;
-                           Layer_Delta := -Sl;
-
-                           --  that will be the minimum anyway
-                           exit For_Each_Vertex_Not_In_Tree when Sl = 1;
-                        end if;
-                     end if;
-                     Next (Eit);
-                  end loop;
-
-                  Eit := First (G, Dest => V);
-                  while not At_End (Eit) loop
-                     E := Get (Eit);
-                     if In_Tree (Spanning, Get_Src (E)) then
-                        Sl := Slack (Info, E);
-                        if Sl < Min_Slack then
-                           Min_Slack := Sl;
-                           Vertex_To_Add := V;
-                           Edge_To_Add := E;
-                           Layer_Delta := Sl;
-
-                           --  that will be the minimum anyway
-                           exit For_Each_Vertex_Not_In_Tree when Sl = 1;
-                        end if;
-                     end if;
-                     Next (Eit);
-                  end loop;
-               end if;
-
-               Next (Vit);
-            end loop For_Each_Vertex_Not_In_Tree;
-
-            --  Have we found an edge to tighten ?
-
-            if Vertex_To_Add /= null then
-               Vit := First (G);
-               while not At_End (Vit) loop
-                  V := Get (Vit);
-
-                  --  If the node is in the current component
-                  if Spanning.Node_In_Tree (Get_Index (V)) =
-                    Spanning.Disjoint_Components
-                  then
-                     Info.Layers (Get_Index (V)) :=
-                       Info.Layers (Get_Index (V)) + Layer_Delta;
-                  end if;
-
-                  Next (Vit);
-               end loop;
-
-               --  Add the edge only after we had adjusted layers
-               Add_Edge (Spanning, Edge_To_Add);
-
-               Min_Layer :=
-                 Integer'Min (Min_Layer, Min_Layer + Layer_Delta);
-               Max_Layer :=
-                 Integer'Max (Max_Layer, Max_Layer + Layer_Delta);
-
-            elsif Last_Vertex_Not_In_Tree /= null then
-               --  No adjacent vertex, and yet the tree is not spanning. We
-               --  start from a new node.
-
-               Spanning.Disjoint_Components :=
-                 Spanning.Disjoint_Components + 1;
-               Dummy := Search (Last_Vertex_Not_In_Tree);
-            end if;
-         end Add_Adjacent_Edge;
-
-         Vit   : constant Vertex_Iterator := First (G);
-         Dummy : Boolean;
-         pragma Unreferenced (Dummy);
-      begin
-         if At_End (Vit) then
-            --  No nodes in graph
-            return;
-         end if;
-
-         Spanning.Disjoint_Components := 1;
-
-         Dummy := Search (Get (Vit));  --  initial tree (non-spanning)
-
-         while not Is_Spanning (Spanning) loop
-            Add_Adjacent_Edge;
-         end loop;
-      end Feasible_Tree;
-
-      ----------------------
-      -- Normalize_Layers --
-      ----------------------
-
-      procedure Normalize_Layers is
-         Min_Layer : Integer_Array (1 .. Spanning.Disjoint_Components) :=
-           (others => Integer'Last);
-         --  The minimal layer used for each of the independent components
-
-         Component : Integer;
-      begin
-         for V in Spanning.Node_In_Tree'Range loop
-            Component := Spanning.Node_In_Tree (V);
-            Min_Layer (Component) :=
-              Integer'Min (Min_Layer (Component), Info.Layers (V));
-         end loop;
-
-         for V in Spanning.Node_In_Tree'Range loop
-            Component := Spanning.Node_In_Tree (V);
-            Info.Layers (V) := Info.Layers (V) - Min_Layer (Component);
-         end loop;
-      end Normalize_Layers;
 
       ------------------------
       -- Insert_Dummy_Nodes --
       ------------------------
 
-      procedure Insert_Dummy_Nodes is
+      procedure Insert_Dummy_Nodes
+        (G : in out Graph; Info : in out Layout_Info)
+      is
          Eit : Edge_Iterator := First (G);
          E   : Edge_Access;
-         V1, V2 : Vertex_Access;
+         V1  : Vertex_Access;
          Start_Layer, End_Layer : Integer;
       begin
          while not At_End (Eit) loop
@@ -971,72 +1015,68 @@ package body Glib.Graphs.Layouts is
             End_Layer   := Info.Layers (Get_Index (Get_Dest (E)));
 
             if Start_Layer < End_Layer - 1 then
-               V1 := Get_Src (E);
-               for Layer in Start_Layer + 1 .. End_Layer - 1 loop
-                  --  We can't add the new layer to Layers, since there is not
-                  --  enough space there.
-                  V2 := new Dummy_Vertex'(Vertex with Layer => Layer);
-                  Add_Vertex (G, V2);
-                  Dummy_Vertices_Count := Dummy_Vertices_Count + 1;
-                  Add_Edge (G, V1, V2);
-                  V1 := V2;
-               end loop;
-               Add_Edge (G, V2, Get_Dest (E));
-               Remove (G, E);
+               declare
+                  Dummies : Vertices_Array
+                    (Start_Layer + 1 .. End_Layer - 1);
+               begin
+                  V1 := Get_Src (E);
+                  for Layer in Start_Layer + 1 .. End_Layer - 1 loop
+                     --  We can't add the new layer to Layers, since there
+                     --  is not enough space there.
+
+                     Dummies (Layer) := new Dummy_Vertex;
+                     Base_Dummy_Vertex (Dummies (Layer).all).Layer := Layer;
+                     Add_Vertex (G, Dummies (Layer));
+                     Add_Edge (G, V1, Dummies (Layer));
+
+                     V1 := Dummies (Layer);
+                  end loop;
+                  Add_Edge (G, V1, Get_Dest (E));
+
+                  Replaced_With_Dummy_Vertices
+                    (Replaced_Edge => E,
+                     Dummies      => Dummies);
+
+                  Remove (G, E);
+               end;
             end if;
          end loop;
       end Insert_Dummy_Nodes;
 
-   begin
-      Init_Rank;
+      ------------
+      -- Layout --
+      ------------
 
-      Feasible_Tree;
+      procedure Layout
+        (G                    : in out Graph;
+         Horizontal           : Boolean := True;
+         Space_Between_Layers : Gdouble := 20.0;
+         Space_Between_Items  : Gdouble := 10.0)
+      is
+         Info : Layout_Info;
+      begin
+         Info.Horizontal           := Horizontal;
+         Info.Space_Between_Items  := Space_Between_Items;
+         Info.Space_Between_Layers := Space_Between_Layers;
 
-      --  ??? Should now compute cut values, and adjust layers for edges with
-      --  negative cut values. The idea is that a node with for instance more
-      --  incoming edges than outgoing edges, should preferably shorten the
-      --  incoming edges
+         Info.Layers := new Integer_Array (Min_Vertex_Index .. Max_Index (G));
 
-      Normalize_Layers;
+         if not Is_Directed (G) then
+            raise Program_Error
+              with "Layer layout only applies to directed graphs";
+         end if;
 
-      --  ??? Could balance the layers: when a node can be in multiple layers
-      --  (same number of incomding and outgoing edges), it should be moved to
-      --  the layer which has the fewest nodes to reduce crowding.
+         Make_Acyclic (G);
+         Rank_Items (G, Info);
 
-      if Add_Dummy_Nodes then
-         Insert_Dummy_Nodes;
-      end if;
+         if Add_Dummy_Nodes then
+            Insert_Dummy_Nodes (G, Info);
+         end if;
 
-      Organize_Nodes;
-   end Rank_Items;
+         Organize_Nodes (G, Info);
+         Free (Info);
+      end Layout;
 
-   ------------------
-   -- Layer_Layout --
-   ------------------
-
-   procedure Layer_Layout
-     (G                    : in out Graph;
-      Horizontal           : Boolean := True;
-      Space_Between_Layers : Gdouble := 20.0;
-      Space_Between_Items  : Gdouble := 10.0)
-   is
-      Info : Layout_Info;
-   begin
-      Info.Horizontal           := Horizontal;
-      Info.Space_Between_Items  := Space_Between_Items;
-      Info.Space_Between_Layers := Space_Between_Layers;
-
-      Info.Layers := new Integer_Array (Min_Vertex_Index .. Max_Index (G));
-
-      if not Is_Directed (G) then
-         raise Program_Error
-           with "Layer layout only applies to directed graphs";
-      end if;
-
-      Make_Acyclic (G);
-      Rank_Items (G, Info);
-
-      Free (Info);
-   end Layer_Layout;
+   end Layered_Layouts;
 
 end Glib.Graphs.Layouts;
