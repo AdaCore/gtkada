@@ -287,14 +287,76 @@ package body Glib.Graphs.Layouts is
    is
       Max_Iterations : constant := 8;
       Max_I          : constant Integer := Max_Index (G);
-      Weights        : Weight_Array (0 .. Max_I + 1);
       Position       : Integer_Array (Min_Vertex_Index .. Max_I);
+
+      procedure Do_Iteration (Layer : Integer; Downward : Boolean);
+      procedure Do_Iteration (Layer : Integer; Downward : Boolean) is
+         Weights        : Weight_Array (0 .. Max_I + 1);
+         C              : Vertex_Lists.Cursor := Info.In_Layers (Layer).First;
+         Src, Dest      : Vertex_Access;
+         Current_C      : Integer := Weights'First + 1;
+         Eit            : Edge_Iterator;
+         Total, Count   : Integer;
+      begin
+         while Has_Element (C) loop
+            Dest := Element (C);
+            Total := 0;
+            Count := 0;
+
+            if Downward then
+               Eit := First (G, Src => Dest);
+            else
+               Eit := First (G, Dest => Dest);
+            end if;
+
+            while not At_End (Eit) loop
+               if Downward then
+                  Src := Get_Dest (Get (Eit));
+               else
+                  Src := Get_Src (Get (Eit));
+               end if;
+
+               --  ignore self-links.
+               --  Only take into account tight edges (where nodes are in
+               --  adjacent layers), which is the default if we added dummy
+               --  nodes.
+
+               if Src /= Dest
+                 and then (Add_Dummy_Nodes
+                           or else Slack (Info, Get (Eit)) = 0)
+               then
+                  Total := Total + Position (Get_Index (Src));
+                  Count := Count + 1;
+               end if;
+
+               Next (Eit);
+            end loop;
+
+            if Count = 0 then
+               --  leave the item in place
+               Weights (Current_C) :=
+                 (Gdouble (Position (Get_Index (Dest))), Dest);
+            else
+               Weights (Current_C) :=
+                 (Gdouble (Total) / Gdouble (Count), Dest);
+            end if;
+
+            Current_C := Current_C + 1;
+            Next (C);
+         end loop;
+
+         --  Now sort based on weights
+
+         Sort (Weights (0 .. Current_C - 1));
+         Info.In_Layers (Layer).Clear;
+         for W in 1 .. Current_C - 1 loop
+            Position (Get_Index (Weights (W).Vertex)) := W;
+            Info.In_Layers (Layer).Append (Weights (W).Vertex);
+         end loop;
+      end Do_Iteration;
+
       C              : Vertex_Lists.Cursor;
-      Src, Dest      : Vertex_Access;
       Current_C      : Integer;
-      Min, Max       : Integer;
-      Eit            : Edge_Iterator;
-      Total, Count   : Integer;
 
    begin
       --  Store the position of elements within each layer
@@ -311,72 +373,15 @@ package body Glib.Graphs.Layouts is
 
       for Iteration in 0 .. Max_Iterations - 1 loop
          if Iteration mod 2 = 0 then
-            Min := Info.In_Layers'First + 1;
-            Max := Info.In_Layers'Last;
+            for L in reverse Info.In_Layers'First .. Info.In_Layers'Last - 1
+            loop
+               Do_Iteration (L, Downward => True);
+            end loop;
          else
-            Min := Info.In_Layers'First;
-            Max := Info.In_Layers'Last - 1;
+            for L in Info.In_Layers'First + 1 .. Info.In_Layers'Last loop
+               Do_Iteration (L, Downward => False);
+            end loop;
          end if;
-
-         for L in Min .. Max loop
-            C := Info.In_Layers (L).First;
-            Current_C := Weights'First + 1;
-            while Has_Element (C) loop
-               Dest := Element (C);
-               Total := 0;
-               Count := 0;
-
-               if Iteration mod 2 = 0 then
-                  Eit := First (G, Dest => Dest);
-               else
-                  Eit := First (G, Src => Dest);
-               end if;
-
-               while not At_End (Eit) loop
-                  if Iteration mod 2 = 0 then
-                     Src := Get_Src (Get (Eit));
-                  else
-                     Src := Get_Dest (Get (Eit));
-                  end if;
-
-                  --  ignore self-links.
-                  --  Only take into account tight edges (where nodes are in
-                  --  adjacent layers), which is the default if we added dummy
-                  --  nodes.
-
-                  if Src /= Dest
-                    and then (Add_Dummy_Nodes
-                              or else Slack (Info, Get (Eit)) = 0)
-                  then
-                     Total := Total + Position (Get_Index (Src));
-                     Count := Count + 1;
-                  end if;
-
-                  Next (Eit);
-               end loop;
-
-               if Count = 0 then
-                  --  leave the item in place
-                  Weights (Current_C) :=
-                    (Gdouble (Position (Get_Index (Dest))), Dest);
-               else
-                  Weights (Current_C) :=
-                    (Gdouble (Total) / Gdouble (Count), Dest);
-               end if;
-
-               Current_C := Current_C + 1;
-               Next (C);
-            end loop;
-
-            --  Now sort based on weights
-
-            Sort (Weights (0 .. Current_C - 1));
-            Info.In_Layers (L).Clear;
-            for W in 1 .. Current_C - 1 loop
-               Position (Get_Index (Weights (W).Vertex)) := W;
-               Info.In_Layers (L).Append (Weights (W).Vertex);
-            end loop;
-         end loop;
       end loop;
    end Sort_Nodes_Within_Layers;
 
