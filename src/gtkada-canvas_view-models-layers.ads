@@ -26,6 +26,7 @@ package Gtkada.Canvas_View.Models.Layers is
    procedure Layout
      (Self                 : not null access Canvas_Model_Record'Class;
       Horizontal           : Boolean := True;
+      Add_Waypoints        : Boolean := False;
       Space_Between_Items  : Gdouble := 10.0;
       Space_Between_Layers : Gdouble := 20.0);
    --  This algorithm is a wrapper for Glib.Graphs.Layouts.Layer_Layout.
@@ -33,6 +34,11 @@ package Gtkada.Canvas_View.Models.Layers is
    --  It Organizes the items into layers: items in layer n never have an
    --  out-link to any item in a layer 1 .. (n - 1). Within a layer, the
    --  items are then reorganized to try and minimize the edge crossings.
+   --
+   --  If Add_Waypoints is True, then long edges are split with waypoints.
+   --  This generally limits the number of edge crossing, but make moving
+   --  items move cumbersome since the waypoints are not moved at the same
+   --  time.
    --
    --  It is provided as an example, and might be changed or removed in the
    --  future.

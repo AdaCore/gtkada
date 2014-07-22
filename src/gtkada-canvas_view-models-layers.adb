@@ -28,10 +28,6 @@ with Glib.Graphs.Layouts;
 
 package body Gtkada.Canvas_View.Models.Layers is
 
-   Debug_Add_Waypoints : constant Boolean := False;
-   --  If true, add waypoints to long edges, going through the dummy vertices
-   --  added by the algorithm.
-
    type Canvas_Vertex is new Vertex with record
       Item  : Abstract_Item;
    end record;
@@ -73,7 +69,7 @@ package body Gtkada.Canvas_View.Models.Layers is
    begin
       if V.all in Canvas_Vertex'Class then
          Canvas_Vertex_Access (V).Item.Set_Position ((X, Y));
-      elsif Debug_Add_Waypoints then
+      else
          Canvas_Dummy_Vertex (V.all).Pos := (X, Y);
       end if;
    end Set_Position;
@@ -85,6 +81,7 @@ package body Gtkada.Canvas_View.Models.Layers is
    procedure Layout
      (Self                 : not null access Canvas_Model_Record'Class;
       Horizontal           : Boolean := True;
+      Add_Waypoints        : Boolean := False;
       Space_Between_Items  : Gdouble := 10.0;
       Space_Between_Layers : Gdouble := 20.0)
    is
@@ -118,7 +115,7 @@ package body Gtkada.Canvas_View.Models.Layers is
       is
          E : constant Canvas_Edge_Access := Canvas_Edge_Access (Replaced_Edge);
       begin
-         if Debug_Add_Waypoints then
+         if Add_Waypoints then
             Long_Edges.Append
               (Long_Edge'(Size => Dummies'Length,
                           Edge => E.Item,
@@ -164,6 +161,9 @@ package body Gtkada.Canvas_View.Models.Layers is
             return;
          end if;
 
+         --  Remove existing waypoints
+         Canvas_Link (It).Set_Waypoints ((1 .. 0 => <>));
+
          V1 := Items.Element (Canvas_Link (It).From.Get_Toplevel_Item);
          V2 := Items.Element (Canvas_Link (It).To.Get_Toplevel_Item);
          E := new Canvas_Edge;
@@ -183,7 +183,7 @@ package body Gtkada.Canvas_View.Models.Layers is
          Space_Between_Layers => Space_Between_Layers,
          Space_Between_Items  => Space_Between_Items);
 
-      if Debug_Add_Waypoints then
+      if Add_Waypoints then
          C := Long_Edges.First;
          while Has_Element (C) loop
             declare

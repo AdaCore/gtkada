@@ -369,6 +369,37 @@ package body Gtkada.Canvas_View.Views is
 
          Self.Queue_Draw;
 
+      elsif Event.Event_Type = Start_Drag then
+         --  Remove the waypoints for all the links that will be impacted.
+
+         declare
+            S : Item_Sets.Set;
+
+            procedure Reset_Wp
+              (Link : not null access Abstract_Item_Record'Class);
+            procedure Add_Item
+              (Item : not null access Abstract_Item_Record'Class);
+
+            procedure Add_Item
+              (Item : not null access Abstract_Item_Record'Class)
+            is
+            begin
+               S.Include (Abstract_Item (Item));
+            end Add_Item;
+
+            procedure Reset_Wp
+              (Link : not null access Abstract_Item_Record'Class)
+            is
+            begin
+               Canvas_Link (Link).Set_Waypoints ((1 .. 0 => <>));
+            end Reset_Wp;
+
+         begin
+            --  Self.Dragged_Items is not available yet
+            Self.Model.For_Each_Item (Add_Item'Access, Selected_Only => True);
+            Self.Model.For_Each_Link (Reset_Wp'Access, From_Or_To => S);
+         end;
+
       elsif Event.Event_Type = Button_Press
         and then Event.Toplevel_Item /= null
         and then Event.Button = 1
