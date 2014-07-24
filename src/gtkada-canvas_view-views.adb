@@ -22,6 +22,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Tags;          use Ada.Tags;
 with Cairo;             use Cairo;
 with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Glib;              use Glib;
@@ -33,6 +35,16 @@ with Gtk.Widget;        use Gtk.Widget;
 with System;            use System;
 
 package body Gtkada.Canvas_View.Views is
+   use Gdouble_Elementary_Functions;
+
+   Min_Animation_Interval : constant Duration := 2.0 * 0.017;
+   --  (in seconds). This is computed for a refresh rate of 60Hs,
+   --  with 1s / 60.
+   --  The animation loop will not do anything if called more often than that.
+
+   Animation_Interval : constant Guint := 30;
+   --  (in milliseconds). How long we give the application to perform one
+   --  iteration of the animation loop.
 
    procedure On_Monitored_Destroyed
      (Minimap : System.Address; Monitored : System.Address);
@@ -67,6 +79,57 @@ package body Gtkada.Canvas_View.Views is
    --  Move all selected items (part of the current drag operation) by the
    --  specified amount (from their initial position if From_Initial is true,
    --  or from their current position otherwise)).
+
+   package Animator_Lists is new Ada.Containers.Doubly_Linked_Lists
+     (Animator_Access);
+   use Animator_Lists;
+
+   type Animation_Data is new Base_Animation_Data with record
+      Last_Run : Ada.Calendar.Time := No_Time;
+      Queue    : Animator_Lists.List;
+      Current  : Animator_Lists.Cursor := Animator_Lists.No_Element;
+   end record;
+   type Animation_Data_Access is access all Animation_Data;
+
+   procedure On_Animate_Destroy (View : in out Canvas_View);
+   --  Called when the animation queue terminates
+
+   function On_Animate (View : Canvas_View) return Boolean;
+   --  Perform one step of animation
+
+   procedure Animation_Iteration
+     (Self     : not null access Canvas_View_Record'Class;
+      Current  : Ada.Calendar.Time;
+      Max_Time : Duration);
+   --  Animate as many items from the queue as possible, spending at most
+   --  Max_Time seconds (or at least not starting a new animator if the
+   --  previous one ended more Max_Time seconds after the start).
+   --  Current is the current time. It can be set to No_Time to indicate that
+   --  all animations should be completed.
+
+   type Position_Animator is new Animator with record
+      Pos_X  : Animation_Value;
+      Pos_Y  : Animation_Value;
+   end record;
+   overriding function Execute
+     (Self     : not null access Position_Animator;
+      Progress : Animation_Progress) return Animation_Status;
+
+   type Scale_Animator is new Animator with record
+      Scale    : Animation_Value;
+      Preserve : Model_Point := No_Point;
+   end record;
+   overriding function Execute
+     (Self     : not null access Scale_Animator;
+      Progress : Animation_Progress) return Animation_Status;
+
+   type Scroll_Animator is new Animator with record
+      Topleft_X : Animation_Value;
+      Topleft_Y : Animation_Value;
+   end record;
+   overriding function Execute
+     (Self     : not null access Scroll_Animator;
+      Progress : Animation_Progress) return Animation_Status;
 
    ------------------
    -- Snap_To_Grid --
@@ -432,7 +495,16 @@ package body Gtkada.Canvas_View.Views is
                S := Self.Get_Scale / Factor;
             end if;
 
-            Self.Set_Scale (S, Preserve => Event.M_Point);
+            if Duration > 0.0 then
+               Start
+                 (Animate_Scale
+                    (Self, S, Preserve => Event.M_Point,
+                     Duration => Duration, Easing => Easing),
+                  Self);
+            else
+               Self.Set_Scale (S, Preserve => Event.M_Point);
+            end if;
+
             Cancel_Inline_Editing (Self);
             return True;
          end if;
@@ -831,7 +903,7 @@ package body Gtkada.Canvas_View.Views is
       Horizontal : Boolean) return Model_Coordinate
    is
       use Smart_Guide_Lists;
-      C      : Cursor;
+      C      : Smart_Guide_Lists.Cursor;
       Result : Model_Coordinate := Pos;
 
       procedure Update_Guide (Guide : in out Smart_Guide);
@@ -880,7 +952,7 @@ package body Gtkada.Canvas_View.Views is
    is
       use Smart_Guide_Lists;
       Box    : constant Model_Rectangle := For_Item.Model_Bounding_Box;
-      C      : Cursor;
+      C      : Smart_Guide_Lists.Cursor;
       Guide  : Smart_Guide;
       From, To : Model_Coordinate;
    begin
@@ -1211,5 +1283,478 @@ package body Gtkada.Canvas_View.Views is
 
       Refresh_Link_Layout (Self.Model, Self.Dragged_Items);
    end Move_Dragged_Items;
+
+   -------------------
+   -- Easing_Linear --
+   -------------------
+
+   function Easing_Linear
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble
+   is
+   begin
+      return Value.Start + (Value.Finish - Value.Start) * Gdouble (Progress);
+   end Easing_Linear;
+
+   -------------------------
+   -- Easing_In_Out_Cubic --
+   -------------------------
+
+   function Easing_In_Out_Cubic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble
+   is
+      P : Gdouble := 2.0 * Gdouble (Progress);
+   begin
+      if Progress < 0.5 then
+         return (Value.Finish - Value.Start) / 2.0 * P * P * P + Value.Start;
+      else
+         P := P - 2.0;
+         return (Value.Finish - Value.Start) / 2.0 * (P * P * P + 2.0)
+           + Value.Start;
+      end if;
+   end Easing_In_Out_Cubic;
+
+   ---------------------
+   -- Easing_In_Cubic --
+   ---------------------
+
+   function Easing_In_Cubic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble
+   is
+      P : constant Gdouble := Gdouble (Progress);
+   begin
+      return (Value.Finish - Value.Start) * P * P * P + Value.Start;
+   end Easing_In_Cubic;
+
+   ----------------------
+   -- Easing_Out_Cubic --
+   ----------------------
+
+   function Easing_Out_Cubic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble
+   is
+      P : constant Gdouble := Gdouble (Progress) - 1.0;
+   begin
+      return (Value.Finish - Value.Start) * (P * P * P + 1.0) + Value.Start;
+   end Easing_Out_Cubic;
+
+   ------------------------
+   -- Easing_Out_Elastic --
+   ------------------------
+
+   function Easing_Out_Elastic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble
+   is
+      P : Gdouble;
+   begin
+      if Progress <= 0.0 then
+         return Value.Start;
+      end if;
+
+      if Progress >= 1.0 then
+         return Value.Finish;
+      end if;
+
+      P := Gdouble (Value.Duration) * 0.3;
+      return (Value.Finish - Value.Start)
+        * (2.0 ** (-10.0 * Gdouble (Progress)))
+        * Sin
+          ((Gdouble (Progress) * Gdouble (Value.Duration) - P / 4.0)
+           * (2.0 * Pi / P))
+        + Value.Finish;
+   end Easing_Out_Elastic;
+
+   -----------------------
+   -- Easing_Out_Bounce --
+   -----------------------
+
+   function Easing_Out_Bounce
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble
+   is
+      Magic         : constant Gdouble := 7.5625;
+      First_Bounce  : constant Gdouble := 1.0 / 2.75;
+      Second_Bounce : constant Gdouble := 2.0 / 2.75;
+      Third_Bounce  : constant Gdouble := 2.5 / 2.75;
+      P             : Gdouble := Gdouble (Progress);
+      C             : constant Gdouble := Value.Finish - Value.Start;
+   begin
+      if P < First_Bounce then
+         return C * Magic * P * P + Value.Start;
+      elsif P < Second_Bounce then
+         P := P - (1.5 / 2.75);
+         return C * (Magic * P * P + 0.75) + Value.Start;
+      elsif P < Third_Bounce then
+         P := P - (2.25 / 2.75);
+         return C * (Magic * P * P + 0.9375) + Value.Start;
+      else
+         P := P - (2.625 / 2.75);
+         return C * (Magic * P * P + 0.984375) + Value.Start;
+      end if;
+   end Easing_Out_Bounce;
+
+   -----------
+   -- Setup --
+   -----------
+
+   procedure Setup
+     (Self     : in out Animator;
+      Duration : Standard.Duration;
+      Easing   : not null Easing_Function := Easing_In_Out_Cubic'Access;
+      View     : access Canvas_View_Record'Class := null;
+      Item     : access Abstract_Item_Record'Class := null)
+   is
+   begin
+      Self.Easing   := Easing;
+      Self.Duration := Duration;
+      Self.View     := View;
+      Self.Item     := Item;
+   end Setup;
+
+   ----------------------
+   -- Animate_Position --
+   ----------------------
+
+   function Animate_Position
+     (Item           : not null access Abstract_Item_Record'Class;
+      Final_Position : Gtkada.Style.Point;
+      Duration       : Standard.Duration := 0.4;
+      Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
+      return Animator_Access
+   is
+      Pos : constant Gtkada.Style.Point := Item.Position;
+   begin
+      if Pos = Final_Position then
+         return null;
+      end if;
+
+      return new Position_Animator'
+        (Easing   => Easing,
+         Duration => Duration,
+         Item     => Item,
+         Pos_X    => (Start    => Pos.X,
+                      Finish   => Final_Position.X,
+                      Duration => Duration),
+         Pos_Y    => (Start    => Pos.Y,
+                      Finish   => Final_Position.Y,
+                      Duration => Duration),
+         others   => <>);
+   end Animate_Position;
+
+   -------------
+   -- Execute --
+   -------------
+
+   overriding function Execute
+     (Self     : not null access Position_Animator;
+      Progress : Animation_Progress)
+      return Animation_Status is
+   begin
+      Self.Item.Set_Position
+        ((X => Self.Easing (Self.Pos_X, Progress),
+          Y => Self.Easing (Self.Pos_Y, Progress)));
+      return Needs_Refresh_Links_From_Item;
+   end Execute;
+
+   -------------------
+   -- Animate_Scale --
+   -------------------
+
+   function Animate_Scale
+     (View           : not null access Canvas_View_Record'Class;
+      Final_Scale    : Gdouble;
+      Preserve       : Model_Point := No_Point;
+      Duration       : Standard.Duration := 0.4;
+      Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
+      return Animator_Access
+   is
+   begin
+      if View.Scale = Final_Scale then
+         return null;
+      end if;
+
+      return new Scale_Animator'
+        (Easing   => Easing,
+         Duration => Duration,
+         View     => View,
+         Preserve => Preserve,
+         Scale    => (Start    => View.Scale,
+                      Finish   => Final_Scale,
+                      Duration => Duration),
+         others   => <>);
+   end Animate_Scale;
+
+   -------------
+   -- Execute --
+   -------------
+
+   overriding function Execute
+     (Self     : not null access Scale_Animator;
+      Progress : Animation_Progress) return Animation_Status is
+   begin
+      Self.View.Set_Scale
+        (Scale    => Self.Easing (Self.Scale, Progress),
+         Preserve => Self.Preserve);
+      return 0;
+   end Execute;
+
+   --------------------
+   -- Animate_Scroll --
+   --------------------
+
+   function Animate_Scroll
+     (View           : not null access Canvas_View_Record'Class;
+      Final_Topleft  : Model_Point;
+      Duration       : Standard.Duration := 0.8;
+      Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
+      return Animator_Access
+   is
+   begin
+      if View.Topleft = Final_Topleft then
+         return null;
+      end if;
+
+      return new Scroll_Animator'
+        (Easing    => Easing,
+         Duration  => Duration,
+         View      => View,
+         Topleft_X => (Start    => View.Topleft.X,
+                       Finish   => Final_Topleft.X,
+                       Duration => Duration),
+         Topleft_Y => (Start    => View.Topleft.Y,
+                       Finish   => Final_Topleft.Y,
+                       Duration => Duration),
+         others   => <>);
+   end Animate_Scroll;
+
+   -------------
+   -- Execute --
+   -------------
+
+   overriding function Execute
+     (Self     : not null access Scroll_Animator;
+      Progress : Animation_Progress) return Animation_Status
+   is
+   begin
+      Self.View.Topleft :=
+        (X => Self.Easing (Self.Topleft_X, Progress),
+         Y => Self.Easing (Self.Topleft_Y, Progress));
+      Self.View.Set_Adjustment_Values;
+      return 0;
+   end Execute;
+
+   ------------------------
+   -- On_Animate_Destroy --
+   ------------------------
+
+   procedure On_Animate_Destroy (View : in out Canvas_View) is
+      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
+        (Base_Animation_Data'Class, Base_Animation_Data_Access);
+   begin
+      View.Id_Animation := No_Source_Id;
+      Unchecked_Free (View.Animation_Data);
+   end On_Animate_Destroy;
+
+   -----------
+   -- Start --
+   -----------
+
+   procedure Start
+     (Self : access Animator'Class;
+      View : not null access Canvas_View_Record'Class)
+   is
+      Data : Animation_Data_Access;
+      C    : Animator_Lists.Cursor;
+   begin
+      if Self = null then
+         return;
+      end if;
+
+      if View.Animation_Data = null then
+         View.Animation_Data := new Animation_Data;
+      end if;
+
+      if View.Id_Animation = No_Source_Id then
+         --  Use an idle rather than a timeout: a timeout would execute after
+         --  n milliseconds, then after (n + execution time for On_Animate)
+         --  milliseconds, and so on, so the quality of the animation degrades.
+
+         View.Id_Animation := View_Sources.Idle_Add
+           (On_Animate'Access,
+            Canvas_View (View),
+            Notify => On_Animate_Destroy'Access);
+      end if;
+
+      Data := Animation_Data_Access (View.Animation_Data);
+
+      --  Do we need to remove any of the previous animators ?
+
+      if Self.Is_Unique_For_Item then
+         C := Data.Queue.First;
+         while Has_Element (C) loop
+            if Element (C)'Tag = Self'Tag
+              and then Element (C).Item = Self.Item
+              and then Element (C).View = Self.View
+            then
+               if Data.Current = C then
+                  Next (Data.Current);
+               end if;
+
+               --  No need to search for others, it is unique.
+               Data.Queue.Delete (C);
+               exit;
+            end if;
+
+            Next (C);
+         end loop;
+      end if;
+
+      Data.Queue.Append (Animator_Access (Self));
+   end Start;
+
+   -------------------------
+   -- Animation_Iteration --
+   -------------------------
+
+   procedure Animation_Iteration
+     (Self     : not null access Canvas_View_Record'Class;
+      Current  : Ada.Calendar.Time;
+      Max_Time : Duration)
+   is
+      Data     : constant Animation_Data_Access := Animation_Data_Access
+        (Self.Animation_Data);
+      Previous : Animator_Lists.Cursor;
+      Anim     : Animator_Access;
+      Status   : Animation_Status := 0;
+      Local_Status : Animation_Status;
+      Progress : Duration;
+      Items    : Item_Drag_Infos.Map;
+
+      Max_Count : constant Integer := Integer (Data.Queue.Length);
+      Count     : Natural := 0;
+      --  These two variables re used to make sure we animate each item only
+      --  once per iteration.
+
+   begin
+      if not Has_Element (Data.Current) then
+         Data.Current := Data.Queue.First;
+      end if;
+
+      while Count < Max_Count
+        and then Has_Element (Data.Current)
+        and then (Current = No_Time or else Clock - Current < Max_Time)
+      loop
+         Anim := Element (Data.Current);
+
+         --  Move to the next element, in case the current animator is removed
+         Previous := Data.Current;
+         Next (Data.Current);
+         if not Has_Element (Data.Current) then
+            Data.Current := Data.Queue.First;
+         end if;
+
+         --  Initialize first time animators;
+
+         if Anim.Start = No_Time then
+            Anim.Start := Current;
+         end if;
+
+         --  Perform the animation
+
+         if Current = No_Time then
+            Progress := 1.0;
+         else
+            Progress := (Current - Anim.Start) / Anim.Duration;
+            if Progress > 1.0 then
+               Progress := 1.0;
+            end if;
+         end if;
+
+         Local_Status := Anim.Execute (Animation_Progress (Progress));
+         Status := Local_Status or Status;
+
+         if Local_Status = Needs_Refresh_Links_From_Item
+           and then (Status and Needs_Refresh_All_Links) = 0
+           and then (Status and Needs_Refresh_Layout) = 0
+         then
+            Items.Include
+              (Abstract_Item (Anim.Item),
+               Item_Drag_Info'(Item => Abstract_Item (Anim.Item), Pos => <>));
+         end if;
+
+         --  Destroy terminated animators
+         if Progress >= 1.0 then
+            Anim.Destroy;
+            Data.Queue.Delete (Previous);
+            if Data.Queue.Is_Empty then
+               Data.Current := No_Element;
+            end if;
+         end if;
+
+         Count := Count + 1;
+      end loop;
+
+      --  No need to refresh if the canvas is being destroyed
+      if Current /= No_Time then
+         if (Status and Needs_Refresh_Layout) /= 0 then
+            Self.Model.Refresh_Layout;
+         elsif (Status and Needs_Refresh_All_Links) /= 0 then
+            Self.Model.Refresh_Link_Layout;
+            Self.Model.Layout_Changed;
+         elsif (Status and Needs_Refresh_Links_From_Item) /= 0 then
+            Self.Model.Refresh_Link_Layout (Items);
+            Self.Model.Layout_Changed;
+         end if;
+      end if;
+   end Animation_Iteration;
+
+   ----------------
+   -- On_Animate --
+   ----------------
+
+   function On_Animate (View : Canvas_View) return Boolean is
+      Now : constant Ada.Calendar.Time := Clock;
+      Data : constant Animation_Data_Access :=
+        Animation_Data_Access (View.Animation_Data);
+   begin
+      --  No need to do anywork if we are called too often
+      if Data.Last_Run = No_Time
+        or else (Now - Data.Last_Run > Min_Animation_Interval)
+      then
+         Data.Last_Run := Now;
+         Animation_Iteration
+           (View,
+            Current  => Now,
+            Max_Time => Duration (Animation_Interval) / 1000.0);
+      end if;
+
+      return not Data.Queue.Is_Empty;
+   end On_Animate;
+
+   -------------------------
+   -- Terminate_Animation --
+   -------------------------
+
+   procedure Terminate_Animation
+     (Self : not null access Canvas_View_Record'Class) is
+   begin
+      if Self.Id_Animation /= No_Source_Id then
+         Animation_Iteration
+           (Self,
+            Current  => GNAT.Calendar.No_Time,
+            Max_Time => Duration'Last);
+         Remove (Self.Id_Animation);
+      end if;
+   end Terminate_Animation;
+
+   ------------------------
+   -- Is_Unique_For_Item --
+   ------------------------
+
+   function Is_Unique_For_Item
+     (Self : not null access Animator) return Boolean
+   is
+      pragma Unreferenced (Self);
+   begin
+      return True;
+   end Is_Unique_For_Item;
 
 end Gtkada.Canvas_View.Views;

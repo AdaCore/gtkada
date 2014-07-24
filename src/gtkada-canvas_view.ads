@@ -142,6 +142,7 @@ pragma Ada_2012;
 with Ada.Containers.Doubly_Linked_Lists;
 private with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Hashed_Sets;
+with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
 private with Ada.Unchecked_Deallocation;
 private with GNAT.Strings;
 with Cairo;
@@ -159,6 +160,9 @@ with Gtkada.Style;     use Gtkada.Style;
 with Pango.Layout;     use Pango.Layout;
 
 package Gtkada.Canvas_View is
+
+   package Gdouble_Elementary_Functions is new
+     Ada.Numerics.Generic_Elementary_Functions (Gdouble);
 
    type Canvas_View_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Canvas_View is access all Canvas_View_Record'Class;
@@ -1016,9 +1020,11 @@ package Gtkada.Canvas_View is
       Scale    : Gdouble := 1.0;
       Preserve : Model_Point := No_Point);
    --  Changes the scaling factor for Self.
-   --  This also scrols the view so that either Preserve or the current center
+   --  This also scrolsl the view so that either Preserve or the current center
    --  of the view remains at the same location in the widget, as if the user
    --  was zooming towards that specific point.
+   --  See also Gtkada.Canvas_View.Views.Animate_Scale for a way to do this
+   --  change via an animation.
 
    procedure Center_On
      (Self         : not null access Canvas_View_Record;
@@ -1040,13 +1046,15 @@ package Gtkada.Canvas_View is
    procedure Scale_To_Fit
      (Self      : not null access Canvas_View_Record;
       Min_Scale : Gdouble := 1.0 / 4.0;
-      Max_Scale : Gdouble := 4.0);
+      Max_Scale : Gdouble := 4.0;
+      Duration  : Standard.Duration := 0.0);
    --  Chose the scale and scroll position so that the whole model is visible.
    --  This procedure leaves a small margin on each sides of the model, since
    --  that looks nicer.
    --  This function can be called even before Self has got a size assigned by
    --  window manager, but the computation of the scale will be delayed until
    --  an actual size is known.
+   --  If a duration is specified, the scaling and scrolling will be animated
 
    type Page_Format is record
       Width_In_Inches, Height_In_Inches : Gdouble;
@@ -1891,11 +1899,18 @@ private
    end record;
    --  Data used when editing a widget
 
+   type Base_Animation_Data is abstract tagged null record;
+   type Base_Animation_Data_Access is access Base_Animation_Data'Class;
+
    type Canvas_View_Record is new Gtk.Bin.Gtk_Bin_Record with record
       Model     : Canvas_Model;
       Topleft   : Model_Point := (0.0, 0.0);
       Scale     : Gdouble := 1.0;
       Grid_Size : Model_Coordinate := 20.0;
+
+      Animation_Data : Base_Animation_Data_Access;
+      Id_Animation   : Glib.Main.G_Source_Id := Glib.Main.No_Source_Id;
+      --  The animation loop (see Gtkada.Canvas_View.Views.Animate)
 
       Id_Layout_Changed,
       Id_Item_Contents_Changed,
@@ -1990,5 +2005,9 @@ private
       Force : access Abstract_Item_Record'Class);
    --  Setup the 'dragged_items" field from the contents of the selection, and
    --  forces a specific item to be there (in addition)
+
+   procedure Set_Adjustment_Values
+     (Self : not null access Canvas_View_Record'Class);
+   --  Update the values for both adjustments
 
 end Gtkada.Canvas_View;

@@ -75,9 +75,6 @@ package Gtkada.Canvas_View.Models is
         (Self    : not null access Rtree_Model_Record;
          Point   : Model_Point;
          Context : Draw_Context) return Abstract_Item;
-      overriding procedure Refresh_Layout
-        (Self        : not null access Rtree_Model_Record;
-         Send_Signal : Boolean := True);
 
    private
       type Rtree_Model_Record is new Base_Model_Record with record

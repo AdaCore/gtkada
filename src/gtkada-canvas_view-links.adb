@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
 with Ada.Unchecked_Deallocation;
 with Cairo;                         use Cairo;
 with Gtkada.Canvas_View.Astar;      use Gtkada.Canvas_View.Astar;
@@ -31,8 +30,6 @@ with Gtkada.Style;                  use Gtkada.Style;
 
 package body Gtkada.Canvas_View.Links is
 
-   package Gdouble_Elementary_Functions is new
-     Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Gdouble_Elementary_Functions;
 
    type End_Info is record

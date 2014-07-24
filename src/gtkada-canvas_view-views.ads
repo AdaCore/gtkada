@@ -24,7 +24,9 @@
 
 --  Various support utilities for the grid and smart guides in the canvas
 
+with Ada.Calendar;   use Ada.Calendar;
 with Glib.Object;
+with GNAT.Calendar;  use GNAT.Calendar;
 with Gtk.Enums;
 
 package Gtkada.Canvas_View.Views is
@@ -71,6 +73,59 @@ package Gtkada.Canvas_View.Views is
    --  Draw a grid with dots in the background
    --  This also sets the background color from the style's fill pattern.
 
+   ------------
+   -- Easing --
+   ------------
+   --  These functions are used to compute the intermediate values during an
+   --  animation. They can be used to provide special effects like starting
+   --  slow, finish slow, or even bounding when reaching the end.
+   --
+   --  see http://www.robertpenner.com/easing
+   --  and http://api.jqueryui.com/easings/
+
+   type Animation_Progress is new Duration range 0.0 .. 1.0;
+   type Animation_Value is record
+      Start, Finish : Gdouble;
+      Duration      : Standard.Duration;
+   end record;
+   --  Describes one value to be animated, giving its initial and final values,
+   --  as well as the duration that the total animation should take.
+
+   type Easing_Function is access function
+     (Value    : Animation_Value;
+      Progress : Animation_Progress) return Gdouble;
+   --  A function that is responsible for computing the current value of
+   --  a property, given the initial and final values, and the current
+   --  progress. It returns the current value of the property.
+
+   function Easing_Linear
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble;
+   --  The current value is on the straight line from Start to Finish.
+   --  Progresses at a constant pace.
+
+   function Easing_In_Out_Cubic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble;
+   --  Rate of change starts slow, increases to linear in the middle, and
+   --  slows done in the end.
+
+   function Easing_In_Cubic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble;
+   --  Starts slow, and then speeds up till the end.
+
+   function Easing_Out_Cubic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble;
+   --  Starts normally, then slows down near the end
+
+   function Easing_Out_Elastic
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble;
+   --  Will move past the finish, then slightly back towards the start, and so
+   --  on.
+
+   function Easing_Out_Bounce
+     (Value : Animation_Value; Progress : Animation_Progress) return Gdouble;
+   --  Will reach the finish value early, then bounce back towards the start,
+   --  a few times. Does not go over the finish value.
+
    ---------------
    -- Callbacks --
    ---------------
@@ -97,6 +152,8 @@ package Gtkada.Canvas_View.Views is
    generic
       Modifier : Gdk.Types.Gdk_Modifier_Type := Mod1_Mask;
       Factor   : Gdouble := 1.1;
+      Duration : Standard.Duration := 0.0;
+      Easing   : Easing_Function := Easing_In_Out_Cubic'Access;
    function On_Item_Event_Zoom_Generic
      (View   : not null access Glib.Object.GObject_Record'Class;
       Event : Event_Details_Access)
@@ -105,6 +162,7 @@ package Gtkada.Canvas_View.Views is
    --  or out with the mouse wheel and a keyboard modifier like ctrl, alt,...
    --  (since the mouse wheel on its own is used for vertical scrolling by
    --  gtk+, and for horizontal scrolling when used with shift).
+   --  If a duration other than 0.0 is provided, the scaling is animated.
 
    function On_Item_Event_Select
      (View   : not null access Glib.Object.GObject_Record'Class;
@@ -254,6 +312,104 @@ package Gtkada.Canvas_View.Views is
      (Self    : not null access Canvas_View_Record'Class);
    --  Destroys any inline editing widget that might be set
 
+   ---------------
+   -- Animation --
+   ---------------
+   --  The following subprograms provide a light-weight animation framework.
+   --  Rather than do your own animation through the use of gtk's idle or
+   --  timeout callbacks, it is more efficient to use this framework which will
+   --  register a single callback and avoid monopolizing the CPU for too long
+   --  each time.
+   --  To move an item from its current position to another with animation,
+   --  use something like:
+   --      Animate (View, Animate_Position (Item, (100.0, 100.0)));
+
+   type Animation_Status is mod 2 ** 16;
+   Needs_Refresh_Links_From_Item : constant Animation_Status := 2 ** 0;
+   --  Whether we need to recompute the layout of links to and from the
+   --  animated item.
+
+   Needs_Refresh_All_Links : constant Animation_Status := 2 ** 1;
+   --  Whether we need to recompute the layout of all links
+
+   Needs_Refresh_Layout : constant Animation_Status := 2 ** 2;
+   --  Whether we need to recompute the layout of the whole model (items and
+   --  links).
+
+   type Animator is abstract tagged private;
+   type Animator_Access is access all Animator'Class;
+
+   procedure Destroy (Self : in out Animator) is null;
+   --  Called when the animator has finished running
+
+   function Is_Unique_For_Item
+     (Self : not null access Animator) return Boolean;
+   --  If True,  single animator of this type can be active for a given item.
+   --  As a result, when you call Animate for this animator, any other
+   --  registered similar animator for the same item is removed from the queue
+   --  (and not completed).
+
+   procedure Setup
+     (Self     : in out Animator;
+      Duration : Standard.Duration;
+      Easing   : not null Easing_Function := Easing_In_Out_Cubic'Access;
+      View     : access Canvas_View_Record'Class := null;
+      Item     : access Abstract_Item_Record'Class := null);
+   --  Initialize internal fields. This is only needed when you are writing
+   --  your own animators.
+
+   function Execute
+     (Self     : not null access Animator;
+      Progress : Animation_Progress) return Animation_Status is abstract;
+   --  Performs one iteration of the animation.
+   --  For instance, this could be moving a specific item slightly closer to
+   --  its goal, or zooming the view a bit more.
+
+   procedure Start
+     (Self : access Animator'Class;
+      View : not null access Canvas_View_Record'Class);
+   --  Adds the animator to the animation queue.
+   --  The animator will be destroyed automatically (and memory reclaimed) when
+   --  it finishes its execution.
+   --  It is valid to pass a null animator (nothing happens in this case)
+
+   procedure Terminate_Animation
+     (Self : not null access Canvas_View_Record'Class);
+   --  Terminate the animation queue:
+   --  All animators are completed (i.e. for instance items are moved to their
+   --  final position,...)
+
+   ---------------
+   -- Animators --
+   ---------------
+   --  Various prebuilt animators.
+
+   function Animate_Position
+     (Item           : not null access Abstract_Item_Record'Class;
+      Final_Position : Gtkada.Style.Point;
+      Duration       : Standard.Duration := 0.4;
+      Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
+      return Animator_Access;
+   --  Moves an item from one position to another.
+   --  Returns null if the item is already at the right position
+
+   function Animate_Scale
+     (View           : not null access Canvas_View_Record'Class;
+      Final_Scale    : Gdouble;
+      Preserve       : Model_Point := No_Point;
+      Duration       : Standard.Duration := 0.4;
+      Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
+      return Animator_Access;
+   --  Changes the scale of the view progressively
+
+   function Animate_Scroll
+     (View           : not null access Canvas_View_Record'Class;
+      Final_Topleft  : Model_Point;
+      Duration       : Standard.Duration := 0.8;
+      Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
+      return Animator_Access;
+   --  Scroll the canvas until the top-left corner reaches the given coordinate
+
 private
    type Minimap_View_Record is new Canvas_View_Record with record
       Monitored           : Canvas_View;
@@ -262,4 +418,15 @@ private
 
       Drag_Pos_X, Drag_Pos_Y : Gdouble;
    end record;
+
+   type Animator is abstract tagged record
+      Start    : Ada.Calendar.Time := GNAT.Calendar.No_Time;
+      Duration : Standard.Duration;
+      Easing   : Easing_Function;
+
+      Item     : access Abstract_Item_Record'Class;
+      View     : access Canvas_View_Record'Class;
+      --  Set only when animating a specific item or view
+   end record;
+
 end Gtkada.Canvas_View.Views;

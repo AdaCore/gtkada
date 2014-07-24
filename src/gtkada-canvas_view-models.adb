@@ -21,9 +21,15 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gtk.Handlers;   use Gtk.Handlers;
+
 package body Gtkada.Canvas_View.Models is
 
    package body Rtree_Models is
+
+      procedure On_Layout_Changed
+        (Model : not null access GObject_Record'Class);
+      --  Called when the layout in the model has changed, to refresh the tree
 
       -------------
       -- Gtk_New --
@@ -42,18 +48,22 @@ package body Gtkada.Canvas_View.Models is
       procedure Initialize
          (Self : not null access Rtree_Model_Record'Class)
       is
+         Id : Handler_Id;
+         pragma Unreferenced (Id);
       begin
          Gtkada.Canvas_View.Initialize (Self);
+         Id := Self.On_Layout_Changed (On_Layout_Changed'Access);
       end Initialize;
 
-      --------------------
-      -- Refresh_Layout --
-      --------------------
+      -----------------------
+      -- On_Layout_Changed --
+      -----------------------
 
-      overriding procedure Refresh_Layout
-        (Self        : not null access Rtree_Model_Record;
-         Send_Signal : Boolean := True)
+      procedure On_Layout_Changed
+        (Model : not null access GObject_Record'Class)
       is
+         Self : constant Rtree_Model := Rtree_Model (Model);
+
          procedure On_Item (It : not null access Abstract_Item_Record'Class);
          procedure On_Item (It : not null access Abstract_Item_Record'Class) is
          begin
@@ -69,10 +79,7 @@ package body Gtkada.Canvas_View.Models is
          Base_Model_Record (Self.all).Refresh_Layout   --  inherited
            (Send_Signal => False);
          Self.For_Each_Item (On_Item'Access, In_Area => No_Rectangle);
-         if Send_Signal then
-            Self.Layout_Changed;
-         end if;
-      end Refresh_Layout;
+      end On_Layout_Changed;
 
       -------------------
       -- For_Each_Item --

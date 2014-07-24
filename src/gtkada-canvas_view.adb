@@ -154,10 +154,6 @@ package body Gtkada.Canvas_View is
       Property_Spec : Param_Spec);
    --  Handlers for gtk+ properties
 
-   procedure Set_Adjustment_Values
-     (Self : not null access Canvas_View_Record'Class);
-   --  Update the values for both adjustments
-
    function Compute_Text
      (Self : not null access Text_Item_Record'Class)
       return String;
@@ -1207,6 +1203,7 @@ package body Gtkada.Canvas_View is
       S : constant Canvas_View := Canvas_View (Self);
    begin
       Cancel_Continuous_Scrolling (S);
+      Terminate_Animation (S);
 
       if S.Model /= null then
          Unref (S.Model);
@@ -1556,11 +1553,13 @@ package body Gtkada.Canvas_View is
    procedure Scale_To_Fit
      (Self      : not null access Canvas_View_Record;
       Min_Scale : Gdouble := 1.0 / 4.0;
-      Max_Scale : Gdouble := 4.0)
+      Max_Scale : Gdouble := 4.0;
+      Duration  : Standard.Duration := 0.0)
    is
-      Box   : Model_Rectangle;
-      W, H  : Gdouble;
-      Alloc : Gtk_Allocation;
+      Box     : Model_Rectangle;
+      W, H, S : Gdouble;
+      Alloc   : Gtk_Allocation;
+      TL      : Model_Point;
    begin
       Self.Get_Allocation (Alloc);
       if Alloc.Width <= 1 then
@@ -1578,18 +1577,26 @@ package body Gtkada.Canvas_View is
             --  The "-1.0" below compensates for rounding errors, since
             --  otherwise we are still seeing the scrollbar along the axis
             --  used to compute the scale.
-            Self.Scale := Gdouble'Min
+            S := Gdouble'Min
               (Max_Scale,
                Gdouble'Min
                  ((W - 2.0 * View_Margin - 1.0) / Box.Width,
                   (H - 2.0 * View_Margin - 1.0) / Box.Height));
-            Self.Scale := Gdouble'Max (Min_Scale, Self.Scale);
-            Self.Topleft :=
-              (X => Box.X - (W / Self.Scale - Box.Width) / 2.0,
-               Y => Box.Y - (H / Self.Scale - Box.Height) / 2.0);
+            S := Gdouble'Max (Min_Scale, S);
+            TL :=
+              (X => Box.X - (W / S - Box.Width) / 2.0,
+               Y => Box.Y - (H / S - Box.Height) / 2.0);
 
-            Self.Set_Adjustment_Values;
-            Self.Queue_Draw;
+            if Duration = 0.0 then
+               Self.Scale := S;
+               Self.Topleft := TL;
+               Self.Set_Adjustment_Values;
+               Self.Queue_Draw;
+
+            else
+               Animate_Scale (Self, S, Duration => Duration).Start (Self);
+               Animate_Scroll (Self, TL, Duration).Start (Self);
+            end if;
          end if;
       end if;
    end Scale_To_Fit;

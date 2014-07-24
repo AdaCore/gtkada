@@ -23,13 +23,15 @@
 
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Indefinite_Doubly_Linked_Lists;
-with Glib.Graphs;         use Glib.Graphs;
+with Glib.Graphs;               use Glib.Graphs;
 with Glib.Graphs.Layouts;
+with Gtkada.Canvas_View.Views;  use Gtkada.Canvas_View.Views;
 
 package body Gtkada.Canvas_View.Models.Layers is
 
    type Canvas_Vertex is new Vertex with record
       Item  : Abstract_Item;
+      View  : Canvas_View;
    end record;
    type Canvas_Vertex_Access is access all Canvas_Vertex'Class;
 
@@ -66,9 +68,18 @@ package body Gtkada.Canvas_View.Models.Layers is
    ------------------
 
    procedure Set_Position (V : Vertex_Access; X, Y : Gdouble) is
+      V2 : Canvas_Vertex_Access;
    begin
       if V.all in Canvas_Vertex'Class then
-         Canvas_Vertex_Access (V).Item.Set_Position ((X, Y));
+         V2 := Canvas_Vertex_Access (V);
+
+         if V2.View /= null
+           and then V2.Item.Position /= No_Position
+         then
+            Animate_Position (V2.Item, (X, Y)).Start (V2.View);
+         else
+            V2.Item.Set_Position ((X, Y));
+         end if;
       else
          Canvas_Dummy_Vertex (V.all).Pos := (X, Y);
       end if;
@@ -80,6 +91,7 @@ package body Gtkada.Canvas_View.Models.Layers is
 
    procedure Layout
      (Self                 : not null access Canvas_Model_Record'Class;
+      View                 : access Canvas_View_Record'Class := null;
       Horizontal           : Boolean := True;
       Add_Waypoints        : Boolean := False;
       Space_Between_Items  : Gdouble := 10.0;
@@ -138,7 +150,9 @@ package body Gtkada.Canvas_View.Models.Layers is
 
       procedure On_Item (It : not null access Abstract_Item_Record'Class) is
          V : constant Vertex_Access := new Canvas_Vertex'
-           (Vertex with Item => Abstract_Item (It));
+           (Vertex with
+            Item => Abstract_Item (It),
+            View => Canvas_View (View));
       begin
          Add_Vertex (G, V);
          Items.Include (Abstract_Item (It), V);
