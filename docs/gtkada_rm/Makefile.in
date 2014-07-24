@@ -7,18 +7,16 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
 SRC=../../src/*.ads ../../src/opengl/*.ads ../../src/glade/*.ads
-SUBDIRS=gtkada_rm gtkada_rm/screenshots gtkada_rm/support gtkada_rm/support/images
+SUBDIRS=gtkada_rm gtkada_rm/docs gtkada_rm/entities gtkada_rm/support/images gtkada_rm/srcs
 
 gtkada_rm: docgen docgen_clean
 
 docgen:
 	$(MKDIR) gtkada_rm
-	gprbuild -Pgenerate_docs.gpr
-	gps -Pgenerate_docs.gpr  --load=python:docgen_gtkada.py
-	cat log.txt
+	gnatdoc -Pgenerate_docs.gpr
 
 docgen_clean:
-	$(RM) -rf log.txt doc_obj/*
+	$(RM) -rf doc_obj/*
 
 install:
 	-$(MKDIR) "${DESTDIR}$(docdir_base)"
