@@ -2,7 +2,7 @@ project GtkAda is
    type Library_Types is ("static", "relocatable");
    Gtkada_Kind : Library_Types := external ("LIBRARY_TYPE", "@DEFAULT_LIBRARY_TYPE@");
 
-   So_Ext := ".@SO_EXT@";
+   So_Ext := "@SO_EXT@";
    Version := "@PACKAGE_VERSION@";
 
    for Source_Dirs use ("../../include/gtkada/");
