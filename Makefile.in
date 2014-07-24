@@ -131,6 +131,9 @@ SRCDIRS=src/ src/generated/
 
 install:
 	@${CP} ${wildcard ${addsuffix *.ad[bs], ${SRCDIRS}}} ${includedir}/${TARNAME}
+ifeq (${OS},Windows_NT)
+	@${CP} ${wildcard ${addsuffix *.[hc], ${SRCDIRS}}} ${includedir}/${TARNAME}
+endif
 	@cd ${includedir}/${TARNAME}; ls ${notdir ${wildcard ${addsuffix *.ad[bs], ${SRCDIRS}}}} > ${DESTDIR}${prefix}/lib/gnat/${TARNAME}/gtkada.lgpr
 
 ifeq (${HAVE_OPENGL},True)
