@@ -3672,6 +3672,12 @@ $as_echo "yes" >&6; }
 
 
 
+
+  case $build_os in
+     *mingw*) GTK_LIBS="-L../../lib $GTK_LIBS";;
+  esac
+
+
    value=$GTK_LIBS
 
    # Special handling on darwin for gcc 4.5 and 4.7

@@ -315,7 +315,16 @@ main (int argc, char** argv)
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
   AM_TO_GPR($GTK_CFLAGS, GTK_CFLAGS_GPR)
-  AM_TO_GPR($GTK_LIBS,  GTK_LIBS_GPR)
+
+  dnl On windows gtk will be embedded along with gtk distrib. In that
+  dnl case we need to adjust switches so that gtkada.gpr packaged in
+  dnl lib/gnat is usable
+
+  case $build_os in
+     *mingw*) GTK_LIBS="-L../../lib $GTK_LIBS";;
+  esac
+
+  AM_TO_GPR($GTK_LIBS, GTK_LIBS_GPR)
   rm -f conf.gtktest
 ])
 
