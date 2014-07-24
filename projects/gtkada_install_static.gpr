@@ -32,13 +32,22 @@
 project GtkAda_Install_Static is
 
    for Source_Dirs use (".");
-
+   for Languages use ("Ada", "C");
    for Library_Dir use "../../lib/gtkada/static";
    for Library_Kind use "static";
    for Library_Name use "gtkada";
 
    package Compiler is
       for Default_Switches ("Ada") use ("-O2", "-gnat05");
+      for Default_Switches ("C") use ("-O2",
+                                      "-I../../include",
+                                      "-I../../include/gtk-3.0",
+                                      "-I../../include/glib-2.0",
+                                      "-I../../lib/glib-2.0/include",
+                                      "-I../../include/pango-1.0",
+                                      "-I../../include/cairo",
+                                      "-I../../include/gdk-pixbuf-2.0",
+                                      "-I../../include/atk-1.0");
    end Compiler;
 
 end GtkAda_Install_Static;

@@ -321,7 +321,7 @@ main (int argc, char** argv)
   dnl lib/gnat is usable
 
   case $build_os in
-     *mingw*) GTK_LIBS="-L../../lib $GTK_LIBS";;
+     *mingw*) GTK_LIBS="-L../../lib -L../../bin $GTK_LIBS";;
   esac
 
   AM_TO_GPR($GTK_LIBS, GTK_LIBS_GPR)

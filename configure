@@ -3674,7 +3674,7 @@ $as_echo "yes" >&6; }
 
 
   case $build_os in
-     *mingw*) GTK_LIBS="-L../../lib $GTK_LIBS";;
+     *mingw*) GTK_LIBS="-L../../lib -L../../bin $GTK_LIBS";;
   esac
 
 

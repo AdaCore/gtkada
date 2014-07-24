@@ -37,7 +37,7 @@ project GtkAda_Install_Dynamic is
    for Library_ALI_Dir use "../../lib/gtkada/relocatable";
    for Library_Kind use "relocatable";
    for Library_Name use "gtkada";
-   for Library_Options use ("-L.", "-L../../bin", "-L../../lib/gtkada/relocatable", @GTK_LIBS_GPR@);
+   for Library_Options use ("-L.", "-L../../lib", "-L../../bin", @GTK_LIBS_GPR@);
    
    package Compiler is
       for Default_Switches ("Ada") use ("-O2", "-gnat05");
