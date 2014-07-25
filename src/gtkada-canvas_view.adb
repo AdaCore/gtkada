@@ -1297,7 +1297,9 @@ package body Gtkada.Canvas_View is
       end if;
 
       if Self.Scale_To_Fit_Requested /= 0.0 then
-         Self.Scale_To_Fit (Max_Scale => Self.Scale_To_Fit_Requested);
+         Self.Scale_To_Fit
+           (Rect      => Self.Scale_To_Fit_Area,
+            Max_Scale => Self.Scale_To_Fit_Requested);
       end if;
    end On_Size_Allocate;
 
@@ -1485,16 +1487,23 @@ package body Gtkada.Canvas_View is
    procedure Center_On
      (Self         : not null access Canvas_View_Record;
       Center_On    : Model_Point;
-      X_Pos, Y_Pos : Gdouble := 0.5)
+      X_Pos, Y_Pos : Gdouble := 0.5;
+      Duration     : Standard.Duration := 0.0)
    is
       Area : constant Model_Rectangle := Self.Get_Visible_Area;
-   begin
-      Self.Topleft :=
+      Pos  : constant Model_Point :=
         (Center_On.X - Area.Width * X_Pos,
          Center_On.Y - Area.Height * Y_Pos);
+   begin
       Self.Scale_To_Fit_Requested := 0.0;
-      Self.Set_Adjustment_Values;
-      Self.Queue_Draw;
+
+      if Duration = 0.0 then
+         Self.Topleft := Pos;
+         Self.Set_Adjustment_Values;
+         Self.Queue_Draw;
+      else
+         Animate_Scroll (Self, Pos, Duration => Duration).Start (Self);
+      end if;
    end Center_On;
 
    ----------------------
@@ -1502,10 +1511,24 @@ package body Gtkada.Canvas_View is
    ----------------------
 
    procedure Scroll_Into_View
-     (Self : not null access Canvas_View_Record;
-      Item : not null access Abstract_Item_Record'Class)
+     (Self     : not null access Canvas_View_Record;
+      Item     : not null access Abstract_Item_Record'Class;
+      Duration : Standard.Duration := 0.0)
    is
-      Box  : Model_Rectangle := Item.Model_Bounding_Box;
+   begin
+      Scroll_Into_View (Self, Item.Model_Bounding_Box, Duration);
+   end Scroll_Into_View;
+
+   ----------------------
+   -- Scroll_Into_View --
+   ----------------------
+
+   procedure Scroll_Into_View
+     (Self     : not null access Canvas_View_Record;
+      Rect     : Model_Rectangle;
+      Duration : Standard.Duration := 0.0)
+   is
+      Box  : Model_Rectangle := Rect;
       Area : Model_Rectangle := Self.Get_Visible_Area;
       Modified : Boolean := False;
       Margin   : constant Model_Coordinate := View_Margin * Self.Scale;
@@ -1532,7 +1555,9 @@ package body Gtkada.Canvas_View is
       end if;
 
       if Modified then
-         Self.Center_On ((Area.X, Area.Y), X_Pos => 0.0, Y_Pos => 0.0);
+         Self.Center_On
+           ((Area.X, Area.Y), X_Pos => 0.0, Y_Pos => 0.0,
+            Duration => Duration);
       end if;
    end Scroll_Into_View;
 
@@ -1552,6 +1577,7 @@ package body Gtkada.Canvas_View is
 
    procedure Scale_To_Fit
      (Self      : not null access Canvas_View_Record;
+      Rect      : Model_Rectangle := No_Rectangle;
       Min_Scale : Gdouble := 1.0 / 4.0;
       Max_Scale : Gdouble := 4.0;
       Duration  : Standard.Duration := 0.0)
@@ -1564,11 +1590,16 @@ package body Gtkada.Canvas_View is
       Self.Get_Allocation (Alloc);
       if Alloc.Width <= 1 then
          Self.Scale_To_Fit_Requested := Max_Scale;
+         Self.Scale_To_Fit_Area := Rect;
 
       elsif Self.Model /= null then
          Self.Scale_To_Fit_Requested := 0.0;
 
-         Box := Self.Model.Bounding_Box;
+         if Rect = No_Rectangle then
+            Box := Self.Model.Bounding_Box;
+         else
+            Box := Rect;
+         end if;
 
          if Box.Width /= 0.0 and then Box.Height /= 0.0 then
             W := Gdouble (Alloc.Width);

@@ -1042,15 +1042,23 @@ package Gtkada.Canvas_View is
    procedure Center_On
      (Self         : not null access Canvas_View_Record;
       Center_On    : Model_Point;
-      X_Pos, Y_Pos : Gdouble := 0.5);
+      X_Pos, Y_Pos : Gdouble := 0.5;
+      Duration     : Standard.Duration := 0.0);
    --  Scroll the canvas so that Center_On appears at the given position
    --  within the view (center when using 0.5, or left when using 0.0, and so
    --  on).
+   --  If the duration is not 0, animation is used.
 
    procedure Scroll_Into_View
-     (Self : not null access Canvas_View_Record;
-      Item : not null access Abstract_Item_Record'Class);
-   --  Do the minimal amount of scrolling to make the item visible
+     (Self     : not null access Canvas_View_Record;
+      Item     : not null access Abstract_Item_Record'Class;
+      Duration : Standard.Duration := 0.0);
+   procedure Scroll_Into_View
+     (Self     : not null access Canvas_View_Record;
+      Rect     : Model_Rectangle;
+      Duration : Standard.Duration := 0.0);
+   --  Do the minimal amount of scrolling to make the item or rectangle
+   --  visible. If the duration is not 0, animation is used.
 
    function Get_Scale
      (Self : not null access Canvas_View_Record) return Gdouble;
@@ -1058,10 +1066,12 @@ package Gtkada.Canvas_View is
 
    procedure Scale_To_Fit
      (Self      : not null access Canvas_View_Record;
+      Rect      : Model_Rectangle := No_Rectangle;
       Min_Scale : Gdouble := 1.0 / 4.0;
       Max_Scale : Gdouble := 4.0;
       Duration  : Standard.Duration := 0.0);
-   --  Chose the scale and scroll position so that the whole model is visible.
+   --  Chose the scale and scroll position so that the whole model (or the
+   --  specified rectangle) is visible.
    --  This procedure leaves a small margin on each sides of the model, since
    --  that looks nicer.
    --  This function can be called even before Self has got a size assigned by
@@ -1951,6 +1961,7 @@ private
            Line_Width => 4.0);
 
       Scale_To_Fit_Requested : Gdouble := 0.0;
+      Scale_To_Fit_Area : Model_Rectangle;
       --  Set to true when the user calls Scale_To_Fit before the view has had
       --  a size allocated (and thus we could not perform computation).
       --  This is set to the maximal zoom requested (or 0.0 if not requested)
