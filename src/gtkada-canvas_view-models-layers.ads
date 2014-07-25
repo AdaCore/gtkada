@@ -23,8 +23,6 @@
 
 package Gtkada.Canvas_View.Models.Layers is
 
-   No_Position : constant Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
-
    procedure Layout
      (Self                 : not null access Canvas_Model_Record'Class;
       View                 : access Canvas_View_Record'Class := null;

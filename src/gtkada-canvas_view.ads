@@ -391,6 +391,9 @@ package Gtkada.Canvas_View is
    --  They also do not contribute to the smart guides that are used while
    --  items are moved around.
 
+   No_Position : constant Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
+   --  Indicates that the item did not get assigned a proper position
+
    function Position
      (Self : not null access Abstract_Item_Record)
       return Gtkada.Style.Point is abstract;
@@ -1797,8 +1800,7 @@ private
    end record;
 
    type Canvas_Item_Record is abstract new Abstract_Item_Record with record
-      Position : Gtkada.Style.Point :=
-        (Gdouble'First, Gdouble'First);
+      Position : Gtkada.Style.Point := No_Position;
       --  Position within its parent or the canvas view.
 
       Visibility_Threshold : Gdouble := 0.0;

@@ -1957,4 +1957,165 @@ package body Gtkada.Canvas_View.Views is
       Move_Items_In_Box (Rect, Direction);
    end Reserve_Space;
 
+   -----------------------------
+   -- Insert_And_Layout_Items --
+   -----------------------------
+
+   procedure Insert_And_Layout_Items
+     (Self                 : not null access Canvas_View_Record'Class;
+      Ref                  : not null access Abstract_Item_Record'Class;
+      Items                : Items_Lists.List;
+      Direction            : Specific_Direction;
+      Space_Between_Items  : Gdouble := 10.0;
+      Space_Between_Layers : Gdouble := 20.0;
+      Duration             : Standard.Duration := 0.0)
+   is
+      use Items_Lists;
+      Context : constant Draw_Context := Self.Build_Context;
+      Horizontal : constant Boolean :=
+        Direction = Left or else Direction = Right;
+      C       : Items_Lists.Cursor;
+      Total   : Gdouble := 0.0;   --  total space for children
+      Max     : Gdouble := 0.0;
+      Box     : Item_Rectangle;   --  size of the parent box
+      CBox    : Item_Rectangle;   --  size of the current child box
+      MBox    : Model_Rectangle;
+      Pos     : Gtkada.Style.Point;
+      Child   : Gtkada.Style.Point; --  coordinates of first child
+      Coord   : Gtkada.Style.Point; --  coordinates of current child
+      It      : Abstract_Item;
+   begin
+      --  Compute the size we need for the children
+
+      C := Items.First;
+      while Has_Element (C) loop
+         Element (C).Refresh_Layout (Context); --  Compute its size
+         CBox := Element (C).Bounding_Box;
+         if Horizontal then
+            Total := Total + CBox.Height;
+            Max := Gdouble'Max (Max, CBox.Width);
+         else
+            Total := Total + CBox.Width;
+            Max := Gdouble'Max (Max, CBox.Height);
+         end if;
+         Next (C);
+      end loop;
+
+      Total := Total + Space_Between_Items * Gdouble (Items.Length);
+
+      --  Now insert (if needed) the parent item, below or to the right of
+      --  the existing model elements, and centered with regards to its
+      --  future children
+
+      Pos := Ref.Position;
+
+      if Pos = No_Position then
+         Ref.Refresh_Layout (Context);  --  Compute its size
+         Box := Ref.Bounding_Box;
+         MBox := Self.Model.Bounding_Box;
+
+         if Horizontal then
+            Child.Y := MBox.Y + MBox.Height;
+            Pos.Y := Child.Y + (Total - MBox.Height) / 2.0;
+            if Direction = Right then
+               Pos.X   := MBox.X;
+               Child.X := Pos.X + Box.Width + Space_Between_Layers;
+            else
+               Child.X := MBox.X;
+               Pos.X   := Child.X + Max + Space_Between_Layers;
+            end if;
+
+         else
+            Child.X := MBox.X + MBox.Width;
+            Pos.X := Child.X + (Total - MBox.Width) / 2.0;
+            if Direction = Down then
+               Pos.Y   := MBox.Y;
+               Child.Y := Pos.Y + Box.Height + Space_Between_Layers;
+            else
+               Child.Y := MBox.Y;
+               Pos.Y   := Child.Y + Max + Space_Between_Layers;
+            end if;
+         end if;
+
+         Ref.Set_Position (Pos);  --  No animation
+
+      else
+         Box := Ref.Bounding_Box;
+         if Horizontal then
+            Child.Y := Pos.Y + (Box.Height - Total) / 2.0;
+            if Direction = Right then
+               Child.X := Pos.X + Box.Width + Space_Between_Layers;
+            else
+               Child.X := Pos.X - Max - Space_Between_Layers;
+            end if;
+         else
+            Child.X := Pos.X + (Box.Width - Total) / 2.0;
+            if Direction = Down then
+               Child.Y := Pos.Y + Box.Height + Space_Between_Layers;
+            else
+               Child.Y := Pos.Y - Max - Space_Between_Layers;
+            end if;
+         end if;
+      end if;
+
+      --  Reserve space for the children by moving existing items aside.
+
+      if Horizontal then
+         Reserve_Space
+           (Self,
+            (Child.X, Child.Y, Max, Total),
+            Direction => Gtkada.Canvas_View.Views.Horizontal,
+            Duration  => Duration);
+      else
+         Reserve_Space
+           (Self,
+            (Child.X, Child.Y, Total, Max),
+            Direction => Gtkada.Canvas_View.Views.Vertical,
+            Duration  => Duration);
+      end if;
+
+      --  Now move the children into place
+
+      C := Items.First;
+      Coord := Child;
+      while Has_Element (C) loop
+         It := Abstract_Item (Element (C));
+
+         if Duration = 0.0 then
+            It.Set_Position (Coord);
+         else
+            It.Set_Position (Pos);  --  position of the parent initially
+            Start
+              (Animate_Position (It, Coord, Duration => Duration), Self);
+         end if;
+
+         CBox := It.Bounding_Box;
+         if Horizontal then
+            Coord.Y := Coord.Y + CBox.Height + Space_Between_Items;
+         else
+            Coord.X := Coord.X + CBox.Width + Space_Between_Items;
+         end if;
+
+         Next (C);
+      end loop;
+
+      Self.Model.Refresh_Layout;  --  for links
+
+      if Horizontal then
+         Self.Scroll_Into_View
+           ((Gdouble'Min (Child.X, Pos.X), Gdouble'Min (Child.Y, Pos.Y),
+            Max + Space_Between_Layers + Box.Width,
+            Gdouble'Max (Total, Box.Height)),
+            Duration  => Duration);
+      else
+         Self.Scroll_Into_View
+           ((Gdouble'Min (Child.X, Pos.X), Gdouble'Min (Child.Y, Pos.Y),
+            Gdouble'Max (Total, Box.Width),
+            Max + Space_Between_Layers + Box.Height),
+            Duration => Duration);
+      end if;
+
+      Self.Queue_Draw;
+   end Insert_And_Layout_Items;
+
 end Gtkada.Canvas_View.Views;

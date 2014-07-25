@@ -418,7 +418,8 @@ package Gtkada.Canvas_View.Views is
    --  The following subprograms can be used to avoid overlap of items.
 
    type Move_Direction is
-     (Left, Right, Horizontal, Up, Down, Vertical, Any);
+     (Left, Right, Up, Down, Horizontal, Vertical, Any);
+   type Specific_Direction is new Move_Direction range Left .. Down;
    --  In which direction items should be moved to make space for other items.
 
    procedure Reserve_Space
@@ -434,6 +435,31 @@ package Gtkada.Canvas_View.Views is
    --  moved in the direction of the minimal distance. Items can also end up
    --  pushing other items in turn if they need some extra space.
    --  Duration can be specified to animate items to their new position.
+
+   procedure Insert_And_Layout_Items
+     (Self                 : not null access Canvas_View_Record'Class;
+      Ref                  : not null access Abstract_Item_Record'Class;
+      Items                : Items_Lists.List;
+      Direction            : Specific_Direction;
+      Space_Between_Items  : Gdouble := 10.0;
+      Space_Between_Layers : Gdouble := 20.0;
+      Duration             : Standard.Duration := 0.0);
+   --  Insert several items in the view, with the following behavior:
+   --    * If Ref itself currenty has No_Position, it is moved to a position
+   --      to below all other items currently in the canvas (if Direction is
+   --      Left or Right) or to the right of all other items.
+   --
+   --    * the other items will be displayed to one side of Ref, after one
+   --      below the other (if Direction is Left or Right), or one next to the
+   --      other. Their current position is ignored.
+   --
+   --  Any item currently in those position will be moved aside via a call to
+   --  Reserve_Space.
+   --  This procedure can be used to avoid recomputing the whole layout of the
+   --  view, and perhaps preserve whatever changes the user has made to the
+   --  model.
+   --
+   --  Direction is the position of the items in Items compared to Ref.
 
 private
    type Minimap_View_Record is new Canvas_View_Record with record
