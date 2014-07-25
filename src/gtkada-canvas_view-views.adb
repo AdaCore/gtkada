@@ -463,6 +463,30 @@ package body Gtkada.Canvas_View.Views is
             Self.Model.For_Each_Link (Reset_Wp'Access, From_Or_To => S);
          end;
 
+      elsif Event.Event_Type = End_Drag
+        and then Self.Avoid_Overlap
+      then
+         declare
+            use Item_Drag_Infos;
+            C : Item_Drag_Infos.Cursor := Self.Dragged_Items.First;
+            Do_Not_Move : Item_Sets.Set;
+         begin
+            while Has_Element (C) loop
+               Do_Not_Move.Include (Element (C).Item);
+               Next (C);
+            end loop;
+
+            C := Self.Dragged_Items.First;
+            while Has_Element (C) loop
+               Reserve_Space
+                 (Self,
+                  Rect        => Element (C).Item.Model_Bounding_Box,
+                  Do_Not_Move => Do_Not_Move,
+                  Duration    => Self.Avoid_Overlap_Duration);
+               Next (C);
+            end loop;
+         end;
+
       elsif Event.Event_Type = Button_Press
         and then Event.Toplevel_Item /= null
         and then Event.Button = 1
@@ -1756,5 +1780,181 @@ package body Gtkada.Canvas_View.Views is
    begin
       return True;
    end Is_Unique_For_Item;
+
+   -------------------
+   -- Reserve_Space --
+   -------------------
+
+   procedure Reserve_Space
+     (Self        : not null access Canvas_View_Record'Class;
+      Rect        : Model_Rectangle;
+      Direction   : Move_Direction := Any;
+      Do_Not_Move : Item_Sets.Set := Item_Sets.Empty_Set;
+      Duration    : Standard.Duration := 0.0;
+      Easing      : Easing_Function := Easing_In_Out_Cubic'Access)
+   is
+      use Item_Sets;
+
+      Overlap_Margin : constant Gdouble := 5.0;
+      --  Minimum distance between items
+
+      Moved : Item_Sets.Set := Do_Not_Move;
+      --  The items that have already been moved. An item is never moved twice.
+
+      procedure Process
+        (Item      : not null access Abstract_Item_Record'Class;
+         Box       : Model_Rectangle;
+         Direction : Move_Direction);
+      --  Moves item in the given direction so that it no longer overlaps
+      --  Box.
+
+      procedure Move_Items_In_Box
+        (Box       : Model_Rectangle;
+         Direction : Move_Direction);
+      --  Move all items in the given area
+
+      -------------
+      -- Process --
+      -------------
+
+      procedure Process
+        (Item      : not null access Abstract_Item_Record'Class;
+         Box       : Model_Rectangle;
+         Direction : Move_Direction)
+      is
+         BBox : constant Model_Rectangle := Item.Model_Bounding_Box;
+         Pos  : Point := (BBox.X, BBox.Y);
+         D1, D2, D3, D4 : Gdouble;
+         Dir  : Move_Direction := Direction;
+      begin
+         if Moved.Contains (Abstract_Item (Item)) then
+            return;
+         end if;
+
+         case Direction is
+            when Left =>
+               Pos.X := Box.X - BBox.Width - Overlap_Margin;
+            when Right =>
+               Pos.X := Box.X + Box.Width + Overlap_Margin;
+            when Up =>
+               Pos.Y := Box.Y - BBox.Height - Overlap_Margin;
+            when Down =>
+               Pos.Y := Box.Y + Box.Height + Overlap_Margin;
+            when Horizontal =>
+               D1 := Box.X - BBox.Width - Overlap_Margin - BBox.X;
+               D2 := Box.X + Box.Width + Overlap_Margin - BBox.X;
+               if abs (D1) < abs (D2) then
+                  Dir := Left;
+                  Pos.X := D1 + BBox.X;
+               else
+                  Dir := Right;
+                  Pos.X := D2 + BBox.X;
+               end if;
+
+            when Vertical =>
+               D3 := Box.Y - BBox.Height - Overlap_Margin - BBox.Y;
+               D4 := Box.Y + Box.Height + Overlap_Margin - BBox.Y;
+               if abs (D3) < abs (D4) then
+                  Dir := Up;
+                  Pos.Y := D3 + BBox.Y;
+               else
+                  Dir := Down;
+                  Pos.Y := D4 + BBox.Y;
+               end if;
+
+            when Any =>
+               D1 := Box.X - BBox.Width - Overlap_Margin - BBox.X;
+               D2 := Box.X + Box.Width + Overlap_Margin - BBox.X;
+               if abs (D1) > abs (D2) then
+                  D1 := D2;
+               end if;
+
+               D3 := Box.Y - BBox.Height - Overlap_Margin - BBox.Y;
+               D4 := Box.Y + Box.Height + Overlap_Margin - BBox.Y;
+               if abs (D3) > abs (D4) then
+                  D3 := D4;
+               end if;
+
+               if abs (D1) < abs (D3) then
+                  --  move horizontally
+                  Pos.X := BBox.X + D1;
+                  if D1 = D2 then
+                     Dir := Right;
+                  else
+                     Dir := Left;
+                  end if;
+
+               else
+                  Pos.Y := BBox.Y + D3;
+                  if D3 = D4 then
+                     Dir := Down;
+                  else
+                     Dir := Up;
+                  end if;
+               end if;
+         end case;
+
+         Moved.Include (Abstract_Item (Item));
+
+         --  The new box is slightly less than the overlap margin, since
+         --  otherwise we have the following scenario: move A on top of B.
+         --  Assume B is moved downward (at a distance Overlap_Margin from A).
+         --  If we then move C on top of the left-hand side of A, then A is
+         --  correctly moved to the right, but B is also moved.
+
+         Move_Items_In_Box
+           ((Pos.X - (Overlap_Margin - 1.0),
+             Pos.Y - (Overlap_Margin - 1.0),
+             BBox.Width + 2.0 * Overlap_Margin - 2.0,
+             BBox.Height + 2.0 * Overlap_Margin - 2.0),
+            Direction => Dir);
+
+         if Duration = 0.0 then
+            Item.Set_Position (Pos);
+         else
+            Start (Animate_Position (Item, Pos, Duration, Easing), Self);
+         end if;
+      end Process;
+
+      -----------------------
+      -- Move_Items_In_Box --
+      -----------------------
+
+      procedure Move_Items_In_Box
+        (Box       : Model_Rectangle;
+         Direction : Move_Direction)
+      is
+         To_Move : Item_Sets.Set;
+         C       : Item_Sets.Cursor;
+
+         procedure On_Item (Item : not null access Abstract_Item_Record'Class);
+         --  Process one of the items that was in the original area
+
+         -------------
+         -- On_Item --
+         -------------
+
+         procedure On_Item
+           (Item : not null access Abstract_Item_Record'Class) is
+         begin
+            --  Store in a temporary structure, since modifying the model might
+            --  break the iteration with For_Each_Item.
+            To_Move.Include (Abstract_Item (Item));
+         end On_Item;
+
+      begin
+         Self.Model.For_Each_Item
+           (On_Item'Access, Filter => Kind_Item, In_Area => Box);
+
+         while not To_Move.Is_Empty loop
+            C := To_Move.First;
+            Process (Element (C), Box, Direction => Direction);
+            To_Move.Delete (C);
+         end loop;
+      end Move_Items_In_Box;
+
+   begin
+      Move_Items_In_Box (Rect, Direction);
+   end Reserve_Space;
 
 end Gtkada.Canvas_View.Views;

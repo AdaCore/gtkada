@@ -346,6 +346,12 @@ package Gtkada.Canvas_View is
    end record;
    --  Context to perform the actual drawing
 
+   function Build_Context
+     (Self : not null access Canvas_View_Record'Class)
+      return Draw_Context;
+   --  Returns a draw context for the view. This context is suitable for
+   --  computing sizes (in Refresh_Layout), but not for actual drawing.
+
    --------------------
    -- Abstract Items --
    --------------------
@@ -417,6 +423,13 @@ package Gtkada.Canvas_View is
    --
    --  The bounding box is also used for fast detection on whether the item
    --  might be clicked on by the user.
+
+   procedure Refresh_Layout
+     (Self    : not null access Abstract_Item_Record;
+      Context : Draw_Context) is null;
+   --  Called when Refresh_Layout is called on the model.
+   --  This is an opportunity for the item to update its size for instance, or
+   --  do other computation that might impact the result of Bounding_Box.
 
    procedure Draw
      (Self    : not null access Abstract_Item_Record;
@@ -1056,6 +1069,20 @@ package Gtkada.Canvas_View is
    --  an actual size is known.
    --  If a duration is specified, the scaling and scrolling will be animated
 
+   procedure Avoid_Overlap
+     (Self     : not null access Canvas_View_Record'Class;
+      Avoid    : Boolean;
+      Duration : Standard.Duration := 0.2);
+   --  Sets whether items should avoid overlap when possible.
+   --  When the user is moving items interactively and dropping them in a new
+   --  position, items that would be overlapped are moved aside to make space
+   --  for the new item.
+   --  If Duration is not 0, the other items are animated to the new position.
+   --
+   --  This setting has no effect when you set the position of items
+   --  explicitly via a call to Set_Position. In such cases, you can force
+   --  the behavior manually by calling Gtkada.Canvas_View.Views.Reserve_Space.
+
    type Page_Format is record
       Width_In_Inches, Height_In_Inches : Gdouble;
    end record;
@@ -1319,12 +1346,6 @@ package Gtkada.Canvas_View is
    --  item (gradients, centering or right-aligning objects,...)
    --  Alignments and margins are automatically handled by the parent.
 
-   procedure Refresh_Layout
-     (Self    : not null access Container_Item_Record;
-      Context : Draw_Context);
-   --  Recompute the layout for Self and its children, i.e. do the full size
-   --  negocitation
-
    procedure For_Each_Child
      (Self     : not null access Container_Item_Record'Class;
       Callback : not null access procedure
@@ -1336,6 +1357,9 @@ package Gtkada.Canvas_View is
       Context : Draw_Context);
    --  Display all the children of Self
 
+   overriding procedure Refresh_Layout
+     (Self    : not null access Container_Item_Record;
+      Context : Draw_Context);
    overriding procedure Set_Position
      (Self     : not null access Container_Item_Record;
       Pos      : Gtkada.Style.Point);
@@ -1943,6 +1967,9 @@ private
 
       Topleft_At_Drag_Start : Model_Point;
       --  Toplevel at the stat of the drag
+
+      Avoid_Overlap : Boolean := False;
+      Avoid_Overlap_Duration : Standard.Duration := 0.2;
 
       Continuous_Scroll : Continuous_Scroll_Data;
       Snap              : Snap_Data;

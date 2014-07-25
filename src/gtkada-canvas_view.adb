@@ -2657,6 +2657,18 @@ package body Gtkada.Canvas_View is
       end if;
    end Refresh_Link_Layout;
 
+   -------------------
+   -- Build_Context --
+   -------------------
+
+   function Build_Context
+     (Self : not null access Canvas_View_Record'Class)
+      return Draw_Context
+   is
+   begin
+      return (Cr => <>, Layout => Self.Layout, View => Canvas_View (Self));
+   end Build_Context;
+
    --------------------
    -- Refresh_Layout --
    --------------------
@@ -2671,12 +2683,9 @@ package body Gtkada.Canvas_View is
       procedure Do_Container_Layout
         (Item : not null access Abstract_Item_Record'Class);
       procedure Do_Container_Layout
-        (Item : not null access Abstract_Item_Record'Class)
-      is
+        (Item : not null access Abstract_Item_Record'Class) is
       begin
-         if Item.all in Container_Item_Record'Class then
-            Container_Item_Record'Class (Item.all).Refresh_Layout (Context);
-         end if;
+         Container_Item_Record'Class (Item.all).Refresh_Layout (Context);
       end Do_Container_Layout;
 
    begin
@@ -4543,5 +4552,19 @@ package body Gtkada.Canvas_View is
    begin
       return Self.To;
    end Get_To;
+
+   -------------------
+   -- Avoid_Overlap --
+   -------------------
+
+   procedure Avoid_Overlap
+     (Self     : not null access Canvas_View_Record'Class;
+      Avoid    : Boolean;
+      Duration : Standard.Duration := 0.2)
+   is
+   begin
+      Self.Avoid_Overlap := Avoid;
+      Self.Avoid_Overlap_Duration := Duration;
+   end Avoid_Overlap;
 
 end Gtkada.Canvas_View;

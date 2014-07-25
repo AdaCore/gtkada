@@ -88,6 +88,9 @@ package body Create_Canvas_View_Events is
         & " from the other items. This provides a convenient way to align"
         & " items."
         & ASCII.LF
+        & "  - @boverlap@B avoidance: when an item is moved on top of another"
+        & " item, the latter is moved aside."
+        & ASCII.LF
         & "  - @bscrolling@B by dragging the background with the mouse."
         & ASCII.LF
         & "  - @bzooming@B with alt-mouse wheel." & ASCII.LF
@@ -182,6 +185,7 @@ package body Create_Canvas_View_Events is
       Canvas := new Demo_View_Record;
       Gtkada.Canvas_View.Initialize (Canvas);
       Canvas.Set_Grid_Size (30.0);
+      Canvas.Avoid_Overlap (True);
       Canvas.Set_Snap (Snap_To_Grid   => True,
                        Snap_To_Guides => True);
       --  Connect this one first so that all events are traced

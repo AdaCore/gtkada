@@ -134,12 +134,14 @@ package Gtkada.Canvas_View.Views is
    --  these might be useful as is, or a starting point for your own callback
 
    function On_Item_Event_Move_Item
-     (View   : not null access Glib.Object.GObject_Record'Class;
+     (View  : not null access Glib.Object.GObject_Record'Class;
       Event : Event_Details_Access)
       return Boolean;
    --  Add this to the list of callbacks for "item_event" to enable dragging
    --  items with the mouse.
    --  If shift is pressed, no snapping on the grid or smart guides occurs.
+   --  You can call Avoid_Overlap below if you want over items to be moved
+   --  aside to avoid overlap.
 
    function On_Item_Event_Scroll_Background
      (View   : not null access Glib.Object.GObject_Record'Class;
@@ -409,6 +411,29 @@ package Gtkada.Canvas_View.Views is
       Easing         : Easing_Function := Easing_In_Out_Cubic'Access)
       return Animator_Access;
    --  Scroll the canvas until the top-left corner reaches the given coordinate
+
+   --------------
+   -- Overlaps --
+   --------------
+   --  The following subprograms can be used to avoid overlap of items.
+
+   type Move_Direction is
+     (Left, Right, Horizontal, Up, Down, Vertical, Any);
+   --  In which direction items should be moved to make space for other items.
+
+   procedure Reserve_Space
+     (Self        : not null access Canvas_View_Record'Class;
+      Rect        : Model_Rectangle;
+      Direction   : Move_Direction := Any;
+      Do_Not_Move : Item_Sets.Set := Item_Sets.Empty_Set;
+      Duration    : Standard.Duration := 0.0;
+      Easing      : Easing_Function := Easing_In_Out_Cubic'Access);
+   --  Move aside all items that intersect with the rectangle, so that the
+   --  latter ends up being an empty area.
+   --  The direction constraints what is allowed. By default, the items are
+   --  moved in the direction of the minimal distance. Items can also end up
+   --  pushing other items in turn if they need some extra space.
+   --  Duration can be specified to animate items to their new position.
 
 private
    type Minimap_View_Record is new Canvas_View_Record with record
