@@ -1,2 +1,3 @@
 pragma Restrictions (No_Implementation_Attributes);
+--  pragma Restrictions (No_Streams);
 --  pragma Initialize_Scalars;

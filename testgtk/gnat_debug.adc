@@ -1,3 +1,5 @@
 --  Ideally, we would share the same file src/gnat_debug.adc, but this
 --  means we need to build testgtk with No_Implementation_Attributes.
+
 --  pragma Initialize_Scalars;
+--  pragma Restrictions (No_Streams);

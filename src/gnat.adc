@@ -1,1 +1,2 @@
 pragma Restrictions (No_Implementation_Attributes);
+--  pragma Restrictions (No_Streams);
