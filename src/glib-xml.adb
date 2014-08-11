@@ -52,7 +52,7 @@ package body Glib.XML is
      (FD   : Integer;
       A    : System.Address;
       N    : Integer) return Integer;
-   pragma Import (C, read, "read");
+   pragma Import (C, Read, "read");
    --  Read N bytes to address A from file referenced by FD. Returned value is
    --  count of bytes actually read, which can be less than N at EOF.
 
@@ -60,7 +60,7 @@ package body Glib.XML is
      (FD   : Integer;
       S    : String;
       N    : Integer);
-   pragma Import (C, write, "write");
+   pragma Import (C, Write, "write");
    --  Write N bytes from address A to file referenced by FD. The returned
    --  value is the number of bytes written, which can be less than N if a
    --  disk full condition was detected.
