@@ -23,6 +23,8 @@
 ------------------------------------------------------------------------------
 
 --  <description>
+--  NOTE: this package is deprecated - prefer GtkAda.Canvas_View.
+--
 --  This package provides an interactive canvas, on which the user can put
 --  items, move them with the mouse, etc. The items can be connected together,
 --  and the connections remain active while the items are moved.
