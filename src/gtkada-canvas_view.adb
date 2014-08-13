@@ -1480,6 +1480,18 @@ package body Gtkada.Canvas_View is
       Self.Queue_Draw;
    end Set_Scale;
 
+   -----------------
+   -- Set_Topleft --
+   -----------------
+
+   procedure Set_Topleft
+     (Self         : not null access Canvas_View_Record;
+      Topleft      : Model_Point) is
+   begin
+      Self.Topleft := Topleft;
+      Self.Queue_Draw;
+   end Set_Topleft;
+
    ---------------
    -- Center_On --
    ---------------

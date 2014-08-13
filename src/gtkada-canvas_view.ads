@@ -1042,6 +1042,14 @@ package Gtkada.Canvas_View is
    --  See also Gtkada.Canvas_View.Views.Animate_Scale for a way to do this
    --  change via an animation.
 
+   procedure Set_Topleft
+     (Self         : not null access Canvas_View_Record;
+      Topleft      : Model_Point);
+   --  Set a specific position for the topleft corner of the visible area.
+   --  This function is mostly useful to restore previous settings (which you
+   --  can get through Get_Visible_Area). Interactively, it is likely better
+   --  to call one of Center_On, Scroll_Into_View or Scale_To_Fit.
+
    procedure Center_On
      (Self         : not null access Canvas_View_Record;
       Center_On    : Model_Point;
