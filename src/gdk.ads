@@ -36,15 +36,13 @@ with System;
 pragma Warnings (On);
 
 package Gdk is
-   pragma Preelaborate;
-
-   type Gdk_GC is new Glib.C_Proxy;
+   --  A Gdk_Window, in gtk+, is really a GObject. That means it comes with
+   --  reference counting. Changing this in GtkAda would break a lot of code
+   --  though, so we only bind it as a C_Proxy, but provide Gdk.Window.Ref
+   --  and Gdk.Window.Unref to access the reference counting support.
    type Gdk_Window is new Glib.C_Proxy;
-   type Gdk_Cursor is new Glib.C_Proxy;
-   type Gdk_Colormap is new Glib.C_Proxy;
-   type Gdk_Visual is new Glib.C_Proxy;
-   type Gdk_Font is new Glib.C_Proxy;
-   type Gdk_Image is new Glib.C_Proxy;
-   type Gdk_Region is new Glib.C_Proxy;
+
+   type Gdk_Cursor is new Glib.C_Proxy;  --  private type in C
+   type Gdk_Visual is new Glib.C_Proxy;  --  private type in C
    type Gdk_Window_Attr is new Glib.C_Proxy;
 end Gdk;

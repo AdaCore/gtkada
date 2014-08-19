@@ -28,18 +28,10 @@
 --  gtk+. It is able to handle any kind of visual (monochrome, greyscale,
 --  color with different depths, ...), but provides a common and easy
 --  interface for all of them.
---  Some of these functions expect a Colormap. There are two ways you can
---  get such a colormap, either a system default colormap or a per-widget
---  colormap. It is recommended, unless you are writing your own new widget,
---  to always use the system default Colormap. All the functions to get
---  these colormaps are found in Gtk.Widget.
 --
 --  Getting the Red/Green/Blue components can be done through Parse, and is
 --  actually recommended, since the exact color generally depends on the
 --  visual your application is running on.
---
---  Note for users transitioning from gtk+ 1.2: the Get_System call is now
---  obsolete, and you should use Gtk.Widget.Get_Default_Colormap instead.
 --
 --  </description>
 --  <c_version>1.3.6</c_version>
@@ -76,24 +68,12 @@ package Gdk.Color is
    --  context, although this exact specification depends on the function you
    --  want to use.
 
-   subtype Gdk_Colormap is Gdk.Gdk_Colormap;
-   --  The set of colors the can be displayed on the screen.
-   --  When the screen is not a true-color screen (ie there is only a limited
-   --  number of possible colors, like 256), the colors are in fact indexes
-   --  into a colormap, which gives the components of the color.
-   --  This is the same concept as a palette.
-
-   Null_Colormap : constant Gdk_Colormap;
-
    Wrong_Color : exception;
    --  Exception raised when some functions below could not find or allocate
    --  a color on the user's system.
 
    function Gdk_Color_Type return Glib.GType;
    --  Return the internal gtk+ types associated with a color
-
-   function Gdk_Colormap_Type return Glib.GType;
-   --  Return the internal gtk+ types associated with a colormap
 
    ---------------------------------------------
    -- Setting/Getting the fields of Gdk_Color --
@@ -105,7 +85,7 @@ package Gdk.Color is
    --  above.
 
    procedure Set_Pixel (Color : in out Gdk_Color; Pixel : Guint32);
-   --  This function should almost never be used. Instead, use Alloc_Color.
+   --  This function should almost never be used.
 
    function Red (Color : Gdk_Color) return Guint16;
    --  Return the Red field of Color.
@@ -122,14 +102,6 @@ package Gdk.Color is
    ------------------------------------
    -- Creating and Destroying colors --
    ------------------------------------
-
-   procedure Ref (Colormap : Gdk_Colormap);
-   --  Increment the ref-count for the color.
-
-   procedure Unref (Colormap : Gdk_Colormap);
-   --  Unref is the only way to destroy a colormap once you no longer need it.
-   --  Note that because gtk+ uses reference counts, the colormap will not
-   --  be actually destroyed while at least one object is using it.
 
    procedure Copy (Source : Gdk_Color; Destination : out Gdk_Color);
    --  Copy the Source color to Destination.
@@ -196,8 +168,6 @@ package Gdk.Color is
    --  </doc_ignore>
 
 private
-   Null_Colormap : constant Gdk_Colormap := null;
-
    type Gdk_Color is record
       Pixel : Guint32;
       Red   : Guint16;
@@ -223,29 +193,4 @@ private
    pragma Inline (Pixel);
    pragma Inline (Set_Property);
    pragma Inline (Get_Property);
-   pragma Import (C, Ref, "gdk_colormap_ref");
-   pragma Import (C, Unref, "gdk_colormap_unref");
-   pragma Import (C, Gdk_Colormap_Type, "gdk_colormap_get_type");
 end Gdk.Color;
-
---  <example>
---  --  Here is an example how you can allocate a new color, when you know
---  --  its red/green/blue components: Note that we allocate white in fact
---  --  since the maximal value for color components is 65535.
---     Color   : Gdk_Color;
---     Success : Boolean;
---     Set_Rbg (Color, 65535, 65535, 65535);
---     Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
---                  Color      => Color,
---                  Writeable  => False,
---                  Best_Match => True,
---                  Success    => Success);
---     if not Success then
---         ...;  --  allocation failed
---     end if;
---  </example>
---
---  missing:
---  gdk_color_get_type
---  gdk_colormap_get_type
---  gdk_color_free,  not needed in Ada
