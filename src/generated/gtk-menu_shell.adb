@@ -50,7 +50,7 @@ package body Gtk.Menu_Shell is
       procedure Internal
          (Menu_Shell       : System.Address;
           Menu_Item        : System.Address;
-          Force_Deactivate : Integer);
+          Force_Deactivate : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_shell_activate_item");
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Menu_Item), Boolean'Pos (Force_Deactivate));
@@ -86,7 +86,7 @@ package body Gtk.Menu_Shell is
          (Menu_Shell       : System.Address;
           Model            : System.Address;
           Action_Namespace : Interfaces.C.Strings.chars_ptr;
-          With_Separators  : Integer);
+          With_Separators  : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_shell_bind_model");
       Tmp_Action_Namespace : Interfaces.C.Strings.chars_ptr;
    begin
@@ -169,7 +169,7 @@ package body Gtk.Menu_Shell is
    function Get_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record) return Boolean
    is
-      function Internal (Menu_Shell : System.Address) return Integer;
+      function Internal (Menu_Shell : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_menu_shell_get_take_focus");
    begin
       return Internal (Get_Object (Menu_Shell)) /= 0;
@@ -219,7 +219,7 @@ package body Gtk.Menu_Shell is
    is
       procedure Internal
          (Menu_Shell       : System.Address;
-          Search_Sensitive : Integer);
+          Search_Sensitive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_shell_select_first");
    begin
       Internal (Get_Object (Menu_Shell), Boolean'Pos (Search_Sensitive));
@@ -249,7 +249,9 @@ package body Gtk.Menu_Shell is
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
        Take_Focus : Boolean)
    is
-      procedure Internal (Menu_Shell : System.Address; Take_Focus : Integer);
+      procedure Internal
+         (Menu_Shell : System.Address;
+          Take_Focus : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_shell_set_take_focus");
    begin
       Internal (Get_Object (Menu_Shell), Boolean'Pos (Take_Focus));

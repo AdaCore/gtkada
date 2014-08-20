@@ -512,7 +512,7 @@ package body Gtk.Combo_Box_Text is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -530,7 +530,7 @@ package body Gtk.Combo_Box_Text is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

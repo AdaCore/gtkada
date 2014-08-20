@@ -85,7 +85,7 @@ package body Gtk.Button_Box is
    is
       function Internal
          (Widget : System.Address;
-          Child  : System.Address) return Integer;
+          Child  : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_button_box_get_child_non_homogeneous");
    begin
       return Internal (Get_Object (Widget), Get_Object (Child)) /= 0;
@@ -102,7 +102,7 @@ package body Gtk.Button_Box is
    is
       function Internal
          (Widget : System.Address;
-          Child  : System.Address) return Integer;
+          Child  : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_button_box_get_child_secondary");
    begin
       return Internal (Get_Object (Widget), Get_Object (Child)) /= 0;
@@ -135,7 +135,7 @@ package body Gtk.Button_Box is
       procedure Internal
          (Widget          : System.Address;
           Child           : System.Address;
-          Non_Homogeneous : Integer);
+          Non_Homogeneous : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_button_box_set_child_non_homogeneous");
    begin
       Internal (Get_Object (Widget), Get_Object (Child), Boolean'Pos (Non_Homogeneous));
@@ -153,7 +153,7 @@ package body Gtk.Button_Box is
       procedure Internal
          (Widget       : System.Address;
           Child        : System.Address;
-          Is_Secondary : Integer);
+          Is_Secondary : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_button_box_set_child_secondary");
    begin
       Internal (Get_Object (Widget), Get_Object (Child), Boolean'Pos (Is_Secondary));

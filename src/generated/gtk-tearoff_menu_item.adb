@@ -136,7 +136,7 @@ package body Gtk.Tearoff_Menu_Item is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tearoff_Menu_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -216,7 +216,9 @@ package body Gtk.Tearoff_Menu_Item is
       (Self           : not null access Gtk_Tearoff_Menu_Item_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

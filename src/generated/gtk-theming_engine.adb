@@ -293,10 +293,10 @@ package body Gtk.Theming_Engine is
    is
       function Internal
          (Self        : System.Address;
-          Style_Class : Interfaces.C.Strings.chars_ptr) return Integer;
+          Style_Class : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_has_class");
       Tmp_Style_Class : Interfaces.C.Strings.chars_ptr := New_String (Style_Class);
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Style_Class);
       Free (Tmp_Style_Class);
@@ -315,11 +315,12 @@ package body Gtk.Theming_Engine is
       function Internal
          (Self         : System.Address;
           Style_Region : Interfaces.C.Strings.chars_ptr;
-          Acc_Flags    : access Gtk.Enums.Gtk_Region_Flags) return Integer;
+          Acc_Flags    : access Gtk.Enums.Gtk_Region_Flags)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_has_region");
       Acc_Flags        : aliased Gtk.Enums.Gtk_Region_Flags;
       Tmp_Style_Region : Interfaces.C.Strings.chars_ptr := New_String (Style_Region);
-      Tmp_Return       : Integer;
+      Tmp_Return       : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Style_Region, Acc_Flags'Access);
       Free (Tmp_Style_Region);
@@ -341,11 +342,11 @@ package body Gtk.Theming_Engine is
       function Internal
          (Self       : System.Address;
           Color_Name : Interfaces.C.Strings.chars_ptr;
-          Acc_Color  : access Gdk.RGBA.Gdk_RGBA) return Integer;
+          Acc_Color  : access Gdk.RGBA.Gdk_RGBA) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_lookup_color");
       Acc_Color      : aliased Gdk.RGBA.Gdk_RGBA;
       Tmp_Color_Name : Interfaces.C.Strings.chars_ptr := New_String (Color_Name);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Color_Name, Acc_Color'Access);
       Free (Tmp_Color_Name);
@@ -365,10 +366,10 @@ package body Gtk.Theming_Engine is
       function Internal
          (Self         : System.Address;
           State        : Gtk.Enums.Gtk_State_Type;
-          Acc_Progress : access Gdouble) return Integer;
+          Acc_Progress : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_state_is_running");
       Acc_Progress : aliased Gdouble;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), State, Acc_Progress'Access);
       Progress.all := Acc_Progress;

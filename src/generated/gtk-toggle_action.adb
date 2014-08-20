@@ -125,7 +125,7 @@ package body Gtk.Toggle_Action is
    function Get_Active
       (Action : not null access Gtk_Toggle_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_toggle_action_get_active");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -138,7 +138,7 @@ package body Gtk.Toggle_Action is
    function Get_Draw_As_Radio
       (Action : not null access Gtk_Toggle_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_toggle_action_get_draw_as_radio");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -152,7 +152,9 @@ package body Gtk.Toggle_Action is
       (Action    : not null access Gtk_Toggle_Action_Record;
        Is_Active : Boolean)
    is
-      procedure Internal (Action : System.Address; Is_Active : Integer);
+      procedure Internal
+         (Action    : System.Address;
+          Is_Active : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_toggle_action_set_active");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Is_Active));
@@ -166,7 +168,9 @@ package body Gtk.Toggle_Action is
       (Action        : not null access Gtk_Toggle_Action_Record;
        Draw_As_Radio : Boolean)
    is
-      procedure Internal (Action : System.Address; Draw_As_Radio : Integer);
+      procedure Internal
+         (Action        : System.Address;
+          Draw_As_Radio : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_toggle_action_set_draw_as_radio");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Draw_As_Radio));

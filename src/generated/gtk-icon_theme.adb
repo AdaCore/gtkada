@@ -285,10 +285,11 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Info     : System.Address;
-          Acc_Rectangle : access Gdk.Rectangle.Gdk_Rectangle) return Integer;
+          Acc_Rectangle : access Gdk.Rectangle.Gdk_Rectangle)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_info_get_embedded_rect");
       Acc_Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle;
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Info), Acc_Rectangle'Access);
       Rectangle := Acc_Rectangle;
@@ -383,10 +384,10 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr) return Integer;
+          Icon_Name  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_theme_has_icon");
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
@@ -492,10 +493,10 @@ package body Gtk.Icon_Theme is
           Success_Color    : System.Address;
           Warning_Color    : System.Address;
           Error_Color      : System.Address;
-          Acc_Was_Symbolic : access Integer) return System.Address;
+          Acc_Was_Symbolic : access Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_symbolic");
       Acc_Was_Symbolic     : aliased Boolean;
-      Tmp_Acc_Was_Symbolic : aliased Integer;
+      Tmp_Acc_Was_Symbolic : aliased Glib.Gboolean;
       Stub_Gdk_Pixbuf      : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return           : System.Address;
    begin
@@ -519,10 +520,10 @@ package body Gtk.Icon_Theme is
       function Internal
          (Icon_Info        : System.Address;
           Context          : System.Address;
-          Acc_Was_Symbolic : access Integer) return System.Address;
+          Acc_Was_Symbolic : access Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_symbolic_for_context");
       Acc_Was_Symbolic     : aliased Boolean;
-      Tmp_Acc_Was_Symbolic : aliased Integer;
+      Tmp_Acc_Was_Symbolic : aliased Glib.Gboolean;
       Stub_Gdk_Pixbuf      : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return           : System.Address;
    begin
@@ -548,10 +549,10 @@ package body Gtk.Icon_Theme is
          (Icon_Info        : System.Address;
           Style            : System.Address;
           State            : Gtk.Enums.Gtk_State_Type;
-          Acc_Was_Symbolic : access Integer) return System.Address;
+          Acc_Was_Symbolic : access Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_symbolic_for_style");
       Acc_Was_Symbolic     : aliased Boolean;
-      Tmp_Acc_Was_Symbolic : aliased Integer;
+      Tmp_Acc_Was_Symbolic : aliased Glib.Gboolean;
       Stub_Gdk_Pixbuf      : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return           : System.Address;
    begin
@@ -634,7 +635,7 @@ package body Gtk.Icon_Theme is
    function Rescan_If_Needed
       (Icon_Theme : not null access Gtk_Icon_Theme_Record) return Boolean
    is
-      function Internal (Icon_Theme : System.Address) return Integer;
+      function Internal (Icon_Theme : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_theme_rescan_if_needed");
    begin
       return Internal (Get_Object (Icon_Theme)) /= 0;
@@ -673,7 +674,7 @@ package body Gtk.Icon_Theme is
    is
       procedure Internal
          (Icon_Info       : System.Address;
-          Raw_Coordinates : Integer);
+          Raw_Coordinates : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_info_set_raw_coordinates");
    begin
       Internal (Get_Object (Icon_Info), Boolean'Pos (Raw_Coordinates));

@@ -78,7 +78,7 @@ package body Gtk.Handle_Box is
    function Get_Child_Detached
       (Handle_Box : not null access Gtk_Handle_Box_Record) return Boolean
    is
-      function Internal (Handle_Box : System.Address) return Integer;
+      function Internal (Handle_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_handle_box_get_child_detached");
    begin
       return Internal (Get_Object (Handle_Box)) /= 0;

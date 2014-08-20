@@ -181,10 +181,11 @@ package body Gtk.Gradient is
       function Internal
          (Self                  : System.Address;
           Props                 : System.Address;
-          Acc_Resolved_Gradient : access Cairo.Cairo_Pattern) return Integer;
+          Acc_Resolved_Gradient : access Cairo.Cairo_Pattern)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_gradient_resolve");
       Acc_Resolved_Gradient : aliased Cairo.Cairo_Pattern;
-      Tmp_Return            : Integer;
+      Tmp_Return            : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Props), Acc_Resolved_Gradient'Access);
       Resolved_Gradient.all := Acc_Resolved_Gradient;

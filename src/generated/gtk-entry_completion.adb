@@ -96,7 +96,7 @@ package body Gtk.Entry_Completion is
       (Completion : System.Address;
        Key        : Interfaces.C.Strings.chars_ptr;
        Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data  : System.Address) return Integer;
+       User_Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
@@ -128,7 +128,7 @@ package body Gtk.Entry_Completion is
       (Completion : System.Address;
        Key        : Interfaces.C.Strings.chars_ptr;
        Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data  : System.Address) return Integer
+       User_Data  : System.Address) return Glib.Gboolean
    is
       Func                      : constant Gtk_Entry_Completion_Match_Func := To_Gtk_Entry_Completion_Match_Func (User_Data);
       Stub_Gtk_Entry_Completion : Gtk_Entry_Completion_Record;
@@ -305,7 +305,7 @@ package body Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean
    is
-      function Internal (Completion : System.Address) return Integer;
+      function Internal (Completion : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_completion_get_inline_completion");
    begin
       return Internal (Get_Object (Completion)) /= 0;
@@ -319,7 +319,7 @@ package body Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean
    is
-      function Internal (Completion : System.Address) return Integer;
+      function Internal (Completion : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_completion_get_inline_selection");
    begin
       return Internal (Get_Object (Completion)) /= 0;
@@ -361,7 +361,7 @@ package body Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean
    is
-      function Internal (Completion : System.Address) return Integer;
+      function Internal (Completion : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_completion");
    begin
       return Internal (Get_Object (Completion)) /= 0;
@@ -375,7 +375,7 @@ package body Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean
    is
-      function Internal (Completion : System.Address) return Integer;
+      function Internal (Completion : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_set_width");
    begin
       return Internal (Get_Object (Completion)) /= 0;
@@ -389,7 +389,7 @@ package body Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record)
        return Boolean
    is
-      function Internal (Completion : System.Address) return Integer;
+      function Internal (Completion : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_completion_get_popup_single_match");
    begin
       return Internal (Get_Object (Completion)) /= 0;
@@ -552,7 +552,7 @@ package body Gtk.Entry_Completion is
    is
       procedure Internal
          (Completion        : System.Address;
-          Inline_Completion : Integer);
+          Inline_Completion : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_completion_set_inline_completion");
    begin
       Internal (Get_Object (Completion), Boolean'Pos (Inline_Completion));
@@ -568,7 +568,7 @@ package body Gtk.Entry_Completion is
    is
       procedure Internal
          (Completion       : System.Address;
-          Inline_Selection : Integer);
+          Inline_Selection : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_completion_set_inline_selection");
    begin
       Internal (Get_Object (Completion), Boolean'Pos (Inline_Selection));
@@ -605,7 +605,7 @@ package body Gtk.Entry_Completion is
          (Completion : System.Address;
           Key        : Interfaces.C.Strings.chars_ptr;
           Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data  : System.Address) return Integer;
+          User_Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  A function which decides whether the row indicated by Iter matches a
       --  given Key, and should be displayed as a possible completion for Key.
@@ -626,7 +626,7 @@ package body Gtk.Entry_Completion is
          (Completion : System.Address;
           Key        : Interfaces.C.Strings.chars_ptr;
           Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data  : System.Address) return Integer
+          User_Data  : System.Address) return Glib.Gboolean
       is
          D                         : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Entry_Completion : Gtk.Entry_Completion.Gtk_Entry_Completion_Record;
@@ -693,7 +693,7 @@ package body Gtk.Entry_Completion is
    is
       procedure Internal
          (Completion       : System.Address;
-          Popup_Completion : Integer);
+          Popup_Completion : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_completion_set_popup_completion");
    begin
       Internal (Get_Object (Completion), Boolean'Pos (Popup_Completion));
@@ -709,7 +709,7 @@ package body Gtk.Entry_Completion is
    is
       procedure Internal
          (Completion      : System.Address;
-          Popup_Set_Width : Integer);
+          Popup_Set_Width : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_completion_set_popup_set_width");
    begin
       Internal (Get_Object (Completion), Boolean'Pos (Popup_Set_Width));
@@ -725,7 +725,7 @@ package body Gtk.Entry_Completion is
    is
       procedure Internal
          (Completion         : System.Address;
-          Popup_Single_Match : Integer);
+          Popup_Single_Match : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_completion_set_popup_single_match");
    begin
       Internal (Get_Object (Completion), Boolean'Pos (Popup_Single_Match));
@@ -824,7 +824,7 @@ package body Gtk.Entry_Completion is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -842,7 +842,7 @@ package body Gtk.Entry_Completion is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

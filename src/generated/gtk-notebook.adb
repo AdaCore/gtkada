@@ -260,7 +260,7 @@ package body Gtk.Notebook is
    function Get_Scrollable
       (Notebook : not null access Gtk_Notebook_Record) return Boolean
    is
-      function Internal (Notebook : System.Address) return Integer;
+      function Internal (Notebook : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_notebook_get_scrollable");
    begin
       return Internal (Get_Object (Notebook)) /= 0;
@@ -273,7 +273,7 @@ package body Gtk.Notebook is
    function Get_Show_Border
       (Notebook : not null access Gtk_Notebook_Record) return Boolean
    is
-      function Internal (Notebook : System.Address) return Integer;
+      function Internal (Notebook : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_notebook_get_show_border");
    begin
       return Internal (Get_Object (Notebook)) /= 0;
@@ -286,7 +286,7 @@ package body Gtk.Notebook is
    function Get_Show_Tabs
       (Notebook : not null access Gtk_Notebook_Record) return Boolean
    is
-      function Internal (Notebook : System.Address) return Integer;
+      function Internal (Notebook : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_notebook_get_show_tabs");
    begin
       return Internal (Get_Object (Notebook)) /= 0;
@@ -303,7 +303,7 @@ package body Gtk.Notebook is
    is
       function Internal
          (Notebook : System.Address;
-          Child    : System.Address) return Integer;
+          Child    : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_notebook_get_tab_detachable");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child)) /= 0;
@@ -383,7 +383,7 @@ package body Gtk.Notebook is
    is
       function Internal
          (Notebook : System.Address;
-          Child    : System.Address) return Integer;
+          Child    : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_notebook_get_tab_reorderable");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child)) /= 0;
@@ -676,7 +676,9 @@ package body Gtk.Notebook is
       (Notebook   : not null access Gtk_Notebook_Record;
        Scrollable : Boolean := True)
    is
-      procedure Internal (Notebook : System.Address; Scrollable : Integer);
+      procedure Internal
+         (Notebook   : System.Address;
+          Scrollable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_notebook_set_scrollable");
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Scrollable));
@@ -690,7 +692,9 @@ package body Gtk.Notebook is
       (Notebook    : not null access Gtk_Notebook_Record;
        Show_Border : Boolean := True)
    is
-      procedure Internal (Notebook : System.Address; Show_Border : Integer);
+      procedure Internal
+         (Notebook    : System.Address;
+          Show_Border : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_notebook_set_show_border");
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Show_Border));
@@ -704,7 +708,9 @@ package body Gtk.Notebook is
       (Notebook  : not null access Gtk_Notebook_Record;
        Show_Tabs : Boolean := True)
    is
-      procedure Internal (Notebook : System.Address; Show_Tabs : Integer);
+      procedure Internal
+         (Notebook  : System.Address;
+          Show_Tabs : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_notebook_set_show_tabs");
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Show_Tabs));
@@ -722,7 +728,7 @@ package body Gtk.Notebook is
       procedure Internal
          (Notebook   : System.Address;
           Child      : System.Address;
-          Detachable : Integer);
+          Detachable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_notebook_set_tab_detachable");
    begin
       Internal (Get_Object (Notebook), Get_Object (Child), Boolean'Pos (Detachable));
@@ -794,7 +800,7 @@ package body Gtk.Notebook is
       procedure Internal
          (Notebook    : System.Address;
           Child       : System.Address;
-          Reorderable : Integer);
+          Reorderable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_notebook_set_tab_reorderable");
    begin
       Internal (Get_Object (Notebook), Get_Object (Child), Boolean'Pos (Reorderable));

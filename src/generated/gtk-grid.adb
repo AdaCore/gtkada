@@ -139,7 +139,7 @@ package body Gtk.Grid is
    function Get_Column_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_grid_get_column_homogeneous");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -165,7 +165,7 @@ package body Gtk.Grid is
    function Get_Row_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_grid_get_row_homogeneous");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -238,7 +238,9 @@ package body Gtk.Grid is
       (Self        : not null access Gtk_Grid_Record;
        Homogeneous : Boolean)
    is
-      procedure Internal (Self : System.Address; Homogeneous : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Homogeneous : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_grid_set_column_homogeneous");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Homogeneous));
@@ -266,7 +268,9 @@ package body Gtk.Grid is
       (Self        : not null access Gtk_Grid_Record;
        Homogeneous : Boolean)
    is
-      procedure Internal (Self : System.Address; Homogeneous : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Homogeneous : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_grid_set_row_homogeneous");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Homogeneous));

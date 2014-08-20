@@ -96,7 +96,7 @@ package body Gtk.Size_Group is
    function Get_Ignore_Hidden
       (Size_Group : not null access Gtk_Size_Group_Record) return Boolean
    is
-      function Internal (Size_Group : System.Address) return Integer;
+      function Internal (Size_Group : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_size_group_get_ignore_hidden");
    begin
       return Internal (Get_Object (Size_Group)) /= 0;
@@ -158,7 +158,7 @@ package body Gtk.Size_Group is
    is
       procedure Internal
          (Size_Group    : System.Address;
-          Ignore_Hidden : Integer);
+          Ignore_Hidden : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_size_group_set_ignore_hidden");
    begin
       Internal (Get_Object (Size_Group), Boolean'Pos (Ignore_Hidden));

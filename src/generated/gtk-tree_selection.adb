@@ -106,8 +106,8 @@ package body Gtk.Tree_Selection is
       (Selection               : System.Address;
        Model                   : Gtk.Tree_Model.Gtk_Tree_Model;
        Path                    : System.Address;
-       Path_Currently_Selected : Integer;
-       Data                    : System.Address) return Integer;
+       Path_Currently_Selected : Glib.Gboolean;
+       Data                    : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Selection_Func);
    --  "selection": A Gtk.Tree_Selection.Gtk_Tree_Selection
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model being viewed
@@ -138,8 +138,8 @@ package body Gtk.Tree_Selection is
       (Selection               : System.Address;
        Model                   : Gtk.Tree_Model.Gtk_Tree_Model;
        Path                    : System.Address;
-       Path_Currently_Selected : Integer;
-       Data                    : System.Address) return Integer
+       Path_Currently_Selected : Glib.Gboolean;
+       Data                    : System.Address) return Glib.Gboolean
    is
       Func                    : constant Gtk_Tree_Selection_Func := To_Gtk_Tree_Selection_Func (Data);
       Stub_Gtk_Tree_Selection : Gtk_Tree_Selection_Record;
@@ -256,7 +256,7 @@ package body Gtk.Tree_Selection is
    is
       function Internal
          (Selection : System.Address;
-          Iter      : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
+          Iter      : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_selection_iter_is_selected");
    begin
       return Internal (Get_Object (Selection), Iter) /= 0;
@@ -272,7 +272,7 @@ package body Gtk.Tree_Selection is
    is
       function Internal
          (Selection : System.Address;
-          Path      : System.Address) return Integer;
+          Path      : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_selection_path_is_selected");
    begin
       return Internal (Get_Object (Selection), Get_Object (Path)) /= 0;
@@ -460,8 +460,8 @@ package body Gtk.Tree_Selection is
          (Selection               : System.Address;
           Model                   : Gtk.Tree_Model.Gtk_Tree_Model;
           Path                    : System.Address;
-          Path_Currently_Selected : Integer;
-          Data                    : System.Address) return Integer;
+          Path_Currently_Selected : Glib.Gboolean;
+          Data                    : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Tree_Selection.Set_Select_Function to filter
       --  whether or not a row may be selected. It is called whenever a row's
@@ -481,8 +481,8 @@ package body Gtk.Tree_Selection is
          (Selection               : System.Address;
           Model                   : Gtk.Tree_Model.Gtk_Tree_Model;
           Path                    : System.Address;
-          Path_Currently_Selected : Integer;
-          Data                    : System.Address) return Integer
+          Path_Currently_Selected : Glib.Gboolean;
+          Data                    : System.Address) return Glib.Gboolean
       is
          D                       : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Tree_Selection : Gtk.Tree_Selection.Gtk_Tree_Selection_Record;

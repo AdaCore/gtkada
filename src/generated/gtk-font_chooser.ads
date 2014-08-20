@@ -33,13 +33,16 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;              use Glib;
-with Glib.Object;       use Glib.Object;
-with Glib.Properties;   use Glib.Properties;
-with Glib.Types;        use Glib.Types;
-with Pango.Font;        use Pango.Font;
-with Pango.Font_Face;   use Pango.Font_Face;
-with Pango.Font_Family; use Pango.Font_Family;
+with Glib;                 use Glib;
+with Glib.Object;          use Glib.Object;
+with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
+with Pango.Font;           use Pango.Font;
+with Pango.Font_Face;      use Pango.Font_Face;
+with Pango.Font_Family;    use Pango.Font_Family;
 
 package Gtk.Font_Chooser is
 
@@ -236,6 +239,70 @@ package Gtk.Font_Chooser is
 
    function "+" (W : Gtk_Font_Chooser) return Gtk_Font_Chooser;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Font_Activated is access procedure
+     (Self     : Gtk_Font_Chooser;
+      Fontname : Interfaces.C.Strings.chars_ptr);
+   pragma Convention (C, Virtual_Font_Activated);
+
+   type Virtual_Get_Font_Face is access function (Self : Gtk_Font_Chooser) return System.Address;
+   pragma Convention (C, Virtual_Get_Font_Face);
+   --  Gets the Pango.Font_Face.Pango_Font_Face representing the selected font
+   --  group details (i.e. family, slant, weight, width, etc).
+   --  If the selected font is not installed, returns null.
+   --  Since: gtk+ 3.2
+
+   type Virtual_Get_Font_Family is access function (Self : Gtk_Font_Chooser) return System.Address;
+   pragma Convention (C, Virtual_Get_Font_Family);
+   --  Gets the Pango.Font_Family.Pango_Font_Family representing the selected
+   --  font family. Font families are a collection of font faces.
+   --  If the selected font is not installed, returns null.
+   --  Since: gtk+ 3.2
+
+   type Virtual_Get_Font_Size is access function (Self : Gtk_Font_Chooser) return Gint;
+   pragma Convention (C, Virtual_Get_Font_Size);
+   --  The selected font size.
+   --  Since: gtk+ 3.2
+
+   type Virtual_Set_Filter_Func is access procedure
+     (Self      : Gtk_Font_Chooser;
+      Filter    : System.Address;
+      User_Data : System.Address;
+      Destroy   : Glib.G_Destroy_Notify_Address);
+   pragma Convention (C, Virtual_Set_Filter_Func);
+   --  Adds a filter function that decides which fonts to display in the font
+   --  chooser.
+   --  Since: gtk+ 3.2
+   --  "filter": a Gtk_Font_Filter_Func, or null
+   --  "user_data": data to pass to Filter
+   --  "destroy": function to call to free Data when it is no longer needed
+
+   subtype Font_Chooser_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Font_Activated
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Font_Activated);
+   pragma Import (C, Set_Font_Activated, "gtkada_Font_Chooser_set_font_activated");
+   procedure Set_Get_Font_Face
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Get_Font_Face);
+   pragma Import (C, Set_Get_Font_Face, "gtkada_Font_Chooser_set_get_font_face");
+   procedure Set_Get_Font_Family
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Get_Font_Family);
+   pragma Import (C, Set_Get_Font_Family, "gtkada_Font_Chooser_set_get_font_family");
+   procedure Set_Get_Font_Size
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Get_Font_Size);
+   pragma Import (C, Set_Get_Font_Size, "gtkada_Font_Chooser_set_get_font_size");
+   procedure Set_Set_Filter_Func
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Set_Filter_Func);
+   pragma Import (C, Set_Set_Filter_Func, "gtkada_Font_Chooser_set_set_filter_func");
+   --  See Glib.Object.Add_Interface
 
 private
    Show_Preview_Entry_Property : constant Glib.Properties.Property_Boolean :=

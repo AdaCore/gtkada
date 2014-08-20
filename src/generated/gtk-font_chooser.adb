@@ -27,9 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Values;              use Glib.Values;
 with Gtk.Arguments;            use Gtk.Arguments;
 with Gtkada.Bindings;          use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;     use Interfaces.C.Strings;
-pragma Warnings(On);
 
 package body Gtk.Font_Chooser is
 
@@ -55,7 +52,7 @@ package body Gtk.Font_Chooser is
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;
        Face   : System.Address;
-       Data   : System.Address) return Integer;
+       Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Font_Filter_Func);
    --  "family": a Pango.Font_Family.Pango_Font_Family
    --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
@@ -68,7 +65,7 @@ package body Gtk.Font_Chooser is
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;
        Face   : System.Address;
-       Data   : System.Address) return Integer
+       Data   : System.Address) return Glib.Gboolean
    is
       Func                   : constant Gtk_Font_Filter_Func := To_Gtk_Font_Filter_Func (Data);
       Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
@@ -134,7 +131,7 @@ package body Gtk.Font_Chooser is
    ----------------------------
 
    function Get_Show_Preview_Entry (Self : Gtk_Font_Chooser) return Boolean is
-      function Internal (Self : Gtk_Font_Chooser) return Integer;
+      function Internal (Self : Gtk_Font_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_chooser_get_show_preview_entry");
    begin
       return Internal (Self) /= 0;
@@ -170,7 +167,7 @@ package body Gtk.Font_Chooser is
       function Internal_Cb
          (Family : System.Address;
           Face   : System.Address;
-          Data   : System.Address) return Integer;
+          Data   : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used for deciding what fonts get shown
       --  in a Gtk.Font_Chooser.Gtk_Font_Chooser. See
@@ -186,7 +183,7 @@ package body Gtk.Font_Chooser is
       function Internal_Cb
          (Family : System.Address;
           Face   : System.Address;
-          Data   : System.Address) return Integer
+          Data   : System.Address) return Glib.Gboolean
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
@@ -254,7 +251,7 @@ package body Gtk.Font_Chooser is
    is
       procedure Internal
          (Self               : Gtk_Font_Chooser;
-          Show_Preview_Entry : Integer);
+          Show_Preview_Entry : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_chooser_set_show_preview_entry");
    begin
       Internal (Self, Boolean'Pos (Show_Preview_Entry));

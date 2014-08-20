@@ -322,7 +322,7 @@ package body Gtk.Status_Icon is
    function Get_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean
    is
-      function Internal (Status_Icon : System.Address) return Integer;
+      function Internal (Status_Icon : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_status_icon_get_has_tooltip");
    begin
       return Internal (Get_Object (Status_Icon)) /= 0;
@@ -473,7 +473,7 @@ package body Gtk.Status_Icon is
    function Get_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean
    is
-      function Internal (Status_Icon : System.Address) return Integer;
+      function Internal (Status_Icon : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_status_icon_get_visible");
    begin
       return Internal (Get_Object (Status_Icon)) /= 0;
@@ -499,7 +499,7 @@ package body Gtk.Status_Icon is
    function Is_Embedded
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean
    is
-      function Internal (Status_Icon : System.Address) return Integer;
+      function Internal (Status_Icon : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_status_icon_is_embedded");
    begin
       return Internal (Get_Object (Status_Icon)) /= 0;
@@ -601,7 +601,7 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Has_Tooltip : Integer);
+          Has_Tooltip : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_status_icon_set_has_tooltip");
    begin
       Internal (Get_Object (Status_Icon), Boolean'Pos (Has_Tooltip));
@@ -708,7 +708,9 @@ package body Gtk.Status_Icon is
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Visible     : Boolean)
    is
-      procedure Internal (Status_Icon : System.Address; Visible : Integer);
+      procedure Internal
+         (Status_Icon : System.Address;
+          Visible     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_status_icon_set_visible");
    begin
       Internal (Get_Object (Status_Icon), Boolean'Pos (Visible));

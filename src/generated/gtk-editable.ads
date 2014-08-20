@@ -58,9 +58,12 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;        use Glib;
-with Glib.Object; use Glib.Object;
-with Glib.Types;  use Glib.Types;
+with Glib;                 use Glib;
+with Glib.Object;          use Glib.Object;
+with Glib.Types;           use Glib.Types;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package Gtk.Editable is
 
@@ -300,6 +303,155 @@ package Gtk.Editable is
 
    function "+" (W : Gtk_Editable) return Gtk_Editable;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Changed is access procedure (Editable : Gtk_Editable);
+   pragma Convention (C, Virtual_Changed);
+
+   type Virtual_Delete_Text is access procedure (Editable : Gtk_Editable; Start_Pos : Gint; End_Pos : Gint);
+   pragma Convention (C, Virtual_Delete_Text);
+   --  Deletes a sequence of characters. The characters that are deleted are
+   --  those characters at positions from Start_Pos up to, but not including
+   --  End_Pos. If End_Pos is negative, then the characters deleted are those
+   --  from Start_Pos to the end of the text.
+   --  Note that the positions are specified in characters, not bytes.
+   --  "start_pos": start position
+   --  "end_pos": end position
+
+   type Virtual_Do_Delete_Text is access procedure (Editable : Gtk_Editable; Start_Pos : Gint; End_Pos : Gint);
+   pragma Convention (C, Virtual_Do_Delete_Text);
+   --  Deletes a sequence of characters. The characters that are deleted are
+   --  those characters at positions from Start_Pos up to, but not including
+   --  End_Pos. If End_Pos is negative, then the characters deleted are those
+   --  from Start_Pos to the end of the text.
+   --  Note that the positions are specified in characters, not bytes.
+   --  "start_pos": start position
+   --  "end_pos": end position
+
+   type Virtual_Do_Insert_Text is access procedure
+     (Editable        : Gtk_Editable;
+      New_Text        : Interfaces.C.Strings.chars_ptr;
+      New_Text_Length : Gint;
+      Position        : in out Gint);
+   pragma Convention (C, Virtual_Do_Insert_Text);
+   --  Inserts New_Text_Length bytes of New_Text into the contents of the
+   --  widget, at position Position.
+   --  Note that the position is in characters, not in bytes. The function
+   --  updates Position to point after the newly inserted text.
+   --  "new_text": the text to append
+   --  "new_text_length": the length of the text in bytes, or -1
+   --  "position": location of the position text will be inserted at
+
+   type Virtual_Get_Chars is access function
+     (Editable  : Gtk_Editable;
+      Start_Pos : Gint;
+      End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
+   pragma Convention (C, Virtual_Get_Chars);
+   --  Retrieves a sequence of characters. The characters that are retrieved
+   --  are those characters at positions from Start_Pos up to, but not
+   --  including End_Pos. If End_Pos is negative, then the characters retrieved
+   --  are those characters from Start_Pos to the end of the text.
+   --  Note that positions are specified in characters, not bytes.
+   --  "start_pos": start of text
+   --  "end_pos": end of text
+
+   type Virtual_Get_Position is access function (Editable : Gtk_Editable) return Gint;
+   pragma Convention (C, Virtual_Get_Position);
+   --  Retrieves the current position of the cursor relative to the start of
+   --  the content of the editable.
+   --  Note that this position is in characters, not in bytes.
+
+   type Virtual_Get_Selection_Bounds is access function
+     (Editable  : Gtk_Editable;
+      Start_Pos : access Gint;
+      End_Pos   : access Gint) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Get_Selection_Bounds);
+   --  Retrieves the selection bound of the editable. start_pos will be filled
+   --  with the start of the selection and End_Pos with end. If no text was
+   --  selected both will be identical and False will be returned.
+   --  Note that positions are specified in characters, not bytes.
+   --  "start_pos": location to store the starting position, or null
+   --  "end_pos": location to store the end position, or null
+
+   type Virtual_Insert_Text is access procedure
+     (Editable        : Gtk_Editable;
+      New_Text        : Interfaces.C.Strings.chars_ptr;
+      New_Text_Length : Gint;
+      Position        : in out Gint);
+   pragma Convention (C, Virtual_Insert_Text);
+   --  Inserts New_Text_Length bytes of New_Text into the contents of the
+   --  widget, at position Position.
+   --  Note that the position is in characters, not in bytes. The function
+   --  updates Position to point after the newly inserted text.
+   --  "new_text": the text to append
+   --  "new_text_length": the length of the text in bytes, or -1
+   --  "position": location of the position text will be inserted at
+
+   type Virtual_Set_Position is access procedure (Editable : Gtk_Editable; Position : Gint);
+   pragma Convention (C, Virtual_Set_Position);
+   --  Sets the cursor position in the editable to the given value.
+   --  The cursor is displayed before the character with the given (base 0)
+   --  index in the contents of the editable. The value must be less than or
+   --  equal to the number of characters in the editable. A value of -1
+   --  indicates that the position should be set after the last character of
+   --  the editable. Note that Position is in characters, not in bytes.
+   --  "position": the position of the cursor
+
+   type Virtual_Set_Selection_Bounds is access procedure (Editable : Gtk_Editable; Start_Pos : Gint; End_Pos : Gint);
+   pragma Convention (C, Virtual_Set_Selection_Bounds);
+   --  Selects a region of text. The characters that are selected are those
+   --  characters at positions from Start_Pos up to, but not including End_Pos.
+   --  If End_Pos is negative, then the characters selected are those
+   --  characters from Start_Pos to the end of the text.
+   --  Note that positions are specified in characters, not bytes.
+   --  "start_pos": start of region
+   --  "end_pos": end of region
+
+   subtype Editable_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Changed
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Changed);
+   pragma Import (C, Set_Changed, "gtkada_Editable_set_changed");
+   procedure Set_Delete_Text
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Delete_Text);
+   pragma Import (C, Set_Delete_Text, "gtkada_Editable_set_delete_text");
+   procedure Set_Do_Delete_Text
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Do_Delete_Text);
+   pragma Import (C, Set_Do_Delete_Text, "gtkada_Editable_set_do_delete_text");
+   procedure Set_Do_Insert_Text
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Do_Insert_Text);
+   pragma Import (C, Set_Do_Insert_Text, "gtkada_Editable_set_do_insert_text");
+   procedure Set_Get_Chars
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Get_Chars);
+   pragma Import (C, Set_Get_Chars, "gtkada_Editable_set_get_chars");
+   procedure Set_Get_Position
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Get_Position);
+   pragma Import (C, Set_Get_Position, "gtkada_Editable_set_get_position");
+   procedure Set_Get_Selection_Bounds
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Get_Selection_Bounds);
+   pragma Import (C, Set_Get_Selection_Bounds, "gtkada_Editable_set_get_selection_bounds");
+   procedure Set_Insert_Text
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Insert_Text);
+   pragma Import (C, Set_Insert_Text, "gtkada_Editable_set_insert_text");
+   procedure Set_Set_Position
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Set_Position);
+   pragma Import (C, Set_Set_Position, "gtkada_Editable_set_set_position");
+   procedure Set_Set_Selection_Bounds
+     (Self    : Editable_Interface_Descr;
+      Handler : Virtual_Set_Selection_Bounds);
+   pragma Import (C, Set_Set_Selection_Bounds, "gtkada_Editable_set_set_selection_bounds");
+   --  See Glib.Object.Add_Interface
 
 private
 

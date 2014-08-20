@@ -107,7 +107,8 @@ package body Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Boolean
    is
-      function Internal (Scrolled_Window : System.Address) return Integer;
+      function Internal
+         (Scrolled_Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_scrolled_window_get_capture_button_press");
    begin
       return Internal (Get_Object (Scrolled_Window)) /= 0;
@@ -153,7 +154,8 @@ package body Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Boolean
    is
-      function Internal (Scrolled_Window : System.Address) return Integer;
+      function Internal
+         (Scrolled_Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_scrolled_window_get_kinetic_scrolling");
    begin
       return Internal (Get_Object (Scrolled_Window)) /= 0;
@@ -277,7 +279,7 @@ package body Gtk.Scrolled_Window is
    is
       procedure Internal
          (Scrolled_Window      : System.Address;
-          Capture_Button_Press : Integer);
+          Capture_Button_Press : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_scrolled_window_set_capture_button_press");
    begin
       Internal (Get_Object (Scrolled_Window), Boolean'Pos (Capture_Button_Press));
@@ -309,7 +311,7 @@ package body Gtk.Scrolled_Window is
    is
       procedure Internal
          (Scrolled_Window   : System.Address;
-          Kinetic_Scrolling : Integer);
+          Kinetic_Scrolling : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_scrolled_window_set_kinetic_scrolling");
    begin
       Internal (Get_Object (Scrolled_Window), Boolean'Pos (Kinetic_Scrolling));

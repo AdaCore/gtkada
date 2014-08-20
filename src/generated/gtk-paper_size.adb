@@ -408,7 +408,7 @@ package body Gtk.Paper_Size is
    ---------------
 
    function Is_Custom (Widget : Gtk_Paper_Size) return Boolean is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_paper_size_is_custom");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -424,7 +424,7 @@ package body Gtk.Paper_Size is
    is
       function Internal
          (Widget : System.Address;
-          Size2  : System.Address) return Integer;
+          Size2  : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_paper_size_is_equal");
    begin
       return Internal (Get_Object (Widget), Get_Object (Size2)) /= 0;
@@ -498,7 +498,8 @@ package body Gtk.Paper_Size is
    function Get_Paper_Sizes
       (Include_Custom : Boolean) return Gtk_Paper_Size_Glist.Glist
    is
-      function Internal (Include_Custom : Integer) return System.Address;
+      function Internal
+         (Include_Custom : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_get_paper_sizes");
       Tmp_Return : Gtk_Paper_Size_Glist.Glist;
    begin

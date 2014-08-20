@@ -464,10 +464,10 @@ package body Gtk.Style_Context is
    is
       function Internal
          (Self       : System.Address;
-          Class_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Class_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_has_class");
       Tmp_Class_Name : Interfaces.C.Strings.chars_ptr := New_String (Class_Name);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Class_Name);
       Free (Tmp_Class_Name);
@@ -488,11 +488,11 @@ package body Gtk.Style_Context is
          (Self             : System.Address;
           Region_Name      : Interfaces.C.Strings.chars_ptr;
           Acc_Flags_Return : access Gtk.Enums.Gtk_Region_Flags)
-          return Integer;
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_has_region");
       Acc_Flags_Return : aliased Gtk.Enums.Gtk_Region_Flags;
       Tmp_Region_Name  : Interfaces.C.Strings.chars_ptr := New_String (Region_Name);
-      Tmp_Return       : Integer;
+      Tmp_Return       : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Region_Name, Acc_Flags_Return'Access);
       Free (Tmp_Region_Name);
@@ -556,11 +556,11 @@ package body Gtk.Style_Context is
       function Internal
          (Self       : System.Address;
           Color_Name : Interfaces.C.Strings.chars_ptr;
-          Acc_Color  : access Gdk.RGBA.Gdk_RGBA) return Integer;
+          Acc_Color  : access Gdk.RGBA.Gdk_RGBA) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_lookup_color");
       Acc_Color      : aliased Gdk.RGBA.Gdk_RGBA;
       Tmp_Color_Name : Interfaces.C.Strings.chars_ptr := New_String (Color_Name);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Color_Name, Acc_Color'Access);
       Free (Tmp_Color_Name);
@@ -584,7 +584,7 @@ package body Gtk.Style_Context is
           Window      : Gdk.Gdk_Window;
           Region_Id   : System.Address;
           State       : Gtk.Enums.Gtk_State_Type;
-          State_Value : Integer);
+          State_Value : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_style_context_notify_state_change");
    begin
       Internal (Get_Object (Self), Window, Region_Id, State, Boolean'Pos (State_Value));
@@ -846,10 +846,10 @@ package body Gtk.Style_Context is
       function Internal
          (Self         : System.Address;
           State        : Gtk.Enums.Gtk_State_Type;
-          Acc_Progress : access Gdouble) return Integer;
+          Acc_Progress : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_state_is_running");
       Acc_Progress : aliased Gdouble;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), State, Acc_Progress'Access);
       Progress := Acc_Progress;

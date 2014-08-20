@@ -140,6 +140,42 @@ package Gtk.Cell_Editable is
    function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable;
    pragma Inline ("+");
 
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Editing_Done is access procedure (Cell_Editable : Gtk_Cell_Editable);
+   pragma Convention (C, Virtual_Editing_Done);
+   --  Emits the Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done signal.
+
+   type Virtual_Remove_Widget is access procedure (Cell_Editable : Gtk_Cell_Editable);
+   pragma Convention (C, Virtual_Remove_Widget);
+   --  Emits the Gtk.Cell_Editable.Gtk_Cell_Editable::remove-widget signal.
+
+   type Virtual_Start_Editing is access procedure
+     (Cell_Editable : Gtk_Cell_Editable;
+      Event         : Gdk.Event.Gdk_Event);
+   pragma Convention (C, Virtual_Start_Editing);
+   --  Begins editing on a Cell_Editable. Event is the Gdk.Event.Gdk_Event
+   --  that began the editing process. It may be null, in the instance that
+   --  editing was initiated through programatic means.
+   --  "event": A Gdk.Event.Gdk_Event, or null
+
+   subtype Cell_Editable_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Editing_Done
+     (Self    : Cell_Editable_Interface_Descr;
+      Handler : Virtual_Editing_Done);
+   pragma Import (C, Set_Editing_Done, "gtkada_Cell_Editable_set_editing_done");
+   procedure Set_Remove_Widget
+     (Self    : Cell_Editable_Interface_Descr;
+      Handler : Virtual_Remove_Widget);
+   pragma Import (C, Set_Remove_Widget, "gtkada_Cell_Editable_set_remove_widget");
+   procedure Set_Start_Editing
+     (Self    : Cell_Editable_Interface_Descr;
+      Handler : Virtual_Start_Editing);
+   pragma Import (C, Set_Start_Editing, "gtkada_Cell_Editable_set_start_editing");
+   --  See Glib.Object.Add_Interface
+
 private
    Editing_Canceled_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("editing-canceled");

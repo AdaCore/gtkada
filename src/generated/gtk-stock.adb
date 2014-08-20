@@ -104,12 +104,12 @@ package body Gtk.Stock is
    is
       function Internal
          (Stock_Id : Interfaces.C.Strings.chars_ptr;
-          Acc_Item : access Gtk_Stock_Item) return Integer;
+          Acc_Item : access Gtk_Stock_Item) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_stock_lookup");
       Acc_Item     : aliased Gtk_Stock_Item;
       Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
       Tmp_Acc_Item : aliased Gtk_Stock_Item;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Stock_Id, Tmp_Acc_Item'Access);
       Acc_Item := Tmp_Acc_Item;

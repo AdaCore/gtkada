@@ -70,7 +70,7 @@ package body Gtk.Accel_Map is
        Accel_Path : Interfaces.C.Strings.chars_ptr;
        Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-       Changed    : Integer);
+       Changed    : Glib.Gboolean);
    pragma Convention (C, Internal_Gtk_Accel_Map_Foreach);
    --  "data": User data passed to Gtk.Accel_Map.Foreach or
    --  Gtk.Accel_Map.Foreach_Unfiltered
@@ -90,7 +90,7 @@ package body Gtk.Accel_Map is
        Accel_Path : Interfaces.C.Strings.chars_ptr;
        Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-       Changed    : Integer)
+       Changed    : Glib.Gboolean)
    is
       Func : constant Gtk_Accel_Map_Foreach := To_Gtk_Accel_Map_Foreach (Data);
    begin
@@ -143,7 +143,7 @@ package body Gtk.Accel_Map is
           Accel_Path : Interfaces.C.Strings.chars_ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-          Changed    : Integer);
+          Changed    : Glib.Gboolean);
       pragma Convention (C, Internal_Cb);
       --  "data": User data passed to Gtk.Accel_Map.Foreach or
       --  Gtk.Accel_Map.Foreach_Unfiltered
@@ -179,7 +179,7 @@ package body Gtk.Accel_Map is
           Accel_Path : Interfaces.C.Strings.chars_ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-          Changed    : Integer)
+          Changed    : Glib.Gboolean)
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -204,7 +204,7 @@ package body Gtk.Accel_Map is
           Accel_Path : Interfaces.C.Strings.chars_ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-          Changed    : Integer);
+          Changed    : Glib.Gboolean);
       pragma Convention (C, Internal_Cb);
       --  "data": User data passed to Gtk.Accel_Map.Foreach or
       --  Gtk.Accel_Map.Foreach_Unfiltered
@@ -240,7 +240,7 @@ package body Gtk.Accel_Map is
           Accel_Path : Interfaces.C.Strings.chars_ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-          Changed    : Integer)
+          Changed    : Glib.Gboolean)
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -296,10 +296,10 @@ package body Gtk.Accel_Map is
          (Accel_Path : Interfaces.C.Strings.chars_ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
-          Replace    : Integer) return Integer;
+          Replace    : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_map_change_entry");
       Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Accel_Path, Accel_Key, Accel_Mods, Boolean'Pos (Replace));
       Free (Tmp_Accel_Path);
@@ -366,12 +366,13 @@ package body Gtk.Accel_Map is
    is
       function Internal
          (Accel_Path : Interfaces.C.Strings.chars_ptr;
-          Acc_Key    : access Gtk.Accel_Group.Gtk_Accel_Key) return Integer;
+          Acc_Key    : access Gtk.Accel_Group.Gtk_Accel_Key)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_map_lookup_entry");
       Acc_Key        : aliased Gtk.Accel_Group.Gtk_Accel_Key;
       Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
       Tmp_Acc_Key    : aliased Gtk.Accel_Group.Gtk_Accel_Key;
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Accel_Path, Tmp_Acc_Key'Access);
       Acc_Key := Tmp_Acc_Key;

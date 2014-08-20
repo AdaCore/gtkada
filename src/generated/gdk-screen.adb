@@ -421,7 +421,7 @@ package body Gdk.Screen is
    function Is_Composited
       (Screen : not null access Gdk_Screen_Record) return Boolean
    is
-      function Internal (Screen : System.Address) return Integer;
+      function Internal (Screen : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_screen_is_composited");
    begin
       return Internal (Get_Object (Screen)) /= 0;

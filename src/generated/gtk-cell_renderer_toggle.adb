@@ -82,7 +82,7 @@ package body Gtk.Cell_Renderer_Toggle is
       (Self : not null access Gtk_Cell_Renderer_Toggle_Record)
        return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_get_activatable");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -96,7 +96,7 @@ package body Gtk.Cell_Renderer_Toggle is
       (Self : not null access Gtk_Cell_Renderer_Toggle_Record)
        return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_get_active");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -110,7 +110,7 @@ package body Gtk.Cell_Renderer_Toggle is
       (Self : not null access Gtk_Cell_Renderer_Toggle_Record)
        return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_get_radio");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -124,7 +124,7 @@ package body Gtk.Cell_Renderer_Toggle is
       (Self    : not null access Gtk_Cell_Renderer_Toggle_Record;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Self : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_set_activatable");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Setting));
@@ -138,7 +138,7 @@ package body Gtk.Cell_Renderer_Toggle is
       (Self    : not null access Gtk_Cell_Renderer_Toggle_Record;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Self : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_set_active");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Setting));
@@ -152,7 +152,7 @@ package body Gtk.Cell_Renderer_Toggle is
       (Self  : not null access Gtk_Cell_Renderer_Toggle_Record;
        Radio : Boolean)
    is
-      procedure Internal (Self : System.Address; Radio : Integer);
+      procedure Internal (Self : System.Address; Radio : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_renderer_toggle_set_radio");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Radio));

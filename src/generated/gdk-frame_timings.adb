@@ -47,7 +47,7 @@ package body Gdk.Frame_Timings is
    ------------------
 
    function Get_Complete (Self : Gdk_Frame_Timings) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_frame_timings_get_complete");
    begin
       return Internal (Get_Object (Self)) /= 0;

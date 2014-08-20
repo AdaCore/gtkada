@@ -228,7 +228,7 @@ package body Gtk.Button is
    function Get_Always_Show_Image
       (Button : not null access Gtk_Button_Record) return Boolean
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal (Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_button_get_always_show_image");
    begin
       return Internal (Get_Object (Button)) /= 0;
@@ -254,7 +254,7 @@ package body Gtk.Button is
    function Get_Focus_On_Click
       (Button : not null access Gtk_Button_Record) return Boolean
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal (Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_button_get_focus_on_click");
    begin
       return Internal (Get_Object (Button)) /= 0;
@@ -326,7 +326,7 @@ package body Gtk.Button is
    function Get_Use_Stock
       (Button : not null access Gtk_Button_Record) return Boolean
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal (Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_button_get_use_stock");
    begin
       return Internal (Get_Object (Button)) /= 0;
@@ -339,7 +339,7 @@ package body Gtk.Button is
    function Get_Use_Underline
       (Button : not null access Gtk_Button_Record) return Boolean
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal (Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_button_get_use_underline");
    begin
       return Internal (Get_Object (Button)) /= 0;
@@ -404,7 +404,9 @@ package body Gtk.Button is
       (Button      : not null access Gtk_Button_Record;
        Always_Show : Boolean)
    is
-      procedure Internal (Button : System.Address; Always_Show : Integer);
+      procedure Internal
+         (Button      : System.Address;
+          Always_Show : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_button_set_always_show_image");
    begin
       Internal (Get_Object (Button), Boolean'Pos (Always_Show));
@@ -418,7 +420,9 @@ package body Gtk.Button is
       (Button         : not null access Gtk_Button_Record;
        Focus_On_Click : Boolean)
    is
-      procedure Internal (Button : System.Address; Focus_On_Click : Integer);
+      procedure Internal
+         (Button         : System.Address;
+          Focus_On_Click : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_button_set_focus_on_click");
    begin
       Internal (Get_Object (Button), Boolean'Pos (Focus_On_Click));
@@ -496,7 +500,9 @@ package body Gtk.Button is
       (Button    : not null access Gtk_Button_Record;
        Use_Stock : Boolean)
    is
-      procedure Internal (Button : System.Address; Use_Stock : Integer);
+      procedure Internal
+         (Button    : System.Address;
+          Use_Stock : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_button_set_use_stock");
    begin
       Internal (Get_Object (Button), Boolean'Pos (Use_Stock));
@@ -510,7 +516,9 @@ package body Gtk.Button is
       (Button        : not null access Gtk_Button_Record;
        Use_Underline : Boolean)
    is
-      procedure Internal (Button : System.Address; Use_Underline : Integer);
+      procedure Internal
+         (Button        : System.Address;
+          Use_Underline : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_button_set_use_underline");
    begin
       Internal (Get_Object (Button), Boolean'Pos (Use_Underline));
@@ -580,7 +588,7 @@ package body Gtk.Button is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -660,7 +668,9 @@ package body Gtk.Button is
       (Self           : not null access Gtk_Button_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

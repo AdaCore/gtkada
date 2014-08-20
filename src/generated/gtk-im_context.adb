@@ -50,7 +50,7 @@ package body Gtk.IM_Context is
       function Internal
          (Self    : System.Address;
           Offset  : Gint;
-          N_Chars : Gint) return Integer;
+          N_Chars : Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_im_context_delete_surrounding");
    begin
       return Internal (Get_Object (Self), Offset, N_Chars) /= 0;
@@ -66,7 +66,7 @@ package body Gtk.IM_Context is
    is
       function Internal
          (Self  : System.Address;
-          Event : Gdk.Event.Gdk_Event_Key) return Integer;
+          Event : Gdk.Event.Gdk_Event_Key) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_im_context_filter_keypress");
    begin
       return Internal (Get_Object (Self), Event) /= 0;
@@ -165,7 +165,9 @@ package body Gtk.IM_Context is
       (Self        : not null access Gtk_IM_Context_Record;
        Use_Preedit : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Preedit : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Use_Preedit : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_im_context_set_use_preedit");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Preedit));

@@ -145,7 +145,8 @@ package body Gtk.Check_Menu_Item is
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean
    is
-      function Internal (Check_Menu_Item : System.Address) return Integer;
+      function Internal
+         (Check_Menu_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_check_menu_item_get_active");
    begin
       return Internal (Get_Object (Check_Menu_Item)) /= 0;
@@ -159,7 +160,8 @@ package body Gtk.Check_Menu_Item is
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean
    is
-      function Internal (Check_Menu_Item : System.Address) return Integer;
+      function Internal
+         (Check_Menu_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_check_menu_item_get_draw_as_radio");
    begin
       return Internal (Get_Object (Check_Menu_Item)) /= 0;
@@ -173,7 +175,8 @@ package body Gtk.Check_Menu_Item is
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean
    is
-      function Internal (Check_Menu_Item : System.Address) return Integer;
+      function Internal
+         (Check_Menu_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_check_menu_item_get_inconsistent");
    begin
       return Internal (Get_Object (Check_Menu_Item)) /= 0;
@@ -189,7 +192,7 @@ package body Gtk.Check_Menu_Item is
    is
       procedure Internal
          (Check_Menu_Item : System.Address;
-          Is_Active       : Integer);
+          Is_Active       : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_check_menu_item_set_active");
    begin
       Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Is_Active));
@@ -205,7 +208,7 @@ package body Gtk.Check_Menu_Item is
    is
       procedure Internal
          (Check_Menu_Item : System.Address;
-          Draw_As_Radio   : Integer);
+          Draw_As_Radio   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_check_menu_item_set_draw_as_radio");
    begin
       Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Draw_As_Radio));
@@ -221,7 +224,7 @@ package body Gtk.Check_Menu_Item is
    is
       procedure Internal
          (Check_Menu_Item : System.Address;
-          Setting         : Integer);
+          Setting         : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_check_menu_item_set_inconsistent");
    begin
       Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Setting));
@@ -304,7 +307,7 @@ package body Gtk.Check_Menu_Item is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Check_Menu_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -384,7 +387,9 @@ package body Gtk.Check_Menu_Item is
       (Self           : not null access Gtk_Check_Menu_Item_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

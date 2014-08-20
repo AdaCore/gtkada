@@ -199,10 +199,10 @@ package body Gtk.Font_Selection is
    is
       function Internal
          (Fontsel  : System.Address;
-          Fontname : Interfaces.C.Strings.chars_ptr) return Integer;
+          Fontname : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_selection_set_font_name");
       Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Fontsel), Tmp_Fontname);
       Free (Tmp_Fontname);

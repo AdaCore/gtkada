@@ -311,7 +311,7 @@ package body Gtk.Dialog is
       procedure Internal
          (Dialog      : System.Address;
           Response_Id : Gtk_Response_Type;
-          Setting     : Integer);
+          Setting     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_dialog_set_response_sensitive");
    begin
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));

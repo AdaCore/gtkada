@@ -41,10 +41,14 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Glib.Variant;    use Glib.Variant;
+with Glib;                 use Glib;
+with Glib.Object;          use Glib.Object;
+with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
+with Glib.Variant;         use Glib.Variant;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package Gtk.Actionable is
 
@@ -147,6 +151,82 @@ package Gtk.Actionable is
 
    function "+" (W : Gtk_Actionable) return Gtk_Actionable;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Get_Action_Name is access function
+     (Self : Gtk_Actionable) return Interfaces.C.Strings.chars_ptr;
+   pragma Convention (C, Virtual_Get_Action_Name);
+   --  Gets the action name for Actionable.
+   --  See Gtk.Actionable.Set_Action_Name for more information.
+   --  Since: gtk+ 3.4
+
+   type Virtual_Get_Action_Target_Value is access function (Self : Gtk_Actionable) return System.Address;
+   pragma Convention (C, Virtual_Get_Action_Target_Value);
+   --  Gets the current target value of Actionabe.
+   --  See Gtk.Actionable.Set_Action_Target_Value for more information.
+   --  Since: gtk+ 3.4
+
+   type Virtual_Set_Action_Name is access procedure
+     (Self        : Gtk_Actionable;
+      Action_Name : Interfaces.C.Strings.chars_ptr);
+   pragma Convention (C, Virtual_Set_Action_Name);
+   --  Specifies the name of the action with which this widget should be
+   --  associated. If Action_Name is null then the widget will be unassociated
+   --  from any previous action.
+   --  Usually this function is used when the widget is located (or will be
+   --  located) within the hierarchy of a
+   --  Gtk.Application_Window.Gtk_Application_Window.
+   --  Names are of the form "win.save" or "app.quit" for actions on the
+   --  containing Gtk.Application_Window.Gtk_Application_Window or its
+   --  associated Gtk.Application.Gtk_Application, respectively. This is the
+   --  same form used for actions in the Glib.Menu.Gmenu associated with the
+   --  window.
+   --  Since: gtk+ 3.4
+   --  "action_name": an action name, or null
+
+   type Virtual_Set_Action_Target_Value is access procedure (Self : Gtk_Actionable; Target_Value : System.Address);
+   pragma Convention (C, Virtual_Set_Action_Target_Value);
+   --  Sets the target value of an actionable widget.
+   --  If Target_Value is null then the target value is unset.
+   --  The target value has two purposes. First, it is used as the parameter
+   --  to activation of the action associated with the
+   --  Gtk.Actionable.Gtk_Actionable widget. Second, it is used to determine if
+   --  the widget should be rendered as "active" - the widget is active if the
+   --  state is equal to the given target.
+   --  Consider the example of associating a set of buttons with a
+   --  Glib.Action.Gaction with string state in a typical "radio button"
+   --  situation. Each button will be associated with the same action, but with
+   --  a different target value for that action. Clicking on a particular
+   --  button will activate the action with the target of that button, which
+   --  will typically cause the action's state to change to that value. Since
+   --  the action's state is now equal to the target value of the button, the
+   --  button will now be rendered as active (and the other buttons, with
+   --  different targets, rendered inactive).
+   --  Since: gtk+ 3.4
+   --  "target_value": a Glib.Variant.Gvariant to set as the target value, or
+   --  null
+
+   subtype Actionable_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Get_Action_Name
+     (Self    : Actionable_Interface_Descr;
+      Handler : Virtual_Get_Action_Name);
+   pragma Import (C, Set_Get_Action_Name, "gtkada_Actionable_set_get_action_name");
+   procedure Set_Get_Action_Target_Value
+     (Self    : Actionable_Interface_Descr;
+      Handler : Virtual_Get_Action_Target_Value);
+   pragma Import (C, Set_Get_Action_Target_Value, "gtkada_Actionable_set_get_action_target_value");
+   procedure Set_Set_Action_Name
+     (Self    : Actionable_Interface_Descr;
+      Handler : Virtual_Set_Action_Name);
+   pragma Import (C, Set_Set_Action_Name, "gtkada_Actionable_set_set_action_name");
+   procedure Set_Set_Action_Target_Value
+     (Self    : Actionable_Interface_Descr;
+      Handler : Virtual_Set_Action_Target_Value);
+   pragma Import (C, Set_Set_Action_Target_Value, "gtkada_Actionable_set_set_action_target_value");
+   --  See Glib.Object.Add_Interface
 
 private
    Action_Target_Property : constant Glib.Properties.Property_Object :=

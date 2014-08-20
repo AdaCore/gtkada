@@ -118,13 +118,13 @@ package body Gtk.Print_Context is
           Acc_Top    : access Gdouble;
           Acc_Bottom : access Gdouble;
           Acc_Left   : access Gdouble;
-          Acc_Right  : access Gdouble) return Integer;
+          Acc_Right  : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_context_get_hard_margins");
       Acc_Top    : aliased Gdouble;
       Acc_Bottom : aliased Gdouble;
       Acc_Left   : aliased Gdouble;
       Acc_Right  : aliased Gdouble;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Context), Acc_Top'Access, Acc_Bottom'Access, Acc_Left'Access, Acc_Right'Access);
       Top.all := Acc_Top;

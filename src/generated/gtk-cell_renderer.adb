@@ -68,10 +68,10 @@ package body Gtk.Cell_Renderer is
           Path            : Interfaces.C.Strings.chars_ptr;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-          Flags           : Gtk_Cell_Renderer_State) return Integer;
+          Flags           : Gtk_Cell_Renderer_State) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_activate");
       Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
       Free (Tmp_Path);
@@ -284,7 +284,7 @@ package body Gtk.Cell_Renderer is
    function Get_Sensitive
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean
    is
-      function Internal (Cell : System.Address) return Integer;
+      function Internal (Cell : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_get_sensitive");
    begin
       return Internal (Get_Object (Cell)) /= 0;
@@ -343,7 +343,7 @@ package body Gtk.Cell_Renderer is
    function Get_Visible
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean
    is
-      function Internal (Cell : System.Address) return Integer;
+      function Internal (Cell : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_get_visible");
    begin
       return Internal (Get_Object (Cell)) /= 0;
@@ -356,7 +356,7 @@ package body Gtk.Cell_Renderer is
    function Is_Activatable
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean
    is
-      function Internal (Cell : System.Address) return Integer;
+      function Internal (Cell : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_is_activatable");
    begin
       return Internal (Get_Object (Cell)) /= 0;
@@ -445,7 +445,7 @@ package body Gtk.Cell_Renderer is
       (Cell      : not null access Gtk_Cell_Renderer_Record;
        Sensitive : Boolean)
    is
-      procedure Internal (Cell : System.Address; Sensitive : Integer);
+      procedure Internal (Cell : System.Address; Sensitive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_renderer_set_sensitive");
    begin
       Internal (Get_Object (Cell), Boolean'Pos (Sensitive));
@@ -459,7 +459,7 @@ package body Gtk.Cell_Renderer is
       (Cell    : not null access Gtk_Cell_Renderer_Record;
        Visible : Boolean)
    is
-      procedure Internal (Cell : System.Address; Visible : Integer);
+      procedure Internal (Cell : System.Address; Visible : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_renderer_set_visible");
    begin
       Internal (Get_Object (Cell), Boolean'Pos (Visible));
@@ -505,7 +505,7 @@ package body Gtk.Cell_Renderer is
       (Cell     : not null access Gtk_Cell_Renderer_Record;
        Canceled : Boolean)
    is
-      procedure Internal (Cell : System.Address; Canceled : Integer);
+      procedure Internal (Cell : System.Address; Canceled : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_renderer_stop_editing");
    begin
       Internal (Get_Object (Cell), Boolean'Pos (Canceled));

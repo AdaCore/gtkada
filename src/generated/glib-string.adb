@@ -87,7 +87,7 @@ package body Glib.String is
          (Self                   : Gstring;
           Unescaped              : Interfaces.C.Strings.chars_ptr;
           Reserved_Chars_Allowed : Interfaces.C.Strings.chars_ptr;
-          Allow_Utf8             : Integer) return access Gstring;
+          Allow_Utf8             : Glib.Gboolean) return access Gstring;
       pragma Import (C, Internal, "g_string_append_uri_escaped");
       Tmp_Unescaped              : Interfaces.C.Strings.chars_ptr := New_String (Unescaped);
       Tmp_Reserved_Chars_Allowed : Interfaces.C.Strings.chars_ptr := New_String (Reserved_Chars_Allowed);
@@ -121,7 +121,7 @@ package body Glib.String is
    -----------
 
    function Equal (Self : Gstring; V2 : Gstring) return Boolean is
-      function Internal (Self : Gstring; V2 : Gstring) return Integer;
+      function Internal (Self : Gstring; V2 : Gstring) return Glib.Gboolean;
       pragma Import (C, Internal, "g_string_equal");
    begin
       return Internal (Self, V2) /= 0;
@@ -134,7 +134,8 @@ package body Glib.String is
    function Free (Self : Gstring; Free_Segment : Boolean) return UTF8_String is
       function Internal
          (Self         : Gstring;
-          Free_Segment : Integer) return Interfaces.C.Strings.chars_ptr;
+          Free_Segment : Glib.Gboolean)
+          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_string_free");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self, Boolean'Pos (Free_Segment)));

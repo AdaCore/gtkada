@@ -248,7 +248,7 @@ package body Glib.Application is
    function Get_Is_Registered
       (Self : not null access Gapplication_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_application_get_is_registered");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -261,7 +261,7 @@ package body Glib.Application is
    function Get_Is_Remote
       (Self : not null access Gapplication_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_application_get_is_remote");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -275,7 +275,7 @@ package body Glib.Application is
       (Self : not null access Gapplication_Command_Line_Record)
        return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_application_command_line_get_is_remote");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -349,7 +349,7 @@ package body Glib.Application is
    is
       function Internal
          (Self        : System.Address;
-          Cancellable : System.Address) return Integer;
+          Cancellable : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_application_register");
    begin
       return Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable))) /= 0;
@@ -510,7 +510,7 @@ package body Glib.Application is
       procedure Internal
          (Self        : System.Address;
           Action_Name : Interfaces.C.Strings.chars_ptr;
-          Enabled     : Integer);
+          Enabled     : Glib.Gboolean);
       pragma Import (C, Internal, "g_action_group_action_enabled_changed");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
    begin
@@ -641,10 +641,10 @@ package body Glib.Application is
    is
       function Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_get_action_enabled");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -745,10 +745,10 @@ package body Glib.Application is
    is
       function Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_has_action");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -807,11 +807,11 @@ package body Glib.Application is
       function Internal
          (Self               : System.Address;
           Action_Name        : Interfaces.C.Strings.chars_ptr;
-          Acc_Enabled        : access Integer;
+          Acc_Enabled        : access Glib.Gboolean;
           Acc_Parameter_Type : access Glib.Variant.Gvariant_Type;
           Acc_State_Type     : access Glib.Variant.Gvariant_Type;
           Acc_State_Hint     : access System.Address;
-          Acc_State          : access System.Address) return Integer;
+          Acc_State          : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_query_action");
       Acc_Enabled        : aliased Boolean;
       Acc_Parameter_Type : aliased Glib.Variant.Gvariant_Type;
@@ -819,10 +819,10 @@ package body Glib.Application is
       Acc_State_Hint     : aliased Glib.Variant.Gvariant;
       Acc_State          : aliased Glib.Variant.Gvariant;
       Tmp_Action_Name    : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Acc_Enabled    : aliased Integer;
+      Tmp_Acc_Enabled    : aliased Glib.Gboolean;
       Tmp_Acc_State_Hint : aliased System.Address;
       Tmp_Acc_State      : aliased System.Address;
-      Tmp_Return         : Integer;
+      Tmp_Return         : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name, Tmp_Acc_Enabled'Access, Acc_Parameter_Type'Access, Acc_State_Type'Access, Tmp_Acc_State_Hint'Access, Tmp_Acc_State'Access);
       Acc_State := From_Object (Tmp_Acc_State);
@@ -881,10 +881,11 @@ package body Glib.Application is
 
    function Id_Is_Valid (Application_Id : UTF8_String) return Boolean is
       function Internal
-         (Application_Id : Interfaces.C.Strings.chars_ptr) return Integer;
+         (Application_Id : Interfaces.C.Strings.chars_ptr)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "g_application_id_is_valid");
       Tmp_Application_Id : Interfaces.C.Strings.chars_ptr := New_String (Application_Id);
-      Tmp_Return         : Integer;
+      Tmp_Return         : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Application_Id);
       Free (Tmp_Application_Id);

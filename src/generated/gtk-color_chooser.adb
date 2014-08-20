@@ -35,7 +35,7 @@ package body Gtk.Color_Chooser is
    -------------------
 
    function Get_Use_Alpha (Self : Gtk_Color_Chooser) return Boolean is
-      function Internal (Self : Gtk_Color_Chooser) return Integer;
+      function Internal (Self : Gtk_Color_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_color_chooser_get_use_alpha");
    begin
       return Internal (Self) /= 0;
@@ -46,7 +46,9 @@ package body Gtk.Color_Chooser is
    -------------------
 
    procedure Set_Use_Alpha (Self : Gtk_Color_Chooser; Use_Alpha : Boolean) is
-      procedure Internal (Self : Gtk_Color_Chooser; Use_Alpha : Integer);
+      procedure Internal
+         (Self      : Gtk_Color_Chooser;
+          Use_Alpha : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_color_chooser_set_use_alpha");
    begin
       Internal (Self, Boolean'Pos (Use_Alpha));

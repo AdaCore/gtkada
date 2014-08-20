@@ -129,7 +129,7 @@ package body Gtk.Window is
    function Activate_Default
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_activate_default");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -142,7 +142,7 @@ package body Gtk.Window is
    function Activate_Focus
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_activate_focus");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -158,7 +158,7 @@ package body Gtk.Window is
    is
       function Internal
          (Window : System.Address;
-          Event  : Gdk.Event.Gdk_Event_Key) return Integer;
+          Event  : Gdk.Event.Gdk_Event_Key) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_activate_key");
    begin
       return Internal (Get_Object (Window), Event) /= 0;
@@ -289,7 +289,7 @@ package body Gtk.Window is
    function Get_Accept_Focus
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_accept_focus");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -351,7 +351,7 @@ package body Gtk.Window is
    function Get_Decorated
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_decorated");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -397,7 +397,7 @@ package body Gtk.Window is
    function Get_Deletable
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_deletable");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -410,7 +410,7 @@ package body Gtk.Window is
    function Get_Destroy_With_Parent
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_destroy_with_parent");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -438,7 +438,7 @@ package body Gtk.Window is
    function Get_Focus_On_Map
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_focus_on_map");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -451,7 +451,7 @@ package body Gtk.Window is
    function Get_Focus_Visible
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_focus_visible");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -493,7 +493,7 @@ package body Gtk.Window is
    function Get_Has_Resize_Grip
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_has_resize_grip");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -506,7 +506,7 @@ package body Gtk.Window is
    function Get_Hide_Titlebar_When_Maximized
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_hide_titlebar_when_maximized");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -579,7 +579,7 @@ package body Gtk.Window is
    function Get_Mnemonics_Visible
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_mnemonics_visible");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -592,7 +592,7 @@ package body Gtk.Window is
    function Get_Modal
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_modal");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -623,7 +623,7 @@ package body Gtk.Window is
    function Get_Resizable
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_resizable");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -640,10 +640,11 @@ package body Gtk.Window is
    is
       function Internal
          (Window   : System.Address;
-          Acc_Rect : access Gdk.Rectangle.Gdk_Rectangle) return Integer;
+          Acc_Rect : access Gdk.Rectangle.Gdk_Rectangle)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_resize_grip_area");
       Acc_Rect   : aliased Gdk.Rectangle.Gdk_Rectangle;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Window), Acc_Rect'Access);
       Rect := Acc_Rect;
@@ -704,7 +705,7 @@ package body Gtk.Window is
    function Get_Skip_Pager_Hint
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_skip_pager_hint");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -717,7 +718,7 @@ package body Gtk.Window is
    function Get_Skip_Taskbar_Hint
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_skip_taskbar_hint");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -773,7 +774,7 @@ package body Gtk.Window is
    function Get_Urgency_Hint
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_get_urgency_hint");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -801,7 +802,7 @@ package body Gtk.Window is
    function Has_Group
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_has_group");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -814,7 +815,7 @@ package body Gtk.Window is
    function Has_Toplevel_Focus
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_has_toplevel_focus");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -838,7 +839,7 @@ package body Gtk.Window is
    function Is_Active
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_is_active");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -884,7 +885,7 @@ package body Gtk.Window is
       function Internal
          (Window   : System.Address;
           Keyval   : Gdk.Types.Gdk_Key_Type;
-          Modifier : Gdk.Types.Gdk_Modifier_Type) return Integer;
+          Modifier : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_mnemonic_activate");
    begin
       return Internal (Get_Object (Window), Keyval, Modifier) /= 0;
@@ -915,10 +916,10 @@ package body Gtk.Window is
    is
       function Internal
          (Window   : System.Address;
-          Geometry : Interfaces.C.Strings.chars_ptr) return Integer;
+          Geometry : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_parse_geometry");
       Tmp_Geometry : Interfaces.C.Strings.chars_ptr := New_String (Geometry);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Window), Tmp_Geometry);
       Free (Tmp_Geometry);
@@ -960,7 +961,7 @@ package body Gtk.Window is
    is
       function Internal
          (Window : System.Address;
-          Event  : Gdk.Event.Gdk_Event_Key) return Integer;
+          Event  : Gdk.Event.Gdk_Event_Key) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_propagate_key_event");
    begin
       return Internal (Get_Object (Window), Event) /= 0;
@@ -1054,7 +1055,7 @@ package body Gtk.Window is
    function Resize_Grip_Is_Visible
       (Window : not null access Gtk_Window_Record) return Boolean
    is
-      function Internal (Window : System.Address) return Integer;
+      function Internal (Window : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_resize_grip_is_visible");
    begin
       return Internal (Get_Object (Window)) /= 0;
@@ -1086,7 +1087,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_accept_focus");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1116,7 +1117,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_decorated");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1182,7 +1183,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_deletable");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1196,7 +1197,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_destroy_with_parent");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1224,7 +1225,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_focus_on_map");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1238,7 +1239,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_focus_visible");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1288,7 +1289,7 @@ package body Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Value  : Boolean)
    is
-      procedure Internal (Window : System.Address; Value : Integer);
+      procedure Internal (Window : System.Address; Value : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_has_resize_grip");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Value));
@@ -1302,7 +1303,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_has_user_ref_count");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1316,7 +1317,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_hide_titlebar_when_maximized");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1346,10 +1347,10 @@ package body Gtk.Window is
    is
       function Internal
          (Window   : System.Address;
-          Filename : Interfaces.C.Strings.chars_ptr) return Integer;
+          Filename : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_set_icon_from_file");
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Window), Tmp_Filename);
       Free (Tmp_Filename);
@@ -1401,7 +1402,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_keep_above");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1415,7 +1416,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_keep_below");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1445,7 +1446,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_mnemonics_visible");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1459,7 +1460,7 @@ package body Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Modal  : Boolean := True)
    is
-      procedure Internal (Window : System.Address; Modal : Integer);
+      procedure Internal (Window : System.Address; Modal : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_modal");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Modal));
@@ -1489,7 +1490,9 @@ package body Gtk.Window is
       (Window    : not null access Gtk_Window_Record;
        Resizable : Boolean)
    is
-      procedure Internal (Window : System.Address; Resizable : Integer);
+      procedure Internal
+         (Window    : System.Address;
+          Resizable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_resizable");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Resizable));
@@ -1535,7 +1538,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_skip_pager_hint");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1549,7 +1552,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_skip_taskbar_hint");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1629,7 +1632,7 @@ package body Gtk.Window is
       (Window  : not null access Gtk_Window_Record;
        Setting : Boolean)
    is
-      procedure Internal (Window : System.Address; Setting : Integer);
+      procedure Internal (Window : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_urgency_hint");
    begin
       Internal (Get_Object (Window), Boolean'Pos (Setting));
@@ -1743,7 +1746,7 @@ package body Gtk.Window is
    -----------------------------------
 
    procedure Set_Auto_Startup_Notification (Setting : Boolean) is
-      procedure Internal (Setting : Integer);
+      procedure Internal (Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_window_set_auto_startup_notification");
    begin
       Internal (Boolean'Pos (Setting));
@@ -1770,10 +1773,10 @@ package body Gtk.Window is
       (Filename : UTF8_String) return Boolean
    is
       function Internal
-         (Filename : Interfaces.C.Strings.chars_ptr) return Integer;
+         (Filename : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_window_set_default_icon_from_file");
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Filename);
       Free (Tmp_Filename);

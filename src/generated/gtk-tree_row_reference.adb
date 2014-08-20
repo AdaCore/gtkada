@@ -174,7 +174,7 @@ package body Gtk.Tree_Row_Reference is
    -----------
 
    function Valid (Reference : Gtk_Tree_Row_Reference) return Boolean is
-      function Internal (Reference : System.Address) return Integer;
+      function Internal (Reference : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_row_reference_valid");
    begin
       return Internal (Get_Object (Reference)) /= 0;

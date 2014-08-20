@@ -171,7 +171,7 @@ package body Gtk.Toolbar is
    function Get_Show_Arrow
       (Toolbar : not null access Gtk_Toolbar_Record) return Boolean
    is
-      function Internal (Toolbar : System.Address) return Integer;
+      function Internal (Toolbar : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_toolbar_get_show_arrow");
    begin
       return Internal (Get_Object (Toolbar)) /= 0;
@@ -252,7 +252,9 @@ package body Gtk.Toolbar is
       (Toolbar    : not null access Gtk_Toolbar_Record;
        Show_Arrow : Boolean := True)
    is
-      procedure Internal (Toolbar : System.Address; Show_Arrow : Integer);
+      procedure Internal
+         (Toolbar    : System.Address;
+          Show_Arrow : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_toolbar_set_show_arrow");
    begin
       Internal (Get_Object (Toolbar), Boolean'Pos (Show_Arrow));

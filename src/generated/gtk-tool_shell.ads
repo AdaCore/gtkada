@@ -31,6 +31,7 @@ pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
+with Glib.Object;    use Glib.Object;
 with Glib.Types;     use Glib.Types;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Size_Group; use Gtk.Size_Group;
@@ -131,6 +132,111 @@ package Gtk.Tool_Shell is
 
    function "+" (W : Gtk_Tool_Shell) return Gtk_Tool_Shell;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Get_Ellipsize_Mode is access function
+     (Self : Gtk_Tool_Shell) return Pango.Layout.Pango_Ellipsize_Mode;
+   pragma Convention (C, Virtual_Get_Ellipsize_Mode);
+   --  Retrieves the current ellipsize mode for the tool shell. Tool items
+   --  must not call this function directly, but rely on
+   --  gtk_tool_item_get_ellipsize_mode instead.
+   --  Since: gtk+ 2.20
+
+   type Virtual_Get_Icon_Size is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size;
+   pragma Convention (C, Virtual_Get_Icon_Size);
+
+   type Virtual_Get_Orientation is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
+   pragma Convention (C, Virtual_Get_Orientation);
+   --  Retrieves the current orientation for the tool shell. Tool items must
+   --  not call this function directly, but rely on
+   --  gtk_tool_item_get_orientation instead.
+   --  Since: gtk+ 2.14
+
+   type Virtual_Get_Relief_Style is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style;
+   pragma Convention (C, Virtual_Get_Relief_Style);
+   --  Returns the relief style of buttons on Shell. Tool items must not call
+   --  this function directly, but rely on gtk_tool_item_get_relief_style
+   --  instead.
+   --  Since: gtk+ 2.14
+
+   type Virtual_Get_Style is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Toolbar_Style;
+   pragma Convention (C, Virtual_Get_Style);
+   --  Retrieves whether the tool shell has text, icons, or both. Tool items
+   --  must not call this function directly, but rely on
+   --  gtk_tool_item_get_toolbar_style instead.
+   --  Since: gtk+ 2.14
+
+   type Virtual_Get_Text_Alignment is access function (Self : Gtk_Tool_Shell) return Gfloat;
+   pragma Convention (C, Virtual_Get_Text_Alignment);
+   --  Retrieves the current text alignment for the tool shell. Tool items
+   --  must not call this function directly, but rely on
+   --  gtk_tool_item_get_text_alignment instead.
+   --  Since: gtk+ 2.20
+
+   type Virtual_Get_Text_Orientation is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
+   pragma Convention (C, Virtual_Get_Text_Orientation);
+   --  Retrieves the current text orientation for the tool shell. Tool items
+   --  must not call this function directly, but rely on
+   --  gtk_tool_item_get_text_orientation instead.
+   --  Since: gtk+ 2.20
+
+   type Virtual_Get_Text_Size_Group is access function (Self : Gtk_Tool_Shell) return System.Address;
+   pragma Convention (C, Virtual_Get_Text_Size_Group);
+   --  Retrieves the current text size group for the tool shell. Tool items
+   --  must not call this function directly, but rely on
+   --  gtk_tool_item_get_text_size_group instead.
+   --  Since: gtk+ 2.20
+
+   type Virtual_Rebuild_Menu is access procedure (Self : Gtk_Tool_Shell);
+   pragma Convention (C, Virtual_Rebuild_Menu);
+   --  Calling this function signals the tool shell that the overflow menu
+   --  item for tool items have changed. If there is an overflow menu and if it
+   --  is visible when this function it called, the menu will be rebuilt.
+   --  Tool items must not call this function directly, but rely on
+   --  gtk_tool_item_rebuild_menu instead.
+   --  Since: gtk+ 2.14
+
+   subtype Tool_Shell_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Get_Ellipsize_Mode
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Ellipsize_Mode);
+   pragma Import (C, Set_Get_Ellipsize_Mode, "gtkada_Tool_Shell_set_get_ellipsize_mode");
+   procedure Set_Get_Icon_Size
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Icon_Size);
+   pragma Import (C, Set_Get_Icon_Size, "gtkada_Tool_Shell_set_get_icon_size");
+   procedure Set_Get_Orientation
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Orientation);
+   pragma Import (C, Set_Get_Orientation, "gtkada_Tool_Shell_set_get_orientation");
+   procedure Set_Get_Relief_Style
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Relief_Style);
+   pragma Import (C, Set_Get_Relief_Style, "gtkada_Tool_Shell_set_get_relief_style");
+   procedure Set_Get_Style
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Style);
+   pragma Import (C, Set_Get_Style, "gtkada_Tool_Shell_set_get_style");
+   procedure Set_Get_Text_Alignment
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Text_Alignment);
+   pragma Import (C, Set_Get_Text_Alignment, "gtkada_Tool_Shell_set_get_text_alignment");
+   procedure Set_Get_Text_Orientation
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Text_Orientation);
+   pragma Import (C, Set_Get_Text_Orientation, "gtkada_Tool_Shell_set_get_text_orientation");
+   procedure Set_Get_Text_Size_Group
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Get_Text_Size_Group);
+   pragma Import (C, Set_Get_Text_Size_Group, "gtkada_Tool_Shell_set_get_text_size_group");
+   procedure Set_Rebuild_Menu
+     (Self    : Tool_Shell_Interface_Descr;
+      Handler : Virtual_Rebuild_Menu);
+   pragma Import (C, Set_Rebuild_Menu, "gtkada_Tool_Shell_set_rebuild_menu");
+   --  See Glib.Object.Add_Interface
 
 private
 

@@ -451,7 +451,7 @@ package body Gtk.Action_Group is
       (Action_Group : not null access Gtk_Action_Group_Record)
        return Boolean
    is
-      function Internal (Action_Group : System.Address) return Integer;
+      function Internal (Action_Group : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_group_get_sensitive");
    begin
       return Internal (Get_Object (Action_Group)) /= 0;
@@ -465,7 +465,7 @@ package body Gtk.Action_Group is
       (Action_Group : not null access Gtk_Action_Group_Record)
        return Boolean
    is
-      function Internal (Action_Group : System.Address) return Integer;
+      function Internal (Action_Group : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_group_get_visible");
    begin
       return Internal (Get_Object (Action_Group)) /= 0;
@@ -530,7 +530,7 @@ package body Gtk.Action_Group is
    is
       procedure Internal
          (Action_Group : System.Address;
-          Sensitive    : Integer);
+          Sensitive    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_group_set_sensitive");
    begin
       Internal (Get_Object (Action_Group), Boolean'Pos (Sensitive));
@@ -633,7 +633,9 @@ package body Gtk.Action_Group is
       (Action_Group : not null access Gtk_Action_Group_Record;
        Visible      : Boolean)
    is
-      procedure Internal (Action_Group : System.Address; Visible : Integer);
+      procedure Internal
+         (Action_Group : System.Address;
+          Visible      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_group_set_visible");
    begin
       Internal (Get_Object (Action_Group), Boolean'Pos (Visible));

@@ -319,7 +319,7 @@ package body Gtk.Tree_Model is
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer;
+       Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Model_Foreach_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
@@ -334,7 +334,7 @@ package body Gtk.Tree_Model is
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer
+       Data  : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Tree_Model_Foreach_Func := To_Gtk_Tree_Model_Foreach_Func (Data);
    begin
@@ -524,7 +524,7 @@ package body Gtk.Tree_Model is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer;
+          Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate
       --  over the rows in a tree model.
@@ -558,7 +558,7 @@ package body Gtk.Tree_Model is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer
+          Data  : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -709,7 +709,7 @@ package body Gtk.Tree_Model is
    is
       function Internal
          (Tree_Model : Gtk_Tree_Model;
-          Iter       : Gtk_Tree_Iter) return Integer;
+          Iter       : Gtk_Tree_Iter) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_model_iter_has_child");
    begin
       return Internal (Tree_Model, Iter) /= 0;
@@ -725,7 +725,7 @@ package body Gtk.Tree_Model is
    is
       function Internal
          (Path       : System.Address;
-          Descendant : System.Address) return Integer;
+          Descendant : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_path_is_ancestor");
    begin
       return Internal (Get_Object (Path), Get_Object (Descendant)) /= 0;
@@ -741,7 +741,7 @@ package body Gtk.Tree_Model is
    is
       function Internal
          (Path     : System.Address;
-          Ancestor : System.Address) return Integer;
+          Ancestor : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_path_is_descendant");
    begin
       return Internal (Get_Object (Path), Get_Object (Ancestor)) /= 0;
@@ -861,7 +861,7 @@ package body Gtk.Tree_Model is
    ----------
 
    function Prev (Path : Gtk_Tree_Path) return Boolean is
-      function Internal (Path : System.Address) return Integer;
+      function Internal (Path : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_path_prev");
    begin
       return Internal (Get_Object (Path)) /= 0;
@@ -991,7 +991,7 @@ package body Gtk.Tree_Model is
    --------
 
    function Up (Path : Gtk_Tree_Path) return Boolean is
-      function Internal (Path : System.Address) return Integer;
+      function Internal (Path : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_path_up");
    begin
       return Internal (Get_Object (Path)) /= 0;

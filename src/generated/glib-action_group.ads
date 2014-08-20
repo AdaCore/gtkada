@@ -71,11 +71,15 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings; use GNAT.Strings;
-with Glib;         use Glib;
-with Glib.Object;  use Glib.Object;
-with Glib.Types;   use Glib.Types;
-with Glib.Variant; use Glib.Variant;
+with GNAT.Strings;         use GNAT.Strings;
+with Glib;                 use Glib;
+with Glib.Object;          use Glib.Object;
+with Glib.Types;           use Glib.Types;
+with Glib.Variant;         use Glib.Variant;
+with Gtkada.Bindings;      use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package Glib.Action_Group is
 
@@ -391,6 +395,284 @@ package Glib.Action_Group is
 
    function "+" (W : Gaction_Group) return Gaction_Group;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Action_Added is access procedure
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr);
+   pragma Convention (C, Virtual_Action_Added);
+   --  Emits the Glib.Action_Group.Gaction_Group::action-added signal on
+   --  Action_Group.
+   --  This function should only be called by Glib.Action_Group.Gaction_Group
+   --  implementations.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of an action in the group
+
+   type Virtual_Action_Enabled_Changed is access procedure
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Enabled     : Glib.Gboolean);
+   pragma Convention (C, Virtual_Action_Enabled_Changed);
+   --  Emits the Glib.Action_Group.Gaction_Group::action-enabled-changed
+   --  signal on Action_Group.
+   --  This function should only be called by Glib.Action_Group.Gaction_Group
+   --  implementations.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of an action in the group
+   --  "enabled": whether or not the action is now enabled
+
+   type Virtual_Action_Removed is access procedure
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr);
+   pragma Convention (C, Virtual_Action_Removed);
+   --  Emits the Glib.Action_Group.Gaction_Group::action-removed signal on
+   --  Action_Group.
+   --  This function should only be called by Glib.Action_Group.Gaction_Group
+   --  implementations.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of an action in the group
+
+   type Virtual_Action_State_Changed is access procedure
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr;
+      State       : System.Address);
+   pragma Convention (C, Virtual_Action_State_Changed);
+   --  Emits the Glib.Action_Group.Gaction_Group::action-state-changed signal
+   --  on Action_Group.
+   --  This function should only be called by Glib.Action_Group.Gaction_Group
+   --  implementations.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of an action in the group
+   --  "state": the new state of the named action
+
+   type Virtual_Activate_Action is access procedure
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Parameter   : System.Address);
+   pragma Convention (C, Virtual_Activate_Action);
+   --  Activate the named action within Action_Group.
+   --  If the action is expecting a parameter, then the correct type of
+   --  parameter must be given as Parameter. If the action is expecting no
+   --  parameters then Parameter must be null. See
+   --  Glib.Action_Group.Get_Action_Parameter_Type.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to activate
+   --  "parameter": parameters to the activation
+
+   type Virtual_Change_Action_State is access procedure
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Value       : System.Address);
+   pragma Convention (C, Virtual_Change_Action_State);
+   --  Request for the state of the named action within Action_Group to be
+   --  changed to Value.
+   --  The action must be stateful and Value must be of the correct type. See
+   --  Glib.Action_Group.Get_Action_State_Type.
+   --  This call merely requests a change. The action may refuse to change its
+   --  state or may change its state to something other than Value. See
+   --  Glib.Action_Group.Get_Action_State_Hint.
+   --  If the Value GVariant is floating, it is consumed.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to request the change on
+   --  "value": the new state
+
+   type Virtual_Get_Action_Enabled is access function
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Get_Action_Enabled);
+   --  Checks if the named action within Action_Group is currently enabled.
+   --  An action must be enabled in order to be activated or in order to have
+   --  its state changed from outside callers.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to query
+
+   type Virtual_Get_Action_Parameter_Type is access function
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr)
+   return Glib.Variant.Gvariant_Type;
+   pragma Convention (C, Virtual_Get_Action_Parameter_Type);
+   --  Queries the type of the parameter that must be given when activating
+   --  the named action within Action_Group.
+   --  When activating the action using Glib.Action_Group.Activate_Action, the
+   --  Glib.Variant.Gvariant given to that function must be of the type
+   --  returned by this function.
+   --  In the case that this function returns null, you must not give any
+   --  Glib.Variant.Gvariant, but null instead.
+   --  The parameter type of a particular action will never change but it is
+   --  possible for an action to be removed and for a new action to be added
+   --  with the same name but a different parameter type.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to query
+
+   type Virtual_Get_Action_State is access function
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+   pragma Convention (C, Virtual_Get_Action_State);
+   --  Queries the current state of the named action within Action_Group.
+   --  If the action is not stateful then null will be returned. If the action
+   --  is stateful then the type of the return value is the type given by
+   --  Glib.Action_Group.Get_Action_State_Type.
+   --  The return value (if non-null) should be freed with g_variant_unref
+   --  when it is no longer required.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to query
+
+   type Virtual_Get_Action_State_Hint is access function
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+   pragma Convention (C, Virtual_Get_Action_State_Hint);
+   --  Requests a hint about the valid range of values for the state of the
+   --  named action within Action_Group.
+   --  If null is returned it either means that the action is not stateful or
+   --  that there is no hint about the valid range of values for the state of
+   --  the action.
+   --  If a Glib.Variant.Gvariant array is returned then each item in the
+   --  array is a possible value for the state. If a Glib.Variant.Gvariant pair
+   --  (ie: two-tuple) is returned then the tuple specifies the inclusive lower
+   --  and upper bound of valid values for the state.
+   --  In any case, the information is merely a hint. It may be possible to
+   --  have a state value outside of the hinted range and setting a value
+   --  within the range may fail.
+   --  The return value (if non-null) should be freed with g_variant_unref
+   --  when it is no longer required.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to query
+
+   type Virtual_Get_Action_State_Type is access function
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr)
+   return Glib.Variant.Gvariant_Type;
+   pragma Convention (C, Virtual_Get_Action_State_Type);
+   --  Queries the type of the state of the named action within Action_Group.
+   --  If the action is stateful then this function returns the
+   --  Glib.Variant.Gvariant_Type of the state. All calls to
+   --  Glib.Action_Group.Change_Action_State must give a Glib.Variant.Gvariant
+   --  of this type and Glib.Action_Group.Get_Action_State will return a
+   --  Glib.Variant.Gvariant of the same type.
+   --  If the action is not stateful then this function will return null. In
+   --  that case, Glib.Action_Group.Get_Action_State will return null and you
+   --  must not call Glib.Action_Group.Change_Action_State.
+   --  The state type of a particular action will never change but it is
+   --  possible for an action to be removed and for a new action to be added
+   --  with the same name but a different state type.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to query
+
+   type Virtual_Has_Action is access function
+     (Self        : Gaction_Group;
+      Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Has_Action);
+   --  Checks if the named action exists within Action_Group.
+   --  Since: gtk+ 2.28
+   --  "action_name": the name of the action to check for
+
+   type Virtual_List_Actions is access function (Self : Gaction_Group) return chars_ptr_array_access;
+   pragma Convention (C, Virtual_List_Actions);
+   --  Lists the actions contained within Action_Group.
+   --  The caller is responsible for freeing the list with g_strfreev when it
+   --  is no longer required.
+   --  Since: gtk+ 2.28
+
+   type Virtual_Query_Action is access function
+     (Self           : Gaction_Group;
+      Action_Name    : Interfaces.C.Strings.chars_ptr;
+      Enabled        : access Glib.Gboolean;
+      Parameter_Type : access Glib.Variant.Gvariant_Type;
+      State_Type     : access Glib.Variant.Gvariant_Type;
+      State_Hint     : access System.Address;
+      State          : access System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Query_Action);
+   --  Queries all aspects of the named action within an Action_Group.
+   --  This function acquires the information available from
+   --  Glib.Action_Group.Has_Action, Glib.Action_Group.Get_Action_Enabled,
+   --  Glib.Action_Group.Get_Action_Parameter_Type,
+   --  Glib.Action_Group.Get_Action_State_Type,
+   --  Glib.Action_Group.Get_Action_State_Hint and
+   --  Glib.Action_Group.Get_Action_State with a single function call.
+   --  This provides two main benefits.
+   --  The first is the improvement in efficiency that comes with not having
+   --  to perform repeated lookups of the action in order to discover different
+   --  things about it. The second is that implementing
+   --  Glib.Action_Group.Gaction_Group can now be done by only overriding this
+   --  one virtual function.
+   --  The interface provides a default implementation of this function that
+   --  calls the individual functions, as required, to fetch the information.
+   --  The interface also provides default implementations of those functions
+   --  that call this function. All implementations, therefore, must override
+   --  either this function or all of the others.
+   --  If the action exists, True is returned and any of the requested fields
+   --  (as indicated by having a non-null reference passed in) are filled. If
+   --  the action doesn't exist, False is returned and the fields may or may
+   --  not have been modified.
+   --  Since: gtk+ 2.32
+   --  "action_name": the name of an action in the group
+   --  "enabled": if the action is presently enabled
+   --  "parameter_type": the parameter type, or null if none needed
+   --  "state_type": the state type, or null if stateless
+   --  "state_hint": the state hint, or null if none
+   --  "state": the current state, or null if stateless
+
+   subtype Action_Group_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Action_Added
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Action_Added);
+   pragma Import (C, Set_Action_Added, "gtkada_Action_Group_set_action_added");
+   procedure Set_Action_Enabled_Changed
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Action_Enabled_Changed);
+   pragma Import (C, Set_Action_Enabled_Changed, "gtkada_Action_Group_set_action_enabled_changed");
+   procedure Set_Action_Removed
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Action_Removed);
+   pragma Import (C, Set_Action_Removed, "gtkada_Action_Group_set_action_removed");
+   procedure Set_Action_State_Changed
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Action_State_Changed);
+   pragma Import (C, Set_Action_State_Changed, "gtkada_Action_Group_set_action_state_changed");
+   procedure Set_Activate_Action
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Activate_Action);
+   pragma Import (C, Set_Activate_Action, "gtkada_Action_Group_set_activate_action");
+   procedure Set_Change_Action_State
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Change_Action_State);
+   pragma Import (C, Set_Change_Action_State, "gtkada_Action_Group_set_change_action_state");
+   procedure Set_Get_Action_Enabled
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Get_Action_Enabled);
+   pragma Import (C, Set_Get_Action_Enabled, "gtkada_Action_Group_set_get_action_enabled");
+   procedure Set_Get_Action_Parameter_Type
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Get_Action_Parameter_Type);
+   pragma Import (C, Set_Get_Action_Parameter_Type, "gtkada_Action_Group_set_get_action_parameter_type");
+   procedure Set_Get_Action_State
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Get_Action_State);
+   pragma Import (C, Set_Get_Action_State, "gtkada_Action_Group_set_get_action_state");
+   procedure Set_Get_Action_State_Hint
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Get_Action_State_Hint);
+   pragma Import (C, Set_Get_Action_State_Hint, "gtkada_Action_Group_set_get_action_state_hint");
+   procedure Set_Get_Action_State_Type
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Get_Action_State_Type);
+   pragma Import (C, Set_Get_Action_State_Type, "gtkada_Action_Group_set_get_action_state_type");
+   procedure Set_Has_Action
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Has_Action);
+   pragma Import (C, Set_Has_Action, "gtkada_Action_Group_set_has_action");
+   procedure Set_List_Actions
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_List_Actions);
+   pragma Import (C, Set_List_Actions, "gtkada_Action_Group_set_list_actions");
+   procedure Set_Query_Action
+     (Self    : Action_Group_Interface_Descr;
+      Handler : Virtual_Query_Action);
+   pragma Import (C, Set_Query_Action, "gtkada_Action_Group_set_query_action");
+   --  See Glib.Object.Add_Interface
 
 private
 

@@ -429,8 +429,10 @@ package Glib.Object is
    -- Interfaces --
    ----------------
 
+   type Interface_Description is new System.Address;
+
    type GInterfaceInitFunc is access procedure
-      (Iface : System.Address;
+      (Iface : Interface_Description;
        Data  : System.Address);
    pragma Convention (C, GInterfaceInitFunc);
    --  The interface initialization function. This function should initialize
@@ -443,7 +445,7 @@ package Glib.Object is
    --  Data: the data supplied to the GInterface_Info.
 
    type GInterfaceFinalizeFunc is access procedure
-      (Iface : System.Address;
+      (Iface : Interface_Description;
        Data  : System.Address);
    pragma Convention (C, GInterfaceFinalizeFunc);
    --  The interface finalization function.

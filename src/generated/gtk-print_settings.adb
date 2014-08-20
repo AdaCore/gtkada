@@ -323,10 +323,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Integer;
+          Key  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_get_bool");
       Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);
@@ -340,7 +340,7 @@ package body Gtk.Print_Settings is
    function Get_Collate
       (Self : not null access Gtk_Print_Settings_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_get_collate");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -795,7 +795,7 @@ package body Gtk.Print_Settings is
    function Get_Reverse
       (Self : not null access Gtk_Print_Settings_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_get_reverse");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -821,7 +821,7 @@ package body Gtk.Print_Settings is
    function Get_Use_Color
       (Self : not null access Gtk_Print_Settings_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_get_use_color");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -837,10 +837,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Integer;
+          Key  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_has_key");
       Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);
@@ -857,10 +857,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_load_file");
       Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);
@@ -879,10 +879,10 @@ package body Gtk.Print_Settings is
       function Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Group_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_load_key_file");
       Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       if Group_Name = "" then
          Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
@@ -933,7 +933,7 @@ package body Gtk.Print_Settings is
       procedure Internal
          (Self  : System.Address;
           Key   : Interfaces.C.Strings.chars_ptr;
-          Value : Integer);
+          Value : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_settings_set_bool");
       Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
    begin
@@ -949,7 +949,7 @@ package body Gtk.Print_Settings is
       (Self    : not null access Gtk_Print_Settings_Record;
        Collate : Boolean)
    is
-      procedure Internal (Self : System.Address; Collate : Integer);
+      procedure Internal (Self : System.Address; Collate : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_settings_set_collate");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Collate));
@@ -1375,7 +1375,9 @@ package body Gtk.Print_Settings is
       (Self        : not null access Gtk_Print_Settings_Record;
        Gtk_Reverse : Boolean)
    is
-      procedure Internal (Self : System.Address; Gtk_Reverse : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Gtk_Reverse : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_settings_set_reverse");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Gtk_Reverse));
@@ -1403,7 +1405,7 @@ package body Gtk.Print_Settings is
       (Self      : not null access Gtk_Print_Settings_Record;
        Use_Color : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Color : Integer);
+      procedure Internal (Self : System.Address; Use_Color : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_settings_set_use_color");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Color));
@@ -1419,10 +1421,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_to_file");
       Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);

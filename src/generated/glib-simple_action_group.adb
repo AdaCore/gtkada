@@ -175,7 +175,7 @@ package body Glib.Simple_Action_Group is
       procedure Internal
          (Self        : System.Address;
           Action_Name : Interfaces.C.Strings.chars_ptr;
-          Enabled     : Integer);
+          Enabled     : Glib.Gboolean);
       pragma Import (C, Internal, "g_action_group_action_enabled_changed");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
    begin
@@ -306,10 +306,10 @@ package body Glib.Simple_Action_Group is
    is
       function Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_get_action_enabled");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -410,10 +410,10 @@ package body Glib.Simple_Action_Group is
    is
       function Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_has_action");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -472,11 +472,11 @@ package body Glib.Simple_Action_Group is
       function Internal
          (Self               : System.Address;
           Action_Name        : Interfaces.C.Strings.chars_ptr;
-          Acc_Enabled        : access Integer;
+          Acc_Enabled        : access Glib.Gboolean;
           Acc_Parameter_Type : access Glib.Variant.Gvariant_Type;
           Acc_State_Type     : access Glib.Variant.Gvariant_Type;
           Acc_State_Hint     : access System.Address;
-          Acc_State          : access System.Address) return Integer;
+          Acc_State          : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_query_action");
       Acc_Enabled        : aliased Boolean;
       Acc_Parameter_Type : aliased Glib.Variant.Gvariant_Type;
@@ -484,10 +484,10 @@ package body Glib.Simple_Action_Group is
       Acc_State_Hint     : aliased Glib.Variant.Gvariant;
       Acc_State          : aliased Glib.Variant.Gvariant;
       Tmp_Action_Name    : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Acc_Enabled    : aliased Integer;
+      Tmp_Acc_Enabled    : aliased Glib.Gboolean;
       Tmp_Acc_State_Hint : aliased System.Address;
       Tmp_Acc_State      : aliased System.Address;
-      Tmp_Return         : Integer;
+      Tmp_Return         : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name, Tmp_Acc_Enabled'Access, Acc_Parameter_Type'Access, Acc_State_Type'Access, Tmp_Acc_State_Hint'Access, Tmp_Acc_State'Access);
       Acc_State := From_Object (Tmp_Acc_State);

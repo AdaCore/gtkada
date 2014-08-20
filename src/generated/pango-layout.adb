@@ -116,7 +116,7 @@ package body Pango.Layout is
    ------------------
 
    function At_Last_Line (Self : Pango_Layout_Iter) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_iter_at_last_line");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -205,7 +205,7 @@ package body Pango.Layout is
    function Get_Auto_Dir
       (Layout : not null access Pango_Layout_Record) return Boolean
    is
-      function Internal (Layout : System.Address) return Integer;
+      function Internal (Layout : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_get_auto_dir");
    begin
       return Internal (Get_Object (Layout)) /= 0;
@@ -423,7 +423,7 @@ package body Pango.Layout is
    function Get_Justify
       (Layout : not null access Pango_Layout_Record) return Boolean
    is
-      function Internal (Layout : System.Address) return Integer;
+      function Internal (Layout : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_get_justify");
    begin
       return Internal (Get_Object (Layout)) /= 0;
@@ -640,7 +640,7 @@ package body Pango.Layout is
    function Get_Single_Paragraph_Mode
       (Layout : not null access Pango_Layout_Record) return Boolean
    is
-      function Internal (Layout : System.Address) return Integer;
+      function Internal (Layout : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_get_single_paragraph_mode");
    begin
       return Internal (Get_Object (Layout)) /= 0;
@@ -760,7 +760,7 @@ package body Pango.Layout is
       procedure Internal
          (Layout   : System.Address;
           Index    : Gint;
-          Trailing : Integer;
+          Trailing : Glib.Gboolean;
           Line     : out Gint;
           X_Pos    : out Gint);
       pragma Import (C, Internal, "pango_layout_index_to_line_x");
@@ -793,7 +793,7 @@ package body Pango.Layout is
    function Is_Ellipsized
       (Layout : not null access Pango_Layout_Record) return Boolean
    is
-      function Internal (Layout : System.Address) return Integer;
+      function Internal (Layout : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_is_ellipsized");
    begin
       return Internal (Get_Object (Layout)) /= 0;
@@ -806,7 +806,7 @@ package body Pango.Layout is
    function Is_Wrapped
       (Layout : not null access Pango_Layout_Record) return Boolean
    is
-      function Internal (Layout : System.Address) return Integer;
+      function Internal (Layout : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_is_wrapped");
    begin
       return Internal (Get_Object (Layout)) /= 0;
@@ -827,7 +827,7 @@ package body Pango.Layout is
    is
       procedure Internal
          (Layout       : System.Address;
-          Strong       : Integer;
+          Strong       : Glib.Gboolean;
           Old_Index    : Gint;
           Old_Trailing : Gint;
           Direction    : Gint;
@@ -843,7 +843,7 @@ package body Pango.Layout is
    ---------------
 
    function Next_Char (Self : Pango_Layout_Iter) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_iter_next_char");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -854,7 +854,7 @@ package body Pango.Layout is
    ------------------
 
    function Next_Cluster (Self : Pango_Layout_Iter) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_iter_next_cluster");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -865,7 +865,7 @@ package body Pango.Layout is
    ---------------
 
    function Next_Line (Self : Pango_Layout_Iter) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_iter_next_line");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -876,7 +876,7 @@ package body Pango.Layout is
    --------------
 
    function Next_Run (Self : Pango_Layout_Iter) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_iter_next_run");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -920,7 +920,7 @@ package body Pango.Layout is
       (Layout   : not null access Pango_Layout_Record;
        Auto_Dir : Boolean)
    is
-      procedure Internal (Layout : System.Address; Auto_Dir : Integer);
+      procedure Internal (Layout : System.Address; Auto_Dir : Glib.Gboolean);
       pragma Import (C, Internal, "pango_layout_set_auto_dir");
    begin
       Internal (Get_Object (Layout), Boolean'Pos (Auto_Dir));
@@ -994,7 +994,7 @@ package body Pango.Layout is
       (Layout  : not null access Pango_Layout_Record;
        Justify : Boolean)
    is
-      procedure Internal (Layout : System.Address; Justify : Integer);
+      procedure Internal (Layout : System.Address; Justify : Glib.Gboolean);
       pragma Import (C, Internal, "pango_layout_set_justify");
    begin
       Internal (Get_Object (Layout), Boolean'Pos (Justify));
@@ -1051,7 +1051,7 @@ package body Pango.Layout is
       (Layout  : not null access Pango_Layout_Record;
        Setting : Boolean)
    is
-      procedure Internal (Layout : System.Address; Setting : Integer);
+      procedure Internal (Layout : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "pango_layout_set_single_paragraph_mode");
    begin
       Internal (Get_Object (Layout), Boolean'Pos (Setting));
@@ -1151,11 +1151,11 @@ package body Pango.Layout is
           X            : Gint;
           Y            : Gint;
           Acc_Index    : access Gint;
-          Acc_Trailing : access Gint) return Integer;
+          Acc_Trailing : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_xy_to_index");
       Acc_Index    : aliased Gint;
       Acc_Trailing : aliased Gint;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Layout), X, Y, Acc_Index'Access, Acc_Trailing'Access);
       Index := Acc_Index;

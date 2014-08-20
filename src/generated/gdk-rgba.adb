@@ -87,7 +87,9 @@ package body Gdk.RGBA is
    -----------
 
    function Equal (Self : Gdk_RGBA; P2 : Gdk_RGBA) return Boolean is
-      function Internal (Self : Gdk_RGBA; P2 : Gdk_RGBA) return Integer;
+      function Internal
+         (Self : Gdk_RGBA;
+          P2   : Gdk_RGBA) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_rgba_equal");
    begin
       return Internal (Self, P2) /= 0;
@@ -104,12 +106,12 @@ package body Gdk.RGBA is
    is
       function Internal
          (Acc_Self : access Gdk_RGBA;
-          Spec     : Interfaces.C.Strings.chars_ptr) return Integer;
+          Spec     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_rgba_parse");
       Acc_Self     : aliased Gdk_RGBA;
       Tmp_Acc_Self : aliased Gdk_RGBA;
       Tmp_Spec     : Interfaces.C.Strings.chars_ptr := New_String (Spec);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Acc_Self'Access, Tmp_Spec);
       Free (Tmp_Spec);

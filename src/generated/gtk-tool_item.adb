@@ -97,7 +97,7 @@ package body Gtk.Tool_Item is
    function Get_Expand
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal (Tool_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_get_expand");
    begin
       return Internal (Get_Object (Tool_Item)) /= 0;
@@ -110,7 +110,7 @@ package body Gtk.Tool_Item is
    function Get_Homogeneous
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal (Tool_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_get_homogeneous");
    begin
       return Internal (Get_Object (Tool_Item)) /= 0;
@@ -138,7 +138,7 @@ package body Gtk.Tool_Item is
    function Get_Is_Important
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal (Tool_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_get_is_important");
    begin
       return Internal (Get_Object (Tool_Item)) /= 0;
@@ -261,7 +261,7 @@ package body Gtk.Tool_Item is
    function Get_Use_Drag_Window
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal (Tool_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_get_use_drag_window");
    begin
       return Internal (Get_Object (Tool_Item)) /= 0;
@@ -274,7 +274,7 @@ package body Gtk.Tool_Item is
    function Get_Visible_Horizontal
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal (Tool_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_get_visible_horizontal");
    begin
       return Internal (Get_Object (Tool_Item)) /= 0;
@@ -287,7 +287,7 @@ package body Gtk.Tool_Item is
    function Get_Visible_Vertical
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Tool_Item : System.Address) return Integer;
+      function Internal (Tool_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_get_visible_vertical");
    begin
       return Internal (Get_Object (Tool_Item)) /= 0;
@@ -327,7 +327,9 @@ package body Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record;
        Expand    : Boolean)
    is
-      procedure Internal (Tool_Item : System.Address; Expand : Integer);
+      procedure Internal
+         (Tool_Item : System.Address;
+          Expand    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_set_expand");
    begin
       Internal (Get_Object (Tool_Item), Boolean'Pos (Expand));
@@ -341,7 +343,9 @@ package body Gtk.Tool_Item is
       (Tool_Item   : not null access Gtk_Tool_Item_Record;
        Homogeneous : Boolean)
    is
-      procedure Internal (Tool_Item : System.Address; Homogeneous : Integer);
+      procedure Internal
+         (Tool_Item   : System.Address;
+          Homogeneous : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_set_homogeneous");
    begin
       Internal (Get_Object (Tool_Item), Boolean'Pos (Homogeneous));
@@ -357,7 +361,7 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item    : System.Address;
-          Is_Important : Integer);
+          Is_Important : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_set_is_important");
    begin
       Internal (Get_Object (Tool_Item), Boolean'Pos (Is_Important));
@@ -429,7 +433,7 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item       : System.Address;
-          Use_Drag_Window : Integer);
+          Use_Drag_Window : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_set_use_drag_window");
    begin
       Internal (Get_Object (Tool_Item), Boolean'Pos (Use_Drag_Window));
@@ -445,7 +449,7 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item          : System.Address;
-          Visible_Horizontal : Integer);
+          Visible_Horizontal : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_set_visible_horizontal");
    begin
       Internal (Get_Object (Tool_Item), Boolean'Pos (Visible_Horizontal));
@@ -461,7 +465,7 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item        : System.Address;
-          Visible_Vertical : Integer);
+          Visible_Vertical : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_set_visible_vertical");
    begin
       Internal (Get_Object (Tool_Item), Boolean'Pos (Visible_Vertical));
@@ -516,7 +520,7 @@ package body Gtk.Tool_Item is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tool_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -544,7 +548,9 @@ package body Gtk.Tool_Item is
       (Self           : not null access Gtk_Tool_Item_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

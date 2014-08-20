@@ -247,8 +247,8 @@ package body Gtk.Paned is
       procedure Internal
          (Paned  : System.Address;
           Child  : System.Address;
-          Resize : Integer;
-          Shrink : Integer);
+          Resize : Glib.Gboolean;
+          Shrink : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_paned_pack1");
    begin
       Internal (Get_Object (Paned), Get_Object (Child), Boolean'Pos (Resize), Boolean'Pos (Shrink));
@@ -267,8 +267,8 @@ package body Gtk.Paned is
       procedure Internal
          (Paned  : System.Address;
           Child  : System.Address;
-          Resize : Integer;
-          Shrink : Integer);
+          Resize : Glib.Gboolean;
+          Shrink : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_paned_pack2");
    begin
       Internal (Get_Object (Paned), Get_Object (Child), Boolean'Pos (Resize), Boolean'Pos (Shrink));

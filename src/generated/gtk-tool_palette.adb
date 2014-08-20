@@ -156,7 +156,7 @@ package body Gtk.Tool_Palette is
    is
       function Internal
          (Self  : System.Address;
-          Group : System.Address) return Integer;
+          Group : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_palette_get_exclusive");
    begin
       return Internal (Get_Object (Self), Get_Object (Group)) /= 0;
@@ -173,7 +173,7 @@ package body Gtk.Tool_Palette is
    is
       function Internal
          (Self  : System.Address;
-          Group : System.Address) return Integer;
+          Group : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_palette_get_expand");
    begin
       return Internal (Get_Object (Self), Get_Object (Group)) /= 0;
@@ -254,7 +254,7 @@ package body Gtk.Tool_Palette is
       procedure Internal
          (Self      : System.Address;
           Group     : System.Address;
-          Exclusive : Integer);
+          Exclusive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_palette_set_exclusive");
    begin
       Internal (Get_Object (Self), Get_Object (Group), Boolean'Pos (Exclusive));
@@ -272,7 +272,7 @@ package body Gtk.Tool_Palette is
       procedure Internal
          (Self   : System.Address;
           Group  : System.Address;
-          Expand : Integer);
+          Expand : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_palette_set_expand");
    begin
       Internal (Get_Object (Self), Get_Object (Group), Boolean'Pos (Expand));

@@ -44,9 +44,11 @@ glib_uri = "http://www.gtk.org/introspection/glib/1.0"
 c_uri = "http://www.gtk.org/introspection/c/1.0"
 
 cidentifier = QName(c_uri, "identifier").text
+cidentifier_prefix = QName(c_uri, "identifier-prefixes").text
 ctype_qname = QName(c_uri, "type").text
 ggettype = QName(glib_uri, "get-type").text
 gsignal = QName(glib_uri, "signal").text
+glib_type_struct = QName(glib_uri, "type-struct").text
 namespace = QName(uri, "namespace").text
 narray = QName(uri, "array").text
 nbitfield = QName(uri, "bitfield").text
@@ -60,6 +62,7 @@ nimplements = QName(uri, "implements").text
 ninterface = QName(uri, "interface").text
 nmember = QName(uri, "member").text
 nmethod = QName(uri, "method").text
+nvirtualmethod = QName(uri, "virtual-method").text
 nparam = QName(uri, "parameter").text
 nparams = QName(uri, "parameters").text
 nrecord = QName(uri, "record").text
@@ -103,6 +106,8 @@ class GIR(object):
             _tree = parse(filename)
             root = _tree.getroot()
 
+            identifier_prefix = root.find(namespace).get(cidentifier_prefix)
+
             k = "%s/%s" % (namespace, ncallback)
             for cl in root.findall(k):
                 ct = cl.get(ctype_qname)
@@ -116,12 +121,14 @@ class GIR(object):
                 self.ctype_interfaces[cl.get(ctype_qname)] = \
                     self.interfaces[cl.get("name")] = \
                     self._create_class(
-                      root, cl, is_interface=True, is_gobject=False)
+                      root, cl, is_interface=True, is_gobject=False,
+                      identifier_prefix=identifier_prefix)
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
                 self.classes[cl.get(ctype_qname)] = self._create_class(
-                    root, cl, is_interface=False)
+                    root, cl, is_interface=False,
+                    identifier_prefix=identifier_prefix)
 
             k = "%s/%s" % (namespace, nconstant)
             for cl in root.findall(k):
@@ -134,14 +141,16 @@ class GIR(object):
             for cl in root.findall(k):
                 if cl.findall(nmethod):
                     self.classes[cl.get(ctype_qname)] = self._create_class(
-                        root, cl, is_interface=False, is_gobject=False)
+                        root, cl, is_interface=False, is_gobject=False,
+                        identifier_prefix=identifier_prefix)
                 self.records[cl.get(ctype_qname)] = cl
 
             k = "%s/%s" % (namespace, nunion)
             for cl in root.findall(k):
                 if cl.findall(nmethod):
                     self.classes[cl.get(ctype_qname)] = self._create_class(
-                        root, cl, is_interface=False, is_gobject=False)
+                        root, cl, is_interface=False, is_gobject=False,
+                        identifier_prefix=identifier_prefix)
                 self.records[cl.get(ctype_qname)] = cl
 
             for enums in (nenumeration, nbitfield):
@@ -185,11 +194,13 @@ class GIR(object):
                 return cl
         return None
 
-    def _create_class(self, rootNode, node, is_interface, is_gobject=True,
+    def _create_class(self, rootNode, node, is_interface,
+                      identifier_prefix, is_gobject=True,
                       has_toplevel_type=True):
         return GIRClass(self, rootNode=rootNode, node=node,
                         is_interface=is_interface,
                         is_gobject=is_gobject,
+                        identifier_prefix=identifier_prefix,
                         has_toplevel_type=has_toplevel_type)
 
     def debug(self, element):
@@ -659,8 +670,8 @@ class SubprogramProfile(object):
 class GIRClass(object):
     """Represents a gtk class"""
 
-    def __init__(self, gir, rootNode, node, is_interface=False,
-                 is_gobject=True, has_toplevel_type=True):
+    def __init__(self, gir, rootNode, node, identifier_prefix,
+                 is_interface=False, is_gobject=True, has_toplevel_type=True):
         """If has_toplevel_type is False, no widget type is generated"""
 
         self.gir = gir
@@ -669,6 +680,7 @@ class GIRClass(object):
         self.ctype = self.node.get(ctype_qname)
         self._private = ""
         self._generated = False
+        self.identifier_prefix = identifier_prefix
         self.implements = dict() # Implemented interfaces
         self.is_gobject = is_gobject
         self.is_interface = is_interface
@@ -1417,6 +1429,71 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section = self.pkg.section("Functions")
             for c in all:
                 self._handle_function(section, c)
+
+    def _virtual_methods(self):
+        all = self.node.findall(nvirtualmethod)
+        has_iface = False
+
+        if all is not None:
+            ifacename = base_name(self.name)
+            info = ''
+
+            for c in all:
+                if not self.gtkpkg.bind_virtual_method(c.get('name')):
+                    continue
+
+                gtkmethod=self.gtkpkg.get_method(cname=c.get(cidentifier))
+                basename = gtkmethod.ada_name() or c.get('name').title()
+                adaname = "Virtual_%s" % basename
+
+                if not has_iface:
+                    has_iface = True
+                    section = self.pkg.section("Virtual Methods")
+
+                info += 'procedure Set_%s\n' % basename
+                info += '   (Self    : %s_Interface_Descr;\n' % ifacename
+                info += '    Handler : %s);\n' % adaname
+                info += 'pragma Import (C, Set_%s, "gtkada_%s_set_%s");\n' % (
+                    basename, ifacename, basename.lower())
+
+                c_iface = '%s%s' % (
+                    self.identifier_prefix,
+                    self.node.get(glib_type_struct))
+
+                self.gir.ccode += """
+void gtkada_%s_set_%s(%s* iface, %s* handler) {
+    iface->%s = handler;
+}""" % (ifacename, basename.lower(),
+                        c_iface,
+                        'void',
+                        c.get('name'))
+
+                profile = SubprogramProfile.parse(
+                    node=c,
+                    gtkmethod=gtkmethod,
+                    pkg=self.pkg)
+                self._add_self_param(
+                    adaname=adaname, gtkmethod=gtkmethod, profile=profile,
+                    is_import=False)
+                subp = profile.subprogram(
+                    name=adaname,
+                    lang="ada->c",
+                    convention="C",
+                    showdoc=True)
+                section.add(
+                    '\ntype %s is %s' % (
+                        adaname,
+                        subp.spec(pkg=self.pkg, as_type=True)))
+                subp.add_withs_for_subprogram(pkg=self.pkg, in_specs=True)
+
+        if has_iface:
+            info = ('subtype %s_Interface_Descr is ' % ifacename
+                    + 'Glib.Object.Interface_Description;\n'
+                    + info
+                    + '--  See Glib.Object.Add_Interface\n')
+            section.add(info)
+            self.pkg.add_with('Glib.Object')
+
 
     def _globals(self):
         funcs = self.gtkpkg.get_global_functions() # List of binding.xml nodes
@@ -2621,6 +2698,9 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._globals()
         self._fields()
 
+        if self.is_interface:
+            self._virtual_methods()
+
         if not into and self.name != "Gtk.Widget":
             self._implements()
         self._properties()
@@ -2732,6 +2812,7 @@ for the_ctype in enums:
     root = Element(nclass)
 
     cl = gir._create_class(rootNode=root, node=node,
+                           identifier_prefix='',
                            is_interface=False,
                            is_gobject=False,
                            has_toplevel_type=False)
@@ -2758,7 +2839,8 @@ for the_ctype in binding:
             raise
         node = Element(nclass, {ctype_qname: the_ctype})
         e = gir.classes[the_ctype] = gir._create_class(
-             rootNode=root, node=node, is_interface=False)
+             rootNode=root, node=node, is_interface=False,
+             identifier_prefix='')
 
     e.generate(gir)
     gir.bound.add(the_ctype)

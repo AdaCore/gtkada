@@ -137,7 +137,7 @@ package body Gtk.Tree_Model_Filter is
    function Internal_Gtk_Tree_Model_Filter_Visible_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer;
+       Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Model_Filter_Visible_Func);
    --  "model": the child model of the
    --  Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
@@ -149,7 +149,7 @@ package body Gtk.Tree_Model_Filter is
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer;
+       Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Model_Foreach_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
@@ -179,7 +179,7 @@ package body Gtk.Tree_Model_Filter is
    function Internal_Gtk_Tree_Model_Filter_Visible_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer
+       Data  : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Tree_Model_Filter_Visible_Func := To_Gtk_Tree_Model_Filter_Visible_Func (Data);
    begin
@@ -194,7 +194,7 @@ package body Gtk.Tree_Model_Filter is
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Path  : System.Address;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer
+       Data  : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Tree_Model_Foreach_Func := To_Gtk_Tree_Model_Foreach_Func (Data);
    begin
@@ -371,7 +371,7 @@ package body Gtk.Tree_Model_Filter is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer;
+          Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate
       --  over the rows in a tree model.
@@ -405,7 +405,7 @@ package body Gtk.Tree_Model_Filter is
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Path  : System.Address;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer
+          Data  : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -568,7 +568,7 @@ package body Gtk.Tree_Model_Filter is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer;
+          Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  A function which decides whether the row indicated by Iter is
       --  visible.
@@ -585,7 +585,7 @@ package body Gtk.Tree_Model_Filter is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer
+          Data  : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -644,7 +644,7 @@ package body Gtk.Tree_Model_Filter is
    is
       function Internal
          (Self : System.Address;
-          Path : System.Address) return Integer;
+          Path : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_delete");
    begin
       return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
@@ -663,7 +663,7 @@ package body Gtk.Tree_Model_Filter is
       function Internal
          (Self           : System.Address;
           Path           : System.Address;
-          Selection_Data : System.Address) return Integer;
+          Selection_Data : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
    begin
       return Internal (Get_Object (Self), Get_Object (Path), Get_Object (Selection_Data)) /= 0;
@@ -844,7 +844,7 @@ package body Gtk.Tree_Model_Filter is
    is
       function Internal
          (Tree_Model : System.Address;
-          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
+          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_model_iter_has_child");
    begin
       return Internal (Get_Object (Tree_Model), Iter) /= 0;
@@ -1011,7 +1011,7 @@ package body Gtk.Tree_Model_Filter is
    is
       function Internal
          (Self : System.Address;
-          Path : System.Address) return Integer;
+          Path : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_row_draggable");
    begin
       return Internal (Get_Object (Self), Get_Object (Path)) /= 0;

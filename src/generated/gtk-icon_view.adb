@@ -337,7 +337,7 @@ package body Gtk.Icon_View is
    function Get_Activate_On_Single_Click
       (Icon_View : not null access Gtk_Icon_View_Record) return Boolean
    is
-      function Internal (Icon_View : System.Address) return Integer;
+      function Internal (Icon_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_activate_on_single_click");
    begin
       return Internal (Get_Object (Icon_View)) /= 0;
@@ -357,10 +357,11 @@ package body Gtk.Icon_View is
          (Icon_View : System.Address;
           Path      : System.Address;
           Cell      : System.Address;
-          Acc_Rect  : access Gdk.Rectangle.Gdk_Rectangle) return Integer;
+          Acc_Rect  : access Gdk.Rectangle.Gdk_Rectangle)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_cell_rect");
       Acc_Rect   : aliased Gdk.Rectangle.Gdk_Rectangle;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), Get_Object (Path), Get_Object_Or_Null (GObject (Cell)), Acc_Rect'Access);
       Rect.all := Acc_Rect;
@@ -406,14 +407,14 @@ package body Gtk.Icon_View is
       function Internal
          (Icon_View : System.Address;
           Acc_Path  : access System.Address;
-          Acc_Cell  : access System.Address) return Integer;
+          Acc_Cell  : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_cursor");
       Acc_Path               : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Cell               : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
       Tmp_Acc_Path           : aliased System.Address;
       Tmp_Acc_Cell           : aliased System.Address;
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Tmp_Return             : Integer;
+      Tmp_Return             : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), Tmp_Acc_Path'Access, Tmp_Acc_Cell'Access);
       Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_Gtk_Cell_Renderer));
@@ -440,12 +441,13 @@ package body Gtk.Icon_View is
           Drag_X    : Gint;
           Drag_Y    : Gint;
           Acc_Path  : access System.Address;
-          Acc_Pos   : access Gtk_Icon_View_Drop_Position) return Integer;
+          Acc_Pos   : access Gtk_Icon_View_Drop_Position)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_dest_item_at_pos");
       Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Pos      : aliased Gtk_Icon_View_Drop_Position;
       Tmp_Acc_Path : aliased System.Address;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), Drag_X, Drag_Y, Tmp_Acc_Path'Access, Acc_Pos'Access);
       Acc_Path := From_Object (Tmp_Acc_Path);
@@ -491,14 +493,14 @@ package body Gtk.Icon_View is
           X         : Gint;
           Y         : Gint;
           Acc_Path  : access System.Address;
-          Acc_Cell  : access System.Address) return Integer;
+          Acc_Cell  : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_item_at_pos");
       Acc_Path               : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Cell               : aliased Gtk.Cell_Renderer.Gtk_Cell_Renderer;
       Tmp_Acc_Path           : aliased System.Address;
       Tmp_Acc_Cell           : aliased System.Address;
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
-      Tmp_Return             : Integer;
+      Tmp_Return             : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Cell'Access);
       Acc_Cell := Gtk.Cell_Renderer.Gtk_Cell_Renderer (Get_User_Data (Tmp_Acc_Cell, Stub_Gtk_Cell_Renderer));
@@ -660,7 +662,7 @@ package body Gtk.Icon_View is
    function Get_Reorderable
       (Icon_View : not null access Gtk_Icon_View_Record) return Boolean
    is
-      function Internal (Icon_View : System.Address) return Integer;
+      function Internal (Icon_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_reorderable");
    begin
       return Internal (Get_Object (Icon_View)) /= 0;
@@ -767,10 +769,11 @@ package body Gtk.Icon_View is
          (Icon_View    : System.Address;
           Acc_X        : access Gint;
           Acc_Y        : access Gint;
-          Keyboard_Tip : Integer;
+          Keyboard_Tip : Glib.Gboolean;
           Acc_Model    : access Gtk.Tree_Model.Gtk_Tree_Model;
           Acc_Path     : access System.Address;
-          Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
+          Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_tooltip_context");
       Acc_X        : aliased Gint := X;
       Acc_Y        : aliased Gint := Y;
@@ -779,7 +782,7 @@ package body Gtk.Icon_View is
       Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
       Tmp_Acc_Path : aliased System.Address;
       Tmp_Acc_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Tmp_Acc_Iter'Access);
       Acc_Iter := Tmp_Acc_Iter;
@@ -838,7 +841,7 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : System.Address) return Integer;
+          Path      : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_path_is_selected");
    begin
       return Internal (Get_Object (Icon_View), Get_Object (Path)) /= 0;
@@ -858,7 +861,7 @@ package body Gtk.Icon_View is
       procedure Internal
          (Icon_View : System.Address;
           Path      : System.Address;
-          Use_Align : Integer;
+          Use_Align : Glib.Gboolean;
           Row_Align : Gfloat;
           Col_Align : Gfloat);
       pragma Import (C, Internal, "gtk_icon_view_scroll_to_path");
@@ -971,7 +974,9 @@ package body Gtk.Icon_View is
       (Icon_View : not null access Gtk_Icon_View_Record;
        Single    : Boolean)
    is
-      procedure Internal (Icon_View : System.Address; Single : Integer);
+      procedure Internal
+         (Icon_View : System.Address;
+          Single    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_view_set_activate_on_single_click");
    begin
       Internal (Get_Object (Icon_View), Boolean'Pos (Single));
@@ -1100,7 +1105,7 @@ package body Gtk.Icon_View is
          (Icon_View     : System.Address;
           Path          : System.Address;
           Cell          : System.Address;
-          Start_Editing : Integer);
+          Start_Editing : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_view_set_cursor");
    begin
       Internal (Get_Object (Icon_View), Get_Object (Path), Get_Object_Or_Null (GObject (Cell)), Boolean'Pos (Start_Editing));
@@ -1234,7 +1239,9 @@ package body Gtk.Icon_View is
       (Icon_View   : not null access Gtk_Icon_View_Record;
        Reorderable : Boolean)
    is
-      procedure Internal (Icon_View : System.Address; Reorderable : Integer);
+      procedure Internal
+         (Icon_View   : System.Address;
+          Reorderable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_view_set_reorderable");
    begin
       Internal (Get_Object (Icon_View), Boolean'Pos (Reorderable));
@@ -1538,7 +1545,7 @@ package body Gtk.Icon_View is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -1556,7 +1563,7 @@ package body Gtk.Icon_View is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

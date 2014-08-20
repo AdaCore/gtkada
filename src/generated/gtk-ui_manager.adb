@@ -92,7 +92,7 @@ package body Gtk.UI_Manager is
           Name     : Interfaces.C.Strings.chars_ptr;
           Action   : Interfaces.C.Strings.chars_ptr;
           The_Type : Manager_Item_Type;
-          Top      : Integer);
+          Top      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_ui_manager_add_ui");
       Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
       Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
@@ -252,7 +252,7 @@ package body Gtk.UI_Manager is
    function Get_Add_Tearoffs
       (Self : not null access Gtk_UI_Manager_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_ui_manager_get_add_tearoffs");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -380,7 +380,9 @@ package body Gtk.UI_Manager is
       (Self         : not null access Gtk_UI_Manager_Record;
        Add_Tearoffs : Boolean)
    is
-      procedure Internal (Self : System.Address; Add_Tearoffs : Integer);
+      procedure Internal
+         (Self         : System.Address;
+          Add_Tearoffs : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_ui_manager_set_add_tearoffs");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Add_Tearoffs));

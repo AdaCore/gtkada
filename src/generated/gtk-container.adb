@@ -564,7 +564,7 @@ package body Gtk.Container is
    is
       procedure Internal
          (Container     : System.Address;
-          Needs_Redraws : Integer);
+          Needs_Redraws : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_container_set_reallocate_redraws");
    begin
       Internal (Get_Object (Container), Boolean'Pos (Needs_Redraws));

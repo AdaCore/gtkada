@@ -221,7 +221,7 @@ package body Gtk.Tool_Button is
    function Get_Use_Underline
       (Button : not null access Gtk_Tool_Button_Record) return Boolean
    is
-      function Internal (Button : System.Address) return Integer;
+      function Internal (Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_button_get_use_underline");
    begin
       return Internal (Get_Object (Button)) /= 0;
@@ -336,7 +336,9 @@ package body Gtk.Tool_Button is
       (Button        : not null access Gtk_Tool_Button_Record;
        Use_Underline : Boolean)
    is
-      procedure Internal (Button : System.Address; Use_Underline : Integer);
+      procedure Internal
+         (Button        : System.Address;
+          Use_Underline : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_button_set_use_underline");
    begin
       Internal (Get_Object (Button), Boolean'Pos (Use_Underline));
@@ -406,7 +408,7 @@ package body Gtk.Tool_Button is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Tool_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -486,7 +488,9 @@ package body Gtk.Tool_Button is
       (Self           : not null access Gtk_Tool_Button_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

@@ -25,6 +25,7 @@ pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
+with Glib.Object;        use Glib.Object;
 with Glib.Types;         use Glib.Types;
 with Gtk.Selection_Data; use Gtk.Selection_Data;
 with Gtk.Tree_Model;     use Gtk.Tree_Model;
@@ -118,6 +119,58 @@ package Gtk.Tree_Drag_Source is
 
    function "+" (W : Gtk_Tree_Drag_Source) return Gtk_Tree_Drag_Source;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Drag_Data_Delete is access function
+     (Self : Gtk_Tree_Drag_Source;
+      Path : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Drag_Data_Delete);
+   --  Asks the Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source to delete the row at
+   --  Path, because it was moved somewhere else via drag-and-drop. Returns
+   --  False if the deletion fails because Path no longer exists, or for some
+   --  model-specific reason. Should robustly handle a Path no longer found in
+   --  the model!
+   --  "path": row that was being dragged
+
+   type Virtual_Drag_Data_Get is access function
+     (Self           : Gtk_Tree_Drag_Source;
+      Path           : System.Address;
+      Selection_Data : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Drag_Data_Get);
+   --  Asks the Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source to fill in
+   --  Selection_Data with a representation of the row at Path.
+   --  Selection_Data->target gives the required type of the data. Should
+   --  robustly handle a Path no longer found in the model!
+   --  "path": row that was dragged
+   --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data to fill with
+   --  data from the dragged row
+
+   type Virtual_Row_Draggable is access function
+     (Self : Gtk_Tree_Drag_Source;
+      Path : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Row_Draggable);
+   --  Asks the Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source whether a particular
+   --  row can be used as the source of a DND operation. If the source doesn't
+   --  implement this interface, the row is assumed draggable.
+   --  "path": row on which user is initiating a drag
+
+   subtype Tree_Drag_Source_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Drag_Data_Delete
+     (Self    : Tree_Drag_Source_Interface_Descr;
+      Handler : Virtual_Drag_Data_Delete);
+   pragma Import (C, Set_Drag_Data_Delete, "gtkada_Tree_Drag_Source_set_drag_data_delete");
+   procedure Set_Drag_Data_Get
+     (Self    : Tree_Drag_Source_Interface_Descr;
+      Handler : Virtual_Drag_Data_Get);
+   pragma Import (C, Set_Drag_Data_Get, "gtkada_Tree_Drag_Source_set_drag_data_get");
+   procedure Set_Row_Draggable
+     (Self    : Tree_Drag_Source_Interface_Descr;
+      Handler : Virtual_Row_Draggable);
+   pragma Import (C, Set_Row_Draggable, "gtkada_Tree_Drag_Source_set_row_draggable");
+   --  See Glib.Object.Add_Interface
 
 private
 

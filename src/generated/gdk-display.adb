@@ -198,7 +198,7 @@ package body Gdk.Display is
    function Has_Pending
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_has_pending");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -211,7 +211,7 @@ package body Gdk.Display is
    function Is_Closed
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_is_closed");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -269,7 +269,7 @@ package body Gdk.Display is
    function Pointer_Is_Grabbed
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_pointer_is_grabbed");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -315,7 +315,7 @@ package body Gdk.Display is
    is
       function Internal
          (Self      : System.Address;
-          Selection : Gdk.Types.Gdk_Atom) return Integer;
+          Selection : Gdk.Types.Gdk_Atom) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_request_selection_notification");
    begin
       return Internal (Get_Object (Self), Selection) /= 0;
@@ -356,7 +356,7 @@ package body Gdk.Display is
    function Supports_Clipboard_Persistence
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_clipboard_persistence");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -369,7 +369,7 @@ package body Gdk.Display is
    function Supports_Composite
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_composite");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -382,7 +382,7 @@ package body Gdk.Display is
    function Supports_Cursor_Alpha
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_cursor_alpha");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -395,7 +395,7 @@ package body Gdk.Display is
    function Supports_Cursor_Color
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_cursor_color");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -408,7 +408,7 @@ package body Gdk.Display is
    function Supports_Input_Shapes
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_input_shapes");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -421,7 +421,7 @@ package body Gdk.Display is
    function Supports_Selection_Notification
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_selection_notification");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -434,7 +434,7 @@ package body Gdk.Display is
    function Supports_Shapes
       (Self : not null access Gdk_Display_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_supports_shapes");
    begin
       return Internal (Get_Object (Self)) /= 0;

@@ -48,7 +48,7 @@ package body Pango.Fontset is
    function Internal_Pango_Fontset_Foreach_Func
       (Fontset   : System.Address;
        Font      : System.Address;
-       User_Data : System.Address) return Integer;
+       User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Pango_Fontset_Foreach_Func);
    --  "fontset": a Pango.Fontset.Pango_Fontset
    --  "font": a font from Fontset
@@ -61,7 +61,7 @@ package body Pango.Fontset is
    function Internal_Pango_Fontset_Foreach_Func
       (Fontset   : System.Address;
        Font      : System.Address;
-       User_Data : System.Address) return Integer
+       User_Data : System.Address) return Glib.Gboolean
    is
       Func               : constant Pango_Fontset_Foreach_Func := To_Pango_Fontset_Foreach_Func (User_Data);
       Stub_Pango_Fontset : Pango_Fontset_Record;
@@ -104,7 +104,7 @@ package body Pango.Fontset is
       function Internal_Cb
          (Fontset   : System.Address;
           Font      : System.Address;
-          User_Data : System.Address) return Integer;
+          User_Data : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  A callback function used by Pango.Fontset.Foreach when enumerating
       --  the fonts in a fontset.
@@ -137,7 +137,7 @@ package body Pango.Fontset is
       function Internal_Cb
          (Fontset   : System.Address;
           Font      : System.Address;
-          User_Data : System.Address) return Integer
+          User_Data : System.Address) return Glib.Gboolean
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Pango_Fontset : Pango.Fontset.Pango_Fontset_Record;

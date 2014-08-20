@@ -215,7 +215,7 @@ package body Gtk.Assistant is
    is
       function Internal
          (Assistant : System.Address;
-          Page      : System.Address) return Integer;
+          Page      : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_assistant_get_page_complete");
    begin
       return Internal (Get_Object (Assistant), Get_Object (Page)) /= 0;
@@ -476,7 +476,7 @@ package body Gtk.Assistant is
       procedure Internal
          (Assistant : System.Address;
           Page      : System.Address;
-          Complete  : Integer);
+          Complete  : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_assistant_set_page_complete");
    begin
       Internal (Get_Object (Assistant), Get_Object (Page), Boolean'Pos (Complete));

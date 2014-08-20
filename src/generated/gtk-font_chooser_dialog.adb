@@ -55,7 +55,7 @@ package body Gtk.Font_Chooser_Dialog is
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;
        Face   : System.Address;
-       Data   : System.Address) return Integer;
+       Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Font_Filter_Func);
    --  "family": a Pango.Font_Family.Pango_Font_Family
    --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
@@ -68,7 +68,7 @@ package body Gtk.Font_Chooser_Dialog is
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;
        Face   : System.Address;
-       Data   : System.Address) return Integer
+       Data   : System.Address) return Glib.Gboolean
    is
       Func                   : constant Gtk_Font_Filter_Func := To_Gtk_Font_Filter_Func (Data);
       Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
@@ -168,7 +168,7 @@ package body Gtk.Font_Chooser_Dialog is
       function Internal_Cb
          (Family : System.Address;
           Face   : System.Address;
-          Data   : System.Address) return Integer;
+          Data   : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used for deciding what fonts get shown
       --  in a Gtk.Font_Chooser.Gtk_Font_Chooser. See
@@ -184,7 +184,7 @@ package body Gtk.Font_Chooser_Dialog is
       function Internal_Cb
          (Family : System.Address;
           Face   : System.Address;
-          Data   : System.Address) return Integer
+          Data   : System.Address) return Glib.Gboolean
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
@@ -307,7 +307,7 @@ package body Gtk.Font_Chooser_Dialog is
    function Get_Show_Preview_Entry
       (Self : not null access Gtk_Font_Chooser_Dialog_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_chooser_get_show_preview_entry");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -375,7 +375,7 @@ package body Gtk.Font_Chooser_Dialog is
    is
       procedure Internal
          (Self               : System.Address;
-          Show_Preview_Entry : Integer);
+          Show_Preview_Entry : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_chooser_set_show_preview_entry");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Show_Preview_Entry));

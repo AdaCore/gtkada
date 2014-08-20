@@ -53,7 +53,7 @@ package body Pango.Tabs is
    is
       function Internal
          (Initial_Size        : Gint;
-          Positions_In_Pixels : Integer) return System.Address;
+          Positions_In_Pixels : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "pango_tab_array_new");
    begin
       Self.Set_Object (Internal (Initial_Size, Boolean'Pos (Positions_In_Pixels)));
@@ -69,7 +69,7 @@ package body Pango.Tabs is
    is
       function Internal
          (Initial_Size        : Gint;
-          Positions_In_Pixels : Integer) return System.Address;
+          Positions_In_Pixels : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "pango_tab_array_new");
       Self : Pango_Tab_Array;
    begin
@@ -104,7 +104,7 @@ package body Pango.Tabs is
    -----------------------------
 
    function Get_Positions_In_Pixels (Self : Pango_Tab_Array) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_tab_array_get_positions_in_pixels");
    begin
       return Internal (Get_Object (Self)) /= 0;

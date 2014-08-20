@@ -210,7 +210,7 @@ package body Gtk.Widget is
    function Internal_Gtk_Tick_Callback
       (Widget      : System.Address;
        Frame_Clock : System.Address;
-       User_Data   : System.Address) return Integer;
+       User_Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tick_Callback);
    --  "widget": the widget
    --  "frame_clock": the frame clock for the widget (same as calling
@@ -224,7 +224,7 @@ package body Gtk.Widget is
    function Internal_Gtk_Tick_Callback
       (Widget      : System.Address;
        Frame_Clock : System.Address;
-       User_Data   : System.Address) return Integer
+       User_Data   : System.Address) return Glib.Gboolean
    is
       Func                 : constant Gtk_Tick_Callback := To_Gtk_Tick_Callback (User_Data);
       Stub_Gtk_Widget      : Gtk_Widget_Record;
@@ -244,7 +244,7 @@ package body Gtk.Widget is
    function Activate
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_activate");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -355,7 +355,7 @@ package body Gtk.Widget is
       function Internal_Cb
          (Widget      : System.Address;
           Frame_Clock : System.Address;
-          User_Data   : System.Address) return Integer;
+          User_Data   : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Callback type for adding a function to update animations. See
       --  Gtk.Widget.Add_Tick_Callback.
@@ -390,7 +390,7 @@ package body Gtk.Widget is
       function Internal_Cb
          (Widget      : System.Address;
           Frame_Clock : System.Address;
-          User_Data   : System.Address) return Integer
+          User_Data   : System.Address) return Glib.Gboolean
       is
          D                    : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Widget      : Gtk.Widget.Gtk_Widget_Record;
@@ -411,7 +411,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget    : System.Address;
-          Signal_Id : Guint) return Integer;
+          Signal_Id : Guint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_can_activate_accel");
    begin
       return Internal (Get_Object (Widget), Signal_Id) /= 0;
@@ -427,7 +427,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget    : System.Address;
-          Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_child_focus");
    begin
       return Internal (Get_Object (Widget), Direction) /= 0;
@@ -461,7 +461,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget      : System.Address;
-          Orientation : Gtk.Enums.Gtk_Orientation) return Integer;
+          Orientation : Gtk.Enums.Gtk_Orientation) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_compute_expand");
    begin
       return Internal (Get_Object (Widget), Orientation) /= 0;
@@ -573,7 +573,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget : System.Address;
-          Device : System.Address) return Integer;
+          Device : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_device_is_shadowed");
    begin
       return Internal (Get_Object (Widget), Get_Object (Device)) /= 0;
@@ -595,7 +595,7 @@ package body Gtk.Widget is
           Start_X   : Gint;
           Start_Y   : Gint;
           Current_X : Gint;
-          Current_Y : Gint) return Integer;
+          Current_Y : Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_drag_check_threshold");
    begin
       return Internal (Get_Object (Widget), Start_X, Start_Y, Current_X, Current_Y) /= 0;
@@ -647,7 +647,7 @@ package body Gtk.Widget is
    function Drag_Dest_Get_Track_Motion
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_drag_dest_get_track_motion");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -667,7 +667,7 @@ package body Gtk.Widget is
          (Widget          : System.Address;
           Proxy_Window    : Gdk.Gdk_Window;
           Protocol        : Gdk.Drag_Contexts.Gdk_Drag_Protocol;
-          Use_Coordinates : Integer);
+          Use_Coordinates : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_drag_dest_set_proxy");
    begin
       Internal (Get_Object (Widget), Proxy_Window, Protocol, Boolean'Pos (Use_Coordinates));
@@ -681,7 +681,9 @@ package body Gtk.Widget is
       (Widget       : not null access Gtk_Widget_Record;
        Track_Motion : Boolean)
    is
-      procedure Internal (Widget : System.Address; Track_Motion : Integer);
+      procedure Internal
+         (Widget       : System.Address;
+          Track_Motion : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_drag_dest_set_track_motion");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Track_Motion));
@@ -837,7 +839,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget : System.Address;
-          Event  : Gdk.Event.Gdk_Event) return Integer;
+          Event  : Gdk.Event.Gdk_Event) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_event");
    begin
       return Internal (Get_Object (Widget), Event) /= 0;
@@ -943,7 +945,7 @@ package body Gtk.Widget is
    function Get_App_Paintable
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_app_paintable");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -956,7 +958,7 @@ package body Gtk.Widget is
    function Get_Can_Default
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_can_default");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -969,7 +971,7 @@ package body Gtk.Widget is
    function Get_Can_Focus
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_can_focus");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1000,7 +1002,7 @@ package body Gtk.Widget is
    function Get_Child_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_child_visible");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1031,7 +1033,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget : System.Address;
-          Device : System.Address) return Integer;
+          Device : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_device_enabled");
    begin
       return Internal (Get_Object (Widget), Get_Object (Device)) /= 0;
@@ -1091,7 +1093,7 @@ package body Gtk.Widget is
    function Get_Double_Buffered
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_double_buffered");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1147,7 +1149,7 @@ package body Gtk.Widget is
    function Get_Has_Tooltip
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_has_tooltip");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1160,7 +1162,7 @@ package body Gtk.Widget is
    function Get_Has_Window
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_has_window");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1173,7 +1175,7 @@ package body Gtk.Widget is
    function Get_Hexpand
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_hexpand");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1186,7 +1188,7 @@ package body Gtk.Widget is
    function Get_Hexpand_Set
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_hexpand_set");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1199,7 +1201,7 @@ package body Gtk.Widget is
    function Get_Mapped
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_mapped");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1294,7 +1296,7 @@ package body Gtk.Widget is
    function Get_No_Show_All
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_no_show_all");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1492,7 +1494,7 @@ package body Gtk.Widget is
    function Get_Realized
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_realized");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1505,7 +1507,7 @@ package body Gtk.Widget is
    function Get_Receives_Default
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_receives_default");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1579,7 +1581,7 @@ package body Gtk.Widget is
    function Get_Sensitive
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_sensitive");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1655,7 +1657,7 @@ package body Gtk.Widget is
    function Get_Support_Multidevice
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_support_multidevice");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1737,7 +1739,7 @@ package body Gtk.Widget is
    function Get_Vexpand
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_vexpand");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1750,7 +1752,7 @@ package body Gtk.Widget is
    function Get_Vexpand_Set
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_vexpand_set");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1763,7 +1765,7 @@ package body Gtk.Widget is
    function Get_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_get_visible");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1848,7 +1850,7 @@ package body Gtk.Widget is
    function Has_Default
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_has_default");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1861,7 +1863,7 @@ package body Gtk.Widget is
    function Has_Focus
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_has_focus");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1874,7 +1876,7 @@ package body Gtk.Widget is
    function Has_Grab
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_has_grab");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1887,7 +1889,7 @@ package body Gtk.Widget is
    function Has_Rc_Style
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_has_rc_style");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1900,7 +1902,7 @@ package body Gtk.Widget is
    function Has_Screen
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_has_screen");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1913,7 +1915,7 @@ package body Gtk.Widget is
    function Has_Visible_Focus
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_has_visible_focus");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1937,7 +1939,7 @@ package body Gtk.Widget is
    function Hide_On_Delete
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_hide_on_delete");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1950,7 +1952,7 @@ package body Gtk.Widget is
    function In_Destruction
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_in_destruction");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -1985,10 +1987,10 @@ package body Gtk.Widget is
          (Widget           : System.Address;
           Area             : Gdk.Rectangle.Gdk_Rectangle;
           Acc_Intersection : access Gdk.Rectangle.Gdk_Rectangle)
-          return Integer;
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_intersect");
       Acc_Intersection : aliased Gdk.Rectangle.Gdk_Rectangle;
-      Tmp_Return       : Integer;
+      Tmp_Return       : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Widget), Area, Acc_Intersection'Access);
       Intersection.all := Acc_Intersection;
@@ -2005,7 +2007,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget   : System.Address;
-          Ancestor : System.Address) return Integer;
+          Ancestor : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_ancestor");
    begin
       return Internal (Get_Object (Widget), Get_Object (Ancestor)) /= 0;
@@ -2018,7 +2020,7 @@ package body Gtk.Widget is
    function Is_Composited
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_composited");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -2031,7 +2033,7 @@ package body Gtk.Widget is
    function Is_Drawable
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_drawable");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -2044,7 +2046,7 @@ package body Gtk.Widget is
    function Is_Focus
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_focus");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -2057,7 +2059,7 @@ package body Gtk.Widget is
    function Is_Sensitive
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_sensitive");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -2070,7 +2072,7 @@ package body Gtk.Widget is
    function Is_Toplevel
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_toplevel");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -2083,7 +2085,7 @@ package body Gtk.Widget is
    function Is_Visible
       (Widget : not null access Gtk_Widget_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_is_visible");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -2099,7 +2101,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget    : System.Address;
-          Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_keynav_failed");
    begin
       return Internal (Get_Object (Widget), Direction) /= 0;
@@ -2141,7 +2143,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget        : System.Address;
-          Group_Cycling : Integer) return Integer;
+          Group_Cycling : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_mnemonic_activate");
    begin
       return Internal (Get_Object (Widget), Boolean'Pos (Group_Cycling)) /= 0;
@@ -2485,7 +2487,7 @@ package body Gtk.Widget is
          (Widget      : System.Address;
           Accel_Group : System.Address;
           Accel_Key   : Gdk.Types.Gdk_Key_Type;
-          Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Integer;
+          Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_remove_accelerator");
    begin
       return Internal (Get_Object (Widget), Get_Object (Accel_Group), Accel_Key, Accel_Mods) /= 0;
@@ -2638,7 +2640,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget : System.Address;
-          Event  : Gdk.Event.Gdk_Event) return Integer;
+          Event  : Gdk.Event.Gdk_Event) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_send_focus_change");
    begin
       return Internal (Get_Object (Widget), Event) /= 0;
@@ -2693,7 +2695,9 @@ package body Gtk.Widget is
       (Widget        : not null access Gtk_Widget_Record;
        App_Paintable : Boolean)
    is
-      procedure Internal (Widget : System.Address; App_Paintable : Integer);
+      procedure Internal
+         (Widget        : System.Address;
+          App_Paintable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_app_paintable");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (App_Paintable));
@@ -2707,7 +2711,9 @@ package body Gtk.Widget is
       (Widget      : not null access Gtk_Widget_Record;
        Can_Default : Boolean)
    is
-      procedure Internal (Widget : System.Address; Can_Default : Integer);
+      procedure Internal
+         (Widget      : System.Address;
+          Can_Default : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_can_default");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Can_Default));
@@ -2721,7 +2727,9 @@ package body Gtk.Widget is
       (Widget    : not null access Gtk_Widget_Record;
        Can_Focus : Boolean)
    is
-      procedure Internal (Widget : System.Address; Can_Focus : Integer);
+      procedure Internal
+         (Widget    : System.Address;
+          Can_Focus : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_can_focus");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Can_Focus));
@@ -2735,7 +2743,9 @@ package body Gtk.Widget is
       (Widget     : not null access Gtk_Widget_Record;
        Is_Visible : Boolean)
    is
-      procedure Internal (Widget : System.Address; Is_Visible : Integer);
+      procedure Internal
+         (Widget     : System.Address;
+          Is_Visible : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_child_visible");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Is_Visible));
@@ -2771,7 +2781,7 @@ package body Gtk.Widget is
       procedure Internal
          (Widget  : System.Address;
           Device  : System.Address;
-          Enabled : Integer);
+          Enabled : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_device_enabled");
    begin
       Internal (Get_Object (Widget), Get_Object (Device), Boolean'Pos (Enabled));
@@ -2821,7 +2831,7 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget          : System.Address;
-          Double_Buffered : Integer);
+          Double_Buffered : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_double_buffered");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Double_Buffered));
@@ -2865,7 +2875,9 @@ package body Gtk.Widget is
       (Widget      : not null access Gtk_Widget_Record;
        Has_Tooltip : Boolean)
    is
-      procedure Internal (Widget : System.Address; Has_Tooltip : Integer);
+      procedure Internal
+         (Widget      : System.Address;
+          Has_Tooltip : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_has_tooltip");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Has_Tooltip));
@@ -2879,7 +2891,9 @@ package body Gtk.Widget is
       (Widget     : not null access Gtk_Widget_Record;
        Has_Window : Boolean)
    is
-      procedure Internal (Widget : System.Address; Has_Window : Integer);
+      procedure Internal
+         (Widget     : System.Address;
+          Has_Window : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_has_window");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Has_Window));
@@ -2893,7 +2907,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Expand : Boolean)
    is
-      procedure Internal (Widget : System.Address; Expand : Integer);
+      procedure Internal (Widget : System.Address; Expand : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_hexpand");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Expand));
@@ -2907,7 +2921,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Set    : Boolean)
    is
-      procedure Internal (Widget : System.Address; Set : Integer);
+      procedure Internal (Widget : System.Address; Set : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_hexpand_set");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Set));
@@ -2921,7 +2935,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Mapped : Boolean)
    is
-      procedure Internal (Widget : System.Address; Mapped : Integer);
+      procedure Internal (Widget : System.Address; Mapped : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_mapped");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Mapped));
@@ -3009,7 +3023,9 @@ package body Gtk.Widget is
       (Widget      : not null access Gtk_Widget_Record;
        No_Show_All : Boolean)
    is
-      procedure Internal (Widget : System.Address; No_Show_All : Integer);
+      procedure Internal
+         (Widget      : System.Address;
+          No_Show_All : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_no_show_all");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (No_Show_All));
@@ -3067,7 +3083,7 @@ package body Gtk.Widget is
       (Widget   : not null access Gtk_Widget_Record;
        Realized : Boolean)
    is
-      procedure Internal (Widget : System.Address; Realized : Integer);
+      procedure Internal (Widget : System.Address; Realized : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_realized");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Realized));
@@ -3083,7 +3099,7 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget           : System.Address;
-          Receives_Default : Integer);
+          Receives_Default : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_receives_default");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Receives_Default));
@@ -3099,7 +3115,7 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget             : System.Address;
-          Redraw_On_Allocate : Integer);
+          Redraw_On_Allocate : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_redraw_on_allocate");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Redraw_On_Allocate));
@@ -3113,7 +3129,9 @@ package body Gtk.Widget is
       (Widget    : not null access Gtk_Widget_Record;
        Sensitive : Boolean := True)
    is
-      procedure Internal (Widget : System.Address; Sensitive : Integer);
+      procedure Internal
+         (Widget    : System.Address;
+          Sensitive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_sensitive");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Sensitive));
@@ -3165,7 +3183,7 @@ package body Gtk.Widget is
       procedure Internal
          (Widget : System.Address;
           Flags  : Gtk.Enums.Gtk_State_Flags;
-          Clear  : Integer);
+          Clear  : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_state_flags");
    begin
       Internal (Get_Object (Widget), Flags, Boolean'Pos (Clear));
@@ -3195,7 +3213,7 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget              : System.Address;
-          Support_Multidevice : Integer);
+          Support_Multidevice : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_support_multidevice");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Support_Multidevice));
@@ -3285,7 +3303,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Expand : Boolean)
    is
-      procedure Internal (Widget : System.Address; Expand : Integer);
+      procedure Internal (Widget : System.Address; Expand : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_vexpand");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Expand));
@@ -3299,7 +3317,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record;
        Set    : Boolean)
    is
-      procedure Internal (Widget : System.Address; Set : Integer);
+      procedure Internal (Widget : System.Address; Set : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_vexpand_set");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Set));
@@ -3313,7 +3331,7 @@ package body Gtk.Widget is
       (Widget  : not null access Gtk_Widget_Record;
        Visible : Boolean)
    is
-      procedure Internal (Widget : System.Address; Visible : Integer);
+      procedure Internal (Widget : System.Address; Visible : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_widget_set_visible");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Visible));
@@ -3493,11 +3511,11 @@ package body Gtk.Widget is
           Src_X       : Gint;
           Src_Y       : Gint;
           Acc_Dest_X  : access Gint;
-          Acc_Dest_Y  : access Gint) return Integer;
+          Acc_Dest_Y  : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_translate_coordinates");
       Acc_Dest_X : aliased Gint;
       Acc_Dest_Y : aliased Gint;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Widget), Get_Object (Dest_Widget), Src_X, Src_Y, Acc_Dest_X'Access, Acc_Dest_Y'Access);
       Dest_X := Acc_Dest_X;
@@ -3647,7 +3665,7 @@ package body Gtk.Widget is
    is
       function Internal
          (Cr     : Cairo.Cairo_Context;
-          Window : Gdk.Gdk_Window) return Integer;
+          Window : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cairo_should_draw_window");
    begin
       return Internal (Cr, Window) /= 0;

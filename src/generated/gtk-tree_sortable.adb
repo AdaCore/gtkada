@@ -104,7 +104,7 @@ package body Gtk.Tree_Sortable is
    function Has_Default_Sort_Func
       (Sortable : Gtk_Tree_Sortable) return Boolean
    is
-      function Internal (Sortable : Gtk_Tree_Sortable) return Integer;
+      function Internal (Sortable : Gtk_Tree_Sortable) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_sortable_has_default_sort_func");
    begin
       return Internal (Sortable) /= 0;

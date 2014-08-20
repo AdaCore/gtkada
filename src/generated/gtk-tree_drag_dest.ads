@@ -25,6 +25,7 @@ pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
+with Glib.Object;        use Glib.Object;
 with Glib.Types;         use Glib.Types;
 with Gtk.Selection_Data; use Gtk.Selection_Data;
 with Gtk.Tree_Model;     use Gtk.Tree_Model;
@@ -81,6 +82,48 @@ package Gtk.Tree_Drag_Dest is
 
    function "+" (W : Gtk_Tree_Drag_Dest) return Gtk_Tree_Drag_Dest;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Drag_Data_Received is access function
+     (Self           : Gtk_Tree_Drag_Dest;
+      Dest           : System.Address;
+      Selection_Data : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Drag_Data_Received);
+   --  Asks the Gtk.Tree_Drag_Dest.Gtk_Tree_Drag_Dest to insert a row before
+   --  the path Dest, deriving the contents of the row from Selection_Data. If
+   --  Dest is outside the tree so that inserting before it is impossible,
+   --  False will be returned. Also, False may be returned if the new row is
+   --  not created for some model-specific reason. Should robustly handle a
+   --  Dest no longer found in the model!
+   --  "dest": row to drop in front of
+   --  "selection_data": data to drop
+
+   type Virtual_Row_Drop_Possible is access function
+     (Self           : Gtk_Tree_Drag_Dest;
+      Dest_Path      : System.Address;
+      Selection_Data : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Row_Drop_Possible);
+   --  Determines whether a drop is possible before the given Dest_Path, at
+   --  the same depth as Dest_Path. i.e., can we drop the data in
+   --  Selection_Data at that location. Dest_Path does not have to exist; the
+   --  return value will almost certainly be False if the parent of Dest_Path
+   --  doesn't exist, though.
+   --  "dest_path": destination row
+   --  "selection_data": the data being dragged
+
+   subtype Tree_Drag_Dest_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Drag_Data_Received
+     (Self    : Tree_Drag_Dest_Interface_Descr;
+      Handler : Virtual_Drag_Data_Received);
+   pragma Import (C, Set_Drag_Data_Received, "gtkada_Tree_Drag_Dest_set_drag_data_received");
+   procedure Set_Row_Drop_Possible
+     (Self    : Tree_Drag_Dest_Interface_Descr;
+      Handler : Virtual_Row_Drop_Possible);
+   pragma Import (C, Set_Row_Drop_Possible, "gtkada_Tree_Drag_Dest_set_row_drop_possible");
+   --  See Glib.Object.Add_Interface
 
 private
 

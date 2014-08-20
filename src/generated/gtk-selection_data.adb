@@ -292,7 +292,7 @@ package body Gtk.Selection_Data is
    is
       function Internal
          (Selection : System.Address;
-          Pixbuf    : System.Address) return Integer;
+          Pixbuf    : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_pixbuf");
    begin
       return Internal (Get_Object (Selection), Get_Object (Pixbuf)) /= 0;
@@ -310,10 +310,10 @@ package body Gtk.Selection_Data is
       function Internal
          (Selection : System.Address;
           Str       : Interfaces.C.Strings.chars_ptr;
-          Len       : Gint) return Integer;
+          Len       : Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_text");
       Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Selection), Tmp_Str, Len);
       Free (Tmp_Str);
@@ -330,10 +330,11 @@ package body Gtk.Selection_Data is
    is
       function Internal
          (Selection : System.Address;
-          Uris      : Interfaces.C.Strings.chars_ptr_array) return Integer;
+          Uris      : Interfaces.C.Strings.chars_ptr_array)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_uris");
       Tmp_Uris   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Uris);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Selection), Tmp_Uris);
       GtkAda.Types.Free (Tmp_Uris);
@@ -350,7 +351,7 @@ package body Gtk.Selection_Data is
    is
       function Internal
          (Selection : System.Address;
-          Writable  : Integer) return Integer;
+          Writable  : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_targets_include_image");
    begin
       return Internal (Get_Object (Selection), Boolean'Pos (Writable)) /= 0;
@@ -363,7 +364,7 @@ package body Gtk.Selection_Data is
    function Targets_Include_Text
       (Selection : Gtk_Selection_Data) return Boolean
    is
-      function Internal (Selection : System.Address) return Integer;
+      function Internal (Selection : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_targets_include_text");
    begin
       return Internal (Get_Object (Selection)) /= 0;
@@ -376,7 +377,7 @@ package body Gtk.Selection_Data is
    function Targets_Include_Uri
       (Selection : Gtk_Selection_Data) return Boolean
    is
-      function Internal (Selection : System.Address) return Integer;
+      function Internal (Selection : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_targets_include_uri");
    begin
       return Internal (Get_Object (Selection)) /= 0;

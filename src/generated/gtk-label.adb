@@ -250,7 +250,7 @@ package body Gtk.Label is
    function Get_Line_Wrap
       (Label : not null access Gtk_Label_Record) return Boolean
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal (Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_line_wrap");
    begin
       return Internal (Get_Object (Label)) /= 0;
@@ -319,7 +319,7 @@ package body Gtk.Label is
    function Get_Selectable
       (Label : not null access Gtk_Label_Record) return Boolean
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal (Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_selectable");
    begin
       return Internal (Get_Object (Label)) /= 0;
@@ -338,11 +338,11 @@ package body Gtk.Label is
       function Internal
          (Label       : System.Address;
           Acc_Start   : access Gint;
-          Acc_The_End : access Gint) return Integer;
+          Acc_The_End : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_selection_bounds");
       Acc_Start   : aliased Gint;
       Acc_The_End : aliased Gint;
-      Tmp_Return  : Integer;
+      Tmp_Return  : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Label), Acc_Start'Access, Acc_The_End'Access);
       Start := Acc_Start;
@@ -357,7 +357,7 @@ package body Gtk.Label is
    function Get_Single_Line_Mode
       (Label : not null access Gtk_Label_Record) return Boolean
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal (Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_single_line_mode");
    begin
       return Internal (Get_Object (Label)) /= 0;
@@ -384,7 +384,7 @@ package body Gtk.Label is
    function Get_Track_Visited_Links
       (Label : not null access Gtk_Label_Record) return Boolean
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal (Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_track_visited_links");
    begin
       return Internal (Get_Object (Label)) /= 0;
@@ -397,7 +397,7 @@ package body Gtk.Label is
    function Get_Use_Markup
       (Label : not null access Gtk_Label_Record) return Boolean
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal (Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_use_markup");
    begin
       return Internal (Get_Object (Label)) /= 0;
@@ -410,7 +410,7 @@ package body Gtk.Label is
    function Get_Use_Underline
       (Label : not null access Gtk_Label_Record) return Boolean
    is
-      function Internal (Label : System.Address) return Integer;
+      function Internal (Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_use_underline");
    begin
       return Internal (Get_Object (Label)) /= 0;
@@ -533,7 +533,7 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record;
        Wrap  : Boolean)
    is
-      procedure Internal (Label : System.Address; Wrap : Integer);
+      procedure Internal (Label : System.Address; Wrap : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_label_set_line_wrap");
    begin
       Internal (Get_Object (Label), Boolean'Pos (Wrap));
@@ -645,7 +645,7 @@ package body Gtk.Label is
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean)
    is
-      procedure Internal (Label : System.Address; Setting : Integer);
+      procedure Internal (Label : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_label_set_selectable");
    begin
       Internal (Get_Object (Label), Boolean'Pos (Setting));
@@ -661,7 +661,7 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label            : System.Address;
-          Single_Line_Mode : Integer);
+          Single_Line_Mode : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_label_set_single_line_mode");
    begin
       Internal (Get_Object (Label), Boolean'Pos (Single_Line_Mode));
@@ -711,7 +711,9 @@ package body Gtk.Label is
       (Label       : not null access Gtk_Label_Record;
        Track_Links : Boolean)
    is
-      procedure Internal (Label : System.Address; Track_Links : Integer);
+      procedure Internal
+         (Label       : System.Address;
+          Track_Links : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_label_set_track_visited_links");
    begin
       Internal (Get_Object (Label), Boolean'Pos (Track_Links));
@@ -725,7 +727,7 @@ package body Gtk.Label is
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean)
    is
-      procedure Internal (Label : System.Address; Setting : Integer);
+      procedure Internal (Label : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_label_set_use_markup");
    begin
       Internal (Get_Object (Label), Boolean'Pos (Setting));
@@ -739,7 +741,7 @@ package body Gtk.Label is
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean)
    is
-      procedure Internal (Label : System.Address; Setting : Integer);
+      procedure Internal (Label : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_label_set_use_underline");
    begin
       Internal (Get_Object (Label), Boolean'Pos (Setting));

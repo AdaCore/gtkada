@@ -139,7 +139,7 @@ package body Gtk.Expander is
    function Get_Expanded
       (Expander : not null access Gtk_Expander_Record) return Boolean
    is
-      function Internal (Expander : System.Address) return Integer;
+      function Internal (Expander : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_expander_get_expanded");
    begin
       return Internal (Get_Object (Expander)) /= 0;
@@ -166,7 +166,7 @@ package body Gtk.Expander is
    function Get_Label_Fill
       (Expander : not null access Gtk_Expander_Record) return Boolean
    is
-      function Internal (Expander : System.Address) return Integer;
+      function Internal (Expander : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_expander_get_label_fill");
    begin
       return Internal (Get_Object (Expander)) /= 0;
@@ -194,7 +194,7 @@ package body Gtk.Expander is
    function Get_Resize_Toplevel
       (Expander : not null access Gtk_Expander_Record) return Boolean
    is
-      function Internal (Expander : System.Address) return Integer;
+      function Internal (Expander : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_expander_get_resize_toplevel");
    begin
       return Internal (Get_Object (Expander)) /= 0;
@@ -220,7 +220,7 @@ package body Gtk.Expander is
    function Get_Use_Markup
       (Expander : not null access Gtk_Expander_Record) return Boolean
    is
-      function Internal (Expander : System.Address) return Integer;
+      function Internal (Expander : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_expander_get_use_markup");
    begin
       return Internal (Get_Object (Expander)) /= 0;
@@ -233,7 +233,7 @@ package body Gtk.Expander is
    function Get_Use_Underline
       (Expander : not null access Gtk_Expander_Record) return Boolean
    is
-      function Internal (Expander : System.Address) return Integer;
+      function Internal (Expander : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_expander_get_use_underline");
    begin
       return Internal (Get_Object (Expander)) /= 0;
@@ -247,7 +247,9 @@ package body Gtk.Expander is
       (Expander : not null access Gtk_Expander_Record;
        Expanded : Boolean)
    is
-      procedure Internal (Expander : System.Address; Expanded : Integer);
+      procedure Internal
+         (Expander : System.Address;
+          Expanded : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_expander_set_expanded");
    begin
       Internal (Get_Object (Expander), Boolean'Pos (Expanded));
@@ -284,7 +286,9 @@ package body Gtk.Expander is
       (Expander   : not null access Gtk_Expander_Record;
        Label_Fill : Boolean)
    is
-      procedure Internal (Expander : System.Address; Label_Fill : Integer);
+      procedure Internal
+         (Expander   : System.Address;
+          Label_Fill : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_expander_set_label_fill");
    begin
       Internal (Get_Object (Expander), Boolean'Pos (Label_Fill));
@@ -316,7 +320,7 @@ package body Gtk.Expander is
    is
       procedure Internal
          (Expander        : System.Address;
-          Resize_Toplevel : Integer);
+          Resize_Toplevel : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_expander_set_resize_toplevel");
    begin
       Internal (Get_Object (Expander), Boolean'Pos (Resize_Toplevel));
@@ -344,7 +348,9 @@ package body Gtk.Expander is
       (Expander   : not null access Gtk_Expander_Record;
        Use_Markup : Boolean)
    is
-      procedure Internal (Expander : System.Address; Use_Markup : Integer);
+      procedure Internal
+         (Expander   : System.Address;
+          Use_Markup : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_expander_set_use_markup");
    begin
       Internal (Get_Object (Expander), Boolean'Pos (Use_Markup));
@@ -360,7 +366,7 @@ package body Gtk.Expander is
    is
       procedure Internal
          (Expander      : System.Address;
-          Use_Underline : Integer);
+          Use_Underline : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_expander_set_use_underline");
    begin
       Internal (Get_Object (Expander), Boolean'Pos (Use_Underline));

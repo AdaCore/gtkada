@@ -38,10 +38,13 @@ pragma Ada_2005;
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
 with Glib.Action;          use Glib.Action;
+with Glib.Object;          use Glib.Object;
 with Glib.Simple_Action;   use Glib.Simple_Action;
 with Glib.Types;           use Glib.Types;
 with Glib.Variant;         use Glib.Variant;
+pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package Glib.Action_Map is
 
@@ -183,6 +186,53 @@ package Glib.Action_Map is
 
    function "+" (W : Gaction_Map) return Gaction_Map;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Add_Action is access procedure (Self : Gaction_Map; Action : Glib.Action.Gaction);
+   pragma Convention (C, Virtual_Add_Action);
+   --  Adds an action to the Action_Map.
+   --  If the action map already contains an action with the same name as
+   --  Action then the old action is dropped from the action map.
+   --  The action map takes its own reference on Action.
+   --  Since: gtk+ 2.32
+   --  "action": a Glib.Action.Gaction
+
+   type Virtual_Lookup_Action is access function
+     (Self        : Gaction_Map;
+      Action_Name : Interfaces.C.Strings.chars_ptr)
+   return Glib.Action.Gaction;
+   pragma Convention (C, Virtual_Lookup_Action);
+   --  Looks up the action with the name Action_Name in Action_Map.
+   --  If no such action exists, returns null.
+   --  Since: gtk+ 2.32
+   --  "action_name": the name of an action
+
+   type Virtual_Remove_Action is access procedure
+     (Self        : Gaction_Map;
+      Action_Name : Interfaces.C.Strings.chars_ptr);
+   pragma Convention (C, Virtual_Remove_Action);
+   --  Removes the named action from the action map.
+   --  If no action of this name is in the map then nothing happens.
+   --  Since: gtk+ 2.32
+   --  "action_name": the name of the action
+
+   subtype Action_Map_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Add_Action
+     (Self    : Action_Map_Interface_Descr;
+      Handler : Virtual_Add_Action);
+   pragma Import (C, Set_Add_Action, "gtkada_Action_Map_set_add_action");
+   procedure Set_Lookup_Action
+     (Self    : Action_Map_Interface_Descr;
+      Handler : Virtual_Lookup_Action);
+   pragma Import (C, Set_Lookup_Action, "gtkada_Action_Map_set_lookup_action");
+   procedure Set_Remove_Action
+     (Self    : Action_Map_Interface_Descr;
+      Handler : Virtual_Remove_Action);
+   pragma Import (C, Set_Remove_Action, "gtkada_Action_Map_set_remove_action");
+   --  See Glib.Object.Add_Interface
 
 private
 type GAction_Entry is record

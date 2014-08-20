@@ -352,10 +352,10 @@ package body Gtk.Page_Setup is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_page_setup_load_file");
       Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);
@@ -374,10 +374,10 @@ package body Gtk.Page_Setup is
       function Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Group_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_page_setup_load_key_file");
       Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       if Group_Name = "" then
          Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
@@ -515,10 +515,10 @@ package body Gtk.Page_Setup is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_page_setup_to_file");
       Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
       Free (Tmp_File_Name);

@@ -197,11 +197,11 @@ package body Gtk.Tree_View_Column is
          (Tree_Column   : System.Address;
           Cell_Renderer : System.Address;
           Acc_X_Offset  : access Gint;
-          Acc_Width     : access Gint) return Integer;
+          Acc_Width     : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_cell_get_position");
       Acc_X_Offset : aliased Gint;
       Acc_Width    : aliased Gint;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_Column), Get_Object (Cell_Renderer), Acc_X_Offset'Access, Acc_Width'Access);
       X_Offset := Acc_X_Offset;
@@ -241,7 +241,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_cell_is_visible");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -262,8 +262,8 @@ package body Gtk.Tree_View_Column is
          (Tree_Column : System.Address;
           Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Is_Expander : Integer;
-          Is_Expanded : Integer);
+          Is_Expander : Glib.Gboolean;
+          Is_Expanded : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_cell_set_cell_data");
    begin
       Internal (Get_Object (Tree_Column), Tree_Model, Iter, Boolean'Pos (Is_Expander), Boolean'Pos (Is_Expanded));
@@ -335,7 +335,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_get_clickable");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -349,7 +349,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_get_expand");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -405,7 +405,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_get_reorderable");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -419,7 +419,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_get_resizable");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -462,7 +462,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_get_sort_indicator");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -536,7 +536,7 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean
    is
-      function Internal (Tree_Column : System.Address) return Integer;
+      function Internal (Tree_Column : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_get_visible");
    begin
       return Internal (Get_Object (Tree_Column)) /= 0;
@@ -701,7 +701,9 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Clickable   : Boolean)
    is
-      procedure Internal (Tree_Column : System.Address; Clickable : Integer);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Clickable   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_set_clickable");
    begin
       Internal (Get_Object (Tree_Column), Boolean'Pos (Clickable));
@@ -715,7 +717,9 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Expand      : Boolean)
    is
-      procedure Internal (Tree_Column : System.Address; Expand : Integer);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_set_expand");
    begin
       Internal (Get_Object (Tree_Column), Boolean'Pos (Expand));
@@ -773,7 +777,7 @@ package body Gtk.Tree_View_Column is
    is
       procedure Internal
          (Tree_Column : System.Address;
-          Reorderable : Integer);
+          Reorderable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_set_reorderable");
    begin
       Internal (Get_Object (Tree_Column), Boolean'Pos (Reorderable));
@@ -787,7 +791,9 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Resizable   : Boolean)
    is
-      procedure Internal (Tree_Column : System.Address; Resizable : Integer);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Resizable   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_set_resizable");
    begin
       Internal (Get_Object (Tree_Column), Boolean'Pos (Resizable));
@@ -833,7 +839,9 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Setting     : Boolean)
    is
-      procedure Internal (Tree_Column : System.Address; Setting : Integer);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Setting     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_set_sort_indicator");
    begin
       Internal (Get_Object (Tree_Column), Boolean'Pos (Setting));
@@ -895,7 +903,9 @@ package body Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Visible     : Boolean)
    is
-      procedure Internal (Tree_Column : System.Address; Visible : Integer);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Visible     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_column_set_visible");
    begin
       Internal (Get_Object (Tree_Column), Boolean'Pos (Visible));
@@ -996,7 +1006,7 @@ package body Gtk.Tree_View_Column is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -1014,7 +1024,7 @@ package body Gtk.Tree_View_Column is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

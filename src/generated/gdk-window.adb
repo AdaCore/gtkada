@@ -99,7 +99,7 @@ package body Gdk.Window is
 
    function Internal_Gdk_Window_Child_Func
       (Window    : Gdk.Gdk_Window;
-       User_Data : System.Address) return Integer;
+       User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gdk_Window_Child_Func);
    --  "window": a Gdk.Gdk_Window
    --  "user_data": user data
@@ -110,7 +110,7 @@ package body Gdk.Window is
 
    function Internal_Gdk_Window_Child_Func
       (Window    : Gdk.Gdk_Window;
-       User_Data : System.Address) return Integer
+       User_Data : System.Address) return Glib.Gboolean
    is
       Func : constant Gdk_Window_Child_Func := To_Gdk_Window_Child_Func (User_Data);
    begin
@@ -211,7 +211,7 @@ package body Gdk.Window is
    -------------------
 
    function Ensure_Native (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_ensure_native");
    begin
       return Internal (Self) /= 0;
@@ -222,7 +222,7 @@ package body Gdk.Window is
    ----------------------
 
    function Get_Accept_Focus (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_get_accept_focus");
    begin
       return Internal (Self) /= 0;
@@ -248,7 +248,7 @@ package body Gdk.Window is
    --------------------
 
    function Get_Composited (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_get_composited");
    begin
       return Internal (Self) /= 0;
@@ -265,10 +265,10 @@ package body Gdk.Window is
    is
       function Internal
          (Self            : Gdk.Gdk_Window;
-          Acc_Decorations : access Gdk_WMDecoration) return Integer;
+          Acc_Decorations : access Gdk_WMDecoration) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_get_decorations");
       Acc_Decorations : aliased Gdk_WMDecoration;
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Self, Acc_Decorations'Access);
       Decorations := Acc_Decorations;
@@ -360,7 +360,7 @@ package body Gdk.Window is
    ----------------------
 
    function Get_Focus_On_Map (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_get_focus_on_map");
    begin
       return Internal (Self) /= 0;
@@ -385,7 +385,7 @@ package body Gdk.Window is
    --------------------
 
    function Get_Modal_Hint (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_get_modal_hint");
    begin
       return Internal (Self) /= 0;
@@ -438,7 +438,7 @@ package body Gdk.Window is
    -----------------------------
 
    function Get_Support_Multidevice (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_get_support_multidevice");
    begin
       return Internal (Self) /= 0;
@@ -449,7 +449,7 @@ package body Gdk.Window is
    ----------------
 
    function Has_Native (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_has_native");
    begin
       return Internal (Self) /= 0;
@@ -485,7 +485,7 @@ package body Gdk.Window is
 
       function Internal_Cb
          (Window    : Gdk.Gdk_Window;
-          User_Data : System.Address) return Integer;
+          User_Data : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  A function of this type is passed to
       --  Gdk.Window.Invalidate_Maybe_Recurse. It gets called for each child of
@@ -499,7 +499,7 @@ package body Gdk.Window is
 
       function Internal_Cb
          (Window    : Gdk.Gdk_Window;
-          User_Data : System.Address) return Integer
+          User_Data : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -538,7 +538,7 @@ package body Gdk.Window is
       procedure Internal
          (Self                : Gdk.Gdk_Window;
           Rect                : Gdk.Rectangle.Gdk_Rectangle;
-          Invalidate_Children : Integer);
+          Invalidate_Children : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_invalidate_rect");
    begin
       Internal (Self, Rect, Boolean'Pos (Invalidate_Children));
@@ -556,7 +556,7 @@ package body Gdk.Window is
       procedure Internal
          (Self                : Gdk.Gdk_Window;
           Region              : Cairo.Region.Cairo_Region;
-          Invalidate_Children : Integer);
+          Invalidate_Children : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_invalidate_region");
    begin
       Internal (Self, Region, Boolean'Pos (Invalidate_Children));
@@ -567,7 +567,7 @@ package body Gdk.Window is
    ------------------
 
    function Is_Destroyed (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_is_destroyed");
    begin
       return Internal (Self) /= 0;
@@ -578,7 +578,7 @@ package body Gdk.Window is
    -------------------
 
    function Is_Input_Only (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_is_input_only");
    begin
       return Internal (Self) /= 0;
@@ -589,7 +589,7 @@ package body Gdk.Window is
    ---------------
 
    function Is_Shaped (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_is_shaped");
    begin
       return Internal (Self) /= 0;
@@ -600,7 +600,7 @@ package body Gdk.Window is
    -----------------
 
    function Is_Viewable (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_is_viewable");
    begin
       return Internal (Self) /= 0;
@@ -611,7 +611,7 @@ package body Gdk.Window is
    ----------------
 
    function Is_Visible (Self : Gdk.Gdk_Window) return Boolean is
-      function Internal (Self : Gdk.Gdk_Window) return Integer;
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_is_visible");
    begin
       return Internal (Self) /= 0;
@@ -640,7 +640,9 @@ package body Gdk.Window is
       (Self            : Gdk.Gdk_Window;
        Update_Children : Boolean)
    is
-      procedure Internal (Self : Gdk.Gdk_Window; Update_Children : Integer);
+      procedure Internal
+         (Self            : Gdk.Gdk_Window;
+          Update_Children : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_process_updates");
    begin
       Internal (Self, Boolean'Pos (Update_Children));
@@ -658,7 +660,7 @@ package body Gdk.Window is
       procedure Internal
          (Self    : Gdk.Gdk_Window;
           Sibling : Gdk.Gdk_Window;
-          Above   : Integer);
+          Above   : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_restack");
    begin
       Internal (Self, Sibling, Boolean'Pos (Above));
@@ -672,7 +674,9 @@ package body Gdk.Window is
       (Self         : Gdk.Gdk_Window;
        Accept_Focus : Boolean)
    is
-      procedure Internal (Self : Gdk.Gdk_Window; Accept_Focus : Integer);
+      procedure Internal
+         (Self         : Gdk.Gdk_Window;
+          Accept_Focus : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_accept_focus");
    begin
       Internal (Self, Boolean'Pos (Accept_Focus));
@@ -683,7 +687,7 @@ package body Gdk.Window is
    --------------------
 
    procedure Set_Composited (Self : Gdk.Gdk_Window; Composited : Boolean) is
-      procedure Internal (Self : Gdk.Gdk_Window; Composited : Integer);
+      procedure Internal (Self : Gdk.Gdk_Window; Composited : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_composited");
    begin
       Internal (Self, Boolean'Pos (Composited));
@@ -733,7 +737,9 @@ package body Gdk.Window is
       (Self         : Gdk.Gdk_Window;
        Focus_On_Map : Boolean)
    is
-      procedure Internal (Self : Gdk.Gdk_Window; Focus_On_Map : Integer);
+      procedure Internal
+         (Self         : Gdk.Gdk_Window;
+          Focus_On_Map : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_focus_on_map");
    begin
       Internal (Self, Boolean'Pos (Focus_On_Map));
@@ -764,7 +770,7 @@ package body Gdk.Window is
    --------------------
 
    procedure Set_Keep_Above (Self : Gdk.Gdk_Window; Setting : Boolean) is
-      procedure Internal (Self : Gdk.Gdk_Window; Setting : Integer);
+      procedure Internal (Self : Gdk.Gdk_Window; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_keep_above");
    begin
       Internal (Self, Boolean'Pos (Setting));
@@ -775,7 +781,7 @@ package body Gdk.Window is
    --------------------
 
    procedure Set_Keep_Below (Self : Gdk.Gdk_Window; Setting : Boolean) is
-      procedure Internal (Self : Gdk.Gdk_Window; Setting : Integer);
+      procedure Internal (Self : Gdk.Gdk_Window; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_keep_below");
    begin
       Internal (Self, Boolean'Pos (Setting));
@@ -786,7 +792,7 @@ package body Gdk.Window is
    --------------------
 
    procedure Set_Modal_Hint (Self : Gdk.Gdk_Window; Modal : Boolean) is
-      procedure Internal (Self : Gdk.Gdk_Window; Modal : Integer);
+      procedure Internal (Self : Gdk.Gdk_Window; Modal : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_modal_hint");
    begin
       Internal (Self, Boolean'Pos (Modal));
@@ -802,7 +808,7 @@ package body Gdk.Window is
    is
       procedure Internal
          (Self              : Gdk.Gdk_Window;
-          Override_Redirect : Integer);
+          Override_Redirect : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_override_redirect");
    begin
       Internal (Self, Boolean'Pos (Override_Redirect));
@@ -831,7 +837,9 @@ package body Gdk.Window is
       (Self        : Gdk.Gdk_Window;
        Skips_Pager : Boolean)
    is
-      procedure Internal (Self : Gdk.Gdk_Window; Skips_Pager : Integer);
+      procedure Internal
+         (Self        : Gdk.Gdk_Window;
+          Skips_Pager : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_skip_pager_hint");
    begin
       Internal (Self, Boolean'Pos (Skips_Pager));
@@ -845,7 +853,9 @@ package body Gdk.Window is
       (Self          : Gdk.Gdk_Window;
        Skips_Taskbar : Boolean)
    is
-      procedure Internal (Self : Gdk.Gdk_Window; Skips_Taskbar : Integer);
+      procedure Internal
+         (Self          : Gdk.Gdk_Window;
+          Skips_Taskbar : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_skip_taskbar_hint");
    begin
       Internal (Self, Boolean'Pos (Skips_Taskbar));
@@ -879,7 +889,7 @@ package body Gdk.Window is
    is
       function Internal
          (Self       : Gdk.Gdk_Window;
-          Use_Static : Integer) return Integer;
+          Use_Static : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_window_set_static_gravities");
    begin
       return Internal (Self, Boolean'Pos (Use_Static)) /= 0;
@@ -895,7 +905,7 @@ package body Gdk.Window is
    is
       procedure Internal
          (Self                : Gdk.Gdk_Window;
-          Support_Multidevice : Integer);
+          Support_Multidevice : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_support_multidevice");
    begin
       Internal (Self, Boolean'Pos (Support_Multidevice));
@@ -921,7 +931,7 @@ package body Gdk.Window is
    ----------------------
 
    procedure Set_Urgency_Hint (Self : Gdk.Gdk_Window; Urgent : Boolean) is
-      procedure Internal (Self : Gdk.Gdk_Window; Urgent : Integer);
+      procedure Internal (Self : Gdk.Gdk_Window; Urgent : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_urgency_hint");
    begin
       Internal (Self, Boolean'Pos (Urgent));
@@ -955,7 +965,7 @@ package body Gdk.Window is
    -----------------------
 
    procedure Set_Debug_Updates (Setting : Boolean) is
-      procedure Internal (Setting : Integer);
+      procedure Internal (Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_window_set_debug_updates");
    begin
       Internal (Boolean'Pos (Setting));

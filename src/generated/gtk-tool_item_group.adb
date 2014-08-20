@@ -86,7 +86,7 @@ package body Gtk.Tool_Item_Group is
    function Get_Collapsed
       (Self : not null access Gtk_Tool_Item_Group_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tool_item_group_get_collapsed");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -243,7 +243,7 @@ package body Gtk.Tool_Item_Group is
       (Self      : not null access Gtk_Tool_Item_Group_Record;
        Collapsed : Boolean)
    is
-      procedure Internal (Self : System.Address; Collapsed : Integer);
+      procedure Internal (Self : System.Address; Collapsed : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tool_item_group_set_collapsed");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Collapsed));

@@ -126,7 +126,7 @@ package body Gtk.Combo_Box is
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer;
+       Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
@@ -156,7 +156,7 @@ package body Gtk.Combo_Box is
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer
+       Data  : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
    begin
@@ -445,7 +445,7 @@ package body Gtk.Combo_Box is
    function Get_Add_Tearoffs
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean
    is
-      function Internal (Combo_Box : System.Address) return Integer;
+      function Internal (Combo_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_combo_box_get_add_tearoffs");
    begin
       return Internal (Get_Object (Combo_Box)) /= 0;
@@ -499,7 +499,7 @@ package body Gtk.Combo_Box is
    function Get_Focus_On_Click
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean
    is
-      function Internal (Combo_Box : System.Address) return Integer;
+      function Internal (Combo_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_combo_box_get_focus_on_click");
    begin
       return Internal (Get_Object (Combo_Box)) /= 0;
@@ -512,7 +512,7 @@ package body Gtk.Combo_Box is
    function Get_Has_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean
    is
-      function Internal (Combo_Box : System.Address) return Integer;
+      function Internal (Combo_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_combo_box_get_has_entry");
    begin
       return Internal (Get_Object (Combo_Box)) /= 0;
@@ -553,7 +553,7 @@ package body Gtk.Combo_Box is
    function Get_Popup_Fixed_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean
    is
-      function Internal (Combo_Box : System.Address) return Integer;
+      function Internal (Combo_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_combo_box_get_popup_fixed_width");
    begin
       return Internal (Get_Object (Combo_Box)) /= 0;
@@ -658,10 +658,10 @@ package body Gtk.Combo_Box is
    is
       function Internal
          (Combo_Box : System.Address;
-          Active_Id : Interfaces.C.Strings.chars_ptr) return Integer;
+          Active_Id : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_combo_box_set_active_id");
       Tmp_Active_Id : Interfaces.C.Strings.chars_ptr;
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       if Active_Id = "" then
          Tmp_Active_Id := Interfaces.C.Strings.Null_Ptr;
@@ -697,7 +697,7 @@ package body Gtk.Combo_Box is
    is
       procedure Internal
          (Combo_Box    : System.Address;
-          Add_Tearoffs : Integer);
+          Add_Tearoffs : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_combo_box_set_add_tearoffs");
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Add_Tearoffs));
@@ -838,7 +838,7 @@ package body Gtk.Combo_Box is
    is
       procedure Internal
          (Combo_Box      : System.Address;
-          Focus_On_Click : Integer);
+          Focus_On_Click : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_combo_box_set_focus_on_click");
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Focus_On_Click));
@@ -882,7 +882,7 @@ package body Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Fixed     : Boolean)
    is
-      procedure Internal (Combo_Box : System.Address; Fixed : Integer);
+      procedure Internal (Combo_Box : System.Address; Fixed : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_combo_box_set_popup_fixed_width");
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Fixed));
@@ -918,7 +918,7 @@ package body Gtk.Combo_Box is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer;
+          Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Function type for determining whether the row pointed to by Iter
       --  should be rendered as a separator. A common way to implement this is
@@ -935,7 +935,7 @@ package body Gtk.Combo_Box is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer
+          Data  : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -1097,7 +1097,7 @@ package body Gtk.Combo_Box is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -1115,7 +1115,7 @@ package body Gtk.Combo_Box is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

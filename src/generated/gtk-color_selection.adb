@@ -173,7 +173,7 @@ package body Gtk.Color_Selection is
    function Get_Has_Opacity_Control
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean
    is
-      function Internal (Colorsel : System.Address) return Integer;
+      function Internal (Colorsel : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_color_selection_get_has_opacity_control");
    begin
       return Internal (Get_Object (Colorsel)) /= 0;
@@ -186,7 +186,7 @@ package body Gtk.Color_Selection is
    function Get_Has_Palette
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean
    is
-      function Internal (Colorsel : System.Address) return Integer;
+      function Internal (Colorsel : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_color_selection_get_has_palette");
    begin
       return Internal (Get_Object (Colorsel)) /= 0;
@@ -244,7 +244,7 @@ package body Gtk.Color_Selection is
    function Is_Adjusting
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean
    is
-      function Internal (Colorsel : System.Address) return Integer;
+      function Internal (Colorsel : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_color_selection_is_adjusting");
    begin
       return Internal (Get_Object (Colorsel)) /= 0;
@@ -304,7 +304,9 @@ package body Gtk.Color_Selection is
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Opacity : Boolean)
    is
-      procedure Internal (Colorsel : System.Address; Has_Opacity : Integer);
+      procedure Internal
+         (Colorsel    : System.Address;
+          Has_Opacity : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_color_selection_set_has_opacity_control");
    begin
       Internal (Get_Object (Colorsel), Boolean'Pos (Has_Opacity));
@@ -318,7 +320,9 @@ package body Gtk.Color_Selection is
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Palette : Boolean)
    is
-      procedure Internal (Colorsel : System.Address; Has_Palette : Integer);
+      procedure Internal
+         (Colorsel    : System.Address;
+          Has_Palette : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_color_selection_set_has_palette");
    begin
       Internal (Get_Object (Colorsel), Boolean'Pos (Has_Palette));

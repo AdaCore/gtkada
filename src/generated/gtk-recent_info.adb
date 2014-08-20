@@ -76,7 +76,7 @@ package body Gtk.Recent_Info is
    ------------
 
    function Exists (Self : Gtk_Recent_Info) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_exists");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -184,7 +184,7 @@ package body Gtk.Recent_Info is
    ----------------------
 
    function Get_Private_Hint (Self : Gtk_Recent_Info) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_get_private_hint");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -247,10 +247,10 @@ package body Gtk.Recent_Info is
    is
       function Internal
          (Self     : System.Address;
-          App_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          App_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_has_application");
       Tmp_App_Name : Interfaces.C.Strings.chars_ptr := New_String (App_Name);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_App_Name);
       Free (Tmp_App_Name);
@@ -267,10 +267,10 @@ package body Gtk.Recent_Info is
    is
       function Internal
          (Self       : System.Address;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return Integer;
+          Group_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_has_group");
       Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Group_Name);
       Free (Tmp_Group_Name);
@@ -282,7 +282,7 @@ package body Gtk.Recent_Info is
    --------------
 
    function Is_Local (Self : Gtk_Recent_Info) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_is_local");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -310,7 +310,7 @@ package body Gtk.Recent_Info is
    is
       function Internal
          (Self   : System.Address;
-          Info_B : System.Address) return Integer;
+          Info_B : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_match");
    begin
       return Internal (Get_Object (Self), Get_Object (Info_B)) /= 0;

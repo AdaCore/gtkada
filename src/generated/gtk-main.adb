@@ -194,7 +194,7 @@ package body Gtk.Main is
       procedure Internal
          (Widget       : System.Address;
           Device       : System.Address;
-          Block_Others : Integer);
+          Block_Others : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_device_grab_add");
    begin
       Internal (Get_Object (Widget), Get_Object (Device), Boolean'Pos (Block_Others));
@@ -230,7 +230,7 @@ package body Gtk.Main is
    --------------------
 
    function Events_Pending return Boolean is
-      function Internal return Integer;
+      function Internal return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_events_pending");
    begin
       return Internal /= 0;
@@ -241,7 +241,7 @@ package body Gtk.Main is
    -----------
 
    function False return Boolean is
-      function Internal return Integer;
+      function Internal return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_false");
    begin
       return Internal /= 0;
@@ -290,10 +290,11 @@ package body Gtk.Main is
        Has_Current_Event : out Boolean)
    is
       function Internal
-         (Acc_State : access Gdk.Types.Gdk_Modifier_Type) return Integer;
+         (Acc_State : access Gdk.Types.Gdk_Modifier_Type)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_get_current_event_state");
       Acc_State  : aliased Gdk.Types.Gdk_Modifier_Type;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Acc_State'Access);
       State := Acc_State;
@@ -430,7 +431,7 @@ package body Gtk.Main is
    --------------------
 
    function Main_Iteration return Boolean is
-      function Internal return Integer;
+      function Internal return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_main_iteration");
    begin
       return Internal /= 0;
@@ -441,7 +442,7 @@ package body Gtk.Main is
    -----------------------
 
    function Main_Iteration_Do (Blocking : Boolean) return Boolean is
-      function Internal (Blocking : Integer) return Integer;
+      function Internal (Blocking : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_main_iteration_do");
    begin
       return Internal (Boolean'Pos (Blocking)) /= 0;
@@ -490,7 +491,7 @@ package body Gtk.Main is
    ----------
 
    function True return Boolean is
-      function Internal return Integer;
+      function Internal return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_true");
    begin
       return Internal /= 0;

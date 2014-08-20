@@ -332,7 +332,7 @@ package body Gtk.Cell_View is
    function Get_Draw_Sensitive
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean
    is
-      function Internal (Cell_View : System.Address) return Integer;
+      function Internal (Cell_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_view_get_draw_sensitive");
    begin
       return Internal (Get_Object (Cell_View)) /= 0;
@@ -345,7 +345,7 @@ package body Gtk.Cell_View is
    function Get_Fit_Model
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean
    is
-      function Internal (Cell_View : System.Address) return Integer;
+      function Internal (Cell_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_view_get_fit_model");
    begin
       return Internal (Get_Object (Cell_View)) /= 0;
@@ -379,11 +379,11 @@ package body Gtk.Cell_View is
          (Cell_View       : System.Address;
           Path            : System.Address;
           Acc_Requisition : access Gtk.Widget.Gtk_Requisition)
-          return Integer;
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_view_get_size_of_row");
       Acc_Requisition     : aliased Gtk.Widget.Gtk_Requisition;
       Tmp_Acc_Requisition : aliased Gtk.Widget.Gtk_Requisition;
-      Tmp_Return          : Integer;
+      Tmp_Return          : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Cell_View), Get_Object (Path), Tmp_Acc_Requisition'Access);
       Acc_Requisition := Tmp_Acc_Requisition;
@@ -528,7 +528,7 @@ package body Gtk.Cell_View is
    is
       procedure Internal
          (Cell_View      : System.Address;
-          Draw_Sensitive : Integer);
+          Draw_Sensitive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_view_set_draw_sensitive");
    begin
       Internal (Get_Object (Cell_View), Boolean'Pos (Draw_Sensitive));
@@ -542,7 +542,9 @@ package body Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record;
        Fit_Model : Boolean)
    is
-      procedure Internal (Cell_View : System.Address; Fit_Model : Integer);
+      procedure Internal
+         (Cell_View : System.Address;
+          Fit_Model : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_view_set_fit_model");
    begin
       Internal (Get_Object (Cell_View), Boolean'Pos (Fit_Model));
@@ -656,7 +658,7 @@ package body Gtk.Cell_View is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -674,7 +676,7 @@ package body Gtk.Cell_View is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

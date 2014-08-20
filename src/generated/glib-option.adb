@@ -240,7 +240,7 @@ package body Glib.Option is
    is
       function Internal
          (Self      : System.Address;
-          Main_Help : Integer;
+          Main_Help : Glib.Gboolean;
           Group     : GOption_Group) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_option_context_get_help");
    begin
@@ -252,7 +252,7 @@ package body Glib.Option is
    ----------------------
 
    function Get_Help_Enabled (Self : Goption_Context) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_option_context_get_help_enabled");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -265,7 +265,7 @@ package body Glib.Option is
    function Get_Ignore_Unknown_Options
       (Self : Goption_Context) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_option_context_get_ignore_unknown_options");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -325,7 +325,9 @@ package body Glib.Option is
       (Self         : Goption_Context;
        Help_Enabled : Boolean)
    is
-      procedure Internal (Self : System.Address; Help_Enabled : Integer);
+      procedure Internal
+         (Self         : System.Address;
+          Help_Enabled : Glib.Gboolean);
       pragma Import (C, Internal, "g_option_context_set_help_enabled");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Help_Enabled));
@@ -339,7 +341,9 @@ package body Glib.Option is
       (Self           : Goption_Context;
        Ignore_Unknown : Boolean)
    is
-      procedure Internal (Self : System.Address; Ignore_Unknown : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Ignore_Unknown : Glib.Gboolean);
       pragma Import (C, Internal, "g_option_context_set_ignore_unknown_options");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Ignore_Unknown));

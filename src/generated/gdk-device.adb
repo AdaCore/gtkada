@@ -149,7 +149,7 @@ package body Gdk.Device is
    function Get_Has_Cursor
       (Self : not null access Gdk_Device_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_device_get_has_cursor");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -258,7 +258,7 @@ package body Gdk.Device is
          (Self           : System.Address;
           Window         : Gdk.Gdk_Window;
           Grab_Ownership : Gdk_Grab_Ownership;
-          Owner_Events   : Integer;
+          Owner_Events   : Glib.Gboolean;
           Event_Mask     : Gdk.Event.Gdk_Event_Mask;
           Cursor         : Gdk.Gdk_Cursor;
           Time           : Guint32) return Gdk_Grab_Status;
@@ -315,7 +315,7 @@ package body Gdk.Device is
    is
       function Internal
          (Self : System.Address;
-          Mode : Gdk_Input_Mode) return Integer;
+          Mode : Gdk_Input_Mode) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_device_set_mode");
    begin
       return Internal (Get_Object (Self), Mode) /= 0;

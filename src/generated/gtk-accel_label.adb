@@ -116,7 +116,7 @@ package body Gtk.Accel_Label is
    function Refetch
       (Accel_Label : not null access Gtk_Accel_Label_Record) return Boolean
    is
-      function Internal (Accel_Label : System.Address) return Integer;
+      function Internal (Accel_Label : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_label_refetch");
    begin
       return Internal (Get_Object (Accel_Label)) /= 0;

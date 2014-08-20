@@ -159,7 +159,7 @@ package body Gtk.Link_Button is
    function Get_Visited
       (Widget : not null access Gtk_Link_Button_Record) return Boolean
    is
-      function Internal (Widget : System.Address) return Integer;
+      function Internal (Widget : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_link_button_get_visited");
    begin
       return Internal (Get_Object (Widget)) /= 0;
@@ -191,7 +191,7 @@ package body Gtk.Link_Button is
       (Widget  : not null access Gtk_Link_Button_Record;
        Visited : Boolean)
    is
-      procedure Internal (Widget : System.Address; Visited : Integer);
+      procedure Internal (Widget : System.Address; Visited : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_link_button_set_visited");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Visited));
@@ -261,7 +261,7 @@ package body Gtk.Link_Button is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Link_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -341,7 +341,9 @@ package body Gtk.Link_Button is
       (Self           : not null access Gtk_Link_Button_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

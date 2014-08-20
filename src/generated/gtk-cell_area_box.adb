@@ -153,9 +153,9 @@ package body Gtk.Cell_Area_Box is
       procedure Internal
          (Self     : System.Address;
           Renderer : System.Address;
-          Expand   : Integer;
-          Align    : Integer;
-          Fixed    : Integer);
+          Expand   : Glib.Gboolean;
+          Align    : Glib.Gboolean;
+          Fixed    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_area_box_pack_end");
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Boolean'Pos (Expand), Boolean'Pos (Align), Boolean'Pos (Fixed));
@@ -175,9 +175,9 @@ package body Gtk.Cell_Area_Box is
       procedure Internal
          (Self     : System.Address;
           Renderer : System.Address;
-          Expand   : Integer;
-          Align    : Integer;
-          Fixed    : Integer);
+          Expand   : Glib.Gboolean;
+          Align    : Glib.Gboolean;
+          Fixed    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_area_box_pack_start");
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Boolean'Pos (Expand), Boolean'Pos (Align), Boolean'Pos (Fixed));
@@ -370,7 +370,7 @@ package body Gtk.Cell_Area_Box is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -388,7 +388,7 @@ package body Gtk.Cell_Area_Box is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

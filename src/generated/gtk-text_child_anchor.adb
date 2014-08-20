@@ -74,7 +74,7 @@ package body Gtk.Text_Child_Anchor is
    function Get_Deleted
       (Anchor : not null access Gtk_Text_Child_Anchor_Record) return Boolean
    is
-      function Internal (Anchor : System.Address) return Integer;
+      function Internal (Anchor : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_child_anchor_get_deleted");
    begin
       return Internal (Get_Object (Anchor)) /= 0;

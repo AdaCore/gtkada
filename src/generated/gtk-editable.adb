@@ -27,9 +27,6 @@ with Ada.Unchecked_Conversion;
 with Glib.Values;              use Glib.Values;
 with Gtk.Arguments;            use Gtk.Arguments;
 with Gtkada.Bindings;          use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;     use Interfaces.C.Strings;
-pragma Warnings(On);
 
 package body Gtk.Editable is
 
@@ -65,7 +62,7 @@ package body Gtk.Editable is
    ------------------
 
    function Get_Editable (Editable : Gtk_Editable) return Boolean is
-      function Internal (Editable : Gtk_Editable) return Integer;
+      function Internal (Editable : Gtk_Editable) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
       return Internal (Editable) /= 0;
@@ -84,11 +81,11 @@ package body Gtk.Editable is
       function Internal
          (Editable      : Gtk_Editable;
           Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Integer;
+          Acc_End_Pos   : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
       Acc_Start_Pos : aliased Gint;
       Acc_End_Pos   : aliased Gint;
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Editable, Acc_Start_Pos'Access, Acc_End_Pos'Access);
       Start_Pos := Acc_Start_Pos;
@@ -123,7 +120,9 @@ package body Gtk.Editable is
    ------------------
 
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean) is
-      procedure Internal (Editable : Gtk_Editable; Is_Editable : Integer);
+      procedure Internal
+         (Editable    : Gtk_Editable;
+          Is_Editable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_editable_set_editable");
    begin
       Internal (Editable, Boolean'Pos (Is_Editable));

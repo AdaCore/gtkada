@@ -68,7 +68,7 @@ package body Glib.Variant is
    -------------------
 
    procedure G_New_Boolean (Self : out Gvariant; Value : Boolean) is
-      function Internal (Value : Integer) return System.Address;
+      function Internal (Value : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "g_variant_new_boolean");
    begin
       Self.Set_Object (Internal (Boolean'Pos (Value)));
@@ -349,7 +349,7 @@ package body Glib.Variant is
    --------------------------
 
    function Gvariant_New_Boolean (Value : Boolean) return Gvariant is
-      function Internal (Value : Integer) return System.Address;
+      function Internal (Value : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "g_variant_new_boolean");
       Self : Gvariant;
    begin
@@ -702,10 +702,10 @@ package body Glib.Variant is
       function Internal
          (Self          : System.Address;
           Format_String : Interfaces.C.Strings.chars_ptr;
-          Copy_Only     : Integer) return Integer;
+          Copy_Only     : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_check_format_string");
       Tmp_Format_String : Interfaces.C.Strings.chars_ptr := New_String (Format_String);
-      Tmp_Return        : Integer;
+      Tmp_Return        : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Format_String, Boolean'Pos (Copy_Only));
       Free (Tmp_Format_String);
@@ -826,7 +826,7 @@ package body Glib.Variant is
    -----------------
 
    function Get_Boolean (Self : Gvariant) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_get_boolean");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -1128,7 +1128,7 @@ package body Glib.Variant is
    --------------
 
    function Is_Array (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_array");
    begin
       return Internal (Self) /= 0;
@@ -1139,7 +1139,7 @@ package body Glib.Variant is
    --------------
 
    function Is_Basic (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_basic");
    begin
       return Internal (Self) /= 0;
@@ -1150,7 +1150,7 @@ package body Glib.Variant is
    ------------------
 
    function Is_Container (Self : Gvariant) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_container");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -1161,7 +1161,7 @@ package body Glib.Variant is
    ------------------
 
    function Is_Container (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_container");
    begin
       return Internal (Self) /= 0;
@@ -1172,7 +1172,7 @@ package body Glib.Variant is
    -----------------
 
    function Is_Definite (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_definite");
    begin
       return Internal (Self) /= 0;
@@ -1183,7 +1183,7 @@ package body Glib.Variant is
    -------------------
 
    function Is_Dict_Entry (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_dict_entry");
    begin
       return Internal (Self) /= 0;
@@ -1194,7 +1194,7 @@ package body Glib.Variant is
    -----------------
 
    function Is_Floating (Self : Gvariant) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_floating");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -1205,7 +1205,7 @@ package body Glib.Variant is
    --------------
 
    function Is_Maybe (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_maybe");
    begin
       return Internal (Self) /= 0;
@@ -1216,7 +1216,7 @@ package body Glib.Variant is
    --------------------
 
    function Is_Normal_Form (Self : Gvariant) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_normal_form");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -1232,7 +1232,7 @@ package body Glib.Variant is
    is
       function Internal
          (Self     : System.Address;
-          The_Type : Gvariant_Type) return Integer;
+          The_Type : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_of_type");
    begin
       return Internal (Get_Object (Self), The_Type) /= 0;
@@ -1248,7 +1248,7 @@ package body Glib.Variant is
    is
       function Internal
          (Self      : Gvariant_Type;
-          Supertype : Gvariant_Type) return Integer;
+          Supertype : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_subtype_of");
    begin
       return Internal (Self, Supertype) /= 0;
@@ -1259,7 +1259,7 @@ package body Glib.Variant is
    --------------
 
    function Is_Tuple (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_tuple");
    begin
       return Internal (Self) /= 0;
@@ -1270,7 +1270,7 @@ package body Glib.Variant is
    ----------------
 
    function Is_Variant (Self : Gvariant_Type) return Boolean is
-      function Internal (Self : Gvariant_Type) return Integer;
+      function Internal (Self : Gvariant_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_is_variant");
    begin
       return Internal (Self) /= 0;
@@ -1353,7 +1353,8 @@ package body Glib.Variant is
    is
       function Internal
          (Self          : System.Address;
-          Type_Annotate : Integer) return Interfaces.C.Strings.chars_ptr;
+          Type_Annotate : Glib.Gboolean)
+          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_variant_print");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Boolean'Pos (Type_Annotate)));
@@ -1371,7 +1372,7 @@ package body Glib.Variant is
       function Internal
          (Self          : System.Address;
           String        : Glib.String.Gstring;
-          Type_Annotate : Integer) return access Glib.String.Gstring;
+          Type_Annotate : Glib.Gboolean) return access Glib.String.Gstring;
       pragma Import (C, Internal, "g_variant_print_string");
    begin
       return From_Object_Free (Internal (Get_Object (Self), String, Boolean'Pos (Type_Annotate)));
@@ -1438,10 +1439,10 @@ package body Glib.Variant is
 
    function Is_Object_Path (String : UTF8_String) return Boolean is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return Integer;
+         (String : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_object_path");
       Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_String);
       Free (Tmp_String);
@@ -1454,10 +1455,10 @@ package body Glib.Variant is
 
    function Is_Signature (String : UTF8_String) return Boolean is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return Integer;
+         (String : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_signature");
       Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_String);
       Free (Tmp_String);
@@ -1515,10 +1516,10 @@ package body Glib.Variant is
 
    function String_Is_Valid (Type_String : UTF8_String) return Boolean is
       function Internal
-         (Type_String : Interfaces.C.Strings.chars_ptr) return Integer;
+         (Type_String : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_string_is_valid");
       Tmp_Type_String : Interfaces.C.Strings.chars_ptr := New_String (Type_String);
-      Tmp_Return      : Integer;
+      Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Type_String);
       Free (Tmp_Type_String);

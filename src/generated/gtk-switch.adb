@@ -79,7 +79,7 @@ package body Gtk.Switch is
    function Get_Active
       (Self : not null access Gtk_Switch_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_switch_get_active");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -93,7 +93,7 @@ package body Gtk.Switch is
       (Self      : not null access Gtk_Switch_Record;
        Is_Active : Boolean)
    is
-      procedure Internal (Self : System.Address; Is_Active : Integer);
+      procedure Internal (Self : System.Address; Is_Active : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_switch_set_active");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Is_Active));
@@ -163,7 +163,7 @@ package body Gtk.Switch is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Switch_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -243,7 +243,9 @@ package body Gtk.Switch is
       (Self           : not null access Gtk_Switch_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

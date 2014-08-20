@@ -158,7 +158,7 @@ package body Gtk.Recent_Chooser is
    --------------------
 
    function Get_Local_Only (Chooser : Gtk_Recent_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
+      function Internal (Chooser : Gtk_Recent_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_local_only");
    begin
       return Internal (Chooser) /= 0;
@@ -171,7 +171,7 @@ package body Gtk.Recent_Chooser is
    function Get_Select_Multiple
       (Chooser : Gtk_Recent_Chooser) return Boolean
    is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
+      function Internal (Chooser : Gtk_Recent_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_select_multiple");
    begin
       return Internal (Chooser) /= 0;
@@ -182,7 +182,7 @@ package body Gtk.Recent_Chooser is
    --------------------
 
    function Get_Show_Icons (Chooser : Gtk_Recent_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
+      function Internal (Chooser : Gtk_Recent_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_icons");
    begin
       return Internal (Chooser) /= 0;
@@ -193,7 +193,7 @@ package body Gtk.Recent_Chooser is
    ------------------------
 
    function Get_Show_Not_Found (Chooser : Gtk_Recent_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
+      function Internal (Chooser : Gtk_Recent_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_not_found");
    begin
       return Internal (Chooser) /= 0;
@@ -204,7 +204,7 @@ package body Gtk.Recent_Chooser is
    ----------------------
 
    function Get_Show_Private (Chooser : Gtk_Recent_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
+      function Internal (Chooser : Gtk_Recent_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_private");
    begin
       return Internal (Chooser) /= 0;
@@ -215,7 +215,7 @@ package body Gtk.Recent_Chooser is
    -------------------
 
    function Get_Show_Tips (Chooser : Gtk_Recent_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_Recent_Chooser) return Integer;
+      function Internal (Chooser : Gtk_Recent_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_tips");
    begin
       return Internal (Chooser) /= 0;
@@ -263,10 +263,10 @@ package body Gtk.Recent_Chooser is
    is
       function Internal
          (Chooser : Gtk_Recent_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_select_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -283,10 +283,10 @@ package body Gtk.Recent_Chooser is
    is
       function Internal
          (Chooser : Gtk_Recent_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_set_current_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -319,7 +319,7 @@ package body Gtk.Recent_Chooser is
    is
       procedure Internal
          (Chooser    : Gtk_Recent_Chooser;
-          Local_Only : Integer);
+          Local_Only : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_local_only");
    begin
       Internal (Chooser, Boolean'Pos (Local_Only));
@@ -335,7 +335,7 @@ package body Gtk.Recent_Chooser is
    is
       procedure Internal
          (Chooser         : Gtk_Recent_Chooser;
-          Select_Multiple : Integer);
+          Select_Multiple : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_select_multiple");
    begin
       Internal (Chooser, Boolean'Pos (Select_Multiple));
@@ -351,7 +351,7 @@ package body Gtk.Recent_Chooser is
    is
       procedure Internal
          (Chooser    : Gtk_Recent_Chooser;
-          Show_Icons : Integer);
+          Show_Icons : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_icons");
    begin
       Internal (Chooser, Boolean'Pos (Show_Icons));
@@ -367,7 +367,7 @@ package body Gtk.Recent_Chooser is
    is
       procedure Internal
          (Chooser        : Gtk_Recent_Chooser;
-          Show_Not_Found : Integer);
+          Show_Not_Found : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_not_found");
    begin
       Internal (Chooser, Boolean'Pos (Show_Not_Found));
@@ -383,7 +383,7 @@ package body Gtk.Recent_Chooser is
    is
       procedure Internal
          (Chooser      : Gtk_Recent_Chooser;
-          Show_Private : Integer);
+          Show_Private : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_private");
    begin
       Internal (Chooser, Boolean'Pos (Show_Private));
@@ -397,7 +397,9 @@ package body Gtk.Recent_Chooser is
       (Chooser   : Gtk_Recent_Chooser;
        Show_Tips : Boolean)
    is
-      procedure Internal (Chooser : Gtk_Recent_Chooser; Show_Tips : Integer);
+      procedure Internal
+         (Chooser   : Gtk_Recent_Chooser;
+          Show_Tips : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_tips");
    begin
       Internal (Chooser, Boolean'Pos (Show_Tips));

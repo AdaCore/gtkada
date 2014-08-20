@@ -152,7 +152,7 @@ package body Gtk.Cell_Layout is
       procedure Internal
          (Cell_Layout : Gtk_Cell_Layout;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Cell_Layout, Get_Object (Cell), Boolean'Pos (Expand));
@@ -170,7 +170,7 @@ package body Gtk.Cell_Layout is
       procedure Internal
          (Cell_Layout : Gtk_Cell_Layout;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Cell_Layout, Get_Object (Cell), Boolean'Pos (Expand));

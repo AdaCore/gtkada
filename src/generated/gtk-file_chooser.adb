@@ -59,10 +59,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          Folder  : Interfaces.C.Strings.chars_ptr) return Integer;
+          Folder  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_add_shortcut_folder");
       Tmp_Folder : Interfaces.C.Strings.chars_ptr := New_String (Folder);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_Folder);
       Free (Tmp_Folder);
@@ -79,10 +79,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_add_shortcut_folder_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -94,7 +94,7 @@ package body Gtk.File_Chooser is
    ------------------------
 
    function Get_Create_Folders (Chooser : Gtk_File_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_create_folders");
    begin
       return Internal (Chooser) /= 0;
@@ -135,7 +135,7 @@ package body Gtk.File_Chooser is
    function Get_Do_Overwrite_Confirmation
       (Chooser : Gtk_File_Chooser) return Boolean
    is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_do_overwrite_confirmation");
    begin
       return Internal (Chooser) /= 0;
@@ -201,7 +201,7 @@ package body Gtk.File_Chooser is
    --------------------
 
    function Get_Local_Only (Chooser : Gtk_File_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_local_only");
    begin
       return Internal (Chooser) /= 0;
@@ -254,7 +254,7 @@ package body Gtk.File_Chooser is
    function Get_Preview_Widget_Active
       (Chooser : Gtk_File_Chooser) return Boolean
    is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_preview_widget_active");
    begin
       return Internal (Chooser) /= 0;
@@ -265,7 +265,7 @@ package body Gtk.File_Chooser is
    -------------------------
 
    function Get_Select_Multiple (Chooser : Gtk_File_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_select_multiple");
    begin
       return Internal (Chooser) /= 0;
@@ -276,7 +276,7 @@ package body Gtk.File_Chooser is
    ---------------------
 
    function Get_Show_Hidden (Chooser : Gtk_File_Chooser) return Boolean is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_show_hidden");
    begin
       return Internal (Chooser) /= 0;
@@ -316,7 +316,7 @@ package body Gtk.File_Chooser is
    function Get_Use_Preview_Label
       (Chooser : Gtk_File_Chooser) return Boolean
    is
-      function Internal (Chooser : Gtk_File_Chooser) return Integer;
+      function Internal (Chooser : Gtk_File_Chooser) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_get_use_preview_label");
    begin
       return Internal (Chooser) /= 0;
@@ -393,10 +393,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          Folder  : Interfaces.C.Strings.chars_ptr) return Integer;
+          Folder  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_remove_shortcut_folder");
       Tmp_Folder : Interfaces.C.Strings.chars_ptr := New_String (Folder);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_Folder);
       Free (Tmp_Folder);
@@ -413,10 +413,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_remove_shortcut_folder_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -433,10 +433,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser  : Gtk_File_Chooser;
-          Filename : Interfaces.C.Strings.chars_ptr) return Integer;
+          Filename : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_select_filename");
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_Filename);
       Free (Tmp_Filename);
@@ -453,10 +453,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_select_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -473,7 +473,7 @@ package body Gtk.File_Chooser is
    is
       procedure Internal
          (Chooser        : Gtk_File_Chooser;
-          Create_Folders : Integer);
+          Create_Folders : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_create_folders");
    begin
       Internal (Chooser, Boolean'Pos (Create_Folders));
@@ -489,10 +489,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser  : Gtk_File_Chooser;
-          Filename : Interfaces.C.Strings.chars_ptr) return Integer;
+          Filename : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_set_current_folder");
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_Filename);
       Free (Tmp_Filename);
@@ -509,10 +509,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_set_current_folder_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -547,7 +547,7 @@ package body Gtk.File_Chooser is
    is
       procedure Internal
          (Chooser                   : Gtk_File_Chooser;
-          Do_Overwrite_Confirmation : Integer);
+          Do_Overwrite_Confirmation : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_do_overwrite_confirmation");
    begin
       Internal (Chooser, Boolean'Pos (Do_Overwrite_Confirmation));
@@ -579,10 +579,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser  : Gtk_File_Chooser;
-          Filename : Interfaces.C.Strings.chars_ptr) return Integer;
+          Filename : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_set_filename");
       Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_Filename);
       Free (Tmp_Filename);
@@ -613,7 +613,9 @@ package body Gtk.File_Chooser is
       (Chooser    : Gtk_File_Chooser;
        Local_Only : Boolean)
    is
-      procedure Internal (Chooser : Gtk_File_Chooser; Local_Only : Integer);
+      procedure Internal
+         (Chooser    : Gtk_File_Chooser;
+          Local_Only : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_local_only");
    begin
       Internal (Chooser, Boolean'Pos (Local_Only));
@@ -643,7 +645,9 @@ package body Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser;
        Active  : Boolean)
    is
-      procedure Internal (Chooser : Gtk_File_Chooser; Active : Integer);
+      procedure Internal
+         (Chooser : Gtk_File_Chooser;
+          Active  : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_preview_widget_active");
    begin
       Internal (Chooser, Boolean'Pos (Active));
@@ -659,7 +663,7 @@ package body Gtk.File_Chooser is
    is
       procedure Internal
          (Chooser         : Gtk_File_Chooser;
-          Select_Multiple : Integer);
+          Select_Multiple : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_select_multiple");
    begin
       Internal (Chooser, Boolean'Pos (Select_Multiple));
@@ -673,7 +677,9 @@ package body Gtk.File_Chooser is
       (Chooser     : Gtk_File_Chooser;
        Show_Hidden : Boolean)
    is
-      procedure Internal (Chooser : Gtk_File_Chooser; Show_Hidden : Integer);
+      procedure Internal
+         (Chooser     : Gtk_File_Chooser;
+          Show_Hidden : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_show_hidden");
    begin
       Internal (Chooser, Boolean'Pos (Show_Hidden));
@@ -689,10 +695,10 @@ package body Gtk.File_Chooser is
    is
       function Internal
          (Chooser : Gtk_File_Chooser;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_chooser_set_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Chooser, Tmp_URI);
       Free (Tmp_URI);
@@ -707,7 +713,9 @@ package body Gtk.File_Chooser is
       (Chooser   : Gtk_File_Chooser;
        Use_Label : Boolean)
    is
-      procedure Internal (Chooser : Gtk_File_Chooser; Use_Label : Integer);
+      procedure Internal
+         (Chooser   : Gtk_File_Chooser;
+          Use_Label : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_file_chooser_set_use_preview_label");
    begin
       Internal (Chooser, Boolean'Pos (Use_Label));

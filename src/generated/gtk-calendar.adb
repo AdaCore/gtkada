@@ -172,7 +172,7 @@ package body Gtk.Calendar is
    is
       function Internal
          (Calendar : System.Address;
-          Day      : Guint) return Integer;
+          Day      : Guint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_calendar_get_day_is_marked");
    begin
       return Internal (Get_Object (Calendar), Day) /= 0;

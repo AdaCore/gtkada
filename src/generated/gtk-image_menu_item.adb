@@ -221,7 +221,7 @@ package body Gtk.Image_Menu_Item is
    function Get_Always_Show_Image
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_image_menu_item_get_always_show_image");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -249,7 +249,7 @@ package body Gtk.Image_Menu_Item is
    function Get_Use_Stock
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_image_menu_item_get_use_stock");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -279,7 +279,9 @@ package body Gtk.Image_Menu_Item is
       (Self        : not null access Gtk_Image_Menu_Item_Record;
        Always_Show : Boolean)
    is
-      procedure Internal (Self : System.Address; Always_Show : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Always_Show : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_image_menu_item_set_always_show_image");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Always_Show));
@@ -307,7 +309,7 @@ package body Gtk.Image_Menu_Item is
       (Self      : not null access Gtk_Image_Menu_Item_Record;
        Use_Stock : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Stock : Integer);
+      procedure Internal (Self : System.Address; Use_Stock : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_image_menu_item_set_use_stock");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Stock));
@@ -377,7 +379,7 @@ package body Gtk.Image_Menu_Item is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -457,7 +459,9 @@ package body Gtk.Image_Menu_Item is
       (Self           : not null access Gtk_Image_Menu_Item_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

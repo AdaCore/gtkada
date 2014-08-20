@@ -218,7 +218,7 @@ package body Gtk.Tree_View is
        Column      : System.Address;
        Prev_Column : System.Address;
        Next_Column : System.Address;
-       Data        : System.Address) return Integer;
+       Data        : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Column_Drop_Func);
    --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
    --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column being dragged
@@ -240,7 +240,7 @@ package body Gtk.Tree_View is
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer;
+       Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
@@ -251,7 +251,7 @@ package body Gtk.Tree_View is
        Column      : Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Search_Data : System.Address) return Integer;
+       Search_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Search_Equal_Func);
    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
    --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
@@ -309,7 +309,7 @@ package body Gtk.Tree_View is
        Column      : System.Address;
        Prev_Column : System.Address;
        Next_Column : System.Address;
-       Data        : System.Address) return Integer
+       Data        : System.Address) return Glib.Gboolean
    is
       Func                      : constant Gtk_Tree_View_Column_Drop_Func := To_Gtk_Tree_View_Column_Drop_Func (Data);
       Stub_Gtk_Tree_View        : Gtk_Tree_View_Record;
@@ -340,7 +340,7 @@ package body Gtk.Tree_View is
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Data  : System.Address) return Integer
+       Data  : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Tree_View_Row_Separator_Func := To_Gtk_Tree_View_Row_Separator_Func (Data);
    begin
@@ -356,7 +356,7 @@ package body Gtk.Tree_View is
        Column      : Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       Search_Data : System.Address) return Integer
+       Search_Data : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Tree_View_Search_Equal_Func := To_Gtk_Tree_View_Search_Equal_Func (Search_Data);
    begin
@@ -500,7 +500,7 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View : System.Address;
-          Path      : System.Address) return Integer;
+          Path      : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_collapse_row");
    begin
       return Internal (Get_Object (Tree_View), Get_Object (Path)) /= 0;
@@ -730,7 +730,7 @@ package body Gtk.Tree_View is
       function Internal
          (Tree_View : System.Address;
           Path      : System.Address;
-          Open_All  : Integer) return Integer;
+          Open_All  : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_expand_row");
    begin
       return Internal (Get_Object (Tree_View), Get_Object (Path), Boolean'Pos (Open_All)) /= 0;
@@ -757,7 +757,7 @@ package body Gtk.Tree_View is
    function Get_Activate_On_Single_Click
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_activate_on_single_click");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -889,12 +889,13 @@ package body Gtk.Tree_View is
           Drag_X    : Gint;
           Drag_Y    : Gint;
           Acc_Path  : access System.Address;
-          Acc_Pos   : access Gtk_Tree_View_Drop_Position) return Integer;
+          Acc_Pos   : access Gtk_Tree_View_Drop_Position)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_dest_row_at_pos");
       Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Pos      : aliased Gtk_Tree_View_Drop_Position;
       Tmp_Acc_Path : aliased System.Address;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_View), Drag_X, Drag_Y, Tmp_Acc_Path'Access, Acc_Pos'Access);
       Acc_Path := From_Object (Tmp_Acc_Path);
@@ -934,7 +935,7 @@ package body Gtk.Tree_View is
    function Get_Enable_Search
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_enable_search");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -947,7 +948,7 @@ package body Gtk.Tree_View is
    function Get_Enable_Tree_Lines
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_enable_tree_lines");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -975,7 +976,7 @@ package body Gtk.Tree_View is
    function Get_Fixed_Height_Mode
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_fixed_height_mode");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1004,7 +1005,7 @@ package body Gtk.Tree_View is
    function Get_Headers_Clickable
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_headers_clickable");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1017,7 +1018,7 @@ package body Gtk.Tree_View is
    function Get_Headers_Visible
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_headers_visible");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1030,7 +1031,7 @@ package body Gtk.Tree_View is
    function Get_Hover_Expand
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_hover_expand");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1043,7 +1044,7 @@ package body Gtk.Tree_View is
    function Get_Hover_Selection
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_hover_selection");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1111,7 +1112,7 @@ package body Gtk.Tree_View is
           Acc_Path   : access System.Address;
           Acc_Column : access System.Address;
           Acc_Cell_X : access Gint;
-          Acc_Cell_Y : access Gint) return Integer;
+          Acc_Cell_Y : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_path_at_pos");
       Acc_Path                  : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
@@ -1120,7 +1121,7 @@ package body Gtk.Tree_View is
       Tmp_Acc_Path              : aliased System.Address;
       Tmp_Acc_Column            : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
-      Tmp_Return                : Integer;
+      Tmp_Return                : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_View), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
       Acc_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Acc_Column, Stub_Gtk_Tree_View_Column));
@@ -1139,7 +1140,7 @@ package body Gtk.Tree_View is
    function Get_Reorderable
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_reorderable");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1165,7 +1166,7 @@ package body Gtk.Tree_View is
    function Get_Rubber_Banding
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_rubber_banding");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1178,7 +1179,7 @@ package body Gtk.Tree_View is
    function Get_Rules_Hint
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_rules_hint");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1260,7 +1261,7 @@ package body Gtk.Tree_View is
    function Get_Show_Expanders
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_show_expanders");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1297,10 +1298,11 @@ package body Gtk.Tree_View is
          (Tree_View    : System.Address;
           Acc_X        : access Gint;
           Acc_Y        : access Gint;
-          Keyboard_Tip : Integer;
+          Keyboard_Tip : Glib.Gboolean;
           Acc_Model    : access Gtk.Tree_Model.Gtk_Tree_Model;
           Acc_Path     : access System.Address;
-          Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter) return Integer;
+          Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter)
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_tooltip_context");
       Acc_X        : aliased Gint := X;
       Acc_Y        : aliased Gint := Y;
@@ -1309,7 +1311,7 @@ package body Gtk.Tree_View is
       Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
       Tmp_Acc_Path : aliased System.Address;
       Tmp_Acc_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_View), Acc_X'Access, Acc_Y'Access, Boolean'Pos (Keyboard_Tip), Acc_Model'Access, Tmp_Acc_Path'Access, Tmp_Acc_Iter'Access);
       Acc_Iter := Tmp_Acc_Iter;
@@ -1335,13 +1337,13 @@ package body Gtk.Tree_View is
       function Internal
          (Tree_View      : System.Address;
           Acc_Start_Path : access System.Address;
-          Acc_End_Path   : access System.Address) return Integer;
+          Acc_End_Path   : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_visible_range");
       Acc_Start_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_End_Path       : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Tmp_Acc_Start_Path : aliased System.Address;
       Tmp_Acc_End_Path   : aliased System.Address;
-      Tmp_Return         : Integer;
+      Tmp_Return         : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_View), Tmp_Acc_Start_Path'Access, Tmp_Acc_End_Path'Access);
       Acc_End_Path := From_Object (Tmp_Acc_End_Path);
@@ -1509,7 +1511,7 @@ package body Gtk.Tree_View is
           Acc_Path   : access System.Address;
           Acc_Column : access System.Address;
           Acc_Cell_X : access Gint;
-          Acc_Cell_Y : access Gint) return Integer;
+          Acc_Cell_Y : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_is_blank_at_pos");
       Acc_Path                  : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
@@ -1518,7 +1520,7 @@ package body Gtk.Tree_View is
       Tmp_Acc_Path              : aliased System.Address;
       Tmp_Acc_Column            : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
-      Tmp_Return                : Integer;
+      Tmp_Return                : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_View), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
       Acc_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Acc_Column, Stub_Gtk_Tree_View_Column));
@@ -1545,7 +1547,7 @@ package body Gtk.Tree_View is
    function Is_Rubber_Banding_Active
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean
    is
-      function Internal (Tree_View : System.Address) return Integer;
+      function Internal (Tree_View : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_is_rubber_banding_active");
    begin
       return Internal (Get_Object (Tree_View)) /= 0;
@@ -1685,7 +1687,7 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View : System.Address;
-          Path      : System.Address) return Integer;
+          Path      : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_row_expanded");
    begin
       return Internal (Get_Object (Tree_View), Get_Object (Path)) /= 0;
@@ -1707,7 +1709,7 @@ package body Gtk.Tree_View is
          (Tree_View : System.Address;
           Path      : System.Address;
           Column    : System.Address;
-          Use_Align : Integer;
+          Use_Align : Glib.Gboolean;
           Row_Align : Gfloat;
           Col_Align : Gfloat);
       pragma Import (C, Internal, "gtk_tree_view_scroll_to_cell");
@@ -1741,7 +1743,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Single    : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Single : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Single    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_activate_on_single_click");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Single));
@@ -1779,7 +1783,7 @@ package body Gtk.Tree_View is
           Column      : System.Address;
           Prev_Column : System.Address;
           Next_Column : System.Address;
-          Data        : System.Address) return Integer;
+          Data        : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Function type for determining whether Column can be dropped in a
       --  particular spot (as determined by Prev_Column and Next_Column). In
@@ -1807,7 +1811,7 @@ package body Gtk.Tree_View is
           Column      : System.Address;
           Prev_Column : System.Address;
           Next_Column : System.Address;
-          Data        : System.Address) return Integer
+          Data        : System.Address) return Glib.Gboolean
       is
          D                         : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Tree_View        : Gtk.Tree_View.Gtk_Tree_View_Record;
@@ -1849,7 +1853,7 @@ package body Gtk.Tree_View is
          (Tree_View     : System.Address;
           Path          : System.Address;
           Focus_Column  : System.Address;
-          Start_Editing : Integer);
+          Start_Editing : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_cursor");
    begin
       Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Focus_Column)), Boolean'Pos (Start_Editing));
@@ -1871,7 +1875,7 @@ package body Gtk.Tree_View is
           Path          : System.Address;
           Focus_Column  : System.Address;
           Focus_Cell    : System.Address;
-          Start_Editing : Integer);
+          Start_Editing : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_cursor_on_cell");
    begin
       Internal (Get_Object (Tree_View), Get_Object (Path), Get_Object_Or_Null (GObject (Focus_Column)), Get_Object_Or_Null (GObject (Focus_Cell)), Boolean'Pos (Start_Editing));
@@ -1974,7 +1978,7 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View     : System.Address;
-          Enable_Search : Integer);
+          Enable_Search : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_enable_search");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Enable_Search));
@@ -1988,7 +1992,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Enabled   : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Enabled : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Enabled   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_enable_tree_lines");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Enabled));
@@ -2018,7 +2024,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Enable    : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Enable : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Enable    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_fixed_height_mode");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Enable));
@@ -2048,7 +2056,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Setting   : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Setting : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Setting   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_headers_clickable");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Setting));
@@ -2064,7 +2074,7 @@ package body Gtk.Tree_View is
    is
       procedure Internal
          (Tree_View       : System.Address;
-          Headers_Visible : Integer);
+          Headers_Visible : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_headers_visible");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Headers_Visible));
@@ -2078,7 +2088,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Expand    : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Expand : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Expand    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_hover_expand");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Expand));
@@ -2092,7 +2104,7 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Hover     : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Hover : Integer);
+      procedure Internal (Tree_View : System.Address; Hover : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_hover_selection");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Hover));
@@ -2136,7 +2148,9 @@ package body Gtk.Tree_View is
       (Tree_View   : not null access Gtk_Tree_View_Record;
        Reorderable : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Reorderable : Integer);
+      procedure Internal
+         (Tree_View   : System.Address;
+          Reorderable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_reorderable");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Reorderable));
@@ -2172,7 +2186,7 @@ package body Gtk.Tree_View is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer;
+          Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Function type for determining whether the row pointed to by Iter
       --  should be rendered as a separator. A common way to implement this is
@@ -2189,7 +2203,7 @@ package body Gtk.Tree_View is
       function Internal_Cb
          (Model : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Data  : System.Address) return Integer
+          Data  : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -2223,7 +2237,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Enable    : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Enable : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Enable    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_rubber_banding");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Enable));
@@ -2237,7 +2253,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Setting   : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Setting : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Setting   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_rules_hint");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Setting));
@@ -2306,7 +2324,7 @@ package body Gtk.Tree_View is
           Column      : Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
           Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Search_Data : System.Address) return Integer;
+          Search_Data : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  A function used for checking whether a row in Model matches a search
       --  key string entered by the user. Note the return value is reversed
@@ -2328,7 +2346,7 @@ package body Gtk.Tree_View is
           Column      : Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
           Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          Search_Data : System.Address) return Integer
+          Search_Data : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Search_Data);
       begin
@@ -2431,7 +2449,9 @@ package body Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Enabled   : Boolean)
    is
-      procedure Internal (Tree_View : System.Address; Enabled : Integer);
+      procedure Internal
+         (Tree_View : System.Address;
+          Enabled   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_tree_view_set_show_expanders");
    begin
       Internal (Get_Object (Tree_View), Boolean'Pos (Enabled));

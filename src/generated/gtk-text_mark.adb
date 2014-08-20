@@ -96,7 +96,7 @@ package body Gtk.Text_Mark is
    is
       function Internal
          (Name         : Interfaces.C.Strings.chars_ptr;
-          Left_Gravity : Integer) return System.Address;
+          Left_Gravity : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_text_mark_new");
       Tmp_Name   : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
@@ -120,7 +120,7 @@ package body Gtk.Text_Mark is
    function Get_Deleted
       (Mark : not null access Gtk_Text_Mark_Record) return Boolean
    is
-      function Internal (Mark : System.Address) return Integer;
+      function Internal (Mark : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_mark_get_deleted");
    begin
       return Internal (Get_Object (Mark)) /= 0;
@@ -133,7 +133,7 @@ package body Gtk.Text_Mark is
    function Get_Left_Gravity
       (Mark : not null access Gtk_Text_Mark_Record) return Boolean
    is
-      function Internal (Mark : System.Address) return Integer;
+      function Internal (Mark : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_mark_get_left_gravity");
    begin
       return Internal (Get_Object (Mark)) /= 0;
@@ -160,7 +160,7 @@ package body Gtk.Text_Mark is
    function Get_Visible
       (Mark : not null access Gtk_Text_Mark_Record) return Boolean
    is
-      function Internal (Mark : System.Address) return Integer;
+      function Internal (Mark : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_mark_get_visible");
    begin
       return Internal (Get_Object (Mark)) /= 0;
@@ -174,7 +174,7 @@ package body Gtk.Text_Mark is
       (Mark    : not null access Gtk_Text_Mark_Record;
        Setting : Boolean)
    is
-      procedure Internal (Mark : System.Address; Setting : Integer);
+      procedure Internal (Mark : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_text_mark_set_visible");
    begin
       Internal (Get_Object (Mark), Boolean'Pos (Setting));

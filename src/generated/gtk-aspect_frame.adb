@@ -85,7 +85,7 @@ package body Gtk.Aspect_Frame is
           Xalign     : Gfloat;
           Yalign     : Gfloat;
           Ratio      : Gfloat;
-          Obey_Child : Integer) return System.Address;
+          Obey_Child : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_aspect_frame_new");
       Tmp_Label  : Interfaces.C.Strings.chars_ptr;
       Tmp_Return : System.Address;
@@ -118,7 +118,7 @@ package body Gtk.Aspect_Frame is
           Xalign       : Gfloat;
           Yalign       : Gfloat;
           Ratio        : Gfloat;
-          Obey_Child   : Integer);
+          Obey_Child   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_aspect_frame_set");
    begin
       Internal (Get_Object (Aspect_Frame), Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child));

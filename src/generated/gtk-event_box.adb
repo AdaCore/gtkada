@@ -74,7 +74,7 @@ package body Gtk.Event_Box is
    function Get_Above_Child
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean
    is
-      function Internal (Event_Box : System.Address) return Integer;
+      function Internal (Event_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_event_box_get_above_child");
    begin
       return Internal (Get_Object (Event_Box)) /= 0;
@@ -87,7 +87,7 @@ package body Gtk.Event_Box is
    function Get_Visible_Window
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean
    is
-      function Internal (Event_Box : System.Address) return Integer;
+      function Internal (Event_Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_event_box_get_visible_window");
    begin
       return Internal (Get_Object (Event_Box)) /= 0;
@@ -101,7 +101,9 @@ package body Gtk.Event_Box is
       (Event_Box   : not null access Gtk_Event_Box_Record;
        Above_Child : Boolean)
    is
-      procedure Internal (Event_Box : System.Address; Above_Child : Integer);
+      procedure Internal
+         (Event_Box   : System.Address;
+          Above_Child : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_event_box_set_above_child");
    begin
       Internal (Get_Object (Event_Box), Boolean'Pos (Above_Child));
@@ -117,7 +119,7 @@ package body Gtk.Event_Box is
    is
       procedure Internal
          (Event_Box      : System.Address;
-          Visible_Window : Integer);
+          Visible_Window : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_event_box_set_visible_window");
    begin
       Internal (Get_Object (Event_Box), Boolean'Pos (Visible_Window));

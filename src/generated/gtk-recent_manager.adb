@@ -175,10 +175,10 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_add_item");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
       Free (Tmp_URI);
@@ -211,10 +211,10 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_has_item");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
       Free (Tmp_URI);
@@ -253,11 +253,11 @@ package body Gtk.Recent_Manager is
       function Internal
          (Self    : System.Address;
           URI     : Interfaces.C.Strings.chars_ptr;
-          New_Uri : Interfaces.C.Strings.chars_ptr) return Integer;
+          New_Uri : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_move_item");
       Tmp_URI     : Interfaces.C.Strings.chars_ptr := New_String (URI);
       Tmp_New_Uri : Interfaces.C.Strings.chars_ptr;
-      Tmp_Return  : Integer;
+      Tmp_Return  : Glib.Gboolean;
    begin
       if New_Uri = "" then
          Tmp_New_Uri := Interfaces.C.Strings.Null_Ptr;
@@ -293,10 +293,10 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_remove_item");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
       Free (Tmp_URI);

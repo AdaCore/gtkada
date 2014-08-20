@@ -56,7 +56,7 @@ package body Pango.Font_Family is
    function Is_Monospace
       (Self : not null access Pango_Font_Family_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_font_family_is_monospace");
    begin
       return Internal (Get_Object (Self)) /= 0;

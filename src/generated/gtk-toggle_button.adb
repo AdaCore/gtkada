@@ -145,7 +145,8 @@ package body Gtk.Toggle_Button is
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean
    is
-      function Internal (Toggle_Button : System.Address) return Integer;
+      function Internal
+         (Toggle_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_toggle_button_get_active");
    begin
       return Internal (Get_Object (Toggle_Button)) /= 0;
@@ -159,7 +160,8 @@ package body Gtk.Toggle_Button is
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean
    is
-      function Internal (Toggle_Button : System.Address) return Integer;
+      function Internal
+         (Toggle_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_toggle_button_get_inconsistent");
    begin
       return Internal (Get_Object (Toggle_Button)) /= 0;
@@ -173,7 +175,8 @@ package body Gtk.Toggle_Button is
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean
    is
-      function Internal (Toggle_Button : System.Address) return Integer;
+      function Internal
+         (Toggle_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_toggle_button_get_mode");
    begin
       return Internal (Get_Object (Toggle_Button)) /= 0;
@@ -189,7 +192,7 @@ package body Gtk.Toggle_Button is
    is
       procedure Internal
          (Toggle_Button : System.Address;
-          Is_Active     : Integer);
+          Is_Active     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_toggle_button_set_active");
    begin
       Internal (Get_Object (Toggle_Button), Boolean'Pos (Is_Active));
@@ -203,7 +206,9 @@ package body Gtk.Toggle_Button is
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Setting       : Boolean := True)
    is
-      procedure Internal (Toggle_Button : System.Address; Setting : Integer);
+      procedure Internal
+         (Toggle_Button : System.Address;
+          Setting       : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_toggle_button_set_inconsistent");
    begin
       Internal (Get_Object (Toggle_Button), Boolean'Pos (Setting));
@@ -219,7 +224,7 @@ package body Gtk.Toggle_Button is
    is
       procedure Internal
          (Toggle_Button  : System.Address;
-          Draw_Indicator : Integer);
+          Draw_Indicator : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_toggle_button_set_mode");
    begin
       Internal (Get_Object (Toggle_Button), Boolean'Pos (Draw_Indicator));
@@ -302,7 +307,7 @@ package body Gtk.Toggle_Button is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Toggle_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -382,7 +387,9 @@ package body Gtk.Toggle_Button is
       (Self           : not null access Gtk_Toggle_Button_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

@@ -36,7 +36,7 @@ package body Gtk.Tree_Drag_Source is
    is
       function Internal
          (Self : Gtk_Tree_Drag_Source;
-          Path : System.Address) return Integer;
+          Path : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_delete");
    begin
       return Internal (Self, Get_Object (Path)) /= 0;
@@ -55,7 +55,7 @@ package body Gtk.Tree_Drag_Source is
       function Internal
          (Self           : Gtk_Tree_Drag_Source;
           Path           : System.Address;
-          Selection_Data : System.Address) return Integer;
+          Selection_Data : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
    begin
       return Internal (Self, Get_Object (Path), Get_Object (Selection_Data)) /= 0;
@@ -71,7 +71,7 @@ package body Gtk.Tree_Drag_Source is
    is
       function Internal
          (Self : Gtk_Tree_Drag_Source;
-          Path : System.Address) return Integer;
+          Path : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_drag_source_row_draggable");
    begin
       return Internal (Self, Get_Object (Path)) /= 0;
@@ -90,12 +90,12 @@ package body Gtk.Tree_Drag_Source is
       function Internal
          (Selection_Data : System.Address;
           Acc_Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model;
-          Acc_Path       : access System.Address) return Integer;
+          Acc_Path       : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_get_row_drag_data");
       Acc_Tree_Model : aliased Gtk.Tree_Model.Gtk_Tree_Model;
       Acc_Path       : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Tmp_Acc_Path   : aliased System.Address;
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Selection_Data), Acc_Tree_Model'Access, Tmp_Acc_Path'Access);
       Acc_Path := From_Object (Tmp_Acc_Path);
@@ -116,7 +116,7 @@ package body Gtk.Tree_Drag_Source is
       function Internal
          (Selection_Data : System.Address;
           Tree_Model     : Gtk.Tree_Model.Gtk_Tree_Model;
-          Path           : System.Address) return Integer;
+          Path           : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_set_row_drag_data");
    begin
       return Internal (Get_Object (Selection_Data), Tree_Model, Get_Object (Path)) /= 0;

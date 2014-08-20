@@ -61,7 +61,7 @@ package body Gtk.Activatable is
    function Get_Use_Action_Appearance
       (Self : Gtk_Activatable) return Boolean
    is
-      function Internal (Self : Gtk_Activatable) return Integer;
+      function Internal (Self : Gtk_Activatable) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Self) /= 0;
@@ -89,7 +89,9 @@ package body Gtk.Activatable is
       (Self           : Gtk_Activatable;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : Gtk_Activatable; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : Gtk_Activatable;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Self, Boolean'Pos (Use_Appearance));

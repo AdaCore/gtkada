@@ -131,7 +131,7 @@ package body Gtk.GEntry is
    function Get_Activates_Default
       (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
-      function Internal (The_Entry : System.Address) return Integer;
+      function Internal (The_Entry : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_get_activates_default");
    begin
       return Internal (Get_Object (The_Entry)) /= 0;
@@ -229,7 +229,7 @@ package body Gtk.GEntry is
    function Get_Has_Frame
       (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
-      function Internal (The_Entry : System.Address) return Integer;
+      function Internal (The_Entry : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_get_has_frame");
    begin
       return Internal (Get_Object (The_Entry)) /= 0;
@@ -245,7 +245,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Gtk_Entry_Icon_Position) return Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_get_icon_activatable");
    begin
       return Internal (Get_Object (The_Entry), Icon_Pos) /= 0;
@@ -347,7 +347,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Gtk_Entry_Icon_Position) return Integer;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_get_icon_sensitive");
    begin
       return Internal (Get_Object (The_Entry), Icon_Pos) /= 0;
@@ -532,7 +532,7 @@ package body Gtk.GEntry is
    function Get_Overwrite_Mode
       (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
-      function Internal (The_Entry : System.Address) return Integer;
+      function Internal (The_Entry : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_get_overwrite_mode");
    begin
       return Internal (Get_Object (The_Entry)) /= 0;
@@ -628,7 +628,7 @@ package body Gtk.GEntry is
    function Get_Visibility
       (The_Entry : not null access Gtk_Entry_Record) return Boolean
    is
-      function Internal (The_Entry : System.Address) return Integer;
+      function Internal (The_Entry : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_get_visibility");
    begin
       return Internal (Get_Object (The_Entry)) /= 0;
@@ -657,7 +657,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Event     : Gdk.Event.Gdk_Event_Key) return Integer;
+          Event     : Gdk.Event.Gdk_Event_Key) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_entry_im_context_filter_keypress");
    begin
       return Internal (Get_Object (The_Entry), Event) /= 0;
@@ -709,7 +709,9 @@ package body Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean)
    is
-      procedure Internal (The_Entry : System.Address; Setting : Integer);
+      procedure Internal
+         (The_Entry : System.Address;
+          Setting   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_set_activates_default");
    begin
       Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
@@ -801,7 +803,9 @@ package body Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Setting   : Boolean := True)
    is
-      procedure Internal (The_Entry : System.Address; Setting : Integer);
+      procedure Internal
+         (The_Entry : System.Address;
+          Setting   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_set_has_frame");
    begin
       Internal (Get_Object (The_Entry), Boolean'Pos (Setting));
@@ -819,7 +823,7 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry   : System.Address;
           Icon_Pos    : Gtk_Entry_Icon_Position;
-          Activatable : Integer);
+          Activatable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_set_icon_activatable");
    begin
       Internal (Get_Object (The_Entry), Icon_Pos, Boolean'Pos (Activatable));
@@ -943,7 +947,7 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Gtk_Entry_Icon_Position;
-          Sensitive : Integer);
+          Sensitive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_set_icon_sensitive");
    begin
       Internal (Get_Object (The_Entry), Icon_Pos, Boolean'Pos (Sensitive));
@@ -1083,7 +1087,9 @@ package body Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Overwrite : Boolean)
    is
-      procedure Internal (The_Entry : System.Address; Overwrite : Integer);
+      procedure Internal
+         (The_Entry : System.Address;
+          Overwrite : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_set_overwrite_mode");
    begin
       Internal (Get_Object (The_Entry), Boolean'Pos (Overwrite));
@@ -1161,7 +1167,9 @@ package body Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record;
        Visible   : Boolean)
    is
-      procedure Internal (The_Entry : System.Address; Visible : Integer);
+      procedure Internal
+         (The_Entry : System.Address;
+          Visible   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_entry_set_visibility");
    begin
       Internal (Get_Object (The_Entry), Boolean'Pos (Visible));
@@ -1297,7 +1305,7 @@ package body Gtk.GEntry is
    function Get_Editable
       (Editable : not null access Gtk_Entry_Record) return Boolean
    is
-      function Internal (Editable : System.Address) return Integer;
+      function Internal (Editable : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
       return Internal (Get_Object (Editable)) /= 0;
@@ -1329,11 +1337,11 @@ package body Gtk.GEntry is
       function Internal
          (Editable      : System.Address;
           Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Integer;
+          Acc_End_Pos   : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
       Acc_Start_Pos : aliased Gint;
       Acc_End_Pos   : aliased Gint;
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
       Start_Pos := Acc_Start_Pos;
@@ -1413,7 +1421,9 @@ package body Gtk.GEntry is
       (Editable    : not null access Gtk_Entry_Record;
        Is_Editable : Boolean)
    is
-      procedure Internal (Editable : System.Address; Is_Editable : Integer);
+      procedure Internal
+         (Editable    : System.Address;
+          Is_Editable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_editable_set_editable");
    begin
       Internal (Get_Object (Editable), Boolean'Pos (Is_Editable));

@@ -385,7 +385,7 @@ package body Gtk.Scale is
    function Get_Draw_Value
       (Scale : not null access Gtk_Scale_Record) return Boolean
    is
-      function Internal (Scale : System.Address) return Integer;
+      function Internal (Scale : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_scale_get_draw_value");
    begin
       return Internal (Get_Object (Scale)) /= 0;
@@ -398,7 +398,7 @@ package body Gtk.Scale is
    function Get_Has_Origin
       (Scale : not null access Gtk_Scale_Record) return Boolean
    is
-      function Internal (Scale : System.Address) return Integer;
+      function Internal (Scale : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_scale_get_has_origin");
    begin
       return Internal (Get_Object (Scale)) /= 0;
@@ -474,7 +474,9 @@ package body Gtk.Scale is
       (Scale      : not null access Gtk_Scale_Record;
        Draw_Value : Boolean)
    is
-      procedure Internal (Scale : System.Address; Draw_Value : Integer);
+      procedure Internal
+         (Scale      : System.Address;
+          Draw_Value : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_scale_set_draw_value");
    begin
       Internal (Get_Object (Scale), Boolean'Pos (Draw_Value));
@@ -488,7 +490,9 @@ package body Gtk.Scale is
       (Scale      : not null access Gtk_Scale_Record;
        Has_Origin : Boolean)
    is
-      procedure Internal (Scale : System.Address; Has_Origin : Integer);
+      procedure Internal
+         (Scale      : System.Address;
+          Has_Origin : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_scale_set_has_origin");
    begin
       Internal (Get_Object (Scale), Boolean'Pos (Has_Origin));

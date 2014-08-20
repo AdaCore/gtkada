@@ -56,7 +56,7 @@ package body Gtk.Font_Button is
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;
        Face   : System.Address;
-       Data   : System.Address) return Integer;
+       Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Font_Filter_Func);
    --  "family": a Pango.Font_Family.Pango_Font_Family
    --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
@@ -69,7 +69,7 @@ package body Gtk.Font_Button is
    function Internal_Gtk_Font_Filter_Func
       (Family : System.Address;
        Face   : System.Address;
-       Data   : System.Address) return Integer
+       Data   : System.Address) return Glib.Gboolean
    is
       Func                   : constant Gtk_Font_Filter_Func := To_Gtk_Font_Filter_Func (Data);
       Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
@@ -188,7 +188,7 @@ package body Gtk.Font_Button is
    function Get_Show_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean
    is
-      function Internal (Font_Button : System.Address) return Integer;
+      function Internal (Font_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_button_get_show_size");
    begin
       return Internal (Get_Object (Font_Button)) /= 0;
@@ -201,7 +201,7 @@ package body Gtk.Font_Button is
    function Get_Show_Style
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean
    is
-      function Internal (Font_Button : System.Address) return Integer;
+      function Internal (Font_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_button_get_show_style");
    begin
       return Internal (Get_Object (Font_Button)) /= 0;
@@ -230,7 +230,7 @@ package body Gtk.Font_Button is
    function Get_Use_Font
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean
    is
-      function Internal (Font_Button : System.Address) return Integer;
+      function Internal (Font_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_button_get_use_font");
    begin
       return Internal (Get_Object (Font_Button)) /= 0;
@@ -243,7 +243,7 @@ package body Gtk.Font_Button is
    function Get_Use_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean
    is
-      function Internal (Font_Button : System.Address) return Integer;
+      function Internal (Font_Button : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_button_get_use_size");
    begin
       return Internal (Get_Object (Font_Button)) /= 0;
@@ -279,7 +279,7 @@ package body Gtk.Font_Button is
       function Internal_Cb
          (Family : System.Address;
           Face   : System.Address;
-          Data   : System.Address) return Integer;
+          Data   : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used for deciding what fonts get shown
       --  in a Gtk.Font_Chooser.Gtk_Font_Chooser. See
@@ -295,7 +295,7 @@ package body Gtk.Font_Button is
       function Internal_Cb
          (Family : System.Address;
           Face   : System.Address;
-          Data   : System.Address) return Integer
+          Data   : System.Address) return Glib.Gboolean
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
@@ -333,10 +333,10 @@ package body Gtk.Font_Button is
    is
       function Internal
          (Font_Button : System.Address;
-          Fontname    : Interfaces.C.Strings.chars_ptr) return Integer;
+          Fontname    : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_button_set_font_name");
       Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Font_Button), Tmp_Fontname);
       Free (Tmp_Fontname);
@@ -351,7 +351,9 @@ package body Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record;
        Show_Size   : Boolean)
    is
-      procedure Internal (Font_Button : System.Address; Show_Size : Integer);
+      procedure Internal
+         (Font_Button : System.Address;
+          Show_Size   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_button_set_show_size");
    begin
       Internal (Get_Object (Font_Button), Boolean'Pos (Show_Size));
@@ -367,7 +369,7 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Font_Button : System.Address;
-          Show_Style  : Integer);
+          Show_Style  : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_button_set_show_style");
    begin
       Internal (Get_Object (Font_Button), Boolean'Pos (Show_Style));
@@ -399,7 +401,9 @@ package body Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record;
        Use_Font    : Boolean)
    is
-      procedure Internal (Font_Button : System.Address; Use_Font : Integer);
+      procedure Internal
+         (Font_Button : System.Address;
+          Use_Font    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_button_set_use_font");
    begin
       Internal (Get_Object (Font_Button), Boolean'Pos (Use_Font));
@@ -413,7 +417,9 @@ package body Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record;
        Use_Size    : Boolean)
    is
-      procedure Internal (Font_Button : System.Address; Use_Size : Integer);
+      procedure Internal
+         (Font_Button : System.Address;
+          Use_Size    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_button_set_use_size");
    begin
       Internal (Get_Object (Font_Button), Boolean'Pos (Use_Size));
@@ -569,7 +575,7 @@ package body Gtk.Font_Button is
    function Get_Show_Preview_Entry
       (Self : not null access Gtk_Font_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_chooser_get_show_preview_entry");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -582,7 +588,7 @@ package body Gtk.Font_Button is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Font_Button_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -716,7 +722,7 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Self               : System.Address;
-          Show_Preview_Entry : Integer);
+          Show_Preview_Entry : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_font_chooser_set_show_preview_entry");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Show_Preview_Entry));
@@ -730,7 +736,9 @@ package body Gtk.Font_Button is
       (Self           : not null access Gtk_Font_Button_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

@@ -171,7 +171,7 @@ package body Gtk.Cell_Area is
       (Renderer        : System.Address;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-       Data            : System.Address) return Integer;
+       Data            : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Cell_Alloc_Callback);
    --  "renderer": the cell renderer to operate on
    --  "cell_area": the area allocated to Renderer inside the rectangle
@@ -182,7 +182,7 @@ package body Gtk.Cell_Area is
 
    function Internal_Gtk_Cell_Callback
       (Renderer : System.Address;
-       Data     : System.Address) return Integer;
+       Data     : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Cell_Callback);
    --  "renderer": the cell renderer to operate on
    --  "data": user-supplied data
@@ -209,7 +209,7 @@ package body Gtk.Cell_Area is
       (Renderer        : System.Address;
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-       Data            : System.Address) return Integer
+       Data            : System.Address) return Glib.Gboolean
    is
       Func                   : constant Gtk_Cell_Alloc_Callback := To_Gtk_Cell_Alloc_Callback (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
@@ -223,7 +223,7 @@ package body Gtk.Cell_Area is
 
    function Internal_Gtk_Cell_Callback
       (Renderer : System.Address;
-       Data     : System.Address) return Integer
+       Data     : System.Address) return Glib.Gboolean
    is
       Func                   : constant Gtk_Cell_Callback := To_Gtk_Cell_Callback (Data);
       Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
@@ -270,7 +270,7 @@ package body Gtk.Cell_Area is
           Widget    : System.Address;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
           Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
-          Edit_Only : Integer) return Integer;
+          Edit_Only : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_area_activate");
    begin
       return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Flags, Boolean'Pos (Edit_Only)) /= 0;
@@ -295,7 +295,7 @@ package body Gtk.Cell_Area is
           Event     : Gdk.Event.Gdk_Event;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
           Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
-          return Integer;
+          return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_area_activate_cell");
    begin
       return Internal (Get_Object (Self), Get_Object (Widget), Get_Object (Renderer), Event, Cell_Area, Flags) /= 0;
@@ -348,8 +348,8 @@ package body Gtk.Cell_Area is
          (Self        : System.Address;
           Tree_Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Is_Expander : Integer;
-          Is_Expanded : Integer);
+          Is_Expander : Glib.Gboolean;
+          Is_Expanded : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_area_apply_attributes");
    begin
       Internal (Get_Object (Self), Tree_Model, Iter, Boolean'Pos (Is_Expander), Boolean'Pos (Is_Expanded));
@@ -508,7 +508,7 @@ package body Gtk.Cell_Area is
    is
       function Internal
          (Self      : System.Address;
-          Direction : Gtk.Enums.Gtk_Direction_Type) return Integer;
+          Direction : Gtk.Enums.Gtk_Direction_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_area_focus");
    begin
       return Internal (Get_Object (Self), Direction) /= 0;
@@ -565,7 +565,7 @@ package body Gtk.Cell_Area is
          (Renderer        : System.Address;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-          Data            : System.Address) return Integer;
+          Data            : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for iterating over the cell
       --  renderers and their allocated areas inside a
@@ -606,7 +606,7 @@ package body Gtk.Cell_Area is
          (Renderer        : System.Address;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
-          Data            : System.Address) return Integer
+          Data            : System.Address) return Glib.Gboolean
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
@@ -629,7 +629,7 @@ package body Gtk.Cell_Area is
 
       function Internal_Cb
          (Renderer : System.Address;
-          Data     : System.Address) return Integer;
+          Data     : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for iterating over the cell
       --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see
@@ -660,7 +660,7 @@ package body Gtk.Cell_Area is
 
       function Internal_Cb
          (Renderer : System.Address;
-          Data     : System.Address) return Integer
+          Data     : System.Address) return Glib.Gboolean
       is
          D                      : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
@@ -908,7 +908,7 @@ package body Gtk.Cell_Area is
    is
       function Internal
          (Self     : System.Address;
-          Renderer : System.Address) return Integer;
+          Renderer : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_area_has_renderer");
    begin
       return Internal (Get_Object (Self), Get_Object (Renderer)) /= 0;
@@ -941,7 +941,7 @@ package body Gtk.Cell_Area is
    function Is_Activatable
       (Self : not null access Gtk_Cell_Area_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_area_is_activatable");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -960,7 +960,7 @@ package body Gtk.Cell_Area is
       function Internal
          (Self     : System.Address;
           Renderer : System.Address;
-          Sibling  : System.Address) return Integer;
+          Sibling  : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_area_is_focus_sibling");
    begin
       return Internal (Get_Object (Self), Get_Object (Renderer), Get_Object (Sibling)) /= 0;
@@ -1020,7 +1020,7 @@ package body Gtk.Cell_Area is
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
-          Paint_Focus     : Integer);
+          Paint_Focus     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_area_render");
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cr, Background_Area, Cell_Area, Flags, Boolean'Pos (Paint_Focus));
@@ -1155,7 +1155,7 @@ package body Gtk.Cell_Area is
       (Self     : not null access Gtk_Cell_Area_Record;
        Canceled : Boolean)
    is
-      procedure Internal (Self : System.Address; Canceled : Integer);
+      procedure Internal (Self : System.Address; Canceled : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_area_stop_editing");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Canceled));
@@ -1238,7 +1238,7 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_end");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));
@@ -1256,7 +1256,7 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Expand      : Integer);
+          Expand      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_cell_layout_pack_start");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Boolean'Pos (Expand));

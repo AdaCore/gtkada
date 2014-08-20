@@ -225,7 +225,7 @@ package body Gtk.Menu_Item is
    function Get_Reserve_Indicator
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean
    is
-      function Internal (Menu_Item : System.Address) return Integer;
+      function Internal (Menu_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_menu_item_get_reserve_indicator");
    begin
       return Internal (Get_Object (Menu_Item)) /= 0;
@@ -238,7 +238,7 @@ package body Gtk.Menu_Item is
    function Get_Right_Justified
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean
    is
-      function Internal (Menu_Item : System.Address) return Integer;
+      function Internal (Menu_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_menu_item_get_right_justified");
    begin
       return Internal (Get_Object (Menu_Item)) /= 0;
@@ -266,7 +266,7 @@ package body Gtk.Menu_Item is
    function Get_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean
    is
-      function Internal (Menu_Item : System.Address) return Integer;
+      function Internal (Menu_Item : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_menu_item_get_use_underline");
    begin
       return Internal (Get_Object (Menu_Item)) /= 0;
@@ -332,7 +332,9 @@ package body Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Reserve   : Boolean)
    is
-      procedure Internal (Menu_Item : System.Address; Reserve : Integer);
+      procedure Internal
+         (Menu_Item : System.Address;
+          Reserve   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_item_set_reserve_indicator");
    begin
       Internal (Get_Object (Menu_Item), Boolean'Pos (Reserve));
@@ -348,7 +350,7 @@ package body Gtk.Menu_Item is
    is
       procedure Internal
          (Menu_Item       : System.Address;
-          Right_Justified : Integer);
+          Right_Justified : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_item_set_right_justified");
    begin
       Internal (Get_Object (Menu_Item), Boolean'Pos (Right_Justified));
@@ -378,7 +380,9 @@ package body Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Setting   : Boolean)
    is
-      procedure Internal (Menu_Item : System.Address; Setting : Integer);
+      procedure Internal
+         (Menu_Item : System.Address;
+          Setting   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_item_set_use_underline");
    begin
       Internal (Get_Object (Menu_Item), Boolean'Pos (Setting));
@@ -478,7 +482,7 @@ package body Gtk.Menu_Item is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Menu_Item_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -558,7 +562,9 @@ package body Gtk.Menu_Item is
       (Self           : not null access Gtk_Menu_Item_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

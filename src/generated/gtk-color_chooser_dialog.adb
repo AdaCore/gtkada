@@ -137,7 +137,7 @@ package body Gtk.Color_Chooser_Dialog is
       (Self : not null access Gtk_Color_Chooser_Dialog_Record)
        return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_color_chooser_get_use_alpha");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -165,7 +165,7 @@ package body Gtk.Color_Chooser_Dialog is
       (Self      : not null access Gtk_Color_Chooser_Dialog_Record;
        Use_Alpha : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Alpha : Integer);
+      procedure Internal (Self : System.Address; Use_Alpha : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_color_chooser_set_use_alpha");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Alpha));

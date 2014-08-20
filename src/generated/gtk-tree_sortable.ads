@@ -263,6 +263,111 @@ package Gtk.Tree_Sortable is
    function "+" (W : Gtk_Tree_Sortable) return Gtk_Tree_Sortable;
    pragma Inline ("+");
 
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Get_Sort_Column_Id is access function
+     (Sortable       : Gtk_Tree_Sortable;
+      Sort_Column_Id : access Gint;
+      Order          : access Gtk.Enums.Gtk_Sort_Type) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Get_Sort_Column_Id);
+   --  Fills in Sort_Column_Id and Order with the current sort column and the
+   --  order. It returns True unless the Sort_Column_Id is
+   --  GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID or
+   --  GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID.
+   --  "sort_column_id": The sort column id to be filled in
+   --  "order": The Gtk.Enums.Gtk_Sort_Type to be filled in
+
+   type Virtual_Has_Default_Sort_Func is access function (Sortable : Gtk_Tree_Sortable) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Has_Default_Sort_Func);
+   --  Returns True if the model has a default sort function. This is used
+   --  primarily by GtkTreeViewColumns in order to determine if a model can go
+   --  back to the default state, or not.
+
+   type Virtual_Set_Default_Sort_Func is access procedure
+     (Sortable  : Gtk_Tree_Sortable;
+      Sort_Func : System.Address;
+      User_Data : System.Address;
+      Destroy   : Glib.G_Destroy_Notify_Address);
+   pragma Convention (C, Virtual_Set_Default_Sort_Func);
+   --  Sets the default comparison function used when sorting to be Sort_Func.
+   --  If the current sort column id of Sortable is
+   --  GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, then the model will sort using
+   --  this function.
+   --  If Sort_Func is null, then there will be no default comparison
+   --  function. This means that once the model has been sorted, it can't go
+   --  back to the default state. In this case, when the current sort column id
+   --  of Sortable is GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model will
+   --  be unsorted.
+   --  "sort_func": The comparison function
+   --  "user_data": User data to pass to Sort_Func, or null
+   --  "destroy": Destroy notifier of User_Data, or null
+
+   type Virtual_Set_Sort_Column_Id is access procedure
+     (Sortable       : Gtk_Tree_Sortable;
+      Sort_Column_Id : Gint;
+      Order          : Gtk.Enums.Gtk_Sort_Type);
+   pragma Convention (C, Virtual_Set_Sort_Column_Id);
+   --  Sets the current sort column to be Sort_Column_Id. The Sortable will
+   --  resort itself to reflect this change, after emitting a
+   --  Gtk.Tree_Sortable.Gtk_Tree_Sortable::sort-column-changed signal.
+   --  Sort_Column_Id may either be a regular column id, or one of the
+   --  following special values:
+   --  'GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID'
+   --     * the default sort function will be used, if it is set
+   --  'GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID'
+   --     * no sorting will occur
+   --  "sort_column_id": the sort column id to set
+   --  "order": The sort order of the column
+
+   type Virtual_Set_Sort_Func is access procedure
+     (Sortable       : Gtk_Tree_Sortable;
+      Sort_Column_Id : Gint;
+      Sort_Func      : System.Address;
+      User_Data      : System.Address;
+      Destroy        : Glib.G_Destroy_Notify_Address);
+   pragma Convention (C, Virtual_Set_Sort_Func);
+   --  Sets the comparison function used when sorting to be Sort_Func. If the
+   --  current sort column id of Sortable is the same as Sort_Column_Id, then
+   --  the model will sort using this function.
+   --  "sort_column_id": the sort column id to set the function for
+   --  "sort_func": The comparison function
+   --  "user_data": User data to pass to Sort_Func, or null
+   --  "destroy": Destroy notifier of User_Data, or null
+
+   type Virtual_Sort_Column_Changed is access procedure (Sortable : Gtk_Tree_Sortable);
+   pragma Convention (C, Virtual_Sort_Column_Changed);
+   --  Emits a Gtk.Tree_Sortable.Gtk_Tree_Sortable::sort-column-changed signal
+   --  on Sortable.
+
+   subtype Tree_Sortable_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Get_Sort_Column_Id
+     (Self    : Tree_Sortable_Interface_Descr;
+      Handler : Virtual_Get_Sort_Column_Id);
+   pragma Import (C, Set_Get_Sort_Column_Id, "gtkada_Tree_Sortable_set_get_sort_column_id");
+   procedure Set_Has_Default_Sort_Func
+     (Self    : Tree_Sortable_Interface_Descr;
+      Handler : Virtual_Has_Default_Sort_Func);
+   pragma Import (C, Set_Has_Default_Sort_Func, "gtkada_Tree_Sortable_set_has_default_sort_func");
+   procedure Set_Set_Default_Sort_Func
+     (Self    : Tree_Sortable_Interface_Descr;
+      Handler : Virtual_Set_Default_Sort_Func);
+   pragma Import (C, Set_Set_Default_Sort_Func, "gtkada_Tree_Sortable_set_set_default_sort_func");
+   procedure Set_Set_Sort_Column_Id
+     (Self    : Tree_Sortable_Interface_Descr;
+      Handler : Virtual_Set_Sort_Column_Id);
+   pragma Import (C, Set_Set_Sort_Column_Id, "gtkada_Tree_Sortable_set_set_sort_column_id");
+   procedure Set_Set_Sort_Func
+     (Self    : Tree_Sortable_Interface_Descr;
+      Handler : Virtual_Set_Sort_Func);
+   pragma Import (C, Set_Set_Sort_Func, "gtkada_Tree_Sortable_set_set_sort_func");
+   procedure Set_Sort_Column_Changed
+     (Self    : Tree_Sortable_Interface_Descr;
+      Handler : Virtual_Sort_Column_Changed);
+   pragma Import (C, Set_Sort_Column_Changed, "gtkada_Tree_Sortable_set_sort_column_changed");
+   --  See Glib.Object.Add_Interface
+
 private
 
 Null_Gtk_Tree_Sortable : constant Gtk_Tree_Sortable :=

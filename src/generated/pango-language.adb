@@ -96,7 +96,7 @@ package body Pango.Language is
    is
       function Internal
          (Self   : System.Address;
-          Script : Pango_Script) return Integer;
+          Script : Pango_Script) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_language_includes_script");
    begin
       return Internal (Get_Object (Self), Script) /= 0;
@@ -112,10 +112,10 @@ package body Pango.Language is
    is
       function Internal
          (Self       : System.Address;
-          Range_List : Interfaces.C.Strings.chars_ptr) return Integer;
+          Range_List : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_language_matches");
       Tmp_Range_List : Interfaces.C.Strings.chars_ptr := New_String (Range_List);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Range_List);
       Free (Tmp_Range_List);

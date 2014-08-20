@@ -146,7 +146,7 @@ package body Gtk.Level_Bar is
    function Get_Inverted
       (Self : not null access Gtk_Level_Bar_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_level_bar_get_inverted");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -205,11 +205,11 @@ package body Gtk.Level_Bar is
       function Internal
          (Self      : System.Address;
           Name      : Interfaces.C.Strings.chars_ptr;
-          Acc_Value : access Gdouble) return Integer;
+          Acc_Value : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_level_bar_get_offset_value");
       Acc_Value  : aliased Gdouble;
       Tmp_Name   : Interfaces.C.Strings.chars_ptr;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       if Name = "" then
          Tmp_Name := Interfaces.C.Strings.Null_Ptr;
@@ -266,7 +266,7 @@ package body Gtk.Level_Bar is
       (Self     : not null access Gtk_Level_Bar_Record;
        Inverted : Boolean)
    is
-      procedure Internal (Self : System.Address; Inverted : Integer);
+      procedure Internal (Self : System.Address; Inverted : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_level_bar_set_inverted");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Inverted));

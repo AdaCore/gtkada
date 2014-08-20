@@ -43,6 +43,11 @@ Where the package node is defined as follows:
            direction="..." <!-- Override direction (see <parameter> node below) -->
        />
 
+       <virtual-method     <!--  list of virtual methods to bind -->
+           id='...'        <!--  the name of the virtual method, or '*'  -->
+           bind=True       <!--  by default, all methods bound for interfaces -->
+       />
+
        <!-- The following tag can be used to override various properties from
             the GIR file.
 
@@ -431,6 +436,21 @@ class GtkAdaPackage(object):
                     for c in self.node.findall("function")
                     if c.get("bind", "true").lower() != "false"]
         return []
+
+    def bind_virtual_method(self, name):
+        """
+        Whether to bind the given virtual method
+        """
+        if not hasattr(self, 'disabled_virtual_methods'):
+            if self.node is None:
+                self.disabled_virtual_methods = set()
+            else:
+                self.disabled_virtual_methods = set(
+                    c.get('id')
+                    for c in self.node.findall("virtual-method")
+                    if c.get("bind", "true").lower() == "false")
+        return (name not in self.disabled_virtual_methods
+                and '*' not in self.disabled_virtual_methods)
 
 
 class GtkAdaMethod(object):

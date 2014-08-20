@@ -109,7 +109,7 @@ package body Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean
    is
-      function Internal (Progress_Bar : System.Address) return Integer;
+      function Internal (Progress_Bar : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_progress_bar_get_inverted");
    begin
       return Internal (Get_Object (Progress_Bar)) /= 0;
@@ -137,7 +137,7 @@ package body Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean
    is
-      function Internal (Progress_Bar : System.Address) return Integer;
+      function Internal (Progress_Bar : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_progress_bar_get_show_text");
    begin
       return Internal (Get_Object (Progress_Bar)) /= 0;
@@ -208,7 +208,9 @@ package body Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Inverted     : Boolean)
    is
-      procedure Internal (Progress_Bar : System.Address; Inverted : Integer);
+      procedure Internal
+         (Progress_Bar : System.Address;
+          Inverted     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_progress_bar_set_inverted");
    begin
       Internal (Get_Object (Progress_Bar), Boolean'Pos (Inverted));
@@ -238,7 +240,7 @@ package body Gtk.Progress_Bar is
    is
       procedure Internal
          (Progress_Bar : System.Address;
-          Show_Text    : Integer);
+          Show_Text    : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_progress_bar_set_show_text");
    begin
       Internal (Get_Object (Progress_Bar), Boolean'Pos (Show_Text));

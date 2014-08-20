@@ -84,7 +84,7 @@ package body Gtk.Binding_Set is
          (Self      : Gtk_Binding_Set;
           Keyval    : Guint;
           Modifiers : Gdk.Types.Gdk_Modifier_Type;
-          Object    : System.Address) return Integer;
+          Object    : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_binding_set_activate");
    begin
       return Internal (Self, Keyval, Modifiers, Get_Object (Object)) /= 0;

@@ -290,10 +290,10 @@ package body Gdk.Event is
       function Internal
          (Event     : Gdk_Event;
           Event2    : Gdk_Event;
-          Acc_Angle : access Gdouble) return Integer;
+          Acc_Angle : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_events_get_angle");
       Acc_Angle  : aliased Gdouble;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Event, Event2, Acc_Angle'Access);
       Angle.all := Acc_Angle;
@@ -314,11 +314,11 @@ package body Gdk.Event is
          (Event  : Gdk_Event;
           Event2 : Gdk_Event;
           Acc_X  : access Gdouble;
-          Acc_Y  : access Gdouble) return Integer;
+          Acc_Y  : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_events_get_center");
       Acc_X      : aliased Gdouble;
       Acc_Y      : aliased Gdouble;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Event, Event2, Acc_X'Access, Acc_Y'Access);
       X.all := Acc_X;
@@ -338,10 +338,10 @@ package body Gdk.Event is
       function Internal
          (Event        : Gdk_Event;
           Event2       : Gdk_Event;
-          Acc_Distance : access Gdouble) return Integer;
+          Acc_Distance : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_events_get_distance");
       Acc_Distance : aliased Gdouble;
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Event, Event2, Acc_Distance'Access);
       Distance.all := Acc_Distance;
@@ -422,7 +422,7 @@ package body Gdk.Event is
    ---------------------------
 
    function Triggers_Context_Menu (Event : Gdk_Event) return Boolean is
-      function Internal (Event : Gdk_Event) return Integer;
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_event_triggers_context_menu");
    begin
       return Internal (Event) /= 0;
@@ -433,7 +433,7 @@ package body Gdk.Event is
    --------------------
 
    function Events_Pending return Boolean is
-      function Internal return Integer;
+      function Internal return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_events_pending");
    begin
       return Internal /= 0;
@@ -444,7 +444,7 @@ package body Gdk.Event is
    ---------------------
 
    function Get_Show_Events return Boolean is
-      function Internal return Integer;
+      function Internal return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_get_show_events");
    begin
       return Internal /= 0;
@@ -455,7 +455,7 @@ package body Gdk.Event is
    ---------------------
 
    procedure Set_Show_Events (Show_Events : Boolean) is
-      procedure Internal (Show_Events : Integer);
+      procedure Internal (Show_Events : Glib.Gboolean);
       pragma Import (C, Internal, "gdk_set_show_events");
    begin
       Internal (Boolean'Pos (Show_Events));

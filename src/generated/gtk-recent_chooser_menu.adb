@@ -168,7 +168,7 @@ package body Gtk.Recent_Chooser_Menu is
    function Get_Show_Numbers
       (Self : not null access Gtk_Recent_Chooser_Menu_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_menu_get_show_numbers");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -182,7 +182,9 @@ package body Gtk.Recent_Chooser_Menu is
       (Self         : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Numbers : Boolean)
    is
-      procedure Internal (Self : System.Address; Show_Numbers : Integer);
+      procedure Internal
+         (Self         : System.Address;
+          Show_Numbers : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_menu_set_show_numbers");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Show_Numbers));
@@ -365,7 +367,7 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal (Chooser : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_local_only");
    begin
       return Internal (Get_Object (Chooser)) /= 0;
@@ -394,7 +396,7 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal (Chooser : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_select_multiple");
    begin
       return Internal (Get_Object (Chooser)) /= 0;
@@ -408,7 +410,7 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal (Chooser : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_icons");
    begin
       return Internal (Get_Object (Chooser)) /= 0;
@@ -422,7 +424,7 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal (Chooser : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_not_found");
    begin
       return Internal (Get_Object (Chooser)) /= 0;
@@ -436,7 +438,7 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal (Chooser : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_private");
    begin
       return Internal (Get_Object (Chooser)) /= 0;
@@ -450,7 +452,7 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser : not null access Gtk_Recent_Chooser_Menu_Record)
        return Boolean
    is
-      function Internal (Chooser : System.Address) return Integer;
+      function Internal (Chooser : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_get_show_tips");
    begin
       return Internal (Get_Object (Chooser)) /= 0;
@@ -479,7 +481,7 @@ package body Gtk.Recent_Chooser_Menu is
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Recent_Chooser_Menu_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_activatable_get_use_action_appearance");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -538,10 +540,10 @@ package body Gtk.Recent_Chooser_Menu is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_select_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
@@ -558,10 +560,10 @@ package body Gtk.Recent_Chooser_Menu is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Integer;
+          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_set_current_uri");
       Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);
@@ -604,7 +606,9 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser    : not null access Gtk_Recent_Chooser_Menu_Record;
        Local_Only : Boolean)
    is
-      procedure Internal (Chooser : System.Address; Local_Only : Integer);
+      procedure Internal
+         (Chooser    : System.Address;
+          Local_Only : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_local_only");
    begin
       Internal (Get_Object (Chooser), Boolean'Pos (Local_Only));
@@ -634,7 +638,7 @@ package body Gtk.Recent_Chooser_Menu is
    is
       procedure Internal
          (Chooser         : System.Address;
-          Select_Multiple : Integer);
+          Select_Multiple : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_select_multiple");
    begin
       Internal (Get_Object (Chooser), Boolean'Pos (Select_Multiple));
@@ -648,7 +652,9 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser    : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Icons : Boolean)
    is
-      procedure Internal (Chooser : System.Address; Show_Icons : Integer);
+      procedure Internal
+         (Chooser    : System.Address;
+          Show_Icons : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_icons");
    begin
       Internal (Get_Object (Chooser), Boolean'Pos (Show_Icons));
@@ -664,7 +670,7 @@ package body Gtk.Recent_Chooser_Menu is
    is
       procedure Internal
          (Chooser        : System.Address;
-          Show_Not_Found : Integer);
+          Show_Not_Found : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_not_found");
    begin
       Internal (Get_Object (Chooser), Boolean'Pos (Show_Not_Found));
@@ -678,7 +684,9 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser      : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Private : Boolean)
    is
-      procedure Internal (Chooser : System.Address; Show_Private : Integer);
+      procedure Internal
+         (Chooser      : System.Address;
+          Show_Private : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_private");
    begin
       Internal (Get_Object (Chooser), Boolean'Pos (Show_Private));
@@ -692,7 +700,9 @@ package body Gtk.Recent_Chooser_Menu is
       (Chooser   : not null access Gtk_Recent_Chooser_Menu_Record;
        Show_Tips : Boolean)
    is
-      procedure Internal (Chooser : System.Address; Show_Tips : Integer);
+      procedure Internal
+         (Chooser   : System.Address;
+          Show_Tips : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_recent_chooser_set_show_tips");
    begin
       Internal (Get_Object (Chooser), Boolean'Pos (Show_Tips));
@@ -722,7 +732,9 @@ package body Gtk.Recent_Chooser_Menu is
       (Self           : not null access Gtk_Recent_Chooser_Menu_Record;
        Use_Appearance : Boolean)
    is
-      procedure Internal (Self : System.Address; Use_Appearance : Integer);
+      procedure Internal
+         (Self           : System.Address;
+          Use_Appearance : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_activatable_set_use_action_appearance");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Use_Appearance));

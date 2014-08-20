@@ -75,7 +75,7 @@ package body Gtk.Recent_Filter is
 
    function Internal_Gtk_Recent_Filter_Func
       (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
-       User_Data   : System.Address) return Integer;
+       User_Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Recent_Filter_Func);
    --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
    --  filled according to the Needed flags passed to
@@ -88,7 +88,7 @@ package body Gtk.Recent_Filter is
 
    function Internal_Gtk_Recent_Filter_Func
       (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
-       User_Data   : System.Address) return Integer
+       User_Data   : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Recent_Filter_Func := To_Gtk_Recent_Filter_Func (User_Data);
    begin
@@ -198,7 +198,7 @@ package body Gtk.Recent_Filter is
 
       function Internal_Cb
          (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
-          User_Data   : System.Address) return Integer;
+          User_Data   : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
       --  Gtk.Recent_Filter.Add_Custom.
@@ -232,7 +232,7 @@ package body Gtk.Recent_Filter is
 
       function Internal_Cb
          (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
-          User_Data   : System.Address) return Integer
+          User_Data   : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -318,7 +318,7 @@ package body Gtk.Recent_Filter is
    is
       function Internal
          (Filter      : System.Address;
-          Filter_Info : Gtk_Recent_Filter_Info) return Integer;
+          Filter_Info : Gtk_Recent_Filter_Info) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_filter_filter");
    begin
       return Internal (Get_Object (Filter), Filter_Info) /= 0;

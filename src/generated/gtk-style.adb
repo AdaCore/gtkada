@@ -199,7 +199,7 @@ package body Gtk.Style is
    function Has_Context
       (Style : not null access Gtk_Style_Record) return Boolean
    is
-      function Internal (Style : System.Address) return Integer;
+      function Internal (Style : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_has_context");
    begin
       return Internal (Get_Object (Style)) /= 0;
@@ -218,11 +218,11 @@ package body Gtk.Style is
       function Internal
          (Style      : System.Address;
           Color_Name : Interfaces.C.Strings.chars_ptr;
-          Acc_Color  : access Gdk.Color.Gdk_Color) return Integer;
+          Acc_Color  : access Gdk.Color.Gdk_Color) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_lookup_color");
       Acc_Color      : aliased Gdk.Color.Gdk_Color;
       Tmp_Color_Name : Interfaces.C.Strings.chars_ptr := New_String (Color_Name);
-      Tmp_Return     : Integer;
+      Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Style), Tmp_Color_Name, Acc_Color'Access);
       Free (Tmp_Color_Name);

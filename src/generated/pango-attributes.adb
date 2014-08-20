@@ -75,7 +75,7 @@ package body Pango.Attributes is
 
    function Internal_Pango_Attr_Filter_Func
       (Attribute : Pango.Attributes.Pango_Attribute;
-       User_Data : System.Address) return Integer;
+       User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Pango_Attr_Filter_Func);
    --  "attribute": a Pango attribute
    --  "user_data": user data passed to the function
@@ -86,7 +86,7 @@ package body Pango.Attributes is
 
    function Internal_Pango_Attr_Filter_Func
       (Attribute : Pango.Attributes.Pango_Attribute;
-       User_Data : System.Address) return Integer
+       User_Data : System.Address) return Glib.Gboolean
    is
       Func : constant Pango_Attr_Filter_Func := To_Pango_Attr_Filter_Func (User_Data);
    begin
@@ -149,7 +149,7 @@ package body Pango.Attributes is
    is
       function Internal
          (Self  : Pango_Attribute;
-          Attr2 : Pango_Attribute) return Integer;
+          Attr2 : Pango_Attribute) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_attribute_equal");
    begin
       return Internal (Self, Attr2) /= 0;
@@ -184,7 +184,7 @@ package body Pango.Attributes is
 
       function Internal_Cb
          (Attribute : Pango.Attributes.Pango_Attribute;
-          User_Data : System.Address) return Integer;
+          User_Data : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Type of a function filtering a list of attributes.
       --  "attribute": a Pango attribute
@@ -213,7 +213,7 @@ package body Pango.Attributes is
 
       function Internal_Cb
          (Attribute : Pango.Attributes.Pango_Attribute;
-          User_Data : System.Address) return Integer
+          User_Data : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -309,7 +309,8 @@ package body Pango.Attributes is
    function Attr_Strikethrough_New
       (Strikethrough : Boolean) return Pango_Attribute
    is
-      function Internal (Strikethrough : Integer) return Pango_Attribute;
+      function Internal
+         (Strikethrough : Glib.Gboolean) return Pango_Attribute;
       pragma Import (C, Internal, "pango_attr_strikethrough_new");
    begin
       return Internal (Boolean'Pos (Strikethrough));

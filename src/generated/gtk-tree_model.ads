@@ -905,6 +905,308 @@ package Gtk.Tree_Model is
    function "+" (W : Gtk_Tree_Model) return Gtk_Tree_Model;
    pragma Inline ("+");
 
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Get_Column_Type is access function (Tree_Model : Gtk_Tree_Model; Index : Gint) return GType;
+   pragma Convention (C, Virtual_Get_Column_Type);
+   --  Returns the type of the column.
+   --  "index_": the column index
+
+   type Virtual_Get_Flags is access function (Tree_Model : Gtk_Tree_Model) return Tree_Model_Flags;
+   pragma Convention (C, Virtual_Get_Flags);
+   --  Returns a set of flags supported by this interface.
+   --  The flags are a bitwise combination of Gtk.Tree_Model.Tree_Model_Flags.
+   --  The flags supported should not change during the lifetime of the
+   --  Tree_Model.
+
+   type Virtual_Get_Iter is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : access Gtk_Tree_Iter;
+      Path       : System.Address) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Get_Iter);
+   --  Sets Iter to a valid iterator pointing to Path. If Path does not exist,
+   --  Iter is set to an invalid iterator and False is returned.
+   --  "iter": the uninitialized Gtk.Tree_Model.Gtk_Tree_Iter
+   --  "path": the Gtk.Tree_Model.Gtk_Tree_Path
+
+   type Virtual_Get_N_Columns is access function (Tree_Model : Gtk_Tree_Model) return Gint;
+   pragma Convention (C, Virtual_Get_N_Columns);
+   --  Returns the number of columns supported by Tree_Model.
+
+   type Virtual_Get_Path is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter) return System.Address;
+   pragma Convention (C, Virtual_Get_Path);
+   --  Returns a newly-created Gtk.Tree_Model.Gtk_Tree_Path referenced by
+   --  Iter.
+   --  This path should be freed with gtk_tree_path_free.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter
+
+   type Virtual_Get_Value is access procedure
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : out Glib.Values.GValue);
+   pragma Convention (C, Virtual_Get_Value);
+   --  Initializes and sets Value to that at Column.
+   --  When done with Value, g_value_unset needs to be called to free any
+   --  allocated memory.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter
+   --  "column": the column to lookup the value at
+   --  "value": an empty Glib.Values.GValue to set
+
+   type Virtual_Iter_Children is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : access Gtk_Tree_Iter;
+      Parent     : access Gtk_Tree_Iter) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Iter_Children);
+   --  Sets Iter to point to the first child of Parent.
+   --  If Parent has no children, False is returned and Iter is set to be
+   --  invalid. Parent will remain a valid node after this function has been
+   --  called.
+   --  If Parent is null returns the first node, equivalent to
+   --  'gtk_tree_model_get_iter_first (tree_model, iter);'
+   --  "iter": the new Gtk.Tree_Model.Gtk_Tree_Iter to be set to the child
+   --  "parent": the Gtk.Tree_Model.Gtk_Tree_Iter, or null
+
+   type Virtual_Iter_Has_Child is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Iter_Has_Child);
+   --  Returns True if Iter has children, False otherwise.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter to test for children
+
+   type Virtual_Iter_N_Children is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter) return Gint;
+   pragma Convention (C, Virtual_Iter_N_Children);
+   --  Returns the number of children that Iter has.
+   --  As a special case, if Iter is null, then the number of toplevel nodes
+   --  is returned.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter, or null
+
+   type Virtual_Iter_Next is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : access Gtk_Tree_Iter) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Iter_Next);
+   --  Sets Iter to point to the node following it at the current level.
+   --  If there is no next Iter, False is returned and Iter is set to be
+   --  invalid.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter
+
+   type Virtual_Iter_Nth_Child is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : access Gtk_Tree_Iter;
+      Parent     : access Gtk_Tree_Iter;
+      N          : Gint) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Iter_Nth_Child);
+   --  Sets Iter to be the child of Parent, using the given index.
+   --  The first index is 0. If N is too big, or Parent has no children, Iter
+   --  is set to an invalid iterator and False is returned. Parent will remain
+   --  a valid node after this function has been called. As a special case, if
+   --  Parent is null, then the N<!-- -->th root node is set.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter to set to the nth child
+   --  "parent": the Gtk.Tree_Model.Gtk_Tree_Iter to get the child from, or
+   --  null.
+   --  "n": the index of the desired child
+
+   type Virtual_Iter_Parent is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : access Gtk_Tree_Iter;
+      Child      : Gtk_Tree_Iter) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Iter_Parent);
+   --  Sets Iter to be the parent of Child.
+   --  If Child is at the toplevel, and doesn't have a parent, then Iter is
+   --  set to an invalid iterator and False is returned. Child will remain a
+   --  valid node after this function has been called.
+   --  "iter": the new Gtk.Tree_Model.Gtk_Tree_Iter to set to the parent
+   --  "child": the Gtk.Tree_Model.Gtk_Tree_Iter
+
+   type Virtual_Iter_Previous is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Iter       : Gtk_Tree_Iter) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Iter_Previous);
+   --  Sets Iter to point to the previous node at the current level.
+   --  If there is no previous Iter, False is returned and Iter is set to be
+   --  invalid.
+   --  Since: gtk+ 3.0
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter
+
+   type Virtual_Ref_Node is access procedure (Tree_Model : Gtk_Tree_Model; Iter : Gtk_Tree_Iter);
+   pragma Convention (C, Virtual_Ref_Node);
+   --  Lets the tree ref the node.
+   --  This is an optional method for models to implement. To be more
+   --  specific, models may ignore this call as it exists primarily for
+   --  performance reasons.
+   --  This function is primarily meant as a way for views to let caching
+   --  models know when nodes are being displayed (and hence, whether or not to
+   --  cache that node). Being displayed means a node is in an expanded branch,
+   --  regardless of whether the node is currently visible in the viewport. For
+   --  example, a file-system based model would not want to keep the entire
+   --  file-hierarchy in memory, just the sections that are currently being
+   --  displayed by every current view.
+   --  A model should be expected to be able to get an iter independent of its
+   --  reffed state.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter
+
+   type Virtual_Row_Changed is access procedure
+     (Tree_Model : Gtk_Tree_Model;
+      Path       : System.Address;
+      Iter       : Gtk_Tree_Iter);
+   pragma Convention (C, Virtual_Row_Changed);
+   --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::row-changed signal on
+   --  Tree_Model.
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path pointing to the changed row
+   --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the changed
+   --  row
+
+   type Virtual_Row_Deleted is access procedure (Tree_Model : Gtk_Tree_Model; Path : System.Address);
+   pragma Convention (C, Virtual_Row_Deleted);
+   --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::row-deleted signal on
+   --  Tree_Model.
+   --  This should be called by models after a row has been removed. The
+   --  location pointed to by Path should be the location that the row
+   --  previously was at. It may not be a valid location anymore.
+   --  Nodes that are deleted are not unreffed, this means that any
+   --  outstanding references on the deleted node should not be released.
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path pointing to the previous
+   --  location of the deleted row
+
+   type Virtual_Row_Has_Child_Toggled is access procedure
+     (Tree_Model : Gtk_Tree_Model;
+      Path       : System.Address;
+      Iter       : Gtk_Tree_Iter);
+   pragma Convention (C, Virtual_Row_Has_Child_Toggled);
+   --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::row-has-child-toggled signal
+   --  on Tree_Model. This should be called by models after the child state of
+   --  a node changes.
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path pointing to the changed row
+   --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the changed
+   --  row
+
+   type Virtual_Row_Inserted is access procedure
+     (Tree_Model : Gtk_Tree_Model;
+      Path       : System.Address;
+      Iter       : Gtk_Tree_Iter);
+   pragma Convention (C, Virtual_Row_Inserted);
+   --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::row-inserted signal on
+   --  Tree_Model.
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path pointing to the inserted row
+   --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the inserted
+   --  row
+
+   type Virtual_Rows_Reordered is access procedure
+     (Tree_Model : Gtk_Tree_Model;
+      Path       : System.Address;
+      Iter       : Gtk_Tree_Iter;
+      New_Order  : in out Gint);
+   pragma Convention (C, Virtual_Rows_Reordered);
+   --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::rows-reordered signal on
+   --  Tree_Model.
+   --  This should be called by models when their rows have been reordered.
+   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path pointing to the tree node whose
+   --  children have been reordered
+   --  "iter": a valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to the node whose
+   --  children have been reordered, or null if the depth of Path is 0
+   --  "new_order": an array of integers mapping the current position of each
+   --  child to its old position before the re-ordering, i.e.
+   --  New_Order'[newpos] = oldpos'
+
+   type Virtual_Unref_Node is access procedure (Tree_Model : Gtk_Tree_Model; Iter : Gtk_Tree_Iter);
+   pragma Convention (C, Virtual_Unref_Node);
+   --  Lets the tree unref the node.
+   --  This is an optional method for models to implement. To be more
+   --  specific, models may ignore this call as it exists primarily for
+   --  performance reasons. For more information on what this means, see
+   --  Gtk.Tree_Model.Ref_Node.
+   --  Please note that nodes that are deleted are not unreffed.
+   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter
+
+   subtype Tree_Model_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Get_Column_Type
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Get_Column_Type);
+   pragma Import (C, Set_Get_Column_Type, "gtkada_Tree_Model_set_get_column_type");
+   procedure Set_Get_Flags
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Get_Flags);
+   pragma Import (C, Set_Get_Flags, "gtkada_Tree_Model_set_get_flags");
+   procedure Set_Get_Iter
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Get_Iter);
+   pragma Import (C, Set_Get_Iter, "gtkada_Tree_Model_set_get_iter");
+   procedure Set_Get_N_Columns
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Get_N_Columns);
+   pragma Import (C, Set_Get_N_Columns, "gtkada_Tree_Model_set_get_n_columns");
+   procedure Set_Get_Path
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Get_Path);
+   pragma Import (C, Set_Get_Path, "gtkada_Tree_Model_set_get_path");
+   procedure Set_Get_Value
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Get_Value);
+   pragma Import (C, Set_Get_Value, "gtkada_Tree_Model_set_get_value");
+   procedure Set_Iter_Children
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_Children);
+   pragma Import (C, Set_Iter_Children, "gtkada_Tree_Model_set_iter_children");
+   procedure Set_Iter_Has_Child
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_Has_Child);
+   pragma Import (C, Set_Iter_Has_Child, "gtkada_Tree_Model_set_iter_has_child");
+   procedure Set_Iter_N_Children
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_N_Children);
+   pragma Import (C, Set_Iter_N_Children, "gtkada_Tree_Model_set_iter_n_children");
+   procedure Set_Iter_Next
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_Next);
+   pragma Import (C, Set_Iter_Next, "gtkada_Tree_Model_set_iter_next");
+   procedure Set_Iter_Nth_Child
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_Nth_Child);
+   pragma Import (C, Set_Iter_Nth_Child, "gtkada_Tree_Model_set_iter_nth_child");
+   procedure Set_Iter_Parent
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_Parent);
+   pragma Import (C, Set_Iter_Parent, "gtkada_Tree_Model_set_iter_parent");
+   procedure Set_Iter_Previous
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Iter_Previous);
+   pragma Import (C, Set_Iter_Previous, "gtkada_Tree_Model_set_iter_previous");
+   procedure Set_Ref_Node
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Ref_Node);
+   pragma Import (C, Set_Ref_Node, "gtkada_Tree_Model_set_ref_node");
+   procedure Set_Row_Changed
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Row_Changed);
+   pragma Import (C, Set_Row_Changed, "gtkada_Tree_Model_set_row_changed");
+   procedure Set_Row_Deleted
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Row_Deleted);
+   pragma Import (C, Set_Row_Deleted, "gtkada_Tree_Model_set_row_deleted");
+   procedure Set_Row_Has_Child_Toggled
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Row_Has_Child_Toggled);
+   pragma Import (C, Set_Row_Has_Child_Toggled, "gtkada_Tree_Model_set_row_has_child_toggled");
+   procedure Set_Row_Inserted
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Row_Inserted);
+   pragma Import (C, Set_Row_Inserted, "gtkada_Tree_Model_set_row_inserted");
+   procedure Set_Rows_Reordered
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Rows_Reordered);
+   pragma Import (C, Set_Rows_Reordered, "gtkada_Tree_Model_set_rows_reordered");
+   procedure Set_Unref_Node
+     (Self    : Tree_Model_Interface_Descr;
+      Handler : Virtual_Unref_Node);
+   pragma Import (C, Set_Unref_Node, "gtkada_Tree_Model_set_unref_node");
+   --  See Glib.Object.Add_Interface
+
 private
 type Gtk_Tree_Iter is record
    Stamp : Gint;

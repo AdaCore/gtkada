@@ -1865,6 +1865,7 @@ __PRE__      Group  : GSlist := null;
   </package>
 
   <package id="GtkBuildable">
+     <virtual-method id='*' bind='False'/>
      <method id="gtk_buildable_custom_tag_start" bind="False"/>
   </package>
 
@@ -1925,6 +1926,7 @@ __PRE__
   </package>
 
   <package id="GtkCellLayout">
+     <virtual-method id='*' bind='False'/>  <!--  circular dep with Gtk.Cell_Area -->
      <doc group="Trees and Lists" testgtk="create_cell_view.adb"/>
      <parameter name="self" ada="Cell_Layout"/>
      <method id="gtk_cell_layout_get_area" bind="False"/>
@@ -2390,6 +2392,7 @@ __PRE__
    </package>
 
    <package id="GtkRecentChooser">
+     <virtual-method id='*' bind='False'/>
      <parameter name="self" ada="Chooser" />
      <method id="gtk_recent_chooser_get_items" return="RecentInfoList"/>
      <enum ctype="GtkRecentSortType" />
@@ -3267,6 +3270,7 @@ __PRE__
    </package>
 
    <package id="GtkStyleProvider">
+      <virtual-method id='*' bind='False'/>  <!--  circular dep with StyleProperties -->
      <method id="gtk_style_provider_get_style" bind="False" /> <!-- circular dep with StyleProperties -->
      <method id="gtk_style_provider_get_style_property"
              return_as_param="Found"/>
@@ -3294,6 +3298,7 @@ __PRE__
    </package>
 
    <package id="GtkStyleProperties">
+      <virtual-method id='*' bind='False'/>  <!--  circular dep with StyleProvider -->
      <method id="gtk_style_properties_get_property"
              return_as_param="Exists"/>
      <method id="gtk_style_properties_set_valist" bind="False"/> <!-- need valist -->
@@ -6006,6 +6011,7 @@ direction, widget state, or icon size.
    </package>
 
    <package id="GIcon" ada="Glib.G_Icon">
+     <virtual-method id='*' bind='False'/>
      <method id="g_icon_hash">
        <parameter name="icon" type="G_Icon"/>
      </method>
@@ -7861,6 +7867,10 @@ package body Generic_Set is
    end Get_Window_At_Pointer;
          </body>
       </extra>
+   </package>
+
+   <package id='GtkActivatable'>
+      <virtual-method id='*' bind='False'/>
    </package>
 
    <!-- Below were added just for the sake of parsing the files to get information

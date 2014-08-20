@@ -148,7 +148,7 @@ package body Pango.Font is
       function Internal
          (Self      : Pango_Font_Description;
           Old_Match : Pango_Font_Description;
-          New_Match : Pango_Font_Description) return Integer;
+          New_Match : Pango_Font_Description) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_font_description_better_match");
    begin
       return Internal (Self, Old_Match, New_Match) /= 0;
@@ -194,7 +194,7 @@ package body Pango.Font is
    is
       function Internal
          (Self  : Pango_Font_Description;
-          Desc2 : Pango_Font_Description) return Integer;
+          Desc2 : Pango_Font_Description) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_font_description_equal");
    begin
       return Internal (Self, Desc2) /= 0;
@@ -257,7 +257,7 @@ package body Pango.Font is
    function Get_Size_Is_Absolute
       (Self : Pango_Font_Description) return Boolean
    is
-      function Internal (Self : Pango_Font_Description) return Integer;
+      function Internal (Self : Pango_Font_Description) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_font_description_get_size_is_absolute");
    begin
       return Internal (Self) /= 0;
@@ -275,7 +275,7 @@ package body Pango.Font is
       procedure Internal
          (Self             : Pango_Font_Description;
           Desc_To_Merge    : Pango_Font_Description;
-          Replace_Existing : Integer);
+          Replace_Existing : Glib.Gboolean);
       pragma Import (C, Internal, "pango_font_description_merge");
    begin
       Internal (Self, Desc_To_Merge, Boolean'Pos (Replace_Existing));
@@ -293,7 +293,7 @@ package body Pango.Font is
       procedure Internal
          (Self             : Pango_Font_Description;
           Desc_To_Merge    : Pango_Font_Description;
-          Replace_Existing : Integer);
+          Replace_Existing : Glib.Gboolean);
       pragma Import (C, Internal, "pango_font_description_merge_static");
    begin
       Internal (Self, Desc_To_Merge, Boolean'Pos (Replace_Existing));

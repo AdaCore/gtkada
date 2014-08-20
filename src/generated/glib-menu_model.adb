@@ -171,7 +171,7 @@ package body Glib.Menu_Model is
    function Is_Mutable
       (Self : not null access Gmenu_Model_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_menu_model_is_mutable");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -238,7 +238,7 @@ package body Glib.Menu_Model is
    function Next
       (Self : not null access Gmenu_Attribute_Iter_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_menu_attribute_iter_next");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -251,7 +251,7 @@ package body Glib.Menu_Model is
    function Next
       (Self : not null access Gmenu_Link_Iter_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_menu_link_iter_next");
    begin
       return Internal (Get_Object (Self)) /= 0;

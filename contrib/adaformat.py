@@ -26,7 +26,7 @@ from collections import namedtuple, defaultdict
 #
 #           "ada"    -> String_List
 #           "c->ada" -> chars_ptr_array_access (no bounds given by C)
-#           "ada->c" -> chars_ptr_arra (bounds will be ignored anyway,
+#           "ada->c" -> chars_ptr_array (bounds will be ignored anyway,
 #                         and it is simpler to pass this type).
 
 class CType(object):
@@ -119,7 +119,7 @@ class CType(object):
         """
         return (self.param, self.cparam, "%(var)s", [], self.cparam, "%(var)s")
 
-    def convert_from_c_add_with(self, pkg):
+    def convert_from_c_add_with(self, pkg, specs=False):
         """Add the "with" statements needed to do the conversion stated
            in convert_from_c().
         """
@@ -326,14 +326,14 @@ class CType(object):
                     call=wrapper % (ret[2] % {"var": name}),
                     precall='', postcall='', tmpvars=ret[3])
 
-    def add_with(self, pkg=None):
+    def add_with(self, pkg=None, specs=False):
         """Add required withs for this type"""
         if pkg:
             pkg.add_with(package_name(self.ada))
 
         if pkg and self.allow_none and self.val_or_null:
             base = self.val_or_null
-            pkg.add_with(package_name(base), specs=False)
+            pkg.add_with(package_name(base), specs=specs)
 
     def copy(self):
         """Return a copy of self, possibly modifying some properties."""
@@ -349,7 +349,7 @@ class Enum(CType):
             CType.__init__(self, ada, property)
 
         if self.ada.lower() == "boolean":
-            self.cparam = "Integer"
+            self.cparam = "Glib.Gboolean"
         else:
             # Do not convert enumerations to integers. We want to pass the
             # associated literal in case the enumeration in C does not start
@@ -484,9 +484,9 @@ class UTF8(CType):
                 # for out parameters
                 self.cparam, conv)
 
-    def convert_from_c_add_with(self, pkg):
+    def convert_from_c_add_with(self, pkg, specs=False):
         if pkg:
-            pkg.add_with("Gtkada.Bindings", specs=False)
+            pkg.add_with("Gtkada.Bindings", specs=specs)
 
     def convert_to_c(self, pkg=None):
         if self.allow_none:
@@ -496,10 +496,10 @@ class UTF8(CType):
         else:
             return "New_String (%(var)s)"
 
-    def add_with(self, pkg):
+    def add_with(self, pkg, specs=False):
         super(UTF8, self).add_with(pkg)
         if pkg:
-            pkg.add_with("Interfaces.C.Strings", specs=False,
+            pkg.add_with("Interfaces.C.Strings", specs=specs,
                          might_be_unused=True)
 
 
@@ -534,12 +534,12 @@ class UTF8_List(CType):
             pkg.add_with("GtkAda.Types", specs=False)
         return "From_String_List (%(var)s)"
 
-    def add_with(self, pkg=None):
+    def add_with(self, pkg=None, specs=False):
         super(UTF8_List, self).add_with(pkg=pkg)
         if pkg:
             pkg.add_with("GNAT.Strings", specs=True)
-            pkg.add_with("Interfaces.C.Strings", specs=False)
-            pkg.add_with("Gtkada.Bindings", specs=False)
+            pkg.add_with("Interfaces.C.Strings", specs=specs)
+            pkg.add_with("Gtkada.Bindings", specs=specs)
 
 
 class Record(CType):
@@ -684,7 +684,7 @@ class List(CType):
     def convert_to_c(self, pkg=None):
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
-    def add_with(self, pkg=None):
+    def add_with(self, pkg=None, specs=False):
         # A list comes from an instantiation (pkg.instance.glist), so we need
         # to skip backward two "."
         if pkg:
@@ -1468,14 +1468,14 @@ class Subprogram(object):
         """Overrides the body of the subprogram (after "is")"""
         self._manual_body = body
 
-    def profile(self, pkg, indent="   ", maxlen=max_profile_length):
+    def profile(self, pkg, indent="   ", maxlen=max_profile_length,
+                as_type=False, specs=False):
         """Compute the profile for the subprogram"""
 
         returns = self.returns and self.returns.as_return(pkg=pkg)
 
         if returns:
             prefix = "function"
-
             if self.lang == "ada->c":
                 suffix = " return %s" % returns[1]
             elif self.lang == "c->ada":
@@ -1486,7 +1486,7 @@ class Subprogram(object):
             prefix = "procedure"
             suffix = ""
 
-        if self.name:
+        if (not as_type) and self.name:
             prefix = indent + prefix + " " + base_name(self.name)
         elif self.allow_none:
             prefix = "access %s" % prefix
@@ -1516,6 +1516,23 @@ class Subprogram(object):
         else:
             return prefix + p + suffix
 
+    def add_withs_for_subprogram(self, pkg, in_specs):
+        """
+        Add required withs to the package (either in specs or body)
+        """
+        if self.returns:
+            r = self.returns.as_return(pkg=pkg)
+            if self.lang == "ada->c":
+                self.returns.add_with(pkg=pkg, specs=in_specs)
+            elif self.lang == "c->ada":
+                self.returns.add_with(pkg=pkg, specs=in_specs)
+            else:
+                pkg.add_with(package_name(r[0]), specs=in_specs)
+
+        if self.plist:
+            for p in self.plist:
+                p.type.add_with(pkg=pkg, specs=in_specs)
+
     def formatted_doc(self, indent="   "):
         if self.showdoc:
             doc = [d for d in self.doc]
@@ -1528,10 +1545,11 @@ class Subprogram(object):
         return format_doc(doc, indent=indent, separate_paragraphs=False)
 
     def spec(self, pkg, indent="   ", show_doc=True,
-             maxlen=max_profile_length):
+             maxlen=max_profile_length, as_type=False):
         """Return the spec of the subprogram"""
 
-        result = self.profile(pkg=pkg, indent=indent, maxlen=maxlen) + ";"
+        result = self.profile(
+            pkg=pkg, indent=indent, maxlen=maxlen, as_type=as_type) + ";"
 
         if self._import:
             result += "\n" + indent + self._import

@@ -166,7 +166,7 @@ package body Gtk.Search_Entry is
    function Get_Editable
       (Editable : not null access Gtk_Search_Entry_Record) return Boolean
    is
-      function Internal (Editable : System.Address) return Integer;
+      function Internal (Editable : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_editable");
    begin
       return Internal (Get_Object (Editable)) /= 0;
@@ -198,11 +198,11 @@ package body Gtk.Search_Entry is
       function Internal
          (Editable      : System.Address;
           Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Integer;
+          Acc_End_Pos   : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
       Acc_Start_Pos : aliased Gint;
       Acc_End_Pos   : aliased Gint;
-      Tmp_Return    : Integer;
+      Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
       Start_Pos := Acc_Start_Pos;
@@ -284,7 +284,9 @@ package body Gtk.Search_Entry is
       (Editable    : not null access Gtk_Search_Entry_Record;
        Is_Editable : Boolean)
    is
-      procedure Internal (Editable : System.Address; Is_Editable : Integer);
+      procedure Internal
+         (Editable    : System.Address;
+          Is_Editable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_editable_set_editable");
    begin
       Internal (Get_Object (Editable), Boolean'Pos (Is_Editable));

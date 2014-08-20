@@ -129,7 +129,7 @@ package body Gtk.Menu is
       (Menu      : System.Address;
        X         : in out Gint;
        Y         : in out Gint;
-       Push_In   : out Integer;
+       Push_In   : out Glib.Gboolean;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Menu_Position_Func);
    --  "menu": a Gtk.Menu.Gtk_Menu.
@@ -157,7 +157,7 @@ package body Gtk.Menu is
       (Menu      : System.Address;
        X         : in out Gint;
        Y         : in out Gint;
-       Push_In   : out Integer;
+       Push_In   : out Glib.Gboolean;
        User_Data : System.Address)
    is
       Func          : constant Gtk_Menu_Position_Func := To_Gtk_Menu_Position_Func (User_Data);
@@ -377,7 +377,7 @@ package body Gtk.Menu is
    function Get_Reserve_Toggle_Size
       (Menu : not null access Gtk_Menu_Record) return Boolean
    is
-      function Internal (Menu : System.Address) return Integer;
+      function Internal (Menu : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_menu_get_reserve_toggle_size");
    begin
       return Internal (Get_Object (Menu)) /= 0;
@@ -390,7 +390,7 @@ package body Gtk.Menu is
    function Get_Tearoff_State
       (Menu : not null access Gtk_Menu_Record) return Boolean
    is
-      function Internal (Menu : System.Address) return Integer;
+      function Internal (Menu : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_menu_get_tearoff_state");
    begin
       return Internal (Get_Object (Menu)) /= 0;
@@ -477,7 +477,7 @@ package body Gtk.Menu is
          (Menu      : System.Address;
           X         : out Gint;
           Y         : out Gint;
-          Push_In   : out Integer;
+          Push_In   : out Glib.Gboolean;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A user function supplied when calling Gtk.Menu.Popup which controls
@@ -511,7 +511,7 @@ package body Gtk.Menu is
          (Menu      : System.Address;
           X         : out Gint;
           Y         : out Gint;
-          Push_In   : out Integer;
+          Push_In   : out Glib.Gboolean;
           User_Data : System.Address)
       is
          D             : constant Users.Internal_Data_Access := Users.Convert (User_Data);
@@ -561,7 +561,7 @@ package body Gtk.Menu is
          (Menu      : System.Address;
           X         : in out Gint;
           Y         : in out Gint;
-          Push_In   : out Integer;
+          Push_In   : out Glib.Gboolean;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A user function supplied when calling Gtk.Menu.Popup which controls
@@ -595,7 +595,7 @@ package body Gtk.Menu is
          (Menu      : System.Address;
           X         : in out Gint;
           Y         : in out Gint;
-          Push_In   : out Integer;
+          Push_In   : out Glib.Gboolean;
           User_Data : System.Address)
       is
          D             : constant Users.Internal_Data_Access := Users.Convert (User_Data);
@@ -735,7 +735,7 @@ package body Gtk.Menu is
    is
       procedure Internal
          (Menu                : System.Address;
-          Reserve_Toggle_Size : Integer);
+          Reserve_Toggle_Size : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_set_reserve_toggle_size");
    begin
       Internal (Get_Object (Menu), Boolean'Pos (Reserve_Toggle_Size));
@@ -763,7 +763,7 @@ package body Gtk.Menu is
       (Menu     : not null access Gtk_Menu_Record;
        Torn_Off : Boolean)
    is
-      procedure Internal (Menu : System.Address; Torn_Off : Integer);
+      procedure Internal (Menu : System.Address; Torn_Off : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_set_tearoff_state");
    begin
       Internal (Get_Object (Menu), Boolean'Pos (Torn_Off));

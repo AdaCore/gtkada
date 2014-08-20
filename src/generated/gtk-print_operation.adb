@@ -120,7 +120,7 @@ package body Gtk.Print_Operation is
    function Get_Embed_Page_Setup
       (Self : not null access Gtk_Print_Operation_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_get_embed_page_setup");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -144,7 +144,7 @@ package body Gtk.Print_Operation is
    function Get_Has_Selection
       (Self : not null access Gtk_Print_Operation_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_get_has_selection");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -213,7 +213,7 @@ package body Gtk.Print_Operation is
    function Get_Support_Selection
       (Self : not null access Gtk_Print_Operation_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_get_support_selection");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -226,7 +226,7 @@ package body Gtk.Print_Operation is
    function Is_Finished
       (Self : not null access Gtk_Print_Operation_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_is_finished");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -259,7 +259,9 @@ package body Gtk.Print_Operation is
       (Self        : not null access Gtk_Print_Operation_Record;
        Allow_Async : Boolean)
    is
-      procedure Internal (Self : System.Address; Allow_Async : Integer);
+      procedure Internal
+         (Self        : System.Address;
+          Allow_Async : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_allow_async");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Allow_Async));
@@ -339,7 +341,7 @@ package body Gtk.Print_Operation is
       (Self  : not null access Gtk_Print_Operation_Record;
        Embed : Boolean)
    is
-      procedure Internal (Self : System.Address; Embed : Integer);
+      procedure Internal (Self : System.Address; Embed : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_embed_page_setup");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Embed));
@@ -371,7 +373,9 @@ package body Gtk.Print_Operation is
       (Self          : not null access Gtk_Print_Operation_Record;
        Has_Selection : Boolean)
    is
-      procedure Internal (Self : System.Address; Has_Selection : Integer);
+      procedure Internal
+         (Self          : System.Address;
+          Has_Selection : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_has_selection");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Has_Selection));
@@ -433,7 +437,9 @@ package body Gtk.Print_Operation is
       (Self          : not null access Gtk_Print_Operation_Record;
        Show_Progress : Boolean)
    is
-      procedure Internal (Self : System.Address; Show_Progress : Integer);
+      procedure Internal
+         (Self          : System.Address;
+          Show_Progress : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_show_progress");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Show_Progress));
@@ -449,7 +455,7 @@ package body Gtk.Print_Operation is
    is
       procedure Internal
          (Self              : System.Address;
-          Support_Selection : Integer);
+          Support_Selection : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_support_selection");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Support_Selection));
@@ -463,7 +469,9 @@ package body Gtk.Print_Operation is
       (Self         : not null access Gtk_Print_Operation_Record;
        Track_Status : Boolean)
    is
-      procedure Internal (Self : System.Address; Track_Status : Integer);
+      procedure Internal
+         (Self         : System.Address;
+          Track_Status : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_track_print_status");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Track_Status));
@@ -491,7 +499,7 @@ package body Gtk.Print_Operation is
       (Self      : not null access Gtk_Print_Operation_Record;
        Full_Page : Boolean)
    is
-      procedure Internal (Self : System.Address; Full_Page : Integer);
+      procedure Internal (Self : System.Address; Full_Page : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_operation_set_use_full_page");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Full_Page));
@@ -520,7 +528,7 @@ package body Gtk.Print_Operation is
    is
       function Internal
          (Preview : System.Address;
-          Page_Nr : Gint) return Integer;
+          Page_Nr : Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
    begin
       return Internal (Get_Object (Preview), Page_Nr) /= 0;

@@ -111,7 +111,7 @@ package body Gtk.Icon_Source is
    ------------------------------
 
    function Get_Direction_Wildcarded (Self : Gtk_Icon_Source) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_source_get_direction_wildcarded");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -170,7 +170,7 @@ package body Gtk.Icon_Source is
    -------------------------
 
    function Get_Size_Wildcarded (Self : Gtk_Icon_Source) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_source_get_size_wildcarded");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -195,7 +195,7 @@ package body Gtk.Icon_Source is
    --------------------------
 
    function Get_State_Wildcarded (Self : Gtk_Icon_Source) return Boolean is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_source_get_state_wildcarded");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -225,7 +225,7 @@ package body Gtk.Icon_Source is
       (Self    : Gtk_Icon_Source;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Self : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_source_set_direction_wildcarded");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Setting));
@@ -304,7 +304,7 @@ package body Gtk.Icon_Source is
    -------------------------
 
    procedure Set_Size_Wildcarded (Self : Gtk_Icon_Source; Setting : Boolean) is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Self : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_source_set_size_wildcarded");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Setting));
@@ -334,7 +334,7 @@ package body Gtk.Icon_Source is
       (Self    : Gtk_Icon_Source;
        Setting : Boolean)
    is
-      procedure Internal (Self : System.Address; Setting : Integer);
+      procedure Internal (Self : System.Address; Setting : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_icon_source_set_state_wildcarded");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Setting));

@@ -64,7 +64,7 @@ package body Gtk.File_Filter is
 
    function Internal_Gtk_File_Filter_Func
       (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
-       Data        : System.Address) return Integer;
+       Data        : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_File_Filter_Func);
    --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
    --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
@@ -76,7 +76,7 @@ package body Gtk.File_Filter is
 
    function Internal_Gtk_File_Filter_Func
       (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
-       Data        : System.Address) return Integer
+       Data        : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_File_Filter_Func := To_Gtk_File_Filter_Func (Data);
    begin
@@ -154,7 +154,7 @@ package body Gtk.File_Filter is
 
       function Internal_Cb
          (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
-          Data        : System.Address) return Integer;
+          Data        : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
       --  Gtk.File_Filter.Add_Custom.
@@ -187,7 +187,7 @@ package body Gtk.File_Filter is
 
       function Internal_Cb
          (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
-          Data        : System.Address) return Integer
+          Data        : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -255,7 +255,7 @@ package body Gtk.File_Filter is
    is
       function Internal
          (Self        : System.Address;
-          Filter_Info : Gtk_File_Filter_Info) return Integer;
+          Filter_Info : Gtk_File_Filter_Info) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_file_filter_filter");
    begin
       return Internal (Get_Object (Self), Filter_Info) /= 0;

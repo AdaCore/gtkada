@@ -96,11 +96,11 @@ package body Gtk.Style_Properties is
          (Self      : System.Address;
           Property  : Interfaces.C.Strings.chars_ptr;
           State     : Gtk.Enums.Gtk_State_Flags;
-          Acc_Value : access Glib.Values.GValue) return Integer;
+          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_properties_get_property");
       Acc_Value    : aliased Glib.Values.GValue;
       Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
-      Tmp_Return   : Integer;
+      Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Property, State, Acc_Value'Access);
       Free (Tmp_Property);
@@ -160,7 +160,7 @@ package body Gtk.Style_Properties is
       procedure Internal
          (Self           : System.Address;
           Props_To_Merge : System.Address;
-          Replace        : Integer);
+          Replace        : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_style_properties_merge");
    begin
       Internal (Get_Object (Self), Get_Object (Props_To_Merge), Boolean'Pos (Replace));
@@ -225,11 +225,11 @@ package body Gtk.Style_Properties is
           Path      : Gtk.Widget.Gtk_Widget_Path;
           State     : Gtk.Enums.Gtk_State_Flags;
           Acc_Pspec : access Glib.Param_Spec;
-          Acc_Value : access Glib.Values.GValue) return Integer;
+          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_provider_get_style_property");
       Acc_Pspec  : aliased Glib.Param_Spec := Pspec;
       Acc_Value  : aliased Glib.Values.GValue;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Path, State, Acc_Pspec'Access, Acc_Value'Access);
       Pspec := Acc_Pspec;

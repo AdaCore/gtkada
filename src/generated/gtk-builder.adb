@@ -526,12 +526,12 @@ package body Gtk.Builder is
          (Builder   : System.Address;
           Acc_Pspec : access Glib.Param_Spec;
           String    : Interfaces.C.Strings.chars_ptr;
-          Acc_Value : access Glib.Values.GValue) return Integer;
+          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string");
       Acc_Pspec  : aliased Glib.Param_Spec := Pspec;
       Acc_Value  : aliased Glib.Values.GValue;
       Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Acc_Pspec'Access, Tmp_String, Acc_Value'Access);
       Free (Tmp_String);
@@ -554,11 +554,11 @@ package body Gtk.Builder is
          (Builder   : System.Address;
           The_Type  : GType;
           String    : Interfaces.C.Strings.chars_ptr;
-          Acc_Value : access Glib.Values.GValue) return Integer;
+          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string_type");
       Acc_Value  : aliased Glib.Values.GValue;
       Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Builder), The_Type, Tmp_String, Acc_Value'Access);
       Free (Tmp_String);

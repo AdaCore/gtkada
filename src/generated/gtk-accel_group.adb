@@ -60,7 +60,7 @@ package body Gtk.Accel_Group is
    function Internal_Gtk_Accel_Group_Find_Func
       (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
        Closure : System.Address;
-       Data    : System.Address) return Integer;
+       Data    : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Accel_Group_Find_Func);
 
    ----------------------------------------
@@ -70,7 +70,7 @@ package body Gtk.Accel_Group is
    function Internal_Gtk_Accel_Group_Find_Func
       (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
        Closure : System.Address;
-       Data    : System.Address) return Integer
+       Data    : System.Address) return Glib.Gboolean
    is
       Func : constant Gtk_Accel_Group_Find_Func := To_Gtk_Accel_Group_Find_Func (Data);
    begin
@@ -133,7 +133,7 @@ package body Gtk.Accel_Group is
           Accel_Quark   : Glib.GQuark;
           Acceleratable : System.Address;
           Accel_Key     : Guint;
-          Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Integer;
+          Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_group_activate");
    begin
       return Internal (Get_Object (Accel_Group), Accel_Quark, Get_Object (Acceleratable), Accel_Key, Accel_Mods) /= 0;
@@ -191,7 +191,7 @@ package body Gtk.Accel_Group is
    is
       function Internal
          (Accel_Group : System.Address;
-          Closure     : C_Gtk_Accel_Group_Activate) return Integer;
+          Closure     : C_Gtk_Accel_Group_Activate) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_group_disconnect");
    begin
       return Internal (Get_Object (Accel_Group), Closure) /= 0;
@@ -209,7 +209,7 @@ package body Gtk.Accel_Group is
       function Internal
          (Accel_Group : System.Address;
           Accel_Key   : Guint;
-          Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Integer;
+          Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_group_disconnect_key");
    begin
       return Internal (Get_Object (Accel_Group), Accel_Key, Accel_Mods) /= 0;
@@ -245,7 +245,7 @@ package body Gtk.Accel_Group is
       function Internal_Cb
          (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
-          Data    : System.Address) return Integer;
+          Data    : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
       --  Since: gtk+ 2.2
 
@@ -273,7 +273,7 @@ package body Gtk.Accel_Group is
       function Internal_Cb
          (Key     : access Gtk.Accel_Group.Gtk_Accel_Key;
           Closure : System.Address;
-          Data    : System.Address) return Integer
+          Data    : System.Address) return Glib.Gboolean
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -289,7 +289,7 @@ package body Gtk.Accel_Group is
    function Get_Is_Locked
       (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean
    is
-      function Internal (Accel_Group : System.Address) return Integer;
+      function Internal (Accel_Group : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_group_get_is_locked");
    begin
       return Internal (Get_Object (Accel_Group)) /= 0;
@@ -344,7 +344,7 @@ package body Gtk.Accel_Group is
       function Internal
          (Object     : System.Address;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
-          Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Integer;
+          Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_groups_activate");
    begin
       return Internal (Get_Object (Object), Accel_Key, Accel_Mods) /= 0;
@@ -414,7 +414,7 @@ package body Gtk.Accel_Group is
    is
       function Internal
          (Keyval    : Gdk.Types.Gdk_Key_Type;
-          Modifiers : Gdk.Types.Gdk_Modifier_Type) return Integer;
+          Modifiers : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accelerator_valid");
    begin
       return Internal (Keyval, Modifiers) /= 0;

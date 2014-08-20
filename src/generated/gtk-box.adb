@@ -144,7 +144,7 @@ package body Gtk.Box is
        Spacing     : Gint := 0)
    is
       function Internal
-         (Homogeneous : Integer;
+         (Homogeneous : Glib.Gboolean;
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
    begin
@@ -163,7 +163,7 @@ package body Gtk.Box is
        Spacing     : Gint := 0)
    is
       function Internal
-         (Homogeneous : Integer;
+         (Homogeneous : Glib.Gboolean;
           Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_vbox_new");
    begin
@@ -196,7 +196,7 @@ package body Gtk.Box is
    function Get_Homogeneous
       (Box : not null access Gtk_Box_Record) return Boolean
    is
-      function Internal (Box : System.Address) return Integer;
+      function Internal (Box : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_box_get_homogeneous");
    begin
       return Internal (Get_Object (Box)) /= 0;
@@ -227,8 +227,8 @@ package body Gtk.Box is
       procedure Internal
          (In_Box  : System.Address;
           Child   : System.Address;
-          Expand  : Integer;
-          Fill    : Integer;
+          Expand  : Glib.Gboolean;
+          Fill    : Glib.Gboolean;
           Padding : Guint);
       pragma Import (C, Internal, "gtk_box_pack_end");
    begin
@@ -249,8 +249,8 @@ package body Gtk.Box is
       procedure Internal
          (In_Box  : System.Address;
           Child   : System.Address;
-          Expand  : Integer;
-          Fill    : Integer;
+          Expand  : Glib.Gboolean;
+          Fill    : Glib.Gboolean;
           Padding : Guint);
       pragma Import (C, Internal, "gtk_box_pack_start");
    begin
@@ -272,13 +272,13 @@ package body Gtk.Box is
       procedure Internal
          (Box       : System.Address;
           Child     : System.Address;
-          Expand    : out Integer;
-          Fill      : out Integer;
+          Expand    : out Glib.Gboolean;
+          Fill      : out Glib.Gboolean;
           Padding   : out Guint;
           Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_box_query_child_packing");
-      Tmp_Expand : aliased Integer;
-      Tmp_Fill   : aliased Integer;
+      Tmp_Expand : aliased Glib.Gboolean;
+      Tmp_Fill   : aliased Glib.Gboolean;
    begin
       Internal (Get_Object (Box), Get_Object (Child), Tmp_Expand, Tmp_Fill, Padding, Pack_Type);
       Fill := Tmp_Fill /= 0;
@@ -318,8 +318,8 @@ package body Gtk.Box is
       procedure Internal
          (Box       : System.Address;
           Child     : System.Address;
-          Expand    : Integer;
-          Fill      : Integer;
+          Expand    : Glib.Gboolean;
+          Fill      : Glib.Gboolean;
           Padding   : Guint;
           Pack_Type : Gtk.Enums.Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_box_set_child_packing");
@@ -335,7 +335,7 @@ package body Gtk.Box is
       (Box         : not null access Gtk_Box_Record;
        Homogeneous : Boolean)
    is
-      procedure Internal (Box : System.Address; Homogeneous : Integer);
+      procedure Internal (Box : System.Address; Homogeneous : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_box_set_homogeneous");
    begin
       Internal (Get_Object (Box), Boolean'Pos (Homogeneous));

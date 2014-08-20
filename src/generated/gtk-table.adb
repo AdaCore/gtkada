@@ -74,7 +74,7 @@ package body Gtk.Table is
       function Internal
          (Rows        : Guint;
           Columns     : Guint;
-          Homogeneous : Integer) return System.Address;
+          Homogeneous : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_table_new");
    begin
       if not Table.Is_Created then
@@ -187,7 +187,7 @@ package body Gtk.Table is
    function Get_Homogeneous
       (Table : not null access Gtk_Table_Record) return Boolean
    is
-      function Internal (Table : System.Address) return Integer;
+      function Internal (Table : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_table_get_homogeneous");
    begin
       return Internal (Get_Object (Table)) /= 0;
@@ -283,7 +283,9 @@ package body Gtk.Table is
       (Table       : not null access Gtk_Table_Record;
        Homogeneous : Boolean)
    is
-      procedure Internal (Table : System.Address; Homogeneous : Integer);
+      procedure Internal
+         (Table       : System.Address;
+          Homogeneous : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_table_set_homogeneous");
    begin
       Internal (Get_Object (Table), Boolean'Pos (Homogeneous));

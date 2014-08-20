@@ -142,6 +142,71 @@ package Gtk.Print_Operation_Preview is
    function "+" (W : Gtk_Print_Operation_Preview) return Gtk_Print_Operation_Preview;
    pragma Inline ("+");
 
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_End_Preview is access procedure (Preview : Gtk_Print_Operation_Preview);
+   pragma Convention (C, Virtual_End_Preview);
+   --  Ends a preview.
+   --  This function must be called to finish a custom print preview.
+   --  Since: gtk+ 2.10
+
+   type Virtual_Got_Page_Size is access procedure
+     (Preview    : Gtk_Print_Operation_Preview;
+      Context    : System.Address;
+      Page_Setup : System.Address);
+   pragma Convention (C, Virtual_Got_Page_Size);
+
+   type Virtual_Is_Selected is access function
+     (Preview : Gtk_Print_Operation_Preview;
+      Page_Nr : Gint) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Is_Selected);
+   --  Returns whether the given page is included in the set of pages that
+   --  have been selected for printing.
+   --  Since: gtk+ 2.10
+   --  "page_nr": a page number
+
+   type Virtual_Ready is access procedure
+     (Preview : Gtk_Print_Operation_Preview;
+      Context : System.Address);
+   pragma Convention (C, Virtual_Ready);
+
+   type Virtual_Render_Page is access procedure (Preview : Gtk_Print_Operation_Preview; Page_Nr : Gint);
+   pragma Convention (C, Virtual_Render_Page);
+   --  Renders a page to the preview, using the print context that was passed
+   --  to the Gtk.Print_Operation.Gtk_Print_Operation::preview handler together
+   --  with Preview.
+   --  A custom iprint preview should use this function in its ::expose
+   --  handler to render the currently selected page.
+   --  Note that this function requires a suitable cairo context to be
+   --  associated with the print context.
+   --  Since: gtk+ 2.10
+   --  "page_nr": the page to render
+
+   subtype Print_Operation_Preview_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_End_Preview
+     (Self    : Print_Operation_Preview_Interface_Descr;
+      Handler : Virtual_End_Preview);
+   pragma Import (C, Set_End_Preview, "gtkada_Print_Operation_Preview_set_end_preview");
+   procedure Set_Got_Page_Size
+     (Self    : Print_Operation_Preview_Interface_Descr;
+      Handler : Virtual_Got_Page_Size);
+   pragma Import (C, Set_Got_Page_Size, "gtkada_Print_Operation_Preview_set_got_page_size");
+   procedure Set_Is_Selected
+     (Self    : Print_Operation_Preview_Interface_Descr;
+      Handler : Virtual_Is_Selected);
+   pragma Import (C, Set_Is_Selected, "gtkada_Print_Operation_Preview_set_is_selected");
+   procedure Set_Ready
+     (Self    : Print_Operation_Preview_Interface_Descr;
+      Handler : Virtual_Ready);
+   pragma Import (C, Set_Ready, "gtkada_Print_Operation_Preview_set_ready");
+   procedure Set_Render_Page
+     (Self    : Print_Operation_Preview_Interface_Descr;
+      Handler : Virtual_Render_Page);
+   pragma Import (C, Set_Render_Page, "gtkada_Print_Operation_Preview_set_render_page");
+   --  See Glib.Object.Add_Interface
+
 private
 
 Null_Gtk_Print_Operation_Preview : constant Gtk_Print_Operation_Preview :=

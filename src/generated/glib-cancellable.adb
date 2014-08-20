@@ -220,7 +220,7 @@ package body Glib.Cancellable is
    function Is_Cancelled
       (Self : not null access Gcancellable_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_cancellable_is_cancelled");
    begin
       return Internal (Get_Object (Self)) /= 0;
@@ -277,7 +277,7 @@ package body Glib.Cancellable is
    function Set_Error_If_Cancelled
       (Self : not null access Gcancellable_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_cancellable_set_error_if_cancelled");
    begin
       return Internal (Get_Object (Self)) /= 0;

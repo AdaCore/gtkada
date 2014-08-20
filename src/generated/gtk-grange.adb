@@ -70,7 +70,7 @@ package body Gtk.GRange is
    function Get_Flippable
       (The_Range : not null access Gtk_Range_Record) return Boolean
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal (The_Range : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_range_get_flippable");
    begin
       return Internal (Get_Object (The_Range)) /= 0;
@@ -83,7 +83,7 @@ package body Gtk.GRange is
    function Get_Inverted
       (The_Range : not null access Gtk_Range_Record) return Boolean
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal (The_Range : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_range_get_inverted");
    begin
       return Internal (Get_Object (The_Range)) /= 0;
@@ -140,7 +140,7 @@ package body Gtk.GRange is
    function Get_Restrict_To_Fill_Level
       (The_Range : not null access Gtk_Range_Record) return Boolean
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal (The_Range : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_range_get_restrict_to_fill_level");
    begin
       return Internal (Get_Object (The_Range)) /= 0;
@@ -166,7 +166,7 @@ package body Gtk.GRange is
    function Get_Show_Fill_Level
       (The_Range : not null access Gtk_Range_Record) return Boolean
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal (The_Range : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_range_get_show_fill_level");
    begin
       return Internal (Get_Object (The_Range)) /= 0;
@@ -197,7 +197,7 @@ package body Gtk.GRange is
    function Get_Slider_Size_Fixed
       (The_Range : not null access Gtk_Range_Record) return Boolean
    is
-      function Internal (The_Range : System.Address) return Integer;
+      function Internal (The_Range : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_range_get_slider_size_fixed");
    begin
       return Internal (Get_Object (The_Range)) /= 0;
@@ -269,7 +269,9 @@ package body Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record;
        Flippable : Boolean)
    is
-      procedure Internal (The_Range : System.Address; Flippable : Integer);
+      procedure Internal
+         (The_Range : System.Address;
+          Flippable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_range_set_flippable");
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Flippable));
@@ -301,7 +303,9 @@ package body Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record;
        Setting   : Boolean)
    is
-      procedure Internal (The_Range : System.Address; Setting : Integer);
+      procedure Internal
+         (The_Range : System.Address;
+          Setting   : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_range_set_inverted");
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Setting));
@@ -365,7 +369,7 @@ package body Gtk.GRange is
    is
       procedure Internal
          (The_Range              : System.Address;
-          Restrict_To_Fill_Level : Integer);
+          Restrict_To_Fill_Level : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_range_set_restrict_to_fill_level");
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Restrict_To_Fill_Level));
@@ -395,7 +399,7 @@ package body Gtk.GRange is
    is
       procedure Internal
          (The_Range       : System.Address;
-          Show_Fill_Level : Integer);
+          Show_Fill_Level : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_range_set_show_fill_level");
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Show_Fill_Level));
@@ -409,7 +413,9 @@ package body Gtk.GRange is
       (The_Range  : not null access Gtk_Range_Record;
        Size_Fixed : Boolean)
    is
-      procedure Internal (The_Range : System.Address; Size_Fixed : Integer);
+      procedure Internal
+         (The_Range  : System.Address;
+          Size_Fixed : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_range_set_slider_size_fixed");
    begin
       Internal (Get_Object (The_Range), Boolean'Pos (Size_Fixed));

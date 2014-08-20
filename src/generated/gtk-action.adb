@@ -249,7 +249,7 @@ package body Gtk.Action is
    function Get_Always_Show_Image
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_get_always_show_image");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -289,7 +289,7 @@ package body Gtk.Action is
    function Get_Is_Important
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_get_is_important");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -346,7 +346,7 @@ package body Gtk.Action is
    function Get_Sensitive
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_get_sensitive");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -401,7 +401,7 @@ package body Gtk.Action is
    function Get_Visible
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_get_visible");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -414,7 +414,7 @@ package body Gtk.Action is
    function Get_Visible_Horizontal
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_get_visible_horizontal");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -427,7 +427,7 @@ package body Gtk.Action is
    function Get_Visible_Vertical
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_get_visible_vertical");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -440,7 +440,7 @@ package body Gtk.Action is
    function Is_Sensitive
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_is_sensitive");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -453,7 +453,7 @@ package body Gtk.Action is
    function Is_Visible
       (Action : not null access Gtk_Action_Record) return Boolean
    is
-      function Internal (Action : System.Address) return Integer;
+      function Internal (Action : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_action_is_visible");
    begin
       return Internal (Get_Object (Action)) /= 0;
@@ -501,7 +501,9 @@ package body Gtk.Action is
       (Action      : not null access Gtk_Action_Record;
        Always_Show : Boolean)
    is
-      procedure Internal (Action : System.Address; Always_Show : Integer);
+      procedure Internal
+         (Action      : System.Address;
+          Always_Show : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_set_always_show_image");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Always_Show));
@@ -549,7 +551,9 @@ package body Gtk.Action is
       (Action       : not null access Gtk_Action_Record;
        Is_Important : Boolean)
    is
-      procedure Internal (Action : System.Address; Is_Important : Integer);
+      procedure Internal
+         (Action       : System.Address;
+          Is_Important : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_set_is_important");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Is_Important));
@@ -581,7 +585,9 @@ package body Gtk.Action is
       (Action    : not null access Gtk_Action_Record;
        Sensitive : Boolean)
    is
-      procedure Internal (Action : System.Address; Sensitive : Integer);
+      procedure Internal
+         (Action    : System.Address;
+          Sensitive : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_set_sensitive");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Sensitive));
@@ -649,7 +655,7 @@ package body Gtk.Action is
       (Action  : not null access Gtk_Action_Record;
        Visible : Boolean)
    is
-      procedure Internal (Action : System.Address; Visible : Integer);
+      procedure Internal (Action : System.Address; Visible : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_set_visible");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Visible));
@@ -665,7 +671,7 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action             : System.Address;
-          Visible_Horizontal : Integer);
+          Visible_Horizontal : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_set_visible_horizontal");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Visible_Horizontal));
@@ -681,7 +687,7 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action           : System.Address;
-          Visible_Vertical : Integer);
+          Visible_Vertical : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_action_set_visible_vertical");
    begin
       Internal (Get_Object (Action), Boolean'Pos (Visible_Vertical));

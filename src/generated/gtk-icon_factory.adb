@@ -159,11 +159,11 @@ package body Gtk.Icon_Factory is
       function Internal
          (Size       : Gtk.Enums.Gtk_Icon_Size;
           Acc_Width  : access Gint;
-          Acc_Height : access Gint) return Integer;
+          Acc_Height : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_size_lookup");
       Acc_Width  : aliased Gint;
       Acc_Height : aliased Gint;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Size, Acc_Width'Access, Acc_Height'Access);
       Width := Acc_Width;
@@ -186,11 +186,11 @@ package body Gtk.Icon_Factory is
          (Settings   : System.Address;
           Size       : Gtk.Enums.Gtk_Icon_Size;
           Acc_Width  : access Gint;
-          Acc_Height : access Gint) return Integer;
+          Acc_Height : access Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_size_lookup_for_settings");
       Acc_Width  : aliased Gint;
       Acc_Height : aliased Gint;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Settings), Size, Acc_Width'Access, Acc_Height'Access);
       Width := Acc_Width;

@@ -214,7 +214,7 @@ package body Gtk.Info_Bar is
       procedure Internal
          (Self        : System.Address;
           Response_Id : Gint;
-          Setting     : Integer);
+          Setting     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_info_bar_set_response_sensitive");
    begin
       Internal (Get_Object (Self), Response_Id, Boolean'Pos (Setting));

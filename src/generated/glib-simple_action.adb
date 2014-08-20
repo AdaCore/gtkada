@@ -152,7 +152,7 @@ package body Glib.Simple_Action is
       (Self    : not null access Gsimple_Action_Record;
        Enabled : Boolean)
    is
-      procedure Internal (Self : System.Address; Enabled : Integer);
+      procedure Internal (Self : System.Address; Enabled : Glib.Gboolean);
       pragma Import (C, Internal, "g_simple_action_set_enabled");
    begin
       Internal (Get_Object (Self), Boolean'Pos (Enabled));
@@ -207,7 +207,7 @@ package body Glib.Simple_Action is
    function Get_Enabled
       (Self : not null access Gsimple_Action_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_get_enabled");
    begin
       return Internal (Get_Object (Self)) /= 0;

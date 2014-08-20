@@ -1,0 +1,2 @@
+src/generated/*                           no-precommit-check
+src/misc_generated.c                      no-precommit-check

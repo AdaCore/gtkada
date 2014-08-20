@@ -114,7 +114,7 @@ package body Gtk.Hsv is
    function Is_Adjusting
       (Self : not null access Gtk_Hsv_Record) return Boolean
    is
-      function Internal (Self : System.Address) return Integer;
+      function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_hsv_is_adjusting");
    begin
       return Internal (Get_Object (Self)) /= 0;

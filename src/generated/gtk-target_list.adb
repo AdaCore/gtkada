@@ -107,7 +107,7 @@ package body Gtk.Target_List is
       procedure Internal
          (List     : System.Address;
           Info     : Guint;
-          Writable : Integer);
+          Writable : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_target_list_add_image_targets");
    begin
       Internal (Get_Object (List), Info, Boolean'Pos (Writable));
@@ -148,10 +148,10 @@ package body Gtk.Target_List is
       function Internal
          (List     : System.Address;
           Target   : Gdk.Types.Gdk_Atom;
-          Acc_Info : access Guint) return Integer;
+          Acc_Info : access Guint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_target_list_find");
       Acc_Info   : aliased Guint := Info;
-      Tmp_Return : Integer;
+      Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (List), Target, Acc_Info'Access);
       Info := Acc_Info;

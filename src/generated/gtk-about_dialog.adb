@@ -303,7 +303,7 @@ package body Gtk.About_Dialog is
    function Get_Wrap_License
       (About : not null access Gtk_About_Dialog_Record) return Boolean
    is
-      function Internal (About : System.Address) return Integer;
+      function Internal (About : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_about_dialog_get_wrap_license");
    begin
       return Internal (Get_Object (About)) /= 0;
@@ -598,7 +598,9 @@ package body Gtk.About_Dialog is
       (About        : not null access Gtk_About_Dialog_Record;
        Wrap_License : Boolean)
    is
-      procedure Internal (About : System.Address; Wrap_License : Integer);
+      procedure Internal
+         (About        : System.Address;
+          Wrap_License : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_about_dialog_set_wrap_license");
    begin
       Internal (Get_Object (About), Boolean'Pos (Wrap_License));

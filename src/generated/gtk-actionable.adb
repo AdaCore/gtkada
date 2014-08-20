@@ -23,10 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Bindings; use Gtkada.Bindings;
 
 package body Gtk.Actionable is
 

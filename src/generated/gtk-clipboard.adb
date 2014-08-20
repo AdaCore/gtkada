@@ -919,7 +919,7 @@ package body Gtk.Clipboard is
    function Wait_Is_Image_Available
       (Clipboard : not null access Gtk_Clipboard_Record) return Boolean
    is
-      function Internal (Clipboard : System.Address) return Integer;
+      function Internal (Clipboard : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_image_available");
    begin
       return Internal (Get_Object (Clipboard)) /= 0;
@@ -936,7 +936,7 @@ package body Gtk.Clipboard is
    is
       function Internal
          (Clipboard : System.Address;
-          Buffer    : System.Address) return Integer;
+          Buffer    : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_rich_text_available");
    begin
       return Internal (Get_Object (Clipboard), Get_Object (Buffer)) /= 0;
@@ -952,7 +952,7 @@ package body Gtk.Clipboard is
    is
       function Internal
          (Clipboard : System.Address;
-          Target    : Gdk.Types.Gdk_Atom) return Integer;
+          Target    : Gdk.Types.Gdk_Atom) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_target_available");
    begin
       return Internal (Get_Object (Clipboard), Target) /= 0;
@@ -965,7 +965,7 @@ package body Gtk.Clipboard is
    function Wait_Is_Text_Available
       (Clipboard : not null access Gtk_Clipboard_Record) return Boolean
    is
-      function Internal (Clipboard : System.Address) return Integer;
+      function Internal (Clipboard : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_text_available");
    begin
       return Internal (Get_Object (Clipboard)) /= 0;
@@ -978,7 +978,7 @@ package body Gtk.Clipboard is
    function Wait_Is_Uris_Available
       (Clipboard : not null access Gtk_Clipboard_Record) return Boolean
    is
-      function Internal (Clipboard : System.Address) return Integer;
+      function Internal (Clipboard : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_clipboard_wait_is_uris_available");
    begin
       return Internal (Get_Object (Clipboard)) /= 0;

@@ -165,6 +165,70 @@ package Gtk.Color_Chooser is
    function "+" (W : Gtk_Color_Chooser) return Gtk_Color_Chooser;
    pragma Inline ("+");
 
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Add_Palette is access procedure
+     (Self            : Gtk_Color_Chooser;
+      Orientation     : Gtk.Enums.Gtk_Orientation;
+      Colors_Per_Line : Gint;
+      N_Colors        : Gint;
+      Colors          : array_of_Gdk_RGBA);
+   pragma Convention (C, Virtual_Add_Palette);
+   --  Adds a palette to the color chooser. If Orientation is horizontal, the
+   --  colors are grouped in rows, with Colors_Per_Line colors in each row. If
+   --  Horizontal is False, the colors are grouped in columns instead.
+   --  The default color palette of
+   --  Gtk.Color_Chooser_Widget.Gtk_Color_Chooser_Widget has 27 colors,
+   --  organized in columns of 3 colors. The default gray palette has 9 grays
+   --  in a single row.
+   --  The layout of the color chooser widget works best when the palettes
+   --  have 9-10 columns.
+   --  Calling this function for the first time has the side effect of
+   --  removing the default color and gray palettes from the color chooser.
+   --  If Colors is null, removes all previously added palettes.
+   --  Since: gtk+ 3.4
+   --  "orientation": Gtk.Enums.Orientation_Horizontal if the palette should
+   --  be displayed in rows, Gtk.Enums.Orientation_Vertical for columns
+   --  "colors_per_line": the number of colors to show in each row/column
+   --  "n_colors": the total number of elements in Colors
+   --  "colors": the colors of the palette, or null
+
+   type Virtual_Color_Activated is access procedure (Self : Gtk_Color_Chooser; Color : Gdk.RGBA.Gdk_RGBA);
+   pragma Convention (C, Virtual_Color_Activated);
+
+   type Virtual_Get_Rgba is access procedure (Self : Gtk_Color_Chooser; Color : out Gdk.RGBA.Gdk_RGBA);
+   pragma Convention (C, Virtual_Get_Rgba);
+   --  Gets the currently-selected color.
+   --  Since: gtk+ 3.4
+   --  "color": a Gdk.RGBA.Gdk_RGBA to fill in with the current color
+
+   type Virtual_Set_Rgba is access procedure (Self : Gtk_Color_Chooser; Color : Gdk.RGBA.Gdk_RGBA);
+   pragma Convention (C, Virtual_Set_Rgba);
+   --  Sets the color.
+   --  Since: gtk+ 3.4
+   --  "color": the new color
+
+   subtype Color_Chooser_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Add_Palette
+     (Self    : Color_Chooser_Interface_Descr;
+      Handler : Virtual_Add_Palette);
+   pragma Import (C, Set_Add_Palette, "gtkada_Color_Chooser_set_add_palette");
+   procedure Set_Color_Activated
+     (Self    : Color_Chooser_Interface_Descr;
+      Handler : Virtual_Color_Activated);
+   pragma Import (C, Set_Color_Activated, "gtkada_Color_Chooser_set_color_activated");
+   procedure Set_Get_Rgba
+     (Self    : Color_Chooser_Interface_Descr;
+      Handler : Virtual_Get_Rgba);
+   pragma Import (C, Set_Get_Rgba, "gtkada_Color_Chooser_set_get_rgba");
+   procedure Set_Set_Rgba
+     (Self    : Color_Chooser_Interface_Descr;
+      Handler : Virtual_Set_Rgba);
+   pragma Import (C, Set_Set_Rgba, "gtkada_Color_Chooser_set_set_rgba");
+   --  See Glib.Object.Add_Interface
+
 private
    Use_Alpha_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-alpha");
