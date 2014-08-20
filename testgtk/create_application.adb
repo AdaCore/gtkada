@@ -69,7 +69,6 @@ package body Create_Application is
       Builder : Gtk_Builder;
       Success : Guint;
       Error   : aliased GError;
-      pragma Unreferenced (Success);
    begin
       --  Startup is when the application should create its menu bar. For
       --  this, we load an xml file and then extra parts of its to get the
@@ -79,8 +78,12 @@ package body Create_Application is
 
       Builder := Gtk_Builder_New;
       Success := Builder.Add_From_File ("menus.ui", Error'Access);
-      App.Set_App_Menu (Gmenu_Model (Builder.Get_Object ("appmenu")));
-      App.Set_Menubar (Gmenu_Model (Builder.Get_Object ("menubar")));
+      if Success = 0 then
+         Put_Line ("Error parsing menus.ui: " & Get_Message (Error));
+      else
+         App.Set_App_Menu (Gmenu_Model (Builder.Get_Object ("appmenu")));
+         App.Set_Menubar (Gmenu_Model (Builder.Get_Object ("menubar")));
+      end if;
       Builder.Unref;  --  no longer needed
    end Startup;
 
