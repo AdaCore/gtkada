@@ -157,7 +157,7 @@ package body Gtkada.Bindings is
    function To_Gint_Array_Zero_Terminated
      (Arr : Gint_Arrays.Unbounded_Array_Access) return Glib.Gint_Array
    is
-      Count : Natural := 0;
+      Count : Natural := Arr'First;
    begin
       while Arr (Count) /= 0 loop
          Count := Count + 1;
@@ -167,7 +167,7 @@ package body Gtkada.Bindings is
          Result : Gint_Array (1 .. Count);
       begin
          for R in Result'Range loop
-            Result (R) := Arr (R - 1);
+            Result (R) := Arr (R - Result'First + Arr'First);
          end loop;
          return Result;
       end;
