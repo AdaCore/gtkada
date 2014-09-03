@@ -91,6 +91,17 @@ package body Gtkada.Canvas_View.Links is
    --  Compute the last point after applying all the relative coordinates
    --  from Wp
 
+   procedure Compute_Sides
+     (Link   : not null access Canvas_Link_Record'Class;
+      Anchor : Anchor_Attachment;
+      Info   : End_Info;
+      Margin : Margins;
+      P, P2  : out Item_Point);
+   --  Compute where a link should point to (for one of its ends).
+   --  (P, P2) is the first segment of an orthogonal link exiting from the
+   --  box. P2 is aligned on a grid of size B, at a distance Margin from P,
+   --  so that we can use Astar
+
    procedure Orthogonal_Waypoints
      (Link       : not null access Canvas_Link_Record'Class;
       Context    : Draw_Context;
@@ -543,6 +554,61 @@ package body Gtkada.Canvas_View.Links is
         (Link, Context, Min_Margin => 6.0, Max_Margin => 25.0);
    end Compute_Layout_For_Orthogonal_Link;
 
+   -------------------
+   -- Compute_Sides --
+   -------------------
+
+   procedure Compute_Sides
+     (Link   : not null access Canvas_Link_Record'Class;
+      Anchor : Anchor_Attachment;
+      Info   : End_Info;
+      Margin : Margins;
+      P, P2  : out Item_Point)
+   is
+      Effective_Side : Side_Attachment;
+   begin
+      case Anchor.Toplevel_Side is
+         when No_Clipping =>
+            P := Link.Model_To_Item (Info.P);
+            return;
+         when Top | Bottom | Right | Left =>
+            Effective_Side := Anchor.Toplevel_Side;
+         when Auto =>
+            if abs (Info.P.X - Info.Toplevel.X) < 0.001 then
+               Effective_Side := Left;
+            elsif abs (Info.P.Y - Info.Toplevel.Y) < 0.001 then
+               Effective_Side := Top;
+            elsif abs (Info.P.X - Info.Toplevel.X - Info.Toplevel.Width)
+              < 0.001
+            then
+               Effective_Side := Right;
+            else
+               Effective_Side := Bottom;
+            end if;
+      end case;
+
+      case Effective_Side is
+         when Top =>
+            P := (Info.Box.X + Info.Box.Width * abs (Anchor.X),
+                  Info.Toplevel.Y);
+            P2 := (P.X, P.Y - Margin.Top);
+         when Bottom =>
+            P := (Info.Box.X + Info.Box.Width * abs (Anchor.X),
+                  Info.Toplevel.Y + Info.Toplevel.Height);
+            P2 := (P.X, P.Y + Margin.Bottom);
+         when Right =>
+            P := (Info.Toplevel.X + Info.Toplevel.Width,
+                  Info.Box.Y + Info.Box.Height * abs (Anchor.Y));
+            P2 := (P.X + Margin.Right, P.Y);
+         when Left =>
+            P := (Info.Toplevel.X,
+                  Info.Box.Y + Info.Box.Height * abs (Anchor.Y));
+            P2 := (P.X - Margin.Left, P.Y);
+         when others =>
+            null;
+      end case;
+   end Compute_Sides;
+
    --------------------------
    -- Orthogonal_Waypoints --
    --------------------------
@@ -574,70 +640,6 @@ package body Gtkada.Canvas_View.Links is
       --  When computing the layout for orthogonal links, we add some borders
       --  around the items, through which the link might go. These borders are
       --  larger between the two items.
-
-      procedure Compute_Sides
-        (Anchor : Anchor_Attachment;
-         Info   : End_Info;
-         Margin : Margins;
-         P, P2  : out Item_Point);
-      --  Compute whether a link should start horizontal or vertical, and
-      --  which side it should start on.
-      --  (P, P2) is the first segment of an orthogonal link exiting from the
-      --  box. P2 is aligned on a grid of size B, so that we can use Astar
-
-      -------------------
-      -- Compute_Sides --
-      -------------------
-
-      procedure Compute_Sides
-        (Anchor : Anchor_Attachment;
-         Info   : End_Info;
-         Margin : Margins;
-         P, P2  : out Item_Point)
-      is
-         Effective_Side : Side_Attachment;
-      begin
-         case Anchor.Toplevel_Side is
-            when No_Clipping =>
-               P := Link.Model_To_Item (Info.P);
-               return;
-            when Top | Bottom | Right | Left =>
-               Effective_Side := Anchor.Toplevel_Side;
-            when Auto =>
-               if abs (Info.P.X - Info.Toplevel.X) < 0.001 then
-                  Effective_Side := Left;
-               elsif abs (Info.P.Y - Info.Toplevel.Y) < 0.001 then
-                  Effective_Side := Top;
-               elsif abs (Info.P.X - Info.Toplevel.X - Info.Toplevel.Width)
-                 < 0.001
-               then
-                  Effective_Side := Right;
-               else
-                  Effective_Side := Bottom;
-               end if;
-         end case;
-
-         case Effective_Side is
-            when Top =>
-               P := (Info.Box.X + Info.Box.Width * abs (Anchor.X),
-                     Info.Toplevel.Y);
-               P2 := (P.X, P.Y - Margin.Top);
-            when Bottom =>
-               P := (Info.Box.X + Info.Box.Width * abs (Anchor.X),
-                     Info.Toplevel.Y + Info.Toplevel.Height);
-               P2 := (P.X, P.Y + Margin.Bottom);
-            when Right =>
-               P := (Info.Toplevel.X + Info.Toplevel.Width,
-                     Info.Box.Y + Info.Box.Height * abs (Anchor.Y));
-               P2 := (P.X + Margin.Right, P.Y);
-            when Left =>
-               P := (Info.Toplevel.X,
-                     Info.Box.Y + Info.Box.Height * abs (Anchor.Y));
-               P2 := (P.X - Margin.Left, P.Y);
-            when others =>
-               null;
-         end case;
-      end Compute_Sides;
 
       ---------------------------
       -- Margins_Between_Items --
@@ -707,8 +709,10 @@ package body Gtkada.Canvas_View.Links is
    begin
       Margins_Between_Items
         (Dim.From.Toplevel, Dim.To.Toplevel, Margin_From, Margin_To);
-      Compute_Sides (Link.Anchor_From, Dim.From, Margin_From, From, P_From);
-      Compute_Sides (Link.Anchor_To, Dim.To, Margin_To, To, P_To);
+      Compute_Sides
+        (Link, Link.Anchor_From, Dim.From, Margin_From, From, P_From);
+      Compute_Sides
+        (Link, Link.Anchor_To, Dim.To, Margin_To, To, P_To);
 
       Unchecked_Free (Link.Points);
 
@@ -957,6 +961,10 @@ package body Gtkada.Canvas_View.Links is
         (From, To : Item_Point; Ctrl1, Ctrl2 : out Item_Point);
       --  Compute the control points on the curve from From to To
 
+      ------------
+      -- Get_Wp --
+      ------------
+
       function Get_Wp return Item_Point_Array is
       begin
          if Link.From = Link.To then
@@ -967,6 +975,10 @@ package body Gtkada.Canvas_View.Links is
             return No_Waypoints;
          end if;
       end Get_Wp;
+
+      --------------------
+      -- Control_Points --
+      --------------------
 
       procedure Control_Points
         (From, To : Item_Point; Ctrl1, Ctrl2 : out Item_Point)
@@ -990,7 +1002,7 @@ package body Gtkada.Canvas_View.Links is
 
       Waypoints : constant Item_Point_Array := Get_Wp;
       P1, P2, P3, P4 : Item_Point;
-      FP, TP : Item_Point;
+      FP, TP, Dummy : Item_Point;
       Radius : Gdouble;
    begin
       Unchecked_Free (Link.Points);
@@ -1007,23 +1019,23 @@ package body Gtkada.Canvas_View.Links is
                     Dim.From.Toplevel.Y)),
                Radius => Radius));
 
-      elsif Waypoints'Length = 0 then
-         FP := Link.Model_To_Item (Dim.From.P);
-         TP := Link.Model_To_Item (Dim.To.P);
-
-         Control_Points (FP, TP, P1, P2);
-         Link.Points := new Item_Point_Array'((FP, P1, P2, TP));
-
       else
-         FP := Link.Model_To_Item (Dim.From.P);
-         TP := Link.Model_To_Item (Dim.To.P);
+         Compute_Sides
+           (Link, Link.Anchor_From, Dim.From, No_Margins, FP, Dummy);
+         Compute_Sides
+           (Link, Link.Anchor_To, Dim.To, No_Margins, TP, Dummy);
 
-         Control_Points (FP, Waypoints (Waypoints'First), P1, P2);
-         Control_Points (Waypoints (Waypoints'Last), TP, P3, P4);
-         Link.Points := new Item_Point_Array'
-           (Item_Point_Array'(FP, P1, P2)
-            & Waypoints
-            & Item_Point_Array'(P3, P4, TP));
+         if Waypoints'Length = 0 then
+            Control_Points (FP, TP, P1, P2);
+            Link.Points := new Item_Point_Array'((FP, P1, P2, TP));
+         else
+            Control_Points (FP, Waypoints (Waypoints'First), P1, P2);
+            Control_Points (Waypoints (Waypoints'Last), TP, P3, P4);
+            Link.Points := new Item_Point_Array'
+              (Item_Point_Array'(FP, P1, P2)
+               & Waypoints
+               & Item_Point_Array'(P3, P4, TP));
+         end if;
       end if;
 
       Link.Bounding_Box := Compute_Bounding_Box
@@ -1134,7 +1146,28 @@ package body Gtkada.Canvas_View.Links is
          Fill := Link.Style.Get_Fill;
          Link.Style.Set_Fill (Null_Pattern);
          Link.Style.Finish_Path (Context.Cr);
-         Link.Style.Draw_Arrows_And_Symbols (Context.Cr, P.all);
+
+         case Link.Routing is
+            when Arc =>
+               if P'Length >= 4 then
+                  Link.Style.Draw_Arrows_And_Symbols
+                    (Context.Cr,
+                     (P (P'First),
+                      --  middle of the two control points (approximate)
+                      ((P (P'First + 1).X + P (P'First + 2).X) / 2.0,
+                       (P (P'First + 1).Y + P (P'First + 2).Y) / 2.0),
+
+                      ((P (P'Last - 1).X + P (P'Last - 2).X) / 2.0,
+                       (P (P'Last - 1).Y + P (P'Last - 2).Y) / 2.0),
+                      P (P'Last)));
+               else
+                  Link.Style.Draw_Arrows_And_Symbols (Context.Cr, P.all);
+               end if;
+
+            when others =>
+               Link.Style.Draw_Arrows_And_Symbols (Context.Cr, P.all);
+         end case;
+
          Link.Style.Set_Fill (Fill);
 
          if Selected
