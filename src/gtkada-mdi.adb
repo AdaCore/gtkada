@@ -4416,7 +4416,12 @@ package body Gtkada.MDI is
 
          Note.Set_Tab_Label (Child, Event);
          Note.Set_Tab_Detachable (Child, False);
-         Note.Set_Tab_Reorderable (Child, Note.Get_N_Pages > 1);
+
+         --  Disable reordering when we have two pages or less. Otherwise, we
+         --  hit a bug in gtk 3.8 where the display of the tabs is broken when
+         --  the reorder operation ends up being a drag of the view to another
+         --  notebook (N408-003)
+         Note.Set_Tab_Reorderable (Child, Note.Get_N_Pages > 2);
 
          Show_All (Event);
 
