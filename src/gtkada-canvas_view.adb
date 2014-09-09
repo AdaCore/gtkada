@@ -214,6 +214,11 @@ package body Gtkada.Canvas_View is
    procedure Cancel_Drag (Self : not null access Canvas_View_Record'Class);
    --  Cancel any drag currently in place.
 
+   procedure Force_Size
+      (Self : not null access Container_Item_Record'Class;
+       Forced_Width, Forced_Height : Gdouble := -1.0);
+   --  Force a specific size for the item if any of the dimensions is positive
+
    ----------------------
    -- Destroy_And_Free --
    ----------------------
@@ -3094,19 +3099,49 @@ package body Gtkada.Canvas_View is
       Canvas_Item_Record (Self.all).Set_Position (Pos);  --  inherited
    end Set_Position;
 
-   ------------------
-   -- Set_Min_Size --
-   ------------------
+   --------------------
+   -- Set_Size_Range --
+   --------------------
 
-   procedure Set_Min_Size
+   procedure Set_Size_Range
      (Self       : not null access Container_Item_Record;
       Min_Width  : Gdouble := 1.0;
-      Min_Height : Gdouble := 1.0)
+      Min_Height : Gdouble := 1.0;
+      Max_Width  : Gdouble := Gdouble'Last;
+      Max_Height : Gdouble := Gdouble'Last)
    is
    begin
       Self.Min_Width := Min_Width;
       Self.Min_Height := Min_Height;
-   end Set_Min_Size;
+      Self.Max_Width := Max_Width;
+      Self.Max_Height := Max_Height;
+   end Set_Size_Range;
+
+   ----------------
+   -- Force_Size --
+   ----------------
+
+   procedure Force_Size
+      (Self : not null access Container_Item_Record'Class;
+       Forced_Width, Forced_Height : Gdouble := -1.0)
+   is
+   begin
+      if Forced_Width >= 0.0 then
+         Self.Max_Width := -1.0;
+         Self.Min_Width := Forced_Width;
+      else
+         Self.Max_Width := Gdouble'Last;
+         Self.Min_Width := 1.0;
+      end if;
+
+      if Forced_Height >= 0.0 then
+         Self.Max_Height := -1.0;
+         Self.Min_Height := Forced_Height;
+      else
+         Self.Max_Height := Gdouble'Last;
+         Self.Min_Height := 1.0;
+      end if;
+   end Force_Size;
 
    ------------------
    -- Size_Request --
@@ -3191,17 +3226,19 @@ package body Gtkada.Canvas_View is
       --  Ignore the previous computation when a size is forced. It was
       --  still needed to make sure all children have a size.
 
-      if Self.Forced_Width > 0.0 then
-         Self.Width := Self.Forced_Width;
+      if Self.Max_Width < 0.0 then
+         Self.Width := Self.Min_Width;
+      else
+         Self.Width := Model_Coordinate'Max (Self.Width, Self.Min_Width);
+         Self.Width := Model_Coordinate'Min (Self.Width, Self.Max_Width);
       end if;
 
-      if Self.Forced_Height > 0.0 then
-         Self.Height := Self.Forced_Height;
+      if Self.Max_Height < 0.0 then
+         Self.Height := Self.Min_Height;
+      else
+         Self.Height := Model_Coordinate'Max (Self.Height, Self.Min_Height);
+         Self.Height := Model_Coordinate'Min (Self.Height, Self.Max_Height);
       end if;
-
-      --  Ensure a minimal size so that the object is visible.
-      Self.Width := Model_Coordinate'Max (Self.Width, Self.Min_Width);
-      Self.Height := Model_Coordinate'Max (Self.Height, Self.Min_Height);
    end Size_Request;
 
    -------------------
@@ -3233,7 +3270,8 @@ package body Gtkada.Canvas_View is
                   Child.Computed_Position.X := Child.Margin.Left;
                end if;
 
-               if not Child.Float and then Child.Forced_Width <= 0.0 then
+               --  No size constraint applied ?
+               if not Child.Float and then Child.Max_Width >= 0.0 then
                   Child.Width := Self.Width
                     - Child.Margin.Right
                     - Child.Computed_Position.X;
@@ -3279,7 +3317,8 @@ package body Gtkada.Canvas_View is
                   Child.Computed_Position.Y := Child.Margin.Top;
                end if;
 
-               if not Child.Float and then Child.Forced_Height <= 0.0 then
+               --  No size constraint ?
+               if not Child.Float and then Child.Max_Height >= 0.0 then
                   Child.Height := Self.Height
                     - Child.Margin.Bottom
                     - Child.Computed_Position.Y;
@@ -3381,8 +3420,7 @@ package body Gtkada.Canvas_View is
       Self.Style := Style;
       Self.Image := Gdk_Pixbuf (Image);
       Ref (Self.Image);
-      Self.Forced_Width := Width;
-      Self.Forced_Height := Height;
+      Force_Size (Self, Width, Height);
    end Initialize_Image;
 
    -------------
@@ -3491,9 +3529,8 @@ package body Gtkada.Canvas_View is
    is
    begin
       Self.Style         := Style;
-      Self.Forced_Width  := Width;
-      Self.Forced_Height := Height;
       Self.Radius        := Radius;
+      Force_Size (Self, Width, Height);
    end Initialize_Rect;
 
    -------------------------
@@ -3756,8 +3793,7 @@ package body Gtkada.Canvas_View is
    is
    begin
       Self.Style := Style;
-      Self.Forced_Width := Width;
-      Self.Forced_Height := Height;
+      Force_Size (Self, Width, Height);
    end Initialize_Ellipse;
 
    ----------
