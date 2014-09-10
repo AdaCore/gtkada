@@ -2513,6 +2513,27 @@ package body Gtkada.Canvas_View is
    end Lower_Item;
 
    ---------------
+   -- Set_Style --
+   ---------------
+
+   procedure Set_Style
+     (Self  : not null access Container_Item_Record;
+      Style : Drawing_Style) is
+   begin
+      Self.Style := Style;
+   end Set_Style;
+
+   ---------------
+   -- Get_Style --
+   ---------------
+
+   function Get_Style
+     (Self : not null access Container_Item_Record) return Drawing_Style is
+   begin
+      return Self.Style;
+   end Get_Style;
+
+   ---------------
    -- Get_Style --
    ---------------
 
@@ -2929,11 +2950,11 @@ package body Gtkada.Canvas_View is
       Self.Set_Visibility_Threshold (Threshold => Gdouble'Last);
    end Hide;
 
-   -------------
-   -- Destroy --
-   -------------
+   -----------
+   -- Clear --
+   -----------
 
-   overriding procedure Destroy
+   procedure Clear
      (Self     : not null access Container_Item_Record;
       In_Model : not null access Canvas_Model_Record'Class)
    is
@@ -2943,14 +2964,25 @@ package body Gtkada.Canvas_View is
       procedure Do_Child (C : not null access Container_Item_Record'Class);
       procedure Do_Child (C : not null access Container_Item_Record'Class) is
       begin
+         --  Remove the children and their links
          In_Model.Include_Related_Items (C, To_Remove);
       end Do_Child;
 
    begin
-      --  Remove all links to any of the children
       Container_Item_Record'Class (Self.all).For_Each_Child (Do_Child'Access);
       Self.Children.Clear;
       Remove (In_Model, To_Remove);
+   end Clear;
+
+   -------------
+   -- Destroy --
+   -------------
+
+   overriding procedure Destroy
+     (Self     : not null access Container_Item_Record;
+      In_Model : not null access Canvas_Model_Record'Class) is
+   begin
+      Self.Clear (In_Model);
       Canvas_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
 
@@ -2962,6 +2994,7 @@ package body Gtkada.Canvas_View is
      (Self     : not null access Container_Item_Record'Class;
       Child    : not null access Container_Item_Record'Class;
       Align    : Alignment_Style := Align_Start;
+      Pack_End : Boolean := False;
       Margin   : Margins := No_Margins;
       Float    : Boolean := False;
       Overflow : Overflow_Style := Overflow_Prevent)
@@ -2972,6 +3005,7 @@ package body Gtkada.Canvas_View is
       Child.Float    := Float;
       Child.Overflow := Overflow;
       Child.Align    := Align;
+      Child.Pack_End := Pack_End;
       Self.Children.Append (Abstract_Item (Child));
    end Add_Child;
 
@@ -3252,7 +3286,14 @@ package body Gtkada.Canvas_View is
       C     : Items_Lists.Cursor := Self.Children.First;
       Child : Container_Item;
       Tmp   : Model_Coordinate := 0.0;
+      Tmp_End : Model_Coordinate;
    begin
+      if Self.Layout = Vertical_Stack then
+         Tmp_End := Self.Height;
+      else
+         Tmp_End := Self.Width;
+      end if;
+
       while Has_Element (C) loop
          Child := Container_Item (Element (C));
 
@@ -3279,8 +3320,15 @@ package body Gtkada.Canvas_View is
 
                Child.Computed_Position.X :=
                  Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
-               Child.Computed_Position.Y :=
-                 Child.Computed_Position.Y - (Child.Height * Child.Anchor_Y);
+
+               if Child.Pack_End then
+                  Child.Computed_Position.Y :=
+                    Tmp_End - Child.Height - Child.Margin.Bottom;
+               else
+                  Child.Computed_Position.Y :=
+                    Child.Computed_Position.Y
+                      - (Child.Height * Child.Anchor_Y);
+               end if;
 
                case Child.Align is
                   when Align_Start =>
@@ -3300,8 +3348,12 @@ package body Gtkada.Canvas_View is
                Child.Size_Allocate;
 
                if not Child.Float then
-                  Tmp := Child.Computed_Position.Y
-                    + Child.Height + Child.Margin.Bottom;
+                  if Child.Pack_End then
+                     Tmp_End := Child.Computed_Position.Y;
+                  else
+                     Tmp := Child.Computed_Position.Y
+                       + Child.Height + Child.Margin.Bottom;
+                  end if;
                end if;
 
             when Horizontal_Stack =>
@@ -3324,8 +3376,14 @@ package body Gtkada.Canvas_View is
                     - Child.Computed_Position.Y;
                end if;
 
-               Child.Computed_Position.X :=
-                 Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
+               if Child.Pack_End then
+                  Child.Computed_Position.X :=
+                    Tmp_End - Child.Width - Child.Margin.Right;
+               else
+                  Child.Computed_Position.X :=
+                    Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
+               end if;
+
                Child.Computed_Position.Y :=
                  Child.Computed_Position.Y - (Child.Height * Child.Anchor_Y);
 
@@ -3347,8 +3405,12 @@ package body Gtkada.Canvas_View is
                Child.Size_Allocate;
 
                if not Child.Float then
-                  Tmp := Child.Computed_Position.X
-                    + Child.Width + Child.Margin.Right;
+                  if Child.Pack_End then
+                     Tmp_End := Child.Computed_Position.X;
+                  else
+                     Tmp := Child.Computed_Position.X
+                       + Child.Width + Child.Margin.Right;
+                  end if;
                end if;
          end case;
 

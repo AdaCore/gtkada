@@ -1297,7 +1297,7 @@ package Gtkada.Canvas_View is
    type Alignment_Style is (Align_Start, Align_Center, Align_End);
    --  How an item should be aligned within its parent.
    --  When the parent stacks its children vertically, alignment is taken into
-   --  account horizontally; and similarly when the parent orgranizes its
+   --  account horizontally; and similarly when the parent organizes its
    --  children horizontally, the alignment is vertical.
    --
    --  When an item does not request a specific size along the alignment axis,
@@ -1324,6 +1324,7 @@ package Gtkada.Canvas_View is
      (Self     : not null access Container_Item_Record'Class;
       Child    : not null access Container_Item_Record'Class;
       Align    : Alignment_Style := Align_Start;
+      Pack_End : Boolean := False;
       Margin   : Margins := No_Margins;
       Float    : Boolean := False;
       Overflow : Overflow_Style := Overflow_Prevent);
@@ -1332,12 +1333,22 @@ package Gtkada.Canvas_View is
    --  Self. If the position is not specified, it will be computed
    --  automatically based on the container's policy (either below the previous
    --  child, or to its right).
+   --
+   --  When Pack_End is True, the children are put in reverse order starting
+   --  from the end of Self: for a vertical layout, for instance, the first
+   --  pack_end child will appear at the bottom of Self.
+   --
    --  Margins are added to each size of the child.
    --
    --  A floating child does not participate in the stacking: it will still be
    --  displayed below or to the right of the previous child, but the next
    --  item will then be displayed at the same coordinate as the floating
    --  child.
+
+   procedure Clear
+      (Self     : not null access Container_Item_Record;
+       In_Model : not null access Canvas_Model_Record'Class);
+   --  Remove all children of Self
 
    procedure Set_Size_Range
      (Self       : not null access Container_Item_Record;
@@ -1379,6 +1390,14 @@ package Gtkada.Canvas_View is
      (Self    : not null access Container_Item_Record'Class;
       Context : Draw_Context);
    --  Display all the children of Self
+
+   procedure Set_Style
+     (Self  : not null access Container_Item_Record;
+      Style : Drawing_Style);
+   function Get_Style
+     (Self : not null access Container_Item_Record) return Drawing_Style;
+   --  Return the style used for the drawingo of this item.
+   --  When changing the style, you must force a refresh of the canvas.
 
    overriding procedure Refresh_Layout
      (Self    : not null access Container_Item_Record;
@@ -1843,6 +1862,7 @@ private
       --  Size constraints for the child. If Max_* if negative, then the child
       --  is constrained to have Min_* has a specific size.
 
+      Pack_End : Boolean := False;
       Layout   : Child_Layout_Strategy := Vertical_Stack;
       Align    : Alignment_Style := Align_Start;
       Float    : Boolean := False;
