@@ -496,20 +496,26 @@ package body Gtk.Icon_Theme is
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
        Size       : Gint;
-       Flags      : Gtk_Icon_Lookup_Flags) return Gdk.Pixbuf.Gdk_Pixbuf
+       Flags      : Gtk_Icon_Lookup_Flags;
+       Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
           Size       : Gint;
-          Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
+          Flags      : Gtk_Icon_Lookup_Flags;
+          Acc_Error  : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon");
+      Acc_Error       : aliased Glib.Error.GError;
       Tmp_Icon_Name   : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Flags);
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Flags, Acc_Error'Access);
       Free (Tmp_Icon_Name);
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Load_Icon;
 
@@ -537,21 +543,27 @@ package body Gtk.Icon_Theme is
        Icon_Name  : UTF8_String;
        Size       : Gint;
        Scale      : Gint;
-       Flags      : Gtk_Icon_Lookup_Flags) return Gdk.Pixbuf.Gdk_Pixbuf
+       Flags      : Gtk_Icon_Lookup_Flags;
+       Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
           Size       : Gint;
           Scale      : Gint;
-          Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
+          Flags      : Gtk_Icon_Lookup_Flags;
+          Acc_Error  : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon_for_scale");
+      Acc_Error       : aliased Glib.Error.GError;
       Tmp_Icon_Name   : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, Flags);
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, Flags, Acc_Error'Access);
       Free (Tmp_Icon_Name);
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Load_Icon_For_Scale;
 
@@ -565,7 +577,8 @@ package body Gtk.Icon_Theme is
        Size       : Gint;
        Scale      : Gint;
        For_Window : Gdk.Gdk_Window;
-       Flags      : Gtk_Icon_Lookup_Flags) return Cairo.Cairo_Surface
+       Flags      : Gtk_Icon_Lookup_Flags;
+       Error      : access Glib.Error.GError) return Cairo.Cairo_Surface
    is
       function Internal
          (Icon_Theme : System.Address;
@@ -573,13 +586,18 @@ package body Gtk.Icon_Theme is
           Size       : Gint;
           Scale      : Gint;
           For_Window : Gdk.Gdk_Window;
-          Flags      : Gtk_Icon_Lookup_Flags) return Cairo.Cairo_Surface;
+          Flags      : Gtk_Icon_Lookup_Flags;
+          Acc_Error  : access Glib.Error.GError) return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gtk_icon_theme_load_surface");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
       Tmp_Return    : Cairo.Cairo_Surface;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, For_Window, Flags);
+      Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, For_Window, Flags, Acc_Error'Access);
       Free (Tmp_Icon_Name);
+      if Error /= null then
+         Error.all := Acc_Error;
+      end if;
       return Tmp_Return;
    end Load_Surface;
 
@@ -609,7 +627,9 @@ package body Gtk.Icon_Theme is
        Success_Color : Gdk.RGBA.Gdk_RGBA;
        Warning_Color : Gdk.RGBA.Gdk_RGBA;
        Error_Color   : Gdk.RGBA.Gdk_RGBA;
-       Was_Symbolic  : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf
+       Was_Symbolic  : access Boolean;
+       Error         : access Glib.Error.GError)
+       return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Info        : System.Address;
@@ -617,17 +637,22 @@ package body Gtk.Icon_Theme is
           Success_Color    : System.Address;
           Warning_Color    : System.Address;
           Error_Color      : System.Address;
-          Acc_Was_Symbolic : access Glib.Gboolean) return System.Address;
+          Acc_Was_Symbolic : access Glib.Gboolean;
+          Acc_Error        : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_symbolic");
       Acc_Was_Symbolic     : aliased Boolean;
+      Acc_Error            : aliased Glib.Error.GError;
       Tmp_Acc_Was_Symbolic : aliased Glib.Gboolean;
       Stub_Gdk_Pixbuf      : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return           : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_Info), Fg, Gdk.RGBA.Gdk_RGBA_Or_Null (Success_Color'Address), Gdk.RGBA.Gdk_RGBA_Or_Null (Warning_Color'Address), Gdk.RGBA.Gdk_RGBA_Or_Null (Error_Color'Address), Tmp_Acc_Was_Symbolic'Access);
+      Tmp_Return := Internal (Get_Object (Icon_Info), Fg, Gdk.RGBA.Gdk_RGBA_Or_Null (Success_Color'Address), Gdk.RGBA.Gdk_RGBA_Or_Null (Warning_Color'Address), Gdk.RGBA.Gdk_RGBA_Or_Null (Error_Color'Address), Tmp_Acc_Was_Symbolic'Access, Acc_Error'Access);
       Acc_Was_Symbolic := Tmp_Acc_Was_Symbolic /= 0;
       if Was_Symbolic /= null then
          Was_Symbolic.all := Acc_Was_Symbolic;
+      end if;
+      if Error /= null then
+         Error.all := Acc_Error;
       end if;
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Load_Symbolic;
@@ -639,22 +664,28 @@ package body Gtk.Icon_Theme is
    function Load_Symbolic_For_Context
       (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Context      : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
-       Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf
+       Was_Symbolic : access Boolean;
+       Error        : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Info        : System.Address;
           Context          : System.Address;
-          Acc_Was_Symbolic : access Glib.Gboolean) return System.Address;
+          Acc_Was_Symbolic : access Glib.Gboolean;
+          Acc_Error        : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_symbolic_for_context");
       Acc_Was_Symbolic     : aliased Boolean;
+      Acc_Error            : aliased Glib.Error.GError;
       Tmp_Acc_Was_Symbolic : aliased Glib.Gboolean;
       Stub_Gdk_Pixbuf      : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return           : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_Info), Get_Object (Context), Tmp_Acc_Was_Symbolic'Access);
+      Tmp_Return := Internal (Get_Object (Icon_Info), Get_Object (Context), Tmp_Acc_Was_Symbolic'Access, Acc_Error'Access);
       Acc_Was_Symbolic := Tmp_Acc_Was_Symbolic /= 0;
       if Was_Symbolic /= null then
          Was_Symbolic.all := Acc_Was_Symbolic;
+      end if;
+      if Error /= null then
+         Error.all := Acc_Error;
       end if;
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Load_Symbolic_For_Context;
@@ -667,23 +698,29 @@ package body Gtk.Icon_Theme is
       (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Style        : not null access Gtk.Style.Gtk_Style_Record'Class;
        State        : Gtk.Enums.Gtk_State_Type;
-       Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf
+       Was_Symbolic : access Boolean;
+       Error        : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Info        : System.Address;
           Style            : System.Address;
           State            : Gtk.Enums.Gtk_State_Type;
-          Acc_Was_Symbolic : access Glib.Gboolean) return System.Address;
+          Acc_Was_Symbolic : access Glib.Gboolean;
+          Acc_Error        : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_info_load_symbolic_for_style");
       Acc_Was_Symbolic     : aliased Boolean;
+      Acc_Error            : aliased Glib.Error.GError;
       Tmp_Acc_Was_Symbolic : aliased Glib.Gboolean;
       Stub_Gdk_Pixbuf      : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return           : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Icon_Info), Get_Object (Style), State, Tmp_Acc_Was_Symbolic'Access);
+      Tmp_Return := Internal (Get_Object (Icon_Info), Get_Object (Style), State, Tmp_Acc_Was_Symbolic'Access, Acc_Error'Access);
       Acc_Was_Symbolic := Tmp_Acc_Was_Symbolic /= 0;
       if Was_Symbolic /= null then
          Was_Symbolic.all := Acc_Was_Symbolic;
+      end if;
+      if Error /= null then
+         Error.all := Acc_Error;
       end if;
       return Gdk.Pixbuf.Gdk_Pixbuf (Get_User_Data (Tmp_Return, Stub_Gdk_Pixbuf));
    end Load_Symbolic_For_Style;
