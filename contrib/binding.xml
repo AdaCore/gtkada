@@ -5359,29 +5359,28 @@ creating a tag.
      <extra>
        <spec>
    function Lookup_Icon_Set
-     (Style  : access Gtk.Style.Gtk_Style_Record'Class; Stock_Id : String)
+      (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       Stock_Id : String)
       return Gtk_Icon_Set;
    --  Retrieve an icon set by its name. The icon might exist in various sizes,
    --  that can be manipulated through the result set
        </spec>
        <body>
    function Lookup_Icon_Set
-     (Style    : access Gtk.Style.Gtk_Style_Record'Class;
-      Stock_Id : String)
+      (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       Stock_Id : String)
       return Gtk_Icon_Set
    is
       function Internal
         (Style    : System.Address;
          Stock_Id : String)
          return System.Address;
-      pragma Import (C, Internal, "gtk_style_lookup_icon_set");
-      --  External binding: gtk_style_lookup_icon_set
+      pragma Import (C, Internal, "gtk_style_context_lookup_icon_set");
    begin
       return From_Object (Internal (Get_Object (Style), Stock_Id &amp; ASCII.NUL));
    end Lookup_Icon_Set;
        </body>
      </extra>
-     <method id="gtk_style_context_lookup_icon_set" bind="False"/> <!--  in GtkIconSet-->
 
      <method id="gtk_icon_set_get_sizes" return="Gint_Array">
        <parameter name="n_sizes" ada=""/>
