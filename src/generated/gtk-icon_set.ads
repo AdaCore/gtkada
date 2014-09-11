@@ -227,7 +227,8 @@ package Gtk.Icon_Set is
    ----------------------
 
    function Lookup_Icon_Set
-     (Style  : access Gtk.Style.Gtk_Style_Record'Class; Stock_Id : String)
+     (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+      Stock_Id : String)
    return Gtk_Icon_Set;
    --  Retrieve an icon set by its name. The icon might exist in various sizes,
    --  that can be manipulated through the result set

@@ -46,7 +46,7 @@ package body Gtk.Icon_Set is
    end From_Object;
 
    function Lookup_Icon_Set
-     (Style    : access Gtk.Style.Gtk_Style_Record'Class;
+     (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
       Stock_Id : String)
    return Gtk_Icon_Set
    is
@@ -54,8 +54,7 @@ package body Gtk.Icon_Set is
         (Style    : System.Address;
          Stock_Id : String)
       return System.Address;
-      pragma Import (C, Internal, "gtk_style_lookup_icon_set");
-      --  External binding: gtk_style_lookup_icon_set
+      pragma Import (C, Internal, "gtk_style_context_lookup_icon_set");
    begin
       return From_Object (Internal (Get_Object (Style), Stock_Id & ASCII.NUL));
    end Lookup_Icon_Set;
