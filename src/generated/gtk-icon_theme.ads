@@ -98,6 +98,7 @@ with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Screen;              use Gdk.Screen;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
+with Glib.Error;              use Glib.Error;
 with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -275,7 +276,8 @@ package Gtk.Icon_Theme is
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
        Size       : Gint;
-       Flags      : Gtk_Icon_Lookup_Flags) return Gdk.Pixbuf.Gdk_Pixbuf;
+       Flags      : Gtk_Icon_Lookup_Flags;
+       Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Looks up an icon in an icon theme, scales it to the given size and
    --  renders it into a pixbuf. This is a convenience function; if more
    --  details about the icon are needed, use Gtk.Icon_Theme.Lookup_Icon
@@ -445,7 +447,9 @@ package Gtk.Icon_Theme is
        Success_Color : Gdk.RGBA.Gdk_RGBA;
        Warning_Color : Gdk.RGBA.Gdk_RGBA;
        Error_Color   : Gdk.RGBA.Gdk_RGBA;
-       Was_Symbolic  : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf;
+       Was_Symbolic  : access Boolean;
+       Error         : access Glib.Error.GError)
+       return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Loads an icon, modifying it to match the system colours for the
    --  foreground, success, warning and error colors provided. If the icon is
    --  not a symbolic one, the function will return the result from
@@ -474,7 +478,8 @@ package Gtk.Icon_Theme is
    function Load_Symbolic_For_Context
       (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Context      : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
-       Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf;
+       Was_Symbolic : access Boolean;
+       Error        : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Loads an icon, modifying it to match the system colors for the
    --  foreground, success, warning and error colors provided. If the icon is
    --  not a symbolic one, the function will return the result from
@@ -492,7 +497,8 @@ package Gtk.Icon_Theme is
       (Icon_Info    : not null access Gtk_Icon_Info_Record;
        Style        : not null access Gtk.Style.Gtk_Style_Record'Class;
        State        : Gtk.Enums.Gtk_State_Type;
-       Was_Symbolic : access Boolean) return Gdk.Pixbuf.Gdk_Pixbuf;
+       Was_Symbolic : access Boolean;
+       Error        : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Load_Symbolic_For_Style);
    --  Loads an icon, modifying it to match the system colours for the
    --  foreground, success, warning and error colors provided. If the icon is
