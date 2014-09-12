@@ -1383,8 +1383,9 @@ package Gtkada.Canvas_View is
    procedure For_Each_Child
      (Self     : not null access Container_Item_Record'Class;
       Callback : not null access procedure
-        (Child : not null access Container_Item_Record'Class));
-   --  Traverse all children of Self recursively, and calls Callback for each.
+        (Child : not null access Container_Item_Record'Class);
+      Recursive : Boolean := False);
+   --  Traverse all children of Self, and calls Callback for each.
 
    procedure Draw_Children
      (Self    : not null access Container_Item_Record'Class;
