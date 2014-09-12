@@ -675,14 +675,10 @@ package body Gtkada.Canvas_View is
             else
                Details.Event_Type := Button_Release;
 
-               if Details.M_Point = Self.Last_Button_Press.M_Point then
-                  --  Do not spend time recomputing
-                  Details.Toplevel_Item :=
-                    Self.Last_Button_Press.Toplevel_Item;
-                  Details.Item := Self.Last_Button_Press.Item;
-               else
-                  Compute_Item (Self, Details);
-               end if;
+               --  ??? The item Self.Last_Button_Press.Toplevel_Item might
+               --  have been destroyed at this point, so we have to
+               --  recompute which item we are dealing with here.
+               Compute_Item (Self, Details);
             end if;
 
          when others =>
@@ -2969,10 +2965,13 @@ package body Gtkada.Canvas_View is
       end Do_Child;
 
    begin
-      Container_Item_Record'Class (Self.all).For_Each_Child
-         (Do_Child'Access, Recursive => False);
-      Self.Children.Clear;
-      Remove (In_Model, To_Remove);
+      if not Self.Children.Is_Empty then
+         Container_Item_Record'Class (Self.all).For_Each_Child
+            (Do_Child'Access, Recursive => False);
+         Self.Children.Clear;
+         Remove (In_Model, To_Remove);
+         In_Model.Refresh_Layout;
+      end if;
    end Clear;
 
    -------------
@@ -3465,12 +3464,13 @@ package body Gtkada.Canvas_View is
    function Gtk_New_Image
      (Style  : Gtkada.Style.Drawing_Style;
       Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+      Allow_Rescale : Boolean := True;
       Width, Height : Model_Coordinate := -1.0)
       return Image_Item
    is
       R : constant Image_Item := new Image_Item_Record;
    begin
-      Initialize_Image (R, Style, Image, Width, Height);
+      Initialize_Image (R, Style, Image, Allow_Rescale, Width, Height);
       return R;
    end Gtk_New_Image;
 
@@ -3482,10 +3482,12 @@ package body Gtkada.Canvas_View is
      (Self   : not null access Image_Item_Record'Class;
       Style  : Gtkada.Style.Drawing_Style;
       Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
+      Allow_Rescale : Boolean := True;
       Width, Height : Model_Coordinate := -1.0) is
    begin
       Self.Style := Style;
       Self.Image := Gdk_Pixbuf (Image);
+      Self.Allow_Rescale := Allow_Rescale;
       Ref (Self.Image);
       Force_Size (Self, Width, Height);
    end Initialize_Image;
@@ -3513,7 +3515,8 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Image_Item_Record;
       Context : Draw_Context)
    is
-      P : Gdk_Pixbuf;
+      P    : Gdk_Pixbuf;
+      W, H : Gdouble;
    begin
       Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
 
@@ -3526,8 +3529,11 @@ package body Gtkada.Canvas_View is
          Height => Self.Height);
       Set_Source_RGBA (Context.Cr, (1.0, 0.0, 0.0, 1.0));
 
-      if Get_Width (Self.Image) /= Gint (Self.Width)
-        or else Get_Height (Self.Image) /= Gint (Self.Height)
+      W := Gdouble (Get_Width (Self.Image)) - Self.Width;
+      H := Gdouble (Get_Height (Self.Image)) - Self.Height;
+
+      if Self.Allow_Rescale and then
+         (abs (W) >= 2.0 or else abs (H) >= 2.0)
       then
          P := Scale_Simple
            (Self.Image,
@@ -3543,8 +3549,8 @@ package body Gtkada.Canvas_View is
          Set_Source_Pixbuf
            (Context.Cr,
             Self.Image,
-            Pixbuf_X => 0.0,
-            Pixbuf_Y => 0.0);
+            Pixbuf_X => W / 2.0,
+            Pixbuf_Y => H / 2.0);
       end if;
 
       Cairo.Fill (Context.Cr);
