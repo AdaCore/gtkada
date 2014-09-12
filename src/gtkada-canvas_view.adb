@@ -2378,7 +2378,7 @@ package body Gtkada.Canvas_View is
      (Self : not null access List_Canvas_Model_Record)
    is
       use Items_Lists;
-      Items : constant Items_Lists.List := Self.Items;
+      Items : constant Items_Lists.List := Self.Items;  --  a copy of the list
       C     : Items_Lists.Cursor := Items.First;
    begin
       --  More efficient to clear the list first, so that 'Remove' finds no
@@ -2969,7 +2969,8 @@ package body Gtkada.Canvas_View is
       end Do_Child;
 
    begin
-      Container_Item_Record'Class (Self.all).For_Each_Child (Do_Child'Access);
+      Container_Item_Record'Class (Self.all).For_Each_Child
+         (Do_Child'Access, Recursive => False);
       Self.Children.Clear;
       Remove (In_Model, To_Remove);
    end Clear;
@@ -3070,12 +3071,16 @@ package body Gtkada.Canvas_View is
    procedure For_Each_Child
      (Self     : not null access Container_Item_Record'Class;
       Callback : not null access procedure
-        (Child : not null access Container_Item_Record'Class))
+        (Child : not null access Container_Item_Record'Class);
+      Recursive : Boolean := False)
    is
       use Items_Lists;
       C : Items_Lists.Cursor := Self.Children.First;
    begin
       while Has_Element (C) loop
+         if Recursive then
+            Container_Item (Element (C)).For_Each_Child (Callback, Recursive);
+         end if;
          Callback (Container_Item (Element (C)));
          Next (C);
       end loop;
