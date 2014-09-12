@@ -55,6 +55,25 @@ package body Gtkada.Canvas_View.Models is
          Id := Self.On_Layout_Changed (On_Layout_Changed'Access);
       end Initialize;
 
+      --------------------
+      -- Refresh_Layout --
+      --------------------
+
+      overriding procedure Refresh_Layout
+         (Self        : not null access Rtree_Model_Record;
+          Send_Signal : Boolean := True)
+      is
+      begin
+         --  Clear the trees, since the inherited refresh_layout will
+         --  call for_each_item, and this would not behave correctly
+         --  when Refresh_Layout is called just after removing items from
+         --  the underlying model.
+
+         Self.Items_Tree.Clear;
+         Self.Links_Tree.Clear;
+         Canvas_Model_Record (Self.all).Refresh_Layout (Send_Signal);
+      end Refresh_Layout;
+
       -----------------------
       -- On_Layout_Changed --
       -----------------------
