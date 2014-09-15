@@ -1609,13 +1609,15 @@ package Gtkada.Canvas_View is
    function Gtk_New_Text
      (Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
-      Directed : Text_Arrow_Direction := No_Text_Arrow)
+      Directed : Text_Arrow_Direction := No_Text_Arrow;
+      Width, Height : Model_Coordinate := -1.0)
       return Text_Item;
    procedure Initialize_Text
      (Self     : not null access Text_Item_Record'Class;
       Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
-      Directed : Text_Arrow_Direction := No_Text_Arrow);
+      Directed : Text_Arrow_Direction := No_Text_Arrow;
+      Width, Height : Model_Coordinate := -1.0);
    --  Create a new text item
    --
    --  Directed indicates whether the text should be followed (or preceded)
