@@ -1769,6 +1769,41 @@ package body Gtkada.Canvas_View.Views is
       end if;
    end Terminate_Animation;
 
+   ----------------------------------
+   -- Terminate_Animation_For_Item --
+   ----------------------------------
+
+   procedure Terminate_Animation_For_Item
+     (Self : not null access Canvas_View_Record'Class;
+      Item : access Abstract_Item_Record'Class := null)
+   is
+      Data  : constant Animation_Data_Access :=
+        Animation_Data_Access (Self.Animation_Data);
+      C, C2 : Animator_Lists.Cursor;
+   begin
+      if Data /= null then
+         C := Data.Queue.First;
+         while Has_Element (C) loop
+            C2 := C;
+            Next (C);
+
+            if (Item /= null and then Element (C2).Item = Item)
+              or else (Item = null and then Element (C2).View = Self)
+            then
+               if Data.Current = C2 then
+                  Next (Data.Current);
+               end if;
+
+               Data.Queue.Delete (C2);
+            end if;
+         end loop;
+
+         if Data.Queue.Is_Empty then
+            Remove (Self.Id_Animation);
+         end if;
+      end if;
+   end Terminate_Animation_For_Item;
+
    ------------------------
    -- Is_Unique_For_Item --
    ------------------------

@@ -63,7 +63,8 @@ package body Gtkada.Canvas_View is
    Model_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
      (1 => New_String (String (Signal_Item_Contents_Changed)),
       2 => New_String (String (Signal_Layout_Changed)),
-      3 => New_String (String (Signal_Selection_Changed)));
+      3 => New_String (String (Signal_Selection_Changed)),
+      4 => New_String (String (Signal_Item_Destroyed)));
    View_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
      (1 => New_String (String (Signal_Viewport_Changed)),
       2 => New_String (String (Signal_Item_Event)));
@@ -133,10 +134,18 @@ package body Gtkada.Canvas_View is
    procedure On_Item_Contents_Changed_For_View
      (View   : access GObject_Record'Class;
       Item : Abstract_Item);
+   procedure On_Item_Destroyed_For_View
+     (View   : access GObject_Record'Class;
+      Item : Abstract_Item);
    procedure On_Selection_Changed_For_View
      (View : not null access GObject_Record'Class;
       Item : Abstract_Item);
    --  Handles the model events for the view.
+
+   procedure Item_Destroyed
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class);
+   --  Emits the "item_destroyed" signal
 
    procedure On_Adj_Value_Changed
      (View : access Glib.Object.GObject_Record'Class);
@@ -231,6 +240,7 @@ package body Gtkada.Canvas_View is
         (Abstract_Item_Record'Class, Abstract_Item);
    begin
       if Self /= null then
+         Item_Destroyed (In_Model, Self);
          Destroy (Self, In_Model);
          Unchecked_Free (Self);
       end if;
@@ -359,7 +369,8 @@ package body Gtkada.Canvas_View is
          Type_Name    => "GtkadaCanvasModel",
          Parameters   => (1 => (1 => GType_Pointer), --  item_content_changed
                           2 => (1 => GType_None),  --  layout_changed
-                          3 => (1 => GType_Pointer)));  --  selection_changed
+                          3 => (1 => GType_Pointer),
+                          4 => (1 => GType_Pointer)));  --  item_destroyed
       return Model_Class_Record.The_Type;
    end Model_Get_Type;
 
@@ -509,6 +520,35 @@ package body Gtkada.Canvas_View is
 --           Width  => Gint (Rect.Width),
 --           Height => Gint (Rect.Height));
    end On_Item_Contents_Changed_For_View;
+
+   --------------------------------
+   -- On_Item_Destroyed_For_View --
+   --------------------------------
+
+   procedure On_Item_Destroyed_For_View
+     (View   : access GObject_Record'Class;
+      Item : Abstract_Item)
+   is
+      Self : constant Canvas_View := Canvas_View (View);
+   begin
+      if Self.Last_Button_Press.Item = Item then
+         Self.Last_Button_Press.Item := null;
+      end if;
+
+      if Self.Last_Button_Press.Toplevel_Item = Item then
+         Self.Last_Button_Press.Toplevel_Item := null;
+      end if;
+
+      if Self.Dragged_Items.Contains (Item) then
+         Self.Dragged_Items.Delete (Item);
+      end if;
+
+      if Self.Inline_Edit.Item = Item then
+         Cancel_Inline_Editing (Self);
+      end if;
+
+      Terminate_Animation_For_Item (Self, Item);
+   end On_Item_Destroyed_For_View;
 
    -------------
    -- Gtk_New --
@@ -675,10 +715,19 @@ package body Gtkada.Canvas_View is
             else
                Details.Event_Type := Button_Release;
 
-               --  ??? The item Self.Last_Button_Press.Toplevel_Item might
-               --  have been destroyed at this point, so we have to
-               --  recompute which item we are dealing with here.
-               Compute_Item (Self, Details);
+               --  The previous button press even might have deleted the item,
+               --  in which case On_Item_Destroyed_For_View has reset the
+               --  Last_Buttton_Press field
+               if Details.M_Point = Self.Last_Button_Press.M_Point
+                 and then Details.Toplevel_Item /= null
+               then
+                  --  Do not spend time recomputing
+                  Details.Toplevel_Item :=
+                    Self.Last_Button_Press.Toplevel_Item;
+                  Details.Item := Self.Last_Button_Press.Item;
+               else
+                  Compute_Item (Self, Details);
+               end if;
             end if;
 
          when others =>
@@ -826,7 +875,7 @@ package body Gtkada.Canvas_View is
       Force : access Abstract_Item_Record'Class)
    is
       use Item_Sets;
-      C : Item_Sets.Cursor := Self.Model.Selection.First;
+      C    : Item_Sets.Cursor := Self.Model.Selection.First;
       Item : Abstract_Item;
       P    : Gtkada.Style.Point;
    begin
@@ -923,6 +972,7 @@ package body Gtkada.Canvas_View is
          Disconnect (Self.Model, Self.Id_Layout_Changed);
          Disconnect (Self.Model, Self.Id_Item_Contents_Changed);
          Disconnect (Self.Model, Self.Id_Selection_Changed);
+         Disconnect (Self.Model, Self.Id_Item_Destroyed);
          Unref (Self.Model);
       end if;
 
@@ -936,6 +986,8 @@ package body Gtkada.Canvas_View is
            (On_Selection_Changed_For_View'Access, Self);
          Self.Id_Item_Contents_Changed := Model.On_Item_Contents_Changed
             (On_Item_Contents_Changed_For_View'Access, Self);
+         Self.Id_Item_Destroyed :=
+           Model.On_Item_Destroyed (On_Item_Destroyed_For_View'Access, Self);
       end if;
 
       if Self.Model /= null and then Self.Model.Layout = null then
@@ -2266,6 +2318,45 @@ package body Gtkada.Canvas_View is
    begin
       Self.Items.Append (Abstract_Item (Item));
    end Add;
+
+   -----------------------
+   -- On_Item_Destroyed --
+   -----------------------
+
+   function On_Item_Destroyed
+     (Self : not null access Canvas_Model_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class;
+         Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id
+   is
+      Id : Handler_Id;
+   begin
+      if Slot = null then
+         Id := Object_Callback.Connect
+           (Self, Signal_Item_Destroyed,
+            Abstract_Item_Marshallers.To_Marshaller (Call));
+      else
+         Id := Object_Callback.Object_Connect
+           (Self, Signal_Item_Destroyed,
+            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+      end if;
+      return Id;
+   end On_Item_Destroyed;
+
+   --------------------
+   -- Item_Destroyed --
+   --------------------
+
+   procedure Item_Destroyed
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class)
+   is
+   begin
+      Abstract_Item_Emit
+        (Self, Signal_Item_Destroyed & ASCII.NUL, Abstract_Item (Item));
+   end Item_Destroyed;
 
    ------------
    -- Remove --
