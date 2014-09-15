@@ -4024,12 +4024,13 @@ package body Gtkada.Canvas_View is
    function Gtk_New_Text
      (Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
-      Directed : Text_Arrow_Direction := No_Text_Arrow)
+      Directed : Text_Arrow_Direction := No_Text_Arrow;
+      Width, Height : Model_Coordinate := -1.0)
       return Text_Item
    is
       R : constant Text_Item := new Text_Item_Record;
    begin
-      Initialize_Text (R, Style, Text, Directed);
+      Initialize_Text (R, Style, Text, Directed, Width, Height);
       return R;
    end Gtk_New_Text;
 
@@ -4041,11 +4042,13 @@ package body Gtkada.Canvas_View is
      (Self     : not null access Text_Item_Record'Class;
       Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
-      Directed : Text_Arrow_Direction := No_Text_Arrow) is
+      Directed : Text_Arrow_Direction := No_Text_Arrow;
+      Width, Height : Model_Coordinate := -1.0) is
    begin
       Self.Style := Style;
       Self.Text  := new String'(Text);
       Self.Directed := Directed;
+      Force_Size (Self, Width, Height);
    end Initialize_Text;
 
    --------------
