@@ -825,6 +825,16 @@ package Gtkada.Canvas_View is
    --  contents of an item (but not its size) has changed). This will only
    --  trigger the refresh of that specific item.
 
+   function On_Item_Destroyed
+     (Self : not null access Canvas_Model_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class;
+         Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
+   Signal_Item_Destroyed : constant Glib.Signal_Name := "item_destroyed";
+   --  This signal is emitted just before an item is destroyed.
+
    ----------------
    -- List Model --
    ----------------
@@ -1987,6 +1997,7 @@ private
 
       Id_Layout_Changed,
       Id_Item_Contents_Changed,
+      Id_Item_Destroyed,
       Id_Selection_Changed : Gtk.Handlers.Handler_Id :=
          (Gtk.Handlers.Null_Handler_Id, null);
       --  Connections to model signals

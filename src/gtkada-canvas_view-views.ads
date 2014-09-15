@@ -381,6 +381,12 @@ package Gtkada.Canvas_View.Views is
    --  All animators are completed (i.e. for instance items are moved to their
    --  final position,...)
 
+   procedure Terminate_Animation_For_Item
+     (Self : not null access Canvas_View_Record'Class;
+      Item : access Abstract_Item_Record'Class := null);
+   --  Terminate the animation for a specific item (or for the view itself when
+   --  Item is null).
+
    ---------------
    -- Animators --
    ---------------
