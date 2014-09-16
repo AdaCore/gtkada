@@ -1379,6 +1379,15 @@ package Gtkada.Canvas_View is
    --  Add_Child.
    --  Self can modify its computed position (i.e. the position within its
    --  parent) as part of the size computation in this procedure.
+   --  One example of overridding this procedure is when you are building an
+   --  item which shoud align some text on two columns (for instance in a UML
+   --  diagram we might want the field names and their types to each be on
+   --  their own column. In this case, the container's Size_Request would
+   --  first call the inherited version (so that each child requests a size),
+   --  then iterate over the children in each column and compute the maximum
+   --  requested width for that column. Finally, another pass for the children
+   --  in each column to call Set_Size_Request and override their requested
+   --  width.
 
    procedure Set_Size_Request
      (Self    : not null access Container_Item_Record;
