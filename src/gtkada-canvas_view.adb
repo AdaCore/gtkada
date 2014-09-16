@@ -3370,6 +3370,24 @@ package body Gtkada.Canvas_View is
       end if;
    end Size_Request;
 
+   ----------------------
+   -- Set_Size_Request --
+   ----------------------
+
+   procedure Set_Size_Request
+     (Self    : not null access Container_Item_Record;
+      Width, Height : Gdouble := -1.0)
+   is
+   begin
+      if Width >= 0.0 then
+         Self.Width := Width;
+      end if;
+
+      if Height >= 0.0 then
+         Self.Height := Height;
+      end if;
+   end Set_Size_Request;
+
    -------------------
    -- Size_Allocate --
    -------------------

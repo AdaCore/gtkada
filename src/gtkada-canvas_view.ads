@@ -1380,6 +1380,16 @@ package Gtkada.Canvas_View is
    --  Self can modify its computed position (i.e. the position within its
    --  parent) as part of the size computation in this procedure.
 
+   procedure Set_Size_Request
+     (Self    : not null access Container_Item_Record;
+      Width, Height : Gdouble := -1.0);
+   --  This procedure should only be called from an override of Size_Request
+   --  (but it can then be called for any item, not just the one passed in
+   --  parameter).
+   --  It can be used to request a specific size for an item, or override the
+   --  size already computed. When Width or Height is negative, they do not
+   --  override the existing size request.
+
    procedure Size_Allocate
      (Self  : not null access Container_Item_Record);
    --  Called once the size of the parent object has been decided (i.e. after
