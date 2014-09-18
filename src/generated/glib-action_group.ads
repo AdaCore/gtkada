@@ -76,8 +76,8 @@ with Glib;                 use Glib;
 with Glib.Object;          use Glib.Object;
 with Glib.Types;           use Glib.Types;
 with Glib.Variant;         use Glib.Variant;
-with Gtkada.Bindings;      use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;      use Gtkada.Bindings;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 pragma Warnings(On);
 

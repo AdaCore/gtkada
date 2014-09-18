@@ -7499,6 +7499,8 @@ package body Generic_Set is
    </package>
 
    <package id="GApplication" ada="Glib.Application">
+     <virtual-method id='command_line' bind='True'/>
+     <virtual-method id='local_command_line' bind='True'/>
      <enum ctype="GApplicationFlags"/>
      <method id="g_application_get_dbus_connection" bind="False"/> <!-- requires DBus -->
      <method id="g_application_open" bind="False" /> <!-- requires GFile -->

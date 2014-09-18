@@ -37,12 +37,12 @@ with Glib;                 use Glib;
 with Glib.Object;          use Glib.Object;
 with Glib.Properties;      use Glib.Properties;
 with Glib.Types;           use Glib.Types;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-pragma Warnings(On);
 with Pango.Font;           use Pango.Font;
 with Pango.Font_Face;      use Pango.Font_Face;
 with Pango.Font_Family;    use Pango.Font_Family;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package Gtk.Font_Chooser is
 

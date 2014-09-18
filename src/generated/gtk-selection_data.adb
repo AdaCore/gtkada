@@ -24,9 +24,11 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with GtkAda.Types;         use GtkAda.Types;
-with Gtkada.Bindings;      use Gtkada.Bindings;
 with Gtkada.C;             use Gtkada.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;      use Gtkada.Bindings;
+pragma Warnings(On);
 
 package body Gtk.Selection_Data is
 

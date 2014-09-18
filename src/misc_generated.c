@@ -314,3 +314,9 @@ void gtkada_Action_Map_set_lookup_action(GActionMapInterface* iface, void* handl
 void gtkada_Action_Map_set_remove_action(GActionMapInterface* iface, void* handler) {
     iface->remove_action = handler;
 }
+void gtkada_Application_set_command_line(GApplicationClass* iface, void* handler) {
+    iface->command_line = handler;
+}
+void gtkada_Application_set_local_command_line(GApplicationClass* iface, void* handler) {
+    iface->local_command_line = handler;
+}

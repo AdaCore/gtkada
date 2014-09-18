@@ -24,8 +24,8 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 pragma Warnings(On);
 

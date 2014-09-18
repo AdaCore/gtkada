@@ -151,6 +151,10 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Glib.Variant;            use Glib.Variant;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;         use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Glib.Application is
 
@@ -872,6 +876,42 @@ package Glib.Application is
      (Interf : Glib.Action_Map.Gaction_Map)
    return Gapplication
    renames Implements_Gaction_Map.To_Object;
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Command_Line is access function
+     (Self         : System.Address;
+      Command_Line : System.Address) return Gint;
+   pragma Convention (C, Virtual_Command_Line);
+
+   type Virtual_Local_Command_Line is access function
+     (Self        : System.Address;
+      Arguments   : access Interfaces.C.Strings.chars_ptr_array;
+      Exit_Status : access Gint) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Local_Command_Line);
+   --  This virtual function is always invoked in the local instance. It gets
+   --  passed a pointer to a null-terminated copy of Argv and is expected to
+   --  remove arguments that it handled (shifting up remaining arguments).
+   --  The last argument to local_command_line is a pointer to the Status
+   --  variable which can used to set the exit status that is returned from
+   --  Glib.Application.Run.
+   --  See Glib.Application.Run for more details on
+   --  Glib.Application.Gapplication startup.
+   --  "arguments": array of command line arguments
+   --  "exit_status": exit status to fill after processing the command line.
+
+   subtype Application_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Command_Line
+     (Self    : Glib.Object.GObject_Class;
+      Handler : Virtual_Command_Line);
+   pragma Import (C, Set_Command_Line, "gtkada_Application_set_command_line");
+   procedure Set_Local_Command_Line
+     (Self    : Glib.Object.GObject_Class;
+      Handler : Virtual_Local_Command_Line);
+   pragma Import (C, Set_Local_Command_Line, "gtkada_Application_set_local_command_line");
+   --  See Glib.Object.Add_Interface
 
 private
    Platform_Data_Property : constant Glib.Properties.Property_Object :=

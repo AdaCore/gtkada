@@ -43,6 +43,10 @@ Where the package node is defined as follows:
            direction="..." <!-- Override direction (see <parameter> node below) -->
        />
 
+       <!-- By default, virtual methods are bound for interfaces, but not for
+            other classes. You should use the following to control which
+            methods should be bound.
+       -->
        <virtual-method     <!--  list of virtual methods to bind -->
            id='...'        <!--  the name of the virtual method, or '*'  -->
            bind=True       <!--  by default, all methods bound for interfaces -->
@@ -437,20 +441,21 @@ class GtkAdaPackage(object):
                     if c.get("bind", "true").lower() != "false"]
         return []
 
-    def bind_virtual_method(self, name):
+    def bind_virtual_method(self, name, default):
         """
         Whether to bind the given virtual method
         """
-        if not hasattr(self, 'disabled_virtual_methods'):
-            if self.node is None:
-                self.disabled_virtual_methods = set()
-            else:
-                self.disabled_virtual_methods = set(
-                    c.get('id')
-                    for c in self.node.findall("virtual-method")
-                    if c.get("bind", "true").lower() == "false")
-        return (name not in self.disabled_virtual_methods
-                and '*' not in self.disabled_virtual_methods)
+        if not hasattr(self, 'virtual_methods'):
+            self.virtual_methods = {'*': default}
+            if self.node is not None:
+                for c in self.node.findall("virtual-method"):
+                    self.virtual_methods[c.get('id')] = (
+                        c.get("bind", "true").lower() == "true")
+
+        v = self.virtual_methods.get(name, None)
+        if v is None:
+            v = self.virtual_methods['*']
+        return v
 
 
 class GtkAdaMethod(object):

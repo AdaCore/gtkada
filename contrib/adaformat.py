@@ -85,10 +85,12 @@ class CType(object):
         self.is_ptr = False
         self.param = ada     # type as parameter
         self.cparam = ada    # type for Ada subprograms binding to C
-        self.cleanup = None  # If set, a tmp variable is created to hold the
-                             # result of convert during the call, and is then
-                             # free by calling this cleanup. Use "%s" as the
-                             # name of the variable.
+
+        self.cleanup = None
+        # If set, a tmp variable is created to hold the result of convert during
+        # the call, and is then free by calling this cleanup. Use "%s" as the
+        # name of the variable.
+
         self.isArray = False
 
         # In some cases, Ada provides a special value for a parameter that
@@ -132,8 +134,8 @@ class CType(object):
            It can also use %(var)s which will be substituted by the name of the
            parameter.
            Otherwise, it is used as " Tmp := <convert>".
-           It might be necessary to also override add_with() to add the necessary
-           with statements.
+           It might be necessary to also override add_with() to add the
+           necessary with statements.
         """
 
         if self.allow_none and self.val_or_null:
@@ -193,8 +195,8 @@ class CType(object):
             return self.cparam
 
     def as_call(
-        self, name, pkg, wrapper="%s", lang="ada", mode="in", value=None,
-        is_temporary_variable=True):
+       self, name, pkg, wrapper="%s", lang="ada", mode="in", value=None,
+       is_temporary_variable=True):
         """'name' represents a parameter of type 'self'.
            'pkg' is the Package instance in which the call occurs.
            'wrapper' is used in the call itself, and %s is replaced by the
@@ -227,18 +229,20 @@ class CType(object):
             # Unless we are already using a temporary variable.
 
             if (ret
-                and ret != "%(var)s"
-                and mode != "in"
-                and not is_temporary_variable):
+               and ret != "%(var)s"
+               and mode != "in"
+               and not is_temporary_variable):
 
                 tmp = "Tmp_%s" % name
 
                 if mode in ("out", "access"):
-                    tmpvars = [Local_Var(name=tmp, type=returns[4], aliased=True)]
+                    tmpvars = [Local_Var(
+                        name=tmp, type=returns[4], aliased=True)]
                 else:
                     tmpvars = [
                         Local_Var(name=tmp, type=returns[4], aliased=True,
-                                  default=self.convert_to_c(pkg=pkg) % {"var":name})]
+                            default=self.convert_to_c(pkg=pkg) % {
+                                "var": name})]
 
                 if "%(tmp)s" in ret:
                     tmp2 = "Tmp2_%s" % name
@@ -264,17 +268,17 @@ class CType(object):
                 call = VariableCall(
                     call=wrapper % tmp,
                     precall=self.convert_to_c(pkg=pkg) % {
-                        "var":name, "tmp":tmp},
+                        "var": name, "tmp": tmp},
                     postcall=self.cleanup % tmp,
-                    tmpvars=[Local_Var(name=tmp, type=self.cparam)]
-                       + []) # additional_tmp_vars
+                    tmpvars=[Local_Var(name=tmp, type=self.cparam)] + [])
 
             elif self.cleanup:
                 tmp = "Tmp_%s" % name
-                conv = self.convert_to_c(pkg=pkg) % {"var":name}
+                conv = self.convert_to_c(pkg=pkg) % {"var": name}
 
-                # Initialize the temporary variable with a default value, in case
-                # it is an unconstrained type (a chars_ptr_array for instance)
+                # Initialize the temporary variable with a default value, in
+                # case it is an unconstrained type (a chars_ptr_array for
+                # instance)
                 call = VariableCall(
                     call=wrapper % tmp,
                     precall='',
@@ -283,7 +287,7 @@ class CType(object):
                         name=tmp, type=AdaType(self.cparam), default=conv)])
 
             else:
-                conv = self.convert_to_c(pkg=pkg) % {"var":name}
+                conv = self.convert_to_c(pkg=pkg) % {"var": name}
                 call = VariableCall(
                     call=wrapper % conv, precall='', postcall="", tmpvars=[])
 
@@ -411,7 +415,7 @@ class GObject(CType):
         self.is_ptr = False
         self.classwide = classwide  # Parameter should include "'Class"
         self.userecord = userecord  # Parameter should be "access .._Record"
-        self.allow_none=allow_none
+        self.allow_none = allow_none
 
     def convert_from_c(self):
         stub = "Stub_%s" % (base_name(self.ada), )
@@ -451,6 +455,7 @@ class GObject(CType):
         result = CType.copy(self)
         return result
 
+
 class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
 
@@ -466,6 +471,7 @@ class Tagged(GObject):
     def as_ada_param(self, pkg):
         # Make sure to bind as a CType here, not as a GOBject
         return CType.as_ada_param(self, pkg)
+
 
 class UTF8(CType):
     def __init__(self):
@@ -539,7 +545,7 @@ class UTF8_List(CType):
         if pkg:
             pkg.add_with("GNAT.Strings", specs=True)
             pkg.add_with("Interfaces.C.Strings", specs=specs)
-            pkg.add_with("Gtkada.Bindings", specs=specs)
+            pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
 
 
 class Record(CType):
@@ -2059,11 +2065,17 @@ class Package(object):
         if withs:
             result = []
             m = max_length(withs)
-            for w in sorted(withs.keys()):
+            had_warnings_off = False
+
+            # sort so that all packages for which 'might_be_unused' is True
+            # are last in the list
+
+            for w in sorted(withs.keys(), key=lambda w: 'zz%s' % w if withs[w][1] else w):
                 do_use, might_be_unused = withs[w]
 
-                if might_be_unused:
+                if might_be_unused and not had_warnings_off:
                     result.append("pragma Warnings(Off);  --  might be unused")
+                    had_warnings_off = True
 
                 if do_use:
                     result.append(
@@ -2071,8 +2083,8 @@ class Package(object):
                 else:
                     result.append("with %s;" % w)
 
-                if might_be_unused:
-                    result.append("pragma Warnings(On);")
+            if had_warnings_off:
+                result.append("pragma Warnings(On);")
 
             return "\n".join(result) + "\n"
         return ""
