@@ -1456,14 +1456,14 @@ package Gtk.Window is
    --  The :startup-id is a write-only property for setting window's startup
    --  notification identifier. See Gtk.Window.Set_Startup_Id for more details.
 
+   The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type;
+
    Title_Property : constant Glib.Properties.Property_String;
 
    Transient_For_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk_Window
    --  The transient parent of the window. See Gtk.Window.Set_Transient_For
    --  for more details about transient windows.
-
-   The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type;
 
    Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint;
    --  Type: Gdk.Window.Gdk_Window_Type_Hint
@@ -1566,12 +1566,12 @@ private
      Glib.Properties.Build ("urgency-hint");
    Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint :=
      Gdk.Window.Build ("type-hint");
-   The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type :=
-     Gtk.Enums.Build ("type");
    Transient_For_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("transient-for");
    Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("title");
+   The_Type_Property : constant Gtk.Enums.Property_Gtk_Window_Type :=
+     Gtk.Enums.Build ("type");
    Startup_Id_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("startup-id");
    Skip_Taskbar_Hint_Property : constant Glib.Properties.Property_Boolean :=

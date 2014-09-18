@@ -1596,10 +1596,10 @@ void gtkada_%s_set_%s(%s* iface, %s* handler) {
                 self._subst["get_type"] = get_type_name
 
                 section.add(
-                    "package Type_Conversion_%(typename)s is new"
-                    + " Glib.Type_Conversion_Hooks.Hook_Registrator\n"
-                    + "   (%(get_type)s'Access, %(typename)s_Record);\n"
-                    + "pragma Unreferenced (Type_Conversion_%(typename)s);"""
+                    ("package Type_Conversion_%(typename)s is new"
+                     + " Glib.Type_Conversion_Hooks.Hook_Registrator\n"
+                     + "   (%(get_type)s'Access, %(typename)s_Record);\n"
+                     + "pragma Unreferenced (Type_Conversion_%(typename)s);""")
                     % self._subst, in_spec=False)
 
     def _get_c_type(self, node):
@@ -1728,7 +1728,7 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                     """The following properties are defined for this widget.
 See Glib.Properties for more information on properties)""")
 
-                adaprops.sort(lambda x, y: cmd(x["name"], y["name"]))
+                adaprops.sort(lambda x, y: cmp(x["name"], y["name"]))
 
                 for p in adaprops:
                     prop_str = '   %(name)s_Property : constant %(ptype)s;' % p
@@ -2097,7 +2097,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                             type="Boolean",
                             default="False")],
                         code=('Connect_Slot (Self, "%s" & ASCII.NUL,'
-                              + 'Call, After, Slot);') % name)
+                              + ' Call, After, Slot);') % name)
                     section.add(obj_connect)
 
                 doc = _get_clean_doc(s)
@@ -2196,10 +2196,10 @@ end "+";""" % self._subst,
                     # Do not repeat for buildable, that's rarely used
 
                     section.add_comment(
-                        "Methods inherited from the Buildable interface arenot"
+                        "Methods inherited from the Buildable interface are"
                         + " not duplicated here since they are meant to be"
                         + " used by tools, mostly. If you need to call them,"
-                        + " use an explicit cast through the "-" operator"
+                        + ' use an explicit cast through the "-" operator'
                         + " below.")
 
                     continue
@@ -2387,10 +2387,11 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         else:
             if private:
                 section.add(
-                    "\ntype %(typename)s is private;\n"
-                    + "function From_Object_Free (B : access %(typename)s)"
-                    + " return %(typename)s;\n"
-                    + "pragma Inline (From_Object_Free);" % {"typename": base})
+                    ("\ntype %(typename)s is private;\n"
+                     + "function From_Object_Free (B : access %(typename)s)"
+                     + " return %(typename)s;\n"
+                     + "pragma Inline (From_Object_Free);")
+                    % {"typename": base})
                 adder = self.pkg.add_private
             else:
                 adder = section.add
@@ -2430,12 +2431,12 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                     "\ntype %s is record\n" % base
                     + "\n".join("%s : %s;" % f for f in fields)
                     + "\nend record;\npragma Convention (C, %s);\n" % base)
-                add(c.format())
+                adder(c.format())
 
             if not private:
                 section.add(
                     ("\nfunction From_Object_Free (B : access %(type)s)"
-                     + "return %(type)s;\n"
+                     + " return %(type)s;\n"
                      + "pragma Inline (From_Object_Free);") % {"type": base})
 
             section.add("""
