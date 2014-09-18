@@ -2093,3 +2093,14 @@ ada_gtk_setup_application(GtkApplication *app, GtkadaApplicationFlags flags)
     }
 #endif
 }
+
+const GVariantType* ada_gvariant_type_boolean = G_VARIANT_TYPE_BOOLEAN;
+const GVariantType* ada_gvariant_type_byte    = G_VARIANT_TYPE_BYTE;
+const GVariantType* ada_gvariant_type_int16   = G_VARIANT_TYPE_INT16;
+const GVariantType* ada_gvariant_type_uint16  = G_VARIANT_TYPE_UINT16;
+const GVariantType* ada_gvariant_type_int32   = G_VARIANT_TYPE_INT32;
+const GVariantType* ada_gvariant_type_uint32  = G_VARIANT_TYPE_UINT32;
+const GVariantType* ada_gvariant_type_int64   = G_VARIANT_TYPE_INT64;
+const GVariantType* ada_gvariant_type_uint64  = G_VARIANT_TYPE_UINT64;
+const GVariantType* ada_gvariant_type_double  = G_VARIANT_TYPE_DOUBLE;
+const GVariantType* ada_gvariant_type_string  = G_VARIANT_TYPE_STRING;
