@@ -6,7 +6,7 @@
 
 # Issues:
 #   - Missing handling of <field> nodes (see GtkArrow for instance)
-#   - Some comments contain xref like "#GtkMisc". Not sure what to do with
+# - Some comments contain xref like "#GtkMisc". Not sure what to do with
 #     those. Likewise for names of subprograms in comments.
 #
 # Backward incompatibility:
@@ -18,7 +18,8 @@ from xml.etree.cElementTree import parse, Element, QName, tostring, fromstring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda
-from data import enums, interfaces, binding, user_data_params, destroy_data_params
+from data import enums, interfaces, binding, user_data_params
+from data import destroy_data_params
 
 # Unfortunately, generating the slot marshallers in a separate package
 # does not work since we end up with circularities in a number of
@@ -453,11 +454,12 @@ class SubprogramProfile(object):
             # systematically put the default value, which is in Ada. We would
             # end up with Interfaces.C.Strings.chars_ptr=""
 
-            result.append(Parameter(name=n, mode=p.mode, type=p.type,
-                                    for_function=self.returns is not None,
-                                    default=p.default if not p.ada_binding else None,
-                                    is_temporary_variable=is_temporary,
-                                    ada_binding=p.ada_binding))
+            result.append(Parameter(
+                name=n, mode=p.mode, type=p.type,
+                for_function=self.returns is not None,
+                default=p.default if not p.ada_binding else None,
+                is_temporary_variable=is_temporary,
+                ada_binding=p.ada_binding))
 
         return result
 
@@ -604,7 +606,7 @@ class SubprogramProfile(object):
                 default = '""'
 
             if (p.get("scope", "") in ("notified", "call", "async")
-                or p.get("closure", "") != ""):  # gtk_menu_popup does not have scope
+                or p.get("closure", "") != ""):
 
                 # "async" means a callback with no closure. As a special case,
                 # we ignore it for destroy callbacks, since they are already
@@ -661,8 +663,9 @@ class SubprogramProfile(object):
                 if self.returns_doc:
                     self.returns_doc = "Returns %s" % self.returns_doc
 
-            return _get_type(ret, allow_access=False, pkg=pkg,
-                             transfer_ownership=gtkmethod.transfer_ownership(ret))
+            return _get_type(
+                ret, allow_access=False, pkg=pkg,
+                transfer_ownership=gtkmethod.transfer_ownership(ret))
         else:
             return naming.type(name=None, cname=returns, pkg=pkg)
 
@@ -702,8 +705,9 @@ class GIRClass(object):
         # Is this a binding for an opaque C record (not a GObject). In this
         # case, we bind it as an Ada tagged type so that we can use the
         # convenient dot notation for primitive operations. This is only doable
-        # if there is no public field that should be user visible in the record.
-        # Otherwise, we'll map to a standard Ada record (self.is_record)
+        # if there is no public field that should be user visible in the
+        # record. Otherwise, we'll map to a standard Ada record
+        # (self.is_record)
 
         self.is_proxy = False
         self.is_boxed = (self.node.tag == nrecord
@@ -751,7 +755,7 @@ class GIRClass(object):
             classtype = naming.type(name=self.ctype)
             typename = classtype.ada
             self.name = package_name(typename)
-            if ada != None:
+            if ada is not None:
                 self.name = ada
 
             self.ada_package_name = self.name
@@ -796,7 +800,7 @@ class GIRClass(object):
                 isinherited=isinherited)
         else:
             naming.add_cmethod(
-                cname, gtkmethod.ada_name() or cname)  # Avoid warning later on.
+                cname, gtkmethod.ada_name() or cname)  # Avoid warning later on
 
     def _func_is_direct_import(self, profile):
         """Whether a function with this profile
@@ -1074,9 +1078,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
 
                 # Generate a subprogram in the body to act as the C callback.
-                # This subprogram is responsible for calling the user's callback.
-                # In the call to the user's callback, we need to convert the
-                # parameters from the C values to the corresponding Ada values.
+                # This subprogram is responsible for calling the user's
+                # callback. In the call to the user's callback, we need to
+                # convert the parameters from the C values to the
+                # corresponding Ada values.
 
                 self.pkg.add_with(
                     "Ada.Unchecked_Conversion", do_use=False, specs=False)
@@ -1099,9 +1104,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 ada_func_call = ada_func.call(in_pkg=self.pkg, lang="c->ada")
                 body_cb = cb_profile.subprogram(
                     name="Internal_%s" % funcname,
-                    local_vars=[Local_Var("Func", "constant %s" % funcname,
-                                          "To_%s (%s)" % (funcname, cb_user_data))]
-                        + ada_func_call[2],
+                    local_vars=[Local_Var(
+                        "Func", "constant %s" % funcname,
+                        "To_%s (%s)" % (funcname, cb_user_data))]
+                    + ada_func_call[2],
                     lang="c->ada",
                     code=ada_func.call_to_string(ada_func_call, lang="c->ada"))
                 body_cb.convention = "C"
@@ -1160,8 +1166,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         # user_data. The function can no longer be a primitive operation of the
         # object, since it is in a nested package.
         # It is possible that the function doesn't accept a user data in fact
-        # (for instance when scope="async"). In this case, no need for a generic
-        # package.
+        # (for instance when scope="async"). In this case, no need for a
+        # generic package.
 
         user_data2 = cb_profile.find_param(user_data_params)
 
@@ -1201,9 +1207,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
             internal_cb = cb_profile.subprogram(
                 name="Internal_Cb",
-                local_vars=[Local_Var("D", "constant Users.Internal_Data_Access",
-                                      "Users.Convert (%s)" % user_data2)]
-                            + user_cb_call[2],
+                local_vars=[
+                    Local_Var("D", "constant Users.Internal_Data_Access",
+                              "Users.Convert (%s)" % user_data2)]
+                + user_cb_call[2],
                 convention="C",
                 lang="c->ada",
                 code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
@@ -1211,8 +1218,9 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
             values = {destroy: "Users.Free_Data'Address",
                       cb.name.lower(): "%s'Address" % internal_cb.name,
-                      user_data.lower(): "Users.Build (To_Address (%s), %s)" % (
-                    cb.name, user_data)}
+                      user_data.lower():
+                          "Users.Build (To_Address (%s), %s)" % (
+                          cb.name, user_data)}
 
             full_profile = copy.deepcopy(profile)
             full_profile.set_class_wide()
@@ -1537,10 +1545,12 @@ void gtkada_%s_set_%s(%s* iface, %s* handler) {
 
                 self._subst["get_type"] = get_type_name
 
-                section.add("""
-package Type_Conversion_%(typename)s is new Glib.Type_Conversion_Hooks.Hook_Registrator
-   (%(get_type)s'Access, %(typename)s_Record);
-pragma Unreferenced (Type_Conversion_%(typename)s);""" % self._subst, in_spec=False)
+                section.add(
+                    ("package Type_Conversion_%(typename)s is new"
+                     + " Glib.Type_Conversion_Hooks.Hook_Registrator\n"
+                     + "   (%(get_type)s'Access, %(typename)s_Record);\n"
+                     + "pragma Unreferenced (Type_Conversion_%(typename)s);""")
+                    % self._subst, in_spec=False)
 
     def _get_c_type(self, node):
         t = node.find(ntype)
@@ -1642,10 +1652,14 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                 else:
                     section = self.pkg.section("Properties")
                     section.add(
-                        ('   %(name)s_Property : constant Glib.Properties.Property_String :='
-                        + '\n      Glib.Properties.Build ("%(cname)s"); --  Unknown type: %(type)s') % {
+                        ('   %(name)s_Property : constant '
+                         + 'Glib.Properties.Property_String :=\n'
+                         + '      Glib.Properties.Build ("%(cname)s");'
+                         + '  --  Unknown type: %(type)s') % {
                             "name": naming.case(p.get("name")),
-                            "type": (p.find(ntype).get("name") if p.find(ntype) is not None else "unspecified"),
+                            "type": (p.find(ntype).get("name")
+                                     if p.find(ntype) is not None
+                                     else "unspecified"),
                             "cname": p.get("name")})
                     self.pkg.add_with("Glib.Properties")
                     continue
@@ -1665,7 +1679,7 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                     """The following properties are defined for this widget.
 See Glib.Properties for more information on properties)""")
 
-                adaprops.sort(lambda x,y: x["name"] <> y["name"])
+                adaprops.sort(lambda x, y: cmp(x["name"], y["name"]))
 
                 for p in adaprops:
                     prop_str = '   %(name)s_Property : constant %(ptype)s;' % p
@@ -1697,7 +1711,8 @@ See Glib.Properties for more information on properties)""")
         return "_".join(
             [base_name(selftype.ada)]
             + [base_name(p.type.ada) for p in profile.params]
-            + [(base_name(profile.returns.ada) if profile.returns else "Void")])
+            + [(base_name(profile.returns.ada)
+                if profile.returns else "Void")])
 
     def _marshall_gvalue(self, profile):
         """Return the arguments to parse to an Ada callback, after extracting
@@ -1783,7 +1798,7 @@ See Glib.Properties for more information on properties)""")
             allow_none=False,
             returns=profile.returns)
 
-        if not slot_name in existing_marshallers:
+        if slot_name not in existing_marshallers:
             existing_marshallers.add(slot_name)
 
             slot_handler_type = "type %s is %s;" % (
@@ -1872,7 +1887,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
             allow_none=False,
             returns=profile.returns)
 
-        if gtkmethod.bind() and not name in self.__marshallers:
+        if gtkmethod.bind() and name not in self.__marshallers:
             self.__marshallers.add(name)
 
             handler_type = "type %s is %s;" % (
@@ -2020,19 +2035,19 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                         name="On_%s" % naming.case(name),
                         plist=[Parameter(name="Self", type=on_selftype),
                                Parameter(
-                                 name="Call",
-                                 type=Proxy(slot_handler_type_name)),
-                               Parameter(
-                                 name="Slot",
-                                 type=GObject("Glib.Object.GObject",
-                                              allow_none=False,
-                                              classwide=True)),
-                               Parameter(
-                                 name="After",
-                                 type="Boolean",
-                                 default="False")],
-                       code='Connect_Slot (Self, "%s" & ASCII.NUL, Call, After, Slot);' %
-                           name)
+                            name="Call",
+                            type=Proxy(slot_handler_type_name)),
+                            Parameter(
+                            name="Slot",
+                            type=GObject("Glib.Object.GObject",
+                                         allow_none=False,
+                                         classwide=True)),
+                            Parameter(
+                            name="After",
+                            type="Boolean",
+                            default="False")],
+                        code=('Connect_Slot (Self, "%s" & ASCII.NUL,'
+                              + ' Call, After, Slot);') % name)
                     section.add(obj_connect)
 
                 doc = s.findtext(ndoc, "")
@@ -2131,10 +2146,11 @@ end "+";""" % self._subst,
                     # Do not repeat for buildable, that's rarely used
 
                     section.add_comment(
-                        "Methods inherited from the Buildable interface are not"
-                        + " duplicated here since they are meant to be used by"
-                        + " tools, mostly. If you need to call them, use an"
-                        + ' explicit cast through the "-" operator below.')
+                        "Methods inherited from the Buildable interface are"
+                        + " not duplicated here since they are meant to be"
+                        + " used by tools, mostly. If you need to call them,"
+                        + ' use an explicit cast through the "-" operator'
+                        + " below.")
 
                     continue
 
@@ -2178,10 +2194,11 @@ end "+";""" % self._subst,
         if conv not in self.conversions:
             self.conversions[conv] = True
 
-            decl += "function Convert (R : %s) return System.Address;\n" % (
+            base = "function Convert (R : %s) return System.Address" % (
                 ctype.ada)
-            body += "function Convert (R : %s) return System.Address is\nbegin\n" % (
-                ctype.ada)
+
+            decl += base + ';\n'
+            body += base + " is\nbegin\n"
 
             if self.is_gobject or self.is_boxed:
                 body += "return Get_Object (R);"
@@ -2206,7 +2223,8 @@ end "+";""" % self._subst,
 
             elif self.is_gobject:
                 body += "Stub : %s_Record;" % ctype.ada
-                body += "begin\nreturn %s (Glib.Object.Get_User_Data (R, Stub));" % (
+                body += "begin\n"
+                body += "return %s (Glib.Object.Get_User_Data (R, Stub));" % (
                     ctype.ada)
             else:
                 body += "begin\nreturn %s" % ctype.ada \
@@ -2228,7 +2246,8 @@ end "+";""" % self._subst,
         section.add(body, in_spec=False)
 
     def record_binding(
-        self, section, ctype, adaname, type, override_fields, unions, private):
+            self, section, ctype, adaname, type, override_fields,
+            unions, private):
         """Create the binding for a <record> or <union> type.
            override_fields has the same format as returned by
            GtkAdaPackage.records()
@@ -2270,9 +2289,10 @@ end "+";""" % self._subst,
 
                             ctype = t[0].get(ctype_qname)
                             if not ctype:
-                                # <type name="..."> has no c:type attribute, so we try
-                                # to map the name to a Girname
-                                ctype = naming.girname_to_ctype[t[0].get("name")]
+                                # <type name="..."> has no c:type attribute,
+                                # so we try to map the name to a Girname
+                                ctype = naming.girname_to_ctype[
+                                    t[0].get("name")]
 
                             first_field_ctype = ctype
 
@@ -2280,18 +2300,18 @@ end "+";""" % self._subst,
 
                 elif cb:
                     # ??? JL: Should properly bind the callback here.
-                    # For now, we just use a System.Address to maintain the record
-                    # integrity
+                    # For now, we just use a System.Address to maintain the
+                    # record integrity
                     ftype = override_fields.get(name, None)
                     if ftype is None:
                         ftype = AdaType(
                             "System.Address", pkg=self.pkg)
 
                 else:
-                    print "WARNING: Field '%s' of '%s' has no type" % (name, base)
-                    print " generation of the record is most certainly incorrect"
+                    print "WARNING: Field '%s.%s' has no type" % (name, base)
+                    print " generated record is most certainly incorrect"
 
-                if ftype != None:
+                if ftype is not None:
                     if ftype.ada in ("GSList", "GList") and private:
                         ftype = "System.Address"
                     else:
@@ -2302,9 +2322,10 @@ end "+";""" % self._subst,
 
         if not fields:
             section.add(
-                "\ntype %s is new Glib.C_Proxy;\n" % base
-                + ("function From_Object_Free (B : access %(typename)s) "
-                + "return %(typename)s;\npragma Inline (From_Object_Free);") % {"typename": base})
+                ("\ntype %(typename)s is new Glib.C_Proxy;\n"
+                 + "function From_Object_Free (B : access %(typename)s) "
+                 + "return %(typename)s;\npragma Inline (From_Object_Free);")
+                 % {"typename": base})
             section.add("""
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
@@ -2314,52 +2335,61 @@ begin
 end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
         else:
-           if private:
-              section.add("\ntype %(typename)s is private;\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s;\npragma Inline (From_Object_Free);" % {"typename": base})
-              adder = self.pkg.add_private
-           else:
-              adder = section.add
+            if private:
+                section.add(
+                    ("\ntype %(typename)s is private;\n"
+                     + "function From_Object_Free (B : access %(typename)s)"
+                     + " return %(typename)s;\n"
+                     + "pragma Inline (From_Object_Free);")
+                    % {"typename": base})
+                adder = self.pkg.add_private
+            else:
+                adder = section.add
 
-           if is_union:
-               enums = self.get_enumeration_values(first_field_ctype)
-               enums_dict = {ctype: adatype for ctype, adatype in enums}
-               text = "\ntype %s (%s : %s := %s) is record\n" % (
-                                base, fields[0][0], fields[0][1],
-                                enums[0][1]) + \
-                   "    case %s is\n" % fields[0][0]
-               for index, f in enumerate(fields):
-                   if index != 0:
-                       when_stmt = []
-                       if unions:
-                           for v, key in unions:
-                               if key.lower() == f[0].lower():   # applies to field
-                                   when_stmt.append(enums_dict[v])
-                       else:
-                           when_stmt = [enums[index][1]]
+            if is_union:
+                enums = self.get_enumeration_values(first_field_ctype)
+                enums_dict = {ctype: adatype for ctype, adatype in enums}
+                text = "\ntype %s (%s : %s := %s) is record\n" % (
+                    base, fields[0][0], fields[0][1],
+                    enums[0][1]) + \
+                    "    case %s is\n" % fields[0][0]
+                for index, f in enumerate(fields):
+                    if index != 0:
+                        when_stmt = []
+                        if unions:
+                            for v, key in unions:
+                                # applies to field
+                                if key.lower() == f[0].lower():
+                                    when_stmt.append(enums_dict[v])
+                        else:
+                            when_stmt = [enums[index][1]]
 
-                       if not when_stmt:
-                           print "ERROR: no discrimant value for field %s" % f[0]
+                        if not when_stmt:
+                            print("ERROR: no discrimant value for field %s"
+                                  % f[0])
 
-                       text += "\n      when %s =>\n %s : %s;\n" % (
-                                "\n          | ".join(when_stmt), f[0], f[1])
+                        text += "\n      when %s =>\n %s : %s;\n" % (
+                            "\n          | ".join(when_stmt), f[0], f[1])
 
-               text += "   end case;\nend record;\n"
-               text += "pragma Convention (C, %s);\n" % base
-               text += "pragma Unchecked_Union(%s);\n" % base
-               adder("\n" + Code(text).format())
+                text += "   end case;\nend record;\n"
+                text += "pragma Convention (C, %s);\n" % base
+                text += "pragma Unchecked_Union(%s);\n" % base
+                adder("\n" + Code(text).format())
 
-           else:
-               adder(Code(
-                   "\ntype %s is record\n" % base
-                   + "\n".join("%s : %s;" % f for f in fields)
-                   + "\nend record;\npragma Convention (C, %s);\n" % base).format())
+            else:
+                c = Code(
+                    "\ntype %s is record\n" % base
+                    + "\n".join("%s : %s;" % f for f in fields)
+                    + "\nend record;\npragma Convention (C, %s);\n" % base)
+                adder(c.format())
 
-           if not private:
-               section.add("\nfunction From_Object_Free (B : access %(typename)s) return %(typename)s;"
-                       % {"typename": base}
-                           + "\npragma Inline (From_Object_Free);")
+            if not private:
+                section.add(
+                    ("\nfunction From_Object_Free (B : access %(type)s)"
+                     + " return %(type)s;\n"
+                     + "pragma Inline (From_Object_Free);") % {"type": base})
 
-           section.add("""
+            section.add("""
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
 begin
@@ -2609,9 +2639,10 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
 
             # Insert constant declaration at the end of the package, to avoid
             # freezing issues
-            self.pkg.add_private("""
-   Null_%(typename)s : constant %(typename)s := (Glib.C_Boxed with null record);
-""" % self._subst, at_end=True)
+            self.pkg.add_private(
+                ("\n   Null_%(typename)s : constant %(typename)s :="
+                + " (Glib.C_Boxed with null record);\n") %
+                self._subst, at_end=True)
 
             section.add("""
    function From_Object_Free
@@ -2632,8 +2663,8 @@ subtype %(typename)s is %(parent)s;""" % self._subst);
 """ % self._subst, in_spec=False)
 
         elif self._subst["parent"] is None:
-            # Likely a public record type (ie with visible fields). Automatically
-            # add it to the list of records to bind.
+            # Likely a public record type (ie with visible fields).
+            # Automatically add it to the list of records to bind.
 
             self.gtkpkg.add_record_type(self.ctype)
 
@@ -2643,7 +2674,9 @@ type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
             % self._subst)
 
-        for ctype, enum, prefix, asbitfield, ignore in self.gtkpkg.enumerations():
+        for ctype, enum, prefix, asbitfield, ignore in \
+             self.gtkpkg.enumerations():
+
             self.enumeration_binding(
                 section, ctype, enum, prefix, asbitfield=asbitfield,
                 ignore=ignore)
@@ -2651,7 +2684,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         for regexp, prefix in self.gtkpkg.constants():
             self.constants_binding(section, regexp, prefix)
 
-        for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
+        for ctype, enum, adaname, fields, unions, private in \
+             self.gtkpkg.records():
 
             self.record_binding(
                 section, ctype, adaname, enum, fields, unions, private)
@@ -2740,13 +2774,13 @@ parser.add_option (
 # Command line argument sanity checking: make sure that all of our
 # inputs and outputs are specified.
 missing_files = []
-if options.gir_file == None:
+if options.gir_file is None:
     missing_files.append("GIR file")
-if options.xml_file == None:
+if options.xml_file is None:
     missing_files.append("binding.xml file")
-if options.ada_outfile == None:
+if options.ada_outfile is None:
     missing_files.append("Ada output file")
-if options.c_outfile == None:
+if options.c_outfile is None:
     missing_files.append("C output file")
 if missing_files:
     parser.error('Must specify files:\n\t' + ', '.join(missing_files))

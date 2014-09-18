@@ -459,11 +459,11 @@ package Gtk.Spin_Button is
    Climb_Rate_Property : constant Glib.Properties.Property_Double;
    --  Type: Gdouble
 
-   The_Digits_Property : constant Glib.Properties.Property_Uint;
-
    Numeric_Property : constant Glib.Properties.Property_Boolean;
 
    Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean;
+
+   The_Digits_Property : constant Glib.Properties.Property_Uint;
 
    Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy;
    --  Type: Gtk_Spin_Button_Update_Policy
@@ -651,12 +651,12 @@ private
      Glib.Properties.Build ("value");
    Update_Policy_Property : constant Gtk.Spin_Button.Property_Gtk_Spin_Button_Update_Policy :=
      Gtk.Spin_Button.Build ("update-policy");
+   The_Digits_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("digits");
    Snap_To_Ticks_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("snap-to-ticks");
    Numeric_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("numeric");
-   The_Digits_Property : constant Glib.Properties.Property_Uint :=
-     Glib.Properties.Build ("digits");
    Climb_Rate_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("climb-rate");
    Adjustment_Property : constant Glib.Properties.Property_Object :=

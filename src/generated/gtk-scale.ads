@@ -377,11 +377,11 @@ package Gtk.Scale is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   The_Digits_Property : constant Glib.Properties.Property_Int;
-
    Draw_Value_Property : constant Glib.Properties.Property_Boolean;
 
    Has_Origin_Property : constant Glib.Properties.Property_Boolean;
+
+   The_Digits_Property : constant Glib.Properties.Property_Int;
 
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
 
@@ -454,10 +454,10 @@ package Gtk.Scale is
 private
    Value_Pos_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
      Gtk.Enums.Build ("value-pos");
+   The_Digits_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("digits");
    Has_Origin_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-origin");
    Draw_Value_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("draw-value");
-   The_Digits_Property : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("digits");
 end Gtk.Scale;

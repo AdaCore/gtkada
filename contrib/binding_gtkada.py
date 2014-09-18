@@ -40,16 +40,16 @@ Where the package node is defined as follows:
                                 In particular used for "Self" -->
            type="..."      <!-- Override Ada types for all methods -->
            ctype="..."     <!-- Override C type (to better qualify it) -->
-           direction="..." <!-- Override direction (see <parameter> node below) -->
+           direction="..." <!-- Override direction (see <parameter> below) -->
        />
 
        <!-- By default, virtual methods are bound for interfaces, but not for
             other classes. You should use the following to control which
             methods should be bound.
        -->
-       <virtual-method     <!--  list of virtual methods to bind -->
-           id='...'        <!--  the name of the virtual method, or '*'  -->
-           bind=True       <!--  by default, all methods bound for interfaces -->
+       <virtual-method  <!--  list of virtual methods to bind -->
+           id='...'     <!--  the name of the virtual method, or '*'  -->
+           bind=True    <!--  by default, all methods bound for interfaces -->
        />
 
        <!-- The following tag can be used to override various properties from
@@ -88,7 +88,7 @@ Where the package node is defined as follows:
          </doc>
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param,
-                                use "varargs" to replace the varargs parameter-->
+                             use "varargs" to replace the varargs parameter -->
             ada="..."      <!-- optional, name to use in Ada. If empty, the
                                 parameter will be omitted in the Ada profile,
                                 but kept in the C profile.
@@ -104,15 +104,15 @@ Where the package node is defined as follows:
                                 is mapped to the null pointer -->
          />
          <body>...</body>  <!-- optional, body of subprogram (after "is")
-                                If the subprogram is defined for an interface,
-                                it will automatically be duplicated on each type
-                                that implements that interface. As such, you
-                                should use "+Self" to pass the parameter to
-                                C, where the type of the C parameter should be
-                                the interface type itself. See GtkTreeModel.
+                             If the subprogram is defined for an interface,
+                             it will automatically be duplicated on each type
+                             that implements that interface. As such, you
+                             should use "+Self" to pass the parameter to
+                             C, where the type of the C parameter should be
+                             the interface type itself. See GtkTreeModel.
 
-                                You can use "%(auto)s" to use the automatic
-                                body and append to it.  -->
+                             You can use "%(auto)s" to use the automatic
+                             body and append to it.  -->
          />
 
        <function id="...">   <!--  repeated as needed, for global functions -->
@@ -139,7 +139,7 @@ Where the package node is defined as follows:
              ada="..."     <!-- optional Ada name (no package info needed) -->
              prefix="GTK_" <!-- remove prefix from values to get Ada name -->
              asbitfield="false" <!--  forces a bitfield -->
-             ignore="value1 value2..."  <!--  values that should not be bound -->
+             ignore="value1 value2..."  <!-- values that should not be bound-->
        />
 
        <!-- Support for <record> types -->
@@ -176,8 +176,8 @@ Where the package node is defined as follows:
           <!-- Code will be put after generated subprograms-->
           <spec>...     <!-- optional, code to insert in spec -->
           <body before="true">...     <!-- optional, code to insert in body
-                               By default, it is inserted before the generated code,
-                               unless 'before' is set to "false" -->
+                By default, it is inserted before the generated code,
+                unless 'before' is set to "false" -->
 
           <type            <!-- Maps a C type to an Ada type -->
              ctype="..."   <!-- Mandatory: c type name -->
@@ -192,7 +192,8 @@ Where the package node is defined as follows:
 
 from xml.etree.cElementTree import parse, QName, tostring, SubElement
 from adaformat import AdaType, GObject, CType, Proxy, List, naming,\
-        Enum, package_name, Record
+    Enum, package_name, Record
+
 
 class GtkAda(object):
 
@@ -210,6 +211,7 @@ class GtkAda(object):
 
 
 class GtkAdaPackage(object):
+
     """A <package> node in the binding.xml file"""
 
     def __init__(self, node):
@@ -267,7 +269,8 @@ class GtkAdaPackage(object):
                 result.append((enum.get("ctype"),
                                naming.type(name="", cname=enum.get("ctype")),
                                enum.get("prefix", "GTK_"),
-                               enum.get("asbitfield", "false").lower() == "true",
+                               enum.get(
+                                   "asbitfield", "false").lower() == "true",
                                enum.get("ignore", "")
                                ))
         return result
@@ -459,9 +462,10 @@ class GtkAdaPackage(object):
 
 
 class GtkAdaMethod(object):
+
     def __init__(self, node, pkg):
         self.node = node
-        self.pkg  = pkg
+        self.pkg = pkg
 
     def cname(self):
         """Return the name of the C function"""
@@ -548,6 +552,7 @@ class GtkAdaMethod(object):
 
 
 class GtkAdaParameter(object):
+
     def __init__(self, node, default):
         self.node = node
         self.default = default
@@ -605,7 +610,9 @@ class GtkAdaParameter(object):
         else:
             return default == '1'
 
+
 class GtkAdaType(object):
+
     def __init__(self, node):
         self.node = node
 
