@@ -980,7 +980,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Iter_N_Children is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : Gtk_Tree_Iter) return Gint;
+      Iter       : access Gtk_Tree_Iter) return Gint;
    pragma Convention (C, Virtual_Iter_N_Children);
    --  Returns the number of children that Iter has.
    --  As a special case, if Iter is null, then the number of toplevel nodes
