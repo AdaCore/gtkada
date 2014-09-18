@@ -1439,7 +1439,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             info = ''
 
             for c in all:
-                if not self.gtkpkg.bind_virtual_method(c.get('name')):
+                if not self.gtkpkg.bind_virtual_method(
+                   c.get('name'), default=self.is_interface):
                     continue
 
                 gtkmethod=self.gtkpkg.get_method(cname=c.get(cidentifier))
@@ -1451,7 +1452,12 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     section = self.pkg.section("Virtual Methods")
 
                 info += 'procedure Set_%s\n' % basename
-                info += '   (Self    : %s_Interface_Descr;\n' % ifacename
+
+                if self.is_interface:
+                    info += '   (Self    : %s_Interface_Descr;\n' % ifacename
+                else:
+                    info += '   (Self    : Glib.Object.GObject_Class;\n'
+
                 info += '    Handler : %s);\n' % adaname
                 info += 'pragma Import (C, Set_%s, "gtkada_%s_set_%s");\n' % (
                     basename, ifacename, basename.lower())
@@ -2698,8 +2704,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._globals()
         self._fields()
 
-        if self.is_interface:
-            self._virtual_methods()
+        self._virtual_methods()
 
         if not into and self.name != "Gtk.Widget":
             self._implements()
