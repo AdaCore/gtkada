@@ -24,6 +24,7 @@
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 with Ada.Unchecked_Conversion;
 
+with Glib.Object;
 with Glib.Values;
 
 with Gtk.Arguments;              use Gtk.Arguments;
@@ -75,8 +76,25 @@ package body Gtkada.Application is
         (Obj   : System.Address;
          Flags : Gtkada_Application_Flags);
       pragma Import (C, C_Setup, "ada_gtk_setup_application");
+
+      function Internal
+         (Application_Id : Interfaces.C.Strings.chars_ptr;
+          Flags          : Glib.Application.GApplication_Flags)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_application_new");
+      Tmp_Application_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Return         : System.Address;
+
    begin
-      Gtk.Application.Initialize (Self, Application_Id, Flags);
+      if Application_Id = "" then
+         Tmp_Application_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Application_Id := New_String (Application_Id);
+      end if;
+      Tmp_Return := Internal (Tmp_Application_Id, Flags);
+      Free (Tmp_Application_Id);
+      Glib.Object.Set_Object (Self, Tmp_Return);
+
       C_Setup (Self.Get_Object, Gtkada_Flags);
    end Initialize;
 
