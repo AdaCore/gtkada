@@ -24,8 +24,9 @@
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
 with Ada.Unchecked_Conversion;
 
-with Glib.Object;
-with Glib.Values;
+with Glib.Application;           use Glib.Application;
+with Glib.Properties;            use Glib.Properties;
+with Glib.Values;                use Glib.Values;
 
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -77,23 +78,19 @@ package body Gtkada.Application is
          Flags : Gtkada_Application_Flags);
       pragma Import (C, C_Setup, "ada_gtk_setup_application");
 
-      function Internal
-         (Application_Id : Interfaces.C.Strings.chars_ptr;
-          Flags          : Glib.Application.GApplication_Flags)
-          return System.Address;
-      pragma Import (C, Internal, "gtk_application_new");
-      Tmp_Application_Id : Interfaces.C.Strings.chars_ptr;
-      Tmp_Return         : System.Address;
+      Value : GValue;
 
    begin
-      if Application_Id = "" then
-         Tmp_Application_Id := Interfaces.C.Strings.Null_Ptr;
+      if not Self.Is_Created then
+         Gtk.Application.Initialize (Self, Application_Id, Flags);
       else
-         Tmp_Application_Id := New_String (Application_Id);
+         Set_Property (Self, Application_Id_Property, Application_Id);
+
+         Init (Value, GType_Int);
+         Set_Int (Value, Gint (Flags));
+         Set_Property (Self, Property_Name (Flags_Property), Value);
+         Unset (Value);
       end if;
-      Tmp_Return := Internal (Tmp_Application_Id, Flags);
-      Free (Tmp_Application_Id);
-      Glib.Object.Set_Object (Self, Tmp_Return);
 
       C_Setup (Self.Get_Object, Gtkada_Flags);
    end Initialize;
