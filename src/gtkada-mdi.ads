@@ -198,10 +198,10 @@ package Gtkada.MDI is
    -- Windows --
    -------------
 
-   type Child_Flags is mod 2 ** 6;
+   type Child_Flags is mod 2 ** 7;
    Destroy_Button       : constant Child_Flags := 2 ** 2;
    Float_As_Transient   : constant Child_Flags := 2 ** 3;
-   Float_As_Dialog      : constant Child_Flags := 2 ** 5;
+   Float_To_Main        : constant Child_Flags := 2 ** 5;
    Always_Destroy_Float : constant Child_Flags := 2 ** 4;
    All_Buttons          : constant Child_Flags := Destroy_Button;
    --  Special flags to set up the widgets: The first is the buttons
@@ -213,9 +213,10 @@ package Gtkada.MDI is
    --  window, or unfloat it depending on the MDI's setup, as is the case for
    --  all dialogs in GtkAda. The MDI's setup will be ignored (and the child
    --  always destroyed when Esc is pressed) if Always_Destroy_Float is true.
-   --  Float_As_Dialog has the same behavior as Float_As_Transient, except
-   --  that the floated child won't be attached to the current MDI child, so
-   --  it won't close when the current MDI child is closed
+   --  Float_To_Main yields the same behavior as Float_As_Transient, except
+   --  that the floated child will always be attached to the main window.
+   --  What this means is that the child will stay on top of the MDI, and will
+   --  persist if you close the current MDI child.
 
    type Child_Group is new Positive;
    Group_Default : constant Child_Group := 1;

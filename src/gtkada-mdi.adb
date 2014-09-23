@@ -3634,7 +3634,7 @@ package body Gtkada.MDI is
          end if;
 
          if (Child.Flags and Float_As_Transient) /= 0
-             or else (Child.Flags and Float_As_Dialog) /= 0
+             or else (Child.Flags and Float_To_Main) /= 0
          then
             declare
                Parent : Gtk_Window := null;
@@ -3665,6 +3665,8 @@ package body Gtkada.MDI is
 
                      Item := Widget_List.Next (Item);
                   end loop;
+               elsif (Child.Flags and Float_To_Main) /= 0 then
+                  Parent := Gtk_Window (Get_Toplevel (Child.MDI));
                end if;
 
                Gtk_New (Diag,
