@@ -2841,7 +2841,7 @@ package body Gtkada.Canvas_View is
       procedure Do_Container_Layout
         (Item : not null access Abstract_Item_Record'Class) is
       begin
-         Container_Item_Record'Class (Item.all).Refresh_Layout (Context);
+         Item.Refresh_Layout (Context);
       end Do_Container_Layout;
 
    begin
