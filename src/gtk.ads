@@ -70,6 +70,8 @@ package Gtk is
 
 private
 
+   pragma Linker_Options ("-shared-libgcc");
+
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
    pragma Import (C, Micro_Version, "ada_gtk_micro_version");
