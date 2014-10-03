@@ -2742,6 +2742,7 @@ package Cairo is
    Null_Font_Options : constant Cairo_Font_Options;
 
 private
+   pragma Linker_Options ("-shared-libgcc");
 
    pragma Convention (C, Cairo_Destroy_Func);
    pragma Convention (C, Cairo_Status);
