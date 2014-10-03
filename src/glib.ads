@@ -399,6 +399,8 @@ package Glib is
    --  Create a new boxed type
 
 private
+   pragma Linker_Options ("-shared-libgcc");
+
    type C_Dummy is record
       Dummy1 : System.Address;
    end record;
