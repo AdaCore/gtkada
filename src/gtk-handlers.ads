@@ -173,6 +173,7 @@ with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
 with Gtk.Tree_Model;
+with Gtk.Tree_View_Column;
 with Gtk.Widget;
 
 with Unchecked_Conversion;
@@ -194,6 +195,10 @@ package Gtk.Handlers is
 
    function To_Address (Path : Gtk.Tree_Model.Gtk_Tree_Path)
       return System.Address;
+
+   function Get_Tree_View_Column
+     (Val : Glib.Values.GValue)
+      return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
 
    procedure Set_On_Exception (Handler : Gtkada.Bindings.Exception_Handler)
      renames Gtkada.Bindings.Set_On_Exception;
@@ -910,6 +915,10 @@ package Gtk.Handlers is
          new Marshallers.Generic_Marshaller_2
                (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path,
                 Gtk.Tree_Model.Gtk_Tree_Iter, Gtk.Tree_Model.Get_Tree_Iter);
+      package Tree_Path_Tree_Column_Marshaller is
+        new Marshallers.Generic_Marshaller_2
+          (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path,
+           Gtk.Tree_View_Column.Gtk_Tree_View_Column, Get_Tree_View_Column);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -946,6 +955,11 @@ package Gtk.Handlers is
         (Cb : Tree_Path_Tree_Iter_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Tree_Path_Tree_Iter_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Path_Tree_Column_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Path_Tree_Column_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
@@ -1147,6 +1161,10 @@ package Gtk.Handlers is
          new Marshallers.Generic_Marshaller_2
                (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path,
                 Gtk.Tree_Model.Gtk_Tree_Iter, Gtk.Tree_Model.Get_Tree_Iter);
+      package Tree_Path_Tree_Column_Marshaller is
+        new Marshallers.Generic_Marshaller_2
+          (Gtk.Tree_Model.Gtk_Tree_Path, Gtk.Tree_Model.Get_Tree_Path,
+           Gtk.Tree_View_Column.Gtk_Tree_View_Column, Get_Tree_View_Column);
 
       function To_Marshaller
         (Cb : Gint_Marshaller.Handler)
@@ -1183,6 +1201,11 @@ package Gtk.Handlers is
         (Cb : Tree_Path_Tree_Iter_Marshaller.Handler)
          return Marshallers.Marshaller
          renames Tree_Path_Tree_Iter_Marshaller.To_Marshaller;
+
+      function To_Marshaller
+        (Cb : Tree_Path_Tree_Column_Marshaller.Handler)
+         return Marshallers.Marshaller
+         renames Tree_Path_Tree_Column_Marshaller.To_Marshaller;
 
       --  Emitting a signal
 
