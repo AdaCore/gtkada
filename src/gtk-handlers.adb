@@ -1989,6 +1989,17 @@ package body Gtk.Handlers is
       return Get_Object (Path);
    end To_Address;
 
+   --------------------------
+   -- Get_Tree_View_Column --
+   --------------------------
+
+   function Get_Tree_View_Column
+     (Val : Glib.Values.GValue)
+      return Gtk.Tree_View_Column.Gtk_Tree_View_Column is
+   begin
+      return Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_Object (Val));
+   end Get_Tree_View_Column;
+
 end Gtk.Handlers;
 
 --  Design of the package:
