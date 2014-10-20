@@ -100,7 +100,7 @@ package Glib.Option is
       Short_Name : Gchar;
       Flags : GOption_Flags;
       Arg : GOption_Arg;
-      Arg_Data : System.Address;
+      Arg_Data : System.Address := System.Null_Address;
       Description : Interfaces.C.Strings.chars_ptr;
       Arg_Description : Interfaces.C.Strings.chars_ptr;
    end record;
