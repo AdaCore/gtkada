@@ -2315,7 +2315,7 @@ end "+";""" % self._subst,
         is_union = node.tag == nunion
         first_field_ctype = None
 
-        fields = []
+        fields = []   # array of (name,type,default) tuples
 
         # Check if we have forced the mapping as a C proxy ?
 
@@ -2364,11 +2364,13 @@ end "+";""" % self._subst,
                 if ftype is not None:
                     if ftype.ada in ("GSList", "GList") and private:
                         ftype = "System.Address"
+                        default_value = "System.Null_Address"
                     else:
+                        default_value = ftype.default_record_field_value
                         ftype = ftype.record_field_type(pkg=self.pkg)
 
                     self.pkg.add_with(package_name(ftype))
-                    fields.append((naming.case(name), ftype))
+                    fields.append((naming.case(name), ftype, default_value))
 
         if not fields:
             section.add(
@@ -2427,10 +2429,16 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 adder("\n" + Code(text).format())
 
             else:
-                c = Code(
-                    "\ntype %s is record\n" % base
-                    + "\n".join("%s : %s;" % f for f in fields)
-                    + "\nend record;\npragma Convention (C, %s);\n" % base)
+                c = []
+                for f in fields:
+                    if f[2]:
+                        c.append('%s : %s := %s;' % (f[0], f[1], f[2]))
+                    else:
+                        c.append('%s : %s;' % (f[0], f[1]))
+
+                c = Code('\ntype %s is record\n' % base
+                         + '\n'.join(c)
+                         + '\nend record;\npragma Convention (C, %s);\n' % base)
                 adder(c.format())
 
             if not private:

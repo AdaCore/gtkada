@@ -42,12 +42,12 @@ package Gtk.Binding_Set is
 
    type Gtk_Binding_Set is record
       Set_Name : Interfaces.C.Strings.chars_ptr;
-      Priority : Gint;
-      Widget_Path_Pspecs : System.Address;
-      Widget_Class_Pspecs : System.Address;
-      Class_Branch_Pspecs : System.Address;
+      Priority : Gint := 0;
+      Widget_Path_Pspecs : System.Address := System.Null_Address;
+      Widget_Class_Pspecs : System.Address := System.Null_Address;
+      Class_Branch_Pspecs : System.Address := System.Null_Address;
       Entries : System.Address;
-      Current : System.Address;
+      Current : System.Address := System.Null_Address;
       Parsed : Guint;
    end record;
    pragma Convention (C, Gtk_Binding_Set);

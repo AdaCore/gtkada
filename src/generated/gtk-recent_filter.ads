@@ -96,7 +96,7 @@ package Gtk.Recent_Filter is
       Mime_Type : Interfaces.C.Strings.chars_ptr;
       Applications : Interfaces.C.Strings.char_array_access;
       Groups : Interfaces.C.Strings.char_array_access;
-      Age : Gint;
+      Age : Gint := 0;
    end record;
    pragma Convention (C, Gtk_Recent_Filter_Info);
 

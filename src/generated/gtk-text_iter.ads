@@ -887,20 +887,20 @@ package Gtk.Text_Iter is
 
 private
 type Gtk_Text_Iter is record
-   Dummy1 : System.Address;
-   Dummy2 : System.Address;
-   Dummy3 : Gint;
-   Dummy4 : Gint;
-   Dummy5 : Gint;
-   Dummy6 : Gint;
-   Dummy7 : Gint;
-   Dummy8 : Gint;
-   Dummy9 : System.Address;
-   Dummy10 : System.Address;
-   Dummy11 : Gint;
-   Dummy12 : Gint;
-   Dummy13 : Gint;
-   Dummy14 : System.Address;
+   Dummy1 : System.Address := System.Null_Address;
+   Dummy2 : System.Address := System.Null_Address;
+   Dummy3 : Gint := 0;
+   Dummy4 : Gint := 0;
+   Dummy5 : Gint := 0;
+   Dummy6 : Gint := 0;
+   Dummy7 : Gint := 0;
+   Dummy8 : Gint := 0;
+   Dummy9 : System.Address := System.Null_Address;
+   Dummy10 : System.Address := System.Null_Address;
+   Dummy11 : Gint := 0;
+   Dummy12 : Gint := 0;
+   Dummy13 : Gint := 0;
+   Dummy14 : System.Address := System.Null_Address;
 end record;
 pragma Convention (C, Gtk_Text_Iter);
 

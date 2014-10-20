@@ -1262,10 +1262,10 @@ package Gtk.Tree_Model is
 
 private
 type Gtk_Tree_Iter is record
-   Stamp : Gint;
-   User_Data : System.Address;
-   User_Data2 : System.Address;
-   User_Data3 : System.Address;
+   Stamp : Gint := 0;
+   User_Data : System.Address := System.Null_Address;
+   User_Data2 : System.Address := System.Null_Address;
+   User_Data3 : System.Address := System.Null_Address;
 end record;
 pragma Convention (C, Gtk_Tree_Iter);
 

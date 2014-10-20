@@ -42,7 +42,7 @@ package Gtk.Text_Attributes is
    type Gtk_Text_Appearance is record
       Bg_Color : Gdk.Color.Gdk_Color;
       Fg_Color : Gdk.Color.Gdk_Color;
-      Rise : Gint;
+      Rise : Gint := 0;
       Underline : Guint;
       Strikethrough : Guint;
       Draw_Bg : Guint;
@@ -62,12 +62,12 @@ package Gtk.Text_Attributes is
       Direction : Gtk.Enums.Gtk_Text_Direction;
       Font : Pango.Font.Pango_Font_Description;
       Font_Scale : Gdouble;
-      Left_Margin : Gint;
-      Right_Margin : Gint;
-      Indent : Gint;
-      Pixels_Above_Lines : Gint;
-      Pixels_Below_Lines : Gint;
-      Pixels_Inside_Wrap : Gint;
+      Left_Margin : Gint := 0;
+      Right_Margin : Gint := 0;
+      Indent : Gint := 0;
+      Pixels_Above_Lines : Gint := 0;
+      Pixels_Below_Lines : Gint := 0;
+      Pixels_Inside_Wrap : Gint := 0;
       Tabs : System.Address;
       Wrap_Mode : Gtk.Enums.Gtk_Wrap_Mode;
       Language : System.Address;

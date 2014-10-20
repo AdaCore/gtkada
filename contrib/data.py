@@ -578,7 +578,7 @@ naming.type_exceptions = {
     "double":   Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "gshort":   Proxy("Gshort",  "Glib.Properties.Property_Int"),
     "int":      Proxy("Gint",    "Glib.Properties.Property_Int"),
-    "gint":     Proxy("Gint",    "Glib.Properties.Property_Int"),
+    "gint":     Proxy("Gint",    "Glib.Properties.Property_Int", default_record_field="0"),
     "gint8":    Proxy("Gint8",   "Glib.Properties.Property_Int"),
     "gint16":   Proxy("Gint16",  "Glib.Properties.Property_Int"),
     "gint32":   Proxy("Gint32",  "Glib.Properties.Property_Int"),
@@ -652,7 +652,7 @@ naming.type_exceptions = {
     "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSlist"),
     "DeviceList": List("Gdk.Device.Device_List.Glist"),
 
-    "gpointer":       Proxy("System.Address", ""),
+    "gpointer":       Proxy("System.Address", "", default_record_field="System.Null_Address"),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
     "GQuark":        Proxy("Glib.GQuark"),
     "GObject":       Proxy("Glib.Object.GObject"),
