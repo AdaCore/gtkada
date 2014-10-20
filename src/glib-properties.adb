@@ -171,7 +171,9 @@ package body Glib.Properties is
       Name   : Property_Object;
       Value  : access Glib.Object.GObject_Record'Class) is
    begin
-      Set_Property (Object, Property_Address (Name), Get_Object (Value));
+      Set_Property
+         (Object, Property_Address (Name),
+          Get_Object_Or_Null (GObject (Value)));
    end Set_Property;
 
    ------------------
@@ -202,7 +204,9 @@ package body Glib.Properties is
       Name   : Property_Object_WO;
       Value  : access Glib.Object.GObject_Record'Class) is
    begin
-      Set_Property (Object, Property_Address (Name), Get_Object (Value));
+      Set_Property
+         (Object, Property_Address (Name),
+          Get_Object_Or_Null (GObject (Value)));
    end Set_Property;
 
    ------------------
