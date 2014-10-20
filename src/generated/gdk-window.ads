@@ -208,14 +208,14 @@ package Gdk.Window is
    --  over when in fullscreen mode.
 
    type Gdk_Geometry is record
-      Min_Width : Gint;
-      Min_Height : Gint;
-      Max_Width : Gint;
-      Max_Height : Gint;
-      Base_Width : Gint;
-      Base_Height : Gint;
-      Width_Inc : Gint;
-      Height_Inc : Gint;
+      Min_Width : Gint := 0;
+      Min_Height : Gint := 0;
+      Max_Width : Gint := 0;
+      Max_Height : Gint := 0;
+      Base_Width : Gint := 0;
+      Base_Height : Gint := 0;
+      Width_Inc : Gint := 0;
+      Height_Inc : Gint := 0;
       Min_Aspect : Gdouble;
       Max_Aspect : Gdouble;
       Win_Gravity : Gdk_Gravity;

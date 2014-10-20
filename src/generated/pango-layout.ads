@@ -765,9 +765,9 @@ package Pango.Layout is
 private
 type Pango_Layout_Line is record
    Layout : System.Address;
-   Start_Index : Gint;
-   Length : Gint;
-   Runs : System.Address;
+   Start_Index : Gint := 0;
+   Length : Gint := 0;
+   Runs : System.Address := System.Null_Address;
    Is_Paragraph_Start : Guint;
    Resolved_Dir : Guint;
 end record;

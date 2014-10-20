@@ -292,8 +292,8 @@ package Gtk.Widget is
 
 
    type Gtk_Requisition is record
-      Width : Gint;
-      Height : Gint;
+      Width : Gint := 0;
+      Height : Gint := 0;
    end record;
    pragma Convention (C, Gtk_Requisition);
 

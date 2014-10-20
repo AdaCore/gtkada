@@ -83,6 +83,7 @@ class CType(object):
     def __init__(self, ada, property):
         self.ada = ada       # Fully qualified Ada type
         self.property = property
+        self.default_record_field_value = None
 
         self.is_ptr = False
         self.param = ada     # type as parameter
@@ -612,7 +613,7 @@ class Record(CType):
 class Proxy(CType):
 
     def __init__(self, ada, property=None, val_or_null=None,
-                 from_gvalue=None):
+                 from_gvalue=None, default_record_field=None):
         """:param val_or_null: is used when GIR indicates the parameter has
            allow-none=1, and is used to test whether we should pass NULL
            to C or a pointer to the Ada data.
@@ -620,6 +621,10 @@ class Proxy(CType):
            :param from_gvalue: is the function used to retrieve this type from
            a GValue, in particular when processing callbacks. The default is to
            retrieve a C_Proxy and Cast as appropriate.
+
+           :param str default_record_field: the default value to set in record
+              type declarations for fields of that type. No default value set
+              if this is None.
         """
 
         if property is None:
@@ -628,6 +633,7 @@ class Proxy(CType):
             CType.__init__(self, ada, property)
 
         self.val_or_null = val_or_null
+        self.default_record_field_value = default_record_field
 
     def record_field_type(self, pkg=None):
         if self.isArray and self.array_fixed_size is not None:
