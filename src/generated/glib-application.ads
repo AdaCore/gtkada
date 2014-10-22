@@ -167,7 +167,10 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Glib.Variant;            use Glib.Variant;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
+pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;         use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Glib.Application is
 
@@ -874,7 +877,7 @@ package Glib.Application is
 
    type Virtual_Local_Command_Line is access function
      (Self        : System.Address;
-      Arguments   : access Gtkada.Bindings.chars_ptr_array_access;
+      Arguments   : access Interfaces.C.Strings.chars_ptr_array;
       Exit_Status : access Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Local_Command_Line);
    --  This virtual function is always invoked in the local instance. It gets

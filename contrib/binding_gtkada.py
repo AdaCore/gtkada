@@ -394,9 +394,6 @@ class GtkAdaPackage(object):
             for f in self.node.findall("method"):
                 if f.get("id") == cname:
                     return GtkAdaMethod(f, self)
-            for f in self.node.findall("virtual-method"):
-                if f.get("id") == cname:
-                    return GtkAdaMethod(f, self)
         return GtkAdaMethod(None, self)
 
     def get_type(self, name):
