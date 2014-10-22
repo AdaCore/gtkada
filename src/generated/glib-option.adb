@@ -81,24 +81,21 @@ package body Glib.Option is
          Error : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_option_context_parse");
 
+      function Convert is new Ada.Unchecked_Conversion
+        (System.Address, chars_ptr_array_access);
+
       Argc : aliased Glib.Gint;
       Argv : chars_ptr_array_access;
       Err  : Glib.Error.GError;
       Ret  : Glib.Gboolean;
-
    begin
       Argv := Get_Args (Command_Line.Get_Object, Argc'Access);
 
       if Filter = null then
-         Ret := Internal
-           (Get_Object (Self),
-            Argc'Access,
-            Argv'Address,
-            Err'Address);
+         Ret := Internal (Get_Object (Self), Argc'Access, Argv'Address, Err'Address);
       else
          declare
             Args : aliased ICS.chars_ptr_array := To_Chars_Ptr (Argv);
-            Args_Access : System.Address;
             Idx  : aliased Glib.Gint := 1;
          begin
             --  Copy command name argument
@@ -113,12 +110,45 @@ package body Glib.Option is
                end if;
             end loop;
 
-            Args_Access := Args'Address;
+            Argv := Convert (Args'Address);
             Ret := Internal
-              (Get_Object (Self), Idx'Access, Args_Access'Address, Err'Address);
+              (Get_Object (Self), Idx'Access, Argv'Address, Err'Address);
          end;
       end if;
 
+      Error := Err;
+      Success := Ret /= 0;
+   end Parse;
+
+   -----------
+   -- Parse --
+   -----------
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Argv         : access chars_ptr_array_access;--  Null-terminated
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError)
+   is
+      use Interfaces.C;
+      function Internal
+        (Self  : System.Address;
+         Argc  : access Glib.Gint;
+         Argv  : access chars_ptr_array_access;
+         Error : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_option_context_parse");
+
+      Err  : Glib.Error.GError;
+      Ret  : Glib.Gboolean;
+      Argc : aliased Glib.Gint := 0;
+
+   begin
+      while Argv.all (size_t (Argc)) /= Null_Ptr loop
+         Argc := Argc + 1;
+      end loop;
+
+      Ret := Internal (Get_Object (Self), Argc'Access, Argv, Err'Address);
+      Argv.all (size_t (Argc)) := Null_Ptr;
       Error := Err;
       Success := Ret /= 0;
    end Parse;
