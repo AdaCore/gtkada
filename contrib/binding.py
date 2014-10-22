@@ -1451,7 +1451,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                    c.get('name'), default=self.is_interface):
                     continue
 
-                gtkmethod=self.gtkpkg.get_method(cname=c.get(cidentifier))
+                gtkmethod = self.gtkpkg.get_method(cname=c.get('name'))
                 basename = gtkmethod.ada_name() or c.get('name').title()
                 adaname = "Virtual_%s" % basename
 
