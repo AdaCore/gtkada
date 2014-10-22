@@ -343,6 +343,13 @@ package Glib.Option is
    --  Parses the arguments given via Command_Line, removing from the arguments
    --  list all parsed switches.
 
+   procedure Parse
+     (Self         : Goption_Context;
+      Argv         : access chars_ptr_array_access;--  Null-terminated
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError);
+   --  This version is suitable for use from Glib.Application.Local_Command_Line
+
    ---------------
    -- Functions --
    ---------------
