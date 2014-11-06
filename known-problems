@@ -1,3 +1,12 @@
+Known problems fixed in Gtkada 3.8.2_1
+
+- NB05-034 Gtkada.MDI.Set_Title not updating tooltip properly
+  Problem:    When only the long title of an MDI_Child is changed, the tooltip
+              displayed while the mouse is hover a notebook tab is not
+              refreshed.
+
+  Workaround: Also change the short title
+
 Known problems fixed in GtkAda 3.8.2
 
 - N326-016 Implementing an interface raises gtk+ warnings
