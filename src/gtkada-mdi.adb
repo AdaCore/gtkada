@@ -3052,8 +3052,6 @@ package body Gtkada.MDI is
       end if;
 
       if Short_Title_Changed then
-         Update_Tab_Label (Child);
-
          --  Update the menu, if it exists. We need to recreate the menu item
          --  to keep it sorted
 
@@ -3064,6 +3062,7 @@ package body Gtkada.MDI is
       end if;
 
       if Title_Changed or else Short_Title_Changed then
+         Update_Tab_Label (Child);   --  this also updated the tooltip
          Child.Queue_Draw;
          if Child.MDI /= null then
             Emit_By_Name_Child
