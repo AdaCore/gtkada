@@ -44,7 +44,7 @@ See GClassInitFunc() for a discussion of the class intialization process.</doc>
       </return-value>
       <parameters>
         <parameter name="g_class" transfer-ownership="none">
-          <doc xml:space="preserve">The #GTypeClass structure to finalize.</doc>
+          <doc xml:space="preserve">The #GTypeClass structure to finalize</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -63,7 +63,7 @@ intialization process.</doc>
       </return-value>
       <parameters>
         <parameter name="g_class" transfer-ownership="none">
-          <doc xml:space="preserve">The #GTypeClass structure to initialize.</doc>
+          <doc xml:space="preserve">The #GTypeClass structure to initialize</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -1830,7 +1830,10 @@ denotes a flags type.</doc>
                 c:identifier="g_cclosure_marshal_generic"
                 version="2.30">
         <doc xml:space="preserve">A generic marshaller function implemented via
-[libffi](http://sourceware.org/libffi/).</doc>
+[libffi](http://sourceware.org/libffi/).
+
+Normally this function is not passed explicitly to g_signal_new(),
+but used automatically by GLib when specifying a %NULL marshaller.</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
@@ -2002,11 +2005,6 @@ is connected). Use G_CALLBACK() to cast the callback function to a #GCallback.</
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
-      <parameters>  <!-- AdaCore -->
-        <parameter name="data" transfer-ownership="none">
-          <type name="gpointer" c:type="gpointer"/>
-        </parameter>
-      </parameters>
     </callback>
     <callback name="ClassFinalizeFunc" c:type="GClassFinalizeFunc">
       <doc xml:space="preserve">A callback function used by the type system to finalize a class.
@@ -2021,11 +2019,11 @@ reference count drops to zero).</doc>
       </return-value>
       <parameters>
         <parameter name="g_class" transfer-ownership="none">
-          <doc xml:space="preserve">The #GTypeClass structure to finalize.</doc>
+          <doc xml:space="preserve">The #GTypeClass structure to finalize</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
         <parameter name="class_data" transfer-ownership="none">
-          <doc xml:space="preserve">The @class_data member supplied via the #GTypeInfo structure.</doc>
+          <doc xml:space="preserve">The @class_data member supplied via the #GTypeInfo structure</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -2034,24 +2032,17 @@ reference count drops to zero).</doc>
       <doc xml:space="preserve">A callback function used by the type system to initialize the class
 of a specific type. This function should initialize all static class
 members.
+
 The initialization process of a class involves:
-&lt;itemizedlist&gt;
-&lt;listitem&gt;&lt;para&gt;
-	1 - Copying common members from the parent class over to the
-	derived class structure.
-&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;
-	2 -  Zero initialization of the remaining members not copied
-	over from the parent class.
-&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;
-	3 - Invocation of the GBaseInitFunc() initializers of all parent
-	types and the class' type.
-&lt;/para&gt;&lt;/listitem&gt;
-&lt;listitem&gt;&lt;para&gt;
-	4 - Invocation of the class' GClassInitFunc() initializer.
-&lt;/para&gt;&lt;/listitem&gt;
-&lt;/itemizedlist&gt;
+
+- Copying common members from the parent class over to the
+  derived class structure.
+- Zero initialization of the remaining members not copied
+  over from the parent class.
+- Invocation of the GBaseInitFunc() initializers of all parent
+  types and the class' type.
+- Invocation of the class' GClassInitFunc() initializer.
+
 Since derived classes are partially initialized through a memory copy
 of the parent class, the general rule is that GBaseInitFunc() and
 GBaseFinalizeFunc() should take care of necessary reinitialization
@@ -2062,10 +2053,11 @@ class members, while dynamic class members (such as allocated strings
 or reference counted resources) are better handled by a GBaseInitFunc()
 for this type, so proper initialization of the dynamic class members
 is performed for class initialization of derived types as well.
+
 An example may help to correspond the intend of the different class
 initializers:
 
-|[
+|[&lt;!-- language="C" --&gt;
 typedef struct {
   GObjectClass parent_class;
   gint         static_integer;
@@ -2111,6 +2103,7 @@ type_b_class_init (TypeBClass *class)
 Initialization of TypeBClass will first cause initialization of
 TypeAClass (derived classes reference their parent classes, see
 g_type_class_ref() on this).
+
 Initialization of TypeAClass roughly involves zero-initializing its fields,
 then calling its GBaseInitFunc() type_a_base_class_init() to allocate
 its dynamic members (dynamic_string), and finally calling its GClassInitFunc()
@@ -2121,11 +2114,13 @@ zero-initialization of the remaining fields in TypeBClass.
 The dynamic members of TypeAClass within TypeBClass now need
 reinitialization which is performed by calling type_a_base_class_init()
 with an argument of TypeBClass.
+
 After that, the GBaseInitFunc() of TypeBClass, type_b_base_class_init()
 is called to allocate the dynamic members of TypeBClass (dynamic_gstring),
 and finally the GClassInitFunc() of TypeBClass, type_b_class_init(),
 is called to complete the initialization process with the static members
 (static_float).
+
 Corresponding finalization counter parts to the GBaseInitFunc() functions
 have to be provided to release allocated resources at class finalization
 time.</doc>
@@ -2150,7 +2145,7 @@ time.</doc>
             c:symbol-prefix="closure">
       <doc xml:space="preserve">A #GClosure represents a callback supplied by the programmer. It
 will generally comprise a function of some kind and a marshaller
-used to call it. It is the reponsibility of the marshaller to
+used to call it. It is the responsibility of the marshaller to
 convert the arguments for the invocation from #GValues into
 a suitable form, perform the callback on the converted arguments,
 and transform the return value back into a #GValue.
@@ -2454,6 +2449,7 @@ been invalidated before).</doc>
           </instance-parameter>
           <parameter name="return_value"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1">
             <doc xml:space="preserve">a #GValue to store the return
                value. May be %NULL if the callback of @closure
@@ -2474,6 +2470,7 @@ been invalidated before).</doc>
           </parameter>
           <parameter name="invocation_hint"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1">
             <doc xml:space="preserve">a context-dependent invocation hint</doc>
             <type name="gpointer" c:type="gpointer"/>
@@ -2681,6 +2678,7 @@ closure, then the closure will be destroyed and freed.</doc>
         </parameter>
         <parameter name="return_value"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">a #GValue to store the return
  value. May be %NULL if the callback of @closure doesn't return a
@@ -2693,7 +2691,7 @@ closure, then the closure will be destroyed and freed.</doc>
         </parameter>
         <parameter name="param_values" transfer-ownership="none">
           <doc xml:space="preserve">an array of
- #GValue&lt;!-- --&gt;s holding the arguments on which to invoke the
+ #GValues holding the arguments on which to invoke the
  callback of @closure</doc>
           <array length="2" zero-terminated="0" c:type="GValue*">
             <type name="Value" c:type="GValue"/>
@@ -2701,6 +2699,7 @@ closure, then the closure will be destroyed and freed.</doc>
         </parameter>
         <parameter name="invocation_hint"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">the invocation hint given as the
  last argument to g_closure_invoke()</doc>
@@ -2708,6 +2707,7 @@ closure, then the closure will be destroyed and freed.</doc>
         </parameter>
         <parameter name="marshal_data"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">additional data specified when
  registering the marshaller, see g_closure_set_marshal() and
@@ -2750,7 +2750,7 @@ connection.</doc>
       </member>
       <member name="swapped" value="2" c:identifier="G_CONNECT_SWAPPED">
         <doc xml:space="preserve">whether the instance and data should be swapped when
- calling the handler.</doc>
+ calling the handler; see g_signal_connect_swapped() for an example.</doc>
       </member>
     </bitfield>
     <record name="EnumClass" c:type="GEnumClass">
@@ -2838,7 +2838,7 @@ nickname.</doc>
            glib:type-name="GInitiallyUnowned"
            glib:get-type="g_initially_unowned_get_type"
            glib:type-struct="InitiallyUnownedClass">
-      <doc xml:space="preserve">All the fields in the &lt;structname&gt;GInitiallyUnowned&lt;/structname&gt; structure
+      <doc xml:space="preserve">All the fields in the GInitiallyUnowned structure
 are private to the #GInitiallyUnowned implementation and should never be
 accessed directly.</doc>
       <field name="g_type_instance">
@@ -2854,7 +2854,7 @@ accessed directly.</doc>
     <record name="InitiallyUnownedClass"
             c:type="GInitiallyUnownedClass"
             glib:is-gtype-struct-for="InitiallyUnowned">
-      <doc xml:space="preserve">The class structure for the &lt;structname&gt;GInitiallyUnowned&lt;/structname&gt; type.</doc>
+      <doc xml:space="preserve">The class structure for the GInitiallyUnowned type.</doc>
       <field name="g_type_class">
         <doc xml:space="preserve">the parent class</doc>
         <type name="TypeClass" c:type="GTypeClass"/>
@@ -3008,20 +3008,24 @@ accessed directly.</doc>
       <doc xml:space="preserve">A callback function used by the type system to initialize a new
 instance of a type. This function initializes all instance members and
 allocates any resources required by it.
+
 Initialization of a derived instance involves calling all its parent
 types instance initializers, so the class member of the instance
 is altered during its initialization to always point to the class that
-belongs to the type the current initializer was introduced for.</doc>
+belongs to the type the current initializer was introduced for.
+
+The extended members of @instance are guaranteed to have been filled with
+zeros before this function is called.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
       <parameters>
         <parameter name="instance" transfer-ownership="none">
-          <doc xml:space="preserve">The instance to initialize.</doc>
+          <doc xml:space="preserve">The instance to initialize</doc>
           <type name="TypeInstance" c:type="GTypeInstance*"/>
         </parameter>
         <parameter name="g_class" transfer-ownership="none">
-          <doc xml:space="preserve">The class of the type the instance is created for.</doc>
+          <doc xml:space="preserve">The class of the type the instance is created for</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -3035,11 +3039,11 @@ allocated by the corresponding GInterfaceInitFunc() function.</doc>
       </return-value>
       <parameters>
         <parameter name="g_iface" transfer-ownership="none">
-          <doc xml:space="preserve">The interface structure to finalize.</doc>
+          <doc xml:space="preserve">The interface structure to finalize</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
         <parameter name="iface_data" transfer-ownership="none">
-          <doc xml:space="preserve">The @interface_data supplied via the #GInterfaceInfo structure.</doc>
+          <doc xml:space="preserve">The @interface_data supplied via the #GInterfaceInfo structure</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -3063,17 +3067,20 @@ used specifically for managing interface types.</doc>
     <callback name="InterfaceInitFunc" c:type="GInterfaceInitFunc">
       <doc xml:space="preserve">A callback function used by the type system to initialize a new
 interface.  This function should initialize all internal data and
-allocate any resources required by the interface.</doc>
+allocate any resources required by the interface.
+
+The members of @iface_data are guaranteed to have been filled with
+zeros before this function is called.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
       <parameters>
         <parameter name="g_iface" transfer-ownership="none">
-          <doc xml:space="preserve">The interface structure to initialize.</doc>
+          <doc xml:space="preserve">The interface structure to initialize</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
         <parameter name="iface_data" transfer-ownership="none">
-          <doc xml:space="preserve">The @interface_data supplied via the #GInterfaceInfo structure.</doc>
+          <doc xml:space="preserve">The @interface_data supplied via the #GInterfaceInfo structure</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -3084,7 +3091,7 @@ allocate any resources required by the interface.</doc>
            glib:type-name="GObject"
            glib:get-type="g_object_get_type"
            glib:type-struct="ObjectClass">
-      <doc xml:space="preserve">All the fields in the &lt;structname&gt;GObject&lt;/structname&gt; structure are private
+      <doc xml:space="preserve">All the fields in the GObject structure are private
 to the #GObject implementation and should never be accessed directly.</doc>
       <constructor name="new_valist"
                    c:identifier="g_object_new_valist"
@@ -3715,6 +3722,7 @@ g_object_bind_property_with_closures() instead.</doc>
           </parameter>
           <parameter name="transform_to"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      scope="notified">
             <doc xml:space="preserve">the transformation function
@@ -3723,6 +3731,7 @@ g_object_bind_property_with_closures() instead.</doc>
           </parameter>
           <parameter name="transform_from"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      scope="notified"
                      closure="6"
@@ -3829,12 +3838,16 @@ object.</doc>
           </parameter>
           <parameter name="dup_func"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      closure="2">
             <doc xml:space="preserve">function to dup the value</doc>
             <type name="GLib.DuplicateFunc" c:type="GDuplicateFunc"/>
           </parameter>
-          <parameter name="user_data" transfer-ownership="none" allow-none="1">
+          <parameter name="user_data"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">passed as user_data to @dup_func</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -3876,12 +3889,16 @@ object.</doc>
           </parameter>
           <parameter name="dup_func"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      closure="2">
             <doc xml:space="preserve">function to dup the value</doc>
             <type name="GLib.DuplicateFunc" c:type="GDuplicateFunc"/>
           </parameter>
-          <parameter name="user_data" transfer-ownership="none" allow-none="1">
+          <parameter name="user_data"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">passed as user_data to @dup_func</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -4223,16 +4240,23 @@ should not destroy the object in the normal way.</doc>
             <doc xml:space="preserve">a string, naming the user data pointer</doc>
             <type name="utf8" c:type="const gchar*"/>
           </parameter>
-          <parameter name="oldval" transfer-ownership="none" allow-none="1">
+          <parameter name="oldval"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the old value to compare against</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
-          <parameter name="newval" transfer-ownership="none" allow-none="1">
+          <parameter name="newval"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the new value</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
           <parameter name="destroy"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      scope="async">
             <doc xml:space="preserve">a destroy notify for the new value</doc>
@@ -4240,6 +4264,7 @@ should not destroy the object in the normal way.</doc>
           </parameter>
           <parameter name="old_destroy"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      scope="async">
             <doc xml:space="preserve">destroy notify for the existing value</doc>
@@ -4277,16 +4302,23 @@ should not destroy the object in the normal way.</doc>
             <doc xml:space="preserve">a #GQuark, naming the user data pointer</doc>
             <type name="GLib.Quark" c:type="GQuark"/>
           </parameter>
-          <parameter name="oldval" transfer-ownership="none" allow-none="1">
+          <parameter name="oldval"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the old value to compare against</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
-          <parameter name="newval" transfer-ownership="none" allow-none="1">
+          <parameter name="newval"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the new value</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
           <parameter name="destroy"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      scope="async">
             <doc xml:space="preserve">a destroy notify for the new value</doc>
@@ -4294,6 +4326,7 @@ should not destroy the object in the normal way.</doc>
           </parameter>
           <parameter name="old_destroy"
                      transfer-ownership="none"
+                     nullable="1"
                      allow-none="1"
                      scope="async">
             <doc xml:space="preserve">destroy notify for the existing value</doc>
@@ -4698,7 +4731,7 @@ detail strings for the notify signal.</doc>
     <record name="ObjectClass"
             c:type="GObjectClass"
             glib:is-gtype-struct-for="Object">
-      <doc xml:space="preserve">The class structure for the &lt;structname&gt;GObject&lt;/structname&gt; type.
+      <doc xml:space="preserve">The class structure for the GObject type.
 
 &lt;example&gt;
 &lt;title&gt;Implementing singletons using a constructor&lt;/title&gt;
@@ -4894,8 +4927,12 @@ my_singleton_constructor (GType                  type,
       <method name="install_properties"
               c:identifier="g_object_class_install_properties"
               version="2.26">
-        <doc xml:space="preserve">Installs new properties from an array of #GParamSpecs. This is
-usually done in the class initializer.
+        <doc xml:space="preserve">Installs new properties from an array of #GParamSpecs.
+
+All properties should be installed during the class initializer.  It
+is possible to install properties after that, but doing so is not
+recommend, and specifically, is not guaranteed to be thread-safe vs.
+use of properties on the same type on other threads.
 
 The property id of each property is the index of each #GParamSpec in
 the @pspecs array.
@@ -4974,7 +5011,12 @@ my_object_set_foo (MyObject *self, gint foo)
       </method>
       <method name="install_property"
               c:identifier="g_object_class_install_property">
-        <doc xml:space="preserve">Installs a new property. This is usually done in the class initializer.
+        <doc xml:space="preserve">Installs a new property.
+
+All properties should be installed during the class initializer.  It
+is possible to install properties after that, but doing so is not
+recommend, and specifically, is not guaranteed to be thread-safe vs.
+use of properties on the same type on other threads.
 
 Note that it is possible to redefine a property in a derived class,
 by installing a property with the same name. This can be useful at times,
@@ -5061,7 +5103,7 @@ g_param_spec_get_redirect_target().</doc>
       </method>
     </record>
     <record name="ObjectConstructParam" c:type="GObjectConstructParam">
-      <doc xml:space="preserve">The &lt;structname&gt;GObjectConstructParam&lt;/structname&gt; struct is an auxiliary
+      <doc xml:space="preserve">The GObjectConstructParam struct is an auxiliary
 structure used to hand #GParamSpec/#GValue pairs to the @constructor of
 a #GObjectClass.</doc>
       <field name="pspec" writable="1">
@@ -5139,10 +5181,6 @@ a #GObjectClass.</doc>
       <doc xml:space="preserve">Mask containing the bits of #GParamSpec.flags which are reserved for GLib.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="PARAM_READWRITE" value="0" c:type="G_PARAM_READWRITE">
-      <doc xml:space="preserve">#GParamFlags value alias for %G_PARAM_READABLE | %G_PARAM_WRITABLE.</doc>
-      <type name="gint" c:type="gint"/>
-    </constant>
     <constant name="PARAM_STATIC_STRINGS"
               value="0"
               c:type="G_PARAM_STATIC_STRINGS">
@@ -5153,7 +5191,7 @@ Since 2.13.0</doc>
     </constant>
     <constant name="PARAM_USER_SHIFT" value="8" c:type="G_PARAM_USER_SHIFT">
       <doc xml:space="preserve">Minimum shift count to be used for user defined flags, to be stored in
-#GParamSpec.flags. The maximum allowed is 30 + G_PARAM_USER_SHIFT.</doc>
+#GParamSpec.flags. The maximum allowed is 10.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
     <bitfield name="ParamFlags" c:type="GParamFlags">
@@ -5164,6 +5202,9 @@ can be configured. See also #G_PARAM_READWRITE and #G_PARAM_STATIC_STRINGS.</doc
       </member>
       <member name="writable" value="2" c:identifier="G_PARAM_WRITABLE">
         <doc xml:space="preserve">the parameter is writable</doc>
+      </member>
+      <member name="readwrite" value="3" c:identifier="G_PARAM_READWRITE">
+        <doc xml:space="preserve">alias for %G_PARAM_READABLE | %G_PARAM_WRITABLE</doc>
       </member>
       <member name="construct" value="4" c:identifier="G_PARAM_CONSTRUCT">
         <doc xml:space="preserve">the parameter will be set upon object construction</doc>
@@ -5201,6 +5242,14 @@ can be configured. See also #G_PARAM_READWRITE and #G_PARAM_STATIC_STRINGS.</doc
  parameter is guaranteed to remain valid and
  unmodified for the lifetime of the parameter.
  Since 2.8</doc>
+      </member>
+      <member name="explicit_notify"
+              value="1073741824"
+              c:identifier="G_PARAM_EXPLICIT_NOTIFY">
+        <doc xml:space="preserve">calls to g_object_set_property() for this
+  property will not automatically result in a "notify" signal being
+  emitted: the implementation must call g_object_notify() themselves
+  in case the property actually changes.  Since: 2.42.</doc>
       </member>
       <member name="deprecated"
               value="2147483648"
@@ -5651,8 +5700,8 @@ required to update user data pointers with a destroy notifier.</doc>
     <record name="ParamSpecClass"
             c:type="GParamSpecClass"
             glib:is-gtype-struct-for="ParamSpec">
-      <doc xml:space="preserve">The class structure for the &lt;structname&gt;GParamSpec&lt;/structname&gt; type.
-Normally, &lt;structname&gt;GParamSpec&lt;/structname&gt; classes are filled by
+      <doc xml:space="preserve">The class structure for the GParamSpec type.
+Normally, GParamSpec classes are filled by
 g_param_type_register_static().</doc>
       <field name="g_type_class">
         <doc xml:space="preserve">the parent class</doc>
@@ -6177,7 +6226,7 @@ g_param_type_register_static().</doc>
         <type name="guint16" c:type="guint16"/>
       </field>
       <field name="n_preallocs" writable="1">
-        <doc xml:space="preserve">Prior to GLib 2.10, it specified the number of pre-allocated (cached) instances to reserve memory for (0 indicates no caching). Since GLib 2.10, it is ignored, since instances are allocated with the &lt;link linkend="glib-Memory-Slices"&gt;slice allocator&lt;/link&gt; now.</doc>
+        <doc xml:space="preserve">Prior to GLib 2.10, it specified the number of pre-allocated (cached) instances to reserve memory for (0 indicates no caching). Since GLib 2.10, it is ignored, since instances are allocated with the [slice allocator][glib-Memory-Slices] now.</doc>
         <type name="guint16" c:type="guint16"/>
       </field>
       <field name="instance_init">
@@ -6423,7 +6472,7 @@ g_param_type_register_static().</doc>
       </field>
     </class>
     <record name="Parameter" c:type="GParameter">
-      <doc xml:space="preserve">The &lt;structname&gt;GParameter&lt;/structname&gt; struct is an auxiliary structure used
+      <doc xml:space="preserve">The GParameter struct is an auxiliary structure used
 to hand parameter name/value pairs to g_object_newv().</doc>
       <field name="name" writable="1">
         <doc xml:space="preserve">the parameter name</doc>
@@ -6630,11 +6679,11 @@ filled in by the g_signal_query() function.</doc>
       <field name="param_types" writable="1">
         <doc xml:space="preserve">The individual parameter types for
  user callbacks, note that the effective callback signature is:
- &lt;programlisting&gt;
+ |[&lt;!-- language="C" --&gt;
  @return_type callback (#gpointer     data1,
  [param_types param_names,]
  gpointer     data2);
- &lt;/programlisting&gt;</doc>
+ ]|</doc>
         <array length="5" zero-terminated="0" c:type="GType*">
           <type name="GType" c:type="GType"/>
         </array>
@@ -6821,7 +6870,7 @@ otherwise.</doc>
 When an object is allocated, the private structures for
 the type and all of its parent types are allocated
 sequentially in the same memory block as the public
-structures.
+structures, and are zero-filled.
 
 Note that the accumulated size of the private structures of
 a type and all its parent types cannot exceed 64 KiB.
@@ -6863,6 +6912,7 @@ my_object_init (MyObject *my_object)
   my_object-&gt;priv = G_TYPE_INSTANCE_GET_PRIVATE (my_object,
                                                  MY_TYPE_OBJECT,
                                                  MyObjectPrivate);
+  // my_object-&gt;priv-&gt;some_field will be automatically initialised to 0
 }
 
 static int
@@ -6993,8 +7043,8 @@ The functions have to check the class id passed in to figure
 whether they actually want to cache the class of this type, since all
 classes are routed through the same #GTypeClassCacheFunc chain.</doc>
       <return-value transfer-ownership="none">
-        <doc xml:space="preserve">%TRUE to stop further #GTypeClassCacheFunc&lt;!-- --&gt;s from being
- called, %FALSE to continue.</doc>
+        <doc xml:space="preserve">%TRUE to stop further #GTypeClassCacheFuncs from being
+ called, %FALSE to continue</doc>
         <type name="gboolean" c:type="gboolean"/>
       </return-value>
       <parameters>
@@ -7019,50 +7069,50 @@ If you need to enable debugging features, use the GOBJECT_DEBUG
 environment variable.</doc>
       <doc-deprecated xml:space="preserve">g_type_init() is now done automatically</doc-deprecated>
       <member name="none" value="0" c:identifier="G_TYPE_DEBUG_NONE">
-        <doc xml:space="preserve">Print no messages.</doc>
+        <doc xml:space="preserve">Print no messages</doc>
       </member>
       <member name="objects" value="1" c:identifier="G_TYPE_DEBUG_OBJECTS">
-        <doc xml:space="preserve">Print messages about object bookkeeping.</doc>
+        <doc xml:space="preserve">Print messages about object bookkeeping</doc>
       </member>
       <member name="signals" value="2" c:identifier="G_TYPE_DEBUG_SIGNALS">
-        <doc xml:space="preserve">Print messages about signal emissions.</doc>
+        <doc xml:space="preserve">Print messages about signal emissions</doc>
       </member>
       <member name="mask" value="3" c:identifier="G_TYPE_DEBUG_MASK">
-        <doc xml:space="preserve">Mask covering all debug flags.</doc>
+        <doc xml:space="preserve">Mask covering all debug flags</doc>
       </member>
     </bitfield>
     <bitfield name="TypeFlags" c:type="GTypeFlags">
       <doc xml:space="preserve">Bit masks used to check or determine characteristics of a type.</doc>
       <member name="abstract" value="16" c:identifier="G_TYPE_FLAG_ABSTRACT">
         <doc xml:space="preserve">Indicates an abstract type. No instances can be
- created for an abstract type.</doc>
+ created for an abstract type</doc>
       </member>
       <member name="value_abstract"
               value="32"
               c:identifier="G_TYPE_FLAG_VALUE_ABSTRACT">
         <doc xml:space="preserve">Indicates an abstract value type, i.e. a type
  that introduces a value table, but can't be used for
- g_value_init().</doc>
+ g_value_init()</doc>
       </member>
     </bitfield>
     <bitfield name="TypeFundamentalFlags" c:type="GTypeFundamentalFlags">
       <doc xml:space="preserve">Bit masks used to check or determine specific characteristics of a
 fundamental type.</doc>
       <member name="classed" value="1" c:identifier="G_TYPE_FLAG_CLASSED">
-        <doc xml:space="preserve">Indicates a classed type.</doc>
+        <doc xml:space="preserve">Indicates a classed type</doc>
       </member>
       <member name="instantiatable"
               value="2"
               c:identifier="G_TYPE_FLAG_INSTANTIATABLE">
-        <doc xml:space="preserve">Indicates an instantiable type (implies classed).</doc>
+        <doc xml:space="preserve">Indicates an instantiable type (implies classed)</doc>
       </member>
       <member name="derivable" value="4" c:identifier="G_TYPE_FLAG_DERIVABLE">
-        <doc xml:space="preserve">Indicates a flat derivable type.</doc>
+        <doc xml:space="preserve">Indicates a flat derivable type</doc>
       </member>
       <member name="deep_derivable"
               value="8"
               c:identifier="G_TYPE_FLAG_DEEP_DERIVABLE">
-        <doc xml:space="preserve">Indicates a deep derivable type (implies derivable).</doc>
+        <doc xml:space="preserve">Indicates a deep derivable type (implies derivable)</doc>
       </member>
     </bitfield>
     <record name="TypeFundamentalInfo" c:type="GTypeFundamentalInfo">
@@ -7077,21 +7127,22 @@ used specifically for managing fundamental types.</doc>
       <doc xml:space="preserve">This structure is used to provide the type system with the information
 required to initialize and destruct (finalize) a type's class and
 its instances.
+
 The initialized structure is passed to the g_type_register_static() function
 (or is copied into the provided #GTypeInfo structure in the
 g_type_plugin_complete_type_info()). The type system will perform a deep
 copy of this structure, so its memory does not need to be persistent
 across invocation of g_type_register_static().</doc>
       <field name="class_size" writable="1">
-        <doc xml:space="preserve">Size of the class structure (required for interface, classed and instantiatable types).</doc>
+        <doc xml:space="preserve">Size of the class structure (required for interface, classed and instantiatable types)</doc>
         <type name="guint16" c:type="guint16"/>
       </field>
       <field name="base_init" writable="1">
-        <doc xml:space="preserve">Location of the base initialization function (optional).</doc>
+        <doc xml:space="preserve">Location of the base initialization function (optional)</doc>
         <type name="BaseInitFunc" c:type="GBaseInitFunc"/>
       </field>
       <field name="base_finalize" writable="1">
-        <doc xml:space="preserve">Location of the base finalization function (optional).</doc>
+        <doc xml:space="preserve">Location of the base finalization function (optional)</doc>
         <type name="BaseFinalizeFunc" c:type="GBaseFinalizeFunc"/>
       </field>
       <field name="class_init" writable="1">
@@ -7105,29 +7156,29 @@ across invocation of g_type_register_static().</doc>
       </field>
       <field name="class_finalize" writable="1">
         <doc xml:space="preserve">Location of the class finalization function for
- classed and instantiatable types. Location fo the default vtable
+ classed and instantiatable types. Location of the default vtable
  finalization function for interface types. (optional)</doc>
         <type name="ClassFinalizeFunc" c:type="GClassFinalizeFunc"/>
       </field>
       <field name="class_data" writable="1">
-        <doc xml:space="preserve">User-supplied data passed to the class init/finalize functions.</doc>
+        <doc xml:space="preserve">User-supplied data passed to the class init/finalize functions</doc>
         <type name="gpointer" c:type="gconstpointer"/>
       </field>
       <field name="instance_size" writable="1">
-        <doc xml:space="preserve">Size of the instance (object) structure (required for instantiatable types only).</doc>
+        <doc xml:space="preserve">Size of the instance (object) structure (required for instantiatable types only)</doc>
         <type name="guint16" c:type="guint16"/>
       </field>
       <field name="n_preallocs" writable="1">
-        <doc xml:space="preserve">Prior to GLib 2.10, it specified the number of pre-allocated (cached) instances to reserve memory for (0 indicates no caching). Since GLib 2.10, it is ignored, since instances are allocated with the &lt;link linkend="glib-Memory-Slices"&gt;slice allocator&lt;/link&gt; now.</doc>
+        <doc xml:space="preserve">Prior to GLib 2.10, it specified the number of pre-allocated (cached) instances to reserve memory for (0 indicates no caching). Since GLib 2.10, it is ignored, since instances are allocated with the [slice allocator][glib-Memory-Slices] now.</doc>
         <type name="guint16" c:type="guint16"/>
       </field>
       <field name="instance_init" writable="1">
-        <doc xml:space="preserve">Location of the instance initialization function (optional, for instantiatable types only).</doc>
+        <doc xml:space="preserve">Location of the instance initialization function (optional, for instantiatable types only)</doc>
         <type name="InstanceInitFunc" c:type="GInstanceInitFunc"/>
       </field>
       <field name="value_table" writable="1">
-        <doc xml:space="preserve">A #GTypeValueTable function table for generic handling of GValues of this type (usually only
- useful for fundamental types).</doc>
+        <doc xml:space="preserve">A #GTypeValueTable function table for generic handling of GValues
+ of this type (usually only useful for fundamental types)</doc>
         <type name="TypeValueTable" c:type="const GTypeValueTable*"/>
       </field>
     </record>
@@ -7262,6 +7313,7 @@ passed in class conforms.</doc>
                      direction="out"
                      caller-allocates="0"
                      transfer-ownership="full"
+                     optional="1"
                      allow-none="1">
             <doc xml:space="preserve">location to return the number
     of prerequisites, or %NULL</doc>
@@ -7280,7 +7332,7 @@ See g_type_add_interface_check().</doc>
       </return-value>
       <parameters>
         <parameter name="check_data" transfer-ownership="none">
-          <doc xml:space="preserve">data passed to g_type_add_interface_check().</doc>
+          <doc xml:space="preserve">data passed to g_type_add_interface_check()</doc>
           <type name="gpointer" c:type="gpointer"/>
         </parameter>
         <parameter name="g_iface" transfer-ownership="none">
@@ -7761,16 +7813,14 @@ the lifecycle of dynamically loaded types.</doc>
       <field name="complete_type_info" writable="1">
         <doc xml:space="preserve">Fills in the #GTypeInfo and
  #GTypeValueTable structs for the type. The structs are initialized
- with &lt;literal&gt;memset(s, 0, sizeof (s))&lt;/literal&gt; before calling
- this function.</doc>
+ with `memset(s, 0, sizeof (s))` before calling this function.</doc>
         <type name="TypePluginCompleteTypeInfo"
               c:type="GTypePluginCompleteTypeInfo"/>
       </field>
       <field name="complete_interface_info" writable="1">
         <doc xml:space="preserve">Fills in missing parts of the #GInterfaceInfo
  for the interface. The structs is initialized with
- &lt;literal&gt;memset(s, 0, sizeof (s))&lt;/literal&gt; before calling
- this function.</doc>
+ `memset(s, 0, sizeof (s))` before calling this function.</doc>
         <type name="TypePluginCompleteInterfaceInfo"
               c:type="GTypePluginCompleteInterfaceInfo"/>
       </field>
@@ -7852,28 +7902,37 @@ to increase the use count of @plugin.</doc>
       </parameters>
     </callback>
     <record name="TypeQuery" c:type="GTypeQuery">
-      <doc xml:space="preserve">A structure holding information for a specific type. It is
-filled in by the g_type_query() function.</doc>
+      <doc xml:space="preserve">A structure holding information for a specific type.
+It is filled in by the g_type_query() function.</doc>
       <field name="type" writable="1">
-        <doc xml:space="preserve">the #GType value of the type.</doc>
+        <doc xml:space="preserve">the #GType value of the type</doc>
         <type name="GType" c:type="GType"/>
       </field>
       <field name="type_name" writable="1">
-        <doc xml:space="preserve">the name of the type.</doc>
+        <doc xml:space="preserve">the name of the type</doc>
         <type name="utf8" c:type="const gchar*"/>
       </field>
       <field name="class_size" writable="1">
-        <doc xml:space="preserve">the size of the class structure.</doc>
+        <doc xml:space="preserve">the size of the class structure</doc>
         <type name="guint" c:type="guint"/>
       </field>
       <field name="instance_size" writable="1">
-        <doc xml:space="preserve">the size of the instance structure.</doc>
+        <doc xml:space="preserve">the size of the instance structure</doc>
         <type name="guint" c:type="guint"/>
       </field>
     </record>
     <record name="TypeValueTable" c:type="GTypeValueTable">
-      <doc xml:space="preserve">The #GTypeValueTable provides the functions required by the #GValue implementation,
-to serve as a container for values of a type.</doc>
+      <doc xml:space="preserve">- 'i' - Integers. passed as collect_values[].v_int.
+ - 'l' - Longs. passed as collect_values[].v_long.
+ - 'd' - Doubles. passed as collect_values[].v_double.
+ - 'p' - Pointers. passed as collect_values[].v_pointer.
+
+ It should be noted that for variable argument list construction,
+ ANSI C promotes every type smaller than an integer to an int, and
+ floats to doubles. So for collection of short int or char, 'i'
+ needs to be used, and for collection of floats 'd'.
+The #GTypeValueTable provides the functions required by the #GValue
+implementation, to serve as a container for values of a type.</doc>
       <field name="value_init">
         <callback name="value_init">
           <return-value transfer-ownership="none">
@@ -7929,25 +7988,7 @@ to serve as a container for values of a type.</doc>
         <doc xml:space="preserve">A string format describing how to collect the contents of
  this value bit-by-bit. Each character in the format represents
  an argument to be collected, and the characters themselves indicate
- the type of the argument. Currently supported arguments are:
- &lt;variablelist&gt;
- &lt;varlistentry&gt;&lt;term /&gt;&lt;listitem&gt;&lt;para&gt;
- 'i' - Integers. passed as collect_values[].v_int.
- &lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
- &lt;varlistentry&gt;&lt;term /&gt;&lt;listitem&gt;&lt;para&gt;
- 'l' - Longs. passed as collect_values[].v_long.
- &lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
- &lt;varlistentry&gt;&lt;term /&gt;&lt;listitem&gt;&lt;para&gt;
- 'd' - Doubles. passed as collect_values[].v_double.
- &lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
- &lt;varlistentry&gt;&lt;term /&gt;&lt;listitem&gt;&lt;para&gt;
- 'p' - Pointers. passed as collect_values[].v_pointer.
- &lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
- &lt;/variablelist&gt;
- It should be noted that for variable argument list construction,
- ANSI C promotes every type smaller than an integer to an int, and
- floats to doubles. So for collection of short int or char, 'i'
- needs to be used, and for collection of floats 'd'.</doc>
+ the type of the argument. Currently supported arguments are:</doc>
         <type name="utf8" c:type="const gchar*"/>
       </field>
       <field name="collect_value">
@@ -8022,7 +8063,7 @@ that implements or has internal knowledge of the implementation of
     <constant name="VALUE_COLLECT_FORMAT_MAX_LENGTH"
               value="8"
               c:type="G_VALUE_COLLECT_FORMAT_MAX_LENGTH">
-      <doc xml:space="preserve">The maximal number of #GTypeCValue&lt;!-- --&gt;s which can be collected for a
+      <doc xml:space="preserve">The maximal number of #GTypeCValues which can be collected for a
 single #GValue.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
@@ -8494,17 +8535,41 @@ Get the contents of a %G_TYPE_CHAR #GValue.</doc>
           </parameter>
         </parameters>
       </method>
-      <method name="peek_pointer" c:identifier="g_value_peek_pointer">
+      <method name="init_from_instance"
+              c:identifier="g_value_init_from_instance"
+              version="2.42">
+        <doc xml:space="preserve">Initializes and sets @value from an instantiatable type via the
+value_table's collect_value() function.
+
+Note: The @value will be initialised with the exact type of
+@instance.  If you wish to set the @value's type to a different GType
+(such as a parent class GType), you need to manually call
+g_value_init() and g_value_set_instance().</doc>
         <return-value transfer-ownership="none">
-          <doc xml:space="preserve">the value contents as pointer. This
-function asserts that g_value_fits_pointer() returned %TRUE for the
-passed in value.  This is an internal function introduced mainly
-for C marshallers.</doc>
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="value" transfer-ownership="none">
+            <doc xml:space="preserve">An uninitialized #GValue structure.</doc>
+            <type name="Value" c:type="GValue*"/>
+          </instance-parameter>
+          <parameter name="instance" transfer-ownership="none">
+            <doc xml:space="preserve">the instance</doc>
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="peek_pointer" c:identifier="g_value_peek_pointer">
+        <doc xml:space="preserve">Returns the value contents as pointer. This function asserts that
+g_value_fits_pointer() returned %TRUE for the passed in value.
+This is an internal function introduced mainly for C marshallers.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:space="preserve">the value contents as pointer</doc>
           <type name="gpointer" c:type="gpointer"/>
         </return-value>
         <parameters>
           <instance-parameter name="value" transfer-ownership="none">
-            <doc xml:space="preserve">An initialized #GValue structure.</doc>
+            <doc xml:space="preserve">An initialized #GValue structure</doc>
             <type name="Value" c:type="const GValue*"/>
           </instance-parameter>
         </parameters>
@@ -8549,7 +8614,10 @@ for C marshallers.</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_BOXED derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_boxed" transfer-ownership="none" allow-none="1">
+          <parameter name="v_boxed"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">boxed value to be set</doc>
             <type name="gpointer" c:type="gconstpointer"/>
           </parameter>
@@ -8569,7 +8637,10 @@ for C marshallers.</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_BOXED derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_boxed" transfer-ownership="none" allow-none="1">
+          <parameter name="v_boxed"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">duplicated unowned boxed value to be set</doc>
             <type name="gpointer" c:type="gconstpointer"/>
           </parameter>
@@ -8686,7 +8757,10 @@ value_table's collect_value() function.</doc>
             <doc xml:space="preserve">An initialized #GValue structure.</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="instance" transfer-ownership="none" allow-none="1">
+          <parameter name="instance"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the instance</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -8760,7 +8834,10 @@ the #GValue still exists).</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_OBJECT derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_object" transfer-ownership="none" allow-none="1">
+          <parameter name="v_object"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">object value to be set</doc>
             <type name="Object" c:type="gpointer"/>
           </parameter>
@@ -8781,7 +8858,10 @@ the #GValue still exists).</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_OBJECT derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_object" transfer-ownership="none" allow-none="1">
+          <parameter name="v_object"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">object value to be set</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -8797,7 +8877,10 @@ the #GValue still exists).</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_PARAM</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="param" transfer-ownership="none" allow-none="1">
+          <parameter name="param"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the #GParamSpec to be set</doc>
             <type name="ParamSpec" c:type="GParamSpec*"/>
           </parameter>
@@ -8818,7 +8901,10 @@ the #GValue still exists).</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_PARAM</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="param" transfer-ownership="none" allow-none="1">
+          <parameter name="param"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the #GParamSpec to be set</doc>
             <type name="ParamSpec" c:type="GParamSpec*"/>
           </parameter>
@@ -8868,7 +8954,10 @@ when setting the #GValue.</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_BOXED derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_boxed" transfer-ownership="none" allow-none="1">
+          <parameter name="v_boxed"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">static boxed value to be set</doc>
             <type name="gpointer" c:type="gconstpointer"/>
           </parameter>
@@ -8887,7 +8976,10 @@ when setting the #GValue.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_STRING</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_string" transfer-ownership="none" allow-none="1">
+          <parameter name="v_string"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">static string to be set</doc>
             <type name="utf8" c:type="const gchar*"/>
           </parameter>
@@ -8903,7 +8995,10 @@ when setting the #GValue.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_STRING</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_string" transfer-ownership="none" allow-none="1">
+          <parameter name="v_string"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">caller-owned string to be duplicated for the #GValue</doc>
             <type name="utf8" c:type="const gchar*"/>
           </parameter>
@@ -8923,7 +9018,10 @@ when setting the #GValue.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_STRING</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_string" transfer-ownership="none" allow-none="1">
+          <parameter name="v_string"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">duplicated unowned string to be set</doc>
             <type name="utf8" c:type="gchar*"/>
           </parameter>
@@ -9006,7 +9104,10 @@ If the variant is floating, it is consumed.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_VARIANT</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="variant" transfer-ownership="none" allow-none="1">
+          <parameter name="variant"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">a #GVariant, or %NULL</doc>
             <type name="GLib.Variant" c:type="GVariant*"/>
           </parameter>
@@ -9026,7 +9127,10 @@ the caller doesn't have to unref it any more.</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_BOXED derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_boxed" transfer-ownership="none" allow-none="1">
+          <parameter name="v_boxed"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">duplicated unowned boxed value to be set</doc>
             <type name="gpointer" c:type="gconstpointer"/>
           </parameter>
@@ -9051,7 +9155,10 @@ g_value_set_object() instead.</doc>
             <doc xml:space="preserve">a valid #GValue of %G_TYPE_OBJECT derived type</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_object" transfer-ownership="none" allow-none="1">
+          <parameter name="v_object"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">object value to be set</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -9072,7 +9179,10 @@ doesn't have to unref it any more.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_PARAM</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="param" transfer-ownership="none" allow-none="1">
+          <parameter name="param"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">the #GParamSpec to be set</doc>
             <type name="ParamSpec" c:type="GParamSpec*"/>
           </parameter>
@@ -9090,7 +9200,10 @@ doesn't have to unref it any more.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_STRING</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="v_string" transfer-ownership="none" allow-none="1">
+          <parameter name="v_string"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">string to take ownership of</doc>
             <type name="utf8" c:type="gchar*"/>
           </parameter>
@@ -9119,7 +9232,10 @@ This is an internal function introduced mainly for C marshallers.</doc>
             <doc xml:space="preserve">a valid #GValue of type %G_TYPE_VARIANT</doc>
             <type name="Value" c:type="GValue*"/>
           </instance-parameter>
-          <parameter name="variant" transfer-ownership="none" allow-none="1">
+          <parameter name="variant"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">a #GVariant, or %NULL</doc>
             <type name="GLib.Variant" c:type="GVariant*"/>
           </parameter>
@@ -9281,7 +9397,10 @@ regardless of the value of @n_prealloced.</doc>
             <doc xml:space="preserve">#GValueArray to add an element to</doc>
             <type name="ValueArray" c:type="GValueArray*"/>
           </instance-parameter>
-          <parameter name="value" transfer-ownership="none" allow-none="1">
+          <parameter name="value"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">#GValue to copy into #GValueArray, or %NULL</doc>
             <type name="Value" c:type="const GValue*"/>
           </parameter>
@@ -9362,7 +9481,10 @@ is %NULL, an uninitialized value is inserted.</doc>
             <doc xml:space="preserve">insertion position, must be &lt;= value_array-&amp;gt;n_values</doc>
             <type name="guint" c:type="guint"/>
           </parameter>
-          <parameter name="value" transfer-ownership="none" allow-none="1">
+          <parameter name="value"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">#GValue to copy into #GValueArray, or %NULL</doc>
             <type name="Value" c:type="const GValue*"/>
           </parameter>
@@ -9384,7 +9506,10 @@ is %NULL, an uninitialized value is inserted.</doc>
             <doc xml:space="preserve">#GValueArray to add an element to</doc>
             <type name="ValueArray" c:type="GValueArray*"/>
           </instance-parameter>
-          <parameter name="value" transfer-ownership="none" allow-none="1">
+          <parameter name="value"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">#GValue to copy into #GValueArray, or %NULL</doc>
             <type name="Value" c:type="const GValue*"/>
           </parameter>
@@ -9612,7 +9737,10 @@ properly initialised.  Just use g_weak_ref_set() directly.</doc>
    reference</doc>
             <type name="WeakRef" c:type="GWeakRef*"/>
           </instance-parameter>
-          <parameter name="object" transfer-ownership="none" allow-none="1">
+          <parameter name="object"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">a #GObject or %NULL</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -9635,7 +9763,10 @@ function.</doc>
             <doc xml:space="preserve">location for a weak reference</doc>
             <type name="WeakRef" c:type="GWeakRef*"/>
           </instance-parameter>
-          <parameter name="object" transfer-ownership="none" allow-none="1">
+          <parameter name="object"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <doc xml:space="preserve">a #GObject or %NULL</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
@@ -10519,7 +10650,10 @@ denotes a flags type.</doc>
               moved-to="CClosure.marshal_generic"
               version="2.30">
       <doc xml:space="preserve">A generic marshaller function implemented via
-[libffi](http://sourceware.org/libffi/).</doc>
+[libffi](http://sourceware.org/libffi/).
+
+Normally this function is not passed explicitly to g_signal_new(),
+but used automatically by GLib when specifying a %NULL marshaller.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
@@ -10664,9 +10798,6 @@ the first parameter.</doc>
 If the reference is %NULL then this function does nothing.
 Otherwise, the reference count of the object is decreased and the
 pointer is set to %NULL.
-
-This function is threadsafe and modifies the pointer atomically,
-using memory barriers where needed.
 
 A macro is also included that allows this function to be used without
 pointer casts.</doc>
@@ -11748,6 +11879,7 @@ See g_param_spec_internal() for details on property names.</doc>
         </parameter>
         <parameter name="default_value"
                    transfer-ownership="full"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">a #GVariant of type @type to
                 use as the default value, or %NULL</doc>
@@ -12405,7 +12537,10 @@ If no handler was found, 0 is returned.</doc>
           <doc xml:space="preserve">Signal detail the handler has to be connected to.</doc>
           <type name="GLib.Quark" c:type="GQuark"/>
         </parameter>
-        <parameter name="closure" transfer-ownership="none" allow-none="1">
+        <parameter name="closure"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
           <doc xml:space="preserve">The closure the handler will invoke.</doc>
           <type name="Closure" c:type="GClosure*"/>
         </parameter>
@@ -12497,7 +12632,10 @@ otherwise.</doc>
           <doc xml:space="preserve">Signal detail the handlers have to be connected to.</doc>
           <type name="GLib.Quark" c:type="GQuark"/>
         </parameter>
-        <parameter name="closure" transfer-ownership="none" allow-none="1">
+        <parameter name="closure"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
           <doc xml:space="preserve">The closure the handlers will invoke.</doc>
           <type name="Closure" c:type="GClosure*"/>
         </parameter>
@@ -12513,12 +12651,15 @@ otherwise.</doc>
     </function>
     <function name="signal_handlers_destroy"
               c:identifier="g_signal_handlers_destroy">
+      <doc xml:space="preserve">Destroy all signal handlers of a type instance. This function is
+an implementation detail of the #GObject dispose implementation,
+and should not be used outside of the type system.</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
       <parameters>
         <parameter name="instance" transfer-ownership="none">
-          <doc xml:space="preserve">The instance where a signal handler is sought.</doc>
+          <doc xml:space="preserve">The instance whose signal handlers are destroyed</doc>
           <type name="Object" c:type="gpointer"/>
         </parameter>
       </parameters>
@@ -12555,7 +12696,10 @@ disconnected handlers otherwise.</doc>
           <doc xml:space="preserve">Signal detail the handlers have to be connected to.</doc>
           <type name="GLib.Quark" c:type="GQuark"/>
         </parameter>
-        <parameter name="closure" transfer-ownership="none" allow-none="1">
+        <parameter name="closure"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
           <doc xml:space="preserve">The closure the handlers will invoke.</doc>
           <type name="Closure" c:type="GClosure*"/>
         </parameter>
@@ -12601,7 +12745,10 @@ not currently blocked.</doc>
           <doc xml:space="preserve">Signal detail the handlers have to be connected to.</doc>
           <type name="GLib.Quark" c:type="GQuark"/>
         </parameter>
-        <parameter name="closure" transfer-ownership="none" allow-none="1">
+        <parameter name="closure"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
           <doc xml:space="preserve">The closure the handlers will invoke.</doc>
           <type name="Closure" c:type="GClosure*"/>
         </parameter>
@@ -12763,6 +12910,7 @@ the marshaller for this signal.</doc>
         </parameter>
         <parameter name="c_marshaller"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">the function to translate arrays of parameter
  values to signal emissions into C language callback invocations or %NULL.</doc>
@@ -12801,7 +12949,7 @@ g_signal_chain_from_overridden_handler().
 
 See g_signal_new() for information about signal names.
 
-If c_marshaller is %NULL @g_cclosure_marshal_generic will be used as
+If c_marshaller is %NULL, g_cclosure_marshal_generic() will be used as
 the marshaller for this signal.</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">the signal id</doc>
@@ -12839,6 +12987,7 @@ the marshaller for this signal.</doc>
         </parameter>
         <parameter name="c_marshaller"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">the function to translate arrays of parameter
  values to signal emissions into C language callback invocations or %NULL.</doc>
@@ -12902,6 +13051,7 @@ the marshaller for this signal.</doc>
         </parameter>
         <parameter name="c_marshaller"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">the function to translate arrays of parameter
  values to signal emissions into C language callback invocations or %NULL.</doc>
@@ -12929,7 +13079,7 @@ the marshaller for this signal.</doc>
 
 See g_signal_new() for details on allowed signal names.
 
-If c_marshaller is %NULL @g_cclosure_marshal_generic will be used as
+If c_marshaller is %NULL, g_cclosure_marshal_generic() will be used as
 the marshaller for this signal.</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">the signal id</doc>
@@ -12953,6 +13103,7 @@ the marshaller for this signal.</doc>
         </parameter>
         <parameter name="class_closure"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">The closure to invoke on signal emission;
     may be %NULL</doc>
@@ -12960,6 +13111,7 @@ the marshaller for this signal.</doc>
         </parameter>
         <parameter name="accumulator"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1"
                    closure="5">
           <doc xml:space="preserve">the accumulator for this signal; may be %NULL</doc>
@@ -12971,6 +13123,7 @@ the marshaller for this signal.</doc>
         </parameter>
         <parameter name="c_marshaller"
                    transfer-ownership="none"
+                   nullable="1"
                    allow-none="1">
           <doc xml:space="preserve">the function to translate arrays of
     parameter values to signal emissions into C language callback
@@ -13308,7 +13461,9 @@ chain.</doc>
 when the class is allocated, the private structures for
 the class and all of its parent types are allocated
 sequentially in the same memory block as the public
-structures. This function should be called in the
+structures, and are zero-filled.
+
+This function should be called in the
 type's get_type() function after the type is registered.
 The private structure can be retrieved using the
 G_TYPE_CLASS_GET_PRIVATE() macro.</doc>
@@ -13488,6 +13643,20 @@ G_TYPE_CHECK_INSTANCE() macro.</doc>
         </parameter>
       </parameters>
     </function>
+    <function name="type_check_instance_is_fundamentally_a"
+              c:identifier="g_type_check_instance_is_fundamentally_a">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="instance" transfer-ownership="none">
+          <type name="TypeInstance" c:type="GTypeInstance*"/>
+        </parameter>
+        <parameter name="fundamental_type" transfer-ownership="none">
+          <type name="GType" c:type="GType"/>
+        </parameter>
+      </parameters>
+    </function>
     <function name="type_check_is_value_type"
               c:identifier="g_type_check_is_value_type">
       <return-value transfer-ownership="none">
@@ -13542,6 +13711,7 @@ the child types of @type.</doc>
                    direction="out"
                    caller-allocates="0"
                    transfer-ownership="full"
+                   optional="1"
                    allow-none="1">
           <doc xml:space="preserve">location to store the length of
     the returned array, or %NULL</doc>
@@ -13558,7 +13728,7 @@ the child types of @type.</doc>
 When an object is allocated, the private structures for
 the type and all of its parent types are allocated
 sequentially in the same memory block as the public
-structures.
+structures, and are zero-filled.
 
 Note that the accumulated size of the private structures of
 a type and all its parent types cannot exceed 64 KiB.
@@ -13600,6 +13770,7 @@ my_object_init (MyObject *my_object)
   my_object-&gt;priv = G_TYPE_INSTANCE_GET_PRIVATE (my_object,
                                                  MY_TYPE_OBJECT,
                                                  MyObjectPrivate);
+  // my_object-&gt;priv-&gt;some_field will be automatically initialised to 0
 }
 
 static int
@@ -13737,6 +13908,9 @@ implementators of fundamental types only. E.g. instances of the
 #GObject hierarchy should be created via g_object_new() and never
 directly through g_type_create_instance() which doesn't handle things
 like singleton objects or object construction.
+
+The extended members of the returned instance are guaranteed to be filled
+with zeros.
 
 Note: Do not use this function, unless you're implementing a
 fundamental type. Also language bindings should not use this
@@ -14083,6 +14257,7 @@ passed in class conforms.</doc>
                    direction="out"
                    caller-allocates="0"
                    transfer-ownership="full"
+                   optional="1"
                    allow-none="1">
           <doc xml:space="preserve">location to return the number
     of prerequisites, or %NULL</doc>
@@ -14109,6 +14284,7 @@ the interface types that @type conforms to.</doc>
                    direction="out"
                    caller-allocates="0"
                    transfer-ownership="full"
+                   optional="1"
                    allow-none="1">
           <doc xml:space="preserve">location to store the length of
     the returned array, or %NULL</doc>
