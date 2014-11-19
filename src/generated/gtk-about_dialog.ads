@@ -34,6 +34,10 @@
 --  a user clicks one. The behaviour can be overridden with the
 --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal.
 --
+--  To specify a person with an email address, use a string like "Edgar Allan
+--  Poe <edgarPoe.com>". To specify a website with a title, use a string like
+--  "GTK+ team http://www.gtk.org".
+--
 --  To make constructing a GtkAboutDialog as convenient as possible, you can
 --  use the function gtk_show_about_dialog which constructs and shows a dialog
 --  and keeps it around so that it can be shown again.

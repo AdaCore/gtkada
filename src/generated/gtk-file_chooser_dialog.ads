@@ -127,8 +127,8 @@
 --
 --  This is because Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog must
 --  intercept responses and switch to folders if appropriate, rather than
---  letting the dialog terminate &mdash; the implementation uses these known
---  response codes to know which responses can be blocked if appropriate.
+--  letting the dialog terminate — the implementation uses these known response
+--  codes to know which responses can be blocked if appropriate.
 --
 --  To summarize, make sure you use a [stock response
 --  code][gtkfilechooserdialog-responses] when you use

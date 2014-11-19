@@ -31,11 +31,12 @@
 --  Gtk.Actionable.Gtk_Actionable:action-target. There are also some
 --  convenience APIs for setting these properties.
 --
---  This interface is presently only meaningful if used on a widget that is
---  (or will be) located inside of a
---  Gtk.Application_Window.Gtk_Application_Window and can only be used to
---  associate the widget with actions on that window, or its associated
---  Gtk.Application.Gtk_Application.
+--  The action will be looked up in action groups that are found among the
+--  widgets ancestors. Most commonly, these will be the actions with the "win"
+--  or "app" prefix that are associated with the
+--  Gtk.Application_Window.Gtk_Application_Window or "GtkApplication, but other
+--  action groups that are added with gtk_widget_insert_action_group will be
+--  consulted as well.
 --
 --  </description>
 pragma Ada_2005;

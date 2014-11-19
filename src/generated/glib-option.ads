@@ -22,9 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A <structname>GOptionContext</structname> struct defines which options are
---  accepted by the commandline option parser. The struct has only private
---  fields and should not be directly accessed.
+--  A `GOptionContext` struct defines which options are accepted by the
+--  commandline option parser. The struct has only private fields and should
+--  not be directly accessed.
 --
 --  </description>
 pragma Ada_2005;
@@ -66,14 +66,15 @@ package Glib.Option is
    pragma Convention (C, GOption_Arg);
    --  The Glib.Option.GOption_Arg enum values determine which type of extra
    --  argument the options expect to find. If an option expects an extra
-   --  argument, it can be specified in several ways; with a short option:
-   --  <option>-x arg</option>, with a long option: <option>--name arg</option>
-   --  or combined in a single argument: <option>--name=arg</option>.
+   --  argument, it can be specified in several ways; with a short option: `-x
+   --  arg`, with a long option: `--name arg` or combined in a single argument:
+   --  `--name=arg`.
 
    type GOption_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, GOption_Flags);
    --  Flags which modify individual options.
 
+   G_Option_Flag_None : constant GOption_Flags := 0;
    G_Option_Flag_Hidden : constant GOption_Flags := 1;
    G_Option_Flag_In_Main : constant GOption_Flags := 2;
    G_Option_Flag_Reverse : constant GOption_Flags := 4;
@@ -85,15 +86,13 @@ package Glib.Option is
    type GOption_Group is new Glib.C_Proxy;
    function From_Object_Free (B : access GOption_Group) return GOption_Group;
    pragma Inline (From_Object_Free);
-   --  A <structname>GOptionGroup</structname> struct defines the options in a
-   --  single group. The struct has only private fields and should not be
-   --  directly accessed.
+   --  A `GOptionGroup` struct defines the options in a single group. The
+   --  struct has only private fields and should not be directly accessed.
    --
    --  All options in a group share the same translation function. Libraries
    --  which need to parse commandline options are expected to provide a
-   --  function for getting a <structname>GOptionGroup</structname> holding
-   --  their options, which the application can then add to its
-   --  Glib.Option.Goption_Context.
+   --  function for getting a `GOptionGroup` holding their options, which the
+   --  application can then add to its Glib.Option.Goption_Context.
 
    type GOption_Entry is record
       Long_Name : Interfaces.C.Strings.chars_ptr;
@@ -108,8 +107,8 @@ package Glib.Option is
 
    function From_Object_Free (B : access GOption_Entry) return GOption_Entry;
    pragma Inline (From_Object_Free);
-   --  A <structname>GOptionEntry</structname> defines a single option. To
-   --  have an effect, they must be added to a Glib.Option.GOption_Group with
+   --  A GOptionEntry struct defines a single option. To have an effect, they
+   --  must be added to a Glib.Option.GOption_Group with
    --  Glib.Option.Add_Main_Entries or g_option_group_add_entries.
 
    type GOption_Entry_Array is array (Natural range <>) of GOption_Entry;

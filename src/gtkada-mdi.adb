@@ -3739,7 +3739,10 @@ package body Gtkada.MDI is
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
          Widget := Child.Initial.Get_Parent;
-         Reparent (Widget, Cont);
+         Ref (Widget);
+         Gtk_Container (Widget.Get_Parent).Remove (Widget);
+         Cont.Add (Widget);
+         Unref (Widget);
          if Cont.all in Gtk_Box_Record'Class then
             Gtk_Box (Cont).Set_Child_Packing
                (Widget, Expand => True, Fill => True, Padding => 0,
@@ -3761,7 +3764,10 @@ package body Gtkada.MDI is
          Box := Gtk_Box (Get_Child (Child));
          Widget := Child.Initial.Get_Parent;
 
-         Reparent (Widget, New_Parent => Box);
+         Ref (Widget);
+         Gtk_Container (Widget.Get_Parent).Remove (Widget);
+         Box.Add (Widget);
+         Unref (Widget);
          Box.Set_Child_Packing
             (Widget, Expand => True, Fill => True, Padding => 0,
              Pack_Type => Pack_Start);

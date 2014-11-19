@@ -22,7 +22,6 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Short_description: A file chooser widget
 --  Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget is a widget for choosing
 --  files. It exposes the Gtk.File_Chooser.Gtk_File_Chooser interface, and you
 --  should use the methods of this interface to interact with the widget.

@@ -396,6 +396,7 @@ package Gtk.Image is
    --  Gtk.Image.Gtk_Image does not assume a reference to the surface; you
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
    --  add its own reference rather than adopting yours.
+   --  Since: gtk+ 3.10
    --  "surface": a cairo_surface_t, or null
 
    function Gtk_Image_New_From_Surface
@@ -404,6 +405,7 @@ package Gtk.Image is
    --  Gtk.Image.Gtk_Image does not assume a reference to the surface; you
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
    --  add its own reference rather than adopting yours.
+   --  Since: gtk+ 3.10
    --  "surface": a cairo_surface_t, or null
 
    function Get_Type return Glib.GType;

@@ -216,16 +216,16 @@ package body Gtk.Tree_Row_Reference is
       (Proxy     : not null access Glib.Object.GObject_Record'Class;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order : in out Gint)
+       New_Order : Gint_Array)
    is
       procedure Internal
          (Proxy     : System.Address;
           Path      : System.Address;
           Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
-          New_Order : in out Gint);
+          New_Order : System.Address);
       pragma Import (C, Internal, "gtk_tree_row_reference_reordered");
    begin
-      Internal (Get_Object (Proxy), Get_Object (Path), Iter, New_Order);
+      Internal (Get_Object (Proxy), Get_Object (Path), Iter, New_Order (New_Order'First)'Address);
    end Reordered;
 
 end Gtk.Tree_Row_Reference;

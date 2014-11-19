@@ -35,6 +35,15 @@
 --  Arrows are created with a call to Gtk.Arrow.Gtk_New. The direction or
 --  style of an arrow can be changed after creation by using Gtk.Arrow.Set.
 --
+--  GtkArrow has been deprecated; you can simply use a Gtk.Image.Gtk_Image
+--  with a suitable icon name, such as "pan-down-symbolic". When replacing
+--  GtkArrow by an image, pay attention to the fact that GtkArrow is doing
+--  automatic flipping between GTK_ARROW_LEFT and GTK_ARROW_RIGHT, depending on
+--  the text direction. To get the same effect with an image, use the icon
+--  names "pan-start-symbolic" and "pan-end-symbolic", which react to the text
+--  direction instead of "pan-left-symbolic" and "pan-right-symbolic" which
+--  don't.
+--
 --  </description>
 --  <screenshot>gtk-arrow</screenshot>
 --  <testgtk>create_arrow.adb</testgtk>
@@ -86,7 +95,9 @@ package Gtk.Arrow is
       (Arrow       : not null access Gtk_Arrow_Record;
        Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type);
+   pragma Obsolescent (Set);
    --  Sets the direction and style of the Gtk.Arrow.Gtk_Arrow, Arrow.
+   --  Deprecated since 3.14, 1
    --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
    --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
 

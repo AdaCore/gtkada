@@ -31,6 +31,16 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.List_Box_Row is
 
+   function Convert (R : Gtk.List_Box_Row.Gtk_List_Box_Row) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gtk.List_Box_Row.Gtk_List_Box_Row is
+      Stub : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;begin
+         return Gtk.List_Box_Row.Gtk_List_Box_Row (Glib.Object.Get_User_Data (R, Stub));
+      end Convert;
+
    package Type_Conversion_Gtk_List_Box_Row is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_List_Box_Row_Record);
    pragma Unreferenced (Type_Conversion_Gtk_List_Box_Row);
@@ -82,6 +92,19 @@ package body Gtk.List_Box_Row is
       Internal (Get_Object (Self));
    end Changed;
 
+   ---------------------
+   -- Get_Activatable --
+   ---------------------
+
+   function Get_Activatable
+      (Self : not null access Gtk_List_Box_Row_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_list_box_row_get_activatable");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Activatable;
+
    ----------------
    -- Get_Header --
    ----------------
@@ -110,6 +133,48 @@ package body Gtk.List_Box_Row is
       return Internal (Get_Object (Self));
    end Get_Index;
 
+   --------------------
+   -- Get_Selectable --
+   --------------------
+
+   function Get_Selectable
+      (Self : not null access Gtk_List_Box_Row_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_list_box_row_get_selectable");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Selectable;
+
+   -----------------
+   -- Is_Selected --
+   -----------------
+
+   function Is_Selected
+      (Self : not null access Gtk_List_Box_Row_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_list_box_row_is_selected");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Selected;
+
+   ---------------------
+   -- Set_Activatable --
+   ---------------------
+
+   procedure Set_Activatable
+      (Self        : not null access Gtk_List_Box_Row_Record;
+       Activatable : Boolean)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Activatable : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_list_box_row_set_activatable");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Activatable));
+   end Set_Activatable;
+
    ----------------
    -- Set_Header --
    ----------------
@@ -123,6 +188,20 @@ package body Gtk.List_Box_Row is
    begin
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Header)));
    end Set_Header;
+
+   --------------------
+   -- Set_Selectable --
+   --------------------
+
+   procedure Set_Selectable
+      (Self       : not null access Gtk_List_Box_Row_Record;
+       Selectable : Boolean)
+   is
+      procedure Internal (Self : System.Address; Selectable : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_list_box_row_set_selectable");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Selectable));
+   end Set_Selectable;
 
    use type System.Address;
 

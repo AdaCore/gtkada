@@ -37,6 +37,11 @@
 --  to it via Gtk.Container.Add, and a Gtk.List_Box_Row.Gtk_List_Box_Row widget
 --  will automatically be inserted between the list and the widget.
 --
+--  Gtk_List_Box_Rows can be marked as activatable or selectable. If a row is
+--  activatable, Gtk.List_Box.Gtk_List_Box::row-activated will be emitted for
+--  it when the user tries to activate it. If it is selectable, the row will be
+--  marked as selected when the user tries to select it.
+--
 --  The GtkListBox widget was added in GTK+ 3.10.
 --
 --  </description>
@@ -62,6 +67,15 @@ package Gtk.List_Box is
    ---------------
    -- Callbacks --
    ---------------
+
+   type Gtk_List_Box_Foreach_Func is access procedure
+     (Box : not null access Gtk_List_Box_Record'Class;
+      Row : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class);
+   --  A function used by Gtk.List_Box.Selected_Foreach. It will be called on
+   --  every selected child of the Box.
+   --  Since: gtk+ 3.14
+   --  "box": a Gtk.List_Box.Gtk_List_Box
+   --  "row": a Gtk.List_Box_Row.Gtk_List_Box_Row
 
    type Gtk_List_Box_Filter_Func is access function
      (Row : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class)
@@ -155,7 +169,7 @@ package Gtk.List_Box is
    --  Sets the adjustment (if any) that the widget uses to for vertical
    --  scrolling. For instance, this is used to get the page size for
    --  PageUp/Down key handling.
-   --  In the normal case when the List_Box is packed inside a
+   --  In the normal case when the Box is packed inside a
    --  Gtk.Scrolled_Window.Gtk_Scrolled_Window the adjustment from that will be
    --  picked up automatically, so there is no need to manually do that.
    --  Since: gtk+ 3.10
@@ -164,7 +178,7 @@ package Gtk.List_Box is
    function Get_Row_At_Index
       (Self  : not null access Gtk_List_Box_Record;
        Index : Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row;
-   --  Gets the n:th child in the list (not counting headers). If _Index is
+   --  Gets the n-th child in the list (not counting headers). If _Index is
    --  negative or larger than the number of items in the list, null is
    --  returned.
    --  Since: gtk+ 3.10
@@ -181,7 +195,15 @@ package Gtk.List_Box is
       (Self : not null access Gtk_List_Box_Record)
        return Gtk.List_Box_Row.Gtk_List_Box_Row;
    --  Gets the selected row.
+   --  Note that the box may allow multiple selection, in which case you
+   --  should use Gtk.List_Box.Selected_Foreach to find all selected rows.
    --  Since: gtk+ 3.10
+
+   function Get_Selected_Rows
+      (Self : not null access Gtk_List_Box_Record)
+       return Gtk.List_Box_Row.List_Box_Row_List.Glist;
+   --  Creates a list of all selected children.
+   --  Since: gtk+ 3.14
 
    function Get_Selection_Mode
       (Self : not null access Gtk_List_Box_Record)
@@ -194,8 +216,6 @@ package Gtk.List_Box is
        Mode : Gtk.Enums.Gtk_Selection_Mode);
    --  Sets how selection works in the listbox. See
    --  Gtk.Enums.Gtk_Selection_Mode for details.
-   --  Note: Gtk.List_Box.Gtk_List_Box does not support
-   --  Gtk_Selection_Multiple.
    --  Since: gtk+ 3.10
    --  "mode": The Gtk.Enums.Gtk_Selection_Mode
 
@@ -203,30 +223,30 @@ package Gtk.List_Box is
       (Self     : not null access Gtk_List_Box_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Gint);
-   --  Insert the Child into the List_Box at Position. If a sort function is
-   --  set, the widget will actually be inserted at the calculated position and
-   --  this function has the same effect of Gtk.Container.Add.
-   --  If Position is -1, or larger than the total number of items in the
-   --  List_Box, then the Child will be appended to the end.
+   --  Insert the Child into the Box at Position. If a sort function is set,
+   --  the widget will actually be inserted at the calculated position and this
+   --  function has the same effect of Gtk.Container.Add.
+   --  If Position is -1, or larger than the total number of items in the Box,
+   --  then the Child will be appended to the end.
    --  Since: gtk+ 3.10
    --  "child": the Gtk.Widget.Gtk_Widget to add
    --  "position": the position to insert Child in
 
    procedure Invalidate_Filter (Self : not null access Gtk_List_Box_Record);
    --  Update the filtering for all rows. Call this when result of the filter
-   --  function on the List_Box is changed due to an external factor. For
-   --  instance, this would be used if the filter function just looked for a
-   --  specific search string and the entry with the search string has changed.
+   --  function on the Box is changed due to an external factor. For instance,
+   --  this would be used if the filter function just looked for a specific
+   --  search string and the entry with the search string has changed.
    --  Since: gtk+ 3.10
 
    procedure Invalidate_Headers (Self : not null access Gtk_List_Box_Record);
    --  Update the separators for all rows. Call this when result of the header
-   --  function on the List_Box is changed due to an external factor.
+   --  function on the Box is changed due to an external factor.
    --  Since: gtk+ 3.10
 
    procedure Invalidate_Sort (Self : not null access Gtk_List_Box_Record);
    --  Update the sorting for all rows. Call this when result of the sort
-   --  function on the List_Box is changed due to an external factor.
+   --  function on the Box is changed due to an external factor.
    --  Since: gtk+ 3.10
 
    procedure Prepend
@@ -238,6 +258,10 @@ package Gtk.List_Box is
    --  Since: gtk+ 3.10
    --  "child": the Gtk.Widget.Gtk_Widget to add
 
+   procedure Select_All (Self : not null access Gtk_List_Box_Record);
+   --  Select all children of Box, if the selection mode allows it.
+   --  Since: gtk+ 3.14
+
    procedure Select_Row
       (Self : not null access Gtk_List_Box_Record;
        Row  : access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class);
@@ -245,10 +269,47 @@ package Gtk.List_Box is
    --  Since: gtk+ 3.10
    --  "row": The row to select or null
 
+   procedure Selected_Foreach
+      (Self : not null access Gtk_List_Box_Record;
+       Func : Gtk_List_Box_Foreach_Func);
+   --  Calls a function for each selected child.
+   --  Note that the selection cannot be modified from within this function.
+   --  Since: gtk+ 3.14
+   --  "func": the function to call for each selected child
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Selected_Foreach_User_Data is
+
+      type Gtk_List_Box_Foreach_Func is access procedure
+        (Box       : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
+         Row       : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class;
+         User_Data : User_Data_Type);
+      --  A function used by Gtk.List_Box.Selected_Foreach. It will be called on
+      --  every selected child of the Box.
+      --  Since: gtk+ 3.14
+      --  "box": a Gtk.List_Box.Gtk_List_Box
+      --  "row": a Gtk.List_Box_Row.Gtk_List_Box_Row
+      --  "user_data": user data
+
+      procedure Selected_Foreach
+         (Self : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
+          Func : Gtk_List_Box_Foreach_Func;
+          Data : User_Data_Type);
+      --  Calls a function for each selected child.
+      --  Note that the selection cannot be modified from within this
+      --  function.
+      --  Since: gtk+ 3.14
+      --  "func": the function to call for each selected child
+      --  "data": user data to pass to the function
+
+   end Selected_Foreach_User_Data;
+
    procedure Set_Filter_Func
       (Self        : not null access Gtk_List_Box_Record;
        Filter_Func : Gtk_List_Box_Filter_Func);
-   --  By setting a filter function on the List_Box one can decide dynamically
+   --  By setting a filter function on the Box one can decide dynamically
    --  which of the rows to show. For instance, to implement a search function
    --  on a list that filters the original list to only show the matching rows.
    --  The Filter_Func will be called for each row after the call, and it will
@@ -276,10 +337,10 @@ package Gtk.List_Box is
          (Self        : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
           Filter_Func : Gtk_List_Box_Filter_Func;
           User_Data   : User_Data_Type);
-      --  By setting a filter function on the List_Box one can decide
-      --  dynamically which of the rows to show. For instance, to implement a
-      --  search function on a list that filters the original list to only show
-      --  the matching rows.
+      --  By setting a filter function on the Box one can decide dynamically
+      --  which of the rows to show. For instance, to implement a search
+      --  function on a list that filters the original list to only show the
+      --  matching rows.
       --  The Filter_Func will be called for each row after the call, and it
       --  will continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) or when Gtk.List_Box.Invalidate_Filter is
@@ -293,18 +354,18 @@ package Gtk.List_Box is
    procedure Set_Header_Func
       (Self          : not null access Gtk_List_Box_Record;
        Update_Header : Gtk_List_Box_Update_Header_Func);
-   --  By setting a header function on the List_Box one can dynamically add
-   --  headers in front of rows, depending on the contents of the row and its
-   --  position in the list. For instance, one could use it to add headers in
-   --  front of the first item of a new kind, in a list sorted by the kind.
+   --  By setting a header function on the Box one can dynamically add headers
+   --  in front of rows, depending on the contents of the row and its position
+   --  in the list. For instance, one could use it to add headers in front of
+   --  the first item of a new kind, in a list sorted by the kind.
    --  The Update_Header can look at the current header widget using
    --  Gtk.List_Box_Row.Get_Header and either update the state of the widget as
    --  needed, or set a new one using Gtk.List_Box_Row.Set_Header. If no header
    --  is needed, set the header to null.
    --  Note that you may get many calls Update_Header to this for a particular
    --  row when e.g. changing things that don't affect the header. In this case
-   --  it is important for performance to not blindly replace an exisiting
-   --  header widh an identical one.
+   --  it is important for performance to not blindly replace an existing
+   --  header with an identical one.
    --  The Update_Header function will be called for each row after the call,
    --  and it will continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) and when the row before changes (either by
@@ -336,7 +397,7 @@ package Gtk.List_Box is
          (Self          : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
           Update_Header : Gtk_List_Box_Update_Header_Func;
           User_Data     : User_Data_Type);
-      --  By setting a header function on the List_Box one can dynamically add
+      --  By setting a header function on the Box one can dynamically add
       --  headers in front of rows, depending on the contents of the row and
       --  its position in the list. For instance, one could use it to add
       --  headers in front of the first item of a new kind, in a list sorted by
@@ -348,7 +409,7 @@ package Gtk.List_Box is
       --  Note that you may get many calls Update_Header to this for a
       --  particular row when e.g. changing things that don't affect the
       --  header. In this case it is important for performance to not blindly
-      --  replace an exisiting header widh an identical one.
+      --  replace an existing header with an identical one.
       --  The Update_Header function will be called for each row after the
       --  call, and it will continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) and when the row before changes (either by
@@ -372,8 +433,8 @@ package Gtk.List_Box is
    procedure Set_Sort_Func
       (Self      : not null access Gtk_List_Box_Record;
        Sort_Func : Gtk_List_Box_Sort_Func);
-   --  By setting a sort function on the List_Box one can dynamically reorder
-   --  the rows of the list, based on the contents of the rows.
+   --  By setting a sort function on the Box one can dynamically reorder the
+   --  rows of the list, based on the contents of the rows.
    --  The Sort_Func will be called for each row after the call, and will
    --  continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
@@ -400,8 +461,8 @@ package Gtk.List_Box is
          (Self      : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
           Sort_Func : Gtk_List_Box_Sort_Func;
           User_Data : User_Data_Type);
-      --  By setting a sort function on the List_Box one can dynamically
-      --  reorder the rows of the list, based on the contents of the rows.
+      --  By setting a sort function on the Box one can dynamically reorder
+      --  the rows of the list, based on the contents of the rows.
       --  The Sort_Func will be called for each row after the call, and will
       --  continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
@@ -411,6 +472,17 @@ package Gtk.List_Box is
       --  "user_data": user data passed to Sort_Func
 
    end Set_Sort_Func_User_Data;
+
+   procedure Unselect_All (Self : not null access Gtk_List_Box_Record);
+   --  Unselect all children of Box, if the selection mode allows it.
+   --  Since: gtk+ 3.14
+
+   procedure Unselect_Row
+      (Self : not null access Gtk_List_Box_Record;
+       Row  : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class);
+   --  Unselects a single row of Box, if the selection mode allows it.
+   --  Since: gtk+ 3.14
+   --  "row": the row to unselected
 
    ----------------
    -- Properties --
@@ -498,6 +570,39 @@ package Gtk.List_Box is
        After : Boolean := False);
    --  The ::row-selected signal is emitted when a new row is selected, or
    --  (with a null Row) when the selection is cleared.
+   --
+   --  When the Box is using GTK_SELECTION_MULTIPLE, this signal will not give
+   --  you the full picture of selection changes, and you should use the
+   --  Gtk.List_Box.Gtk_List_Box::selected-rows-changed signal instead.
+
+   Signal_Select_All : constant Glib.Signal_Name := "select-all";
+   procedure On_Select_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_Gtk_List_Box_Void;
+       After : Boolean := False);
+   procedure On_Select_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::select-all signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to select all children of the box, if the selection
+   --  mode permits it.
+   --
+   --  The default bindings for this signal is Ctrl-a.
+
+   Signal_Selected_Rows_Changed : constant Glib.Signal_Name := "selected-rows-changed";
+   procedure On_Selected_Rows_Changed
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_Gtk_List_Box_Void;
+       After : Boolean := False);
+   procedure On_Selected_Rows_Changed
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::selected-rows-changed signal is emitted when the set of selected
+   --  rows changes.
 
    Signal_Toggle_Cursor_Row : constant Glib.Signal_Name := "toggle-cursor-row";
    procedure On_Toggle_Cursor_Row
@@ -509,6 +614,22 @@ package Gtk.List_Box is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+
+   Signal_Unselect_All : constant Glib.Signal_Name := "unselect-all";
+   procedure On_Unselect_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_Gtk_List_Box_Void;
+       After : Boolean := False);
+   procedure On_Unselect_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::unselect-all signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to unselect all children of the box, if the selection
+   --  mode permits it.
+   --
+   --  The default bindings for this signal is Ctrl-Shift-a.
 
    ----------------
    -- Interfaces --

@@ -188,6 +188,7 @@ package Pango.Enums is
       Pango_Weight_Thin,
       Pango_Weight_Ultralight,
       Pango_Weight_Light,
+      Pango_Weight_Semilight,
       Pango_Weight_Book,
       Pango_Weight_Normal,
       Pango_Weight_Medium,
@@ -198,13 +199,14 @@ package Pango.Enums is
       Pango_Weight_Ultraheavy);
    pragma Convention (C, Weight);
    --  An enumeration specifying the weight (boldness) of a font. This is a
-   --  numerical value ranging from 100 to 900, but there are some predefined
+   --  numerical value ranging from 100 to 1000, but there are some predefined
    --  values:
 
    for Weight use (
       Pango_Weight_Thin => 100,
       Pango_Weight_Ultralight => 200,
       Pango_Weight_Light => 300,
+      Pango_Weight_Semilight => 350,
       Pango_Weight_Book => 380,
       Pango_Weight_Normal => 400,
       Pango_Weight_Medium => 500,

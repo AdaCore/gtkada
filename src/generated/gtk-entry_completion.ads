@@ -638,6 +638,26 @@ package Gtk.Entry_Completion is
    --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
    --    --  Returns True if the signal has been handled
 
+   type Cb_Gtk_Entry_Completion_Void is not null access procedure
+     (Self : access Gtk_Entry_Completion_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_No_Matches : constant Glib.Signal_Name := "no-matches";
+   procedure On_No_Matches
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Void;
+       After : Boolean := False);
+   procedure On_No_Matches
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  Gets emitted when the filter model has zero number of rows in
+   --  completion_complete method. (In other words when GtkEntryCompletion is
+   --  out of suggestions)
+
    ----------------
    -- Interfaces --
    ----------------

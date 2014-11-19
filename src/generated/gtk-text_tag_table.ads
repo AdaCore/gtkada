@@ -57,6 +57,7 @@ package Gtk.Text_Tag_Table is
 
    type Gtk_Text_Tag_Table_Foreach is access procedure
      (Tag : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
+   --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
 
    ------------------
    -- Constructors --
@@ -104,6 +105,8 @@ package Gtk.Text_Tag_Table is
       type Gtk_Text_Tag_Table_Foreach is access procedure
         (Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
          Data : User_Data_Type);
+      --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
+      --  "data": data passed to Gtk.Text_Tag_Table.Foreach
 
       procedure Foreach
          (Table : not null access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class;

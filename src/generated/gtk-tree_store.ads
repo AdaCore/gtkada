@@ -260,7 +260,7 @@ package Gtk.Tree_Store is
    --  indicated by New_Order. Note that this function only works with unsorted
    --  stores.
    --  Since: gtk+ 2.2
-   --  "parent": A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  "parent": A Gtk.Tree_Model.Gtk_Tree_Iter, or null
    --  "new_order": an array of integers mapping the new position of each
    --  child to its old position before the re-ordering, i.e.
    --  New_Order`[newpos] = oldpos`.

@@ -147,6 +147,7 @@ with Glib.Action_Group;       use Glib.Action_Group;
 with Glib.Action_Map;         use Glib.Action_Map;
 with Glib.Cancellable;        use Glib.Cancellable;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Notification;       use Glib.Notification;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
@@ -332,6 +333,40 @@ package Glib.Application is
    --  Determines if Cmdline represents a remote invocation.
    --  Since: gtk+ 2.28
 
+   function Get_Resource_Base_Path
+      (Self : not null access Gapplication_Record) return UTF8_String;
+   --  Gets the resource base path of Application.
+   --  See Glib.Application.Set_Resource_Base_Path for more information.
+   --  Since: gtk+ 2.42
+
+   procedure Set_Resource_Base_Path
+      (Self          : not null access Gapplication_Record;
+       Resource_Path : UTF8_String := "");
+   --  Sets (or unsets) the base resource path of Application.
+   --  The path is used to automatically load various [application
+   --  resources][gresource] such as menu layouts and action descriptions. The
+   --  various types of resources will be found at fixed names relative to the
+   --  given base path.
+   --  By default, the resource base path is determined from the application
+   --  ID by prefixing '/' and replacing each '.' with '/'. This is done at the
+   --  time that the Glib.Application.Gapplication object is constructed.
+   --  Changes to the application ID after that point will not have an impact
+   --  on the resource base path.
+   --  As an example, if the application has an ID of "org.example.app" then
+   --  the default resource base path will be "/org/example/app". If this is a
+   --  Gtk.Application.Gtk_Application (and you have not manually changed the
+   --  path) then Gtk will then search for the menus of the application at
+   --  "/org/example/app/gtk/menus.ui".
+   --  See Gresource.Gresource for more information about adding resources to
+   --  your application.
+   --  You can disable automatic resource loading functionality by setting the
+   --  path to null.
+   --  Changing the resource base path once the application is running is not
+   --  recommended. The point at which the resource path is consulted for
+   --  forming paths for various purposes is unspecified.
+   --  Since: gtk+ 2.42
+   --  "resource_path": the resource path to use
+
    procedure Hold (Self : not null access Gapplication_Record);
    --  Increases the use count of Application.
    --  Use this function to indicate that the application has a reason to
@@ -472,6 +507,34 @@ package Glib.Application is
    --  "argc": the argc from main (or 0 if Argv is null)
    --  "argv": the argv from main, or null
 
+   procedure Send_Notification
+      (Self         : not null access Gapplication_Record;
+       Id           : UTF8_String := "";
+       Notification : not null access Glib.Notification.Gnotification_Record'Class);
+   --  Sends a notification on behalf of Application to the desktop shell.
+   --  There is no guarantee that the notification is displayed immediately, or
+   --  even at all.
+   --  Notifications may persist after the application exits. It will be
+   --  D-Bus-activated when the notification or one of its actions is
+   --  activated.
+   --  Modifying Notification after this call has no effect. However, the
+   --  object can be reused for a later call to this function.
+   --  Id may be any string that uniquely identifies the event for the
+   --  application. It does not need to be in any special format. For example,
+   --  "new-message" might be appropriate for a notification about new
+   --  messages.
+   --  If a previous notification was sent with the same Id, it will be
+   --  replaced with Notification and shown again as if it was a new
+   --  notification. This works even for notifications sent from a previous
+   --  execution of the application, as long as Id is the same string.
+   --  Id may be null, but it is impossible to replace or withdraw
+   --  notifications without an id.
+   --  If Notification is no longer relevant, it can be withdrawn with
+   --  Glib.Application.Withdraw_Notification.
+   --  Since: gtk+ 2.40
+   --  "id": id of the notification, or null
+   --  "notification": the Glib.Notification.Gnotification to send
+
    procedure Set_Action_Group
       (Self         : not null access Gapplication_Record;
        Action_Group : Glib.Action_Group.Gaction_Group);
@@ -498,6 +561,22 @@ package Glib.Application is
    --  This function must only be called to cancel the effect of a previous
    --  call to Glib.Application.Mark_Busy.
    --  Since: gtk+ 2.38
+
+   procedure Withdraw_Notification
+      (Self : not null access Gapplication_Record;
+       Id   : UTF8_String);
+   --  Withdraws a notification that was sent with
+   --  Glib.Application.Send_Notification.
+   --  This call does nothing if a notification with Id doesn't exist or the
+   --  notification was never sent.
+   --  This function works even for notifications sent in previous executions
+   --  of this application, as long Id is the same as it was for the sent
+   --  notification.
+   --  Note that notifications are dismissed when the user clicks on one of
+   --  the buttons in a notification or triggers its default action, so there
+   --  is no need to explicitly withdraw the notification in that case.
+   --  Since: gtk+ 2.40
+   --  "id": id of a previously sent notification
 
    function Get_Arguments
       (Self : not null access Gapplication_Command_Line_Record)
@@ -742,7 +821,13 @@ package Glib.Application is
 
    Is_Remote_Property : constant Glib.Properties.Property_Boolean;
 
+   Resource_Base_Path_Property : constant Glib.Properties.Property_String;
+
    Arguments_Property : constant Glib.Properties.Property_Object;
+   --  Type: Glib.Variant.Gvariant
+   --  Flags: write
+
+   Options_Property : constant Glib.Properties.Property_Object;
    --  Type: Glib.Variant.Gvariant
    --  Flags: write
 
@@ -802,6 +887,59 @@ package Glib.Application is
    --    --  representing the passed commandline
    --    --  Returns An integer that is set as the exit status for the calling
    --   process. See Glib.Application.Set_Exit_Status.
+
+   Signal_Handle_Local_Options : constant Glib.Signal_Name := "handle-local-options";
+   --  The ::handle-local-options signal is emitted on the local instance
+   --  after the parsing of the commandline options has occurred.
+   --
+   --  You can add options to be recognised during commandline option parsing
+   --  using g_application_add_main_option_entries and
+   --  g_application_add_option_group.
+   --
+   --  Signal handlers can inspect Options (along with values pointed to from
+   --  the Arg_Data of an installed GOption_Entrys) in order to decide to
+   --  perform certain actions, including direct local handling (which may be
+   --  useful for options like --version).
+   --
+   --  In the event that the application is marked
+   --  Glib.Application.G_Application_Handles_Command_Line the "normal
+   --  processing" will send the Option dictionary to the primary instance
+   --  where it can be read with g_application_command_line_get_options. The
+   --  signal handler can modify the dictionary before returning, and the
+   --  modified dictionary will be sent.
+   --
+   --  In the event that Glib.Application.G_Application_Handles_Command_Line
+   --  is not set, "normal processing" will treat the remaining uncollected
+   --  command line arguments as filenames or URIs. If there are no arguments,
+   --  the application is activated by Glib.Application.Activate. One or more
+   --  arguments results in a call to g_application_open.
+   --
+   --  If you want to handle the local commandline arguments for yourself by
+   --  converting them to calls to g_application_open or
+   --  Glib.Action_Group.Activate_Action then you must be sure to register the
+   --  application first. You should probably not call
+   --  Glib.Application.Activate for yourself, however: just return -1 and
+   --  allow the default handler to do it for you. This will ensure that the
+   --  `--gapplication-service` switch works properly (i.e. no activation in
+   --  that case).
+   --
+   --  Note that this signal is emitted from the default implementation of
+   --  local_command_line. If you override that function and don't chain up
+   --  then this signal will never be emitted.
+   --
+   --  You can override local_command_line if you need more powerful
+   --  capabilities than what is provided here, but this should not normally be
+   --  required.
+   --    function Handler
+   --       (Self    : access Gapplication_Record'Class;
+   --        Options : GLib.Variant_Dict) return Gint
+   -- 
+   --  Callback parameters:
+   --    --  "options": the options dictionary
+   --    --  Returns an exit code. If you have handled your options and want
+   -- to exit the process, return a non-negative option, 0 for success,
+   -- and a positive value for failure. To continue, return -1 to let
+   -- the default option processing continue.
 
    Signal_Open : constant Glib.Signal_Name := "open";
    --  The ::open signal is emitted on the primary instance when there are
@@ -913,8 +1051,12 @@ package Glib.Application is
 private
    Platform_Data_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("platform-data");
+   Options_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("options");
    Arguments_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("arguments");
+   Resource_Base_Path_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("resource-base-path");
    Is_Remote_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-remote");
    Is_Registered_Property : constant Glib.Properties.Property_Boolean :=

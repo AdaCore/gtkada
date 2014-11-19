@@ -28,8 +28,8 @@
 --  what "icon theme" is selected by the user. The operation of icon themes on
 --  Linux and Unix follows the [Icon Theme
 --  Specification](http://www.freedesktop.org/Standards/icon-theme-spec) There
---  is a default icon theme, named `hicolor` where applications should install
---  their icons, but more additional application themes can be installed as
+--  is a fallback icon theme, named `hicolor`, where applications should
+--  install their icons, but additional icon themes can be installed as
 --  operating system vendors and users choose.
 --
 --  Named icons are similar to the deprecated [Stock Items][gtkstock], and the
@@ -63,10 +63,9 @@
 --  the icons in the current theme. You can create new
 --  Gtk.Icon_Theme.Gtk_Icon_Theme objects, but it's much more efficient to use
 --  the standard icon theme for the Gdk.Screen.Gdk_Screen so that the icon
---  information is shared with other people looking up icons. In the case where
---  the default screen is being used, looking up an icon can be as simple as:
---  |[<!-- language="C" --> GError *error = NULL; GtkIconTheme *icon_theme;
---  GdkPixbuf *pixbuf;
+--  information is shared with other people looking up icons. |[<!--
+--  language="C" --> GError *error = NULL; GtkIconTheme *icon_theme; GdkPixbuf
+--  *pixbuf;
 --
 --  icon_theme = gtk_icon_theme_get_default (); pixbuf =
 --  gtk_icon_theme_load_icon (icon_theme, "my-icon-name", // icon name 48, //
@@ -109,6 +108,10 @@ package Gtk.Icon_Theme is
    Icon_Lookup_Use_Builtin : constant Gtk_Icon_Lookup_Flags := 4;
    Icon_Lookup_Generic_Fallback : constant Gtk_Icon_Lookup_Flags := 8;
    Icon_Lookup_Force_Size : constant Gtk_Icon_Lookup_Flags := 16;
+   Icon_Lookup_Force_Regular : constant Gtk_Icon_Lookup_Flags := 32;
+   Icon_Lookup_Force_Symbolic : constant Gtk_Icon_Lookup_Flags := 64;
+   Icon_Lookup_Dir_Ltr : constant Gtk_Icon_Lookup_Flags := 128;
+   Icon_Lookup_Dir_Rtl : constant Gtk_Icon_Lookup_Flags := 256;
 
    type Gtk_Icon_Info_Record is new GObject_Record with null record;
    type Gtk_Icon_Info is access all Gtk_Icon_Info_Record'Class;
@@ -172,6 +175,21 @@ package Gtk.Icon_Theme is
    -------------
    -- Methods --
    -------------
+
+   procedure Add_Resource_Path
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Path       : UTF8_String);
+   --  Adds a resource path that will be looked at when looking for icons,
+   --  similar to search paths.
+   --  This function should be used to make application-specific icons
+   --  available as part of the icon theme.
+   --  The resources are considered as part of the hicolor icon theme and must
+   --  be located in subdirectories that are defined in the hicolor icon theme,
+   --  such as `Path/16x16/actions/run.png`. Icons that are directly placed in
+   --  the resource path instead of a subdirectory are also considered as
+   --  ultimate fallback.
+   --  Since: gtk+ 3.14
+   --  "path": a resource path
 
    procedure Append_Search_Path
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -244,15 +262,16 @@ package Gtk.Icon_Theme is
        Path       : GNAT.Strings.String_List);
    --  Sets the search path for the icon theme object. When looking for an
    --  icon theme, GTK+ will search for a subdirectory of one or more of the
-   --  directories in Path with the same name as the icon theme. (Themes from
-   --  multiple of the path elements are combined to allow themes to be
-   --  extended by adding icons in the user's home directory.)
+   --  directories in Path with the same name as the icon theme containing an
+   --  index.theme file. (Themes from multiple of the path elements are
+   --  combined to allow themes to be extended by adding icons in the user's
+   --  home directory.)
    --  In addition if an icon found isn't found either in the current icon
    --  theme or the default icon theme, and an image file with the right name
    --  is found directly in one of the elements of Path, then that image will
    --  be used for the icon name. (This is legacy feature, and new icons should
-   --  be put into the default icon theme, which is called hicolor, rather than
-   --  directly on the icon path.)
+   --  be put into the fallback icon theme, which is called hicolor, rather
+   --  than directly on the icon path.)
    --  Since: gtk+ 2.4
    --  "path": array of directories that are searched for icon themes
 
@@ -497,17 +516,17 @@ package Gtk.Icon_Theme is
    function Get_Attach_Points
       (Icon_Info : not null access Gtk_Icon_Info_Record)
        return Gdk.Types.Gdk_Points_Array;
-   --  Fetches the set of attach points for an icon. An attach point is a
-   --  location in the icon that can be used as anchor points for attaching
-   --  emblems or overlays to the icon.
+   pragma Obsolescent (Get_Attach_Points);
+   --  This function is deprecated and always returns False.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
 
    function Get_Base_Scale
       (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint;
    --  Gets the base scale for the icon. The base scale is a scale for the
    --  icon that was specified by the icon theme creator. For instance an icon
-   --  drawn for a high-dpi screen with window-scale 2 for a base size of 32
-   --  will be 64 pixels tall and have a base_scale of 2.
+   --  drawn for a high-dpi screen with window scale 2 for a base size of 32
+   --  will be 64 pixels tall and have a base scale of 2.
    --  Since: gtk+ 3.10
 
    function Get_Base_Size
@@ -524,27 +543,28 @@ package Gtk.Icon_Theme is
    function Get_Builtin_Pixbuf
       (Icon_Info : not null access Gtk_Icon_Info_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Get_Builtin_Pixbuf);
    --  Gets the built-in image for this icon, if any. To allow GTK+ to use
    --  built in icon images, you must pass the
    --  Gtk.Icon_Theme.Icon_Lookup_Use_Builtin to Gtk.Icon_Theme.Lookup_Icon.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
 
    function Get_Display_Name
       (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String;
-   --  Gets the display name for an icon. A display name is a string to be
-   --  used in place of the icon name in a user visible context like a list of
-   --  icons.
+   pragma Obsolescent (Get_Display_Name);
+   --  This function is deprecated and always returns null.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
 
    procedure Get_Embedded_Rect
       (Icon_Info              : not null access Gtk_Icon_Info_Record;
        Rectangle              : out Gdk.Rectangle.Gdk_Rectangle;
        Has_Embedded_Rectangle : out Boolean);
-   --  Gets the coordinates of a rectangle within the icon that can be used
-   --  for display of information such as a preview of the contents of a text
-   --  file. See Gtk.Icon_Theme.Set_Raw_Coordinates for further information
-   --  about the coordinate system.
+   pragma Obsolescent (Get_Embedded_Rect);
+   --  This function is deprecated and always returns False.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "rectangle": Gdk.Rectangle.Gdk_Rectangle in which to store embedded
    --  rectangle coordinates; coordinates are only stored when this function
    --  returns True.
@@ -640,6 +660,7 @@ package Gtk.Icon_Theme is
    procedure Set_Raw_Coordinates
       (Icon_Info       : not null access Gtk_Icon_Info_Record;
        Raw_Coordinates : Boolean);
+   pragma Obsolescent (Set_Raw_Coordinates);
    --  Sets whether the coordinates returned by
    --  Gtk.Icon_Theme.Get_Embedded_Rect and Gtk.Icon_Theme.Get_Attach_Points
    --  should be returned in their original form as specified in the icon
@@ -654,6 +675,7 @@ package Gtk.Icon_Theme is
    --  This function is provided primarily to allow compatibility wrappers for
    --  older API's, and is not expected to be useful for applications.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "raw_coordinates": whether the coordinates of embedded rectangles and
    --  attached points should be returned in their original (unscaled) form.
 
@@ -665,6 +687,7 @@ package Gtk.Icon_Theme is
       (Icon_Name : UTF8_String;
        Size      : Gint;
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   pragma Obsolescent (Add_Builtin_Icon);
    --  Registers a built-in icon for icon theme lookups. The idea of built-in
    --  icons is to allow an application or library that uses themed icons to
    --  function requiring files to be present in the file system. For instance,
@@ -676,11 +699,12 @@ package Gtk.Icon_Theme is
    --  This function will generally be used with pixbufs loaded via
    --  gdk_pixbuf_new_from_inline.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "icon_name": the name of the icon to register
    --  "size": the size in pixels at which to register the icon (different
    --  images can be registered for the same icon name at different sizes.)
    --  "pixbuf": Gdk.Pixbuf.Gdk_Pixbuf that contains the image to use for
-   --  Icon_Name.
+   --  Icon_Name
 
    function Get_Default return Gtk_Icon_Theme;
    --  Gets the icon theme for the default screen. See

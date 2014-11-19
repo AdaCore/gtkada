@@ -23,7 +23,7 @@
 
 --  <description>
 --  Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel displays a keyboard
---  accelerator (i.e. a key combination like `Control + a`. If the cell
+--  accelerator (i.e. a key combination like `Control + a`). If the cell
 --  renderer is editable, the accelerator can be changed by simply typing the
 --  new combination.
 --

@@ -54,11 +54,12 @@
 --  Gdbus.Message.Gdbus_Message, in the gio library, for those.)
 --
 --  For space-efficiency, the Glib.Variant.Gvariant serialisation format does
---  not automatically include the variant's type or endianness, which must
---  either be implied from context (such as knowledge that a particular file
---  format always contains a little-endian G_VARIANT_TYPE_VARIANT) or supplied
---  out-of-band (for instance, a type and/or endianness indicator could be
---  placed at the beginning of a file, network message or network stream).
+--  not automatically include the variant's length, type or endianness, which
+--  must either be implied from context (such as knowledge that a particular
+--  file format always contains a little-endian G_VARIANT_TYPE_VARIANT which
+--  occupies the whole length of the file) or supplied out-of-band (for
+--  instance, a length, type and/or endianness indicator could be placed at the
+--  beginning of a file, network message or network stream).
 --
 --  A Glib.Variant.Gvariant's size is limited mainly by any lower level
 --  operating system constraints, such as the number of bits in Gsize. For
@@ -89,7 +90,8 @@
 --
 --  This is the memory that is used for storing GVariant data in serialised
 --  form. This is what would be sent over the network or what would end up on
---  disk.
+--  disk, not counting any indicator of the endianness, or of the length or
+--  type of the top-level variant.
 --
 --  The amount of memory required to store a boolean is 1 byte. 16, 32 and 64
 --  bit integers and double precision floating point numbers use their
@@ -234,6 +236,7 @@ pragma Ada_2005;
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib;                    use Glib;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.String;             use Glib.String;
 
@@ -993,7 +996,8 @@ package Glib.Variant is
    --  If Expected_Type was specified then any non-null return value will have
    --  this type.
    --  This function is currently implemented with a linear scan. If you plan
-   --  to do many lookups then GVariant_Dict may be more efficient.
+   --  to do many lookups then Gvariant.Dict.Gvariant_Dict may be more
+   --  efficient.
    --  Since: gtk+ 2.28
    --  "key": the key to lookup in the dictionary
    --  "expected_type": a Glib.Variant.Gvariant_Type, or null
@@ -1341,8 +1345,32 @@ package Glib.Variant is
    --  "limit": a pointer to the end of Text, or null
    --  "endptr": a location to store the end pointer, or null
 
+   function Parse_Error_Print_Context
+      (Error      : Glib.Error.GError;
+       Source_Str : UTF8_String) return UTF8_String;
+   --  Pretty-prints a message showing the context of a Glib.Variant.Gvariant
+   --  parse error within the string for which parsing was attempted.
+   --  The resulting string is suitable for output to the console or other
+   --  monospace media where newlines are treated in the usual way.
+   --  The message will typically look something like one of the following:
+   --  |[ unterminated string constant: (1, 2, 3, 'abc ^^^^ ]|
+   --  or
+   --  |[ unable to find a common type: [1, 2, 3, 'str'] ^ ^^^^^ ]|
+   --  The format of the message may change in a future version.
+   --  Error must have come from a failed attempt to Glib.Variant.Parse and
+   --  Source_Str must be exactly the same string that caused the error. If
+   --  Source_Str was not nul-terminated when you passed it to
+   --  Glib.Variant.Parse then you must add nul termination before using this
+   --  function.
+   --  Since: gtk+ 2.40
+   --  "error": a Gerror.Gerror from the GVariant_Parse_Error domain
+   --  "source_str": the string that was given to the parser
+
+   function Parse_Error_Quark return Glib.GQuark;
+
    function Parser_Get_Error_Quark return Glib.GQuark;
    pragma Obsolescent (Parser_Get_Error_Quark);
+   --  Same as g_variant_error_quark.
    --  Deprecated since None, 1
 
    function String_Is_Valid (Type_String : UTF8_String) return Boolean;

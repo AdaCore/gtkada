@@ -264,7 +264,7 @@ package Gtk.File_Chooser is
    --  Sets whether file choser will offer to create new folders. This is only
    --  relevant if the action is not set to be Gtk.File_Chooser.Action_Open.
    --  Since: gtk+ 2.18
-   --  "create_folders": True if the New Folder button should be displayed
+   --  "create_folders": True if the Create Folder button should be displayed
 
    function Get_Current_Folder
       (Chooser : Gtk_File_Chooser) return UTF8_String;
@@ -399,13 +399,13 @@ package Gtk.File_Chooser is
    --  which you already have a file name to which the user may save. For
    --  example, when the user opens an existing file and then does Save As...
    --  to save a copy or a modified version. If you don't have a file name
-   --  already &mdash; for example, if the user just created a new file and is
-   --  saving it for the first time, do not call this function. Instead, use
-   --  something similar to this: |[<!-- language="C" --> if (document_is_new)
-   --  { // the user just created a new document
-   --  gtk_file_chooser_set_current_name (chooser, "Untitled document"); } else
-   --  { // the user edited an existing document gtk_file_chooser_set_filename
-   --  (chooser, existing_filename); } ]|
+   --  already — for example, if the user just created a new file and is saving
+   --  it for the first time, do not call this function. Instead, use something
+   --  similar to this: |[<!-- language="C" --> if (document_is_new) { // the
+   --  user just created a new document gtk_file_chooser_set_current_name
+   --  (chooser, "Untitled document"); } else { // the user edited an existing
+   --  document gtk_file_chooser_set_filename (chooser, existing_filename); }
+   --  ]|
    --  In the first case, the file chooser will present the user with useful
    --  suggestions as to where to save his new file. In the second case, the
    --  file's existing location is already known, so the file chooser will use
@@ -446,9 +446,9 @@ package Gtk.File_Chooser is
       (Chooser    : Gtk_File_Chooser;
        Local_Only : Boolean);
    --  Sets whether only local files can be selected in the file selector. If
-   --  Local_Only is True (the default), then the selected file are files are
+   --  Local_Only is True (the default), then the selected file or files are
    --  guaranteed to be accessible through the operating systems native file
-   --  file system and therefore the application only needs to worry about the
+   --  system and therefore the application only needs to worry about the
    --  filename functions in Gtk.File_Chooser.Gtk_File_Chooser, like
    --  Gtk.File_Chooser.Get_Filename, rather than the URI functions like
    --  Gtk.File_Chooser.Get_Uri,
@@ -560,13 +560,12 @@ package Gtk.File_Chooser is
    --  which you already have a file name to which the user may save. For
    --  example, when the user opens an existing file and then does Save As...
    --  to save a copy or a modified version. If you don't have a file name
-   --  already &mdash; for example, if the user just created a new file and is
-   --  saving it for the first time, do not call this function. Instead, use
-   --  something similar to this: |[<!-- language="C" --> if (document_is_new)
-   --  { // the user just created a new document
-   --  gtk_file_chooser_set_current_name (chooser, "Untitled document"); } else
-   --  { // the user edited an existing document gtk_file_chooser_set_uri
-   --  (chooser, existing_uri); } ]|
+   --  already — for example, if the user just created a new file and is saving
+   --  it for the first time, do not call this function. Instead, use something
+   --  similar to this: |[<!-- language="C" --> if (document_is_new) { // the
+   --  user just created a new document gtk_file_chooser_set_current_name
+   --  (chooser, "Untitled document"); } else { // the user edited an existing
+   --  document gtk_file_chooser_set_uri (chooser, existing_uri); } ]|
    --  In the first case, the file chooser will present the user with useful
    --  suggestions as to where to save his new file. In the second case, the
    --  file's existing location is already known, so the file chooser will use

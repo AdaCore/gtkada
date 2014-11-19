@@ -33,7 +33,7 @@
 --  when the widget is instantiated on a particular display. (Create GDK
 --  resources in response to this signal.)
 --
---  - The Gtk.Widget.Gtk_Widget::configure-event signal to take any necessary
+--  - The Gtk.Widget.Gtk_Widget::size-allocate signal to take any necessary
 --  actions when the widget changes size.
 --
 --  - The Gtk.Widget.Gtk_Widget::draw signal to handle redrawing the contents

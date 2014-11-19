@@ -21,6 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Font_Family.Pango_Font_Family structure is used to represent a
+--  family of related font faces. The faces in a family share a common design,
+--  but differ in slant, weight, width and other aspects.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");

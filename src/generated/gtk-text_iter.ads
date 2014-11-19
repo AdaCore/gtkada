@@ -788,10 +788,13 @@ package Gtk.Text_Iter is
    --  the Pango text boundary algorithms).
 
    function Inside_Word (Iter : Gtk_Text_Iter) return Boolean;
-   --  Determines whether Iter is inside a natural-language word (as opposed
-   --  to say inside some whitespace). Word breaks are determined by Pango and
-   --  should be correct for nearly any language (if not, the correct fix would
-   --  be to the Pango word break algorithms).
+   --  Determines whether the character pointed by Iter is part of a
+   --  natural-language word (as opposed to say inside some whitespace). Word
+   --  breaks are determined by Pango and should be correct for nearly any
+   --  language (if not, the correct fix would be to the Pango word break
+   --  algorithms).
+   --  Note that if Gtk.Text_Iter.Starts_Word returns True, then this function
+   --  returns True too, since Iter points to the first character of the word.
 
    function Is_Cursor_Position (Iter : Gtk_Text_Iter) return Boolean;
    --  See Gtk.Text_Iter.Forward_Cursor_Position or Pango_Log_Attr or

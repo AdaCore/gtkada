@@ -44,21 +44,33 @@
 --  Gtk.Application_Window.Gtk_Application_Window and to the "activate" and
 --  'open' Glib.Application.Gapplication methods.
 --
---  To set an application menu for a GtkApplication, use
---  Gtk.Application.Set_App_Menu. The Glib.Menu_Model.Gmenu_Model that this
---  function expects is usually constructed using Gtk.Builder.Gtk_Builder, as
---  seen in the following example. To specify a menubar that will be shown by
---  Gtk_Application_Windows, use Gtk.Application.Set_Menubar. Use the base
---  Glib.Action_Map.Gaction_Map interface to add actions, to respond to the
---  user selecting these menu items.
+--  ## Automatic resources ## {automatic-resources}
 --
---  GTK+ displays these menus as expected, depending on the platform the
---  application is running on.
+--  Gtk.Application.Gtk_Application will automatically load menus from the
+--  Gtk.Builder.Gtk_Builder file located at "gtk/menus.ui", relative to the
+--  application's resource base path (see
+--  Glib.Application.Set_Resource_Base_Path). The menu with the ID "app-menu"
+--  is taken as the application's app menu and the menu with the ID "menubar"
+--  is taken as the application's menubar. Additional menus (most interesting
+--  submenus) can be named and accessed via Gtk.Application.Get_Menu_By_Id
+--  which allows for dynamic population of a part of the menu structure.
+--
+--  If the files "gtk/menus-appmenu.ui" or "gtk/menus-traditional.ui" are
+--  present then these files will be used in preference, depending on the value
+--  of Gtk.Application.Prefers_App_Menu.
+--
+--  It is also possible to provide the menus manually using
+--  Gtk.Application.Set_App_Menu and Gtk.Application.Set_Menubar.
+--
+--  Gtk.Application.Gtk_Application will also automatically setup an icon
+--  search path for the default icon theme by appending "icons" to the resource
+--  base path. This allows your application to easily store its icons as
+--  resources. See Gtk.Icon_Theme.Add_Resource_Path for more information.
 --
 --  ## A simple application ## {gtkapplication}
 --
 --  [A simple
---  example](https://git.gnome.org/browse/gtk+/tree/examples/bloatpad.c)
+--  example](https://git.gnome.org/browse/gtk+/tree/examples/bp/bloatpad.c)
 --
 --  GtkApplication optionally registers with a session manager of the users
 --  session (if you set the Gtk.Application.Gtk_Application:register-session
@@ -83,6 +95,7 @@ with Glib.Action_Group;       use Glib.Action_Group;
 with Glib.Action_Map;         use Glib.Action_Map;
 with Glib.Application;        use Glib.Application;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Menu;               use Glib.Menu;
 with Glib.Menu_Model;         use Glib.Menu_Model;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -189,6 +202,7 @@ package Gtk.Application is
        Accelerator : UTF8_String;
        Action_Name : UTF8_String;
        Parameter   : Glib.Variant.Gvariant);
+   pragma Obsolescent (Add_Accelerator);
    --  Installs an accelerator that will cause the named action to be
    --  activated when the key combination specificed by Accelerator is pressed.
    --  Accelerator must be a string that can be parsed by
@@ -203,6 +217,7 @@ package Gtk.Application is
    --  Gtk.Application.Set_Menubar, which is usually more convenient than
    --  calling this function for each accelerator.
    --  Since: gtk+ 3.4
+   --  Deprecated since 3.14, 1
    --  "accelerator": accelerator string
    --  "action_name": the name of the action to activate
    --  "parameter": parameter to pass when activating the action, or null if
@@ -245,6 +260,24 @@ package Gtk.Application is
    --  "accels": a list of accelerators in the format understood by
    --  Gtk.Accel_Group.Accelerator_Parse
 
+   function Get_Actions_For_Accel
+      (Self  : not null access Gtk_Application_Record;
+       Accel : UTF8_String) return GNAT.Strings.String_List;
+   --  Returns the list of actions (possibly empty) that Accel maps to. Each
+   --  item in the list is a detailed action name in the usual form.
+   --  This might be useful to discover if an accel already exists in order to
+   --  prevent installation of a conflicting accelerator (from an accelerator
+   --  editor or a plugin system, for example). Note that having more than one
+   --  action per accelerator may not be a bad thing and might make sense in
+   --  cases where the actions never appear in the same context.
+   --  In case there are no actions for a given accelerator, an empty array is
+   --  returned. null is never returned.
+   --  It is a programmer error to pass an invalid accelerator string. If you
+   --  are unsure, check it with Gtk.Accel_Group.Accelerator_Parse first.
+   --  Since: gtk+ 3.14
+   --  "accel": an accelerator that can be parsed by
+   --  Gtk.Accel_Group.Accelerator_Parse
+
    function Get_Active_Window
       (Self : not null access Gtk_Application_Record)
        return Gtk.Window.Gtk_Window;
@@ -279,6 +312,14 @@ package Gtk.Application is
    --  respond to the user selecting these menu items.
    --  Since: gtk+ 3.4
    --  "app_menu": a Glib.Menu_Model.Gmenu_Model, or null
+
+   function Get_Menu_By_Id
+      (Self : not null access Gtk_Application_Record;
+       Id   : UTF8_String) return Glib.Menu.Gmenu;
+   --  Gets a menu from automatically loaded resources. See [Automatic
+   --  resources][automatic-resources] for more information.
+   --  Since: gtk+ 3.14
+   --  "id": the id of the menu to look up
 
    function Get_Menubar
       (Self : not null access Gtk_Application_Record)
@@ -370,13 +411,45 @@ package Gtk.Application is
    --  Gtk.Application.Set_Accels_For_Action.
    --  Since: gtk+ 3.12
 
+   function Prefers_App_Menu
+      (Self : not null access Gtk_Application_Record) return Boolean;
+   --  Determines if the desktop environment in which the application is
+   --  running would prefer an application menu be shown.
+   --  If this function returns True then the application should call
+   --  Gtk.Application.Set_App_Menu with the contents of an application menu,
+   --  which will be shown by the desktop environment. If it returns False then
+   --  you should consider using an alternate approach, such as a menubar.
+   --  The value returned by this function is purely advisory and you are free
+   --  to ignore it. If you call Gtk.Application.Set_App_Menu even if the
+   --  desktop environment doesn't support app menus, then a fallback will be
+   --  provided.
+   --  Applications are similarly free not to set an app menu even if the
+   --  desktop environment wants to show one. In that case, a fallback will
+   --  also be created by the desktop environment (GNOME, for example, uses a
+   --  menu with only a "Quit" item in it).
+   --  The value returned by this function never changes. Once it returns a
+   --  particular value, it is guaranteed to always return the same value.
+   --  You may only call this function after the application has been
+   --  registered and after the base startup handler has run. You're most
+   --  likely to want to use this from your own startup handler. It may also
+   --  make sense to consult this function while constructing UI (in activate,
+   --  open or an action activation handler) in order to determine if you
+   --  should show a gear menu or not.
+   --  This function will return False on Mac OS and a default app menu will
+   --  be created automatically with the "usual" contents of that menu typical
+   --  to most Mac OS applications. If you call Gtk.Application.Set_App_Menu
+   --  anyway, then this menu will be replaced with your own.
+   --  Since: gtk+ 3.14
+
    procedure Remove_Accelerator
       (Self        : not null access Gtk_Application_Record;
        Action_Name : UTF8_String;
        Parameter   : Glib.Variant.Gvariant);
+   pragma Obsolescent (Remove_Accelerator);
    --  Removes an accelerator that has been previously added with
    --  Gtk.Application.Add_Accelerator.
    --  Since: gtk+ 3.4
+   --  Deprecated since 3.14, 1
    --  "action_name": the name of the action to activate
    --  "parameter": parameter to pass when activating the action, or null if
    --  the action does not accept an activation parameter

@@ -142,6 +142,9 @@ package Gdk.Device is
    --  Sets a the mode of an input device. The mode controls if the device is
    --  active and whether the device's range is mapped to the entire screen or
    --  to a single window.
+   --  Note: This is only meaningful for floating devices, master devices (and
+   --  slaves connected to these) drive the pointer cursor, which is not
+   --  limited by the input mode.
    --  "mode": the input mode.
 
    function Get_N_Axes
@@ -182,8 +185,8 @@ package Gdk.Device is
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
        Window : Gdk.Gdk_Window;
-       Axes   : in out Gdouble;
-       Mask   : in out Gdk.Types.Gdk_Modifier_Type);
+       Axes   : Gdouble_Array;
+       Mask   : out Gdk.Types.Gdk_Modifier_Type);
    --  Gets the current state of a pointer device relative to Window. As a
    --  slave device's coordinates are those of its master pointer, this
    --  function may not be called on devices of type

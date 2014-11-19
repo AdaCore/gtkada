@@ -28,8 +28,11 @@
 --
 --  The Gtk.Menu_Button.Gtk_Menu_Button widget can hold any valid child
 --  widget. That is, it can hold almost any other standard
---  Gtk.Widget.Gtk_Widget. The most commonly used child is the provided
---  Gtk.Arrow.Gtk_Arrow.
+--  Gtk.Widget.Gtk_Widget. The most commonly used child is Gtk.Image.Gtk_Image.
+--  If no widget is explicitely added to the Gtk.Menu_Button.Gtk_Menu_Button, a
+--  Gtk.Image.Gtk_Image is automatically created, using an arrow image oriented
+--  according to Gtk.Menu_Button.Gtk_Menu_Button:direction or the generic
+--  "view-context-menu" icon if the direction is not set.
 --
 --  The positioning of the popup is determined by the
 --  Gtk.Menu_Button.Gtk_Menu_Button:direction property of the menu button.

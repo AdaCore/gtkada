@@ -453,6 +453,17 @@ package Gtk.Assistant is
    --  page is clicked, or when the apply button in the last page in the flow
    --  (of type Gtk.Assistant.Gtk_Assistant_Page_Confirm) is clicked.
 
+   Signal_Escape : constant Glib.Signal_Name := "escape";
+   procedure On_Escape
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Void;
+       After : Boolean := False);
+   procedure On_Escape
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
    type Cb_Gtk_Assistant_Gtk_Widget_Void is not null access procedure
      (Self : access Gtk_Assistant_Record'Class;
       Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);

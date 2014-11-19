@@ -85,6 +85,19 @@ package body Gtk.Switch is
       return Internal (Get_Object (Self)) /= 0;
    end Get_Active;
 
+   ---------------
+   -- Get_State --
+   ---------------
+
+   function Get_State
+      (Self : not null access Gtk_Switch_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_switch_get_state");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_State;
+
    ----------------
    -- Set_Active --
    ----------------
@@ -98,6 +111,20 @@ package body Gtk.Switch is
    begin
       Internal (Get_Object (Self), Boolean'Pos (Is_Active));
    end Set_Active;
+
+   ---------------
+   -- Set_State --
+   ---------------
+
+   procedure Set_State
+      (Self  : not null access Gtk_Switch_Record;
+       State : Boolean)
+   is
+      procedure Internal (Self : System.Address; State : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_switch_set_state");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (State));
+   end Set_State;
 
    ---------------------------
    -- Do_Set_Related_Action --
@@ -277,10 +304,26 @@ package body Gtk.Switch is
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_GObject_Void);
 
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Switch_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Switch_Boolean_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Boolean_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Boolean_Boolean);
+
    procedure Connect
       (Object  : access Gtk_Switch_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Switch_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Switch_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Switch_Boolean_Boolean;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -290,6 +333,22 @@ package body Gtk.Switch is
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
+   procedure Connect_Slot
+      (Object  : access Gtk_Switch_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Boolean_Boolean);
+
    procedure Marsh_GObject_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -298,6 +357,15 @@ package body Gtk.Switch is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Switch_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Switch_Boolean_Boolean);
 
    procedure Marsh_Gtk_Switch_Void
       (Closure         : GClosure;
@@ -327,6 +395,25 @@ package body Gtk.Switch is
          After       => After);
    end Connect;
 
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Switch_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Switch_Boolean_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Switch_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
    ------------------
    -- Connect_Slot --
    ------------------
@@ -348,6 +435,48 @@ package body Gtk.Switch is
          After       => After);
    end Connect_Slot;
 
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Switch_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Boolean_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Boolean_Boolean'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   -----------------------------------
+   -- Marsh_GObject_Boolean_Boolean --
+   -----------------------------------
+
+   procedure Marsh_GObject_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Boolean_Boolean;
+
    ------------------------
    -- Marsh_GObject_Void --
    ------------------------
@@ -367,6 +496,27 @@ package body Gtk.Switch is
       H (Obj);
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
+
+   --------------------------------------
+   -- Marsh_Gtk_Switch_Boolean_Boolean --
+   --------------------------------------
+
+   procedure Marsh_Gtk_Switch_Boolean_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Switch_Boolean_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Switch := Gtk_Switch (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Switch_Boolean_Boolean;
 
    ---------------------------
    -- Marsh_Gtk_Switch_Void --
@@ -414,5 +564,32 @@ package body Gtk.Switch is
    begin
       Connect_Slot (Self, "activate" & ASCII.NUL, Call, After, Slot);
    end On_Activate;
+
+   ------------------
+   -- On_State_Set --
+   ------------------
+
+   procedure On_State_Set
+      (Self  : not null access Gtk_Switch_Record;
+       Call  : Cb_Gtk_Switch_Boolean_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "state-set" & ASCII.NUL, Call, After);
+   end On_State_Set;
+
+   ------------------
+   -- On_State_Set --
+   ------------------
+
+   procedure On_State_Set
+      (Self  : not null access Gtk_Switch_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "state-set" & ASCII.NUL, Call, After, Slot);
+   end On_State_Set;
 
 end Gtk.Switch;

@@ -192,6 +192,9 @@ package Gdk.Screen is
    --  The work area should be considered when positioning menus and similar
    --  popups, to avoid placing them below panels, docks or other desktop
    --  components.
+   --  Note that not all backends may have a concept of workarea. This
+   --  function will return the monitor geometry if a workarea is not
+   --  available, or does not apply.
    --  Monitor numbers start at 0. To obtain the number of monitors of Screen,
    --  use Gdk.Screen.Get_N_Monitors.
    --  Since: gtk+ 3.4

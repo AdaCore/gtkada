@@ -131,6 +131,24 @@ package body Gtk.Icon_Theme is
       end if;
    end Initialize_For_Pixbuf;
 
+   -----------------------
+   -- Add_Resource_Path --
+   -----------------------
+
+   procedure Add_Resource_Path
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Path       : UTF8_String)
+   is
+      procedure Internal
+         (Icon_Theme : System.Address;
+          Path       : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_icon_theme_add_resource_path");
+      Tmp_Path : Interfaces.C.Strings.chars_ptr := New_String (Path);
+   begin
+      Internal (Get_Object (Icon_Theme), Tmp_Path);
+      Free (Tmp_Path);
+   end Add_Resource_Path;
+
    ------------------------
    -- Append_Search_Path --
    ------------------------

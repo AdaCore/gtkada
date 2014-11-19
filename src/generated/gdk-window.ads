@@ -73,7 +73,8 @@ package Gdk.Window is
       Window_Child,
       Window_Temp,
       Window_Foreign,
-      Window_Offscreen);
+      Window_Offscreen,
+      Window_Subsurface);
    pragma Convention (C, Gdk_Window_Type);
    --  Describes the kind of window.
 
@@ -664,18 +665,10 @@ package Gdk.Window is
 
    procedure Flush (Self : Gdk.Gdk_Window);
    pragma Import (C, Flush, "gdk_window_flush");
-   --  Flush all outstanding cached operations on a window, leaving the window
-   --  in a state which reflects all that has been drawn before.
-   --  Gdk uses multiple kinds of caching to get better performance and nicer
-   --  drawing. For instance, during exposes all paints to a window using
-   --  double buffered rendering are keep on a surface until the last window
-   --  has been exposed.
-   --  Normally this should be completely invisible to applications, as we
-   --  automatically flush the windows when required, but this might be needed
-   --  if you for instance mix direct native drawing with gdk drawing. For Gtk
-   --  widgets that don't use double buffering this will be called
-   --  automatically before sending the expose event.
+   pragma Obsolescent (Flush);
+   --  This function does nothing.
    --  Since: gtk+ 2.18
+   --  Deprecated since 3.14, 1
 
    procedure Focus (Self : Gdk.Gdk_Window; Timestamp : Guint32);
    pragma Import (C, Focus, "gdk_window_focus");
@@ -1947,6 +1940,17 @@ package Gdk.Window is
    --  also updates some internal GDK state, which means that you can't really
    --  use XMapWindow directly on a GDK window).
 
+   function Show_Window_Menu
+      (Self  : Gdk.Gdk_Window;
+       Event : Gdk.Event.Gdk_Event) return Boolean;
+   --  Asks the windowing system to show the window menu. The window menu is
+   --  the menu shown when right-clicking the titlebar on traditional windows
+   --  managed by the window manager. This is useful for windows using
+   --  client-side decorations, activating it with a right-click on the window
+   --  decorations.
+   --  Since: gtk+ 3.14
+   --  "event": a Gdk.Event.Gdk_Event to show the menu for
+
    procedure Stick (Self : Gdk.Gdk_Window);
    pragma Import (C, Stick, "gdk_window_stick");
    --  "Pins" a window such that it's on all workspaces and does not scroll
@@ -2106,10 +2110,10 @@ package Gdk.Window is
 
    Signal_Create_Surface : constant Glib.Signal_Name := "create-surface";
    --  The ::create-surface signal is emitted when an offscreen window needs
-   --  its surface (re)created, which happens either when the the window is
-   --  first drawn to, or when the window is being resized. The first signal
-   --  handler that returns a non-null surface will stop any further signal
-   --  emission, and its surface will be used.
+   --  its surface (re)created, which happens either when the window is first
+   --  drawn to, or when the window is being resized. The first signal handler
+   --  that returns a non-null surface will stop any further signal emission,
+   --  and its surface will be used.
    --
    --  Note that it is not possible to access the window's previous surface
    --  from within any callback of this signal. Calling
@@ -2155,8 +2159,8 @@ package Gdk.Window is
    --  Callback parameters:
    --    --  "x": x coordinate in the window
    --    --  "y": y coordinate in the window
-   --    --  Returns the Gdk.Gdk_Window of the embedded child at
-   --     X, Y, or null
+   --    --  Returns the Gdk.Gdk_Window of the
+   --     embedded child at X, Y, or null
 
    Signal_To_Embedder : constant Glib.Signal_Name := "to-embedder";
    --  The ::to-embedder signal is emitted to translate coordinates in an

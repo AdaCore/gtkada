@@ -172,8 +172,10 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
+   pragma Obsolescent (Get_Alignment);
    --  Gets the alignment of the child in the button.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "xalign": return location for horizontal alignment
    --  "yalign": return location for vertical alignment
 
@@ -181,9 +183,11 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
+   pragma Obsolescent (Set_Alignment);
    --  Sets the alignment of the child. This property has no effect unless the
    --  child is a Gtk.Misc.Gtk_Misc or a Gtk.Alignment.Gtk_Alignment.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "xalign": the horizontal position of the child, 0.0 is left aligned,
    --  1.0 is right aligned
    --  "yalign": the vertical position of the child, 0.0 is top aligned, 1.0
@@ -282,13 +286,14 @@ package Gtk.Button is
    --  Returns the current relief style of the given Gtk.Button.Gtk_Button.
 
    procedure Set_Relief
-      (Button   : not null access Gtk_Button_Record;
-       Newstyle : Gtk.Enums.Gtk_Relief_Style);
+      (Button : not null access Gtk_Button_Record;
+       Relief : Gtk.Enums.Gtk_Relief_Style);
    --  Sets the relief style of the edges of the given Gtk.Button.Gtk_Button
-   --  widget. Three styles exist, GTK_RELIEF_NORMAL, GTK_RELIEF_HALF,
-   --  GTK_RELIEF_NONE. The default style is, as one can guess,
-   --  GTK_RELIEF_NORMAL.
-   --  "newstyle": The GtkReliefStyle as described above.
+   --  widget. Two styles exist, Gtk.Enums.Relief_Normal and
+   --  Gtk.Enums.Relief_None. The default style is, as one can guess,
+   --  Gtk.Enums.Relief_Normal. The deprecated value Gtk.Enums.Relief_Half
+   --  behaves the same as Gtk.Enums.Relief_Normal.
+   --  "relief": The GtkReliefStyle as described above
 
    function Get_Use_Stock
       (Button : not null access Gtk_Button_Record) return Boolean;

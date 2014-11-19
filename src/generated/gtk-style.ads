@@ -141,7 +141,7 @@ package Gtk.Style is
       (Style         : not null access Gtk_Style_Record;
        Widget_Type   : GType;
        Property_Name : UTF8_String;
-       Value         : in out Glib.Values.GValue);
+       Value         : out Glib.Values.GValue);
    --  Queries the value of a style property corresponding to a widget class
    --  is in the given style.
    --  Since: gtk+ 2.16

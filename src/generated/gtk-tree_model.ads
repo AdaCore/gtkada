@@ -39,7 +39,7 @@
 --  made.
 --
 --  In order to make life simpler for programmers who do not need to write
---  their own specialized model, two generic models are provided &mdash; the
+--  their own specialized model, two generic models are provided — the
 --  Gtk.Tree_Store.Gtk_Tree_Store and the Gtk.List_Store.Gtk_List_Store. To use
 --  these, the developer simply pushes data into these models as necessary.
 --  These models provide the data structure as well as all appropriate tree
@@ -1017,7 +1017,7 @@ package Gtk.Tree_Model is
    --  `gtk_tree_model_get_iter_first (tree_model, iter);`
    --  "iter": the new Gtk.Tree_Model.Gtk_Tree_Iter-struct to be set to the
    --  child
-   --  "parent": the Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  "parent": the Gtk.Tree_Model.Gtk_Tree_Iter-struct, or null
 
    type Virtual_Iter_Has_Child is access function
      (Tree_Model : Gtk_Tree_Model;

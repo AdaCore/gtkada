@@ -515,7 +515,17 @@
 --  relative to the parent. - `percentage`: A percentage difference from the
 --  nominal size. |[ font-size: 12px; ]|
 --
---  ## font: [family] [style] [variant] [size];
+--  ## font-stretch: [face]
+--
+--  Selects a normal, condensed, or expanded face from a font family.
+--
+--  Absolute keyword values have the following ordering, from narrowest to
+--  widest:
+--
+--  - ultra-condensed - extra-condensed - condensed - semi-condensed - normal
+--  - semi-expanded - expanded - extra-expanded - ultra-expanded
+--
+--  ## font: [family] [style] [variant] [stretch] [size];
 --
 --  A shorthand for setting a few font properties at once. - Supports any
 --  format accepted by Pango.Font.From_String - Note: this is somewhat

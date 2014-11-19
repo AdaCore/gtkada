@@ -99,16 +99,22 @@
 --  GtkDialog supports a custom <action-widgets> element, which can contain
 --  multiple <action-widget> elements. The "response" attribute specifies a
 --  numeric response, and the content of the element is the id of widget (which
---  should be a child of the dialogs Action_Area).
+--  should be a child of the dialogs Action_Area). To mark a response as
+--  default, set the "default" attribute of the <action-widget> element to
+--  true.
+--
+--  GtkDialog supports adding action widgets by specifying "action" as the
+--  "type" attribute of a <child> element. The widget will be added either to
+--  the action area or the headerbar of the dialog, depending on the
+--  "use-header-bar" property. The response id has to be associated with the
+--  action widget using the <action-widgets> element.
 --
 --  An example of a Gtk.Dialog.Gtk_Dialog UI definition fragment: |[ <object
---  class="GtkDialog" id="dialog1"> <child internal-child="vbox"> <object
---  class="GtkVBox" id="vbox"> <child internal-child="action_area"> <object
---  class="GtkHButtonBox" id="button_box"> <child> <object class="GtkButton"
---  id="button_cancel"/> </child> <child> <object class="GtkButton"
---  id="button_ok"/> </child> </object> </child> </object> </child>
---  <action-widgets> <action-widget response="ok">button_ok</action-widget>
+--  class="GtkDialog" id="dialog1"> <child type="action"> <object
+--  class="GtkButton" id="button_cancel"/> </child> <child type="action">
+--  <object class="GtkButton" id="button_ok"/> </child> <action-widgets>
 --  <action-widget response="cancel">button_cancel</action-widget>
+--  <action-widget response="ok" default="true">button_ok</action-widget>
 --  </action-widgets> </object> ]|
 --
 --  </description>

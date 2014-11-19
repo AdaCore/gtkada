@@ -260,6 +260,8 @@ package Gtk.Tree_Model_Filter is
    --  goal of the modify function is to return the data which should be
    --  displayed at the location specified using the parameters of the modify
    --  function.
+   --  Note that Gtk.Tree_Model_Filter.Set_Modify_Func can only be called once
+   --  for a given filter model.
    --  Since: gtk+ 2.4
    --  "types": The GTypes of the columns.
    --  "func": A Gtk_Tree_Model_Filter_Modify_Func
@@ -300,6 +302,8 @@ package Gtk.Tree_Model_Filter is
       --  data access, the goal of the modify function is to return the data
       --  which should be displayed at the location specified using the
       --  parameters of the modify function.
+      --  Note that Gtk.Tree_Model_Filter.Set_Modify_Func can only be called
+      --  once for a given filter model.
       --  Since: gtk+ 2.4
       --  "types": The GTypes of the columns.
       --  "func": A Gtk_Tree_Model_Filter_Modify_Func
@@ -314,9 +318,11 @@ package Gtk.Tree_Model_Filter is
    --  look for visibility information. Columns should be a column of type
    --  G_TYPE_BOOLEAN, where True means that a row is visible, and False if
    --  not.
+   --  Note that Gtk.Tree_Model_Filter.Set_Visible_Func or
+   --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for a
+   --  given filter model.
    --  Since: gtk+ 2.4
-   --  "column": A Gint which is the column containing the visible
-   --  information.
+   --  "column": A Gint which is the column containing the visible information
 
    procedure Set_Visible_Func
       (Self : not null access Gtk_Tree_Model_Filter_Record;
@@ -327,7 +333,7 @@ package Gtk.Tree_Model_Filter is
    --  If the condition calculated by the function changes over time (e.g.
    --  because it depends on some global parameters), you must call
    --  Gtk.Tree_Model_Filter.Refilter to keep the visibility information of the
-   --  model uptodate.
+   --  model up-to-date.
    --  Note that Func is called whenever a row is inserted, when it may still
    --  be empty. The visible function should therefore take special care of
    --  empty rows, like in the example below.
@@ -337,8 +343,11 @@ package Gtk.Tree_Model_Filter is
    --  gtk_tree_model_get (model, iter, 0, &str, -1); if (str && strcmp (str,
    --  "HI") == 0) visible = TRUE; g_free (str);
    --  return visible; } ]|
+   --  Note that Gtk.Tree_Model_Filter.Set_Visible_Func or
+   --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for a
+   --  given filter model.
    --  Since: gtk+ 2.4
-   --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function.
+   --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function
 
    generic
       type User_Data_Type (<>) is private;
@@ -366,7 +375,7 @@ package Gtk.Tree_Model_Filter is
       --  If the condition calculated by the function changes over time (e.g.
       --  because it depends on some global parameters), you must call
       --  Gtk.Tree_Model_Filter.Refilter to keep the visibility information of
-      --  the model uptodate.
+      --  the model up-to-date.
       --  Note that Func is called whenever a row is inserted, when it may
       --  still be empty. The visible function should therefore take special
       --  care of empty rows, like in the example below.
@@ -377,9 +386,12 @@ package Gtk.Tree_Model_Filter is
       --  gtk_tree_model_get (model, iter, 0, &str, -1); if (str && strcmp
       --  (str, "HI") == 0) visible = TRUE; g_free (str);
       --  return visible; } ]|
+      --  Note that Gtk.Tree_Model_Filter.Set_Visible_Func or
+      --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for
+      --  a given filter model.
       --  Since: gtk+ 2.4
-      --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function.
-      --  "data": User data to pass to the visible function, or null.
+      --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function
+      --  "data": User data to pass to the visible function, or null
 
    end Set_Visible_Func_User_Data;
 

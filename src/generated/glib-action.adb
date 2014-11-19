@@ -115,18 +115,18 @@ package body Glib.Action is
    -------------------------
 
    function Print_Detailed_Name
-      (Action_Name : UTF8_String;
-       Parameter   : Glib.Variant.Gvariant) return UTF8_String
+      (Action_Name  : UTF8_String;
+       Target_Value : Glib.Variant.Gvariant) return UTF8_String
    is
       function Internal
-         (Action_Name : Interfaces.C.Strings.chars_ptr;
-          Parameter   : System.Address)
+         (Action_Name  : Interfaces.C.Strings.chars_ptr;
+          Target_Value : System.Address)
           return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_action_print_detailed_name");
       Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
       Tmp_Return      : Interfaces.C.Strings.chars_ptr;
    begin
-      Tmp_Return := Internal (Tmp_Action_Name, Get_Object (Parameter));
+      Tmp_Return := Internal (Tmp_Action_Name, Get_Object (Target_Value));
       Free (Tmp_Action_Name);
       return Gtkada.Bindings.Value_And_Free (Tmp_Return);
    end Print_Detailed_Name;

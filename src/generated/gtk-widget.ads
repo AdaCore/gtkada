@@ -101,10 +101,10 @@
 --
 --  |[<!-- language="C" --> static void foo_widget_get_preferred_height
 --  (GtkWidget *widget, gint *min_height, gint *nat_height) { if
---  (i_am_in_height_for_width_mode) { gint min_width;
+--  (i_am_in_height_for_width_mode) { gint min_width, nat_width;
 --
 --  GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget, &min_width,
---  NULL); GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
+--  &nat_width); GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
 --  (widget, min_width, min_height, nat_height); } else { ... some widgets do
 --  both. For instance, if a GtkLabel is rotated to 90 degrees it will return
 --  the minimum and natural height for the rotated label here. } } ]|
@@ -248,10 +248,60 @@
 --  class="FooWidget" parent="GtkBox"> <property
 --  name="orientation">GTK_ORIENTATION_HORIZONTAL</property> <property
 --  name="spacing">4</property> <child> <object class="GtkButton"
---  id="hello_button"> <property name="label">Hello World</property> </object>
---  </child> <child> <object class="GtkButton" id="goodbye_button"> <property
---  name="label">Goodbye World</property> </object> </child> </template>
---  </interface> ]|
+--  id="hello_button"> <property name="label">Hello World</property> <signal
+--  name="clicked" handler="hello_button_clicked" object="FooWidget"
+--  swapped="yes"/> </object> </child> <child> <object class="GtkButton"
+--  id="goodbye_button"> <property name="label">Goodbye World</property>
+--  </object> </child> </template> </interface> ]|
+--
+--  Typically, you'll place the template fragment into a file that is bundled
+--  with your project, using Gresource.Gresource. In order to load the
+--  template, you need to call gtk_widget_class_set_template_from_resource from
+--  the class initialization of your Gtk.Widget.Gtk_Widget type:
+--
+--  |[<!-- language="C" --> static void foo_widget_class_init (FooWidgetClass
+--  *klass) { // ...
+--
+--  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
+--  "/com/example/ui/foowidget.ui"); } ]|
+--
+--  You will also need to call Gtk.Widget.Init_Template from the instance
+--  initialization function:
+--
+--  |[<!-- language="C" --> static void foo_widget_init (FooWidget *self) { //
+--  ... gtk_widget_init_template (GTK_WIDGET (self)); } ]|
+--
+--  You can access widgets defined in the template using the
+--  Gtk.Widget.Get_Template_Child function, but you will typically declare a
+--  pointer in the instance private data structure of your type using the same
+--  name as the widget in the template definition, and call
+--  gtk_widget_class_bind_template_child_private with that name, e.g.
+--
+--  |[<!-- language="C" --> typedef struct { GtkWidget *hello_button;
+--  GtkWidget *goodbye_button; } FooWidgetPrivate;
+--
+--  G_DEFINE_TYPE_WITH_PRIVATE (FooWidget, foo_widget, GTK_TYPE_BOX)
+--
+--  static void foo_widget_class_init (FooWidgetClass *klass) { // ...
+--  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
+--  "/com/example/ui/foowidget.ui");
+--  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
+--  FooWidget, hello_button); gtk_widget_class_bind_template_child_private
+--  (GTK_WIDGET_CLASS (klass), FooWidget, goodbye_button); } ]|
+--
+--  You can also use gtk_widget_class_bind_template_callback to connect a
+--  signal callback defined in the template with a function visible in the
+--  scope of the class, e.g.
+--
+--  |[<!-- language="C" --> // the signal handler has the instance and user
+--  data swapped // because of the swapped="yes" attribute in the template XML
+--  static void hello_button_clicked (FooWidget *self, GtkButton *button) {
+--  g_print ("Hello, world!\n"); }
+--
+--  static void foo_widget_class_init (FooWidgetClass *klass) { // ...
+--  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
+--  "/com/example/ui/foowidget.ui"); gtk_widget_class_bind_template_callback
+--  (GTK_WIDGET_CLASS (klass), hello_button_clicked); } ]|
 --
 --  </description>
 pragma Ada_2005;
@@ -724,16 +774,16 @@ package Gtk.Widget is
    --  done). If you can really not pass a real event, pass NULL instead.
    --  Since: gtk+ 3.10
    --  "targets": The targets (data formats) in which the source can provide
-   --  the data.
-   --  "actions": A bitmask of the allowed drag actions for this drag.
-   --  "button": The button the user clicked to start the drag.
-   --  "event": The event that triggered the start of the drag.
+   --  the data
+   --  "actions": A bitmask of the allowed drag actions for this drag
+   --  "button": The button the user clicked to start the drag
+   --  "event": The event that triggered the start of the drag
    --  "x": The initial x coordinate to start dragging from, in the coordinate
    --  space of Widget. If -1 is passed, the coordinates are retrieved from
-   --  Event or the current pointer position.
+   --  Event or the current pointer position
    --  "y": The initial y coordinate to start dragging from, in the coordinate
    --  space of Widget. If -1 is passed, the coordinates are retrieved from
-   --  Event or the current pointer position.
+   --  Event or the current pointer position
 
    function Drag_Check_Threshold
       (Widget    : not null access Gtk_Widget_Record;
@@ -820,10 +870,10 @@ package Gtk.Widget is
    --  called implicitely because the Gtk.Tool_Palette.Dest_Default_Drop was
    --  set, then the widget will not receive notification of failed drops.
    --  "context": the drag context
-   --  "target": the target (form of the data) to retrieve.
+   --  "target": the target (form of the data) to retrieve
    --  "time_": a timestamp for retrieving the data. This will generally be
    --  the time received in a Gtk.Widget.Gtk_Widget::drag-motion" or
-   --  Gtk.Widget.Gtk_Widget::drag-drop" signal.
+   --  Gtk.Widget.Gtk_Widget::drag-drop" signal
 
    procedure Drag_Highlight (Widget : not null access Gtk_Widget_Record);
    --  Draws a highlight around a widget. This will attach handlers to
@@ -1106,6 +1156,36 @@ package Gtk.Widget is
    --  should be called by an application.
    --  "is_visible": if True, Widget should be mapped along with its parent.
 
+   procedure Get_Clip
+      (Widget : not null access Gtk_Widget_Record;
+       Clip   : out Gtk_Allocation);
+   --  Retrieves the widget's clip area.
+   --  The clip area is the area in which all of Widget's drawing will happen.
+   --  Other toolkits call it the bounding box.
+   --  Historically, in GTK+ the clip area has been equal to the allocation
+   --  retrieved via Gtk.Widget.Get_Allocation.
+   --  Since: gtk+ 3.14
+   --  "clip": a pointer to a Gtk_Allocation to copy to
+
+   procedure Set_Clip
+      (Widget : not null access Gtk_Widget_Record;
+       Clip   : in out Gtk_Allocation);
+   --  Sets the widget's clip. This must not be used directly, but from within
+   --  a widget's size_allocate method.
+   --  The clip set should be the area that Widget draws on. If Widget is a
+   --  Gtk.Container.Gtk_Container, the area must contain all children's clips.
+   --  If this function is not called by Widget during a ::size-allocate
+   --  handler, it is assumed to be equal to the allocation. However, if the
+   --  function is not called, certain features that might extend a widget's
+   --  allocation will not be available:
+   --   * The Gtk.Widget.Gtk_Widget::draw signal will be clipped to the
+   --  widget's allocation to avoid overdraw. * Calling
+   --  Gtk.Style_Context.Render_Background will not draw outset shadows.
+   --  It is therefore suggested that you always call Gtk.Widget.Set_Clip
+   --  during a ::size-allocate handler.
+   --  Since: gtk+ 3.14
+   --  "clip": a pointer to a Gtk_Allocation to copy from
+
    function Get_Composite_Name
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
    pragma Obsolescent (Get_Composite_Name);
@@ -1213,6 +1293,7 @@ package Gtk.Widget is
    procedure Set_Double_Buffered
       (Widget          : not null access Gtk_Widget_Record;
        Double_Buffered : Boolean);
+   pragma Obsolescent (Set_Double_Buffered);
    --  Widgets are double buffered by default; you can use this function to
    --  turn off the buffering. "Double buffered" simply means that
    --  Gdk.Window.Begin_Paint_Region and Gdk.Window.End_Paint are called
@@ -1229,6 +1310,7 @@ package Gtk.Widget is
    --  not happen automatically (as it is done in
    --  Gdk.Window.Begin_Paint_Region).
    --  Since 3.10 this function only works for widgets with native windows.
+   --  Deprecated since 3.14, 1
    --  "double_buffered": True to double-buffer a widget
 
    function Get_Events
@@ -1237,6 +1319,10 @@ package Gtk.Widget is
    --  Returns the event mask for the widget (a bitfield containing flags from
    --  the Gdk.Event.Gdk_Event_Mask enumeration). These are the events that the
    --  widget will receive.
+   --  Note: Internally, the widget event mask will be the logical OR of the
+   --  event mask set through Gtk.Widget.Set_Events or Gtk.Widget.Add_Events,
+   --  and the event mask necessary to cater for every
+   --  Gtk.Event_Controller.Gtk_Event_Controller created for the widget.
 
    procedure Set_Events
       (Widget : not null access Gtk_Widget_Record;
@@ -1900,7 +1986,7 @@ package Gtk.Widget is
    pragma Obsolescent (Get_State);
    --  Returns the widget's state. See Gtk.Widget.Set_State.
    --  Since: gtk+ 2.18
-   --  Deprecated since 3.0., 1
+   --  Deprecated since 3.0, 1
 
    procedure Set_State
       (Widget : not null access Gtk_Widget_Record;
@@ -1909,7 +1995,7 @@ package Gtk.Widget is
    --  This function is for use in widget implementations. Sets the state of a
    --  widget (insensitive, prelighted, etc.) Usually you should set the state
    --  using wrapper functions such as Gtk.Widget.Set_Sensitive.
-   --  Deprecated since 3.0., 1
+   --  Deprecated since 3.0, 1
    --  "state": new state for Widget
 
    function Get_State_Flags
@@ -2067,7 +2153,9 @@ package Gtk.Widget is
    --  For backwards compatibility reasons this method will never return
    --  Gtk.Widget.Align_Baseline, but instead it will convert it to
    --  Gtk.Widget.Align_Fill. If your widget want to support baseline aligned
-   --  children it must use Gtk.Widget.Get_Valign_With_Baseline.
+   --  children it must use Gtk.Widget.Get_Valign_With_Baseline, or
+   --  `g_object_get (widget, "valign", &value, NULL)`, which will also report
+   --  the true value.
 
    procedure Set_Valign
       (Widget : not null access Gtk_Widget_Record;
@@ -2461,7 +2549,7 @@ package Gtk.Widget is
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
    --  Since: gtk+ 2.12
-   --  Deprecated since 3.0., 1
+   --  Deprecated since 3.0, 1
    --  "primary": the color to use for primary cursor (does not need to be
    --  allocated), or null to undo the effect of previous calls to of
    --  Gtk.Widget.Modify_Cursor.
@@ -2669,9 +2757,11 @@ package Gtk.Widget is
    function Region_Intersect
       (Widget : not null access Gtk_Widget_Record;
        Region : Cairo.Region.Cairo_Region) return Cairo.Region.Cairo_Region;
+   pragma Obsolescent (Region_Intersect);
    --  Computes the intersection of a Widget's area and Region, returning the
    --  intersection. The result may be empty, use cairo_region_is_empty to
    --  check.
+   --  Deprecated since 3.14, 1
    --  "region": a cairo_region_t, in the same coordinate system as
    --  Widget->allocation. That is, relative to Widget->window for NO_WINDOW
    --  widgets; relative to the parent window of Widget->window for widgets
@@ -2763,8 +2853,10 @@ package Gtk.Widget is
    procedure Reparent
       (Widget     : not null access Gtk_Widget_Record;
        New_Parent : not null access Gtk_Widget_Record'Class);
+   pragma Obsolescent (Reparent);
    --  Moves a widget from one Gtk.Container.Gtk_Container to another,
    --  handling reference count issues to avoid destroying the widget.
+   --  Deprecated since 3.14, 1
    --  "new_parent": a Gtk.Container.Gtk_Container to move the widget into
 
    procedure Reset_Rc_Styles (Widget : not null access Gtk_Widget_Record);
@@ -2936,7 +3028,7 @@ package Gtk.Widget is
    --  implementation, because one of the parent classes (finally
    --  Gtk.Widget.Gtk_Widget) would attach the style itself.
    --  Since: gtk+ 2.20
-   --  Deprecated since 3.0., 1
+   --  Deprecated since 3.0, 1
 
    procedure Style_Get_Property
       (Widget        : not null access Gtk_Widget_Record;
@@ -3395,7 +3487,8 @@ package Gtk.Widget is
    --  Gtk.Widget.Set_Size_Request for example.
 
    Margin_End_Property : constant Glib.Properties.Property_Int;
-   --  Margin on end of widget.
+   --  Margin on end of widget, horizontally. This property supports
+   --  left-to-right and right-to-left text directions.
    --
    --  This property adds margin outside of the widget's normal size request,
    --  the margin will be added in addition to the size from
@@ -3416,7 +3509,8 @@ package Gtk.Widget is
    --  Gtk.Widget.Set_Size_Request for example.
 
    Margin_Start_Property : constant Glib.Properties.Property_Int;
-   --  Margin on start of widget.
+   --  Margin on start of widget, horizontally. This property supports
+   --  left-to-right and right-to-left text directions.
    --
    --  This property adds margin outside of the widget's normal size request,
    --  the margin will be added in addition to the size from
@@ -5007,22 +5101,22 @@ package Gtk.Widget is
    --    --  Returns True to stop other handlers from being invoked for the event.
    -- False to propagate the event further.
 
-   type Cb_Gtk_Widget_Cairo_Rectangle_Int_Void is not null access procedure
+   type Cb_Gtk_Widget_Gtk_Allocation_Void is not null access procedure
      (Self       : access Gtk_Widget_Record'Class;
-      Allocation : Cairo.Region.Cairo_Rectangle_Int);
+      Allocation : Gtk_Allocation);
 
-   type Cb_GObject_Cairo_Rectangle_Int_Void is not null access procedure
+   type Cb_GObject_Gtk_Allocation_Void is not null access procedure
      (Self       : access Glib.Object.GObject_Record'Class;
-      Allocation : Cairo.Region.Cairo_Rectangle_Int);
+      Allocation : Gtk_Allocation);
 
    Signal_Size_Allocate : constant Glib.Signal_Name := "size-allocate";
    procedure On_Size_Allocate
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_Gtk_Widget_Cairo_Rectangle_Int_Void;
+       Call  : Cb_Gtk_Widget_Gtk_Allocation_Void;
        After : Boolean := False);
    procedure On_Size_Allocate
       (Self  : not null access Gtk_Widget_Record;
-       Call  : Cb_GObject_Cairo_Rectangle_Int_Void;
+       Call  : Cb_GObject_Gtk_Allocation_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
 

@@ -48,6 +48,8 @@ package body Gtk.Tree_Model_Filter is
    --  goal of the modify function is to return the data which should be
    --  displayed at the location specified using the parameters of the modify
    --  function.
+   --  Note that Gtk.Tree_Model_Filter.Set_Modify_Func can only be called once
+   --  for a given filter model.
    --  Since: gtk+ 2.4
    --  "n_columns": The number of columns in the filter model.
    --  "types": The GTypes of the columns.
@@ -67,7 +69,7 @@ package body Gtk.Tree_Model_Filter is
    --  If the condition calculated by the function changes over time (e.g.
    --  because it depends on some global parameters), you must call
    --  Gtk.Tree_Model_Filter.Refilter to keep the visibility information of the
-   --  model uptodate.
+   --  model up-to-date.
    --  Note that Func is called whenever a row is inserted, when it may still
    --  be empty. The visible function should therefore take special care of
    --  empty rows, like in the example below.
@@ -77,10 +79,13 @@ package body Gtk.Tree_Model_Filter is
    --  gtk_tree_model_get (model, iter, 0, &str, -1); if (str && strcmp (str,
    --  "HI") == 0) visible = TRUE; g_free (str);
    --  return visible; } ]|
+   --  Note that Gtk.Tree_Model_Filter.Set_Visible_Func or
+   --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for a
+   --  given filter model.
    --  Since: gtk+ 2.4
-   --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function.
-   --  "data": User data to pass to the visible function, or null.
-   --  "destroy": Destroy notifier of Data, or null.
+   --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function
+   --  "data": User data to pass to the visible function, or null
+   --  "destroy": Destroy notifier of Data, or null
 
    procedure C_Gtk_Tree_Model_Foreach
       (Tree_Model : System.Address;

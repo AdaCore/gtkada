@@ -22,6 +22,15 @@
 ------------------------------------------------------------------------------
 
 --  <description>
+--  A Pango.Fontset.Pango_Fontset represents a set of Pango.Font.Pango_Font to
+--  use when rendering text. It is the result of resolving a
+--  Pango.Font.Pango_Font_Description against a particular
+--  Pango.Context.Pango_Context. It has operations for finding the component
+--  font for a particular Unicode character, and for finding a composite set of
+--  metrics for the entire fontset.
+--
+--  </description>
+--  <description>
 --  an object containing a set of pango.Font objects
 --
 --  </description>

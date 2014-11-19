@@ -24,17 +24,23 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;          use Glib;
-with Glib.Object;   use Glib.Object;
-with Glib.Types;    use Glib.Types;
-with Gtk.Bin;       use Gtk.Bin;
-with Gtk.Buildable; use Gtk.Buildable;
-with Gtk.Widget;    use Gtk.Widget;
+with Glib;            use Glib;
+with Glib.Glist;      use Glib.Glist;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Bin;         use Gtk.Bin;
+with Gtk.Buildable;   use Gtk.Buildable;
+with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.List_Box_Row is
 
    type Gtk_List_Box_Row_Record is new Gtk_Bin_Record with null record;
    type Gtk_List_Box_Row is access all Gtk_List_Box_Row_Record'Class;
+
+   function Convert (R : Gtk.List_Box_Row.Gtk_List_Box_Row) return System.Address;
+   function Convert (R : System.Address) return Gtk.List_Box_Row.Gtk_List_Box_Row;
+   package List_Box_Row_List is new Generic_List (Gtk.List_Box_Row.Gtk_List_Box_Row);
 
    ------------------
    -- Constructors --
@@ -75,6 +81,20 @@ package Gtk.List_Box_Row is
    --  expensive.
    --  Since: gtk+ 3.10
 
+   function Get_Activatable
+      (Self : not null access Gtk_List_Box_Row_Record) return Boolean;
+   --  Gets the value of the Gtk.List_Box_Row.Gtk_List_Box_Row:activatable
+   --  property for this row.
+   --  Since: gtk+ 3.14
+
+   procedure Set_Activatable
+      (Self        : not null access Gtk_List_Box_Row_Record;
+       Activatable : Boolean);
+   --  Set the Gtk.List_Box_Row.Gtk_List_Box_Row:activatable property for this
+   --  row.
+   --  Since: gtk+ 3.14
+   --  "activatable": True to mark the row as activatable
+
    function Get_Header
       (Self : not null access Gtk_List_Box_Row_Record)
        return Gtk.Widget.Gtk_Widget;
@@ -97,6 +117,40 @@ package Gtk.List_Box_Row is
    --  Gets the current index of the Row in its Gtk.List_Box.Gtk_List_Box
    --  container.
    --  Since: gtk+ 3.10
+
+   function Get_Selectable
+      (Self : not null access Gtk_List_Box_Row_Record) return Boolean;
+   --  Gets the value of the Gtk.List_Box_Row.Gtk_List_Box_Row:selectable
+   --  property for this row.
+   --  Since: gtk+ 3.14
+
+   procedure Set_Selectable
+      (Self       : not null access Gtk_List_Box_Row_Record;
+       Selectable : Boolean);
+   --  Set the Gtk.List_Box_Row.Gtk_List_Box_Row:selectable property for this
+   --  row.
+   --  Since: gtk+ 3.14
+   --  "selectable": True to mark the row as selectable
+
+   function Is_Selected
+      (Self : not null access Gtk_List_Box_Row_Record) return Boolean;
+   --  Returns whether the child is currently selected in its
+   --  Gtk.List_Box.Gtk_List_Box container.
+   --  Since: gtk+ 3.14
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Activatable_Property : constant Glib.Properties.Property_Boolean;
+   --  The property determines whether the
+   --  Gtk.List_Box.Gtk_List_Box::row-activated signal will be emitted for this
+   --  row.
+
+   Selectable_Property : constant Glib.Properties.Property_Boolean;
+   --  The property determines whether this row can be selected.
 
    -------------
    -- Signals --
@@ -137,4 +191,9 @@ package Gtk.List_Box_Row is
    return Gtk_List_Box_Row
    renames Implements_Gtk_Buildable.To_Object;
 
+private
+   Selectable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("selectable");
+   Activatable_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("activatable");
 end Gtk.List_Box_Row;

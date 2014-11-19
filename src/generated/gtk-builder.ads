@@ -116,16 +116,22 @@
 --  (can be specified by their name, nick or integer value), flags (can be
 --  specified by their name, nick, integer value, optionally combined with "|",
 --  e.g. "GTK_VISIBLE|GTK_REALIZED") and colors (in a format understood by
---  gdk_color_parse). Pixbufs can be specified as a filename of an image file
---  to load. Objects can be referred to by their name and by default refer to
+--  Gdk.RGBA.Parse). Pixbufs can be specified as a filename of an image file to
+--  load. Objects can be referred to by their name and by default refer to
 --  objects declared in the local xml fragment and objects exposed via
 --  Gtk.Builder.Expose_Object.
 --
---  In general, GtkBuilder allows forward references to objects -- declared in
+--  In general, GtkBuilder allows forward references to objects — declared in
 --  the local xml; an object doesn't have to be constructed before it can be
 --  referred to. The exception to this rule is that an object has to be
 --  constructed before it can be used as the value of a construct-only
 --  property.
+--
+--  It is also possible to bind a property value to another object's property
+--  value using the attributes "bind-source" to specify the source object of
+--  the binding, "bind-property" to specify the source property and optionally
+--  "bind-flags" to specify the binding flags Internally builder implement this
+--  using GBinding objects. For more information see g_object_bind_property
 --
 --  Signal handlers are set up with the <signal> element. The "name" attribute
 --  specifies the name of the signal, and the "handler" attribute specifies the
@@ -367,7 +373,8 @@ package Gtk.Builder is
    --  merges it with the current contents of Builder.
    --  Most users will probably want to use Gtk.Builder.Gtk_New_From_String.
    --  Upon errors 0 will be returned and Error will be assigned a
-   --  Gerror.Gerror from the GTK_BUILDER_ERROR or G_MARKUP_ERROR domain.
+   --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
+   --  G_VARIANT_PARSE_ERROR domain.
    --  It's not really reasonable to attempt to handle failures of this call.
    --  The only reasonable thing to do when an error is detected is to call
    --  g_error.

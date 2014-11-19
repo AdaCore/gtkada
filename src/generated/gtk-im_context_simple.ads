@@ -53,7 +53,7 @@ package Gtk.IM_Context_Simple is
 
    procedure Add_Table
       (Self        : not null access Gtk_IM_Context_Simple_Record;
-       Data        : in out Guint16;
+       Data        : Gint_Array;
        Max_Seq_Len : Gint;
        N_Seqs      : Gint);
    --  Adds an additional table to search to the input context. Each row of

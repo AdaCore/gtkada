@@ -35,10 +35,10 @@
 --  course, if the scale settings are both set to 1, the alignment settings
 --  have no effect.
 --
---  Note that the desired effect can in most cases be achieved by using the
+--  GtkAlignment has been deprecated in 3.14 and should not be used in
+--  newly-written code. The desired effect can be achieved by using the
 --  Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
---  Gtk.Widget.Gtk_Widget:margin properties on the child widget, so
---  Gtk.Alignment.Gtk_Alignment should not be used in new code.
+--  Gtk.Widget.Gtk_Widget:margin properties on the child widget.
 --
 --  </description>
 --  <screenshot>gtk-alignment</screenshot>
@@ -117,9 +117,11 @@ package Gtk.Alignment is
        Padding_Bottom : out Guint;
        Padding_Left   : out Guint;
        Padding_Right  : out Guint);
+   pragma Obsolescent (Get_Padding);
    --  Gets the padding on the different sides of the widget. See
    --  gtk_alignment_set_padding ().
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "padding_top": location to store the padding for the top of the widget,
    --  or null
    --  "padding_bottom": location to store the padding for the bottom of the
@@ -135,11 +137,13 @@ package Gtk.Alignment is
        Padding_Bottom : Guint;
        Padding_Left   : Guint;
        Padding_Right  : Guint);
+   pragma Obsolescent (Set_Padding);
    --  Sets the padding on the different sides of the widget. The padding adds
    --  blank space to the sides of the widget. For instance, this can be used
    --  to indent the child widget towards the right by adding padding on the
    --  left.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "padding_top": the padding at the top of the widget
    --  "padding_bottom": the padding at the bottom of the widget
    --  "padding_left": the padding at the left of the widget
@@ -151,7 +155,9 @@ package Gtk.Alignment is
        Yalign    : Gfloat;
        Xscale    : Gfloat;
        Yscale    : Gfloat);
+   pragma Obsolescent (Set);
    --  Sets the Gtk.Alignment.Gtk_Alignment values.
+   --  Deprecated since 3.14, 1
    --  "xalign": the horizontal alignment of the child widget, from 0 (left)
    --  to 1 (right).
    --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1

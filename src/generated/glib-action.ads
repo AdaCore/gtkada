@@ -177,8 +177,8 @@ package Glib.Action is
    --  "action_name": an potential action name
 
    function Print_Detailed_Name
-      (Action_Name : UTF8_String;
-       Parameter   : Glib.Variant.Gvariant) return UTF8_String;
+      (Action_Name  : UTF8_String;
+       Target_Value : Glib.Variant.Gvariant) return UTF8_String;
    --  Formats a detailed action name from Action_Name and Target_Value.
    --  It is an error to call this function with an invalid action name.
    --  This function is the opposite of g_action_parse_detailed_action_name.
@@ -188,6 +188,7 @@ package Glib.Action is
    --  function.
    --  Since: gtk+ 2.38
    --  "action_name": a valid action name
+   --  "target_value": a Glib.Variant.Gvariant target value, or null
 
    ----------------
    -- Properties --
@@ -203,12 +204,14 @@ package Glib.Action is
 
    Name_Property : constant Glib.Properties.Property_String;
    --  The name of the action. This is mostly meaningful for identifying the
-   --  action once it has been added to a Glib.Action_Group.Gaction_Group.
+   --  action once it has been added to a Glib.Action_Group.Gaction_Group. It
+   --  is immutable.
 
    Parameter_Type_Property : constant Glib.Properties.Property_Boxed;
    --  Type: GLib.Variant_Type
    --  The type of the parameter that must be given when activating the
-   --  action.
+   --  action. This is immutable, and may be null if no parameter is needed
+   --  when activating the action.
 
    State_Property : constant Glib.Properties.Property_Object;
    --  Type: Glib.Variant.Gvariant
@@ -217,7 +220,7 @@ package Glib.Action is
    State_Type_Property : constant Glib.Properties.Property_Boxed;
    --  Type: GLib.Variant_Type
    --  The Glib.Variant.Gvariant_Type of the state that the action has, or
-   --  null if the action is stateless.
+   --  null if the action is stateless. This is immutable.
 
    ----------------
    -- Interfaces --

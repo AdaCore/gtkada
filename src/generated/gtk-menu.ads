@@ -273,7 +273,7 @@ package Gtk.Menu is
        Index : Guint);
    --  Selects the specified menu item within the menu. This is used by the
    --  Gtk.Combo_Box.Gtk_Combo_Box and should not be used by anyone else.
-   --  "index": the index of the menu item to select. Iindex values are from 0
+   --  "index": the index of the menu item to select. Index values are from 0
    --  to n-1
 
    function Get_Attach_Widget

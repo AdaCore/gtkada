@@ -306,7 +306,7 @@ package Gtk.Message_Dialog is
 
    Message_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  The Gtk.Box.Gtk_Vbox that corresponds to the message area of this
+   --  The Gtk.Box.Gtk_Box that corresponds to the message area of this
    --  dialog. See Gtk.Message_Dialog.Get_Message_Area for a detailed
    --  description of this area.
 

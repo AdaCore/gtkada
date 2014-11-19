@@ -119,12 +119,20 @@ package Gtk.Clipboard is
    type Gtk_Clipboard_Rich_Text_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
       Format    : Gdk.Types.Gdk_Atom;
-      Text      : in out Guint8;
+      Text      : UTF8_String := "";
       Length    : Gsize);
+   --  A function to be called when the results of
+   --  Gtk.Clipboard.Request_Rich_Text are received, or when the request fails.
+   --  Since: gtk+ 2.10
+   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+   --  "format": The format of the rich text
+   --  "text": the rich text received, as a UTF-8 encoded string, or null if
+   --  retrieving the data failed.
+   --  "length": Length of the text.
 
    type Gtk_Clipboard_Targets_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
-      Atoms     : in out Gdk.Types.Gdk_Atom;
+      Atoms     : Gdk_Atom_Array;
       N_Atoms   : Gint);
    --  A function to be called when the results of
    --  Gtk.Clipboard.Request_Targets are received, or when the request fails.
@@ -136,7 +144,7 @@ package Gtk.Clipboard is
 
    type Gtk_Clipboard_Text_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
-      Text      : UTF8_String);
+      Text      : UTF8_String := "");
    --  A function to be called when the results of Gtk.Clipboard.Request_Text
    --  are received, or when the request fails.
    --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
@@ -146,6 +154,11 @@ package Gtk.Clipboard is
    type Gtk_Clipboard_Urireceived_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
       Uris      : GNAT.Strings.String_List);
+   --  A function to be called when the results of Gtk.Clipboard.Request_Uris
+   --  are received, or when the request fails.
+   --  Since: gtk+ 2.14
+   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+   --  "uris": the received URIs
 
    ------------------
    -- Constructors --
@@ -299,9 +312,18 @@ package Gtk.Clipboard is
       type Gtk_Clipboard_Rich_Text_Received_Func is access procedure
         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
          Format    : Gdk.Types.Gdk_Atom;
-         Text      : in out Guint8;
+         Text      : UTF8_String := "";
          Length    : Gsize;
          Data      : User_Data_Type);
+      --  A function to be called when the results of
+      --  Gtk.Clipboard.Request_Rich_Text are received, or when the request fails.
+      --  Since: gtk+ 2.10
+      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+      --  "format": The format of the rich text
+      --  "text": the rich text received, as a UTF-8 encoded string, or null if
+      --  retrieving the data failed.
+      --  "length": Length of the text.
+      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
 
       procedure Request_Rich_Text
          (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
@@ -341,7 +363,7 @@ package Gtk.Clipboard is
 
       type Gtk_Clipboard_Targets_Received_Func is access procedure
         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Atoms     : in out Gdk.Types.Gdk_Atom;
+         Atoms     : Gdk_Atom_Array;
          N_Atoms   : Gint;
          Data      : User_Data_Type);
       --  A function to be called when the results of
@@ -388,7 +410,7 @@ package Gtk.Clipboard is
 
       type Gtk_Clipboard_Text_Received_Func is access procedure
         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Text      : UTF8_String;
+         Text      : UTF8_String := "";
          Data      : User_Data_Type);
       --  A function to be called when the results of Gtk.Clipboard.Request_Text
       --  are received, or when the request fails.
@@ -436,6 +458,12 @@ package Gtk.Clipboard is
         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
          Uris      : GNAT.Strings.String_List;
          Data      : User_Data_Type);
+      --  A function to be called when the results of Gtk.Clipboard.Request_Uris
+      --  are received, or when the request fails.
+      --  Since: gtk+ 2.14
+      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+      --  "uris": the received URIs
+      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
 
       procedure Request_Uris
          (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;

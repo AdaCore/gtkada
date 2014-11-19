@@ -449,6 +449,16 @@ package Gtk.Cell_Area is
    --  attribute for
    --  "attribute": the attribute name
 
+   function Attribute_Get_Column
+      (Self      : not null access Gtk_Cell_Area_Record;
+       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Attribute : UTF8_String) return Gint;
+   --  Returns the model column that an attribute has been mapped to, or -1 if
+   --  the attribute is not mapped.
+   --  Since: gtk+ 3.14
+   --  "renderer": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  "attribute": an attribute on the renderer
+
    procedure Cell_Get_Property
       (Self          : not null access Gtk_Cell_Area_Record;
        Renderer      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;

@@ -234,14 +234,20 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
        Format    : Gdk.Types.Gdk_Atom;
-       Text      : in out Guint8;
+       Text      : Interfaces.C.Strings.chars_ptr;
        Length    : Gsize;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Rich_Text_Received_Func);
+   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+   --  "format": The format of the rich text
+   --  "text": the rich text received, as a UTF-8 encoded string, or null if
+   --  retrieving the data failed.
+   --  "length": Length of the text.
+   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
 
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
-       Atoms     : in out Gdk.Types.Gdk_Atom;
+       Atoms     : System.Address;
        N_Atoms   : Gint;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Targets_Received_Func);
@@ -266,6 +272,9 @@ package body Gtk.Clipboard is
        Uris      : chars_ptr_array_access;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Urireceived_Func);
+   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+   --  "uris": the received URIs
+   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
 
    ------------------------------------------------
    -- Internal_Gtk_Clipboard_Image_Received_Func --
@@ -305,14 +314,14 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
        Format    : Gdk.Types.Gdk_Atom;
-       Text      : in out Guint8;
+       Text      : Interfaces.C.Strings.chars_ptr;
        Length    : Gsize;
        Data      : System.Address)
    is
       Func               : constant Gtk_Clipboard_Rich_Text_Received_Func := To_Gtk_Clipboard_Rich_Text_Received_Func (Data);
       Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Text, Length);
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Gtkada.Bindings.Value_Allowing_Null (Text), Length);
    end Internal_Gtk_Clipboard_Rich_Text_Received_Func;
 
    --------------------------------------------------
@@ -321,14 +330,14 @@ package body Gtk.Clipboard is
 
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
-       Atoms     : in out Gdk.Types.Gdk_Atom;
+       Atoms     : System.Address;
        N_Atoms   : Gint;
        Data      : System.Address)
    is
       Func               : constant Gtk_Clipboard_Targets_Received_Func := To_Gtk_Clipboard_Targets_Received_Func (Data);
       Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atoms, N_Atoms);
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atom_Arrays.To_Array (Atom_Arrays.Convert (Atoms), Integer (N_Atoms)), N_Atoms);
    end Internal_Gtk_Clipboard_Targets_Received_Func;
 
    -----------------------------------------------
@@ -588,10 +597,20 @@ package body Gtk.Clipboard is
       procedure Internal_Cb
          (Clipboard : System.Address;
           Format    : Gdk.Types.Gdk_Atom;
-          Text      : in out Guint8;
+          Text      : Interfaces.C.Strings.chars_ptr;
           Length    : Gsize;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
+      --  A function to be called when the results of
+      --  Gtk.Clipboard.Request_Rich_Text are received, or when the request
+      --  fails.
+      --  Since: gtk+ 2.10
+      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+      --  "format": The format of the rich text
+      --  "text": the rich text received, as a UTF-8 encoded string, or null
+      --  if retrieving the data failed.
+      --  "length": Length of the text.
+      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
 
       -----------------
       -- Internal_Cb --
@@ -600,14 +619,14 @@ package body Gtk.Clipboard is
       procedure Internal_Cb
          (Clipboard : System.Address;
           Format    : Gdk.Types.Gdk_Atom;
-          Text      : in out Guint8;
+          Text      : Interfaces.C.Strings.chars_ptr;
           Length    : Gsize;
           Data      : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Rich_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Text, Length, D.Data.all);
+         To_Gtk_Clipboard_Rich_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Gtkada.Bindings.Value_Allowing_Null (Text), Length, D.Data.all);
       end Internal_Cb;
 
       -----------------------
@@ -659,7 +678,7 @@ package body Gtk.Clipboard is
 
       procedure Internal_Cb
          (Clipboard : System.Address;
-          Atoms     : in out Gdk.Types.Gdk_Atom;
+          Atoms     : System.Address;
           N_Atoms   : Gint;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -679,14 +698,14 @@ package body Gtk.Clipboard is
 
       procedure Internal_Cb
          (Clipboard : System.Address;
-          Atoms     : in out Gdk.Types.Gdk_Atom;
+          Atoms     : System.Address;
           N_Atoms   : Gint;
           Data      : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Targets_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atoms, N_Atoms, D.Data.all);
+         To_Gtk_Clipboard_Targets_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atom_Arrays.To_Array (Atom_Arrays.Convert (Atoms), Integer (N_Atoms)), N_Atoms, D.Data.all);
       end Internal_Cb;
 
       ---------------------
@@ -813,6 +832,12 @@ package body Gtk.Clipboard is
           Uris      : chars_ptr_array_access;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
+      --  A function to be called when the results of
+      --  Gtk.Clipboard.Request_Uris are received, or when the request fails.
+      --  Since: gtk+ 2.14
+      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+      --  "uris": the received URIs
+      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
 
       -----------------
       -- Internal_Cb --

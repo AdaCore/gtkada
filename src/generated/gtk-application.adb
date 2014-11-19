@@ -156,6 +156,27 @@ package body Gtk.Application is
       return To_String_List_And_Free (Tmp_Return);
    end Get_Accels_For_Action;
 
+   ---------------------------
+   -- Get_Actions_For_Accel --
+   ---------------------------
+
+   function Get_Actions_For_Accel
+      (Self  : not null access Gtk_Application_Record;
+       Accel : UTF8_String) return GNAT.Strings.String_List
+   is
+      function Internal
+         (Self  : System.Address;
+          Accel : Interfaces.C.Strings.chars_ptr)
+          return chars_ptr_array_access;
+      pragma Import (C, Internal, "gtk_application_get_actions_for_accel");
+      Tmp_Accel  : Interfaces.C.Strings.chars_ptr := New_String (Accel);
+      Tmp_Return : chars_ptr_array_access;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Accel);
+      Free (Tmp_Accel);
+      return To_String_List_And_Free (Tmp_Return);
+   end Get_Actions_For_Accel;
+
    -----------------------
    -- Get_Active_Window --
    -----------------------
@@ -185,6 +206,27 @@ package body Gtk.Application is
    begin
       return Glib.Menu_Model.Gmenu_Model (Get_User_Data (Internal (Get_Object (Self)), Stub_Gmenu_Model));
    end Get_App_Menu;
+
+   --------------------
+   -- Get_Menu_By_Id --
+   --------------------
+
+   function Get_Menu_By_Id
+      (Self : not null access Gtk_Application_Record;
+       Id   : UTF8_String) return Glib.Menu.Gmenu
+   is
+      function Internal
+         (Self : System.Address;
+          Id   : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_application_get_menu_by_id");
+      Tmp_Id     : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Stub_Gmenu : Glib.Menu.Gmenu_Record;
+      Tmp_Return : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Id);
+      Free (Tmp_Id);
+      return Glib.Menu.Gmenu (Get_User_Data (Tmp_Return, Stub_Gmenu));
+   end Get_Menu_By_Id;
 
    -----------------
    -- Get_Menubar --
@@ -293,6 +335,19 @@ package body Gtk.Application is
    begin
       return To_String_List_And_Free (Internal (Get_Object (Self)));
    end List_Action_Descriptions;
+
+   ----------------------
+   -- Prefers_App_Menu --
+   ----------------------
+
+   function Prefers_App_Menu
+      (Self : not null access Gtk_Application_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_application_prefers_app_menu");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Prefers_App_Menu;
 
    ------------------------
    -- Remove_Accelerator --

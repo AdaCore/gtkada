@@ -359,8 +359,8 @@ package Gdk.Cursor is
 
    procedure Get_Surface
       (Self    : Gdk.Gdk_Cursor;
-       X_Hot   : in out Gdouble;
-       Y_Hot   : in out Gdouble;
+       X_Hot   : out Gdouble;
+       Y_Hot   : out Gdouble;
        Surface : out Cairo.Cairo_Surface);
    --  Returns a cairo image surface with the image used to display the
    --  cursor.

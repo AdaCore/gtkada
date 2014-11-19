@@ -45,6 +45,9 @@
 --  Making it a widget would be impractical, since the system tray on Win32
 --  doesn't allow to embed arbitrary widgets.
 --
+--  GtkStatusIcon has been deprecated in 3.14. You should consider using
+--  notifications or more modern platform-specific APIs instead.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -189,6 +192,7 @@ package Gtk.Status_Icon is
    function Get_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Glib.G_Icon.G_Icon;
+   pragma Obsolescent (Get_Gicon);
    --  Retrieves the Glib.G_Icon.G_Icon being displayed by the
    --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Gicon (see
@@ -196,82 +200,102 @@ package Gtk.Status_Icon is
    --  own a reference to the returned Glib.G_Icon.G_Icon.
    --  If this function fails, Icon is left unchanged;
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.14, 1
 
    procedure Set_From_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Icon        : Glib.G_Icon.G_Icon);
+   pragma Obsolescent (Set_From_Gicon);
    --  Makes Status_Icon display the Glib.G_Icon.G_Icon. See
    --  Gtk.Status_Icon.Gtk_New_From_Gicon for details.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.14, 1
    --  "icon": a GIcon
 
    function Get_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
+   pragma Obsolescent (Get_Has_Tooltip);
    --  Returns the current value of the has-tooltip property. See
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip for more information.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.14, 1
 
    procedure Set_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Has_Tooltip : Boolean);
+   pragma Obsolescent (Set_Has_Tooltip);
    --  Sets the has-tooltip property on Status_Icon to Has_Tooltip. See
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip for more information.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.14, 1
    --  "has_tooltip": whether or not Status_Icon has a tooltip
 
    function Get_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   pragma Obsolescent (Get_Icon_Name);
    --  Gets the name of the icon being displayed by the
    --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Icon_Name (see
    --  Gtk.Status_Icon.Get_Storage_Type). The returned string is owned by the
    --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
 
    procedure Set_From_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Icon_Name   : UTF8_String);
+   pragma Obsolescent (Set_From_Icon_Name);
    --  Makes Status_Icon display the icon named Icon_Name from the current
    --  icon theme. See Gtk.Status_Icon.Gtk_New_From_Icon_Name for details.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
    --  "icon_name": an icon name
 
    function Get_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Get_Pixbuf);
    --  Gets the Gdk.Pixbuf.Gdk_Pixbuf being displayed by the
    --  Gtk.Status_Icon.Gtk_Status_Icon. The storage type of the status icon
    --  must be Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
    --  Gtk.Status_Icon.Get_Storage_Type). The caller of this function does not
    --  own a reference to the returned pixbuf.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
 
    procedure Set_From_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Pixbuf      : access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   pragma Obsolescent (Set_From_Pixbuf);
    --  Makes Status_Icon display Pixbuf. See
    --  Gtk.Status_Icon.Gtk_New_From_Pixbuf for details.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf or null
 
    function Get_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Gdk.Screen.Gdk_Screen;
+   pragma Obsolescent (Get_Screen);
    --  Returns the Gdk.Screen.Gdk_Screen associated with Status_Icon.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.14, 1
 
    procedure Set_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Screen      : not null access Gdk.Screen.Gdk_Screen_Record'Class);
+   pragma Obsolescent (Set_Screen);
    --  Sets the Gdk.Screen.Gdk_Screen where Status_Icon is displayed; if the
    --  icon is already mapped, it will be unmapped, and then remapped on the
    --  new screen.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.14, 1
    --  "screen": a Gdk.Screen.Gdk_Screen
 
    function Get_Size
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Gint;
+   pragma Obsolescent (Get_Size);
    --  Gets the size in pixels that is available for the image. Stock icons
    --  and named icons adapt their size automatically if the size of the
    --  notification area changes. For other storage types, the size-changed
@@ -279,6 +303,7 @@ package Gtk.Status_Icon is
    --  Note that the returned size is only meaningful while the status icon is
    --  embedded (see Gtk.Status_Icon.Is_Embedded).
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
 
    function Get_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -305,36 +330,45 @@ package Gtk.Status_Icon is
    function Get_Storage_Type
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return Gtk.Image.Gtk_Image_Type;
+   pragma Obsolescent (Get_Storage_Type);
    --  Gets the type of representation being used by the
    --  Gtk.Status_Icon.Gtk_Status_Icon to store image data. If the
    --  Gtk.Status_Icon.Gtk_Status_Icon has no image data, the return value will
    --  be Gtk.Image.Image_Empty.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
 
    function Get_Title
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   pragma Obsolescent (Get_Title);
    --  Gets the title of this tray icon. See Gtk.Status_Icon.Set_Title.
    --  Since: gtk+ 2.18
+   --  Deprecated since 3.14, 1
 
    procedure Set_Title
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Title       : UTF8_String);
+   pragma Obsolescent (Set_Title);
    --  Sets the title of this tray icon. This should be a short,
    --  human-readable, localized string describing the tray icon. It may be
    --  used by tools like screen readers to render the tray icon.
    --  Since: gtk+ 2.18
+   --  Deprecated since 3.14, 1
    --  "title": the title
 
    function Get_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   pragma Obsolescent (Get_Tooltip_Markup);
    --  Gets the contents of the tooltip for Status_Icon.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.14, 1
 
    procedure Set_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Markup      : UTF8_String := "");
+   pragma Obsolescent (Set_Tooltip_Markup);
    --  Sets Markup as the contents of the tooltip, which is marked up with the
    --  [Pango text markup language][PangoMarkupFormat].
    --  This function will take care of setting
@@ -343,17 +377,21 @@ package Gtk.Status_Icon is
    --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-markup property
    --  and Gtk.Tooltip.Set_Markup.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.14, 1
    --  "markup": the contents of the tooltip for Status_Icon, or null
 
    function Get_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record)
        return UTF8_String;
+   pragma Obsolescent (Get_Tooltip_Text);
    --  Gets the contents of the tooltip for Status_Icon.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.14, 1
 
    procedure Set_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Text        : UTF8_String);
+   pragma Obsolescent (Set_Tooltip_Text);
    --  Sets Text as the contents of the tooltip.
    --  This function will take care of setting
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip to True and of the default
@@ -361,24 +399,30 @@ package Gtk.Status_Icon is
    --  See also the Gtk.Status_Icon.Gtk_Status_Icon:tooltip-text property and
    --  Gtk.Tooltip.Set_Text.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.14, 1
    --  "text": the contents of the tooltip for Status_Icon
 
    function Get_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
+   pragma Obsolescent (Get_Visible);
    --  Returns whether the status icon is visible or not. Note that being
    --  visible does not guarantee that the user can actually see the icon, see
    --  also Gtk.Status_Icon.Is_Embedded.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
 
    procedure Set_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Visible     : Boolean);
+   pragma Obsolescent (Set_Visible);
    --  Shows or hides a status icon.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
    --  "visible": True to show the status icon, False to hide it
 
    function Get_X11_Window_Id
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Guint32;
+   pragma Obsolescent (Get_X11_Window_Id);
    --  This function is only useful on the X11/freedesktop.org platform. It
    --  returns a window ID for the widget in the underlying status icon
    --  implementation. This is useful for the Galago notification service,
@@ -388,27 +432,34 @@ package Gtk.Status_Icon is
    --  to be met by one of the non-X11 specific methods, such as
    --  Gtk.Status_Icon.Position_Menu.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.14, 1
 
    function Is_Embedded
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
+   pragma Obsolescent (Is_Embedded);
    --  Returns whether the status icon is embedded in a notification area.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
 
    procedure Set_From_File
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Filename    : UTF8_String);
+   pragma Obsolescent (Set_From_File);
    --  Makes Status_Icon display the file Filename. See
    --  Gtk.Status_Icon.Gtk_New_From_File for details.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
    --  "filename": a filename
 
    procedure Set_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record;
        Name        : UTF8_String);
+   pragma Obsolescent (Set_Name);
    --  Sets the name of this tray icon. This should be a string identifying
    --  this icon. It is may be used for sorting the icons in the tray and will
    --  not be shown to the user.
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.14, 1
    --  "name": the name
 
    ---------------
@@ -421,9 +472,11 @@ package Gtk.Status_Icon is
        Y       : in out Gint;
        Push_In : out Boolean;
        Icon    : Glib.Object.GObject);
+   pragma Obsolescent (Position_Menu);
    --  Menu positioning function to use with Gtk.Menu.Popup to position Menu
    --  aligned to the status icon User_Data.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.14, 1
    --  "menu": the Gtk.Menu.Gtk_Menu
    --  "x": return location for the x position
    --  "y": return location for the y position

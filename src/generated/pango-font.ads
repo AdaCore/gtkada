@@ -21,6 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Font.Pango_Font structure is used to represent a font in a
+--  rendering-system-independent matter. To create an implementation of a
+--  Pango.Font.Pango_Font, the rendering-system specific code should allocate a
+--  larger structure that contains a nested Pango.Font.Pango_Font, fill in the
+--  <structfield>klass</structfield> member of the nested Pango.Font.Pango_Font
+--  with a pointer to a appropriate Pango_Font_Class, then call pango_font_init
+--  on the structure.
+--
+--  The Pango.Font.Pango_Font structure contains one member which the
+--  implementation fills in.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");

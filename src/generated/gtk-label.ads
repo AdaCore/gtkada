@@ -110,10 +110,10 @@
 --
 --  Labels can be made selectable with Gtk.Label.Set_Selectable. Selectable
 --  labels allow the user to copy the label contents to the clipboard. Only
---  labels that contain useful-to-copy information &mdash; such as error
---  messages &mdash; should be made selectable.
+--  labels that contain useful-to-copy information — such as error messages —
+--  should be made selectable.
 --
---  # Text layout
+--  # Text layout # {label-text-layout}
 --
 --  A label can contain any number of paragraphs, but will have performance
 --  problems if it contains more than a small number. Paragraphs are separated
@@ -123,7 +123,8 @@
 --
 --  Gtk.Label.Set_Justify sets how the lines in a label align with one
 --  another. If you want to set how the label as a whole aligns in its
---  available space, see Gtk.Misc.Set_Alignment.
+--  available space, see the Gtk.Widget.Gtk_Widget::halign and
+--  Gtk.Widget.Gtk_Widget:valign properties.
 --
 --  The Gtk.Label.Gtk_Label:width-chars and
 --  Gtk.Label.Gtk_Label:max-width-chars properties can be used to control the
@@ -318,7 +319,7 @@ package Gtk.Label is
    --  Sets the alignment of the lines in the text of the label relative to
    --  each other. Gtk.Enums.Justify_Left is the default value when the widget
    --  is first created with Gtk.Label.Gtk_New. If you instead want to set the
-   --  alignment of the label as a whole, use Gtk.Misc.Set_Alignment instead.
+   --  alignment of the label as a whole, use Gtk.Widget.Set_Halign instead.
    --  Gtk.Label.Set_Justify has no effect on labels containing only a single
    --  line.
    --  "jtype": a Gtk.Enums.Gtk_Justification

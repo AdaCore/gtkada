@@ -27,10 +27,6 @@
 --  system and allow the user to manipulate the window (resize it, move it,
 --  close it,...).
 --
---  GTK+ also allows windows to have a resize grip (a small area in the lower
---  right or left corner) which can be clicked to resize the window. To control
---  whether a window has a resize grip, use Gtk.Window.Set_Has_Resize_Grip.
---
 --  # GtkWindow as GtkBuildable
 --
 --  The GtkWindow implementation of the GtkBuildable interface supports a
@@ -38,9 +34,12 @@
 --  elements representing the Gtk.Accel_Group.Gtk_Accel_Group objects you want
 --  to add to your window (synonymous with Gtk.Window.Add_Accel_Group.
 --
+--  It also supports the <initial-focus> element, whose name property names
+--  the widget to receive the focus when the window is mapped.
+--
 --  An example of a UI definition fragment with accel groups: |[ <object
 --  class="GtkWindow"> <accel-groups> <group name="accelgroup1"/>
---  </accel-groups> </object>
+--  </accel-groups> <initial-focus name="thunderclap"/> </object>
 --
 --  ...
 --
@@ -456,17 +455,21 @@ package Gtk.Window is
 
    function Get_Has_Resize_Grip
       (Window : not null access Gtk_Window_Record) return Boolean;
+   pragma Obsolescent (Get_Has_Resize_Grip);
    --  Determines whether the window may have a resize grip.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
 
    procedure Set_Has_Resize_Grip
       (Window : not null access Gtk_Window_Record;
        Value  : Boolean);
+   pragma Obsolescent (Set_Has_Resize_Grip);
    --  Sets whether Window has a corner resize grip.
    --  Note that the resize grip is only shown if the window is actually
    --  resizable and not maximized. Use Gtk.Window.Resize_Grip_Is_Visible to
    --  find out if the resize grip is currently shown.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "value": True to allow a resize grip
 
    function Get_Hide_Titlebar_When_Maximized
@@ -662,9 +665,11 @@ package Gtk.Window is
       (Window    : not null access Gtk_Window_Record;
        Rect      : out Gdk.Rectangle.Gdk_Rectangle;
        retrieved : out Boolean);
+   pragma Obsolescent (Get_Resize_Grip_Area);
    --  If a window has a resize grip, this will retrieve the grip position,
    --  width and height into the specified Gdk.Rectangle.Gdk_Rectangle.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "rect": a pointer to a Gdk.Rectangle.Gdk_Rectangle which we should
    --  store the resize grip area
 
@@ -967,7 +972,7 @@ package Gtk.Window is
    --  GDK_GRAVITY_NORTH_WEST };
    --  gtk_init (&argc, &argv);
    --  window = gtk_window_new (GTK_WINDOW_TOPLEVEL); vbox = gtk_box_new
-   --  (GTK_ORIENTATION_VERTICAL, FALSE, 0);
+   --  (GTK_ORIENTATION_VERTICAL, 0);
    --  gtk_container_add (GTK_CONTAINER (window), vbox); fill_with_content
    --  (vbox); gtk_widget_show_all (vbox);
    --  gtk_window_set_geometry_hints (GTK_WINDOW (window), window,
@@ -1055,8 +1060,10 @@ package Gtk.Window is
 
    function Resize_Grip_Is_Visible
       (Window : not null access Gtk_Window_Record) return Boolean;
+   pragma Obsolescent (Resize_Grip_Is_Visible);
    --  Determines whether a resize grip is visible for the specified window.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
 
    procedure Resize_To_Geometry
       (Window : not null access Gtk_Window_Record;
@@ -1348,6 +1355,13 @@ package Gtk.Window is
    --  Since: gtk+ 2.2
    --  "filename": location of icon file
 
+   procedure Set_Interactive_Debugging (Enable : Boolean);
+   --  Opens or closes the [interactive debugger][interactive-debugging],
+   --  which offers access to the widget hierarchy of the application and to
+   --  useful debugging tools.
+   --  Since: gtk+ 3.14
+   --  "enable": True to enable interactive debugging
+
    ----------------
    -- Properties --
    ----------------
@@ -1508,6 +1522,36 @@ package Gtk.Window is
    --  The ::activate-focus signal is a [keybinding signal][GtkBindingSignal]
    --  which gets emitted when the user activates the currently focused widget
    --  of Window.
+
+   type Cb_Gtk_Window_Boolean_Boolean is not null access function
+     (Self   : access Gtk_Window_Record'Class;
+      Toggle : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Toggle : Boolean) return Boolean;
+
+   Signal_Enable_Debugging : constant Glib.Signal_Name := "enable-debugging";
+   procedure On_Enable_Debugging
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_Gtk_Window_Boolean_Boolean;
+       After : Boolean := False);
+   procedure On_Enable_Debugging
+      (Self  : not null access Gtk_Window_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::enable-debugging signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user enables or
+   --  disables interactive debugging. When Toggle is True, interactive
+   --  debugging is toggled on or off, when it is False, the debugger will be
+   --  pointed at the widget under the pointer.
+   --
+   --  The default bindings for this signal are Ctrl-Shift-I and Ctrl-Shift-D.
+   -- 
+   --  Callback parameters:
+   --    --  "toggle": toggle the debugger
+   --    --  Returns True if the key binding was handled
 
    Signal_Keys_Changed : constant Glib.Signal_Name := "keys-changed";
    procedure On_Keys_Changed

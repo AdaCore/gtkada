@@ -68,7 +68,10 @@ package Gtk.Stack is
       Stack_Transition_Type_Under_Down,
       Stack_Transition_Type_Under_Left,
       Stack_Transition_Type_Under_Right,
-      Stack_Transition_Type_Over_Up_Down);
+      Stack_Transition_Type_Over_Up_Down,
+      Stack_Transition_Type_Over_Down_Up,
+      Stack_Transition_Type_Over_Left_Right,
+      Stack_Transition_Type_Over_Right_Left);
    pragma Convention (C, Gtk_Stack_Transition_Type);
    --  These enumeration values describe the possible transitions between
    --  pages in a Gtk.Stack.Gtk_Stack widget.

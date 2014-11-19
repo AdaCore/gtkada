@@ -95,6 +95,10 @@ package Gtk.Action_Group is
    ---------------
 
    type Gtk_Translate_Func is access function (Path : UTF8_String) return UTF8_String;
+   --  The function used to translate messages in e.g.
+   --  Gtk.Icon_Factory.Gtk_Icon_Factory and Gtk.Action_Group.Gtk_Action_Group.
+   --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+   --  this will be a label or tooltip from a Gtk_Action_Entry.
 
    ------------------
    -- Constructors --
@@ -270,6 +274,11 @@ package Gtk.Action_Group is
       type Gtk_Translate_Func is access function
         (Path      : UTF8_String;
          Func_Data : User_Data_Type) return UTF8_String;
+      --  The function used to translate messages in e.g.
+      --  Gtk.Icon_Factory.Gtk_Icon_Factory and Gtk.Action_Group.Gtk_Action_Group.
+      --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+      --  this will be a label or tooltip from a Gtk_Action_Entry.
+      --  "func_data": user data passed in when registering the function
 
       procedure Set_Translate_Func
          (Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;

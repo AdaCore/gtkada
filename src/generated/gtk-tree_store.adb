@@ -662,11 +662,11 @@ Iter := Gtk.Tree_Model.Null_Iter;
    is
       procedure Internal
          (Tree_Store : System.Address;
-          Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Parent     : System.Address;
           New_Order  : Gint_Array);
       pragma Import (C, Internal, "gtk_tree_store_reorder");
    begin
-      Internal (Get_Object (Tree_Store), Parent, New_Order);
+      Internal (Get_Object (Tree_Store), Iter_Or_Null (Parent'Address), New_Order);
    end Reorder;
 
    ----------------------

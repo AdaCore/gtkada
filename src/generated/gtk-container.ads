@@ -361,10 +361,9 @@ package Gtk.Container is
    --  the outside of the container. The only exception to this is
    --  Gtk.Window.Gtk_Window; because toplevel windows can't leave space
    --  outside, they leave the space inside. The border is added on all sides
-   --  of the container. To add space to only one side, one approach is to
-   --  create a Gtk.Alignment.Gtk_Alignment widget, call
-   --  Gtk.Widget.Set_Size_Request to give it a size, and place it on the side
-   --  of the container as a spacer.
+   --  of the container. To add space to only one side, use a specific
+   --  Gtk.Widget.Gtk_Widget:margin property on the child widget, for example
+   --  Gtk.Widget.Gtk_Widget:margin-top.
    --  "border_width": amount of blank space to leave outside the container.
    --  Valid values are in the range 0-65535 pixels.
 
@@ -517,9 +516,11 @@ package Gtk.Container is
    procedure Set_Reallocate_Redraws
       (Container     : not null access Gtk_Container_Record;
        Needs_Redraws : Boolean);
+   pragma Obsolescent (Set_Reallocate_Redraws);
    --  Sets the Reallocate_Redraws flag of the container to the given value.
    --  Containers requesting reallocation redraws get automatically redrawn if
    --  any of their children changed allocation.
+   --  Deprecated since 3.14, 1
    --  "needs_redraws": the new value for the container's Reallocate_Redraws
    --  flag
 

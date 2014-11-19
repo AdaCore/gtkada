@@ -264,17 +264,17 @@ package body Gdk.Device is
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
        Window : Gdk.Gdk_Window;
-       Axes   : in out Gdouble;
-       Mask   : in out Gdk.Types.Gdk_Modifier_Type)
+       Axes   : Gdouble_Array;
+       Mask   : out Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
          (Self   : System.Address;
           Window : Gdk.Gdk_Window;
-          Axes   : in out Gdouble;
-          Mask   : in out Gdk.Types.Gdk_Modifier_Type);
+          Axes   : System.Address;
+          Mask   : out Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gdk_device_get_state");
    begin
-      Internal (Get_Object (Self), Window, Axes, Mask);
+      Internal (Get_Object (Self), Window, Axes (Axes'First)'Address, Mask);
    end Get_State;
 
    -----------------------------------

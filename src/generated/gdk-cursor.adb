@@ -194,8 +194,8 @@ package body Gdk.Cursor is
 
    procedure Get_Surface
       (Self    : Gdk.Gdk_Cursor;
-       X_Hot   : in out Gdouble;
-       Y_Hot   : in out Gdouble;
+       X_Hot   : out Gdouble;
+       Y_Hot   : out Gdouble;
        Surface : out Cairo.Cairo_Surface)
    is
       function Internal
@@ -203,8 +203,8 @@ package body Gdk.Cursor is
           Acc_X_Hot : access Gdouble;
           Acc_Y_Hot : access Gdouble) return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gdk_cursor_get_surface");
-      Acc_X_Hot  : aliased Gdouble := X_Hot;
-      Acc_Y_Hot  : aliased Gdouble := Y_Hot;
+      Acc_X_Hot  : aliased Gdouble;
+      Acc_Y_Hot  : aliased Gdouble;
       Tmp_Return : Cairo.Cairo_Surface;
    begin
       Tmp_Return := Internal (Self, Acc_X_Hot'Access, Acc_Y_Hot'Access);

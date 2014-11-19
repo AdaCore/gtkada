@@ -31,13 +31,24 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.List_Box is
 
+   procedure C_Gtk_List_Box_Selected_Foreach
+      (Self : System.Address;
+       Func : System.Address;
+       Data : System.Address);
+   pragma Import (C, C_Gtk_List_Box_Selected_Foreach, "gtk_list_box_selected_foreach");
+   --  Calls a function for each selected child.
+   --  Note that the selection cannot be modified from within this function.
+   --  Since: gtk+ 3.14
+   --  "func": the function to call for each selected child
+   --  "data": user data to pass to the function
+
    procedure C_Gtk_List_Box_Set_Filter_Func
       (Self        : System.Address;
        Filter_Func : System.Address;
        User_Data   : System.Address;
        Destroy     : System.Address);
    pragma Import (C, C_Gtk_List_Box_Set_Filter_Func, "gtk_list_box_set_filter_func");
-   --  By setting a filter function on the List_Box one can decide dynamically
+   --  By setting a filter function on the Box one can decide dynamically
    --  which of the rows to show. For instance, to implement a search function
    --  on a list that filters the original list to only show the matching rows.
    --  The Filter_Func will be called for each row after the call, and it will
@@ -55,18 +66,18 @@ package body Gtk.List_Box is
        User_Data     : System.Address;
        Destroy       : System.Address);
    pragma Import (C, C_Gtk_List_Box_Set_Header_Func, "gtk_list_box_set_header_func");
-   --  By setting a header function on the List_Box one can dynamically add
-   --  headers in front of rows, depending on the contents of the row and its
-   --  position in the list. For instance, one could use it to add headers in
-   --  front of the first item of a new kind, in a list sorted by the kind.
+   --  By setting a header function on the Box one can dynamically add headers
+   --  in front of rows, depending on the contents of the row and its position
+   --  in the list. For instance, one could use it to add headers in front of
+   --  the first item of a new kind, in a list sorted by the kind.
    --  The Update_Header can look at the current header widget using
    --  Gtk.List_Box_Row.Get_Header and either update the state of the widget as
    --  needed, or set a new one using Gtk.List_Box_Row.Set_Header. If no header
    --  is needed, set the header to null.
    --  Note that you may get many calls Update_Header to this for a particular
    --  row when e.g. changing things that don't affect the header. In this case
-   --  it is important for performance to not blindly replace an exisiting
-   --  header widh an identical one.
+   --  it is important for performance to not blindly replace an existing
+   --  header with an identical one.
    --  The Update_Header function will be called for each row after the call,
    --  and it will continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) and when the row before changes (either by
@@ -84,8 +95,8 @@ package body Gtk.List_Box is
        User_Data : System.Address;
        Destroy   : System.Address);
    pragma Import (C, C_Gtk_List_Box_Set_Sort_Func, "gtk_list_box_set_sort_func");
-   --  By setting a sort function on the List_Box one can dynamically reorder
-   --  the rows of the list, based on the contents of the rows.
+   --  By setting a sort function on the Box one can dynamically reorder the
+   --  rows of the list, based on the contents of the rows.
    --  The Sort_Func will be called for each row after the call, and will
    --  continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
@@ -94,6 +105,12 @@ package body Gtk.List_Box is
    --  "sort_func": the sort function
    --  "user_data": user data passed to Sort_Func
    --  "destroy": destroy notifier for User_Data
+
+   function To_Gtk_List_Box_Foreach_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_List_Box_Foreach_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_List_Box_Foreach_Func, System.Address);
 
    function To_Gtk_List_Box_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_List_Box_Filter_Func);
@@ -118,6 +135,15 @@ package body Gtk.List_Box is
        User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_List_Box_Filter_Func);
    --  "row": the row that may be filtered
+   --  "user_data": user data
+
+   procedure Internal_Gtk_List_Box_Foreach_Func
+      (Box       : System.Address;
+       Row       : System.Address;
+       User_Data : System.Address);
+   pragma Convention (C, Internal_Gtk_List_Box_Foreach_Func);
+   --  "box": a Gtk.List_Box.Gtk_List_Box
+   --  "row": a Gtk.List_Box_Row.Gtk_List_Box_Row
    --  "user_data": user data
 
    function Internal_Gtk_List_Box_Sort_Func
@@ -151,6 +177,22 @@ package body Gtk.List_Box is
    begin
       return Boolean'Pos (Func (Gtk.List_Box_Row.Gtk_List_Box_Row (Get_User_Data (Row, Stub_Gtk_List_Box_Row))));
    end Internal_Gtk_List_Box_Filter_Func;
+
+   ----------------------------------------
+   -- Internal_Gtk_List_Box_Foreach_Func --
+   ----------------------------------------
+
+   procedure Internal_Gtk_List_Box_Foreach_Func
+      (Box       : System.Address;
+       Row       : System.Address;
+       User_Data : System.Address)
+   is
+      Func                  : constant Gtk_List_Box_Foreach_Func := To_Gtk_List_Box_Foreach_Func (User_Data);
+      Stub_Gtk_List_Box     : Gtk_List_Box_Record;
+      Stub_Gtk_List_Box_Row : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;
+   begin
+      Func (Gtk.List_Box.Gtk_List_Box (Get_User_Data (Box, Stub_Gtk_List_Box)), Gtk.List_Box_Row.Gtk_List_Box_Row (Get_User_Data (Row, Stub_Gtk_List_Box_Row)));
+   end Internal_Gtk_List_Box_Foreach_Func;
 
    -------------------------------------
    -- Internal_Gtk_List_Box_Sort_Func --
@@ -324,6 +366,22 @@ package body Gtk.List_Box is
       return Gtk.List_Box_Row.Gtk_List_Box_Row (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_List_Box_Row));
    end Get_Selected_Row;
 
+   -----------------------
+   -- Get_Selected_Rows --
+   -----------------------
+
+   function Get_Selected_Rows
+      (Self : not null access Gtk_List_Box_Record)
+       return Gtk.List_Box_Row.List_Box_Row_List.Glist
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_list_box_get_selected_rows");
+      Tmp_Return : Gtk.List_Box_Row.List_Box_Row_List.Glist;
+   begin
+      Gtk.List_Box_Row.List_Box_Row_List.Set_Object (Tmp_Return, Internal (Get_Object (Self)));
+      return Tmp_Return;
+   end Get_Selected_Rows;
+
    ------------------------
    -- Get_Selection_Mode --
    ------------------------
@@ -405,6 +463,17 @@ package body Gtk.List_Box is
    end Prepend;
 
    ----------------
+   -- Select_All --
+   ----------------
+
+   procedure Select_All (Self : not null access Gtk_List_Box_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "gtk_list_box_select_all");
+   begin
+      Internal (Get_Object (Self));
+   end Select_All;
+
+   ----------------
    -- Select_Row --
    ----------------
 
@@ -417,6 +486,80 @@ package body Gtk.List_Box is
    begin
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Row)));
    end Select_Row;
+
+   ----------------------
+   -- Selected_Foreach --
+   ----------------------
+
+   procedure Selected_Foreach
+      (Self : not null access Gtk_List_Box_Record;
+       Func : Gtk_List_Box_Foreach_Func)
+   is
+   begin
+      if Func = null then
+         C_Gtk_List_Box_Selected_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
+      else
+         C_Gtk_List_Box_Selected_Foreach (Get_Object (Self), Internal_Gtk_List_Box_Foreach_Func'Address, To_Address (Func));
+      end if;
+   end Selected_Foreach;
+
+   package body Selected_Foreach_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gtk_List_Box_Foreach_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_List_Box_Foreach_Func);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_List_Box_Foreach_Func, System.Address);
+
+      procedure Internal_Cb
+         (Box       : System.Address;
+          Row       : System.Address;
+          User_Data : System.Address);
+      pragma Convention (C, Internal_Cb);
+      --  A function used by Gtk.List_Box.Selected_Foreach. It will be called
+      --  on every selected child of the Box.
+      --  Since: gtk+ 3.14
+      --  "box": a Gtk.List_Box.Gtk_List_Box
+      --  "row": a Gtk.List_Box_Row.Gtk_List_Box_Row
+      --  "user_data": user data
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      procedure Internal_Cb
+         (Box       : System.Address;
+          Row       : System.Address;
+          User_Data : System.Address)
+      is
+         D                     : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub_Gtk_List_Box     : Gtk.List_Box.Gtk_List_Box_Record;
+         Stub_Gtk_List_Box_Row : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;
+      begin
+         To_Gtk_List_Box_Foreach_Func (D.Func) (Gtk.List_Box.Gtk_List_Box (Get_User_Data (Box, Stub_Gtk_List_Box)), Gtk.List_Box_Row.Gtk_List_Box_Row (Get_User_Data (Row, Stub_Gtk_List_Box_Row)), D.Data.all);
+      end Internal_Cb;
+
+      ----------------------
+      -- Selected_Foreach --
+      ----------------------
+
+      procedure Selected_Foreach
+         (Self : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
+          Func : Gtk_List_Box_Foreach_Func;
+          Data : User_Data_Type)
+      is
+      begin
+         if Func = null then
+            C_Gtk_List_Box_Selected_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
+         else
+            C_Gtk_List_Box_Selected_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Func), Data));
+         end if;
+      end Selected_Foreach;
+
+   end Selected_Foreach_User_Data;
 
    ----------------------------------
    -- Set_Activate_On_Single_Click --
@@ -696,6 +839,31 @@ package body Gtk.List_Box is
       end Set_Sort_Func;
 
    end Set_Sort_Func_User_Data;
+
+   ------------------
+   -- Unselect_All --
+   ------------------
+
+   procedure Unselect_All (Self : not null access Gtk_List_Box_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "gtk_list_box_unselect_all");
+   begin
+      Internal (Get_Object (Self));
+   end Unselect_All;
+
+   ------------------
+   -- Unselect_Row --
+   ------------------
+
+   procedure Unselect_Row
+      (Self : not null access Gtk_List_Box_Record;
+       Row  : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Row : System.Address);
+      pragma Import (C, Internal, "gtk_list_box_unselect_row");
+   begin
+      Internal (Get_Object (Self), Get_Object (Row));
+   end Unselect_Row;
 
    use type System.Address;
 
@@ -1170,6 +1338,60 @@ package body Gtk.List_Box is
       Connect_Slot (Self, "row-selected" & ASCII.NUL, Call, After, Slot);
    end On_Row_Selected;
 
+   -------------------
+   -- On_Select_All --
+   -------------------
+
+   procedure On_Select_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_Gtk_List_Box_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "select-all" & ASCII.NUL, Call, After);
+   end On_Select_All;
+
+   -------------------
+   -- On_Select_All --
+   -------------------
+
+   procedure On_Select_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "select-all" & ASCII.NUL, Call, After, Slot);
+   end On_Select_All;
+
+   ------------------------------
+   -- On_Selected_Rows_Changed --
+   ------------------------------
+
+   procedure On_Selected_Rows_Changed
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_Gtk_List_Box_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "selected-rows-changed" & ASCII.NUL, Call, After);
+   end On_Selected_Rows_Changed;
+
+   ------------------------------
+   -- On_Selected_Rows_Changed --
+   ------------------------------
+
+   procedure On_Selected_Rows_Changed
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "selected-rows-changed" & ASCII.NUL, Call, After, Slot);
+   end On_Selected_Rows_Changed;
+
    --------------------------
    -- On_Toggle_Cursor_Row --
    --------------------------
@@ -1196,5 +1418,32 @@ package body Gtk.List_Box is
    begin
       Connect_Slot (Self, "toggle-cursor-row" & ASCII.NUL, Call, After, Slot);
    end On_Toggle_Cursor_Row;
+
+   ---------------------
+   -- On_Unselect_All --
+   ---------------------
+
+   procedure On_Unselect_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_Gtk_List_Box_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "unselect-all" & ASCII.NUL, Call, After);
+   end On_Unselect_All;
+
+   ---------------------
+   -- On_Unselect_All --
+   ---------------------
+
+   procedure On_Unselect_All
+      (Self  : not null access Gtk_List_Box_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "unselect-all" & ASCII.NUL, Call, After, Slot);
+   end On_Unselect_All;
 
 end Gtk.List_Box;

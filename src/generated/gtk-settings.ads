@@ -360,6 +360,9 @@ package Gtk.Settings is
 
    Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean;
 
+   Gtk_Long_Press_Time_Property : constant Glib.Properties.Property_Uint;
+   --  The time for a button or touch press to be considered a "long press".
+
    Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String;
    --  Keybinding to activate the menu bar.
 
@@ -446,6 +449,24 @@ package Gtk.Settings is
    Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int;
 
    Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Titlebar_Double_Click_Property : constant Glib.Properties.Property_String;
+   --  This setting determines the action to take when a double-click occurs
+   --  on the titlebar of client-side decorated windows.
+   --
+   --  Recognized actions are minimize, toggle-maximize, menu, lower or none.
+
+   Gtk_Titlebar_Middle_Click_Property : constant Glib.Properties.Property_String;
+   --  This setting determines the action to take when a middle-click occurs
+   --  on the titlebar of client-side decorated windows.
+   --
+   --  Recognized actions are minimize, toggle-maximize, menu, lower or none.
+
+   Gtk_Titlebar_Right_Click_Property : constant Glib.Properties.Property_String;
+   --  This setting determines the action to take when a right-click occurs on
+   --  the titlebar of client-side decorated windows.
+   --
+   --  Recognized actions are minimize, toggle-maximize, menu, lower or none.
 
    Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The size of icons in default toolbars.
@@ -537,6 +558,12 @@ private
      Gtk.Enums.Build ("gtk-toolbar-style");
    Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
      Gtk.Enums.Build ("gtk-toolbar-icon-size");
+   Gtk_Titlebar_Right_Click_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-titlebar-right-click");
+   Gtk_Titlebar_Middle_Click_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-titlebar-middle-click");
+   Gtk_Titlebar_Double_Click_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-titlebar-double-click");
    Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("gtk-timeout-repeat");
    Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int :=
@@ -585,6 +612,8 @@ private
      Glib.Properties.Build ("gtk-menu-bar-popup-delay");
    Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-menu-bar-accel");
+   Gtk_Long_Press_Time_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("gtk-long-press-time");
    Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-label-select-on-focus");
    Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean :=

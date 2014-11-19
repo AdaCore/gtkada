@@ -532,15 +532,15 @@ package body Gtk.Button is
    ----------------
 
    procedure Set_Relief
-      (Button   : not null access Gtk_Button_Record;
-       Newstyle : Gtk.Enums.Gtk_Relief_Style)
+      (Button : not null access Gtk_Button_Record;
+       Relief : Gtk.Enums.Gtk_Relief_Style)
    is
       procedure Internal
-         (Button   : System.Address;
-          Newstyle : Gtk.Enums.Gtk_Relief_Style);
+         (Button : System.Address;
+          Relief : Gtk.Enums.Gtk_Relief_Style);
       pragma Import (C, Internal, "gtk_button_set_relief");
    begin
-      Internal (Get_Object (Button), Newstyle);
+      Internal (Get_Object (Button), Relief);
    end Set_Relief;
 
    -------------------

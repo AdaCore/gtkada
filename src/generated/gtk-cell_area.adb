@@ -397,6 +397,28 @@ package body Gtk.Cell_Area is
       Free (Tmp_Attribute);
    end Attribute_Disconnect;
 
+   --------------------------
+   -- Attribute_Get_Column --
+   --------------------------
+
+   function Attribute_Get_Column
+      (Self      : not null access Gtk_Cell_Area_Record;
+       Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+       Attribute : UTF8_String) return Gint
+   is
+      function Internal
+         (Self      : System.Address;
+          Renderer  : System.Address;
+          Attribute : Interfaces.C.Strings.chars_ptr) return Gint;
+      pragma Import (C, Internal, "gtk_cell_area_attribute_get_column");
+      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Return    : Gint;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Attribute);
+      Free (Tmp_Attribute);
+      return Tmp_Return;
+   end Attribute_Get_Column;
+
    -----------------------
    -- Cell_Get_Property --
    -----------------------

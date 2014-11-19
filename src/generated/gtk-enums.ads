@@ -37,8 +37,7 @@ package Gtk.Enums is
       Arrow_Right,
       Arrow_None);
    pragma Convention (C, Gtk_Arrow_Type);
-   --  Used to indicate the direction in which a Gtk.Arrow.Gtk_Arrow should
-   --  point.
+   --  Used to indicate the direction in which an arrow should point.
 
    type Gtk_Attach_Options is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Attach_Options);
@@ -58,8 +57,7 @@ package Gtk.Enums is
       Buttonbox_Expand);
    pragma Convention (C, Gtk_Button_Box_Style);
    --  Used to dictate the style that a Gtk.Button_Box.Gtk_Button_Box uses to
-   --  layout the buttons it contains. (See also:
-   --  Gtk.Vbutton_Box.Gtk_Vbutton_Box and Gtk.Hbutton_Box.Gtk_Hbutton_Box).
+   --  layout the buttons it contains.
 
    for Gtk_Button_Box_Style use (
       Buttonbox_Spread => 1,
@@ -259,9 +257,9 @@ package Gtk.Enums is
       Orientation_Horizontal,
       Orientation_Vertical);
    pragma Convention (C, Gtk_Orientation);
-   --  Represents the orientation of widgets which can be switched between
-   --  horizontal and vertical orientation on the fly, like
-   --  Gtk.Toolbar.Gtk_Toolbar.
+   --  Represents the orientation of widgets and other objects which can be
+   --  switched between horizontal and vertical orientation on the fly, like
+   --  Gtk.Toolbar.Gtk_Toolbar or Gtk.Gesture_Pan.Gtk_Gesture_Pan.
 
    type Gtk_Pack_Direction is (
       Pack_Direction_Ltr,
@@ -332,7 +330,8 @@ package Gtk.Enums is
       Policy_Automatic,
       Policy_Never);
    pragma Convention (C, Gtk_Policy_Type);
-   --  Determines when a scroll bar will be visible.
+   --  Determines how the size should be computed to achieve the one of the
+   --  visibility mode for the scrollbars.
 
    type Gtk_Position_Type is (
       Pos_Left,
@@ -454,6 +453,10 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Shadow_Type);
    --  Used to change the appearance of an outline typically provided by a
    --  Gtk.Frame.Gtk_Frame.
+   --
+   --  Note that many themes do not differentiate the appearance of the
+   --  various shadow types: Either their is no visible shadow
+   --  (Gtk_Shadow_None), or there is (any other value).
 
    type Gtk_Size_Request_Mode is (
       Height_For_Width,
@@ -487,6 +490,7 @@ package Gtk.Enums is
    Gtk_State_Flag_Dir_Rtl : constant Gtk_State_Flags := 256;
    Gtk_State_Flag_Link : constant Gtk_State_Flags := 512;
    Gtk_State_Flag_Visited : constant Gtk_State_Flags := 1024;
+   Gtk_State_Flag_Checked : constant Gtk_State_Flags := 2048;
 
    type Gtk_State_Type is (
       State_Normal,

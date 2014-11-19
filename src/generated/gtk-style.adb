@@ -178,13 +178,13 @@ package body Gtk.Style is
       (Style         : not null access Gtk_Style_Record;
        Widget_Type   : GType;
        Property_Name : UTF8_String;
-       Value         : in out Glib.Values.GValue)
+       Value         : out Glib.Values.GValue)
    is
       procedure Internal
          (Style         : System.Address;
           Widget_Type   : GType;
           Property_Name : Interfaces.C.Strings.chars_ptr;
-          Value         : in out Glib.Values.GValue);
+          Value         : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_style_get_style_property");
       Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
    begin

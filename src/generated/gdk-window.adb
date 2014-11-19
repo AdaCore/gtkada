@@ -1030,6 +1030,22 @@ package body Gdk.Window is
       Internal (Self, Boolean'Pos (Urgent));
    end Set_Urgency_Hint;
 
+   ----------------------
+   -- Show_Window_Menu --
+   ----------------------
+
+   function Show_Window_Menu
+      (Self  : Gdk.Gdk_Window;
+       Event : Gdk.Event.Gdk_Event) return Boolean
+   is
+      function Internal
+         (Self  : Gdk.Gdk_Window;
+          Event : Gdk.Event.Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_window_show_window_menu");
+   begin
+      return Internal (Self, Event) /= 0;
+   end Show_Window_Menu;
+
    ----------------
    -- At_Pointer --
    ----------------

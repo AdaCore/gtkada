@@ -163,8 +163,12 @@ package Gtk.Text_Mark is
    --  Glib.Properties for more information on properties)
 
    Left_Gravity_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the mark has left gravity. When text is inserted at the mark's
+   --  current location, if the mark has left gravity it will be moved to the
+   --  left of the newly-inserted text, otherwise to the right.
 
    Name_Property : constant Glib.Properties.Property_String;
+   --  The name of the mark or null if the mark is anonymous.
 
 private
    Name_Property : constant Glib.Properties.Property_String :=

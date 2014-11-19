@@ -182,7 +182,7 @@ package Gtk.Tree_Row_Reference is
       (Proxy     : not null access Glib.Object.GObject_Record'Class;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
-       New_Order : in out Gint);
+       New_Order : Gint_Array);
    --  Lets a set of row reference created by gtk_tree_row_reference_new_proxy
    --  know that the model emitted the
    --  Gtk.Tree_Model.Gtk_Tree_Model::rows-reordered signal.

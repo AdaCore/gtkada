@@ -474,11 +474,11 @@ package Gtk.Spin_Button is
 
    type Cb_Gtk_Spin_Button_Gtk_Scroll_Type_Void is not null access procedure
      (Self   : access Gtk_Spin_Button_Record'Class;
-      Object : Gtk.Enums.Gtk_Scroll_Type);
+      Scroll : Gtk.Enums.Gtk_Scroll_Type);
 
    type Cb_GObject_Gtk_Scroll_Type_Void is not null access procedure
      (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gtk.Enums.Gtk_Scroll_Type);
+      Scroll : Gtk.Enums.Gtk_Scroll_Type);
 
    Signal_Change_Value : constant Glib.Signal_Name := "change-value";
    procedure On_Change_Value
@@ -490,6 +490,15 @@ package Gtk.Spin_Button is
        Call  : Cb_GObject_Gtk_Scroll_Type_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  The ::change-value signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a value change.
+   --
+   --  Applications should not connect to it, but may emit it with
+   --  g_signal_emit_by_name if they need to control the cursor
+   --  programmatically.
+   --
+   --  The default bindings for this signal are Up/Down and PageUp
+   --  and/PageDown.
 
    type Cb_Gtk_Spin_Button_Gdouble_Gint is not null access function
      (Self      : access Gtk_Spin_Button_Record'Class;
@@ -569,6 +578,9 @@ package Gtk.Spin_Button is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  The ::value-changed signal is emitted when the value represented by
+   --  Spinbutton changes. Also see the Gtk.Spin_Button.Gtk_Spin_Button::output
+   --  signal.
 
    Signal_Wrapped : constant Glib.Signal_Name := "wrapped";
    procedure On_Wrapped
@@ -580,8 +592,8 @@ package Gtk.Spin_Button is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The wrapped signal is emitted right after the spinbutton wraps from its
-   --  maximum to minimum value or vice-versa.
+   --  The ::wrapped signal is emitted right after the spinbutton wraps from
+   --  its maximum to minimum value or vice-versa.
 
    ----------------
    -- Interfaces --

@@ -136,7 +136,7 @@ package Gtk.Frame is
 
    procedure Set_Label_Widget
       (Frame        : not null access Gtk_Frame_Record;
-       Label_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the label widget for the frame. This is the widget that will
    --  appear embedded in the top edge of the frame as a title.
    --  "label_widget": the new label widget

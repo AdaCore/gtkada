@@ -284,7 +284,12 @@ package body Gtk.Action_Group is
    function Internal_Gtk_Translate_Func
       (Path      : Interfaces.C.Strings.chars_ptr;
        Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+   pragma Obsolescent (Internal_Gtk_Translate_Func);
    pragma Convention (C, Internal_Gtk_Translate_Func);
+   --  Deprecated since 3.10, 1
+   --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+   --  this will be a label or tooltip from a Gtk_Action_Entry.
+   --  "func_data": user data passed in when registering the function
 
    ---------------------------------
    -- Internal_Gtk_Translate_Func --
@@ -569,7 +574,15 @@ package body Gtk.Action_Group is
       function Internal_Cb
          (Path      : Interfaces.C.Strings.chars_ptr;
           Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Obsolescent (Internal_Cb);
       pragma Convention (C, Internal_Cb);
+      --  The function used to translate messages in e.g.
+      --  Gtk.Icon_Factory.Gtk_Icon_Factory and
+      --  Gtk.Action_Group.Gtk_Action_Group.
+      --  Deprecated since 3.10, 1
+      --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+      --  this will be a label or tooltip from a Gtk_Action_Entry.
+      --  "func_data": user data passed in when registering the function
 
       -----------------
       -- Internal_Cb --

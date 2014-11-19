@@ -46,83 +46,17 @@
 --  Gtk.Settings.Gtk_Settings:gtk-theme-name setting or a hierarchy change in
 --  the rendered widget.
 --
---  # Transition Animations
---
---  Gtk.Style_Context.Gtk_Style_Context has built-in support for state change
---  transitions. Note that these animations respect the
---  Gtk.Settings.Gtk_Settings:gtk-enable-animations setting.
---
---  For simple widgets where state changes affect the whole widget area,
---  calling Gtk.Style_Context.Notify_State_Change with a null region is
---  sufficient to trigger the transition animation. And GTK+ already does that
---  when Gtk.Widget.Set_State or Gtk.Widget.Set_State_Flags are called.
---
---  If a widget needs to declare several animatable regions (i.e. not
---  affecting the whole widget area), its Gtk.Widget.Gtk_Widget::draw signal
---  handler needs to wrap the render operations for the different regions with
---  calls to Gtk.Style_Context.Push_Animatable_Region and
---  Gtk.Style_Context.Pop_Animatable_Region. These functions take an identifier
---  for the region which must be unique within the style context. For simple
---  widgets with a fixed set of animatable regions, using an enumeration works
---  well:
---
---  An example for Using an enumeration to identify animatable regions:
---
---  |[<!-- language="C" --> enum { REGION_ENTRY, REGION_BUTTON_UP,
---  REGION_BUTTON_DOWN };
---
---  ...
---
---  gboolean spin_button_draw (GtkWidget *widget, cairo_t *cr) {
---  GtkStyleContext *context;
---
---  context = gtk_widget_get_style_context (widget);
---
---  gtk_style_context_push_animatable_region (context, GUINT_TO_POINTER
---  (REGION_ENTRY));
---
---  gtk_render_background (cr, 0, 0, 100, 30); gtk_render_frame (cr, 0, 0,
---  100, 30);
---
---  gtk_style_context_pop_animatable_region (context);
---
---  ... } ]|
---
---  For complex widgets with an arbitrary number of animatable regions, it is
---  up to the implementation to come up with a way to uniquely identify each
---  animatable region. Using pointers to internal structs is one way to achieve
---  this:
---
---  An example for using struct pointers to identify animatable regions:
---  |[<!-- language="C" --> void notebook_draw_tab (GtkWidget *widget,
---  NotebookPage *page, cairo_t *cr) { gtk_style_context_push_animatable_region
---  (context, page); gtk_render_extension (cr, page->x, page->y, page->width,
---  page->height); gtk_style_context_pop_animatable_region (context); } ]|
---
---  The widget also needs to notify the style context about a state change for
---  a given animatable region so the animation is triggered.
---
---  An example for triggering a state change animation on a region: |[<!--
---  language="C" --> gboolean notebook_motion_notify (GtkWidget *widget,
---  GdkEventMotion *event) { GtkStyleContext *context; NotebookPage *page;
---
---  context = gtk_widget_get_style_context (widget); page =
---  find_page_under_pointer (widget, event);
---  gtk_style_context_notify_state_change (context, gtk_widget_get_window
---  (widget), page, GTK_STATE_PRELIGHT, TRUE); ... } ]|
---
---  Gtk.Style_Context.Notify_State_Change accepts null region IDs as a special
---  value, in this case, the whole widget area will be updated by the
---  animation.
---
---  # Style Classes and Regions # {gtkstylecontext-classes}
+--  # Style Classes # {gtkstylecontext-classes}
 --
 --  Widgets can add style classes to their context, which can be used to
 --  associate different styles by class (see
---  [Selectors][gtkcssprovider-selectors]). Theme engines can also use style
---  classes to vary their rendering.
+--  [Selectors][gtkcssprovider-selectors]).
 --
---  Widgets can also add regions with flags to their context.
+--  # Style Regions
+--
+--  Widgets can also add regions with flags to their context. This feature is
+--  deprecated and will be removed in a future GTK+ update. Please use style
+--  classes instead.
 --
 --  The regions used by GTK+ widgets are:
 --
@@ -144,9 +78,8 @@
 --  Gtk.Style_Provider.Gtk_Style_Provider yourself with the
 --  GTK_STYLE_PROVIDER_PRIORITY_FALLBACK priority, either a
 --  Gtk.Css_Provider.Gtk_Css_Provider or a custom object implementing the
---  Gtk.Style_Provider.Gtk_Style_Provider interface. This way theming engines
---  may still attempt to style your UI elements in a different way if needed
---  so.
+--  Gtk.Style_Provider.Gtk_Style_Provider interface. This way themes may still
+--  attempt to style your UI elements in a different way if needed so.
 --
 --  If you are using custom styling on an applications, you probably want then
 --  to make your style information prevail to the theme's, so you must use a
@@ -155,12 +88,6 @@
 --  user settings in `XDG_CONFIG_HOME/gtk-3.0/gtk.css` will still take
 --  precedence over your changes, as it uses the
 --  GTK_STYLE_PROVIDER_PRIORITY_USER priority.
---
---  If a custom theming engine is needed, you probably want to implement a
---  Gtk.Style_Provider.Gtk_Style_Provider yourself so it points to your
---  Gtk.Theming_Engine.Gtk_Theming_Engine implementation, as
---  Gtk.Css_Provider.Gtk_Css_Provider uses Gtk.Theming_Engine.Load which loads
---  the theming engine module from the standard paths.
 --
 --  </description>
 pragma Ada_2005;
@@ -257,6 +184,7 @@ package Gtk.Style_Context is
       (Self        : not null access Gtk_Style_Context_Record;
        Region_Name : UTF8_String;
        Flags       : Gtk.Enums.Gtk_Region_Flags);
+   pragma Obsolescent (Add_Region);
    --  Adds a region to Context, so posterior calls to gtk_style_context_get
    --  or any of the gtk_render_* functions will make use of this new region
    --  for styling.
@@ -270,6 +198,7 @@ package Gtk.Style_Context is
    --  Region names must only contain lowercase letters and "-", starting
    --  always with a lowercase letter.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "region_name": region name to use in styling
    --  "flags": flags that apply to the region
 
@@ -386,8 +315,7 @@ package Gtk.Style_Context is
    --  Sets the sides where rendered elements (mostly through
    --  Gtk.Style_Context.Render_Frame) will visually connect with other visual
    --  elements.
-   --  This is merely a hint that may or may not be honored by theming
-   --  engines.
+   --  This is merely a hint that may or may not be honored by themes.
    --  Container widgets are expected to set junction hints as appropriate for
    --  their children, so it should not normally be necessary to call this
    --  function manually.
@@ -541,9 +469,11 @@ package Gtk.Style_Context is
        Region_Name  : UTF8_String;
        Flags_Return : out Gtk.Enums.Gtk_Region_Flags;
        Is_Defined   : out Boolean);
+   pragma Obsolescent (Has_Region);
    --  Returns True if Context has the region defined. If Flags_Return is not
    --  null, it is set to the flags affecting the region.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "region_name": a region name
    --  "flags_return": return location for region flags
 
@@ -564,8 +494,10 @@ package Gtk.Style_Context is
    function List_Regions
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.String_List.Glist;
+   pragma Obsolescent (List_Regions);
    --  Returns the list of regions currently defined in Context.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
 
    procedure Lookup_Color
       (Self       : not null access Gtk_Style_Context_Record;
@@ -630,8 +562,8 @@ package Gtk.Style_Context is
    --  potentially show transition animations for this region if
    --  Gtk.Style_Context.Notify_State_Change is called for a given state, and
    --  the current theme/style defines transition animations for state changes.
-   --  The Region_Id used must be unique in Context so the theming engine can
-   --  uniquely identify rendered elements subject to a state transition.
+   --  The Region_Id used must be unique in Context so the themes can uniquely
+   --  identify rendered elements subject to a state transition.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
    --  "region_id": unique identifier for the animatable region
@@ -653,8 +585,10 @@ package Gtk.Style_Context is
    procedure Remove_Region
       (Self        : not null access Gtk_Style_Context_Record;
        Region_Name : UTF8_String);
+   pragma Obsolescent (Remove_Region);
    --  Removes a region from Context.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "region_name": region name to unset
 
    procedure Restore (Self : not null access Gtk_Style_Context_Record);
@@ -791,7 +725,7 @@ package Gtk.Style_Context is
        Width   : Gdouble;
        Height  : Gdouble);
    --  Renders a checkmark (as in a Gtk.Check_Button.Gtk_Check_Button).
-   --  The Gtk.Enums.Gtk_State_Flag_Active state determines whether the check
+   --  The Gtk.Enums.Gtk_State_Flag_Checked state determines whether the check
    --  is on or off, and Gtk.Enums.Gtk_State_Flag_Inconsistent determines
    --  whether it should be marked as undefined.
    --  Typical checkmark rendering:
@@ -812,7 +746,7 @@ package Gtk.Style_Context is
        Width   : Gdouble;
        Height  : Gdouble);
    --  Renders an option mark (as in a Gtk.Radio_Button.Gtk_Radio_Button), the
-   --  Gtk.Enums.Gtk_State_Flag_Active state will determine whether the option
+   --  Gtk.Enums.Gtk_State_Flag_Checked state will determine whether the option
    --  is on or off, and Gtk.Enums.Gtk_State_Flag_Inconsistent whether it
    --  should be marked as undefined.
    --  Typical option mark rendering:
@@ -892,7 +826,7 @@ package Gtk.Style_Context is
        Height  : Gdouble);
    --  Renders an expander (as used in Gtk.Tree_View.Gtk_Tree_View and
    --  Gtk.Expander.Gtk_Expander) in the area defined by X, Y, Width, Height.
-   --  The state Gtk.Enums.Gtk_State_Flag_Active determines whether the
+   --  The state Gtk.Enums.Gtk_State_Flag_Checked determines whether the
    --  expander is collapsed or expanded.
    --  Typical expander rendering:
    --  ![](expanders.png)
@@ -1032,10 +966,9 @@ package Gtk.Style_Context is
        Y       : Gdouble;
        Width   : Gdouble;
        Height  : Gdouble);
-   --  Renders an activity area (Such as in Gtk.Spinner.Gtk_Spinner or the
-   --  fill line in Gtk.GRange.Gtk_Range), the state
-   --  Gtk.Enums.Gtk_State_Flag_Active determines whether there is activity
-   --  going on.
+   --  Renders an activity indicator (such as in Gtk.Spinner.Gtk_Spinner). The
+   --  state Gtk.Enums.Gtk_State_Flag_Checked determines whether there is
+   --  activity going on.
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
