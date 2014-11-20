@@ -2067,12 +2067,12 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
                 section.add(
                     Code('   Signal_%s : constant Glib.Signal_Name := "%s";' %
-                         (naming.case(name), name)),
+                         (naming.case(name, protect=False), name)),
                     add_newline=False)
 
                 if bind:
                     connect = Subprogram(
-                        name="On_%s" % naming.case(name),
+                        name="On_%s" % naming.case(name, protect=False),
                         plist=[Parameter(name="Self", type=on_selftype),
                                Parameter(
                             name="Call",
@@ -2087,7 +2087,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
                     self.pkg.add_with("Glib.Object")
                     obj_connect = Subprogram(
-                        name="On_%s" % naming.case(name),
+                        name="On_%s" % naming.case(name, protect=False),
                         plist=[Parameter(name="Self", type=on_selftype),
                                Parameter(
                             name="Call",

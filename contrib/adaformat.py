@@ -822,7 +822,7 @@ class AdaNaming(object):
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
 
-    def case(self, name):
+    def case(self, name, protect=True):
         """Return the proper casing to use for 'name', taking keywords
            into account. This is for packages.
         """
@@ -830,7 +830,10 @@ class AdaNaming(object):
         if name.endswith("_"):
             name = name[:-1]
 
-        return self.protect_keywords(name)
+        if protect:
+            return self.protect_keywords(name)
+        else:
+            return name
 
     def protect_keywords(self, name):
         return ".".join(self.exceptions.get(n, n) for n in name.split("."))

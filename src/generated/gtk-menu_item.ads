@@ -390,12 +390,12 @@ package Gtk.Menu_Item is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
 
-   Signal_Gtk_Select : constant Glib.Signal_Name := "select";
-   procedure On_Gtk_Select
+   Signal_Select : constant Glib.Signal_Name := "select";
+   procedure On_Select
       (Self  : not null access Gtk_Menu_Item_Record;
        Call  : Cb_Gtk_Menu_Item_Void;
        After : Boolean := False);
-   procedure On_Gtk_Select
+   procedure On_Select
       (Self  : not null access Gtk_Menu_Item_Record;
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;

@@ -389,12 +389,12 @@ package Gtk.Gesture is
    --  Gesture must forget everything about Sequence as a reaction to this
    --  signal.
 
-   Signal_The_End : constant Glib.Signal_Name := "end";
-   procedure On_The_End
+   Signal_End : constant Glib.Signal_Name := "end";
+   procedure On_End
       (Self  : not null access Gtk_Gesture_Record;
        Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
        After : Boolean := False);
-   procedure On_The_End
+   procedure On_End
       (Self  : not null access Gtk_Gesture_Record;
        Call  : Cb_GObject_Gdk_Event_Sequence_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;

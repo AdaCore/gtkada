@@ -669,6 +669,33 @@ package body Gtk.Gesture is
       Connect_Slot (Self, "cancel" & ASCII.NUL, Call, After, Slot);
    end On_Cancel;
 
+   ------------
+   -- On_End --
+   ------------
+
+   procedure On_End
+      (Self  : not null access Gtk_Gesture_Record;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "end" & ASCII.NUL, Call, After);
+   end On_End;
+
+   ------------
+   -- On_End --
+   ------------
+
+   procedure On_End
+      (Self  : not null access Gtk_Gesture_Record;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "end" & ASCII.NUL, Call, After, Slot);
+   end On_End;
+
    -------------------------------
    -- On_Sequence_State_Changed --
    -------------------------------
@@ -695,33 +722,6 @@ package body Gtk.Gesture is
    begin
       Connect_Slot (Self, "sequence-state-changed" & ASCII.NUL, Call, After, Slot);
    end On_Sequence_State_Changed;
-
-   ----------------
-   -- On_The_End --
-   ----------------
-
-   procedure On_The_End
-      (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
-       After : Boolean := False)
-   is
-   begin
-      Connect (Self, "end" & ASCII.NUL, Call, After);
-   end On_The_End;
-
-   ----------------
-   -- On_The_End --
-   ----------------
-
-   procedure On_The_End
-      (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False)
-   is
-   begin
-      Connect_Slot (Self, "end" & ASCII.NUL, Call, After, Slot);
-   end On_The_End;
 
    ---------------
    -- On_Update --
