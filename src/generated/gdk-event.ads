@@ -286,6 +286,11 @@ package Gdk.Event is
    pragma Convention (C, Gdk_Owner_Change);
    --  Specifies why a selection ownership was changed.
 
+   type Gdk_Event_Sequence is new Glib.C_Proxy;
+   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence;
+   pragma Inline (From_Object_Free);
+
+
    type Gdk_Event_Any is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
@@ -608,7 +613,7 @@ package Gdk.Event is
       Y : Gdouble;
       Axes : access Gdouble;
       State : Gdk.Types.Gdk_Modifier_Type;
-      Sequence : System.Address;
+      Sequence : Gdk_Event_Sequence;
       Emulating_Pointer : Boolean;
       Device : System.Address;
       X_Root : Gdouble;
@@ -627,11 +632,6 @@ package Gdk.Event is
    --  number of Gdk.Event.Touch_Update events, and ends with a
    --  Gdk.Event.Touch_End (or Gdk.Event.Touch_Cancel) event. With multitouch
    --  devices, there may be several active sequences at the same time.
-
-   type Gdk_Event_Sequence is new Glib.C_Proxy;
-   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence;
-   pragma Inline (From_Object_Free);
-
 
    type Gdk_Event_Grab_Broken is record
       The_Type : Gdk_Event_Type;
@@ -903,7 +903,7 @@ package Gdk.Event is
    --  "x_win": location to put event window x coordinate
    --  "y_win": location to put event window y coordinate
 
-   function Get_Event_Sequence (Event : Gdk_Event) return System.Address;
+   function Get_Event_Sequence (Event : Gdk_Event) return Gdk_Event_Sequence;
    pragma Import (C, Get_Event_Sequence, "gdk_event_get_event_sequence");
    --  If Event if of type Gdk.Event.Touch_Begin, Gdk.Event.Touch_Update,
    --  Gdk.Event.Touch_End or Gdk.Event.Touch_Cancel, returns the

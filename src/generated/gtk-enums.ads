@@ -292,6 +292,31 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Page_Set);
    --  See also gtk_print_job_set_page_set.
 
+   type Gtk_Pan_Direction is (
+      Pan_Direction_Left,
+      Pan_Direction_Right,
+      Pan_Direction_Up,
+      Pan_Direction_Down);
+   pragma Convention (C, Gtk_Pan_Direction);
+   --  Describes the panning direction of a Gtk.Gesture_Pan.Gtk_Gesture_Pan
+
+   type Gtk_Propagation_Phase is (
+      Phase_None,
+      Phase_Capture,
+      Phase_Bubble,
+      Phase_Target);
+   pragma Convention (C, Gtk_Propagation_Phase);
+   --  Describes the stage at which events are fed into a
+   --  Gtk.Event_Controller.Gtk_Event_Controller.
+
+   type Gtk_Event_Sequence_State is (
+      Event_Sequence_None,
+      Event_Sequence_Claimed,
+      Event_Sequence_Denied);
+   pragma Convention (C, Gtk_Event_Sequence_State);
+   --  Describes the state of a Gdk.Event.Gdk_Event_Sequence in a
+   --  Gtk.Gesture.Gtk_Gesture.
+
    type Gtk_Level_Bar_Mode is (
       Level_Bar_Mode_Continuous,
       Level_Bar_Mode_Discrete);
@@ -697,6 +722,18 @@ package Gtk.Enums is
    package Gtk_Page_Set_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Page_Set);
    type Property_Gtk_Page_Set is new Gtk_Page_Set_Properties.Property;
+
+   package Gtk_Pan_Direction_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Pan_Direction);
+   type Property_Gtk_Pan_Direction is new Gtk_Pan_Direction_Properties.Property;
+
+   package Gtk_Propagation_Phase_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Propagation_Phase);
+   type Property_Gtk_Propagation_Phase is new Gtk_Propagation_Phase_Properties.Property;
+
+   package Gtk_Event_Sequence_State_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Event_Sequence_State);
+   type Property_Gtk_Event_Sequence_State is new Gtk_Event_Sequence_State_Properties.Property;
 
    package Gtk_Level_Bar_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Level_Bar_Mode);

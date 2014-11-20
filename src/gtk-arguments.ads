@@ -158,6 +158,8 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Visibility);
    function Unchecked_To_Gdk_Event_Window_State
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Window_State);
+   function Unchecked_To_Gdk_Event_Sequence
+     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Sequence);
    function Unchecked_To_Gtk_Movement_Step
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Movement_Step);
    function Unchecked_To_Gtk_Drag_Result
@@ -170,6 +172,10 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Type);
    function Unchecked_To_Gtk_Text_Direction
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Text_Direction);
+   function Unchecked_To_Gtk_Pan_Direction
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Pan_Direction);
+   function Unchecked_To_Gtk_Event_Sequence_State
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
    function Unchecked_To_Gtk_Direction_Type
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Direction_Type);
    function Unchecked_To_Gtk_Widget_Help_Type

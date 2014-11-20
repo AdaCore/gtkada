@@ -2240,7 +2240,7 @@ end "+";""" % self._subst,
                     section.add(impl["body"], in_spec=False)
 
     def add_list_binding(self, section, adaname, ctype, singleList):
-        """Generate a list instantiation"""
+        """Generate a list instance"""
 
         conv = "%s->Address" % ctype.ada
         decl = ""
@@ -2255,11 +2255,10 @@ end "+";""" % self._subst,
             decl += base + ';\n'
             body += base + " is\nbegin\n"
 
-            if self.is_gobject or self.is_boxed:
-                body += "return Get_Object (R);"
-            else:
-                # a proxy
+            if isinstance(ctype, Proxy):
                 body += "return Glib.To_Address (Glib.C_Proxy (R));"
+            else:
+                body += "return Get_Object (R);"
 
             body += "\nend Convert;\n\n"
 
@@ -2272,18 +2271,19 @@ end "+";""" % self._subst,
             body += "function Convert (R : System.Address) return %s is\n" % (
                 ctype.ada)
 
-            if isinstance(ctype, Tagged) or self.is_boxed:
+            if isinstance(ctype, Proxy):
+                body += "begin\nreturn %s" % ctype.ada \
+                    + "(Glib.C_Proxy'(Glib.To_Proxy (R)));"
+
+            elif isinstance(ctype, Tagged):
                 # Not a GObject ?
                 body += "begin\nreturn From_Object(R);"
 
-            elif self.is_gobject:
+            else:
                 body += "Stub : %s_Record;" % ctype.ada
                 body += "begin\n"
                 body += "return %s (Glib.Object.Get_User_Data (R, Stub));" % (
                     ctype.ada)
-            else:
-                body += "begin\nreturn %s" % ctype.ada \
-                    + "(Glib.C_Proxy'(Glib.To_Proxy (R)));"
 
             body += "\nend Convert;"
 

@@ -28,6 +28,13 @@ with Glib.Object;
 
 package body Gdk.Event is
 
+   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence is
+      Result : constant Gdk_Event_Sequence := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object_Free (B : access Gdk_Event_Any) return Gdk_Event_Any is
       Result : constant Gdk_Event_Any := B.all;
    begin
@@ -149,13 +156,6 @@ package body Gdk.Event is
 
    function From_Object_Free (B : access Gdk_Event_Touch) return Gdk_Event_Touch is
       Result : constant Gdk_Event_Touch := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
-   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence is
-      Result : constant Gdk_Event_Sequence := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;

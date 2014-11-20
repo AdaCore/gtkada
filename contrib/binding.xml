@@ -2857,6 +2857,9 @@ __PRE__
      <enum ctype="GtkPackType"/>
      <enum ctype="GtkPageOrientation"/>
      <enum ctype="GtkPageSet"/>
+     <enum ctype="GtkPanDirection"/>
+     <enum ctype="GtkPropagationPhase"/>
+     <enum ctype="GtkEventSequenceState"/>
      <enum ctype="GtkLevelBarMode"/>
      <enum ctype="GtkPathPriorityType"/>
      <enum ctype="GtkPathType"/>
@@ -4073,6 +4076,7 @@ creating a tag.
      <enum ctype="GdkWindowState" prefix="GDK_"/>
      <enum ctype="GdkSettingAction" prefix="GDK_"/>
      <enum ctype="GdkOwnerChange" prefix="GDK_"/>
+     <record ctype="GdkEventSequence"/>
      <record ctype="GdkEventAny"/>
      <record ctype="GdkEventButton"/>
      <record ctype="GdkEventExpose"/>
@@ -4091,7 +4095,6 @@ creating a tag.
      <record ctype="GdkEventWindowState"/>
      <record ctype="GdkEventSetting"/>
      <record ctype="GdkEventTouch"/>
-     <record ctype="GdkEventSequence"/>
      <record ctype="GdkEventGrabBroken"/>
 
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
@@ -7943,6 +7946,13 @@ package body Generic_Set is
    <package id='GtkListBox'>
       <method id='gtk_list_box_get_selected_rows' return='ListBoxRowList'>
       </method>
+   </package>
+
+   <package id='GtkGesture'>
+      <list ctype='GtkGesture' ada='Gesture_List'/>
+      <list ctype='GdkEventSequence' ada='Gdk_Event_Sequence_List'/>
+      <method id='gtk_gesture_get_group' return='GestureList'/>
+      <method id='gtk_gesture_get_sequences' return='GdkEventSequenceList'/>
    </package>
 
 

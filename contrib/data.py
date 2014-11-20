@@ -332,6 +332,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkEntryCompletion",
            "--GtkEntryIconAccessible",  # We do not support atk
            "GtkEventBox",
+           "GtkEventController",
            "GtkExpander",
            "--GtkExpanderAccessible",  # We do not support atk
            "GtkFileChooserButton",
@@ -350,6 +351,15 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkFontSelectionDialog",
            "GtkFrame",
            "--GtkFrameAccessible",  # We do not support atk
+           "GtkGesture",
+           "GtkGestureDrag",
+           "GtkGestureLongPress",
+           "GtkGestureMultiPress",
+           "GtkGesturePan",
+           "GtkGestureRotate",
+           "GtkGestureSingle",
+           "GtkGestureSwipe",
+           "GtkGestureZoom",
            "GtkGradient",
            "GtkGrid",
            "GtkHandleBox",
@@ -591,6 +601,7 @@ naming.girname_to_ctype = {
     "Gdk.EventKey":        "GdkEventKey*",
     "Gdk.EventCrossing":   "GdkEventCrossing*",
     "Gdk.EventScroll":     "GdkEventScroll*",
+    "Gdk.EventSequence":   "GdkEventSequence*",
     "Gdk.EventWindowState": "GdkEventWindowState*",
     "Gdk.EventVisibility":  "GdkEventVisibility*",
     "Gdk.EventSelection":   "GdkEventSelection*",
@@ -721,6 +732,9 @@ naming.type_exceptions = {
     "GVariantType*":     Proxy("Glib.Variant.Gvariant_Type"),
     "GVariantIter":      Proxy("Glib.Variant.Gvariant_Iter"),
 
+    # Proper generation of lists
+    "GdkEventSequence":  Proxy("Gdk.Event.Gdk_Event_Sequence"),
+
     # Specific to this binding generator (referenced from binding.xml)
     "VisualList":  List("Gdk.Visual.Gdk_Visual_List.Glist"),
     "ObjectList":  List("Glib.Object.Object_Simple_List.Glist"),
@@ -782,6 +796,4 @@ naming.type_exceptions = {
     "GdkCursor*":        Proxy("Gdk.Gdk_Cursor"),
     "GdkWindow":         Proxy("Gdk.Gdk_Window"),
     "GdkWindow*":        Proxy("Gdk.Gdk_Window"),
-
-    "GdkEventSequence*": Proxy("System.Address"),
 }
