@@ -1,3 +1,4 @@
+/*
 .notebook tab {
    background-image: -gtk-gradient (linear, left top, left bottom, from(#999), to(#fff));
 }
@@ -10,9 +11,11 @@ GtkNotebook .active {
 GtkTreeView *:hover {
    color: #009900;
 }
+
 .notebook :active {
    background-image:none;
 }
+*/
 
 /* For the stack switch, to call attention to a child */
 .needs-attention {

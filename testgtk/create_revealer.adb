@@ -51,6 +51,8 @@ package body Create_Revealer is
       Revealer : Gtk_Revealer;
       Ent      : Gtk_Entry;
    begin
+      Frame.Set_Label ("Revealer");
+
       Gtk_New (Box);
       Frame.Add (Box);
 

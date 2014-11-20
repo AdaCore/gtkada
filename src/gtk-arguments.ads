@@ -124,6 +124,9 @@ package Gtk.Arguments is
      (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA;
    function Unchecked_To_Gdk_Key_Type
      (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type;
+   function Unchecked_To_Gdk_Event_Sequence
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Gdk.Event.Gdk_Event_Sequence;
    function Unchecked_To_Gdk_Event_Button
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Button);
    function Unchecked_To_Gdk_Event_Owner_Change
@@ -158,8 +161,6 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Visibility);
    function Unchecked_To_Gdk_Event_Window_State
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Window_State);
-   function Unchecked_To_Gdk_Event_Sequence
-     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Sequence);
    function Unchecked_To_Gtk_Movement_Step
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Movement_Step);
    function Unchecked_To_Gtk_Drag_Result
