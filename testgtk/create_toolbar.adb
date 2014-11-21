@@ -24,6 +24,7 @@
 with Glib.Error;   use Glib.Error;
 with Glib.Object;  use Glib.Object;
 with Gdk.Pixbuf;   use Gdk.Pixbuf;
+with Gtk.Box;      use Gtk.Box;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.GEntry;   use Gtk.GEntry;
 with Gtk.Image;    use Gtk.Image;
@@ -176,19 +177,32 @@ package body Create_Toolbar is
       Gtk_New (Separator);
       Insert (Toolbar, Separator);
 
-      Gtk_New (Button, New_Pixmap ("test.xpm"), "Dummy");
+      --  Examples on how to insert buttons using named icons.
+      --  Those icons are looked up in the icon theme (see Gtk_Icon_Theme)
+      --  Valid names correspond to the base file names for files any of
+      --  the subdirectories of the icon theme, for instance in
+      --    <prefix>/share/icons/*/
+      --  The theme will automatically use different variants of the icon,
+      --  for instance depending on left-to-right or right-to-left writting,
+      --  or based on the color theme.
+
+      Gtk_New (Button);
+      Button.Set_Icon_Name ("media-record");
       Insert (Toolbar, Button);
 
-      Gtk_New (Button, New_Pixmap ("test.xpm"), "Dummy");
+      Gtk_New (Button);
+      Button.Set_Icon_Name ("media-playback-pause");
       Insert (Toolbar, Button);
 
       Gtk_New (Separator);
       Insert (Toolbar, Separator);
 
-      Gtk_New (Button, New_Pixmap ("test.xpm"), "Dummy");
+      Gtk_New (Button);
+      Button.Set_Icon_Name ("media-playback-start");
       Insert (Toolbar, Button);
 
-      Gtk_New (Button, New_Pixmap ("test.xpm"), "Dummy");
+      Gtk_New (Button);
+      Button.Set_Icon_Name ("media-playback-stop");
       Insert (Toolbar, Button);
 
    end Make_Toolbar;
@@ -199,11 +213,16 @@ package body Create_Toolbar is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Toolbar : Gtk_Toolbar;
+      Box     : Gtk_Box;
    begin
       Set_Label (Frame, "Toolbar");
+
+      Gtk_New_Vbox (Box, Homogeneous => False);
+      Frame.Add (Box);
+
       Make_Toolbar (Toolbar, True);
-      Set_Orientation (Toolbar, Orientation_Vertical);
-      Add (Frame, Toolbar);
+      Set_Orientation (Toolbar, Orientation_Horizontal);
+      Box.Pack_Start (Toolbar, Fill => False, Expand => False);
 
       Show_All (Frame);
    end Run;
