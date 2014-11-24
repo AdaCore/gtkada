@@ -134,6 +134,9 @@ package body Gtkada.MDI is
    --  Windows the later seems to be set to 0, and thus we can't change a
    --  notebook page by clicking on its tab without splitting the notebook
 
+   Icon_Size_In_Title : constant := 8;
+   Icon_Size_In_Tabs  : constant := 8;
+
    MDI_Class_Record        : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
    Child_Class_Record      : aliased Glib.Object.Ada_GObject_Class :=
@@ -1160,12 +1163,17 @@ package body Gtkada.MDI is
             C := MDI_Child (Get_Data (D.Current_Child));
             Set_Text (D.Label, Get_Short_Title (C));
 
-            Scaled := C.Title_Icon.Get;   --  still owned by Title_Icon
-            Set_Child_Visible (D.Icon, Scaled /= null);
-            if Scaled /= null then
-               Scaled := Scale_Simple (Scaled, 32, 32);
-               Gtk.Image.Set (D.Icon, Scaled);
-               Unref (Scaled);
+            if C.Icon_Name /= null then
+               D.Icon.Set_From_Icon_Name
+                  (C.Icon_Name.all, Size => Icon_Size_Menu);
+            elsif C.Title_Icon /= null then
+               Scaled := C.Title_Icon.Get;   --  still owned by Title_Icon
+               Set_Child_Visible (D.Icon, Scaled /= null);
+               if Scaled /= null then
+                  Scaled := Scale_Simple (Scaled, 32, 32);
+                  Gtk.Image.Set (D.Icon, Scaled);
+                  Unref (Scaled);
+               end if;
             end if;
          end;
       end if;
@@ -1841,6 +1849,7 @@ package body Gtkada.MDI is
       end if;
 
       Unref (C.Title_Icon);
+      Free (C.Icon_Name);
       Free (C.Title);
       Free (C.Short_Title);
       Free (C.XML_Node_Name);
@@ -2945,6 +2954,7 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf) is
    begin
+      Free (Child.Icon_Name);
       Child.Title_Icon.Set (Icon);
       if Icon /= null then
          Child.Title_Icon.Show;
@@ -2968,6 +2978,40 @@ package body Gtkada.MDI is
          Get_Object (Child));
    end Set_Icon;
 
+   -------------------
+   -- Set_Icon_Name --
+   -------------------
+
+   procedure Set_Icon_Name
+     (Child     : access MDI_Child_Record;
+      Icon_Name : String) is
+   begin
+      Free (Child.Icon_Name);
+      Child.Icon_Name := new String'(Icon_Name);
+
+      if Icon_Name /= "" then
+         Child.Title_Icon.Show;
+         Child.Title_Icon.Set_From_Icon_Name (Icon_Name, Icon_Size_In_Title);
+      else
+         Child.Title_Icon.Hide;
+      end if;
+
+      if Child.Tab_Icon /= null then
+         if Icon_Name /= "" then
+            Child.Tab_Icon.Show;
+            Child.Tab_Icon.Set_From_Icon_Name (Icon_Name, Icon_Size_In_Tabs);
+         else
+            Child.Tab_Icon.Hide;
+         end if;
+      end if;
+
+      Update_Menu_Item (Child);
+      Emit_By_Name_Child
+        (Get_Object (Child.MDI),
+         String (Signal_Child_Icon_Changed) & ASCII.NUL,
+         Get_Object (Child));
+   end Set_Icon_Name;
+
    --------------
    -- Get_Icon --
    --------------
@@ -2978,6 +3022,21 @@ package body Gtkada.MDI is
    begin
       return Child.Title_Icon.Get;
    end Get_Icon;
+
+   -------------------
+   -- Get_Icon_Name --
+   -------------------
+
+   function Get_Icon_Name
+     (Child : access MDI_Child_Record) return String
+   is
+   begin
+      if Child.Icon_Name = null then
+         return "";
+      else
+         return Child.Icon_Name.all;
+      end if;
+   end Get_Icon_Name;
 
    ---------------
    -- Set_Title --
@@ -4341,7 +4400,12 @@ package body Gtkada.MDI is
 
       procedure Add_Icon is
       begin
-         Gtk_New (Child.Tab_Icon, Gdk_Pixbuf'(Child.Title_Icon.Get));
+         if Child.Icon_Name = null then
+            Gtk_New (Child.Tab_Icon);
+         else
+            Gtk_New_From_Icon_Name
+               (Child.Tab_Icon, Child.Icon_Name.all, Icon_Size_In_Tabs);
+         end if;
          Box.Pack_Start (Child.Tab_Icon, Expand => False, Padding => 1);
       end Add_Icon;
 

@@ -381,6 +381,10 @@ package Gtkada.MDI is
    procedure Set_Icon
      (Child : access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf);
+   pragma Obsolescent (Set_Icon);
+   procedure Set_Icon_Name
+     (Child     : access MDI_Child_Record;
+      Icon_Name : String);
    --  Associate an icon with Child. This icon is visible in the title bar, the
    --  notebook tabs, the Window menu and the interactive selection dialog.
    --  The icon is updated dynamically on the screen.
@@ -389,6 +393,9 @@ package Gtkada.MDI is
 
    function Get_Icon
      (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Get_Icon);
+   function Get_Icon_Name
+     (Child : access MDI_Child_Record) return String;
    --  Returns the icon associated with Child. The returned pixbuf is owned
    --  by the MDI and must not be freed by the caller.
 
@@ -1070,6 +1077,8 @@ private
       Tab_Label     : Gtk.Label.Gtk_Label;
       Tab_Icon      : Gtk.Image.Gtk_Image;
       --  label used when child is in a notebook, null if not in a notebook
+
+      Icon_Name : GNAT.Strings.String_Access;
    end record;
 
    type Child_Iterator (Group_By_Notebook : Boolean := False) is record
