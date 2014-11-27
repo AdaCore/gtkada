@@ -991,6 +991,20 @@ package Gtk.Style_Context is
    --  "x": X position for the Pixbuf
    --  "y": Y position for the Pixbuf
 
+   procedure Render_Icon_Surface
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       Surface : Cairo.Cairo_Surface;
+       X       : Gdouble;
+       Y       : Gdouble);
+   --  Renders the icon in Surface at the specified X and Y coordinates.
+   --  Since: gtk+ 3.10
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "cr": a cairo_t
+   --  "surface": a cairo_surface_t containing the icon to draw
+   --  "x": X position for the Icon
+   --  "y": Y position for the Incon
+
    ----------------
    -- Properties --
    ----------------

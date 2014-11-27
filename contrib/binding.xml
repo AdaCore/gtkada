@@ -3342,6 +3342,7 @@ __PRE__
      <function id="gtk_render_activity" />
      <!--  <function id="gtk_render_icon_pixbuf" /> -->
      <function id="gtk_render_icon" />
+     <function id="gtk_render_icon_surface" />
      <extra>
        <spec>
    function Get_Style_Context

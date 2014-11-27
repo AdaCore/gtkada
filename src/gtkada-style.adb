@@ -41,6 +41,7 @@ with Gdk.Types;          use Gdk.Types;
 with Gdk.Window;         use Gdk;
 
 with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Icon_Theme;     use Gtk.Icon_Theme;
 with Gtk.Style_Context;  use Gtk.Style_Context;
 with Gtk.Style;          use Gtk.Style;
 with Gtk.Widget;         use Gtk.Widget;
@@ -651,6 +652,70 @@ package body Gtkada.Style is
       Gdk.Cairo.Set_Source_Pixbuf (Cr, Pixbuf, Gdouble (X), Gdouble (Y));
       Cairo.Paint (Cr);
    end Draw_Pixbuf;
+
+   ----------------------------
+   -- Draw_Pixbuf_With_Scale --
+   ----------------------------
+
+   procedure Draw_Pixbuf_With_Scale
+      (Cr     : Cairo.Cairo_Context;
+       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf;
+       X, Y   : Glib.Gdouble;
+       Widget : access Gtk_Widget_Record'Class := null)
+   is
+      Scale : Gint;
+      Surf  : Cairo_Surface;
+   begin
+      Save (Cr);
+
+      if Widget /= null then
+         Scale := Widget.Get_Scale_Factor;
+         Surf := Create_From_Pixbuf
+            (Pixbuf, Scale => Scale, For_Window => Widget.Get_Window);
+         Get_Style_Context (Widget).Render_Icon_Surface (Cr, Surf, X, Y);
+      else
+         Surf := Create_From_Pixbuf
+            (Pixbuf, Scale => 1, For_Window => null);
+         Set_Source_Surface (Cr, Surf, X, Y);
+         Cairo.Fill (Cr);
+      end if;
+
+      Surface_Destroy (Surf);
+      Restore (Cr);
+   end Draw_Pixbuf_With_Scale;
+
+   ----------------------------
+   -- Draw_Pixbuf_With_Scale --
+   ----------------------------
+
+   procedure Draw_Pixbuf_With_Scale
+      (Cr        : Cairo.Cairo_Context;
+       Icon_Name : String;
+       X, Y      : Glib.Gdouble;
+       Size      : Glib.Gint;
+       Widget    : access Gtk_Widget_Record'Class := null)
+   is
+      use Gdk.Pixbuf;
+      P     : Gdk.Pixbuf.Gdk_Pixbuf;
+      Scale : Gint;
+   begin
+      if Widget /= null then
+         Scale := Widget.Get_Scale_Factor;
+      else
+         Scale := 1;
+      end if;
+
+      P := Gtk.Icon_Theme.Get_Default.Load_Icon_For_Scale
+         (Icon_Name,
+          Size  => Size,
+          Scale => Scale,
+          Flags => 0,
+          Error => null);
+      if P /= null then
+         Draw_Pixbuf_With_Scale (Cr, P, X, Y, Widget);
+         Gdk.Pixbuf.Unref (P);
+      end if;
+   end Draw_Pixbuf_With_Scale;
 
    --------------
    -- Snapshot --

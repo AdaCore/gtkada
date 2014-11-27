@@ -58,6 +58,23 @@ package body Gdk.Cairo is
       Internal (Cr, Get_Object (Pixbuf), Pixbuf_X, Pixbuf_Y);
    end Set_Source_Pixbuf;
 
+   ------------------------
+   -- Create_From_Pixbuf --
+   ------------------------
+
+   function Create_From_Pixbuf
+      (Pixbuf  : Gdk_Pixbuf;
+       Scale   : Gint;
+       For_Window : Gdk.Gdk_Window := null) return Cairo_Surface
+   is
+      function Internal (Pixbuf  : System.Address;
+                         Scale   : Gint;
+                         Win     : Gdk_Window) return Cairo_Surface;
+      pragma Import (C, Internal, "gdk_cairo_surface_create_from_pixbuf");
+   begin
+      return Internal (Get_Object (Pixbuf), Scale, For_Window);
+   end Create_From_Pixbuf;
+
    ---------------------
    -- Set_Source_RGBA --
    ---------------------

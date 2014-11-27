@@ -3583,6 +3583,23 @@ package body Gtkada.Canvas_View is
       return R;
    end Gtk_New_Image;
 
+   -------------------
+   -- Gtk_New_Image --
+   -------------------
+
+   function Gtk_New_Image
+     (Style  : Gtkada.Style.Drawing_Style;
+      Icon_Name : String;
+      Allow_Rescale : Boolean := True;
+      Width, Height : Model_Coordinate := -1.0)
+      return Image_Item
+   is
+      R : constant Image_Item := new Image_Item_Record;
+   begin
+      Initialize_Image (R, Style, Icon_Name, Allow_Rescale, Width, Height);
+      return R;
+   end Gtk_New_Image;
+
    ----------------------
    -- Initialize_Image --
    ----------------------
@@ -3601,6 +3618,23 @@ package body Gtkada.Canvas_View is
       Force_Size (Self, Width, Height);
    end Initialize_Image;
 
+   ----------------------
+   -- Initialize_Image --
+   ----------------------
+
+   procedure Initialize_Image
+     (Self   : not null access Image_Item_Record'Class;
+      Style  : Gtkada.Style.Drawing_Style;
+      Icon_Name  : String;
+      Allow_Rescale : Boolean := True;
+      Width, Height : Model_Coordinate := -1.0) is
+   begin
+      Self.Style := Style;
+      Self.Icon_Name := new String'(Icon_Name);
+      Self.Allow_Rescale := Allow_Rescale;
+      Force_Size (Self, Width, Height);
+   end Initialize_Image;
+
    -------------
    -- Destroy --
    -------------
@@ -3613,6 +3647,7 @@ package body Gtkada.Canvas_View is
          Unref (Self.Image);
          Self.Image := null;
       end if;
+      Free (Self.Icon_Name);
       Container_Item_Record (Self.all).Destroy (In_Model);  --  inherited
    end Destroy;
 
@@ -3624,47 +3659,40 @@ package body Gtkada.Canvas_View is
      (Self    : not null access Image_Item_Record;
       Context : Draw_Context)
    is
-      P    : Gdk_Pixbuf;
-      W, H : Gdouble;
+      P : Gdk_Pixbuf;
+      W, H  : Gdouble;
    begin
       Self.Style.Draw_Rect (Context.Cr, (0.0, 0.0), Self.Width, Self.Height);
 
-      Save (Context.Cr);
-      Rectangle
-        (Context.Cr,
-         X      => 0.0,
-         Y      => 0.0,
-         Width  => Self.Width,
-         Height => Self.Height);
-      Set_Source_RGBA (Context.Cr, (1.0, 0.0, 0.0, 1.0));
+      if Self.Icon_Name /= null then
+         W := Gdouble'Min (Self.Width, Self.Height);
+         Draw_Pixbuf_With_Scale
+            (Context.Cr,
+             Self.Icon_Name.all,
+             Size => Gint (W),
+             X => (Self.Width - W) / 2.0,
+             Y => (Self.Height - W) / 2.0,
+             Widget => Context.View);
 
-      W := Gdouble (Get_Width (Self.Image)) - Self.Width;
-      H := Gdouble (Get_Height (Self.Image)) - Self.Height;
-
-      if Self.Allow_Rescale and then
-         (abs (W) >= 2.0 or else abs (H) >= 2.0)
-      then
-         P := Scale_Simple
-           (Self.Image,
-            Dest_Width  => Gint (Self.Width),
-            Dest_Height => Gint (Self.Height));
-         Set_Source_Pixbuf
-           (Context.Cr,
-            P,
-            Pixbuf_X => 0.0,
-            Pixbuf_Y => 0.0);
-         Unref (P);
       else
-         Set_Source_Pixbuf
-           (Context.Cr,
-            Self.Image,
-            Pixbuf_X => W / 2.0,
-            Pixbuf_Y => H / 2.0);
+         W := Gdouble (Get_Width (Self.Image)) - Self.Width;
+         H := Gdouble (Get_Height (Self.Image)) - Self.Height;
+
+         if Self.Allow_Rescale and then
+            (abs (W) >= 2.0 or else abs (H) >= 2.0)
+         then
+            P := Scale_Simple
+              (Self.Image,
+               Dest_Width  => Gint (Self.Width),
+               Dest_Height => Gint (Self.Height));
+            Draw_Pixbuf_With_Scale
+              (Context.Cr, P, 0.0, 0.0, Context.View);
+            Unref (P);
+         else
+            Draw_Pixbuf_With_Scale
+              (Context.Cr, Self.Image, W / 2.0, H / 2.0, Context.View);
+         end if;
       end if;
-
-      Cairo.Fill (Context.Cr);
-
-      Restore (Context.Cr);
    end Draw;
 
    ------------------
@@ -3677,10 +3705,12 @@ package body Gtkada.Canvas_View is
    is
    begin
       Container_Item_Record (Self.all).Size_Request (Context);  --  inherited
-      Self.Width := Model_Coordinate'Max
-        (Self.Width, Gdouble (Get_Width (Self.Image)));
-      Self.Height := Model_Coordinate'Max
-        (Self.Height, Gdouble (Get_Height (Self.Image)));
+      if Self.Image /= null then
+         Self.Width := Model_Coordinate'Max
+           (Self.Width, Gdouble (Get_Width (Self.Image)));
+         Self.Height := Model_Coordinate'Max
+           (Self.Height, Gdouble (Get_Height (Self.Image)));
+      end if;
    end Size_Request;
 
    ------------------

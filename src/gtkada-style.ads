@@ -216,12 +216,33 @@ package Gtkada.Style is
      (Cr     : Cairo.Cairo_Context;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf;
       X, Y   : Glib.Gint);
+   pragma Obsolescent (Draw_Pixbuf, "Use Draw_Pixbuf_With_Scale instead");
    --  Draws a pixbuf at coordinate X, Y
    --
    --  Note that Gdk_Pixmap or Gdk_Bitmap are not supported, as those
    --  are server-side images, so depend on a surface attached to a screen.
    --  As a result, those would not be drawn on a non-screen surface (such as
    --  an internal Image_Surface).
+
+   procedure Draw_Pixbuf_With_Scale
+      (Cr     : Cairo.Cairo_Context;
+       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf;
+       X, Y   : Glib.Gdouble;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null);
+   procedure Draw_Pixbuf_With_Scale
+      (Cr        : Cairo.Cairo_Context;
+       Icon_Name : String;
+       X, Y      : Glib.Gdouble;
+       Size      : Glib.Gint;
+       Widget    : access Gtk.Widget.Gtk_Widget_Record'Class := null);
+   --  Draw the pixbuf at the specified coordinates.
+   --  This takes into account the scale factor on the screen, so that the
+   --  image is properly sized on hi-dpi (retina) displays.
+   --  The pixbuf must have been created with the proper scale factor as well,
+   --  using for instance Gtk.Icon_Theme.Load_Icon_For_Scale. It is often more
+   --  convenient to pass the name of the icon, as found in the icon theme,
+   --  and let gtk+ create the pixbuf automatically.
+   --  The widget is used to compute the appropriate scale factor.
 
    --------------------
    -- Drawing styles --

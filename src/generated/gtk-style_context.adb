@@ -1187,6 +1187,28 @@ package body Gtk.Style_Context is
       Internal (Get_Object (Context), Cr, Get_Object (Pixbuf), X, Y);
    end Render_Icon;
 
+   -------------------------
+   -- Render_Icon_Surface --
+   -------------------------
+
+   procedure Render_Icon_Surface
+      (Context : not null access Gtk_Style_Context_Record'Class;
+       Cr      : Cairo.Cairo_Context;
+       Surface : Cairo.Cairo_Surface;
+       X       : Gdouble;
+       Y       : Gdouble)
+   is
+      procedure Internal
+         (Context : System.Address;
+          Cr      : Cairo.Cairo_Context;
+          Surface : Cairo.Cairo_Surface;
+          X       : Gdouble;
+          Y       : Gdouble);
+      pragma Import (C, Internal, "gtk_render_icon_surface");
+   begin
+      Internal (Get_Object (Context), Cr, Surface, X, Y);
+   end Render_Icon_Surface;
+
    -------------------
    -- Render_Layout --
    -------------------
