@@ -30,30 +30,47 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;                   use Gdk;
-with Gdk.Event;             use Gdk.Event;
-with Gdk.Rectangle;         use Gdk.Rectangle;
-with Glib;                  use Glib;
-with Glib.Object;           use Glib.Object;
-with Glib.Properties;       use Glib.Properties;
-with Glib.Types;            use Glib.Types;
-with Gtk.Adjustment;        use Gtk.Adjustment;
-with Gtk.Buildable;         use Gtk.Buildable;
-with Gtk.Container;         use Gtk.Container;
-with Gtk.Enums;             use Gtk.Enums;
-with Gtk.Scrollable;        use Gtk.Scrollable;
-with Gtk.Text_Attributes;   use Gtk.Text_Attributes;
-with Gtk.Text_Buffer;       use Gtk.Text_Buffer;
-with Gtk.Text_Child_Anchor; use Gtk.Text_Child_Anchor;
-with Gtk.Text_Iter;         use Gtk.Text_Iter;
-with Gtk.Text_Mark;         use Gtk.Text_Mark;
-with Gtk.Widget;            use Gtk.Widget;
-with Pango.Tabs;            use Pango.Tabs;
+with Cairo;                   use Cairo;
+with Gdk;                     use Gdk;
+with Gdk.Event;               use Gdk.Event;
+with Gdk.Rectangle;           use Gdk.Rectangle;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Adjustment;          use Gtk.Adjustment;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Container;           use Gtk.Container;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Scrollable;          use Gtk.Scrollable;
+with Gtk.Text_Attributes;     use Gtk.Text_Attributes;
+with Gtk.Text_Buffer;         use Gtk.Text_Buffer;
+with Gtk.Text_Child_Anchor;   use Gtk.Text_Child_Anchor;
+with Gtk.Text_Iter;           use Gtk.Text_Iter;
+with Gtk.Text_Mark;           use Gtk.Text_Mark;
+with Gtk.Widget;              use Gtk.Widget;
+with Pango.Tabs;              use Pango.Tabs;
 
 package Gtk.Text_View is
 
    type Gtk_Text_View_Record is new Gtk_Container_Record with null record;
    type Gtk_Text_View is access all Gtk_Text_View_Record'Class;
+
+   type Gtk_Text_View_Layer is (
+      Text_View_Layer_Below,
+      Text_View_Layer_Above);
+   pragma Convention (C, Gtk_Text_View_Layer);
+   --  Used to reference the layers of Gtk.Text_View.Gtk_Text_View for the
+   --  purpose of customized drawing with the ::draw_layer vfunc.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Text_View_Layer_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Text_View_Layer);
+   type Property_Gtk_Text_View_Layer is new Gtk_Text_View_Layer_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -1169,6 +1186,27 @@ package Gtk.Text_View is
      (Interf : Gtk.Scrollable.Gtk_Scrollable)
    return Gtk_Text_View
    renames Implements_Gtk_Scrollable.To_Object;
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Draw_Layer is access procedure
+     (View  : System.Address;
+      Layer : Gtk_Text_View_Layer;
+      Cr    : Cairo.Cairo_Context);
+   pragma Convention (C, Virtual_Draw_Layer);
+   --  The draw_layer virtual function is called before and after the text
+   --  view is drawing its own text. Applications can override this vfunc in a
+   --  subclass to draw customized content underneath or above the text. Since:
+   --  3.14
+
+   subtype Text_View_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Draw_Layer
+     (Self    : Glib.Object.GObject_Class;
+      Handler : Virtual_Draw_Layer);
+   pragma Import (C, Set_Draw_Layer, "gtkada_Text_View_set_draw_layer");
+   --  See Glib.Object.Add_Interface
 
 private
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=

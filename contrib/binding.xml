@@ -3930,6 +3930,7 @@ creating a tag.
 
    <package id="GtkTextView">
      <parameter name="self" ada="View"/>
+     <enum ctype="GtkTextViewLayer" />
 
      <!-- These are now inherited from the Scrollable interface -->
      <method id="gtk_text_view_get_hadjustment" bind="false"/>
@@ -3938,6 +3939,15 @@ creating a tag.
      <method id="gtk_text_view_set_vadjustment" bind="false"/>
 
      <method id="gtk_text_view_new_with_buffer" ada="Gtk_New"/>
+
+     <virtual-method id='draw_layer' bind='True'>
+        <doc>
+The draw_layer virtual function is called before and after the text
+view is drawing its own text. Applications can override this vfunc
+in a subclass to draw customized content underneath or above the
+text. Since: 3.14
+        </doc>
+     </virtual-method>
    </package>
 
    <package id="GdkWindow" bindtype="False">
