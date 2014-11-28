@@ -148,13 +148,14 @@ package Gtk.Dialog is
    pragma Convention (C, Gtk_Dialog_Flags);
    Modal               : constant Gtk_Dialog_Flags := 2 ** 0;
    Destroy_With_Parent : constant Gtk_Dialog_Flags := 2 ** 1;
-   No_Separator        : constant Gtk_Dialog_Flags := 2 ** 2;
+   Use_Header_Bar      : constant Gtk_Dialog_Flags := 2 ** 2;
    --  Various flags that can be set for the dialog, with the following
    --  implications:
    --     - Modal : the dialog is modal, see Gtk.Window.Set_Modal
    --     - Destroy_With_Parent: The dialog is destroyed if its parent is
    --       destroyed. See Gtk.Window.Set_Destroy_With_Parent
-   --     - No_Separator: No separator bar above the buttons.
+   --     - Use_Header_Bar: create dialogs with actions in the header bar
+   --       instead of action area (since 3.12)
 
    type Gtk_Response_Type is new Gint;
    --  Type used for Response_Id's.
@@ -392,6 +393,18 @@ package Gtk.Dialog is
    --  setting changes.
    --
    --  Returns: Whether the alternative button order should be used
+
+   function Use_Header_Bar_From_Settings
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null)
+   return Gtk_Dialog_Flags;
+   --  Check in the gtk settings whether dialogs should display their action
+   --  buttons in the header bar rather than in the action area at the bottom.
+   --  Widget is used to retrieve the settings. If unspecified, the default
+   --  settings are used.
+   --  The value of the setting can be set in the file
+   --    $HOME/.config/gtk-3.0/settings.ini
+   --  with the following line:
+   --    gtk-dialogs-use-header=0
 
    ----------------
    -- Properties --

@@ -114,6 +114,15 @@ package Gtk.Settings is
       Value    : GValue;
       Origin   : String);
 
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+   return Gtk_Settings;
+   --  Get the settings object holding the settings used for this widget.
+   --
+   --  Note that this function can only be called when the widget is
+   --  attached to a toplevel, since the settings object is specific to a
+   --  particular Gdk.Screen.Gdk_Screen.
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------

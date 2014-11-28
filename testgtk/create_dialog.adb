@@ -110,11 +110,13 @@ package body Create_Dialog is
    ------------------
 
    procedure Basic_Dialog (Widget : access Gtk_Widget_Record'Class) is
-      pragma Unreferenced (Widget);
       Button : Gtk_Widget;
    begin
       if Dialog = null then
-         Gtk_New (Dialog);
+         Gtk_New (Dialog,
+                  Title => "example dialog",
+                  Parent => Gtk_Window (Get_Toplevel (Widget)),
+                  Flags  => Use_Header_Bar_From_Settings (Widget));
          Destroy_Dialog_Handler.Connect
            (Dialog, "destroy",
             Destroy_Dialog_Handler.To_Marshaller (Destroy_Dialog'Access),
@@ -129,6 +131,7 @@ package body Create_Dialog is
          Show (Button);
 
          Button := Dialog.Add_Button ("Toggle", Response_Id => 1);
+         Label_Toggle (Button);
          Widget_Handler.Connect (Button, "clicked", Label_Toggle'Access);
          Show (Button);
          Show (Dialog);

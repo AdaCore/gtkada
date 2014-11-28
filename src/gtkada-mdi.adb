@@ -3730,7 +3730,8 @@ package body Gtkada.MDI is
                Gtk_New (Diag,
                         Title  => "",
                         Parent => Parent,
-                        Flags  => No_Separator or Destroy_With_Parent);
+                        Flags  => Use_Header_Bar_From_Settings (Child.MDI)
+                           or Destroy_With_Parent);
             end;
 
             Win  := Gtk_Window (Diag);

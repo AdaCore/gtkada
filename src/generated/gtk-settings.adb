@@ -30,6 +30,17 @@ pragma Warnings(On);
 
 package body Gtk.Settings is
 
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+   return Gtk_Settings
+   is
+      function Internal (W : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_settings");
+      Stub : Gtk_Settings_Record;
+   begin
+      return Gtk_Settings (Get_User_Data (Internal (Get_Object (Widget)), Stub));
+   end Get_Settings;
+
    procedure Set_Property_Value
      (Settings : not null access Gtk_Settings_Record;
       Name     : String;
