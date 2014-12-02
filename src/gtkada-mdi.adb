@@ -3300,6 +3300,10 @@ package body Gtkada.MDI is
 
          Child.MDI.Focus_Child := Old_Focus;
 
+         if Give_Focus and then Child.Initial.Get_Realized then
+            Present (Gtk_Window (Get_Toplevel (Child.Initial)));
+         end if;
+
       elsif Child.State = Floating
         and then Give_Focus
         and then Child.Initial.Get_Realized
