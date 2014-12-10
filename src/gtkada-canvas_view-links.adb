@@ -649,21 +649,21 @@ package body Gtkada.Canvas_View.Links is
         (Item1, Item2     : Model_Rectangle;
          Margin1, Margin2 : out Margins)
       is
-         Dist : Gdouble;
+         Dist, Tmp : Gdouble;
       begin
          if Item1.X + Item1.Width < Item2.X then
             Dist := Item2.X - Item1.X - Item1.Width;
             Margin1.Left := Min_Margin;
-            Margin1.Right := Gdouble'Min
-              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Tmp := Gdouble'Max (Dist / 2.0, Min_Margin);
+            Margin1.Right := Gdouble'Min (Max_Margin, Tmp);
             Margin2.Left := Dist - Margin1.Right;
             Margin2.Right := Min_Margin;
 
          elsif Item2.X + Item2.Width < Item1.X then
             Dist := Item1.X - Item2.X - Item2.Width;
             Margin1.Right := Min_Margin;
-            Margin1.Left := Gdouble'Min
-              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Tmp := Gdouble'Max (Dist / 2.0, Min_Margin);
+            Margin1.Left := Gdouble'Min (Max_Margin, Tmp);
             Margin2.Right := Dist - Margin1.Left;
             Margin2.Left := Min_Margin;
 
@@ -677,16 +677,16 @@ package body Gtkada.Canvas_View.Links is
          if Item1.Y + Item1.Height < Item2.Y then
             Dist := Item2.Y - Item1.Y - Item1.Height;
             Margin1.Top := Min_Margin;
-            Margin1.Bottom := Gdouble'Min
-              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Tmp := Gdouble'Max (Dist / 2.0, Min_Margin);
+            Margin1.Bottom := Gdouble'Min (Max_Margin, Tmp);
             Margin2.Top := Dist - Margin1.Bottom;
             Margin2.Bottom := Min_Margin;
 
          elsif Item2.Y + Item2.Height < Item1.Y then
             Dist := Item1.Y - Item2.Y - Item2.Height;
             Margin1.Bottom := Min_Margin;
-            Margin1.Top := Gdouble'Min
-              (Max_Margin, Gdouble'Max (Dist / 2.0, Min_Margin));
+            Tmp := Gdouble'Max (Dist / 2.0, Min_Margin);
+            Margin1.Top := Gdouble'Min (Max_Margin, Tmp);
             Margin2.Bottom := Dist - Margin1.Top;
             Margin2.Top := Min_Margin;
 
@@ -1003,14 +1003,13 @@ package body Gtkada.Canvas_View.Links is
       Waypoints : constant Item_Point_Array := Get_Wp;
       P1, P2, P3, P4 : Item_Point;
       FP, TP, Dummy : Item_Point;
-      Radius : Gdouble;
+      Radius, Tmp : Gdouble;
    begin
       Unchecked_Free (Link.Points);
 
       if Link.From = Link.To then
-         Radius := Gdouble'Min
-           (Gdouble'Min (abs (Offset), Dim.From.Toplevel.Width / 2.0),
-            Dim.From.Toplevel.Height / 2.0);
+         Tmp := Gdouble'Min (abs (Offset), Dim.From.Toplevel.Width / 2.0);
+         Radius := Gdouble'Min (Tmp, Dim.From.Toplevel.Height / 2.0);
 
          Link.Points := new Item_Point_Array'
            (Circle_From_Bezier
