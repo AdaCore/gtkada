@@ -1287,8 +1287,20 @@ package body Gtkada.Canvas_View is
          Refresh (Self, Cr, Self.View_To_Model ((X1, Y1, X2 - X1, Y2 - Y1)));
       end if;
 
-      --  There are no children, so no need to chain up
-      return 1;
+      --  We might have an inline widget, which we need to draw.
+      if Self.Inline_Edit.Item /= null then
+         if Inherited_Draw
+           (View_Class_Record,
+            Widget => Self,
+            Cr     => Cr)
+         then
+            return 1;
+         else
+            return 0;
+         end if;
+      else
+         return 1;
+      end if;
 
    exception
       when E : others =>
@@ -1320,7 +1332,6 @@ package body Gtkada.Canvas_View is
       SAlloc.X := 0;
       SAlloc.Y := 0;
       Self.Set_Allocation (SAlloc);
-      --  Inherited_Size_Allocate (View_Class_Record, Self, SAlloc);
       Set_Adjustment_Values (Self);
 
       if Self.Get_Realized then
