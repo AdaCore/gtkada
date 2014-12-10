@@ -1651,6 +1651,7 @@ package body Gtkada.Canvas_View is
       W, H, S : Gdouble;
       Alloc   : Gtk_Allocation;
       TL      : Model_Point;
+      Wmin, Hmin : Gdouble;
    begin
       Self.Get_Allocation (Alloc);
       if Alloc.Width <= 1 then
@@ -1673,11 +1674,10 @@ package body Gtkada.Canvas_View is
             --  The "-1.0" below compensates for rounding errors, since
             --  otherwise we are still seeing the scrollbar along the axis
             --  used to compute the scale.
-            S := Gdouble'Min
-              (Max_Scale,
-               Gdouble'Min
-                 ((W - 2.0 * View_Margin - 1.0) / Box.Width,
-                  (H - 2.0 * View_Margin - 1.0) / Box.Height));
+            Wmin := (W - 2.0 * View_Margin - 1.0) / Box.Width;
+            Hmin := (H - 2.0 * View_Margin - 1.0) / Box.Height;
+            Wmin := Gdouble'Min (Wmin, Hmin);
+            S := Gdouble'Min (Max_Scale, Wmin);
             S := Gdouble'Max (Min_Scale, S);
             TL :=
               (X => Box.X - (W / S - Box.Width) / 2.0,
