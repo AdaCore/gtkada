@@ -6499,13 +6499,12 @@ package body Gtkada.MDI is
          --  rest of the desktop makes sense.
 
          declare
-            State : Gdk_Window_State;
+            Maximized : Boolean;
             Toplevel_Width, Toplevel_Height : Gint := -1;
          begin
-            State := Gdk_Window_State'Value
-              (Get_Attribute (Perspectives, "state", "0"));
-
-            if (State and Window_State_Maximized) /= 0 then
+            Maximized := Integer'Value
+               (Get_Attribute (Perspectives, "state", "0")) = 4;
+            if Maximized then
 
                --  Compute the width the window will have when maximized.
                --  We cannot simply do a Maximize and then read the allocation
@@ -6527,9 +6526,9 @@ package body Gtkada.MDI is
 
             else
                Toplevel_Width  := Gint'Value
-                 (Get_Attribute (Perspectives, "width",  "640"));
+                 (Get_Attribute (Perspectives, "width",  "-1"));
                Toplevel_Height := Gint'Value
-                 (Get_Attribute (Perspectives, "height", "480"));
+                 (Get_Attribute (Perspectives, "height", "-1"));
 
                --  More recent versions of the desktop also explicitly store
                --  the size of the MDI
@@ -6551,9 +6550,15 @@ package body Gtkada.MDI is
                      & Gint'Image (MDI_Height));
                end if;
 
-               Set_Default_Size
-                 (Gtk_Window (MDI.Get_Toplevel),
-                  Toplevel_Width, Toplevel_Height);
+               if Toplevel_Width /= -1 then
+                  Set_Default_Size
+                    (Gtk_Window (MDI.Get_Toplevel),
+                     Toplevel_Width, Toplevel_Height);
+               end if;
+
+               --  ??? Should not call MDI.Set_Size_Request, since that
+               --  sets a minimal size for the MDI, not a default size.
+               --     MDI.Set_Size_Request (MDI_Width, MDI_Height);
             end if;
          exception
             when others =>
@@ -7090,12 +7095,9 @@ package body Gtkada.MDI is
 
          declare
             Win   : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
-            State : Gdk_Window_State;
          begin
             if Win /= null then
-               State := Get_State (Get_Window (Win));
-
-               if (State and Window_State_Maximized) = 0 then
+               if not Win.Is_Maximized and then Get_Window (Win) /= null then
                   Set_Attribute
                     (MDI.Perspectives, "width",
                      Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width));
@@ -7112,10 +7114,12 @@ package body Gtkada.MDI is
                   Gint'Image (MDI.Get_Allocated_Height));
 
                --  We are only interested in whether the window is maximized
-               Set_Attribute
-                 (MDI.Perspectives, "state",
-                  Gdk_Window_State'Image
-                  (State and Window_State_Maximized));
+               if Win.Is_Maximized then
+                  Set_Attribute (MDI.Perspectives, "state", " 4");
+               else
+                  Set_Attribute (MDI.Perspectives, "state", " 0");
+               end if;
+
                Set_Attribute
                  (Central, "perspective", Current_Perspective (MDI));
             end if;
