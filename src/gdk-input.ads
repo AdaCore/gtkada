@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 1998-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -38,9 +38,9 @@ package Gdk.Input is
    procedure Gdk_Exit;
 
    procedure Set_Extension_Events
-     (Window : in Gdk.Gdk_Window;
-      Mask   : in Gdk.Event.Gdk_Event_Mask;
-      Mode   : in Gdk.Types.Gdk_Extension_Mode);
+     (Window : Gdk.Gdk_Window;
+      Mask   : Gdk.Event.Gdk_Event_Mask;
+      Mode   : Gdk.Types.Gdk_Extension_Mode);
    --  ??? Check that Mask is indeed of type GdkEventMask.
    --  The C code defines it as Gint...
 

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 1998-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -41,7 +41,7 @@ package body Glib.GSlist is
 
       procedure Append
         (List : in out GSlist;
-         Data : in Gpointer)
+         Data : Gpointer)
       is
          function Internal (List : System.Address;
                             Data : System.Address)
@@ -57,8 +57,8 @@ package body Glib.GSlist is
       ------------
 
       function Concat
-        (List1 : in GSlist;
-         List2 : in GSlist)
+        (List1 : GSlist;
+         List2 : GSlist)
          return GSlist
       is
          function Internal (List1 : System.Address;
@@ -76,9 +76,7 @@ package body Glib.GSlist is
       -- Get_Data --
       --------------
 
-      function Get_Data (List : in GSlist)
-                         return Gpointer
-      is
+      function Get_Data (List : GSlist) return Gpointer is
          function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "ada_gslist_get_data");
       begin
@@ -90,7 +88,7 @@ package body Glib.GSlist is
       ----------------------
 
       function Get_Data_Address (List : GSlist) return System.Address is
-         function Internal (List : in System.Address) return System.Address;
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "ada_slist_get_data");
       begin
          return Internal (Get_Object (List));
@@ -102,8 +100,8 @@ package body Glib.GSlist is
 
       procedure Insert
         (List     : in out GSlist;
-         Data     : in     Gpointer;
-         Position : in     Gint)
+         Data     :        Gpointer;
+         Position :        Gint)
       is
          function Internal (List : System.Address;
                             Data : System.Address;
@@ -120,8 +118,8 @@ package body Glib.GSlist is
       ----------
 
       function Find
-        (List : in GSlist;
-         Data : in Gpointer)
+        (List : GSlist;
+         Data : Gpointer)
          return GSlist
       is
          function Internal (List : System.Address;
@@ -150,8 +148,7 @@ package body Glib.GSlist is
       -- Get_Object --
       ----------------
 
-      function Get_Object (Obj : in GSlist)
-                           return System.Address is
+      function Get_Object (Obj : GSlist) return System.Address is
       begin
          return Obj.Ptr;
       end Get_Object;
@@ -161,8 +158,8 @@ package body Glib.GSlist is
       -----------
 
       function Index
-        (List : in GSlist;
-         Data : in Gpointer)
+        (List : GSlist;
+         Data : Gpointer)
          return Gint
       is
          function Internal (List : System.Address;
@@ -178,9 +175,8 @@ package body Glib.GSlist is
       -- Last --
       ----------
 
-      function Last (List : in GSlist) return GSlist is
-         function Internal (List : System.Address)
-                            return System.Address;
+      function Last (List : GSlist) return GSlist is
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "g_slist_last");
          Tmp : GSlist;
       begin
@@ -192,9 +188,8 @@ package body Glib.GSlist is
       -- Length --
       ------------
 
-      function Length (List : in GSlist) return Guint is
-         function Internal (List : System.Address)
-                            return Guint;
+      function Length (List : GSlist) return Guint is
+         function Internal (List : System.Address) return Guint;
          pragma Import (C, Internal, "g_slist_length");
       begin
          return Internal (Get_Object (List));
@@ -205,8 +200,7 @@ package body Glib.GSlist is
       ------------------
 
       procedure List_Reverse (List : in out GSlist) is
-         function Internal (List : System.Address)
-                            return System.Address;
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "g_slist_reverse");
       begin
          Set_Object (List, Internal (Get_Object (List)));
@@ -216,9 +210,8 @@ package body Glib.GSlist is
       -- Next --
       ----------
 
-      function Next (List : in GSlist) return GSlist is
-         function Internal (List : System.Address)
-                            return System.Address;
+      function Next (List : GSlist) return GSlist is
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "ada_gslist_next");
          Tmp : GSlist;
       begin
@@ -231,8 +224,8 @@ package body Glib.GSlist is
       ---------
 
       function Nth
-        (List : in GSlist;
-         N    : in Guint)
+        (List : GSlist;
+         N    : Guint)
          return GSlist
       is
          function Internal (List : System.Address;
@@ -250,8 +243,8 @@ package body Glib.GSlist is
       --------------
 
       function Nth_Data
-        (List : in GSlist;
-         N    : in Guint)
+        (List : GSlist;
+         N    : Guint)
          return Gpointer
       is
          function Internal (List : System.Address;
@@ -267,8 +260,8 @@ package body Glib.GSlist is
       --------------
 
       function Position
-        (List : in GSlist;
-         Link : in GSlist)
+        (List : GSlist;
+         Link : GSlist)
          return Gint
       is
          function Internal (List : System.Address;
@@ -285,7 +278,7 @@ package body Glib.GSlist is
 
       procedure Prepend
         (List : in out GSlist;
-         Data : in Gpointer)
+         Data : Gpointer)
       is
          function Internal (List : System.Address;
                             Data : System.Address)
@@ -302,7 +295,7 @@ package body Glib.GSlist is
 
       procedure Remove
         (List : in out GSlist;
-         Data : in Gpointer)
+         Data : Gpointer)
       is
          function Internal (List : System.Address;
                             Data : System.Address)
@@ -319,7 +312,7 @@ package body Glib.GSlist is
 
       procedure Remove_Link
         (List : in out GSlist;
-         Link : in GSlist)
+         Link : GSlist)
       is
          function Internal (List : System.Address;
                             Link : System.Address)
@@ -335,7 +328,7 @@ package body Glib.GSlist is
       ----------------
 
       procedure Set_Object (Obj   : in out GSlist;
-                            Value : in     System.Address) is
+                            Value :        System.Address) is
       begin
          Obj.Ptr := Value;
       end Set_Object;

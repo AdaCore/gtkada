@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 1998-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -55,55 +55,53 @@ package Glib.GSlist is
 
       procedure Alloc (List : out GSlist);
       procedure Append (List : in out GSlist;
-                        Data : in Gpointer);
-      function Concat (List1 : in GSlist;
-                       List2 : in GSlist)
+                        Data : Gpointer);
+      function Concat (List1 : GSlist;
+                       List2 : GSlist)
                        return GSlist;
       procedure Insert (List : in out GSlist;
-                        Data : in Gpointer;
-                        Position : in Gint);
-      function Find (List : in GSlist;
-                     Data : in Gpointer)
+                        Data : Gpointer;
+                        Position : Gint);
+      function Find (List : GSlist;
+                     Data : Gpointer)
                      return GSlist;
       procedure Free (List : in out GSlist);
-      function Get_Data (List : in GSlist)
-                         return Gpointer;
+      function Get_Data (List : GSlist) return Gpointer;
 
       function Get_Data_Address (List : GSlist) return System.Address;
       --  Return directly the System.Address contained in the C list.
       --  This is used mainly internally in GtkAda to implement String lists,
       --  and you should not have to use this subprogram yourself.
 
-      function Index (List : in GSlist;
-                      Data : in Gpointer)
+      function Index (List : GSlist;
+                      Data : Gpointer)
                       return Gint;
-      function Last (List : in GSlist)
+      function Last (List : GSlist)
                      return GSlist;
-      function Length (List : in GSlist)
+      function Length (List : GSlist)
                        return Guint;
       procedure List_Reverse (List : in out GSlist);
-      function Next (List : in GSlist)
+      function Next (List : GSlist)
                      return GSlist;
-      function Nth (List : in GSlist;
-                    N    : in Guint)
+      function Nth (List : GSlist;
+                    N    : Guint)
                     return GSlist;
-      function Nth_Data (List : in GSlist;
-                         N : in Guint)
+      function Nth_Data (List : GSlist;
+                         N : Guint)
                          return Gpointer;
-      function Position (List : in GSlist;
-                         Link : in GSlist)
+      function Position (List : GSlist;
+                         Link : GSlist)
                          return Gint;
       procedure Prepend (List : in out GSlist;
-                         Data : in Gpointer);
+                         Data : Gpointer);
       procedure Remove (List : in out GSlist;
-                        Data : in Gpointer);
+                        Data : Gpointer);
       procedure Remove_Link (List : in out GSlist;
-                             Link : in GSlist);
-      function Get_Object (Obj : in GSlist)
-                           return System.Address;
+                             Link : GSlist);
+      function Get_Object (Obj : GSlist) return System.Address;
       pragma Inline (Get_Object);
       procedure Set_Object (Obj    : in out GSlist;
-                            Value  : in     System.Address);
+                            Value  :        System.Address);
       pragma Inline (Set_Object);
    private
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 1998-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -134,9 +134,9 @@ package Glib.XML is
    --  the Specific_Data for each node.
 
    function Get_Attribute
-     (N : in Node_Ptr;
-      Attribute_Name : in UTF8_String;
-      Default        : in UTF8_String := "") return UTF8_String;
+     (N              : Node_Ptr;
+      Attribute_Name : UTF8_String;
+      Default        : UTF8_String := "") return UTF8_String;
    --  Return the value of the attribute 'Attribute_Name' if present.
    --  Special XML characters have already been interpreted in the result
    --  string.

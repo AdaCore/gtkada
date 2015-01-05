@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2000-2014, AdaCore                     --
+--                     Copyright (C) 2000-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -32,7 +32,7 @@ with Gtkada.Types;
 
 package Gtkada.Pixmaps is
 
-   function "+" (Str : in String) return Gtkada.Types.Chars_Ptr
+   function "+" (Str : String) return Gtkada.Types.Chars_Ptr
      renames Interfaces.C.Strings.New_String;
 
    Warning_Xpm : Gtkada.Types.Chars_Ptr_Array :=

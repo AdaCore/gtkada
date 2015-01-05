@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 1998-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -31,7 +31,7 @@ package body Glib.Gnodes is
    ---------------
 
    procedure Destroy (Node : in out Gnode) is
-      procedure Internal (Node : in Gnode);
+      procedure Internal (Node : Gnode);
       pragma Import (C, Internal, "g_node_destroy");
    begin
       Internal (Node);
@@ -42,10 +42,10 @@ package body Glib.Gnodes is
    --  Is_Ancestor  --
    -------------------
 
-   function Is_Ancestor (Node       : in Gnode;
-                         Descendant : in Gnode) return Boolean is
-      function Internal (Node       : in Gnode;
-                         Descendant : in Gnode) return Gboolean;
+   function Is_Ancestor (Node       : Gnode;
+                         Descendant : Gnode) return Boolean is
+      function Internal (Node       : Gnode;
+                         Descendant : Gnode) return Gboolean;
       pragma Import (C, Internal, "g_node_is_ancestor");
    begin
       return Internal (Node, Descendant) /= 0;
@@ -55,8 +55,8 @@ package body Glib.Gnodes is
    --  Is_Leaf  --
    ---------------
 
-   function Is_Leaf (Node : in Gnode) return Boolean is
-      function Internal (Node : in Gnode) return Gboolean;
+   function Is_Leaf (Node : Gnode) return Boolean is
+      function Internal (Node : Gnode) return Gboolean;
       pragma Import (C, Internal, "ada_gnode_is_leaf");
    begin
       return Internal (Node) /= 0;
@@ -66,8 +66,8 @@ package body Glib.Gnodes is
    --  Is_Root  --
    ---------------
 
-   function Is_Root (Node : in Gnode) return Boolean is
-      function Internal (Node : in Gnode) return Gboolean;
+   function Is_Root (Node : Gnode) return Boolean is
+      function Internal (Node : Gnode) return Gboolean;
       pragma Import (C, Internal, "ada_gnode_is_root");
    begin
       return Internal (Node) /= 0;
@@ -77,8 +77,8 @@ package body Glib.Gnodes is
    --  N_Nodes  --
    ---------------
 
-   function N_Nodes (Root  : in Gnode;
-                     Flags : in Glib_Traverse_Flags) return Guint is
+   function N_Nodes (Root  : Gnode;
+                     Flags : Glib_Traverse_Flags) return Guint is
       function Internal
         (Root : Gnode; Flags : Glib_Traverse_Flags) return Guint;
       pragma Import (C, Internal, "g_node_n_nodes");
@@ -99,8 +99,8 @@ package body Glib.Gnodes is
       --  Glib_New  --
       ----------------
 
-      procedure Glib_New (Node :    out Gnode;
-                          Data : in     Element_Access) is
+      procedure Glib_New (Node : out Gnode;
+                          Data :     Element_Access) is
       begin
          Node := Convert (Data);
       end Glib_New;

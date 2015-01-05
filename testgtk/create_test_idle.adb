@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2014, AdaCore                     --
+--                     Copyright (C) 1998-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -63,7 +63,7 @@ package body Create_Test_Idle is
    -- Idle_Test --
    ---------------
 
-   function Idle_Test (Label : in Gtk_Label) return Boolean is
+   function Idle_Test (Label : Gtk_Label) return Boolean is
    begin
       Count := Count + 1;
       Set_Text (Label, "count:" & Integer'Image (Count));
@@ -109,7 +109,7 @@ package body Create_Test_Idle is
 
    procedure Toggle_Container
       (Button  : access My_Button_Record'Class;
-       Contain : in Gtk_Box) is
+       Contain : Gtk_Box) is
    begin
       Set_Resize_Mode (Contain, Button.Value);
    end Toggle_Container;
