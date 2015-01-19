@@ -1019,6 +1019,11 @@ package Gtkada.MDI is
                                    "children_reorganized";
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
 
+   procedure Child_Selected
+      (Self  : not null access MDI_Window_Record'Class;
+       Child : access MDI_Child_Record'Class := null);
+   --  Emit the "child_selected" signal
+
 private
    type String_Access is access all UTF8_String;
 

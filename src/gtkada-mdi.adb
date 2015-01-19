@@ -2753,13 +2753,25 @@ package body Gtkada.MDI is
       if Last = null then
          Print_Debug ("Give_Focus_To_Previous_Child: no one");
          Child.MDI.Focus_Child := null;
-         Emit_By_Name_Child
-           (Get_Object (Child.MDI),
-            String (Signal_Child_Selected) & ASCII.NUL, System.Null_Address);
+         Child_Selected (Child.MDI, null);
       else
          Set_Focus_Child (Last);
       end if;
    end Give_Focus_To_Previous_Child;
+
+   --------------------
+   -- Child_Selected --
+   --------------------
+
+   procedure Child_Selected
+      (Self  : not null access MDI_Window_Record'Class;
+       Child : access MDI_Child_Record'Class := null) is
+   begin
+      Emit_By_Name_Child
+        (Get_Object (Self),
+         String (Signal_Child_Selected) & ASCII.NUL,
+         Get_Object_Or_Null (GObject (Child)));
+   end Child_Selected;
 
    ------------------
    -- Save_Desktop --
@@ -3499,9 +3511,7 @@ package body Gtkada.MDI is
       Highlight_Child (C, False);
 
       Widget_Callback.Emit_By_Name (C, "selected");
-      Emit_By_Name_Child
-        (Get_Object (C.MDI), String (Signal_Child_Selected) & ASCII.NUL,
-         Get_Object (C));
+      Child_Selected (C.MDI, C);
    end Set_Focus_Child;
 
    ------------------
