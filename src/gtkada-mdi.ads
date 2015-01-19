@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2014, AdaCore                     --
+--                     Copyright (C) 2001-2015, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1025,6 +1025,11 @@ package Gtkada.MDI is
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
+
+   procedure Child_Selected
+      (Self  : not null access MDI_Window_Record'Class;
+       Child : access MDI_Child_Record'Class := null);
+   --  Emit the "child_selected" signal
 
 private
    type String_Access is access all UTF8_String;
