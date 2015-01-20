@@ -98,6 +98,22 @@ package body Gtk.Widget is
       Internal (Klass, Widget.Get_Object, Minimum_Size, Natural_Size);
    end Inherited_Get_Preferred_Width;
 
+   procedure Inherited_Get_Preferred_Width_For_Height
+     (Klass  : Glib.Object.Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Height     : Glib.Gint;
+      Minimum_Size, Natural_Size : out Glib.Gint)
+   is
+      procedure Internal (Klass    : Ada_GObject_Class;
+         Widget   : System.Address;
+         Height   : Glib.Gint;
+         Min, Nat : out Glib.Gint);
+      pragma Import
+        (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_width_for_height");
+   begin
+      Internal (Klass, Widget.Get_Object, Height, Minimum_Size, Natural_Size);
+   end Inherited_Get_Preferred_Width_For_Height;
+
    procedure Inherited_Get_Preferred_Height
      (Klass  : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
@@ -111,6 +127,22 @@ package body Gtk.Widget is
    begin
       Internal (Klass, Widget.Get_Object, Minimum_Size, Natural_Size);
    end Inherited_Get_Preferred_Height;
+
+   procedure Inherited_Get_Preferred_Height_For_Width
+     (Klass  : Glib.Object.Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Width      : Glib.Gint;
+      Minimum_Size, Natural_Size : out Glib.Gint)
+   is
+      procedure Internal (Klass : Ada_GObject_Class;
+         Widget : System.Address;
+         Width      : Glib.Gint;
+         Min, Nat : out Glib.Gint);
+      pragma Import
+        (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_height_for_width");
+   begin
+      Internal (Klass, Widget.Get_Object, Width, Minimum_Size, Natural_Size);
+   end Inherited_Get_Preferred_Height_For_Width;
 
    procedure Inherited_Size_Allocate
      (Klass      : Glib.Object.Ada_GObject_Class;
