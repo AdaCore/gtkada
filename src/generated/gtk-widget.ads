@@ -3270,16 +3270,33 @@ package Gtk.Widget is
       Natural_Size : out Glib.Gint);
    pragma Convention (C, Preferred_Size_Handler);
 
+   type Preferred_Size_For_Handler is access procedure
+     (Widget       : System.Address;
+      Ref          : Glib.Gint;--  known width or height
+      Minimum_Size : out Glib.Gint;
+      Natural_Size : out Glib.Gint);
+   pragma Convention (C, Preferred_Size_For_Handler);
+
    procedure Set_Default_Get_Preferred_Width_Handler
      (Klass   : Glib.Object.GObject_Class;
       Handler : Preferred_Size_Handler);
    procedure Set_Default_Get_Preferred_Height_Handler
      (Klass   : Glib.Object.GObject_Class;
       Handler : Preferred_Size_Handler);
+   procedure Set_Default_Get_Preferred_Height_For_Width_Handler
+     (Klass   : Glib.Object.GObject_Class;
+      Handler : Preferred_Size_For_Handler);
+   procedure Set_Default_Get_Preferred_Width_For_Height_Handler
+     (Klass   : Glib.Object.GObject_Class;
+      Handler : Preferred_Size_For_Handler);
    pragma Import (C, Set_Default_Get_Preferred_Width_Handler,
       "ada_WIDGET_CLASS_override_get_preferred_width");
    pragma Import (C, Set_Default_Get_Preferred_Height_Handler,
       "ada_WIDGET_CLASS_override_get_preferred_height");
+   pragma Import (C, Set_Default_Get_Preferred_Height_For_Width_Handler,
+      "ada_WIDGET_CLASS_override_get_preferred_height_for_width");
+   pragma Import (C, Set_Default_Get_Preferred_Width_For_Height_Handler,
+      "ada_WIDGET_CLASS_override_get_preferred_width_for_height");
    --  Override the computation of a widget's preferred sizes.
    --  You will only need to override this computation if you are writting
    --  your own container widgets.
@@ -3288,9 +3305,19 @@ package Gtk.Widget is
      (Klass      : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
       Minimum_Size, Natural_Size : out Glib.Gint);
+   procedure Inherited_Get_Preferred_Width_For_Height
+     (Klass      : Glib.Object.Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Height     : Glib.Gint;
+      Minimum_Size, Natural_Size : out Glib.Gint);
    procedure Inherited_Get_Preferred_Height
      (Klass      : Glib.Object.Ada_GObject_Class;
       Widget     : access Gtk_Widget_Record'Class;
+      Minimum_Size, Natural_Size : out Glib.Gint);
+   procedure Inherited_Get_Preferred_Height_For_Width
+     (Klass      : Glib.Object.Ada_GObject_Class;
+      Widget     : access Gtk_Widget_Record'Class;
+      Width      : Glib.Gint;
       Minimum_Size, Natural_Size : out Glib.Gint);
    --  Call the default implementation
 

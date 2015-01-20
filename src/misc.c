@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2014, AdaCore                   --
+--                Copyright (C) 2000-2015, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -677,6 +677,8 @@ ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, draw)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, realize)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width_for_height)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height_for_width)
 
 void ada_inherited_WIDGET_CLASS_size_allocate (
       AdaGObjectClass klass, GtkWidget* widget, GtkAllocation* rect)
@@ -705,6 +707,16 @@ void ada_inherited_WIDGET_CLASS_get_preferred_width (
    g_type_class_unref (objklass);
 }
 
+void ada_inherited_WIDGET_CLASS_get_preferred_width_for_height (
+      AdaGObjectClass klass, GtkWidget* widget, gint height, gint* min, gint* natural)
+{
+   GObjectClass* objklass = g_type_class_ref (klass->type);
+   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
+   GTK_WIDGET_CLASS (parent_class)->get_preferred_width_for_height
+      (widget, height, min, natural);
+   g_type_class_unref (objklass);
+}
+
 void ada_inherited_WIDGET_CLASS_get_preferred_height (
       AdaGObjectClass klass, GtkWidget* widget, gint* min, gint* natural)
 {
@@ -712,6 +724,16 @@ void ada_inherited_WIDGET_CLASS_get_preferred_height (
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
    GTK_WIDGET_CLASS (parent_class)->get_preferred_height
      (widget, min, natural);
+   g_type_class_unref (objklass);
+}
+
+void ada_inherited_WIDGET_CLASS_get_preferred_height_for_width (
+      AdaGObjectClass klass, GtkWidget* widget, gint width, gint* min, gint* natural)
+{
+   GObjectClass* objklass = g_type_class_ref (klass->type);
+   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
+   GTK_WIDGET_CLASS (parent_class)->get_preferred_height_for_width
+     (widget, width, min, natural);
    g_type_class_unref (objklass);
 }
 
