@@ -33,7 +33,7 @@
 --  colors.
 --
 --  To change the initially selected color, use Gtk.Color_Chooser.Set_Rgba. To
---  get the selected font use Gtk.Color_Chooser.Get_Rgba.
+--  get the selected color use Gtk.Color_Chooser.Get_Rgba.
 --
 --  The Gtk.Color_Chooser_Widget.Gtk_Color_Chooser_Widget is used in the
 --  Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog to provide a dialog for

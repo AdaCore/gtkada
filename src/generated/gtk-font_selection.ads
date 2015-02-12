@@ -81,18 +81,18 @@ package Gtk.Font_Selection is
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Face_List);
    --  This returns the Gtk.Tree_View.Gtk_Tree_View which lists all styles
-   --  available for the selected font. For example, 'Regular', 'Bold', etc.
+   --  available for the selected font. For example, "Regular", "Bold", etc.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    function Get_Family_List
       (Fontsel : not null access Gtk_Font_Selection_Record)
        return Gtk.Widget.Gtk_Widget;
    pragma Obsolescent (Get_Family_List);
    --  This returns the Gtk.Tree_View.Gtk_Tree_View that lists font families,
-   --  for example, 'Sans', 'Serif', etc.
+   --  for example, "Sans", "Serif", etc.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    function Get_Font_Name
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -105,7 +105,7 @@ package Gtk.Font_Selection is
    --  structure. For example, "Helvetica Italic Bold 12" could be normalized
    --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
    --  compare two font descriptions.
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    function Set_Font_Name
       (Fontsel  : not null access Gtk_Font_Selection_Record;
@@ -115,7 +115,7 @@ package Gtk.Font_Selection is
    --  Note that the Fontsel needs to know the screen in which it will appear
    --  for this to work; this can be guaranteed by simply making sure that the
    --  Fontsel is inserted in a toplevel window before you call this function.
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
    --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Preview_Entry
@@ -125,14 +125,14 @@ package Gtk.Font_Selection is
    --  This returns the Gtk.GEntry.Gtk_Entry used to display the font as a
    --  preview.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    function Get_Preview_Text
       (Fontsel : not null access Gtk_Font_Selection_Record)
        return UTF8_String;
    pragma Obsolescent (Get_Preview_Text);
    --  Gets the text displayed in the preview area.
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    procedure Set_Preview_Text
       (Fontsel : not null access Gtk_Font_Selection_Record;
@@ -140,7 +140,7 @@ package Gtk.Font_Selection is
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area. The Text is used to show
    --  how the selected font looks.
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
    --  "text": the text to display in the preview area
 
    function Get_Size
@@ -148,7 +148,7 @@ package Gtk.Font_Selection is
    pragma Obsolescent (Get_Size);
    --  The selected font size.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    function Get_Size_Entry
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -158,7 +158,7 @@ package Gtk.Font_Selection is
    --  the font number manually instead of selecting it from the list of font
    --  sizes.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    function Get_Size_List
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -166,7 +166,7 @@ package Gtk.Font_Selection is
    pragma Obsolescent (Get_Size_List);
    --  This returns the Gtk.Tree_View.Gtk_Tree_View used to list font sizes.
    --  Since: gtk+ 2.14
-   --  Deprecated since 3.2, Use Gtk.Font_Chooser.Gtk_Font_Chooser
+   --  Deprecated since 3.2, 1
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

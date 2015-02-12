@@ -48,7 +48,6 @@ package Gtk.Text_Attributes is
       Draw_Bg : Guint;
       Inside_Selection : Guint;
       Is_Text : Guint;
-      Rgba : array_of_Gdk_RGBA (1 .. 2);
    end record;
    pragma Convention (C, Gtk_Text_Appearance);
 

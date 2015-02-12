@@ -392,6 +392,7 @@ package body Create_Canvas_View_Items is
          Image := Gtk_New_Image
            (Style  => Gtk_New (Stroke => (0.0, 0.0, 0.0, 1.0)),
             Image  => Pixbuf,
+            Allow_Rescale => False,
             Width  => 50.0,
             Height => 50.0);
          Rect2.Add_Child (Image);

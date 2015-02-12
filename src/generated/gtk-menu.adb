@@ -42,6 +42,10 @@ package body Gtk.Menu is
    --  Attaches the menu to the widget and provides a callback function that
    --  will be invoked when the menu calls Gtk.Menu.Detach during its
    --  destruction.
+   --  If the menu is attached to the widget then it will be destroyed when
+   --  the widget is destroyed, as if it was a child widget. An attached menu
+   --  will also move between screens correctly if the widgets moves between
+   --  screens.
    --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu will be
    --  attached to
    --  "detacher": the user supplied callback function that will be called

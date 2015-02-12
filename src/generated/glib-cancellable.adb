@@ -48,6 +48,10 @@ package body Glib.Cancellable is
    --  immediately if the cancellable is already cancelled.
    --  See Glib.Cancellable.Gcancellable::cancelled for details on how to use
    --  this.
+   --  Since GLib 2.40, the lock protecting Cancellable is not held when
+   --  Callback is invoked. This lifts a restriction in place for earlier GLib
+   --  versions which now makes it easier to write cleanup code that
+   --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
    --  Since: gtk+ 2.22
    --  "callback": The Gcallback to connect.
    --  "data": Data to pass to Callback.

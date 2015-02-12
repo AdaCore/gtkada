@@ -125,14 +125,14 @@ package body Gtk.Accel_Group is
       (Accel_Group   : not null access Gtk_Accel_Group_Record;
        Accel_Quark   : Glib.GQuark;
        Acceleratable : not null access Glib.Object.GObject_Record'Class;
-       Accel_Key     : Guint;
+       Accel_Key     : Gdk.Types.Gdk_Key_Type;
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
       function Internal
          (Accel_Group   : System.Address;
           Accel_Quark   : Glib.GQuark;
           Acceleratable : System.Address;
-          Accel_Key     : Guint;
+          Accel_Key     : Gdk.Types.Gdk_Key_Type;
           Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_group_activate");
    begin
@@ -145,14 +145,14 @@ package body Gtk.Accel_Group is
 
    procedure Connect
       (Accel_Group : not null access Gtk_Accel_Group_Record;
-       Accel_Key   : Guint;
+       Accel_Key   : Gdk.Types.Gdk_Key_Type;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
        Accel_Flags : Gtk_Accel_Flags;
        Closure     : C_Gtk_Accel_Group_Activate)
    is
       procedure Internal
          (Accel_Group : System.Address;
-          Accel_Key   : Guint;
+          Accel_Key   : Gdk.Types.Gdk_Key_Type;
           Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
           Accel_Flags : Gtk_Accel_Flags;
           Closure     : C_Gtk_Accel_Group_Activate);
@@ -203,12 +203,12 @@ package body Gtk.Accel_Group is
 
    function Disconnect_Key
       (Accel_Group : not null access Gtk_Accel_Group_Record;
-       Accel_Key   : Guint;
+       Accel_Key   : Gdk.Types.Gdk_Key_Type;
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean
    is
       function Internal
          (Accel_Group : System.Address;
-          Accel_Key   : Guint;
+          Accel_Key   : Gdk.Types.Gdk_Key_Type;
           Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_group_disconnect_key");
    begin

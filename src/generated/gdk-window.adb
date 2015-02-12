@@ -91,6 +91,19 @@ package body Gdk.Window is
    --  means never recurse.
    --  "user_data": data passed to Child_Func
 
+   procedure C_Gdk_Window_Set_Invalidate_Handler
+      (Self    : Gdk.Gdk_Window;
+       Handler : System.Address);
+   pragma Import (C, C_Gdk_Window_Set_Invalidate_Handler, "gdk_window_set_invalidate_handler");
+   --  Registers an invalidate handler for a specific window. This will get
+   --  called whenever a region in the window or its children is invalidated.
+   --  This can be used to record the invalidated region, which is useful if
+   --  you are keeping an offscreen copy of some region and want to keep it up
+   --  to date. You can also modify the invalidated region in case you're doing
+   --  some effect where e.g. a child widget appears in multiple places.
+   --  Since: gtk+ 3.10
+   --  "handler": a Gdk_Window_Invalidate_Handler_Func callback function
+
    function To_Gdk_Window_Child_Func is new Ada.Unchecked_Conversion
      (System.Address, Gdk_Window_Child_Func);
 
@@ -341,6 +354,43 @@ package body Gdk.Window is
       Window := Tmp_Return;
    end Get_Device_Position;
 
+   --------------------------------
+   -- Get_Device_Position_Double --
+   --------------------------------
+
+   function Get_Device_Position_Double
+      (Self   : Gdk.Gdk_Window;
+       Device : not null access Gdk.Device.Gdk_Device_Record'Class;
+       X      : access Gdouble;
+       Y      : access Gdouble;
+       Mask   : access Gdk.Types.Gdk_Modifier_Type) return Gdk.Gdk_Window
+   is
+      function Internal
+         (Self     : Gdk.Gdk_Window;
+          Device   : System.Address;
+          Acc_X    : access Gdouble;
+          Acc_Y    : access Gdouble;
+          Acc_Mask : access Gdk.Types.Gdk_Modifier_Type)
+          return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "gdk_window_get_device_position_double");
+      Acc_X      : aliased Gdouble;
+      Acc_Y      : aliased Gdouble;
+      Acc_Mask   : aliased Gdk.Types.Gdk_Modifier_Type;
+      Tmp_Return : Gdk.Gdk_Window;
+   begin
+      Tmp_Return := Internal (Self, Get_Object (Device), Acc_X'Access, Acc_Y'Access, Acc_Mask'Access);
+      if X /= null then
+         X.all := Acc_X;
+      end if;
+      if Y /= null then
+         Y.all := Acc_Y;
+      end if;
+      if Mask /= null then
+         Mask.all := Acc_Mask;
+      end if;
+      return Tmp_Return;
+   end Get_Device_Position_Double;
+
    -----------------
    -- Get_Display --
    -----------------
@@ -354,6 +404,17 @@ package body Gdk.Window is
    begin
       return Gdk.Display.Gdk_Display (Get_User_Data (Internal (Self), Stub_Gdk_Display));
    end Get_Display;
+
+   ---------------------------
+   -- Get_Event_Compression --
+   ---------------------------
+
+   function Get_Event_Compression (Self : Gdk.Gdk_Window) return Boolean is
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_window_get_event_compression");
+   begin
+      return Internal (Self) /= 0;
+   end Get_Event_Compression;
 
    ----------------------
    -- Get_Focus_On_Map --
@@ -729,6 +790,22 @@ package body Gdk.Window is
       Internal (Self, Get_Object (Device), Event_Mask);
    end Set_Device_Events;
 
+   ---------------------------
+   -- Set_Event_Compression --
+   ---------------------------
+
+   procedure Set_Event_Compression
+      (Self              : Gdk.Gdk_Window;
+       Event_Compression : Boolean)
+   is
+      procedure Internal
+         (Self              : Gdk.Gdk_Window;
+          Event_Compression : Glib.Gboolean);
+      pragma Import (C, Internal, "gdk_window_set_event_compression");
+   begin
+      Internal (Self, Boolean'Pos (Event_Compression));
+   end Set_Event_Compression;
+
    ----------------------
    -- Set_Focus_On_Map --
    ----------------------
@@ -764,6 +841,22 @@ package body Gdk.Window is
       Internal (Self, Tmp_Name);
       Free (Tmp_Name);
    end Set_Icon_Name;
+
+   ----------------------------
+   -- Set_Invalidate_Handler --
+   ----------------------------
+
+   procedure Set_Invalidate_Handler
+      (Self    : Gdk.Gdk_Window;
+       Handler : Gdk_Window_Invalidate_Handler_Func)
+   is
+   begin
+      if Handler = null then
+         C_Gdk_Window_Set_Invalidate_Handler (Self, System.Null_Address);
+      else
+         C_Gdk_Window_Set_Invalidate_Handler (Self, Handler'Address);
+      end if;
+   end Set_Invalidate_Handler;
 
    --------------------
    -- Set_Keep_Above --
@@ -936,6 +1029,22 @@ package body Gdk.Window is
    begin
       Internal (Self, Boolean'Pos (Urgent));
    end Set_Urgency_Hint;
+
+   ----------------------
+   -- Show_Window_Menu --
+   ----------------------
+
+   function Show_Window_Menu
+      (Self  : Gdk.Gdk_Window;
+       Event : Gdk.Event.Gdk_Event) return Boolean
+   is
+      function Internal
+         (Self  : Gdk.Gdk_Window;
+          Event : Gdk.Event.Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_window_show_window_menu");
+   begin
+      return Internal (Self, Event) /= 0;
+   end Show_Window_Menu;
 
    ----------------
    -- At_Pointer --

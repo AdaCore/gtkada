@@ -34,7 +34,7 @@
 --  allowing the users to switch pages. (see Gtk.Notebook.Popup_Enable,
 --  Gtk.Notebook.Popup_Disable)
 --
---  == GtkNotebook as GtkBuildable ==
+--  # GtkNotebook as GtkBuildable
 --
 --  The GtkNotebook implementation of the Gtk.Buildable.Gtk_Buildable
 --  interface supports placing children into tabs by specifying "tab" as the
@@ -45,20 +45,12 @@
 --  To add a child widget in the notebooks action area, specify "action-start"
 --  or "action-end" as the "type" attribute of the <child> element.
 --
---  == A UI definition fragment with GtkNotebook ==
+--  An example of a UI definition fragment with GtkNotebook: |[ <object
+--  class="GtkNotebook"> <child> <object class="GtkLabel"
+--  id="notebook-content"> <property name="label">Content</property> </object>
+--  </child> <child type="tab"> <object class="GtkLabel" id="notebook-tab">
+--  <property name="label">Tab</property> </object> </child> </object> ]|
 --
---    <object class="GtkNotebook">
---    <child>
---    <object class="GtkLabel" id="notebook-content">
---    <property name="label">Content</property>
---    </object>
---    </child>
---    <child type="tab">
---    <object class="GtkLabel" id="notebook-tab">
---    <property name="label">Tab</property>
---    </object>
---    </child>
---    </object>
 --  </description>
 --  <screenshot>gtk-notebook</screenshot>
 --  <group>Layout containers</group>
@@ -120,7 +112,7 @@ package Gtk.Notebook is
    --  Appends a page to Notebook.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or null to use the default label, 'page N'
+   --  page, or null to use the default label, "page N"
 
    procedure Append_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -131,7 +123,7 @@ package Gtk.Notebook is
    --  in the popup menu.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or null to use the default label, 'page N'
+   --  page, or null to use the default label, "page N"
    --  "menu_label": the widget to use as a label for the page-switch menu, if
    --  that is enabled. If null, and Tab_Label is a Gtk.Label.Gtk_Label or
    --  null, then the menu label will be a newly created label with the same
@@ -288,15 +280,15 @@ package Gtk.Notebook is
    --  accept dragged tabs from it) it must be set as a drop destination and
    --  accept the target "GTK_NOTEBOOK_TAB". The notebook will fill the
    --  selection with a GtkWidget** pointing to the child widget that
-   --  corresponds to the dropped tab. |[ static void
-   --  on_drop_zone_drag_data_received (GtkWidget *widget, GdkDragContext
-   --  *context, gint x, gint y, GtkSelectionData *selection_data, guint info,
-   --  guint time, gpointer user_data) { GtkWidget *notebook; GtkWidget
-   --  **child;
+   --  corresponds to the dropped tab. |[<!-- language="C" --> static void
+   --  on_drag_data_received (GtkWidget *widget, GdkDragContext *context, gint
+   --  x, gint y, GtkSelectionData *data, guint info, guint time, gpointer
+   --  user_data) { GtkWidget *notebook; GtkWidget **child; GtkContainer
+   --  *container;
    --  notebook = gtk_drag_get_source_widget (context); child = (void*)
-   --  gtk_selection_data_get_data (selection_data);
-   --  process_widget (*child); gtk_container_remove (GTK_CONTAINER
-   --  (notebook), *child); } ]|
+   --  gtk_selection_data_get_data (data);
+   --  process_widget (*child); container = GTK_CONTAINER (notebook);
+   --  gtk_container_remove (container, *child); } ]|
    --  If you want a notebook to accept drags from other widgets, you will
    --  have to set your own DnD code to do it.
    --  Since: gtk+ 2.10
@@ -308,7 +300,7 @@ package Gtk.Notebook is
    pragma Obsolescent (Get_Tab_Hborder);
    --  Returns the horizontal width of a tab border.
    --  Since: gtk+ 2.22
-   --  Deprecated since 3.4, this function returns zero
+   --  Deprecated since 3.4, 1
 
    function Get_Tab_Label
       (Notebook : not null access Gtk_Notebook_Record;
@@ -324,7 +316,7 @@ package Gtk.Notebook is
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Changes the tab label for Child. If null is specified for Tab_Label,
-   --  then the page will have the label 'page N'.
+   --  then the page will have the label "page N".
    --  "child": the page
    --  "tab_label": the tab label widget to use, or null for default tab label
 
@@ -380,7 +372,7 @@ package Gtk.Notebook is
    pragma Obsolescent (Get_Tab_Vborder);
    --  Returns the vertical width of a tab border.
    --  Since: gtk+ 2.22
-   --  Deprecated since 3.4, this function returns zero
+   --  Deprecated since 3.4, 1
 
    function Insert_Page
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -390,7 +382,7 @@ package Gtk.Notebook is
    --  Insert a page into Notebook at the given position.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or null to use the default label, 'page N'
+   --  page, or null to use the default label, "page N"
    --  "position": the index (starting at 0) at which to insert the page, or
    --  -1 to append the page after all other pages
 
@@ -404,7 +396,7 @@ package Gtk.Notebook is
    --  widget to use as the label in the popup menu.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or null to use the default label, 'page N'
+   --  page, or null to use the default label, "page N"
    --  "menu_label": the widget to use as a label for the page-switch menu, if
    --  that is enabled. If null, and Tab_Label is a Gtk.Label.Gtk_Label or
    --  null, then the menu label will be a newly created label with the same
@@ -438,7 +430,7 @@ package Gtk.Notebook is
    --  Prepends a page to Notebook.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or null to use the default label, 'page N'
+   --  page, or null to use the default label, "page N"
 
    function Prepend_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -449,7 +441,7 @@ package Gtk.Notebook is
    --  in the popup menu.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
-   --  page, or null to use the default label, 'page N'
+   --  page, or null to use the default label, "page N"
    --  "menu_label": the widget to use as a label for the page-switch menu, if
    --  that is enabled. If null, and Tab_Label is a Gtk.Label.Gtk_Label or
    --  null, then the menu label will be a newly created label with the same
@@ -572,7 +564,8 @@ package Gtk.Notebook is
    --    --  "page": the tab of Notebook that is being detached
    --    --  "x": the X coordinate where the drop happens
    --    --  "y": the Y coordinate where the drop happens
-   --    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be added to, or null.
+   --    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
+   --     added to, or null.
 
    type Cb_Gtk_Notebook_Gtk_Notebook_Tab_Boolean is not null access function
      (Self   : access Gtk_Notebook_Record'Class;

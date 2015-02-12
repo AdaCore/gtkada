@@ -33,27 +33,25 @@
 --  have any methods of its own. Instead, you should use the functions that
 --  work on a Gtk.Recent_Chooser.Gtk_Recent_Chooser.
 --
---  <example id="gtkrecentchooser-typical-usage">
---  == Typical usage ==
+--  ## Typical usage ## {gtkrecentchooser-typical-usage}
 --
 --  In the simplest of cases, you can use the following code to use a
 --  Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog to select a recently
 --  used file:
 --
---    GtkWidget *dialog;
---    dialog = gtk_recent_chooser_dialog_new ("Recent Documents",
---       parent_window,
---       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
---       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
---       NULL);
---    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
---    {
---       GtkRecentInfo *info;
---       info = gtk_recent_chooser_get_current_item (GTK_RECENT_CHOOSER (dialog));
---       open_file (gtk_recent_info_get_uri (info));
---       gtk_recent_info_unref (info);
---    }
---    gtk_widget_destroy (dialog);
+--  |[<!-- language="C" --> GtkWidget *dialog; gint res;
+--
+--  dialog = gtk_recent_chooser_dialog_new ("Recent Documents", parent_window,
+--  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+--
+--  res = gtk_dialog_run (GTK_DIALOG (dialog)); if (res ==
+--  GTK_RESPONSE_ACCEPT) { GtkRecentInfo *info; GtkRecentChooser *chooser =
+--  GTK_RECENT_CHOOSER (dialog);
+--
+--  info = gtk_recent_chooser_get_current_item (chooser); open_file
+--  (gtk_recent_info_get_uri (info)); gtk_recent_info_unref (info); }
+--
+--  gtk_widget_destroy (dialog); ]|
 --
 --  Recently used files are supported since GTK+ 2.10.
 --
@@ -201,7 +199,7 @@ package Gtk.Recent_Chooser_Dialog is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
+       Filter  : access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)

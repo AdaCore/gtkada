@@ -27,6 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Settings;               use Gtk.Settings;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -57,6 +58,25 @@ package body Gtk.Dialog is
    begin
       return Boolean'Val (Internal (Get_Object (Screen)));
    end Gtk_Alternative_Dialog_Button_Order;
+
+   function Use_Header_Bar_From_Settings
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null)
+   return Gtk_Dialog_Flags
+   is
+      S : Gtk_Settings;
+   begin
+      if Widget = null then
+         S := Gtk.Settings.Get_Default;
+      else
+         S := Get_Settings (Widget);
+      end if;
+
+      if Get_Property (S, Gtk_Dialogs_Use_Header_Property) then
+         return Use_Header_Bar;
+      else
+         return 0;
+      end if;
+   end Use_Header_Bar_From_Settings;
 
    package Type_Conversion_Gtk_Dialog is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Dialog_Record);
@@ -219,6 +239,21 @@ package body Gtk.Dialog is
    begin
       return Gtk.Box.Gtk_Box (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Box));
    end Get_Content_Area;
+
+   --------------------
+   -- Get_Header_Bar --
+   --------------------
+
+   function Get_Header_Bar
+      (Dialog : not null access Gtk_Dialog_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Dialog : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_dialog_get_header_bar");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Dialog)), Stub_Gtk_Widget));
+   end Get_Header_Bar;
 
    -----------------------------
    -- Get_Response_For_Widget --

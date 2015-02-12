@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The GdkRGBA structure is used to represent a (possibly translucent) color,
+--  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent) color,
 --  in a way that is compatible with cairos notion of color.
 --
 --  </description>
@@ -45,7 +45,7 @@ package Gdk.RGBA is
 
    function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA;
    pragma Inline (From_Object_Free);
-   --  The GdkRGBA structure is used to represent a (possibly translucent)
+   --  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent)
    --  color, in a way that is compatible with cairos notion of color.
 
    ------------------
@@ -61,7 +61,7 @@ package Gdk.RGBA is
 
    function Copy (Self : Gdk_RGBA) return Gdk_RGBA;
    pragma Import (C, Copy, "gdk_rgba_copy");
-   --  Makes a copy of a Gdk.RGBA.Gdk_RGBA structure.
+   --  Makes a copy of a Gdk.RGBA.Gdk_RGBA.
    --  The result must be freed through Gdk.RGBA.Free.
    --  Since: gtk+ 3.0
 
@@ -72,7 +72,7 @@ package Gdk.RGBA is
 
    procedure Free (Self : Gdk_RGBA);
    pragma Import (C, Free, "gdk_rgba_free");
-   --  Frees a Gdk.RGBA.Gdk_RGBA struct created with Gdk.RGBA.Copy
+   --  Frees a Gdk.RGBA.Gdk_RGBA created with Gdk.RGBA.Copy
    --  Since: gtk+ 3.0
 
    function Hash (Self : Gdk_RGBA) return Guint;
@@ -85,18 +85,14 @@ package Gdk.RGBA is
       (Self    : out Gdk_RGBA;
        Spec    : UTF8_String;
        Success : out Boolean);
-   --  Parses a textual representation of a color, filling in the
-   --  <structfield>red</structfield>, <structfield>green</structfield>,
-   --  <structfield>blue</structfield> and <structfield>alpha</structfield>
-   --  fields of the Rgba struct.
-   --  The string can be either one of:
-   --     * A standard name (Taken from the X11 rgb.txt file).
-   --     * A hex value in the form '&num;rgb' '&num;rrggbb' '&num;rrrgggbbb'
-   --  or '&num;rrrrggggbbbb'
-   --     * A RGB color in the form 'rgb(r,g,b)' (In this case the color will
-   --  have full opacity)
-   --     * A RGBA color in the form 'rgba(r,g,b,a)'
-   --  Where 'r', 'g', 'b' and 'a' are respectively the red, green, blue and
+   --  Parses a textual representation of a color, filling in the Red, Green,
+   --  Blue and Alpha fields of the Rgba Gdk.RGBA.Gdk_RGBA.
+   --  The string can be either one of: - A standard name (Taken from the X11
+   --  rgb.txt file). - A hexadecimal value in the form "\rgb", "\rrggbb",
+   --  "\rrrgggbbb" or "\rrrrggggbbbb" - A RGB color in the form "rgb(r,g,b)"
+   --  (In this case the color will have full opacity) - A RGBA color in the
+   --  form "rgba(r,g,b,a)"
+   --  Where "r", "g", "b" and "a" are respectively the red, green, blue and
    --  alpha color values. In the last two cases, r g and b are either integers
    --  in the range 0 to 255 or precentage values in the range 0% to 100%, and
    --  a is a floating point value in the range 0 to 1.
@@ -104,14 +100,14 @@ package Gdk.RGBA is
    --  "spec": the string specifying the color
 
    function To_String (Self : Gdk_RGBA) return UTF8_String;
-   --  Returns a textual specification of Rgba in the form 'rgb (r, g, b)' or
-   --  'rgba (r, g, b, a)', where 'r', 'g', 'b' and 'a' represent the red,
+   --  Returns a textual specification of Rgba in the form `rgb (r, g, b)` or
+   --  `rgba (r, g, b, a)`, where "r", "g", "b" and "a" represent the red,
    --  green, blue and alpha values respectively. r, g, and b are represented
    --  as integers in the range 0 to 255, and a is represented as floating
    --  point value in the range 0 to 1.
    --  These string forms are string forms those supported by the CSS3 colors
    --  module, and can be parsed by Gdk.RGBA.Parse.
-   --  Note that this string representation may loose some precision, since r,
+   --  Note that this string representation may lose some precision, since r,
    --  g and b are represented as 8-bit integers. If this is a concern, you
    --  should use a different representation.
    --  Since: gtk+ 3.0

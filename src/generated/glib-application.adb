@@ -294,6 +294,20 @@ package body Glib.Application is
       return From_Object (Internal (Get_Object (Self)));
    end Get_Platform_Data;
 
+   ----------------------------
+   -- Get_Resource_Base_Path --
+   ----------------------------
+
+   function Get_Resource_Base_Path
+      (Self : not null access Gapplication_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "g_application_get_resource_base_path");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Resource_Base_Path;
+
    ------------
    -- Getenv --
    ------------
@@ -325,6 +339,17 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self));
    end Hold;
+
+   ---------------
+   -- Mark_Busy --
+   ---------------
+
+   procedure Mark_Busy (Self : not null access Gapplication_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_application_mark_busy");
+   begin
+      Internal (Get_Object (Self));
+   end Mark_Busy;
 
    ----------
    -- Quit --
@@ -386,6 +411,31 @@ package body Glib.Application is
       GtkAda.Types.Free (Tmp_Argv);
       return Tmp_Return;
    end Run;
+
+   -----------------------
+   -- Send_Notification --
+   -----------------------
+
+   procedure Send_Notification
+      (Self         : not null access Gapplication_Record;
+       Id           : UTF8_String := "";
+       Notification : not null access Glib.Notification.Gnotification_Record'Class)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Id           : Interfaces.C.Strings.chars_ptr;
+          Notification : System.Address);
+      pragma Import (C, Internal, "g_application_send_notification");
+      Tmp_Id : Interfaces.C.Strings.chars_ptr;
+   begin
+      if Id = "" then
+         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Id := New_String (Id);
+      end if;
+      Internal (Get_Object (Self), Tmp_Id, Get_Object (Notification));
+      Free (Tmp_Id);
+   end Send_Notification;
 
    ----------------------
    -- Set_Action_Group --
@@ -478,6 +528,58 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self), Inactivity_Timeout);
    end Set_Inactivity_Timeout;
+
+   ----------------------------
+   -- Set_Resource_Base_Path --
+   ----------------------------
+
+   procedure Set_Resource_Base_Path
+      (Self          : not null access Gapplication_Record;
+       Resource_Path : UTF8_String := "")
+   is
+      procedure Internal
+         (Self          : System.Address;
+          Resource_Path : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "g_application_set_resource_base_path");
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr;
+   begin
+      if Resource_Path = "" then
+         Tmp_Resource_Path := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Resource_Path := New_String (Resource_Path);
+      end if;
+      Internal (Get_Object (Self), Tmp_Resource_Path);
+      Free (Tmp_Resource_Path);
+   end Set_Resource_Base_Path;
+
+   -----------------
+   -- Unmark_Busy --
+   -----------------
+
+   procedure Unmark_Busy (Self : not null access Gapplication_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_application_unmark_busy");
+   begin
+      Internal (Get_Object (Self));
+   end Unmark_Busy;
+
+   ---------------------------
+   -- Withdraw_Notification --
+   ---------------------------
+
+   procedure Withdraw_Notification
+      (Self : not null access Gapplication_Record;
+       Id   : UTF8_String)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Id   : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "g_application_withdraw_notification");
+      Tmp_Id : Interfaces.C.Strings.chars_ptr := New_String (Id);
+   begin
+      Internal (Get_Object (Self), Tmp_Id);
+      Free (Tmp_Id);
+   end Withdraw_Notification;
 
    ------------------
    -- Action_Added --

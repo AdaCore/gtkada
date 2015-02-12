@@ -24,12 +24,27 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings;       use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Pango.Font_Map is
 
    package Type_Conversion_Pango_Font_Map is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Pango_Font_Map_Record);
    pragma Unreferenced (Type_Conversion_Pango_Font_Map);
+
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed (Self : not null access Pango_Font_Map_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "pango_font_map_changed");
+   begin
+      Internal (Get_Object (Self));
+   end Changed;
 
    --------------------
    -- Create_Context --
@@ -58,6 +73,20 @@ package body Pango.Font_Map is
    begin
       return Internal (Get_Object (Self));
    end Get_Serial;
+
+   ---------------------------
+   -- Get_Shape_Engine_Type --
+   ---------------------------
+
+   function Get_Shape_Engine_Type
+      (Self : not null access Pango_Font_Map_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "pango_font_map_get_shape_engine_type");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Shape_Engine_Type;
 
    -------------------
    -- List_Families --

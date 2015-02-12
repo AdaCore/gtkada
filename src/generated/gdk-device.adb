@@ -155,6 +155,19 @@ package body Gdk.Device is
       return Internal (Get_Object (Self)) /= 0;
    end Get_Has_Cursor;
 
+   ---------------------------
+   -- Get_Last_Event_Window --
+   ---------------------------
+
+   function Get_Last_Event_Window
+      (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Window
+   is
+      function Internal (Self : System.Address) return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "gdk_device_get_last_event_window");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Last_Event_Window;
+
    --------------
    -- Get_Mode --
    --------------
@@ -208,6 +221,29 @@ package body Gdk.Device is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Name;
 
+   -------------------------
+   -- Get_Position_Double --
+   -------------------------
+
+   procedure Get_Position_Double
+      (Self   : not null access Gdk_Device_Record;
+       Screen : out Gdk.Screen.Gdk_Screen;
+       X      : out Gdouble;
+       Y      : out Gdouble)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Screen : out System.Address;
+          X      : out Gdouble;
+          Y      : out Gdouble);
+      pragma Import (C, Internal, "gdk_device_get_position_double");
+      Tmp_Screen      : aliased System.Address;
+      Stub_Gdk_Screen : Gdk.Screen.Gdk_Screen_Record;
+   begin
+      Internal (Get_Object (Self), Tmp_Screen, X, Y);
+      Screen := Gdk.Screen.Gdk_Screen (Get_User_Data (Tmp_Screen, Stub_Gdk_Screen));
+   end Get_Position_Double;
+
    ----------------
    -- Get_Source --
    ----------------
@@ -228,18 +264,46 @@ package body Gdk.Device is
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
        Window : Gdk.Gdk_Window;
-       Axes   : in out Gdouble;
-       Mask   : in out Gdk.Types.Gdk_Modifier_Type)
+       Axes   : Gdouble_Array;
+       Mask   : out Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
          (Self   : System.Address;
           Window : Gdk.Gdk_Window;
-          Axes   : in out Gdouble;
-          Mask   : in out Gdk.Types.Gdk_Modifier_Type);
+          Axes   : System.Address;
+          Mask   : out Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gdk_device_get_state");
    begin
-      Internal (Get_Object (Self), Window, Axes, Mask);
+      Internal (Get_Object (Self), Window, Axes (Axes'First)'Address, Mask);
    end Get_State;
+
+   -----------------------------------
+   -- Get_Window_At_Position_Double --
+   -----------------------------------
+
+   function Get_Window_At_Position_Double
+      (Self  : not null access Gdk_Device_Record;
+       Win_X : access Gdouble;
+       Win_Y : access Gdouble) return Gdk.Gdk_Window
+   is
+      function Internal
+         (Self      : System.Address;
+          Acc_Win_X : access Gdouble;
+          Acc_Win_Y : access Gdouble) return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "gdk_device_get_window_at_position_double");
+      Acc_Win_X  : aliased Gdouble;
+      Acc_Win_Y  : aliased Gdouble;
+      Tmp_Return : Gdk.Gdk_Window;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
+      if Win_X /= null then
+         Win_X.all := Acc_Win_X;
+      end if;
+      if Win_Y /= null then
+         Win_Y.all := Acc_Win_Y;
+      end if;
+      return Tmp_Return;
+   end Get_Window_At_Position_Double;
 
    ----------
    -- Grab --

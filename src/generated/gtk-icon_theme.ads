@@ -25,28 +25,28 @@
 --  Gtk.Icon_Theme.Gtk_Icon_Theme provides a facility for looking up icons by
 --  name and size. The main reason for using a name rather than simply
 --  providing a filename is to allow different icons to be used depending on
---  what 'icon theme' is selected by the user. The operation of icon themes on
---  Linux and Unix follows the <ulink
---  url="http://www.freedesktop.org/Standards/icon-theme-spec">Icon Theme
---  Specification</ulink>. There is a default icon theme, named 'hicolor' where
---  applications should install their icons, but more additional application
---  themes can be installed as operating system vendors and users choose.
+--  what "icon theme" is selected by the user. The operation of icon themes on
+--  Linux and Unix follows the [Icon Theme
+--  Specification](http://www.freedesktop.org/Standards/icon-theme-spec) There
+--  is a fallback icon theme, named `hicolor`, where applications should
+--  install their icons, but additional icon themes can be installed as
+--  operating system vendors and users choose.
 --
---  Named icons are similar to the <xref
---  linkend="gtk3-Themeable-Stock-Images"/> facility, and the distinction
---  between the two may be a bit confusing. A few things to keep in mind:
+--  Named icons are similar to the deprecated [Stock Items][gtkstock], and the
+--  distinction between the two may be a bit confusing. A few things to keep in
+--  mind:
 --
---     * Stock images usually are used in conjunction with <xref
---  linkend="gtk3-Stock-Items"/>, such as GTK_STOCK_OK or GTK_STOCK_OPEN. Named
---  icons are easier to set up and therefore are more useful for new icons that
---  an application wants to add, such as application icons or window icons.
+--  - Stock images usually are used in conjunction with [Stock
+--  Items][gtkstock], such as GTK_STOCK_OK or GTK_STOCK_OPEN. Named icons are
+--  easier to set up and therefore are more useful for new icons that an
+--  application wants to add, such as application icons or window icons.
 --
---     * Stock images can only be loaded at the symbolic sizes defined by the
+--  - Stock images can only be loaded at the symbolic sizes defined by the
 --  Gtk.Enums.Gtk_Icon_Size enumeration, or by custom sizes defined by
 --  Gtk.Icon_Factory.Icon_Size_Register, while named icons are more flexible
 --  and any pixel size can be specified.
 --
---     * Because stock images are closely tied to stock items, and thus to
+--  - Because stock images are closely tied to stock items, and thus to
 --  actions in the user interface, stock images may come in multiple variants
 --  for different widget states or writing directions.
 --
@@ -63,35 +63,23 @@
 --  the icons in the current theme. You can create new
 --  Gtk.Icon_Theme.Gtk_Icon_Theme objects, but it's much more efficient to use
 --  the standard icon theme for the Gdk.Screen.Gdk_Screen so that the icon
---  information is shared with other people looking up icons. In the case where
---  the default screen is being used, looking up an icon can be as simple as:
+--  information is shared with other people looking up icons. |[<!--
+--  language="C" --> GError *error = NULL; GtkIconTheme *icon_theme; GdkPixbuf
+--  *pixbuf;
 --
---    GError *error = NULL;
---    GtkIconTheme *icon_theme;
---    GdkPixbuf *pixbuf;
---    icon_theme = gtk_icon_theme_get_default ();
---    pixbuf = gtk_icon_theme_load_icon (icon_theme,
---       "my-icon-name", // icon name
---       48, // size
---       0,  // flags
---       &error);
---    if (!pixbuf)
---    {
---       g_warning ("Couldn't load icon: %s", error->message);
---       g_error_free (error);
---    }
--- else
---    {
---       // Use the pixbuf
---       g_object_unref (pixbuf);
---    }
---
+--  icon_theme = gtk_icon_theme_get_default (); pixbuf =
+--  gtk_icon_theme_load_icon (icon_theme, "my-icon-name", // icon name 48, //
+--  icon size 0, // flags &error); if (!pixbuf) { g_warning ("Couldn't load
+--  icon: %s", error->message); g_error_free (error); } else { // Use the
+--  pixbuf g_object_unref (pixbuf); } ]|
 --
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
+with Cairo;                   use Cairo;
 with GNAT.Strings;            use GNAT.Strings;
+with Gdk;                     use Gdk;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
@@ -120,6 +108,10 @@ package Gtk.Icon_Theme is
    Icon_Lookup_Use_Builtin : constant Gtk_Icon_Lookup_Flags := 4;
    Icon_Lookup_Generic_Fallback : constant Gtk_Icon_Lookup_Flags := 8;
    Icon_Lookup_Force_Size : constant Gtk_Icon_Lookup_Flags := 16;
+   Icon_Lookup_Force_Regular : constant Gtk_Icon_Lookup_Flags := 32;
+   Icon_Lookup_Force_Symbolic : constant Gtk_Icon_Lookup_Flags := 64;
+   Icon_Lookup_Dir_Ltr : constant Gtk_Icon_Lookup_Flags := 128;
+   Icon_Lookup_Dir_Rtl : constant Gtk_Icon_Lookup_Flags := 256;
 
    type Gtk_Icon_Info_Record is new GObject_Record with null record;
    type Gtk_Icon_Info is access all Gtk_Icon_Info_Record'Class;
@@ -184,6 +176,21 @@ package Gtk.Icon_Theme is
    -- Methods --
    -------------
 
+   procedure Add_Resource_Path
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Path       : UTF8_String);
+   --  Adds a resource path that will be looked at when looking for icons,
+   --  similar to search paths.
+   --  This function should be used to make application-specific icons
+   --  available as part of the icon theme.
+   --  The resources are considered as part of the hicolor icon theme and must
+   --  be located in subdirectories that are defined in the hicolor icon theme,
+   --  such as `Path/16x16/actions/run.png`. Icons that are directly placed in
+   --  the resource path instead of a subdirectory are also considered as
+   --  ultimate fallback.
+   --  Since: gtk+ 3.14
+   --  "path": a resource path
+
    procedure Append_Search_Path
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Path       : UTF8_String);
@@ -197,15 +204,35 @@ package Gtk.Icon_Theme is
        Icon_Names : GNAT.Strings.String_List;
        Size       : Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
-   --  Looks up a named icon and returns a structure containing information
-   --  such as the filename of the icon. The icon can then be rendered into a
-   --  pixbuf using Gtk.Icon_Theme.Load_Icon. (gtk_icon_theme_load_icon
-   --  combines these two steps if all you need is the pixbuf.)
+   --  Looks up a named icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info
+   --  containing information such as the filename of the icon. The icon can
+   --  then be rendered into a pixbuf using Gtk.Icon_Theme.Load_Icon.
+   --  (gtk_icon_theme_load_icon combines these two steps if all you need is
+   --  the pixbuf.)
    --  If Icon_Names contains more than one name, this function tries them all
    --  in the given order before falling back to inherited icon themes.
    --  Since: gtk+ 2.12
    --  "icon_names": null-terminated array of icon names to lookup
    --  "size": desired icon size
+   --  "flags": flags modifying the behavior of the icon lookup
+
+   function Choose_Icon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Names : GNAT.Strings.String_List;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
+   --  Looks up a named icon for a particular window scale and returns a
+   --  Gtk.Icon_Theme.Gtk_Icon_Info containing information such as the filename
+   --  of the icon. The icon can then be rendered into a pixbuf using
+   --  Gtk.Icon_Theme.Load_Icon. (gtk_icon_theme_load_icon combines these two
+   --  steps if all you need is the pixbuf.)
+   --  If Icon_Names contains more than one name, this function tries them all
+   --  in the given order before falling back to inherited icon themes.
+   --  Since: gtk+ 3.10
+   --  "icon_names": null-terminated array of icon names to lookup
+   --  "size": desired icon size
+   --  "scale": desired scale
    --  "flags": flags modifying the behavior of the icon lookup
 
    function Get_Example_Icon_Name
@@ -235,15 +262,16 @@ package Gtk.Icon_Theme is
        Path       : GNAT.Strings.String_List);
    --  Sets the search path for the icon theme object. When looking for an
    --  icon theme, GTK+ will search for a subdirectory of one or more of the
-   --  directories in Path with the same name as the icon theme. (Themes from
-   --  multiple of the path elements are combined to allow themes to be
-   --  extended by adding icons in the user's home directory.)
+   --  directories in Path with the same name as the icon theme containing an
+   --  index.theme file. (Themes from multiple of the path elements are
+   --  combined to allow themes to be extended by adding icons in the user's
+   --  home directory.)
    --  In addition if an icon found isn't found either in the current icon
    --  theme or the default icon theme, and an image file with the right name
    --  is found directly in one of the elements of Path, then that image will
    --  be used for the icon name. (This is legacy feature, and new icons should
-   --  be put into the default icon theme, which is called DEFAULT_THEME_NAME,
-   --  rather than directly on the icon path.)
+   --  be put into the fallback icon theme, which is called hicolor, rather
+   --  than directly on the icon path.)
    --  Since: gtk+ 2.4
    --  "path": array of directories that are searched for icon themes
 
@@ -311,17 +339,97 @@ package Gtk.Icon_Theme is
    --  pixbuf returned by this function will be scaled to the exact size.
    --  Since: gtk+ 2.4
 
+   function Load_Icon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags;
+       Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  Looks up an icon in an icon theme for a particular window scale, scales
+   --  it to the given size and renders it into a pixbuf. This is a convenience
+   --  function; if more details about the icon are needed, use
+   --  Gtk.Icon_Theme.Lookup_Icon followed by Gtk.Icon_Theme.Load_Icon.
+   --  Note that you probably want to listen for icon theme changes and update
+   --  the icon. This is usually done by connecting to the GtkWidget::style-set
+   --  signal. If for some reason you do not want to update the icon when the
+   --  icon theme changes, you should consider using gdk_pixbuf_copy to make a
+   --  private copy of the pixbuf returned by this function. Otherwise GTK+ may
+   --  need to keep the old icon theme loaded, which would be a waste of
+   --  memory.
+   --  Since: gtk+ 3.10
+   --  "icon_name": the name of the icon to lookup
+   --  "size": the desired icon size. The resulting icon may not be exactly
+   --  this size; see Gtk.Icon_Theme.Load_Icon.
+   --  "scale": desired scale
+   --  "flags": flags modifying the behavior of the icon lookup
+
+   function Load_Surface
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String;
+       Size       : Gint;
+       Scale      : Gint;
+       For_Window : Gdk.Gdk_Window;
+       Flags      : Gtk_Icon_Lookup_Flags;
+       Error      : access Glib.Error.GError) return Cairo.Cairo_Surface;
+   --  Looks up an icon in an icon theme for a particular window scale, scales
+   --  it to the given size and renders it into a cairo surface. This is a
+   --  convenience function; if more details about the icon are needed, use
+   --  Gtk.Icon_Theme.Lookup_Icon followed by Gtk.Icon_Theme.Load_Surface.
+   --  Note that you probably want to listen for icon theme changes and update
+   --  the icon. This is usually done by connecting to the GtkWidget::style-set
+   --  signal.
+   --  Since: gtk+ 3.10
+   --  "icon_name": the name of the icon to lookup
+   --  "size": the desired icon size. The resulting icon may not be exactly
+   --  this size; see Gtk.Icon_Theme.Load_Icon.
+   --  "scale": desired scale
+   --  "for_window": Gdk.Gdk_Window to optimize drawing for, or null
+   --  "flags": flags modifying the behavior of the icon lookup
+
+   function Load_Surface
+      (Icon_Info  : not null access Gtk_Icon_Info_Record;
+       For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface;
+   --  Renders an icon previously looked up in an icon theme using
+   --  Gtk.Icon_Theme.Lookup_Icon; the size will be based on the size passed to
+   --  Gtk.Icon_Theme.Lookup_Icon. Note that the resulting surface may not be
+   --  exactly this size; an icon theme may have icons that differ slightly
+   --  from their nominal sizes, and in addition GTK+ will avoid scaling icons
+   --  that it considers sufficiently close to the requested size or for which
+   --  the source image would have to be scaled up too far. (This maintains
+   --  sharpness.). This behaviour can be changed by passing the
+   --  Gtk.Icon_Theme.Icon_Lookup_Force_Size flag when obtaining the
+   --  Gtk.Icon_Theme.Gtk_Icon_Info. If this flag has been specified, the
+   --  pixbuf returned by this function will be scaled to the exact size.
+   --  Since: gtk+ 3.10
+   --  "for_window": Gdk.Gdk_Window to optimize drawing for, or null
+
    function Lookup_By_Gicon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon       : Glib.G_Icon.G_Icon;
        Size       : Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
-   --  Looks up an icon and returns a structure containing information such as
-   --  the filename of the icon. The icon can then be rendered into a pixbuf
-   --  using Gtk.Icon_Theme.Load_Icon.
+   --  Looks up an icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info containing
+   --  information such as the filename of the icon. The icon can then be
+   --  rendered into a pixbuf using Gtk.Icon_Theme.Load_Icon.
    --  Since: gtk+ 2.14
    --  "icon": the Glib.G_Icon.G_Icon to look up
    --  "size": desired icon size
+   --  "flags": flags modifying the behavior of the icon lookup
+
+   function Lookup_By_Gicon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon       : Glib.G_Icon.G_Icon;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
+   --  Looks up an icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info containing
+   --  information such as the filename of the icon. The icon can then be
+   --  rendered into a pixbuf using Gtk.Icon_Theme.Load_Icon.
+   --  Since: gtk+ 3.10
+   --  "icon": the Glib.G_Icon.G_Icon to look up
+   --  "size": desired icon size
+   --  "scale": the desired scale
    --  "flags": flags modifying the behavior of the icon lookup
 
    function Lookup_Icon
@@ -329,13 +437,31 @@ package Gtk.Icon_Theme is
        Icon_Name  : UTF8_String;
        Size       : Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
-   --  Looks up a named icon and returns a structure containing information
-   --  such as the filename of the icon. The icon can then be rendered into a
-   --  pixbuf using Gtk.Icon_Theme.Load_Icon. (gtk_icon_theme_load_icon
-   --  combines these two steps if all you need is the pixbuf.)
+   --  Looks up a named icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info
+   --  containing information such as the filename of the icon. The icon can
+   --  then be rendered into a pixbuf using Gtk.Icon_Theme.Load_Icon.
+   --  (gtk_icon_theme_load_icon combines these two steps if all you need is
+   --  the pixbuf.)
    --  Since: gtk+ 2.4
    --  "icon_name": the name of the icon to lookup
    --  "size": desired icon size
+   --  "flags": flags modifying the behavior of the icon lookup
+
+   function Lookup_Icon_For_Scale
+      (Icon_Theme : not null access Gtk_Icon_Theme_Record;
+       Icon_Name  : UTF8_String;
+       Size       : Gint;
+       Scale      : Gint;
+       Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
+   --  Looks up a named icon for a particular window scale and returns a
+   --  Gtk.Icon_Theme.Gtk_Icon_Info containing information such as the filename
+   --  of the icon. The icon can then be rendered into a pixbuf using
+   --  Gtk.Icon_Theme.Load_Icon. (gtk_icon_theme_load_icon combines these two
+   --  steps if all you need is the pixbuf.)
+   --  Since: gtk+ 3.10
+   --  "icon_name": the name of the icon to lookup
+   --  "size": desired icon size
+   --  "scale": the desired scale
    --  "flags": flags modifying the behavior of the icon lookup
 
    procedure Prepend_Search_Path
@@ -379,21 +505,29 @@ package Gtk.Icon_Theme is
    pragma Obsolescent (Copy);
    --  Make a copy of a Gtk.Icon_Theme.Gtk_Icon_Info.
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.8, Use g_object_ref
+   --  Deprecated since 3.8, 1
 
    procedure Free (Icon_Info : not null access Gtk_Icon_Info_Record);
    pragma Obsolescent (Free);
    --  Free a Gtk.Icon_Theme.Gtk_Icon_Info and associated information
    --  Since: gtk+ 2.4
-   --  Deprecated since 3.8, Use g_object_unref
+   --  Deprecated since 3.8, 1
 
    function Get_Attach_Points
       (Icon_Info : not null access Gtk_Icon_Info_Record)
        return Gdk.Types.Gdk_Points_Array;
-   --  Fetches the set of attach points for an icon. An attach point is a
-   --  location in the icon that can be used as anchor points for attaching
-   --  emblems or overlays to the icon.
+   pragma Obsolescent (Get_Attach_Points);
+   --  This function is deprecated and always returns False.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
+
+   function Get_Base_Scale
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint;
+   --  Gets the base scale for the icon. The base scale is a scale for the
+   --  icon that was specified by the icon theme creator. For instance an icon
+   --  drawn for a high-dpi screen with window scale 2 for a base size of 32
+   --  will be 64 pixels tall and have a base scale of 2.
+   --  Since: gtk+ 3.10
 
    function Get_Base_Size
       (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint;
@@ -402,32 +536,35 @@ package Gtk.Icon_Theme is
    --  the actual size of image; an example of this is small emblem icons that
    --  can be attached to a larger icon. These icons will be given the same
    --  base size as the larger icons to which they are attached.
+   --  Note that for scaled icons the base size does not include the base
+   --  scale.
    --  Since: gtk+ 2.4
 
    function Get_Builtin_Pixbuf
       (Icon_Info : not null access Gtk_Icon_Info_Record)
        return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Get_Builtin_Pixbuf);
    --  Gets the built-in image for this icon, if any. To allow GTK+ to use
    --  built in icon images, you must pass the
    --  Gtk.Icon_Theme.Icon_Lookup_Use_Builtin to Gtk.Icon_Theme.Lookup_Icon.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
 
    function Get_Display_Name
       (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String;
-   --  Gets the display name for an icon. A display name is a string to be
-   --  used in place of the icon name in a user visible context like a list of
-   --  icons.
+   pragma Obsolescent (Get_Display_Name);
+   --  This function is deprecated and always returns null.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
 
    procedure Get_Embedded_Rect
       (Icon_Info              : not null access Gtk_Icon_Info_Record;
        Rectangle              : out Gdk.Rectangle.Gdk_Rectangle;
        Has_Embedded_Rectangle : out Boolean);
-   --  Gets the coordinates of a rectangle within the icon that can be used
-   --  for display of information such as a preview of the contents of a text
-   --  file. See Gtk.Icon_Theme.Set_Raw_Coordinates for further information
-   --  about the coordinate system.
+   pragma Obsolescent (Get_Embedded_Rect);
+   --  This function is deprecated and always returns False.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "rectangle": Gdk.Rectangle.Gdk_Rectangle in which to store embedded
    --  rectangle coordinates; coordinates are only stored when this function
    --  returns True.
@@ -440,6 +577,13 @@ package Gtk.Icon_Theme is
    --  is returned; in this case, you should use
    --  Gtk.Icon_Theme.Get_Builtin_Pixbuf.
    --  Since: gtk+ 2.4
+
+   function Is_Symbolic
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Boolean;
+   --  Checks if the icon is symbolic or not. This currently uses only the
+   --  file name and not the file contents for determining this. This behaviour
+   --  may change in the future.
+   --  Since: gtk+ 3.12
 
    function Load_Symbolic
       (Icon_Info     : not null access Gtk_Icon_Info_Record;
@@ -459,11 +603,11 @@ package Gtk.Icon_Theme is
    --  g_themed_icon_new_with_default_fallbacks to load the icon.
    --  As implementation details, the icon loaded needs to be of SVG type,
    --  contain the "symbolic" term as the last component of the icon name, and
-   --  use the 'fg', 'success', 'warning' and 'error' CSS styles in the SVG
+   --  use the "fg", "success", "warning" and "error" CSS styles in the SVG
    --  file itself.
-   --  See the <ulink
-   --  url="http://www.freedesktop.org/wiki/SymbolicIcons">Symbolic Icons
-   --  spec</ulink> for more information about symbolic icons.
+   --  See the [Symbolic Icons
+   --  Specification](http://www.freedesktop.org/wiki/SymbolicIcons) for more
+   --  information about symbolic icons.
    --  Since: gtk+ 3.0
    --  "fg": a Gdk.RGBA.Gdk_RGBA representing the foreground color of the icon
    --  "success_color": a Gdk.RGBA.Gdk_RGBA representing the warning color of
@@ -507,8 +651,7 @@ package Gtk.Icon_Theme is
    --  This allows loading symbolic icons that will match the system theme.
    --  See Gtk.Icon_Theme.Load_Symbolic for more details.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.0, Use Gtk.Icon_Theme.Load_Symbolic_For_Context
-   --  instead
+   --  Deprecated since 3.0, 1
    --  "style": a Gtk.Style.Gtk_Style to take the colors from
    --  "state": the widget state to use for colors
    --  "was_symbolic": a Boolean, returns whether the loaded icon was a
@@ -517,6 +660,7 @@ package Gtk.Icon_Theme is
    procedure Set_Raw_Coordinates
       (Icon_Info       : not null access Gtk_Icon_Info_Record;
        Raw_Coordinates : Boolean);
+   pragma Obsolescent (Set_Raw_Coordinates);
    --  Sets whether the coordinates returned by
    --  Gtk.Icon_Theme.Get_Embedded_Rect and Gtk.Icon_Theme.Get_Attach_Points
    --  should be returned in their original form as specified in the icon
@@ -527,10 +671,11 @@ package Gtk.Icon_Theme is
    --  they are in a 1000x1000 coordinate space that is scaled to the final
    --  size of the icon. You can determine if the icon is an SVG icon by using
    --  Gtk.Icon_Theme.Get_Filename, and seeing if it is non-null and ends in
-   --  '.svg'.
+   --  ".svg".
    --  This function is provided primarily to allow compatibility wrappers for
    --  older API's, and is not expected to be useful for applications.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "raw_coordinates": whether the coordinates of embedded rectangles and
    --  attached points should be returned in their original (unscaled) form.
 
@@ -542,6 +687,7 @@ package Gtk.Icon_Theme is
       (Icon_Name : UTF8_String;
        Size      : Gint;
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   pragma Obsolescent (Add_Builtin_Icon);
    --  Registers a built-in icon for icon theme lookups. The idea of built-in
    --  icons is to allow an application or library that uses themed icons to
    --  function requiring files to be present in the file system. For instance,
@@ -553,11 +699,12 @@ package Gtk.Icon_Theme is
    --  This function will generally be used with pixbufs loaded via
    --  gdk_pixbuf_new_from_inline.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "icon_name": the name of the icon to register
-   --  "size": the size at which to register the icon (different images can be
-   --  registered for the same icon name at different sizes.)
+   --  "size": the size in pixels at which to register the icon (different
+   --  images can be registered for the same icon name at different sizes.)
    --  "pixbuf": Gdk.Pixbuf.Gdk_Pixbuf that contains the image to use for
-   --  Icon_Name.
+   --  Icon_Name
 
    function Get_Default return Gtk_Icon_Theme;
    --  Gets the icon theme for the default screen. See

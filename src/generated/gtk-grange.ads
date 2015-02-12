@@ -401,7 +401,8 @@ package Gtk.GRange is
    --  Callback parameters:
    --    --  "scroll": the type of scroll action that was performed
    --    --  "value": the new value resulting from the scroll action
-   --    --  Returns True to prevent other handlers from being invoked for the signal, False to propagate the signal further
+   --    --  Returns True to prevent other handlers from being invoked for
+   --     the signal, False to propagate the signal further
 
    type Cb_Gtk_Range_Gtk_Scroll_Type_Void is not null access procedure
      (Self : access Gtk_Range_Record'Class;

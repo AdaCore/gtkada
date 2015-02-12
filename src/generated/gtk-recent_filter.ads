@@ -33,7 +33,7 @@
 --  e.g. a filter for text/plain also matches a file with mime type
 --  application/rtf, since application/rtf is a subclass of text/plain. Note
 --  that Gtk.Recent_Filter.Gtk_Recent_Filter allows wildcards for the subtype
---  of a mime type, so you can e.g. filter for image/<!-- -->*.
+--  of a mime type, so you can e.g. filter for image/\*.
 --
 --  Normally, filters are used by adding them to a
 --  Gtk.Recent_Chooser.Gtk_Recent_Chooser, see Gtk.Recent_Chooser.Add_Filter,
@@ -42,31 +42,23 @@
 --
 --  Recently used files are supported since GTK+ 2.10.
 --
---  == GtkRecentFilter as GtkBuildable ==
+--  ## GtkRecentFilter as GtkBuildable
 --
 --  The GtkRecentFilter implementation of the GtkBuildable interface supports
 --  adding rules using the <mime-types>, <patterns> and <applications> elements
 --  and listing the rules within. Specifying a <mime-type>, <pattern> or
---  <application> is the same as calling Gtk.Recent_Filter.Add_Mime_Type,
---  Gtk.Recent_Filter.Add_Pattern or Gtk.Recent_Filter.Add_Application.
+--  <application> has the same effect as calling
+--  Gtk.Recent_Filter.Add_Mime_Type, Gtk.Recent_Filter.Add_Pattern or
+--  Gtk.Recent_Filter.Add_Application.
 --
---  == A UI definition fragment specifying GtkRecentFilter rules ==
+--  An example of a UI definition fragment specifying GtkRecentFilter rules:
+--  |[ <object class="GtkRecentFilter"> <mime-types>
+--  <mime-type>text/plain</mime-type> <mime-type>image/png</mime-type>
+--  </mime-types> <patterns> <pattern>*.txt</pattern> <pattern>*.png</pattern>
+--  </patterns> <applications> <application>gimp</application>
+--  <application>gedit</application> <application>glade</application>
+--  </applications> </object> ]|
 --
---    <object class="GtkRecentFilter">
---    <mime-types>
---    <mime-type>text/plain</mime-type>
---    <mime-type>image/png</mime-type>
---    </mime-types>
---    <patterns>
---    <pattern>*.txt</pattern>
---    <pattern>*.png</pattern>
---    </patterns>
---    <applications>
---    <application>gimp</application>
---    <application>gedit</application>
---    <application>glade</application>
---    </applications>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -148,8 +140,8 @@ package Gtk.Recent_Filter is
    --  not particularly useful until you add rules with
    --  Gtk.Recent_Filter.Add_Pattern, Gtk.Recent_Filter.Add_Mime_Type,
    --  Gtk.Recent_Filter.Add_Application, Gtk.Recent_Filter.Add_Age. To create
-   --  a filter that accepts any recently used resource, use: |[
-   --  GtkRecentFilter *filter = gtk_recent_filter_new ();
+   --  a filter that accepts any recently used resource, use: |[<!--
+   --  language="C" --> GtkRecentFilter *filter = gtk_recent_filter_new ();
    --  gtk_recent_filter_add_pattern (filter, "*"); ]|
    --  Since: gtk+ 2.10
 
@@ -159,8 +151,8 @@ package Gtk.Recent_Filter is
    --  not particularly useful until you add rules with
    --  Gtk.Recent_Filter.Add_Pattern, Gtk.Recent_Filter.Add_Mime_Type,
    --  Gtk.Recent_Filter.Add_Application, Gtk.Recent_Filter.Add_Age. To create
-   --  a filter that accepts any recently used resource, use: |[
-   --  GtkRecentFilter *filter = gtk_recent_filter_new ();
+   --  a filter that accepts any recently used resource, use: |[<!--
+   --  language="C" --> GtkRecentFilter *filter = gtk_recent_filter_new ();
    --  gtk_recent_filter_add_pattern (filter, "*"); ]|
    --  Since: gtk+ 2.10
 
@@ -274,14 +266,16 @@ package Gtk.Recent_Filter is
       (Filter      : not null access Gtk_Recent_Filter_Record;
        Filter_Info : Gtk_Recent_Filter_Info) return Boolean;
    --  Tests whether a file should be displayed according to Filter. The
-   --  Gtk.Recent_Filter.Gtk_Recent_Filter_Info structure Filter_Info should
-   --  include the fields returned from Gtk.Recent_Filter.Get_Needed.
+   --  Gtk.Recent_Filter.Gtk_Recent_Filter_Info Filter_Info should include the
+   --  fields returned from Gtk.Recent_Filter.Get_Needed, and must set the
+   --  Gtk.Recent_Filter.Gtk_Recent_Filter_Info.contains field of Filter_Info
+   --  to indicate which fields have been set.
    --  This function will not typically be used by applications; it is
    --  intended principally for use in the implementation of
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
    --  Since: gtk+ 2.10
-   --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info structure
-   --  containing information about a recently used resource
+   --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info containing
+   --  information about a recently used resource
 
    function Get_Name
       (Filter : not null access Gtk_Recent_Filter_Record) return UTF8_String;
@@ -301,7 +295,8 @@ package Gtk.Recent_Filter is
    function Get_Needed
       (Filter : not null access Gtk_Recent_Filter_Record)
        return Gtk_Recent_Filter_Flags;
-   --  Gets the fields that need to be filled in for the structure passed to
+   --  Gets the fields that need to be filled in for the
+   --  Gtk.Recent_Filter.Gtk_Recent_Filter_Info passed to
    --  Gtk.Recent_Filter.Filter
    --  This function will not typically be used by applications; it is
    --  intended principally for use in the implementation of

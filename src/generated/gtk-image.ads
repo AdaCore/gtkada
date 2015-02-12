@@ -26,16 +26,13 @@
 --  can be displayed as an image; most typically, you would load a
 --  Gdk.Pixbuf.Gdk_Pixbuf ("pixel buffer") from a file, and then display that.
 --  There's a convenience function to do this, Gtk.Image.Gtk_New, used as
---  follows:
---
---    GtkWidget *image;
---    image = gtk_image_new_from_file ("myfile.png");
---
---  If the file isn't loaded successfully, the image will contain a "broken
---  image" icon similar to that used in many web browsers. If you want to
---  handle errors in loading the file yourself, for example by displaying an
---  error message, then load the image with Gdk.Pixbuf.Gdk_New_From_File, then
---  create the Gtk.Image.Gtk_Image with Gtk.Image.Gtk_New.
+--  follows: |[<!-- language="C" --> GtkWidget *image; image =
+--  gtk_image_new_from_file ("myfile.png"); ]| If the file isn't loaded
+--  successfully, the image will contain a "broken image" icon similar to that
+--  used in many web browsers. If you want to handle errors in loading the file
+--  yourself, for example by displaying an error message, then load the image
+--  with Gdk.Pixbuf.Gdk_New_From_File, then create the Gtk.Image.Gtk_Image with
+--  Gtk.Image.Gtk_New.
 --
 --  The image file may contain an animation, if so the Gtk.Image.Gtk_Image
 --  will display an animation (Gdk_Pixbuf_Animation) instead of a static image.
@@ -50,36 +47,29 @@
 --  Gtk.Event_Box.Gtk_Event_Box, then connect to the event signals on the event
 --  box.
 --
---  <title>Handling button press events on a
---  <structname>GtkImage</structname>.</title>
---    static gboolean
---    button_press_callback (GtkWidget      *event_box,
---       GdkEventButton *event,
---       gpointer        data)
---    {
---       g_print ("Event box clicked at coordinates %f,%f\n",
---          event->x, event->y);
---       /<!---->* Returning TRUE means we handled the event, so the signal
---       * emission should be stopped (don't call any further
---          * callbacks that may be connected). Return FALSE
---       * to continue invoking callbacks.
---       *<!---->/
---       return TRUE;
---    }
---    static GtkWidget*
---    create_image (void)
---    {
---       GtkWidget *image;
---       GtkWidget *event_box;
---       image = gtk_image_new_from_file ("myfile.png");
---       event_box = gtk_event_box_new (<!-- -->);
---          gtk_container_add (GTK_CONTAINER (event_box), image);
---             g_signal_connect (G_OBJECT (event_box),
---             "button_press_event",
---             G_CALLBACK (button_press_callback),
---             image);
---          return image;
---       }
+--  ## Handling button press events on a Gtk.Image.Gtk_Image.
+--
+--  |[<!-- language="C" --> static gboolean button_press_callback (GtkWidget
+--  *event_box, GdkEventButton *event, gpointer data) { g_print ("Event box
+--  clicked at coordinates %f,%f\n", event->x, event->y);
+--
+--  // Returning TRUE means we handled the event, so the signal // emission
+--  should be stopped (don't call any further callbacks // that may be
+--  connected). Return FALSE to continue invoking callbacks. return TRUE; }
+--
+--  static GtkWidget* create_image (void) { GtkWidget *image; GtkWidget
+--  *event_box;
+--
+--  image = gtk_image_new_from_file ("myfile.png");
+--
+--  event_box = gtk_event_box_new ();
+--
+--  gtk_container_add (GTK_CONTAINER (event_box), image);
+--
+--  g_signal_connect (G_OBJECT (event_box), "button_press_event", G_CALLBACK
+--  (button_press_callback), image);
+--
+--  return image; } ]|
 --
 --  When handling events on the event box, keep in mind that coordinates in
 --  the image may be different from event box coordinates due to the alignment
@@ -90,9 +80,9 @@
 --
 --  Sometimes an application will want to avoid depending on external data
 --  files, such as image files. GTK+ comes with a program to avoid this, called
---  <application>gdk-pixbuf-csource</application>. This library allows you to
---  convert an image into a C variable declaration, which can then be loaded
---  into a Gdk.Pixbuf.Gdk_Pixbuf using gdk_pixbuf_new_from_inline.
+--  "gdk-pixbuf-csource". This library allows you to convert an image into a C
+--  variable declaration, which can then be loaded into a Gdk.Pixbuf.Gdk_Pixbuf
+--  using gdk_pixbuf_new_from_inline.
 --
 --  </description>
 --  <screenshot>gtk-image</screenshot>
@@ -100,6 +90,7 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
+with Cairo;                   use Cairo;
 with GNAT.Strings;            use GNAT.Strings;
 with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Glib;                    use Glib;
@@ -124,7 +115,8 @@ package Gtk.Image is
       Image_Icon_Set,
       Image_Animation,
       Image_Icon_Name,
-      Image_Gicon);
+      Image_Gicon,
+      Image_Surface);
    pragma Convention (C, Gtk_Image_Type);
    --  Describes the image data representation used by a Gtk.Image.Gtk_Image.
    --  If you want to get the image from the widget, you can only get the
@@ -315,7 +307,7 @@ package Gtk.Image is
    --  own reference rather than adopting yours.
    --  Note that this function just creates an Gtk.Image.Gtk_Image from the
    --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
-   --  Should you want that, you should use Gtk.Image.Gtk_New.
+   --  Should you want that, you should use Gtk.Image.Gtk_New_From_Icon_Name.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    function Gtk_Image_New_From_Pixbuf
@@ -326,7 +318,7 @@ package Gtk.Image is
    --  own reference rather than adopting yours.
    --  Note that this function just creates an Gtk.Image.Gtk_Image from the
    --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
-   --  Should you want that, you should use Gtk.Image.Gtk_New.
+   --  Should you want that, you should use Gtk.Image.Gtk_New_From_Icon_Name.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Gtk_New_From_Resource
@@ -394,6 +386,28 @@ package Gtk.Image is
    --  "stock_id": a stock icon name
    --  "size": a stock icon size
 
+   procedure Gtk_New_From_Surface
+      (Image   : out Gtk_Image;
+       Surface : Cairo.Cairo_Surface);
+   procedure Initialize_From_Surface
+      (Image   : not null access Gtk_Image_Record'Class;
+       Surface : Cairo.Cairo_Surface);
+   --  Creates a new Gtk.Image.Gtk_Image displaying Surface. The
+   --  Gtk.Image.Gtk_Image does not assume a reference to the surface; you
+   --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
+   --  add its own reference rather than adopting yours.
+   --  Since: gtk+ 3.10
+   --  "surface": a cairo_surface_t, or null
+
+   function Gtk_Image_New_From_Surface
+      (Surface : Cairo.Cairo_Surface) return Gtk_Image;
+   --  Creates a new Gtk.Image.Gtk_Image displaying Surface. The
+   --  Gtk.Image.Gtk_Image does not assume a reference to the surface; you
+   --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
+   --  add its own reference rather than adopting yours.
+   --  Since: gtk+ 3.10
+   --  "surface": a cairo_surface_t, or null
+
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_image_get_type");
 
@@ -431,9 +445,11 @@ package Gtk.Image is
       (Image    : not null access Gtk_Image_Record;
        Icon_Set : out Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : out Gtk.Enums.Gtk_Icon_Size);
+   pragma Obsolescent (Get);
    --  Gets the icon set and size being displayed by the Gtk.Image.Gtk_Image.
    --  The storage type of the image must be Gtk.Image.Image_Empty or
    --  Gtk.Image.Image_Icon_Set (see Gtk.Image.Get_Storage_Type).
+   --  Deprecated since 3.10, 1
    --  "icon_set": location to store a Gtk.Icon_Set.Gtk_Icon_Set, or null
    --  "size": location to store a stock icon size, or null
 
@@ -492,7 +508,9 @@ package Gtk.Image is
       (Image    : not null access Gtk_Image_Record;
        Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
        Size     : Gtk.Enums.Gtk_Icon_Size);
+   pragma Obsolescent (Set);
    --  See Gtk.Image.Gtk_New for details.
+   --  Deprecated since 3.10, 1
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
    --  "size": a stock icon size
 
@@ -506,7 +524,9 @@ package Gtk.Image is
       (Image    : not null access Gtk_Image_Record;
        Stock_Id : UTF8_String;
        Size     : Gtk.Enums.Gtk_Icon_Size);
+   pragma Obsolescent (Set);
    --  See Gtk.Image.Gtk_New for details.
+   --  Deprecated since 3.10, 1
    --  "stock_id": a stock icon name
    --  "size": a stock icon size
 
@@ -524,6 +544,13 @@ package Gtk.Image is
        Resource_Path : UTF8_String := "");
    --  See Gtk.Image.Gtk_New_From_Resource for details.
    --  "resource_path": a resource path or null
+
+   procedure Set_From_Surface
+      (Image   : not null access Gtk_Image_Record;
+       Surface : Cairo.Cairo_Surface);
+   --  See Gtk.Image.Gtk_New_From_Surface for details.
+   --  Since: gtk+ 3.10
+   --  "surface": a cairo_surface_t
 
    ----------------------
    -- GtkAda additions --
@@ -580,6 +607,9 @@ package Gtk.Image is
    Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type;
    --  Type: Gtk_Image_Type
 
+   Surface_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Cairo.Cairo_Surface
+
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the icon displayed in the GtkImage will use standard icon names
    --  fallback. The value of this property is only relevant for images of type
@@ -606,6 +636,8 @@ package Gtk.Image is
 private
    Use_Fallback_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("use-fallback");
+   Surface_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("surface");
    Storage_Type_Property : constant Gtk.Image.Property_Gtk_Image_Type :=
      Gtk.Image.Build ("storage-type");
    Stock_Property : constant Glib.Properties.Property_String :=

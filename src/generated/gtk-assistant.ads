@@ -28,23 +28,23 @@
 --
 --  The design of GtkAssistant is that it controls what buttons to show and to
 --  make sensitive, based on what it knows about the page sequence and the
---  <link linkend="GtkAssistantPageType">type</link> of each page, in addition
---  to state information like the page <link
---  linkend="gtk-assistant-set-page-complete">completion</link> and <link
---  linkend="gtk-assistant-commit">committed</link> status.
+--  [type][GtkAssistantPageType] of each page, in addition to state information
+--  like the page [completion][gtk-assistant-set-page-complete] and
+--  [committed][gtk-assistant-commit] status.
 --
 --  If you have a case that doesn't quite fit in Gtk_Assistants way of
 --  handling buttons, you can use the GTK_ASSISTANT_PAGE_CUSTOM page type and
 --  handle buttons yourself.
 --
---  == GtkAssistant as GtkBuildable ==
+--  # GtkAssistant as GtkBuildable
 --
---  The GtkAssistant implementation of the GtkBuildable interface exposes the
---  Action_Area as internal children with the name "action_area".
+--  The GtkAssistant implementation of the Gtk.Buildable.Gtk_Buildable
+--  interface exposes the Action_Area as internal children with the name
+--  "action_area".
 --
---  To add pages to an assistant in GtkBuilder, simply add it as a <child> to
---  the GtkAssistant object, and set its child properties as necessary.
---
+--  To add pages to an assistant in Gtk.Builder.Gtk_Builder, simply add it as
+--  a child to the GtkAssistant object, and set its child properties as
+--  necessary.
 --
 --  </description>
 --  <group>Windows</group>
@@ -56,6 +56,7 @@ with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Widget;              use Gtk.Widget;
@@ -205,8 +206,7 @@ package Gtk.Assistant is
    pragma Obsolescent (Get_Page_Header_Image);
    --  Gets the header image for Page.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown; add
-   --  your header decoration to the page content instead.
+   --  Deprecated since 3.2, 1
    --  "page": a page of Assistant
 
    procedure Set_Page_Header_Image
@@ -216,8 +216,7 @@ package Gtk.Assistant is
    pragma Obsolescent (Set_Page_Header_Image);
    --  Sets a header image for Page.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, a header is no longer shown; add
-   --  your header decoration to the page content instead.
+   --  Deprecated since 3.2, 1
    --  "page": a page of Assistant
    --  "pixbuf": the new header image Page
 
@@ -228,8 +227,7 @@ package Gtk.Assistant is
    pragma Obsolescent (Get_Page_Side_Image);
    --  Gets the side image for Page.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not shown
-   --  anymore.
+   --  Deprecated since 3.2, 1
    --  "page": a page of Assistant
 
    procedure Set_Page_Side_Image
@@ -241,8 +239,7 @@ package Gtk.Assistant is
    --  This image used to be displayed in the side area of the assistant when
    --  Page is the current page.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.2, Since GTK+ 3.2, sidebar images are not shown
-   --  anymore.
+   --  Deprecated since 3.2, 1
    --  "page": a page of Assistant
    --  "pixbuf": the new side image Page
 
@@ -385,6 +382,19 @@ package Gtk.Assistant is
    --  assistant.
    --  Since: gtk+ 2.10
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Use_Header_Bar_Property : constant Glib.Properties.Property_Int;
+   --  True if the assistant uses a Gtk.Header_Bar.Gtk_Header_Bar for action
+   --  buttons instead of the action-area.
+   --
+   --  For technical reasons, this property is declared as an integer
+   --  property, but you should only set it to True or False.
+
    -------------
    -- Signals --
    -------------
@@ -443,6 +453,17 @@ package Gtk.Assistant is
    --  page is clicked, or when the apply button in the last page in the flow
    --  (of type Gtk.Assistant.Gtk_Assistant_Page_Confirm) is clicked.
 
+   Signal_Escape : constant Glib.Signal_Name := "escape";
+   procedure On_Escape
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Void;
+       After : Boolean := False);
+   procedure On_Escape
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+
    type Cb_Gtk_Assistant_Gtk_Widget_Void is not null access procedure
      (Self : access Gtk_Assistant_Record'Class;
       Page : not null access Gtk.Widget.Gtk_Widget_Record'Class);
@@ -485,4 +506,7 @@ package Gtk.Assistant is
    return Gtk_Assistant
    renames Implements_Gtk_Buildable.To_Object;
 
+private
+   Use_Header_Bar_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("use-header-bar");
 end Gtk.Assistant;

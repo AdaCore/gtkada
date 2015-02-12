@@ -27,9 +27,9 @@
 --  column header, and functions as a holding pen for the cell renderers which
 --  determine how the data in the column is displayed.
 --
---  Please refer to the <link linkend="TreeWidget">tree widget conceptual
---  overview</link> for an overview of all the objects and data types related
---  to the tree widget and how they work together.
+--  Please refer to the [tree widget conceptual overview][TreeWidget] for an
+--  overview of all the objects and data types related to the tree widget and
+--  how they work together.
 --
 --  </description>
 pragma Ada_2005;
@@ -377,7 +377,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Order       : Gtk.Enums.Gtk_Sort_Type);
    --  Changes the appearance of the sort indicator.
-   --  This *does not* actually sort the model. Use
+   --  This does not actually sort the model. Use
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id if you want automatic sorting
    --  support. This function is primarily for custom sorting behavior, and
    --  should be used in conjunction with Gtk.Tree_Sortable.Set_Sort_Column_Id

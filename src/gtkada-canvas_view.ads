@@ -1567,6 +1567,24 @@ package Gtkada.Canvas_View is
    --  appropriate. You can disable this behavior by setting Allow_Rescale to
    --  False.
 
+   function Gtk_New_Image
+     (Style  : Gtkada.Style.Drawing_Style;
+      Icon_Name : String;
+      Allow_Rescale : Boolean := True;
+      Width, Height : Model_Coordinate := -1.0)
+      return Image_Item;
+   procedure Initialize_Image
+     (Self   : not null access Image_Item_Record'Class;
+      Style  : Gtkada.Style.Drawing_Style;
+      Icon_Name : String;
+      Allow_Rescale : Boolean := True;
+      Width, Height : Model_Coordinate := -1.0);
+   --  Same as buffer, but the image is created from one of the files given
+   --  by the Gtk.Icon_Theme. This will often result in better (more sharp)
+   --  rendering.
+   --  You should in general specify the size you want to use, since the
+   --  icon_name itself does not provide this information.
+
    overriding procedure Draw
      (Self    : not null access Image_Item_Record;
       Context : Draw_Context);
@@ -1943,6 +1961,7 @@ private
 
    type Image_Item_Record is new Container_Item_Record with record
       Image         : Gdk.Pixbuf.Gdk_Pixbuf;
+      Icon_Name     : GNAT.Strings.String_Access;
       Allow_Rescale : Boolean := True;
    end record;
 

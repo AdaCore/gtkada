@@ -1030,24 +1030,24 @@ package body Gtk.Menu_Item is
       Connect_Slot (Self, "deselect" & ASCII.NUL, Call, After, Slot);
    end On_Deselect;
 
-   -------------------
-   -- On_Gtk_Select --
-   -------------------
+   ---------------
+   -- On_Select --
+   ---------------
 
-   procedure On_Gtk_Select
+   procedure On_Select
       (Self  : not null access Gtk_Menu_Item_Record;
        Call  : Cb_Gtk_Menu_Item_Void;
        After : Boolean := False)
    is
    begin
       Connect (Self, "select" & ASCII.NUL, Call, After);
-   end On_Gtk_Select;
+   end On_Select;
 
-   -------------------
-   -- On_Gtk_Select --
-   -------------------
+   ---------------
+   -- On_Select --
+   ---------------
 
-   procedure On_Gtk_Select
+   procedure On_Select
       (Self  : not null access Gtk_Menu_Item_Record;
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
@@ -1055,7 +1055,7 @@ package body Gtk.Menu_Item is
    is
    begin
       Connect_Slot (Self, "select" & ASCII.NUL, Call, After, Slot);
-   end On_Gtk_Select;
+   end On_Select;
 
    -----------------------------
    -- On_Toggle_Size_Allocate --

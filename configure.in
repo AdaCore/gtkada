@@ -1,4 +1,4 @@
-AC_INIT(gtkada,3.8.3,report@adacore.com,gtkada)
+AC_INIT(gtkada,3.14.1,report@adacore.com,gtkada)
 AC_CANONICAL_SYSTEM
 
 TARGET=""
@@ -27,7 +27,7 @@ ALL_LINGUAS="en"
 AM_GNU_GETTEXT([external])
 
 # checking for gtk
-AM_PATH_GTK(3.8.3)
+AM_PATH_GTK(3.14.0)
 
 # try to find OpenGL if present
 AM_CHECK_OPENGL

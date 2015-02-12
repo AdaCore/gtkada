@@ -196,7 +196,7 @@ package Gtk.Recent_Chooser_Widget is
 
    procedure Set_Filter
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
+       Filter  : access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class);
 
    function Get_Items
       (Chooser : not null access Gtk_Recent_Chooser_Widget_Record)

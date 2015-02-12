@@ -30,8 +30,6 @@
 --  file and whether the file should be displayed only by the applications that
 --  have registered it.
 --
---  Note:
---
 --  The recently used files list is per user.
 --
 --  The Gtk.Recent_Manager.Gtk_Recent_Manager acts like a database of all the
@@ -41,7 +39,7 @@
 --
 --  Adding a new recently used file is as simple as:
 --
---  |[ GtkRecentManager *manager;
+--  |[<!-- language="C" --> GtkRecentManager *manager;
 --
 --  manager = gtk_recent_manager_get_default (); gtk_recent_manager_add_item
 --  (manager, file_uri); ]|
@@ -52,26 +50,24 @@
 --  Looking up the meta-data associated with a recently used file given its
 --  URI requires calling Gtk.Recent_Manager.Lookup_Item:
 --
---  |[ GtkRecentManager *manager; GtkRecentInfo *info; GError *error = NULL;
+--  |[<!-- language="C" --> GtkRecentManager *manager; GtkRecentInfo *info;
+--  GError *error = NULL;
 --
 --  manager = gtk_recent_manager_get_default (); info =
---  gtk_recent_manager_lookup_item (manager, file_uri, &amp;error); if (error)
---  { g_warning ("Could not find the file: %s", error->message); g_error_free
---  (error); } else { /* Use the info object */ gtk_recent_info_unref (info); }
---  ]|
+--  gtk_recent_manager_lookup_item (manager, file_uri, &error); if (error) {
+--  g_warning ("Could not find the file: %s", error->message); g_error_free
+--  (error); } else { // Use the info object gtk_recent_info_unref (info); } ]|
 --
 --  In order to retrieve the list of recently used files, you can use
 --  Gtk.Recent_Manager.Get_Items, which returns a list of
---  Gtk.Recent_Info.Gtk_Recent_Info structures.
+--  Gtk.Recent_Info.Gtk_Recent_Info-structs.
 --
 --  A Gtk.Recent_Manager.Gtk_Recent_Manager is the model used to populate the
 --  contents of one, or more Gtk.Recent_Chooser.Gtk_Recent_Chooser
 --  implementations.
 --
---  Note:
---
---  The maximum age of the recently used files list is controllable through
---  the Gtk.Settings.Gtk_Settings:gtk-recent-files-max-age property.
+--  Note that the maximum age of the recently used files list is controllable
+--  through the Gtk.Settings.Gtk_Settings:gtk-recent-files-max-age property.
 --
 --  Recently used files are supported since GTK+ 2.10.
 --
@@ -210,8 +206,8 @@ package Gtk.Recent_Manager is
       (Self : not null access Gtk_Recent_Manager_Record;
        URI  : UTF8_String) return Gtk.Recent_Info.Gtk_Recent_Info;
    --  Searches for a URI inside the recently used resources list, and returns
-   --  a structure containing informations about the resource like its MIME
-   --  type, or its display name.
+   --  a Gtk.Recent_Info.Gtk_Recent_Info-struct containing informations about
+   --  the resource like its MIME type, or its display name.
    --  Since: gtk+ 2.10
    --  "uri": a URI
 

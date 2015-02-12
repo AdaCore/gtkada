@@ -33,12 +33,19 @@
 --  does not work if you are using the secondary icon position for some other
 --  purpose.
 --
+--  To make filtering appear more reactive, it is a good idea to not react to
+--  every change in the entry text immediately, but only after a short delay.
+--  To support this, Gtk.Search_Entry.Gtk_Search_Entry emits the
+--  Gtk.Search_Entry.Gtk_Search_Entry::search-changed signal which can be used
+--  instead of the Gtk.Editable.Gtk_Editable::changed signal.
+--
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;         use Gdk.Event;
 with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
 with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Cell_Editable; use Gtk.Cell_Editable;
@@ -138,6 +145,30 @@ package Gtk.Search_Entry is
       (Editable  : not null access Gtk_Search_Entry_Record;
        Start_Pos : Gint;
        End_Pos   : Gint := -1);
+
+   -------------
+   -- Signals --
+   -------------
+
+   type Cb_Gtk_Search_Entry_Void is not null access procedure
+     (Self : access Gtk_Search_Entry_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_Search_Changed : constant Glib.Signal_Name := "search-changed";
+   procedure On_Search_Changed
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False);
+   procedure On_Search_Changed
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The Gtk.Search_Entry.Gtk_Search_Entry::search-changed signal is emitted
+   --  with a short delay of 150 milliseconds after the last change to the
+   --  entry text.
 
    ----------------
    -- Interfaces --

@@ -25,29 +25,25 @@
 --  Widget that displays any object that implements the
 --  Gtk.Tree_Model.Gtk_Tree_Model interface.
 --
---  Please refer to the <link linkend="TreeWidget">tree widget conceptual
---  overview</link> for an overview of all the objects and data types related
---  to the tree widget and how they work together.
+--  Please refer to the [tree widget conceptual overview][TreeWidget] for an
+--  overview of all the objects and data types related to the tree widget and
+--  how they work together.
 --
 --  Several different coordinate systems are exposed in the GtkTreeView API.
 --  These are:
 --
---  <inlinegraphic fileref="tree-view-coordinates.png"
---  format="PNG"></inlinegraphic>
---  == Coordinate systems in GtkTreeView API ==
+--  ![](tree-view-coordinates.png)
 --
---  'Widget coordinates'
+--  Coordinate systems in GtkTreeView API:
 --
---     * Coordinates relative to the widget (usually 'widget->window').
+--  - Widget coordinates: Coordinates relative to the widget (usually
+--  `widget->window`).
 --
---  'Bin window coordinates'
+--  - Bin window coordinates: Coordinates relative to the window that
+--  GtkTreeView renders to.
 --
---     * Coordinates relative to the window that GtkTreeView renders to.
---
---  'Tree coordinates'
---
---     * Coordinates relative to the entire scrollable area of GtkTreeView.
---  These coordinates start at (0, 0) for row 0 of the tree.
+--  - Tree coordinates: Coordinates relative to the entire scrollable area of
+--  GtkTreeView. These coordinates start at (0, 0) for row 0 of the tree.
 --
 --  Several functions are available for converting between the different
 --  coordinate systems. The most common translations are between widget and bin
@@ -56,34 +52,24 @@
 --  vice versa), for the latter Gtk.Tree_View.Convert_Bin_Window_To_Tree_Coords
 --  (and vice versa).
 --
---  == GtkTreeView as GtkBuildable ==
+--  # GtkTreeView as GtkBuildable
 --
 --  The GtkTreeView implementation of the GtkBuildable interface accepts
 --  Gtk.Tree_View_Column.Gtk_Tree_View_Column objects as <child> elements and
 --  exposes the internal Gtk.Tree_Selection.Gtk_Tree_Selection in UI
 --  definitions.
 --
---  == A UI definition fragment with GtkTreeView ==
+--  An example of a UI definition fragment with GtkTreeView: |[ <object
+--  class="GtkTreeView" id="treeview"> <property
+--  name="model">liststore1</property> <child> <object
+--  class="GtkTreeViewColumn" id="test-column"> <property
+--  name="title">Test</property> <child> <object class="GtkCellRendererText"
+--  id="test-renderer"/> <attributes> <attribute name="text">1</attribute>
+--  </attributes> </child> </object> </child> <child
+--  internal-child="selection"> <object class="GtkTreeSelection"
+--  id="selection"> <signal name="changed"
+--  handler="on_treeview_selection_changed"/> </object> </child> </object> ]|
 --
---    <object class="GtkTreeView" id="treeview">
---    <property name="model">liststore1</property>
---    <child>
---    <object class="GtkTreeViewColumn" id="test-column">
---    <property name="title">Test</property>
---    <child>
---    <object class="GtkCellRendererText" id="test-renderer"/>
---    <attributes>
---    <attribute name="text">1</attribute>
---    </attributes>
---    </child>
---    </object>
---    </child>
---    <child internal-child="selection">
---    <object class="GtkTreeSelection" id="selection">
---    <signal name="changed" handler="on_treeview_selection_changed"/>
---    </object>
---    </child>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -443,7 +429,7 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record)
        return Gdk.Gdk_Window;
    --  Returns the window that Tree_View renders to. This is used primarily to
-   --  compare to 'event->window' to confirm that the event on Tree_View is on
+   --  compare to `event->window` to confirm that the event on Tree_View is on
    --  the right window.
 
    procedure Get_Cell_Area
@@ -716,16 +702,16 @@ package Gtk.Tree_View is
    --  Finds the path at the point (X, Y), relative to bin_window coordinates
    --  (please see Gtk.Tree_View.Get_Bin_Window). That is, X and Y are relative
    --  to an events coordinates. X and Y must come from an event on the
-   --  Tree_View only where 'event->window == gtk_tree_view_get_bin_window
-   --  (<!-- -->)'. It is primarily for things like popup menus. If Path is
-   --  non-null, then it will be filled with the Gtk.Tree_Model.Gtk_Tree_Path
-   --  at that point. This path should be freed with Gtk.Tree_Model.Path_Free.
-   --  If Column is non-null, then it will be filled with the column at that
-   --  point. Cell_X and Cell_Y return the coordinates relative to the cell
-   --  background (i.e. the Background_Area passed to
-   --  Gtk.Cell_Renderer.Render). This function is only meaningful if Tree_View
-   --  is realized. Therefore this function will always return False if
-   --  Tree_View is not realized or does not have a model.
+   --  Tree_View only where `event->window == gtk_tree_view_get_bin_window ()`.
+   --  It is primarily for things like popup menus. If Path is non-null, then
+   --  it will be filled with the Gtk.Tree_Model.Gtk_Tree_Path at that point.
+   --  This path should be freed with Gtk.Tree_Model.Path_Free. If Column is
+   --  non-null, then it will be filled with the column at that point. Cell_X
+   --  and Cell_Y return the coordinates relative to the cell background (i.e.
+   --  the Background_Area passed to Gtk.Cell_Renderer.Render). This function
+   --  is only meaningful if Tree_View is realized. Therefore this function
+   --  will always return False if Tree_View is not realized or does not have a
+   --  model.
    --  For converting widget coordinates (eg. the ones you get from
    --  GtkWidget::query-tooltip), please see
    --  Gtk.Tree_View.Convert_Widget_To_Bin_Window_Coords.
@@ -754,10 +740,11 @@ package Gtk.Tree_View is
    --  Gtk.List_Store.Gtk_List_Store support these. If Reorderable is True,
    --  then the user can reorder the model by dragging and dropping rows. The
    --  developer can listen to these changes by connecting to the model's
-   --  row_inserted and row_deleted signals. The reordering is implemented by
-   --  setting up the tree view as a drag source and destination. Therefore,
-   --  drag and drop can not be used in a reorderable view for any other
-   --  purpose.
+   --  Gtk.Tree_Model.Gtk_Tree_Model::row-inserted and
+   --  Gtk.Tree_Model.Gtk_Tree_Model::row-deleted signals. The reordering is
+   --  implemented by setting up the tree view as a drag source and
+   --  destination. Therefore, drag and drop can not be used in a reorderable
+   --  view for any other purpose.
    --  This function does not give you any degree of control over the order --
    --  any reordering is allowed. If more control is needed, you should
    --  probably handle drag and drop manually.
@@ -795,21 +782,27 @@ package Gtk.Tree_View is
 
    function Get_Rules_Hint
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
+   pragma Obsolescent (Get_Rules_Hint);
    --  Gets the setting set by Gtk.Tree_View.Set_Rules_Hint.
+   --  Deprecated since 3.14, 1
 
    procedure Set_Rules_Hint
       (Tree_View : not null access Gtk_Tree_View_Record;
        Setting   : Boolean);
-   --  This function tells GTK+ that the user interface for your application
-   --  requires users to read across tree rows and associate cells with one
-   --  another. By default, GTK+ will then render the tree with alternating row
-   --  colors. Do *not* use it just because you prefer the appearance of the
-   --  ruled tree; that's a question for the theme. Some themes will draw tree
-   --  rows in alternating colors even when rules are turned off, and users who
-   --  prefer that appearance all the time can choose those themes. You should
-   --  call this function only as a *semantic* hint to the theme engine that
-   --  your tree makes alternating colors useful from a functional standpoint
-   --  (since it has lots of columns, generally).
+   pragma Obsolescent (Set_Rules_Hint);
+   --  Sets a hint for the theme to draw even/odd rows in the Tree_View with
+   --  different colors, also known as "zebra striping".
+   --  This function tells the GTK+ theme that the user interface for your
+   --  application requires users to read across tree rows and associate cells
+   --  with one another.
+   --  Do not use it just because you prefer the appearance of the ruled tree;
+   --  that's a question for the theme. Some themes will draw tree rows in
+   --  alternating colors even when rules are turned off, and users who prefer
+   --  that appearance all the time can choose those themes. You should call
+   --  this function only as a semantic hint to the theme engine that your tree
+   --  makes alternating colors useful from a functional standpoint (since it
+   --  has lots of columns, generally).
+   --  Deprecated since 3.14, 1
    --  "setting": True if the tree requires reading across rows
 
    function Get_Search_Column
@@ -917,7 +910,7 @@ package Gtk.Tree_View is
    --  Tree_View will connect a Gtk.Widget.Gtk_Widget::query-tooltip signal
    --  handler.
    --  Note that the signal handler sets the text with Gtk.Tooltip.Set_Markup,
-   --  so &amp;, <, etc have to be escaped in the text.
+   --  so &, <, etc have to be escaped in the text.
    --  Since: gtk+ 2.12
    --  "column": an integer, which is a valid column number for Tree_View's
    --  model
@@ -1067,7 +1060,7 @@ package Gtk.Tree_View is
    --  selection, having a custom context menu or starting rubber banding.
    --  The X and Y coordinate that are provided must be relative to bin_window
    --  coordinates. That is, X and Y must come from an event on Tree_View where
-   --  'event->window == gtk_tree_view_get_bin_window (<!-- -->)'.
+   --  `event->window == gtk_tree_view_get_bin_window ()`.
    --  For converting widget coordinates (eg. the ones you get from
    --  GtkWidget::query-tooltip), please see
    --  Gtk.Tree_View.Convert_Widget_To_Bin_Window_Coords.
@@ -1293,7 +1286,7 @@ package Gtk.Tree_View is
    --  This function should almost never be used. It is meant for private use
    --  by ATK for determining the number of visible children that are removed
    --  when the user collapses a row, or a row is deleted.
-   --  Deprecated since 3.4, Accessibility does not need the function anymore.
+   --  Deprecated since 3.4, 1
    --  "func": Function to be called when a view row is destroyed, or null
 
    generic
@@ -1315,8 +1308,7 @@ package Gtk.Tree_View is
       --  This function should almost never be used. It is meant for private
       --  use by ATK for determining the number of visible children that are
       --  removed when the user collapses a row, or a row is deleted.
-      --  Deprecated since 3.4, Accessibility does not need the function
-      --  anymore.
+      --  Deprecated since 3.4, 1
       --  "func": Function to be called when a view row is destroyed, or null
       --  "data": User data to be passed to Func, or null
 
@@ -1560,6 +1552,7 @@ package Gtk.Tree_View is
    Rubber_Banding_Property : constant Glib.Properties.Property_Boolean;
 
    Rules_Hint_Property : constant Glib.Properties.Property_Boolean;
+   --  Sets a hint to the theme to draw rows in alternating colors.
 
    Search_Column_Property : constant Glib.Properties.Property_Int;
 
@@ -1627,14 +1620,14 @@ package Gtk.Tree_View is
    --  Callback parameters:
 
    type Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean is not null access function
-     (Self   : access Gtk_Tree_View_Record'Class;
-      Object : Gtk.Enums.Gtk_Movement_Step;
-      P0     : Gint) return Boolean;
+     (Self      : access Gtk_Tree_View_Record'Class;
+      Step      : Gtk.Enums.Gtk_Movement_Step;
+      Direction : Gint) return Boolean;
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Boolean is not null access function
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gtk.Enums.Gtk_Movement_Step;
-      P0     : Gint) return Boolean;
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Step      : Gtk.Enums.Gtk_Movement_Step;
+      Direction : Gint) return Boolean;
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor
@@ -1646,8 +1639,27 @@ package Gtk.Tree_View is
        Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  The Gtk.Tree_View.Gtk_Tree_View::move-cursor signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user presses one
+   --  of the cursor keys.
+   --
+   --  Applications should not connect to it, but may emit it with
+   --  g_signal_emit_by_name if they need to control the cursor
+   --  programmatically. In contrast to Gtk.Tree_View.Set_Cursor and
+   --  Gtk.Tree_View.Set_Cursor_On_Cell when moving horizontally
+   --  Gtk.Tree_View.Gtk_Tree_View::move-cursor does not reset the current
+   --  selection.
    -- 
    --  Callback parameters:
+   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step.
+   --    --  Gtk.Enums.Movement_Logical_Positions,
+   --    --  Gtk.Enums.Movement_Visual_Positions, Gtk.Enums.Movement_Display_Lines,
+   --    --  Gtk.Enums.Movement_Pages and Gtk.Enums.Movement_Buffer_Ends are
+   --    --  supported. Gtk.Enums.Movement_Logical_Positions and
+   --    --  Gtk.Enums.Movement_Visual_Positions are treated identically.
+   --    --  "direction": the direction to move: +1 to move forwards; -1 to move
+   --    --  backwards. The resulting movement is undefined for all other values.
+   --    --  Returns True if Step is supported, False otherwise.
 
    type Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void is not null access procedure
      (Self   : access Gtk_Tree_View_Record'Class;
@@ -1677,9 +1689,8 @@ package Gtk.Tree_View is
    --  selected and one of the keys: Space, Shift+Space, Return or Enter is
    --  pressed.
    --
-   --  For selection handling refer to the <link linkend="TreeWidget">tree
-   --  widget conceptual overview</link> as well as
-   --  Gtk.Tree_Selection.Gtk_Tree_Selection.
+   --  For selection handling refer to the [tree widget conceptual
+   --  overview][TreeWidget] as well as Gtk.Tree_Selection.Gtk_Tree_Selection.
    -- 
    --  Callback parameters:
    --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated row

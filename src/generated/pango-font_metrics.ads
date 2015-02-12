@@ -21,6 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  A Pango.Font_Metrics.Pango_Font_Metrics structure holds the overall metric
+--  information for a font (possibly restricted to a script). The fields of
+--  this structure are private to implementations of a font backend. See the
+--  documentation of the corresponding getters for documentation of their
+--  meaning.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -38,6 +46,16 @@ package Pango.Font_Metrics is
    ------------------
    -- Constructors --
    ------------------
+
+   procedure Gdk_New (Self : out Pango_Font_Metrics);
+   --  Creates a new Pango.Font_Metrics.Pango_Font_Metrics structure. This is
+   --  only for internal use by Pango backends and there is no public way to
+   --  set the fields of the structure.
+
+   function Pango_Font_Metrics_New return Pango_Font_Metrics;
+   --  Creates a new Pango.Font_Metrics.Pango_Font_Metrics structure. This is
+   --  only for internal use by Pango backends and there is no public way to
+   --  set the fields of the structure.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_font_metrics_get_type");

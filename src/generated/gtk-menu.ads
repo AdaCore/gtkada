@@ -39,39 +39,29 @@
 --  the Gtk.Menu.Popup function. The example below shows how an application can
 --  pop up a menu when the 3rd mouse button is pressed.
 --
---  == Connecting the popup signal handler. ==
+--  ## Connecting the popup signal handler.
 --
---    /<!---->* connect our handler which will popup the menu *<!---->/
---    g_signal_connect_swapped (window, "button_press_event",
---       G_CALLBACK (my_popup_handler), menu);
+--  |[<!-- language="C" --> // connect our handler which will popup the menu
+--  g_signal_connect_swapped (window, "button_press_event", G_CALLBACK
+--  (my_popup_handler), menu); ]|
 --
---  == Signal handler which displays a popup menu. ==
+--  ## Signal handler which displays a popup menu.
 --
---    static gint
---    my_popup_handler (GtkWidget *widget, GdkEvent *event)
---    {
---       GtkMenu *menu;
---       GdkEventButton *event_button;
---       g_return_val_if_fail (widget != NULL, FALSE);
---       g_return_val_if_fail (GTK_IS_MENU (widget), FALSE);
---       g_return_val_if_fail (event != NULL, FALSE);
---       /<!---->* The "widget" is the menu that was supplied when
---       * g_signal_connect_swapped was called.
---       *<!---->/
---       menu = GTK_MENU (widget);
---       if (event->type == GDK_BUTTON_PRESS)
---       {
---          event_button = (GdkEventButton *) event;
---          if (event_button->button == GDK_BUTTON_SECONDARY)
---          {
---             gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
---                event_button->button, event_button->time);
---             return TRUE;
---          }
---       }
---       return FALSE;
---    }
+--  |[<!-- language="C" --> static gint my_popup_handler (GtkWidget *widget,
+--  GdkEvent *event) { GtkMenu *menu; GdkEventButton *event_button;
 --
+--  g_return_val_if_fail (widget != NULL, FALSE); g_return_val_if_fail
+--  (GTK_IS_MENU (widget), FALSE); g_return_val_if_fail (event != NULL, FALSE);
+--
+--  // The "widget" is the menu that was supplied when //
+--  g_signal_connect_swapped was called. menu = GTK_MENU (widget);
+--
+--  if (event->type == GDK_BUTTON_PRESS) { event_button = (GdkEventButton *)
+--  event; if (event_button->button == GDK_BUTTON_SECONDARY) { gtk_menu_popup
+--  (menu, NULL, NULL, NULL, NULL, event_button->button, event_button->time);
+--  return TRUE; } }
+--
+--  return FALSE; } ]|
 --
 --  </description>
 pragma Ada_2005;
@@ -158,6 +148,8 @@ package Gtk.Menu is
    --  - typically by means of being attached to a widget (see
    --  Gtk.Menu.Attach_To_Widget) that is contained within the
    --  Gtk_Application_Windows widget hierarchy.
+   --  Actions can also be added using gtk_widget_insert_action_group on the
+   --  menu's attach widget or on any of its parent widgets.
    --  Since: gtk+ 3.4
    --  "model": a Glib.Menu_Model.Gmenu_Model
 
@@ -171,6 +163,8 @@ package Gtk.Menu is
    --  - typically by means of being attached to a widget (see
    --  Gtk.Menu.Attach_To_Widget) that is contained within the
    --  Gtk_Application_Windows widget hierarchy.
+   --  Actions can also be added using gtk_widget_insert_action_group on the
+   --  menu's attach widget or on any of its parent widgets.
    --  Since: gtk+ 3.4
    --  "model": a Glib.Menu_Model.Gmenu_Model
 
@@ -189,7 +183,7 @@ package Gtk.Menu is
        Top_Attach    : Guint;
        Bottom_Attach : Guint);
    --  Adds a new Gtk.Menu_Item.Gtk_Menu_Item to a (table) menu. The number of
-   --  'cells' that an item will occupy is specified by Left_Attach,
+   --  "cells" that an item will occupy is specified by Left_Attach,
    --  Right_Attach, Top_Attach and Bottom_Attach. These each represent the
    --  leftmost, rightmost, uppermost and lower column and row numbers of the
    --  table. (Columns and rows are indexed from zero).
@@ -209,6 +203,10 @@ package Gtk.Menu is
    --  Attaches the menu to the widget and provides a callback function that
    --  will be invoked when the menu calls Gtk.Menu.Detach during its
    --  destruction.
+   --  If the menu is attached to the widget then it will be destroyed when
+   --  the widget is destroyed, as if it was a child widget. An attached menu
+   --  will also move between screens correctly if the widgets moves between
+   --  screens.
    --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu will be
    --  attached to
    --  "detacher": the user supplied callback function that will be called
@@ -253,9 +251,9 @@ package Gtk.Menu is
    --  menu, that contains a label describing its purpose, automatically gets
    --  an accel path assigned.
    --  For example, a menu containing menu items "New" and "Exit", will, after
-   --  'gtk_menu_set_accel_path (menu, "<Gnumeric-Sheet>/File");' has been
-   --  called, assign its items the accel paths: '"<Gnumeric-Sheet>/File/New"'
-   --  and '"<Gnumeric-Sheet>/File/Exit"'.
+   --  `gtk_menu_set_accel_path (menu, "<Gnumeric-Sheet>/File");` has been
+   --  called, assign its items the accel paths: `"<Gnumeric-Sheet>/File/New"`
+   --  and `"<Gnumeric-Sheet>/File/Exit"`.
    --  Assigning accel paths to menu items then enables the user to change
    --  their accelerators at runtime. More details about accelerator paths and
    --  their default setups can be found at Gtk.Accel_Map.Add_Entry.
@@ -275,7 +273,7 @@ package Gtk.Menu is
        Index : Guint);
    --  Selects the specified menu item within the menu. This is used by the
    --  Gtk.Combo_Box.Gtk_Combo_Box and should not be used by anyone else.
-   --  "index": the index of the menu item to select. Iindex values are from 0
+   --  "index": the index of the menu item to select. Index values are from 0
    --  to n-1
 
    function Get_Attach_Widget
@@ -316,29 +314,37 @@ package Gtk.Menu is
 
    function Get_Tearoff_State
       (Menu : not null access Gtk_Menu_Record) return Boolean;
+   pragma Obsolescent (Get_Tearoff_State);
    --  Returns whether the menu is torn off. See Gtk.Menu.Set_Tearoff_State.
+   --  Deprecated since 3.10, 1
 
    procedure Set_Tearoff_State
       (Menu     : not null access Gtk_Menu_Record;
        Torn_Off : Boolean);
+   pragma Obsolescent (Set_Tearoff_State);
    --  Changes the tearoff state of the menu. A menu is normally displayed as
    --  drop down menu which persists as long as the menu is active. It can also
    --  be displayed as a tearoff menu which persists until it is closed or
    --  reattached.
+   --  Deprecated since 3.10, 1
    --  "torn_off": If True, menu is displayed as a tearoff menu.
 
    function Get_Title
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
+   pragma Obsolescent (Get_Title);
    --  Returns the title of the menu. See Gtk.Menu.Set_Title.
+   --  Deprecated since 3.10, 1
 
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;
        Title : UTF8_String);
+   pragma Obsolescent (Set_Title);
    --  Sets the title string for the menu.
    --  The title is displayed when the menu is shown as a tearoff menu. If
    --  Title is null, the menu will see if it is attached to a parent menu
    --  item, and if so it will try to use the same text as that menu item's
    --  label.
+   --  Deprecated since 3.10, 1
    --  "title": a string containing the title for the menu
 
    procedure Popdown (Menu : not null access Gtk_Menu_Record);
@@ -619,6 +625,8 @@ package Gtk.Menu is
    --  A boolean that indicates whether the menu is torn-off.
 
    Tearoff_Title_Property : constant Glib.Properties.Property_String;
+   --  A title that may be displayed by the window manager when this menu is
+   --  torn-off.
 
    -------------
    -- Signals --

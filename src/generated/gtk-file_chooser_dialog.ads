@@ -34,125 +34,106 @@
 --  any methods of its own. Instead, you should use the functions that work on
 --  a Gtk.File_Chooser.Gtk_File_Chooser.
 --
---  <example id="gtkfilechooser-typical-usage">
---  == Typical usage ==
+--  ## Typical usage ## {gtkfilechooser-typical-usage}
 --
 --  In the simplest of cases, you can the following code to use
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to select a file for
 --  opening:
 --
---    GtkWidget *dialog;
---    dialog = gtk_file_chooser_dialog_new ("Open File",
---       parent_window,
---       GTK_FILE_CHOOSER_ACTION_OPEN,
---       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
---       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
---       NULL);
---    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
---    {
---       char *filename;
---       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
---       open_file (filename);
---       g_free (filename);
---    }
---    gtk_widget_destroy (dialog);
+--  |[ GtkWidget *dialog; GtkFileChooserAction action =
+--  GTK_FILE_CHOOSER_ACTION_OPEN; gint res;
+--
+--  dialog = gtk_file_chooser_dialog_new ("Open File", parent_window, action,
+--  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+--
+--  res = gtk_dialog_run (GTK_DIALOG (dialog)); if (res ==
+--  GTK_RESPONSE_ACCEPT) { char *filename; GtkFileChooser *chooser =
+--  GTK_FILE_CHOOSER (dialog); filename = gtk_file_chooser_get_filename
+--  (chooser); open_file (filename); g_free (filename); }
+--
+--  gtk_widget_destroy (dialog); ]|
 --
 --  To use a dialog for saving, you can use this:
 --
---    GtkWidget *dialog;
---    dialog = gtk_file_chooser_dialog_new ("Save File",
---       parent_window,
---       GTK_FILE_CHOOSER_ACTION_SAVE,
---       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
---       GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
---       NULL);
---    gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
---    if (user_edited_a_new_document)
---    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "Untitled document");
--- else
---    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), filename_for_existing_document);
---    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
---    {
---       char *filename;
---       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
---       save_to_file (filename);
---       g_free (filename);
---    }
---    gtk_widget_destroy (dialog);
+--  |[ GtkWidget *dialog; GtkFileChooser *chooser; GtkFileChooserAction action
+--  = GTK_FILE_CHOOSER_ACTION_SAVE; gint res;
 --
---  <section id="gtkfilechooserdialog-setting-up">
---  == Setting up a file chooser dialog ==
+--  dialog = gtk_file_chooser_dialog_new ("Save File", parent_window, action,
+--  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Save"), GTK_RESPONSE_ACCEPT, NULL);
+--  chooser = GTK_FILE_CHOOSER (dialog);
+--
+--  gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+--
+--  if (user_edited_a_new_document) gtk_file_chooser_set_current_name
+--  (chooser, _("Untitled document")); else gtk_file_chooser_set_filename
+--  (chooser, existing_filename);
+--
+--  res = gtk_dialog_run (GTK_DIALOG (dialog)); if (res ==
+--  GTK_RESPONSE_ACCEPT) { char *filename;
+--
+--  filename = gtk_file_chooser_get_filename (chooser); save_to_file
+--  (filename); g_free (filename); }
+--
+--  gtk_widget_destroy (dialog); ]|
+--
+--  ## Setting up a file chooser dialog ## {gtkfilechooserdialog-setting-up}
 --
 --  There are various cases in which you may need to use a
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog:
 --
---     * To select a file for opening, as for a
---  <guimenuitem>File/Open</guimenuitem> command. Use
---  GTK_FILE_CHOOSER_ACTION_OPEN.
+--  - To select a file for opening. Use GTK_FILE_CHOOSER_ACTION_OPEN.
 --
---     * To save a file for the first time, as for a
---  <guimenuitem>File/Save</guimenuitem> command. Use
---  GTK_FILE_CHOOSER_ACTION_SAVE, and suggest a name such as "Untitled" with
---  Gtk.File_Chooser.Set_Current_Name.
+--  - To save a file for the first time. Use GTK_FILE_CHOOSER_ACTION_SAVE, and
+--  suggest a name such as "Untitled" with Gtk.File_Chooser.Set_Current_Name.
 --
---     * To save a file under a different name, as for a
---  <guimenuitem>File/Save As</guimenuitem> command. Use
---  GTK_FILE_CHOOSER_ACTION_SAVE, and set the existing filename with
---  Gtk.File_Chooser.Set_Filename.
+--  - To save a file under a different name. Use GTK_FILE_CHOOSER_ACTION_SAVE,
+--  and set the existing filename with Gtk.File_Chooser.Set_Filename.
 --
---     * To choose a folder instead of a file. Use
+--  - To choose a folder instead of a file. Use
 --  GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER.
 --
---  Note:
---
---  Old versions of the file chooser's documentation suggested using
+--  Note that old versions of the file chooser's documentation suggested using
 --  Gtk.File_Chooser.Set_Current_Folder in various situations, with the
 --  intention of letting the application suggest a reasonable default folder.
 --  This is no longer considered to be a good policy, as now the file chooser
 --  is able to make good suggestions on its own. In general, you should only
 --  cause the file chooser to show a specific folder when it is appropriate to
---  use Gtk.File_Chooser.Set_Filename, i.e. when you are doing a
---  <guimenuitem>File/Save As</guimenuitem> command *and* you already have a
---  file saved somewhere.
+--  use Gtk.File_Chooser.Set_Filename, i.e. when you are doing a Save As
+--  command and you already have a file saved somewhere.
 --
---  </section> <section id="gtkfilechooserdialog-response-codes">
---  == Response Codes ==
+--  ## Response Codes ## {gtkfilechooserdialog-responses}
 --
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog inherits from
 --  Gtk.Dialog.Gtk_Dialog, so buttons that go in its action area have response
 --  codes such as GTK_RESPONSE_ACCEPT and GTK_RESPONSE_CANCEL. For example, you
 --  could call Gtk_New as follows:
 --
---    GtkWidget *dialog;
---    dialog = gtk_file_chooser_dialog_new ("Open File",
---       parent_window,
---       GTK_FILE_CHOOSER_ACTION_OPEN,
---       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
---       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
---       NULL);
+--  |[ GtkWidget *dialog; GtkFileChooserAction action =
+--  GTK_FILE_CHOOSER_ACTION_OPEN;
+--
+--  dialog = gtk_file_chooser_dialog_new ("Open File", parent_window, action,
+--  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+--  ]|
 --
 --  This will create buttons for "Cancel" and "Open" that use stock response
 --  identifiers from Gtk_Response_Type. For most dialog boxes you can use your
 --  own custom response codes rather than the ones in Gtk_Response_Type, but
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog assumes that its
---  "accept"-type action, e.g. an "Open" or "Save" button, *will* have one of
---  the following response codes:
+--  "accept"-type action, e.g. an "Open" or "Save" button, will have one of the
+--  following response codes:
 --
---  <simplelist id="gtkfilechooserdialog-responses">
---  <member>GTK_RESPONSE_ACCEPT</member> <member>GTK_RESPONSE_OK</member>
---  <member>GTK_RESPONSE_YES</member> <member>GTK_RESPONSE_APPLY</member>
---  </simplelist>
+--  - GTK_RESPONSE_ACCEPT - GTK_RESPONSE_OK - GTK_RESPONSE_YES -
+--  GTK_RESPONSE_APPLY
+--
 --  This is because Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog must
 --  intercept responses and switch to folders if appropriate, rather than
---  letting the dialog terminate &mdash; the implementation uses these known
---  response codes to know which responses can be blocked if appropriate.
+--  letting the dialog terminate — the implementation uses these known response
+--  codes to know which responses can be blocked if appropriate.
 --
---  Note: To summarize, make sure you use a <link
---  linkend="gtkfilechooserdialog-responses">stock response code</link> when
---  you use Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to ensure proper
---  operation.
+--  To summarize, make sure you use a [stock response
+--  code][gtkfilechooserdialog-responses] when you use
+--  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to ensure proper operation.
 --
---  </section>
 --  </description>
 pragma Ada_2005;
 
@@ -259,6 +240,14 @@ package Gtk.File_Chooser_Dialog is
    function Set_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        URI     : UTF8_String) return Boolean;
+
+   function Get_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
+       return UTF8_String;
+
+   procedure Set_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
+       Name    : UTF8_String);
 
    function Get_Do_Overwrite_Confirmation
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
@@ -398,10 +387,6 @@ package Gtk.File_Chooser_Dialog is
    function Select_Uri
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        URI     : UTF8_String) return Boolean;
-
-   procedure Set_Current_Name
-      (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
-       Name    : UTF8_String);
 
    procedure Unselect_All
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record);

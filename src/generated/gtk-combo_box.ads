@@ -37,7 +37,7 @@
 --  choices is not restricted to a flat list, it can be a real tree, and the
 --  popup will reflect the tree structure.
 --
---  To allow the user to enter values not in the model, the 'has-entry'
+--  To allow the user to enter values not in the model, the "has-entry"
 --  property allows the GtkComboBox to contain a Gtk.GEntry.Gtk_Entry. This
 --  entry can be accessed by calling Gtk.Bin.Get_Child on the combo box.
 --
@@ -150,9 +150,11 @@ package Gtk.Combo_Box is
    procedure Initialize_With_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
+   --  Since: gtk+ 2.24
 
    function Gtk_Combo_Box_New_With_Entry return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
+   --  Since: gtk+ 2.24
 
    procedure Gtk_New_With_Model
       (Combo_Box : out Gtk_Combo_Box;
@@ -180,12 +182,14 @@ package Gtk.Combo_Box is
        Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
    --  the model initialized to Model.
+   --  Since: gtk+ 2.24
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Gtk_Combo_Box_New_With_Model_And_Entry
       (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
    --  the model initialized to Model.
+   --  Since: gtk+ 2.24
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Type return Glib.GType;
@@ -200,7 +204,7 @@ package Gtk.Combo_Box is
    --  Returns the index of the currently active item, or -1 if there's no
    --  active item. If the model is a non-flat treemodel, and the active item
    --  is not an immediate child of the root of the tree, this function returns
-   --  'gtk_tree_path_get_indices (path)[0]', where 'path' is the
+   --  `gtk_tree_path_get_indices (path)[0]`, where `path` is the
    --  Gtk.Tree_Model.Gtk_Tree_Path of the active item.
    --  Since: gtk+ 2.4
 
@@ -240,13 +244,17 @@ package Gtk.Combo_Box is
 
    function Get_Add_Tearoffs
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
+   pragma Obsolescent (Get_Add_Tearoffs);
    --  Gets the current value of the :add-tearoffs property.
+   --  Deprecated since 3.10, 1
 
    procedure Set_Add_Tearoffs
       (Combo_Box    : not null access Gtk_Combo_Box_Record;
        Add_Tearoffs : Boolean);
+   pragma Obsolescent (Set_Add_Tearoffs);
    --  Sets whether the popup menu should have a tearoff menu item.
    --  Since: gtk+ 2.6
+   --  Deprecated since 3.10, 1
    --  "add_tearoffs": True to add tearoff menu items
 
    function Get_Button_Sensitivity
@@ -398,15 +406,19 @@ package Gtk.Combo_Box is
 
    function Get_Title
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String;
+   pragma Obsolescent (Get_Title);
    --  Gets the current title of the menu in tearoff mode. See
    --  Gtk.Combo_Box.Set_Add_Tearoffs.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.10, 1
 
    procedure Set_Title
       (Combo_Box : not null access Gtk_Combo_Box_Record;
        Title     : UTF8_String);
+   pragma Obsolescent (Set_Title);
    --  Sets the menu's title in tearoff mode.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.10, 1
    --  "title": a title for the menu in tearoff mode
 
    function Get_Wrap_Width
@@ -596,8 +608,8 @@ package Gtk.Combo_Box is
    Active_Property : constant Glib.Properties.Property_Int;
    --  The item which is currently active. If the model is a non-flat
    --  treemodel, and the active item is not an immediate child of the root of
-   --  the tree, this property has the value 'gtk_tree_path_get_indices
-   --  (path)[0]', where 'path' is the Gtk.Tree_Model.Gtk_Tree_Path of the
+   --  the tree, this property has the value `gtk_tree_path_get_indices
+   --  (path)[0]`, where `path` is the Gtk.Tree_Model.Gtk_Tree_Path of the
    --  active item.
 
    Active_Id_Property : constant Glib.Properties.Property_String;
@@ -730,10 +742,10 @@ package Gtk.Combo_Box is
    --  GtkComboBox::entry-text-column model column.
    --
    --  Here's an example signal handler which fetches data from the model and
-   --  displays it in the entry. |[ static gchar* format_entry_text_callback
-   --  (GtkComboBox *combo, const gchar *path, gpointer user_data) {
-   --  GtkTreeIter iter; GtkTreeModel model; gdouble value; model =
-   --  gtk_combo_box_get_model (combo);
+   --  displays it in the entry. |[<!-- language="C" --> static gchar*
+   --  format_entry_text_callback (GtkComboBox *combo, const gchar *path,
+   --  gpointer user_data) { GtkTreeIter iter; GtkTreeModel model; gdouble
+   --  value; model = gtk_combo_box_get_model (combo);
    --
    --  gtk_tree_model_get_iter_from_string (model, &iter, path);
    --  gtk_tree_model_get (model, &iter, THE_DOUBLE_VALUE_COLUMN, &value, -1);
@@ -743,7 +755,8 @@ package Gtk.Combo_Box is
    --  Callback parameters:
    --    --  "path": the GtkTreePath string from the combo box's current model to
    --    --  format text for
-   --    --  Returns a newly allocated string representing Path for the current GtkComboBox model.
+   --    --  Returns a newly allocated string representing Path
+   -- for the current GtkComboBox model.
 
    type Cb_Gtk_Combo_Box_Gtk_Scroll_Type_Void is not null access procedure
      (Self        : access Gtk_Combo_Box_Record'Class;
@@ -763,9 +776,8 @@ package Gtk.Combo_Box is
        Call  : Cb_GObject_Gtk_Scroll_Type_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-active signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to move the active selection.
+   --  The ::move-active signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to move the active selection.
 
    type Cb_Gtk_Combo_Box_Boolean is not null access function
      (Self : access Gtk_Combo_Box_Record'Class) return Boolean;
@@ -784,8 +796,8 @@ package Gtk.Combo_Box is
        Call  : Cb_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::popdown signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted to popdown the combo box list.
+   --  The ::popdown signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted to popdown the combo box list.
    --
    --  The default bindings for this signal are Alt+Up and Escape.
 
@@ -799,8 +811,8 @@ package Gtk.Combo_Box is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::popup signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted to popup the combo box list.
+   --  The ::popup signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted to popup the combo box list.
    --
    --  The default binding for this signal is Alt+Down.
 

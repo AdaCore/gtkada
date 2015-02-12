@@ -55,6 +55,8 @@ package body Gtk.Text_Tag_Table is
       (Tag  : System.Address;
        Data : System.Address);
    pragma Convention (C, Internal_Gtk_Text_Tag_Table_Foreach);
+   --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
+   --  "data": data passed to Gtk.Text_Tag_Table.Foreach
 
    -----------------------------------------
    -- Internal_Gtk_Text_Tag_Table_Foreach --
@@ -153,6 +155,8 @@ package body Gtk.Text_Tag_Table is
 
       procedure Internal_Cb (Tag : System.Address; Data : System.Address);
       pragma Convention (C, Internal_Cb);
+      --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
+      --  "data": data passed to Gtk.Text_Tag_Table.Foreach
 
       -------------
       -- Foreach --

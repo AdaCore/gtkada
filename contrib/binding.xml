@@ -1382,7 +1382,22 @@ See Gtk_Text_View for a multiple-line text editing widget.
    --  setting changes.
    --
    --  Returns: Whether the alternative button order should be used
+
+   function Use_Header_Bar_From_Settings
+      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null)
+      return Gtk_Dialog_Flags;
+   --  Check in the gtk settings whether dialogs should display their action
+   --  buttons in the header bar rather than in the action area at the bottom.
+   --  Widget is used to retrieve the settings. If unspecified, the default
+   --  settings are used.
+   --  The value of the setting can be set in the file
+   --    $HOME/.config/gtk-3.0/settings.ini
+   --  with the following line:
+   --    gtk-dialogs-use-header=0
         </spec>
+
+        <with_body pkg="Gtk.Settings" />
+        <with_body pkg="Glib.Properties" />
         <body>
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
@@ -1407,6 +1422,25 @@ See Gtk_Text_View for a multiple-line text editing widget.
    begin
       return Boolean'Val (Internal (Get_Object (Screen)));
    end Gtk_Alternative_Dialog_Button_Order;
+
+   function Use_Header_Bar_From_Settings
+      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null)
+      return Gtk_Dialog_Flags
+   is
+      S : Gtk_Settings;
+   begin
+      if Widget = null then
+         S := Gtk.Settings.Get_Default;
+      else
+         S := Get_Settings (Widget);
+      end if;
+
+      if Get_Property (S, Gtk_Dialogs_Use_Header_Property) then
+         return Use_Header_Bar;
+      else
+         return 0;
+      end if;
+   end Use_Header_Bar_From_Settings;
         </body>
 
         <type ctype="GtkDialogFlags" ada="Gtk_Dialog_Flags">
@@ -1415,13 +1449,14 @@ See Gtk_Text_View for a multiple-line text editing widget.
    pragma Convention (C, Gtk_Dialog_Flags);
    Modal               : constant Gtk_Dialog_Flags := 2 ** 0;
    Destroy_With_Parent : constant Gtk_Dialog_Flags := 2 ** 1;
-   No_Separator        : constant Gtk_Dialog_Flags := 2 ** 2;
+   Use_Header_Bar      : constant Gtk_Dialog_Flags := 2 ** 2;
    --  Various flags that can be set for the dialog, with the following
    --  implications:
    --     - Modal : the dialog is modal, see Gtk.Window.Set_Modal
    --     - Destroy_With_Parent: The dialog is destroyed if its parent is
    --       destroyed. See Gtk.Window.Set_Destroy_With_Parent
-   --     - No_Separator: No separator bar above the buttons.
+   --     - Use_Header_Bar: create dialogs with actions in the header bar
+   --       instead of action area (since 3.12)
         </type>
 
         <type ctype="GtkResponseType" ada="Gtk_Response_Type">
@@ -2413,6 +2448,10 @@ __PRE__
 
      <method id="gtk_widget_class_install_style_property_parser" bind="False" />
      <method id="gtk_widget_class_list_style_properties" bind="False" />
+
+     <method id="gtk_widget_class_set_template" bind="False"/> <!-- needs GBytes -->
+     <method id="gtk_widget_class_set_template_from_resource" bind="False"/> <!-- needs GBytes -->
+     <method id="gtk_widget_class_bind_template_callback_full" bind="False"/> <!-- useless withouth gtk_widget_class_set_template -->
    </package>
 
    <package id="GtkWidget" needs_merge="false">
@@ -2900,6 +2939,7 @@ __PRE__
      <enum ctype="GtkExpanderStyle"/>
      <enum ctype="GtkIconSize" asbitfield="True"/>
      <enum ctype="GtkJunctionSides"/>
+     <enum ctype="GtkBaselinePosition"/>
      <enum ctype="GtkJustification"/>
      <enum ctype="GtkMenuDirectionType"/>
      <enum ctype="GtkMovementStep"/>
@@ -2911,6 +2951,9 @@ __PRE__
      <enum ctype="GtkPackType"/>
      <enum ctype="GtkPageOrientation"/>
      <enum ctype="GtkPageSet"/>
+     <enum ctype="GtkPanDirection"/>
+     <enum ctype="GtkPropagationPhase"/>
+     <enum ctype="GtkEventSequenceState"/>
      <enum ctype="GtkLevelBarMode"/>
      <enum ctype="GtkPathPriorityType"/>
      <enum ctype="GtkPathType"/>
@@ -3393,6 +3436,7 @@ __PRE__
      <function id="gtk_render_activity" />
      <!--  <function id="gtk_render_icon_pixbuf" /> -->
      <function id="gtk_render_icon" />
+     <function id="gtk_render_icon_surface" />
      <extra>
        <spec>
    function Get_Style_Context
@@ -3918,6 +3962,9 @@ creating a tag.
 
      <method id="gdk_cursor_unref" bind="False" />  <!--  obsolete -->
      <method id="gdk_cursor_ref" bind="False" />  <!--  obsolete -->
+
+     <method id="gdk_cursor_get_surface" return_as_param="Surface"/>
+
      <extra>
        <spec>
    procedure Ref (Self : Gdk.Gdk_Cursor);
@@ -3937,10 +3984,12 @@ creating a tag.
 
    <package id="GtkTextTagTable">
      <parameter name="self" ada="Table"/>
+     <method id='gtk_text_tag_table_add' return='void'/> <!--  backward compatibility -->
    </package>
 
    <package id="GtkTextView">
      <parameter name="self" ada="View"/>
+     <enum ctype="GtkTextViewLayer" />
 
      <!-- These are now inherited from the Scrollable interface -->
      <method id="gtk_text_view_get_hadjustment" bind="false"/>
@@ -3949,6 +3998,15 @@ creating a tag.
      <method id="gtk_text_view_set_vadjustment" bind="false"/>
 
      <method id="gtk_text_view_new_with_buffer" ada="Gtk_New"/>
+
+     <virtual-method id='draw_layer' bind='True'>
+        <doc>
+The draw_layer virtual function is called before and after the text
+view is drawing its own text. Applications can override this vfunc
+in a subclass to draw customized content underneath or above the
+text. Since: 3.14
+        </doc>
+     </virtual-method>
    </package>
 
    <package id="GdkWindow" bindtype="False">
@@ -3992,6 +4050,7 @@ creating a tag.
      <method id="gdk_window_get_drag_protocol" return_as_param="Protocol" bind="False"/> <!--  circular dep with GdkDragContent -->
 
      <method id="gdk_window_get_user_data" bind="False"/>  <!-- see below -->
+     <method id="gdk_window_get_children_with_user_data" bind="False"/> <!-- low-level -->
 
      <extra>
        <spec>
@@ -4122,6 +4181,7 @@ creating a tag.
      <enum ctype="GdkWindowState" prefix="GDK_"/>
      <enum ctype="GdkSettingAction" prefix="GDK_"/>
      <enum ctype="GdkOwnerChange" prefix="GDK_"/>
+     <record ctype="GdkEventSequence"/>
      <record ctype="GdkEventAny"/>
      <record ctype="GdkEventButton"/>
      <record ctype="GdkEventExpose"/>
@@ -4140,7 +4200,6 @@ creating a tag.
      <record ctype="GdkEventWindowState"/>
      <record ctype="GdkEventSetting"/>
      <record ctype="GdkEventTouch"/>
-     <record ctype="GdkEventSequence"/>
      <record ctype="GdkEventGrabBroken"/>
 
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
@@ -4234,14 +4293,6 @@ creating a tag.
        <gir:method name="Get_Keycode" c:identifier="ada_gdk_event_get_keycode">
          <gir:doc>Hardware key code of the key that was pressed</gir:doc>
          <gir:return-value><gir:type name="guint" c:type="guint"/></gir:return-value>
-       </gir:method>
-       <gir:method name="Get_Event_Type" c:identifier="ada_gdk_event_get_event_type">
-         <gir:doc>The type of the event</gir:doc>
-         <gir:return-value><gir:type name="GdkEventType" c:type="GdkEventType"/></gir:return-value>
-       </gir:method>
-       <gir:method name="Get_Window" c:identifier="ada_gdk_event_get_window">
-         <gir:doc>The window to which the event was sent</gir:doc>
-         <gir:return-value><gir:type name="GdkWindow*" c:type="GdkWindow*"/></gir:return-value>
        </gir:method>
 
        <type ctype="GdkEvent*" ada="Gdk_Event">
@@ -4647,6 +4698,7 @@ creating a tag.
    </package>
 
    <package id="PangoFontMetrics">
+      <!--<record ctype="PangoFontMetrics" private="true"/>-->
    </package>
 
    <package id="PangoFontset">
@@ -5380,6 +5432,11 @@ creating a tag.
      </method>
      <method id="gtk_builder_get_objects" return="ObjectSList" />
      <method id="gtk_builder_value_from_string" return_as_param="Success" />
+
+     <method id="gtk_builder_set_application" bind="False"/> <!-- circular dep with GtkWidget -->
+     <method id="gtk_builder_get_application" bind="False"/> <!-- circular dep with GtkWidget -->
+
+     <method id="gtk_builder_add_callback_symbol" bind="False"/> <!-- error in generated binding -->
    </package>
 
    <package id="GtkUIManager">
@@ -5653,8 +5710,28 @@ direction, widget state, or icon size.
       Name     : String;
       Value    : GValue;
       Origin   : String);
+
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+     return Gtk_Settings;
+   --  Get the settings object holding the settings used for this widget.
+   --
+   --  Note that this function can only be called when the widget is
+   --  attached to a toplevel, since the settings object is specific to a
+   --  particular Gdk.Screen.Gdk_Screen.
        </spec>
        <body>
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+     return Gtk_Settings
+   is
+      function Internal (W : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_settings");
+      Stub : Gtk_Settings_Record;
+   begin
+      return Gtk_Settings (Get_User_Data (Internal (Get_Object (Widget)), Stub));
+   end Get_Settings;
+
    procedure Set_Property_Value
      (Settings : not null access Gtk_Settings_Record;
       Name     : String;
@@ -6241,6 +6318,7 @@ direction, widget state, or icon size.
       Enums.Pango_Weight_Medium      =&gt; "Medium    ",
       Enums.Pango_Weight_Semibold    =&gt; "Semi-Bold ",
       Enums.Pango_Weight_Bold        =&gt; "Bold      ",
+      Enums.Pango_Weight_Semilight   =&gt; "Semi-Light",
       Enums.Pango_Weight_Ultrabold   =&gt; "Bold      ",
       Enums.Pango_Weight_Ultraheavy  =&gt; "Ultraheavy",
       Enums.Pango_Weight_Heavy       =&gt; "Heavy     ");
@@ -7560,12 +7638,24 @@ package body Generic_Set is
      <method id="g_application_get_dbus_connection" bind="False"/> <!-- requires DBus -->
      <method id="g_application_open" bind="False" /> <!-- requires GFile -->
      <method id="::open" bind="False"/>  <!--  requires GFile -->
+     <method id="g_application_add_main_option_entries" bind="False"/>  <!--  requires GOptionEntry -->
+     <method id="g_application_add_main_option" bind="False" /> <!--  circular dependency -->
+     <method id="g_application_add_option_group" bind="False"/> <!--  circular dependency -->
+     <method id="::handle-local-options" bind="False"/>  <!--  require GVariant -->
+   </package>
+
+   <package id="GNotification" ada="Glib.Notification">
+      <method id="g_notification_set_body">
+         <parameter name="body" ada="the_body"/>
+      </method>
+      <enum ctype='GNotificationPriority'/>
    </package>
 
    <package id="GApplicationCommandLine" into="GApplication" ada="Glib.Application">
      <method id="g_application_command_line_create_file_for_arg" bind="False" /> <!-- requires GFile -->
      <method id="g_application_command_line_get_stdin" bind="False" /> <!-- requires GInputStream -->
      <method id="g_application_command_line_get_type" ada="Get_Type_Command_Line" />
+     <method id="g_application_command_line_get_options_dict" bind="False"/> <!-- requires GVariant -->
      <method id="g_application_command_line_get_arguments">
        <parameter name="argc" ada="" default="null"/>
        <return-value transfer-ownership="full"/>
@@ -7609,6 +7699,7 @@ package body Generic_Set is
      <method id="g_option_context_new" ada="G_New"/>
      <method id="g_option_group_new" ada="G_New"/>
      <method id="g_option_context_parse" bind="False"/> <!-- Invalid binding generated -->
+     <method id="g_option_context_parse_strv" bind="False"/> <!-- low-level -->
      <method id="g_option_context_add_main_entries">
        <parameter name="entries" type="GOption_Entry_Array"/>
      </method>
@@ -7750,6 +7841,7 @@ package body Generic_Set is
    </package>
 
    <package id="GAction" ada="Glib.Action">
+      <method id="g_action_parse_detailed_name" bind="False"/>  <!-- incorrect generated binding -->
    </package>
 
    <package id="GSimpleAction" ada="Glib.Simple_Action">
@@ -7973,6 +8065,22 @@ package body Generic_Set is
       <virtual-method id='*' bind='False'/>
    </package>
 
+   <package id='GtkListBoxRow'>
+     <list ctype="GtkListBoxRow" ada="List_Box_Row_List" />
+   </package>
+   <package id='GtkListBox'>
+      <method id='gtk_list_box_get_selected_rows' return='ListBoxRowList'>
+      </method>
+   </package>
+
+   <package id='GtkGesture'>
+      <list ctype='GtkGesture' ada='Gesture_List'/>
+      <list ctype='GdkEventSequence' ada='Gdk_Event_Sequence_List'/>
+      <method id='gtk_gesture_get_group' return='GestureList'/>
+      <method id='gtk_gesture_get_sequences' return='GdkEventSequenceList'/>
+   </package>
+
+
    <!-- Below were added just for the sake of parsing the files to get information
         on their symbols, and properly substitute them in the docs.
         No file is generated from them.
@@ -7990,4 +8098,15 @@ package body Generic_Set is
     <method id="gtk_im_context_get_surrounding" bind="False" />
   </package>
 
+  <package id="GtkRevealer">
+     <enum ctype="GtkRevealerTransitionType"/>
+  </package>
+
+  <package id="GtkStack">
+     <enum ctype="GtkStackTransitionType"/>
+  </package>
+
+  <package id="GtkFlowBox">
+     <method id="gtk_flow_box_get_selected_children" return="WidgetList" />
+  </package>
 </GIR>

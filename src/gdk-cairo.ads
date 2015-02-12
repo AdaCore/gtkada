@@ -60,6 +60,18 @@ package Gdk.Cairo is
    --  The pattern has an extend mode of CAIRO_EXTEND_NONE and is aligned
    --  so that the origin of Pixbuf is Pixbuf_X, Pixbuf_Y
 
+   function Create_From_Pixbuf
+      (Pixbuf  : Gdk_Pixbuf;
+       Scale   : Gint;
+       For_Window : Gdk.Gdk_Window := null) return Cairo_Surface;
+   --  Creates an image surface with the same contents as the pixbuf.
+   --  This is similar to the work done by Set_Source_Pixbuf, but allows you
+   --  to specify the scale factor for the screen, i.e. adapt to high-dpi
+   --  (Retina) screens.
+   --  You can then use Gtk.Style_Context.Render_Icon_Surface to paint the
+   --  surface onto a Cairo_Context, and then destroy the surface.
+   --  See also the convenient wrapper Gtkada.Style.Draw_Pixbuf_With_Scale.
+
    procedure Set_Source_Color
      (Cr       : Cairo_Context;
       Color    : Gdk_Color);

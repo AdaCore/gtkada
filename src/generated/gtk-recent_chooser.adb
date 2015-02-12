@@ -299,14 +299,14 @@ package body Gtk.Recent_Chooser is
 
    procedure Set_Filter
       (Chooser : Gtk_Recent_Chooser;
-       Filter  : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
+       Filter  : access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class)
    is
       procedure Internal
          (Chooser : Gtk_Recent_Chooser;
           Filter  : System.Address);
       pragma Import (C, Internal, "gtk_recent_chooser_set_filter");
    begin
-      Internal (Chooser, Get_Object (Filter));
+      Internal (Chooser, Get_Object_Or_Null (GObject (Filter)));
    end Set_Filter;
 
    --------------------

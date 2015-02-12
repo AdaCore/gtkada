@@ -160,8 +160,8 @@ package body Glib.Option is
        Destroy_Notify : Glib.G_Destroy_Notify_Address);
    pragma Import (C, C_G_Option_Context_Set_Translate_Func, "g_option_context_set_translate_func");
    --  Sets the function which is used to translate the contexts user-visible
-   --  strings, for <option>--help</option> output. If Func is null, strings
-   --  are not translated.
+   --  strings, for `--help` output. If Func is null, strings are not
+   --  translated.
    --  Note that option groups have their own translation functions, this
    --  function only affects the Parameter_String (see Glib.Option.G_New), the
    --  summary (see Glib.Option.Set_Summary) and the description (see

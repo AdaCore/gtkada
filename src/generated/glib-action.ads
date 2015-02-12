@@ -39,7 +39,7 @@
 --
 --  Glib.Action.Gaction is merely the interface to the concept of an action,
 --  as described above. Various implementations of actions exist, including
---  Glib.Simple_Action.Gsimple_Action and Gtk.Action.Gtk_Action.
+--  Glib.Simple_Action.Gsimple_Action.
 --
 --  In all cases, the implementing class is responsible for storing the name
 --  of the action, the parameter type, the enabled state, the optional state
@@ -84,6 +84,7 @@ package Glib.Action is
    --  Parameter must be the correct type of parameter for the action (ie: the
    --  parameter type given at construction time). If the parameter type was
    --  null then Parameter must also be null.
+   --  If the Parameter GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
    --  "parameter": the parameter to the activation
 
@@ -162,6 +163,33 @@ package Glib.Action is
    --  Glib.Action.Change_State.
    --  Since: gtk+ 2.28
 
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Name_Is_Valid (Action_Name : UTF8_String) return Boolean;
+   --  Checks if Action_Name is valid.
+   --  Action_Name is valid if it consists only of alphanumeric characters,
+   --  plus '-' and '.'. The empty string is not a valid action name.
+   --  It is an error to call this function with a non-utf8 Action_Name.
+   --  Action_Name must not be null.
+   --  Since: gtk+ 2.38
+   --  "action_name": an potential action name
+
+   function Print_Detailed_Name
+      (Action_Name  : UTF8_String;
+       Target_Value : Glib.Variant.Gvariant) return UTF8_String;
+   --  Formats a detailed action name from Action_Name and Target_Value.
+   --  It is an error to call this function with an invalid action name.
+   --  This function is the opposite of g_action_parse_detailed_action_name.
+   --  It will produce a string that can be parsed back to the Action_Name and
+   --  Target_Value by that function.
+   --  See that function for the types of strings that will be printed by this
+   --  function.
+   --  Since: gtk+ 2.38
+   --  "action_name": a valid action name
+   --  "target_value": a Glib.Variant.Gvariant target value, or null
+
    ----------------
    -- Properties --
    ----------------
@@ -176,12 +204,14 @@ package Glib.Action is
 
    Name_Property : constant Glib.Properties.Property_String;
    --  The name of the action. This is mostly meaningful for identifying the
-   --  action once it has been added to a Glib.Action_Group.Gaction_Group.
+   --  action once it has been added to a Glib.Action_Group.Gaction_Group. It
+   --  is immutable.
 
    Parameter_Type_Property : constant Glib.Properties.Property_Boxed;
    --  Type: GLib.Variant_Type
    --  The type of the parameter that must be given when activating the
-   --  action.
+   --  action. This is immutable, and may be null if no parameter is needed
+   --  when activating the action.
 
    State_Property : constant Glib.Properties.Property_Object;
    --  Type: Glib.Variant.Gvariant
@@ -190,7 +220,7 @@ package Glib.Action is
    State_Type_Property : constant Glib.Properties.Property_Boxed;
    --  Type: GLib.Variant_Type
    --  The Glib.Variant.Gvariant_Type of the state that the action has, or
-   --  null if the action is stateless.
+   --  null if the action is stateless. This is immutable.
 
    ----------------
    -- Interfaces --
@@ -212,6 +242,7 @@ package Glib.Action is
    --  Parameter must be the correct type of parameter for the action (ie: the
    --  parameter type given at construction time). If the parameter type was
    --  null then Parameter must also be null.
+   --  If the Parameter GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
    --  "parameter": the parameter to the activation
 

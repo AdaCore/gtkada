@@ -23,11 +23,11 @@
 
 --  <description>
 --  GtkGradient is a boxed type that represents a gradient. It is the result
---  of parsing a <link linkend="gtkcssprovider-gradients">gradient
---  expression</link>. To obtain the gradient represented by a GtkGradient, it
---  has to be resolved with Gtk.Gradient.Resolve, which replaces all symbolic
---  color references by the colors they refer to (in a given context) and
---  constructs a cairo_pattern_t value.
+--  of parsing a [gradient expression][gtkcssprovider-gradients]. To obtain the
+--  gradient represented by a GtkGradient, it has to be resolved with
+--  Gtk.Gradient.Resolve, which replaces all symbolic color references by the
+--  colors they refer to (in a given context) and constructs a cairo_pattern_t
+--  value.
 --
 --  It is not normally necessary to deal directly with Gtk_Gradients, since
 --  they are mostly used behind the scenes by
@@ -141,7 +141,7 @@ package Gtk.Gradient is
    pragma Obsolescent (Add_Color_Stop);
    --  Adds a stop color to Gradient.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
+   --  Deprecated since 3.8, 1
    --  "offset": offset for the color stop
    --  "color": color to use
 
@@ -149,7 +149,7 @@ package Gtk.Gradient is
    pragma Obsolescent (Ref);
    --  Increases the reference count of Gradient.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
+   --  Deprecated since 3.8, 1
 
    function Resolve
       (Self              : Gtk_Gradient;
@@ -161,7 +161,7 @@ package Gtk.Gradient is
    --  Generally, if Gradient can't be resolved, it is due to it being defined
    --  on top of a named color that doesn't exist in Props.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
+   --  Deprecated since 3.8, 1
    --  "props": Gtk.Style_Properties.Gtk_Style_Properties to use when
    --  resolving named colors
    --  "resolved_gradient": return location for the resolved pattern
@@ -175,14 +175,14 @@ package Gtk.Gradient is
    pragma Obsolescent (To_String);
    --  Creates a string representation for Gradient that is suitable for using
    --  in GTK CSS files.
-   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
+   --  Deprecated since 3.8, 1
 
    procedure Unref (Self : Gtk_Gradient);
    pragma Obsolescent (Unref);
    --  Decreases the reference count of Gradient, freeing its memory if the
    --  reference count reaches 0.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Gtk.Gradient.Gtk_Gradient is deprecated.
+   --  Deprecated since 3.8, 1
 
 private
 

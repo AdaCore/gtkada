@@ -54,7 +54,8 @@ package Gdk.Drag_Contexts is
       Drag_Proto_Rootwin,
       Drag_Proto_Win32_Dropfiles,
       Drag_Proto_Ole2,
-      Drag_Proto_Local);
+      Drag_Proto_Local,
+      Drag_Proto_Wayland);
    pragma Convention (C, Gdk_Drag_Protocol);
    --  Used in Gdk.Drag_Contexts.Drag_Context to indicate the protocol
    --  according to which DND is done.
@@ -85,7 +86,8 @@ package Gdk.Drag_Contexts is
    function Get_Actions
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Action;
    --  Determines the bitmask of actions proposed by the source if
-   --  Gdk.Drag_Contexts.Get_Suggested_Action returns GDK_ACTION_ASK.
+   --  Gdk.Drag_Contexts.Get_Suggested_Action returns
+   --  Gdk.Drag_Contexts.Action_Ask.
    --  Since: gtk+ 2.22
 
    function Get_Dest_Window

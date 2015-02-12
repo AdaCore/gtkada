@@ -72,8 +72,8 @@ package Gtk.Text_Child_Anchor is
    --  Determines whether a child anchor has been deleted from the buffer.
    --  Keep in mind that the child anchor will be unreferenced when removed
    --  from the buffer, so you need to hold your own reference (with
-   --  g_object_ref) if you plan to use this function &mdash; otherwise all
-   --  deleted child anchors will also be finalized.
+   --  g_object_ref) if you plan to use this function — otherwise all deleted
+   --  child anchors will also be finalized.
 
    function Get_Widgets
       (Anchor : not null access Gtk_Text_Child_Anchor_Record)

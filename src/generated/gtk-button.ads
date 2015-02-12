@@ -60,6 +60,37 @@ package Gtk.Button is
    -- Constructors --
    ------------------
 
+   procedure Gtk_New_From_Icon_Name
+      (Button    : out Gtk_Button;
+       Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size);
+   procedure Initialize_From_Icon_Name
+      (Button    : not null access Gtk_Button_Record'Class;
+       Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size);
+   --  Creates a new button containing an icon from the current icon theme.
+   --  If the icon name isn't known, a "broken image" icon will be displayed
+   --  instead. If the current icon theme is changed, the icon will be updated
+   --  appropriately.
+   --  This function is a convenience wrapper around gtk_button_new and
+   --  Gtk.Button.Set_Image.
+   --  Since: gtk+ 3.10
+   --  "icon_name": an icon name
+   --  "size": an icon size
+
+   function Gtk_Button_New_From_Icon_Name
+      (Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size) return Gtk_Button;
+   --  Creates a new button containing an icon from the current icon theme.
+   --  If the icon name isn't known, a "broken image" icon will be displayed
+   --  instead. If the current icon theme is changed, the icon will be updated
+   --  appropriately.
+   --  This function is a convenience wrapper around gtk_button_new and
+   --  Gtk.Button.Set_Image.
+   --  Since: gtk+ 3.10
+   --  "icon_name": an icon name
+   --  "size": an icon size
+
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Button;
        Stock_Id : UTF8_String);
@@ -104,7 +135,7 @@ package Gtk.Button is
        Label  : UTF8_String);
    --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
    --  in Label are preceded by an underscore, they are underlined. If you need
-   --  a literal underscore character in a label, use '__' (two underscores).
+   --  a literal underscore character in a label, use "__" (two underscores).
    --  The first underlined character represents a keyboard accelerator called
    --  a mnemonic. Pressing Alt and that key activates the button.
    --  "label": The text of the button, with an underscore in front of the
@@ -114,7 +145,7 @@ package Gtk.Button is
       (Label : UTF8_String) return Gtk_Button;
    --  Creates a new Gtk.Button.Gtk_Button containing a label. If characters
    --  in Label are preceded by an underscore, they are underlined. If you need
-   --  a literal underscore character in a label, use '__' (two underscores).
+   --  a literal underscore character in a label, use "__" (two underscores).
    --  The first underlined character represents a keyboard accelerator called
    --  a mnemonic. Pressing Alt and that key activates the button.
    --  "label": The text of the button, with an underscore in front of the
@@ -135,15 +166,16 @@ package Gtk.Button is
    pragma Obsolescent (Enter);
    --  Emits a Gtk.Button.Gtk_Button::enter signal to the given
    --  Gtk.Button.Gtk_Button.
-   --  Deprecated since 2.20, Use the
-   --  Gtk.Widget.Gtk_Widget::enter-notify-event signal.
+   --  Deprecated since 2.20, 1
 
    procedure Get_Alignment
       (Button : not null access Gtk_Button_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
+   pragma Obsolescent (Get_Alignment);
    --  Gets the alignment of the child in the button.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "xalign": return location for horizontal alignment
    --  "yalign": return location for vertical alignment
 
@@ -151,9 +183,11 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
+   pragma Obsolescent (Set_Alignment);
    --  Sets the alignment of the child. This property has no effect unless the
    --  child is a Gtk.Misc.Gtk_Misc or a Gtk.Alignment.Gtk_Alignment.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.14, 1
    --  "xalign": the horizontal position of the child, 0.0 is left aligned,
    --  1.0 is right aligned
    --  "yalign": the vertical position of the child, 0.0 is top aligned, 1.0
@@ -211,10 +245,10 @@ package Gtk.Button is
    procedure Set_Image
       (Button : not null access Gtk_Button_Record;
        Image  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Set the image of Button to the given widget. Note that it depends on
-   --  the Gtk.Settings.Gtk_Settings:gtk-button-images setting whether the
-   --  image will be displayed or not, you don't have to call Gtk.Widget.Show
-   --  on Image yourself.
+   --  Set the image of Button to the given widget. The image will be
+   --  displayed if the label text is null or if
+   --  Gtk.Button.Gtk_Button:always-show-image is True. You don't have to call
+   --  Gtk.Widget.Show on Image yourself.
    --  Since: gtk+ 2.6
    --  "image": a widget to set as the image for the button
 
@@ -252,24 +286,28 @@ package Gtk.Button is
    --  Returns the current relief style of the given Gtk.Button.Gtk_Button.
 
    procedure Set_Relief
-      (Button   : not null access Gtk_Button_Record;
-       Newstyle : Gtk.Enums.Gtk_Relief_Style);
+      (Button : not null access Gtk_Button_Record;
+       Relief : Gtk.Enums.Gtk_Relief_Style);
    --  Sets the relief style of the edges of the given Gtk.Button.Gtk_Button
-   --  widget. Three styles exist, GTK_RELIEF_NORMAL, GTK_RELIEF_HALF,
-   --  GTK_RELIEF_NONE. The default style is, as one can guess,
-   --  GTK_RELIEF_NORMAL.
-   --  <!-- FIXME: put pictures of each style -->
-   --  "newstyle": The GtkReliefStyle as described above.
+   --  widget. Two styles exist, Gtk.Enums.Relief_Normal and
+   --  Gtk.Enums.Relief_None. The default style is, as one can guess,
+   --  Gtk.Enums.Relief_Normal. The deprecated value Gtk.Enums.Relief_Half
+   --  behaves the same as Gtk.Enums.Relief_Normal.
+   --  "relief": The GtkReliefStyle as described above
 
    function Get_Use_Stock
       (Button : not null access Gtk_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Stock);
    --  Returns whether the button label is a stock item.
+   --  Deprecated since 3.10, 1
 
    procedure Set_Use_Stock
       (Button    : not null access Gtk_Button_Record;
        Use_Stock : Boolean);
+   pragma Obsolescent (Set_Use_Stock);
    --  If True, the label set on the button is used as a stock id to select
    --  the stock item for the button.
+   --  Deprecated since 3.10, 1
    --  "use_stock": True if the button should use a stock item
 
    function Get_Use_Underline
@@ -288,22 +326,19 @@ package Gtk.Button is
    pragma Obsolescent (Leave);
    --  Emits a Gtk.Button.Gtk_Button::leave signal to the given
    --  Gtk.Button.Gtk_Button.
-   --  Deprecated since 2.20, Use the
-   --  Gtk.Widget.Gtk_Widget::leave-notify-event signal.
+   --  Deprecated since 2.20, 1
 
    procedure Pressed (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Pressed);
    --  Emits a Gtk.Button.Gtk_Button::pressed signal to the given
    --  Gtk.Button.Gtk_Button.
-   --  Deprecated since 2.20, Use the
-   --  Gtk.Widget.Gtk_Widget::button-press-event signal.
+   --  Deprecated since 2.20, 1
 
    procedure Released (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Released);
    --  Emits a Gtk.Button.Gtk_Button::released signal to the given
    --  Gtk.Button.Gtk_Button.
-   --  Deprecated since 2.20, Use the
-   --  Gtk.Widget.Gtk_Widget::button-release-event signal.
+   --  Deprecated since 2.20, 1
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -334,25 +369,31 @@ package Gtk.Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

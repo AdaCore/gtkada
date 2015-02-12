@@ -22,26 +22,26 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk.Tool_Palette.Gtk_Tool_Palette allows you to add
---  Gtk.Tool_Item.Gtk_Tool_Item<!-- -->s to a palette-like container with
---  different categories and drag and drop support.
+--  A Gtk.Tool_Palette.Gtk_Tool_Palette allows you to add Gtk_Tool_Items to a
+--  palette-like container with different categories and drag and drop support.
 --
 --  A Gtk.Tool_Palette.Gtk_Tool_Palette is created with a call to
 --  Gtk.Tool_Palette.Gtk_New.
 --
---  Gtk.Tool_Item.Gtk_Tool_Item<!-- -->s cannot be added directly to a
+--  Gtk_Tool_Items cannot be added directly to a
 --  Gtk.Tool_Palette.Gtk_Tool_Palette - instead they are added to a
 --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which can than be added to a
 --  Gtk.Tool_Palette.Gtk_Tool_Palette. To add a
 --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group to a
 --  Gtk.Tool_Palette.Gtk_Tool_Palette, use Gtk.Container.Add.
 --
---  |[ GtkWidget *palette, *group; GtkToolItem *item;
+--  |[<!-- language="C" --> GtkWidget *palette, *group; GtkToolItem *item;
 --
 --  palette = gtk_tool_palette_new (); group = gtk_tool_item_group_new
 --  (_("Test Category")); gtk_container_add (GTK_CONTAINER (palette), group);
 --
---  item = gtk_tool_button_new_from_stock (GTK_STOCK_OK);
+--  item = gtk_tool_button_new_new (NULL, _("_Open"));
+--  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "document-open");
 --  gtk_tool_item_group_insert (GTK_TOOL_ITEM_GROUP (group), item, -1); ]|
 --
 --  The easiest way to use drag and drop with
@@ -51,16 +51,17 @@
 --  the Gtk.Widget.Gtk_Widget::drag-data-received signal handler of the drag
 --  target.
 --
---  |[ static void passive_canvas_drag_data_received (GtkWidget *widget,
---  GdkDragContext *context, gint x, gint y, GtkSelectionData *selection, guint
---  info, guint time, gpointer data) { GtkWidget *palette; GtkWidget *item;
+--  |[<!-- language="C" --> static void passive_canvas_drag_data_received
+--  (GtkWidget *widget, GdkDragContext *context, gint x, gint y,
+--  GtkSelectionData *selection, guint info, guint time, gpointer data) {
+--  GtkWidget *palette; GtkWidget *item;
 --
---  /<!-- -->* Get the dragged item *<!-- -->/ palette =
---  gtk_widget_get_ancestor (gtk_drag_get_source_widget (context),
---  GTK_TYPE_TOOL_PALETTE); if (palette != NULL) item =
---  gtk_tool_palette_get_drag_item (GTK_TOOL_PALETTE (palette), selection);
+--  // Get the dragged item palette = gtk_widget_get_ancestor
+--  (gtk_drag_get_source_widget (context), GTK_TYPE_TOOL_PALETTE); if (palette
+--  != NULL) item = gtk_tool_palette_get_drag_item (GTK_TOOL_PALETTE (palette),
+--  selection);
 --
---  /<!-- -->* Do something with item *<!-- -->/ }
+--  // Do something with item }
 --
 --  GtkWidget *target, palette;
 --
@@ -164,8 +165,7 @@ package Gtk.Tool_Palette is
    --  on that widget
    --  "targets": the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which the
    --  widget should support
-   --  "actions": the Gdk.Drag_Contexts.Gdk_Drag_Action<!-- -->s which the
-   --  widget should suppport
+   --  "actions": the Gdk_Drag_Actions which the widget should suppport
 
    function Get_Drag_Item
       (Self      : not null access Gtk_Tool_Palette_Record;
@@ -375,9 +375,8 @@ package Gtk.Tool_Palette is
    --  Glib.Properties for more information on properties)
 
    Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
-   --  The size of the icons in a tool palette is normally determined by the
-   --  Gtk.Settings.Gtk_Settings:gtk-toolbar-icon-size setting. When this
-   --  property is set, it overrides the setting.
+   --  The size of the icons in a tool palette. When this property is set, it
+   --  overrides the default setting.
    --
    --  This should only be used for special-purpose tool palettes, normal
    --  application tool palettes should respect the user preferences for the

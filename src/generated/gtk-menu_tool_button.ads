@@ -28,23 +28,18 @@
 --  menu.
 --
 --  Use Gtk.Menu_Tool_Button.Gtk_New to create a new
---  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button. Use
---  Gtk.Menu_Tool_Button.Gtk_New_From_Stock to create a new
---  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button containing a stock item.
+--  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button.
 --
---  == GtkMenuToolButton as GtkBuildable ==
+--  # GtkMenuToolButton as GtkBuildable
 --
 --  The GtkMenuToolButton implementation of the GtkBuildable interface
 --  supports adding a menu by specifying "menu" as the "type" attribute of a
 --  <child> element.
 --
---  == A UI definition fragment with menus ==
+--  An example for a UI definition fragment with menus: |[ <object
+--  class="GtkMenuToolButton"> <child type="menu"> <object class="GtkMenu"/>
+--  </child> </object> ]|
 --
---    <object class="GtkMenuToolButton">
---    <child type="menu">
---    <object class="GtkMenu"/>
---    </child>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -186,25 +181,31 @@ package Gtk.Menu_Tool_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Menu_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Menu_Tool_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Menu_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Menu_Tool_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Menu_Tool_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Menu_Tool_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

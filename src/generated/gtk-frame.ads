@@ -27,23 +27,18 @@
 --  side of the frame. The position of the label can be controlled with
 --  Gtk.Frame.Set_Label_Align.
 --
---  == GtkFrame as GtkBuildable ==
+--  # GtkFrame as GtkBuildable
 --
 --  The GtkFrame implementation of the GtkBuildable interface supports placing
 --  a child in the label position by specifying "label" as the "type" attribute
 --  of a <child> element. A normal content child can be specified without
 --  specifying a <child> type attribute.
 --
---  == A UI definition fragment with GtkFrame ==
+--  An example of a UI definition fragment with GtkFrame: |[ <object
+--  class="GtkFrame"> <child type="label"> <object class="GtkLabel"
+--  id="frame-label"/> </child> <child> <object class="GtkEntry"
+--  id="frame-content"/> </child> </object> ]|
 --
---    <object class="GtkFrame">
---    <child type="label">
---    <object class="GtkLabel" id="frame-label"/>
---    </child>
---    <child>
---    <object class="GtkEntry" id="frame-content"/>
---    </child>
---    </object>
 --  </description>
 --  <description>
 --  This is a very convenient widget to visually group related widgets (like
@@ -141,7 +136,7 @@ package Gtk.Frame is
 
    procedure Set_Label_Widget
       (Frame        : not null access Gtk_Frame_Record;
-       Label_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the label widget for the frame. This is the widget that will
    --  appear embedded in the top edge of the frame as a title.
    --  "label_widget": the new label widget

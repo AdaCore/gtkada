@@ -27,76 +27,54 @@
 --  Gtk.Tree_Model.Gtk_Tree_Model interface, and consequentialy, can use all of
 --  the methods available there. It also implements the
 --  Gtk.Tree_Sortable.Gtk_Tree_Sortable interface so it can be sorted by the
---  view. Finally, it also implements the tree <link linkend="gtktreednd">drag
---  and drop</link> interfaces.
+--  view. Finally, it also implements the tree [drag and
+--  drop][gtk3-GtkTreeView-drag-and-drop] interfaces.
 --
 --  The Gtk.List_Store.Gtk_List_Store can accept most GObject types as a
 --  column type, though it can't accept all custom types. Internally, it will
 --  keep a copy of data passed in (such as a string or a boxed pointer).
---  Columns that accept Glib.Object.GObject<!-- -->s are handled a little
---  differently. The Gtk.List_Store.Gtk_List_Store will keep a reference to the
---  object instead of copying the value. As a result, if the object is
---  modified, it is up to the application writer to call
---  Gtk.Tree_Model.Row_Changed to emit the
+--  Columns that accept GObjects are handled a little differently. The
+--  Gtk.List_Store.Gtk_List_Store will keep a reference to the object instead
+--  of copying the value. As a result, if the object is modified, it is up to
+--  the application writer to call Gtk.Tree_Model.Row_Changed to emit the
 --  Gtk.Tree_Model.Gtk_Tree_Model::row_changed signal. This most commonly
---  affects lists with Gdk.Pixbuf.Gdk_Pixbuf<!-- -->s stored.
+--  affects lists with Gdk_Pixbufs stored.
 --
---  == Creating a simple list store. ==
+--  An example for creating a simple list store: |[<!-- language="C" --> enum
+--  { COLUMN_STRING, COLUMN_INT, COLUMN_BOOLEAN, N_COLUMNS };
 --
---    enum {
---       COLUMN_STRING,
---       COLUMN_INT,
---       COLUMN_BOOLEAN,
---       N_COLUMNS
---    };
---    {
---       GtkListStore *list_store;
---       GtkTreePath *path;
---       GtkTreeIter iter;
---       gint i;
---       list_store = gtk_list_store_new (N_COLUMNS,
---          G_TYPE_STRING,
---          G_TYPE_INT,
---          G_TYPE_BOOLEAN);
---       for (i = 0; i < 10; i++)
---       {
---          gchar *some_data;
---          some_data = get_some_data (i);
---          // Add a new row to the model
---          gtk_list_store_append (list_store, &iter);
---          gtk_list_store_set (list_store, &iter,
---             COLUMN_STRING, some_data,
---             COLUMN_INT, i,
---             COLUMN_BOOLEAN,  FALSE,
---             -1);
---          /<!---->* As the store will keep a copy of the string internally, we
---          * free some_data.
---          *<!---->/
---          g_free (some_data);
---       }
---       // Modify a particular row
---       path = gtk_tree_path_new_from_string ("4");
---       gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store),
---          &iter,
---          path);
---       gtk_tree_path_free (path);
---       gtk_list_store_set (list_store, &iter,
---          COLUMN_BOOLEAN, TRUE,
---          -1);
---    }
+--  { GtkListStore *list_store; GtkTreePath *path; GtkTreeIter iter; gint i;
 --
---  == Performance Considerations ==
+--  list_store = gtk_list_store_new (N_COLUMNS, G_TYPE_STRING, G_TYPE_INT,
+--  G_TYPE_BOOLEAN);
+--
+--  for (i = 0; i < 10; i++) { gchar *some_data;
+--
+--  some_data = get_some_data (i);
+--
+--  // Add a new row to the model gtk_list_store_append (list_store, &iter);
+--  gtk_list_store_set (list_store, &iter, COLUMN_STRING, some_data,
+--  COLUMN_INT, i, COLUMN_BOOLEAN, FALSE, -1);
+--
+--  // As the store will keep a copy of the string internally, // we free
+--  some_data. g_free (some_data); }
+--
+--  // Modify a particular row path = gtk_tree_path_new_from_string ("4");
+--  gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store), &iter, path);
+--  gtk_tree_path_free (path); gtk_list_store_set (list_store, &iter,
+--  COLUMN_BOOLEAN, TRUE, -1); } ]|
+--
+--  # Performance Considerations
 --
 --  Internally, the Gtk.List_Store.Gtk_List_Store was implemented with a
 --  linked list with a tail pointer prior to GTK+ 2.6. As a result, it was fast
 --  at data insertion and deletion, and not fast at random data access. The
 --  Gtk.List_Store.Gtk_List_Store sets the GTK_TREE_MODEL_ITERS_PERSIST flag,
---  which means that Gtk.Tree_Model.Gtk_Tree_Iter<!-- -->s can be cached while
---  the row exists. Thus, if access to a particular row is needed often and
---  your code is expected to run on older versions of GTK+, it is worth keeping
---  the iter around.
+--  which means that Gtk_Tree_Iters can be cached while the row exists. Thus,
+--  if access to a particular row is needed often and your code is expected to
+--  run on older versions of GTK+, it is worth keeping the iter around.
 --
---  == Atomic Operations ==
+--  # Atomic Operations
 --
 --  It is important to note that only the methods
 --  gtk_list_store_insert_with_values and gtk_list_store_insert_with_valuesv
@@ -116,7 +94,7 @@
 --  Gtk_Tree_Model_Filter_Visible_Func to be visited with an empty row first;
 --  the function must be prepared for that.
 --
---  == GtkListStore as GtkBuildable ==
+--  # GtkListStore as GtkBuildable
 --
 --  The GtkListStore implementation of the GtkBuildable interface allows to
 --  specify the model columns with a <columns> element that may contain
@@ -124,33 +102,22 @@
 --  attribute specifies the data type for the column.
 --
 --  Additionally, it is possible to specify content for the list store in the
---  UI definition, with the <data> element. It can contain multiple <row>
---  elements, each specifying to content for one row of the list model. Inside
---  a <row>, the <col> elements specify the content for individual cells.
+--  UI definition, with the <data> element. It can contain multiple elements,
+--  each specifying to content for one row of the list model. Inside a , the
+--  <col> elements specify the content for individual cells.
 --
 --  Note that it is probably more common to define your models in the code,
 --  and one might consider it a layering violation to specify the content of a
---  list store in a UI definition, *data*, not *presentation*, and common
---  wisdom is to separate the two, as far as possible. <!-- FIXME a bit
---  inconclusive -->
+--  list store in a UI definition, data, not presentation, and common wisdom is
+--  to separate the two, as far as possible.
 --
---  == A UI Definition fragment for a list store ==
+--  An example of a UI Definition fragment for a list store: |[<!--
+--  language="C" --> <object class="GtkListStore"> <columns> <column
+--  type="gchararray"/> <column type="gchararray"/> <column type="gint"/>
+--  </columns> <data> <col id="0">John</col> <col id="1">Doe</col> <col
+--  id="2">25</col> <col id="0">Johan</col> <col id="1">Dahlin</col> <col
+--  id="2">50</col> </data> </object> ]|
 --
---    <object class="GtkListStore">
---    <columns>
---    <column type="gchararray"/>
---    <column type="gchararray"/>
---    <column type="gint"/>
---    </columns>
---    <data>
---    <col id="0">John</col>
---    <col id="1">Doe</col>
---    <col id="2">25</col>
---    <col id="0">Johan</col>
---    <col id="1">Dahlin</col>
---    <col id="2">50</col>
---    </data>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -198,8 +165,8 @@ package Gtk.List_Store is
    --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
    --  must be reflexive, antisymmetric and transitive.
    --  For example, if Model is a product catalogue, then a compare function
-   --  for the "price" column could be one which returns 'price_of(A) -
-   --  price_of(B)'.
+   --  for the "price" column could be one which returns `price_of(A) -
+   --  price_of(B)`.
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -277,8 +244,8 @@ package Gtk.List_Store is
    function Iter_Is_Valid
       (List_Store : not null access Gtk_List_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
-   --  <warning>This function is slow. Only use it for debugging and/or
-   --  testing purposes.</warning>
+   --  > This function is slow. Only use it for debugging and/or testing >
+   --  purposes.
    --  Checks if the given iter is a valid iter for this
    --  Gtk.List_Store.Gtk_List_Store.
    --  Since: gtk+ 2.2
@@ -330,7 +297,7 @@ package Gtk.List_Store is
    --  Since: gtk+ 2.2
    --  "new_order": an array of integers mapping the new position of each
    --  child to its old position before the re-ordering, i.e.
-   --  New_Order'[newpos] = oldpos'. It must have exactly as many items as the
+   --  New_Order`[newpos] = oldpos`. It must have exactly as many items as the
    --  list store's length.
 
    procedure Set_Column_Types
@@ -433,8 +400,8 @@ package Gtk.List_Store is
       --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
       --  must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare function
-      --  for the "price" column could be one which returns 'price_of(A) -
-      --  price_of(B)'.
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -487,8 +454,8 @@ package Gtk.List_Store is
       --  GtkTreeIterCompareFunc must define a partial order on the model, i.e. it
       --  must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare function
-      --  for the "price" column could be one which returns 'price_of(A) -
-      --  price_of(B)'.
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -666,6 +633,13 @@ package Gtk.List_Store is
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        New_Order  : Gint_Array);
+
+   procedure Rows_Reordered_With_Length
+      (Tree_Model : not null access Gtk_List_Store_Record;
+       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+       New_Order  : Gint_Array;
+       Length     : Gint);
 
    procedure Unref_Node
       (Tree_Model : not null access Gtk_List_Store_Record;

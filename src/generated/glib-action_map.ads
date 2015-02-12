@@ -94,33 +94,17 @@ package Glib.Action_Map is
    --  Glib.Simple_Action.Gsimple_Action instances and adding them to a
    --  Glib.Action_Map.Gaction_Map.
    --  Each action is constructed as per one Glib.Action_Map.GAction_Entry.
-   --  == Using Glib.Action_Map.Add_Action_Entries ==
-   --    static void
-   --    activate_quit (GSimpleAction *simple,
-   --       GVariant      *parameter,
-   --       gpointer       user_data)
-   --    {
-   --       exit (0);
-   --    }
-   --    static void
-   --    activate_print_string (GSimpleAction *simple,
-   --       GVariant      *parameter,
-   --       gpointer       user_data)
-   --    {
-   --       g_print ("%s\n", g_variant_get_string (parameter, NULL));
-   --    }
-   --    static GActionGroup *
-   --    create_action_group (void)
-   --    {
-   --       const GActionEntry entries[] = {
-   --          { "quit",         activate_quit              },
-   --          { "print-string", activate_print_string, "s" }
-   --       };
-   --       GSimpleActionGroup *group;
-   --       group = g_simple_action_group_new ();
-   --       g_action_map_add_action_entries (G_ACTION_MAP (group), entries, G_N_ELEMENTS (entries), NULL);
-   --       return G_ACTION_GROUP (group);
-   --    }
+   --  |[<!-- language="C" --> static void activate_quit (GSimpleAction
+   --  *simple, GVariant *parameter, gpointer user_data) { exit (0); }
+   --  static void activate_print_string (GSimpleAction *simple, GVariant
+   --  *parameter, gpointer user_data) { g_print ("%s\n", g_variant_get_string
+   --  (parameter, NULL)); }
+   --  static GActionGroup * create_action_group (void) { const GActionEntry
+   --  entries[] = { { "quit", activate_quit }, { "print-string",
+   --  activate_print_string, "s" } }; GSimpleActionGroup *group;
+   --  group = g_simple_action_group_new (); g_action_map_add_action_entries
+   --  (G_ACTION_MAP (group), entries, G_N_ELEMENTS (entries), NULL);
+   --  return G_ACTION_GROUP (group); } ]|
    --  Since: gtk+ 2.32
    --  "entries": a pointer to the first item in an array of
    --  Glib.Action_Map.GAction_Entry structs

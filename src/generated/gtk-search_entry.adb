@@ -23,7 +23,10 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Glib.Values;                use Glib.Values;
+with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;       use Interfaces.C.Strings;
@@ -321,5 +324,155 @@ package body Gtk.Search_Entry is
    begin
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Search_Entry_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Search_Entry_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Void);
+
+   procedure Connect
+      (Object  : access Gtk_Search_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Search_Entry_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Search_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Void);
+
+   procedure Marsh_Gtk_Search_Entry_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Search_Entry_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Search_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Search_Entry_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Search_Entry_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Search_Entry_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------------
+   -- Marsh_GObject_Void --
+   ------------------------
+
+   procedure Marsh_GObject_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Void;
+
+   ---------------------------------
+   -- Marsh_Gtk_Search_Entry_Void --
+   ---------------------------------
+
+   procedure Marsh_Gtk_Search_Entry_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Search_Entry_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Search_Entry := Gtk_Search_Entry (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Search_Entry_Void;
+
+   -----------------------
+   -- On_Search_Changed --
+   -----------------------
+
+   procedure On_Search_Changed
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "search-changed" & ASCII.NUL, Call, After);
+   end On_Search_Changed;
+
+   -----------------------
+   -- On_Search_Changed --
+   -----------------------
+
+   procedure On_Search_Changed
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "search-changed" & ASCII.NUL, Call, After, Slot);
+   end On_Search_Changed;
 
 end Gtk.Search_Entry;

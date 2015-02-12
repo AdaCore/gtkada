@@ -172,6 +172,35 @@ package body Gtk.Box is
       end if;
    end Initialize_Vbox;
 
+   ---------------------------
+   -- Get_Baseline_Position --
+   ---------------------------
+
+   function Get_Baseline_Position
+      (Box : not null access Gtk_Box_Record)
+       return Gtk.Enums.Gtk_Baseline_Position
+   is
+      function Internal
+         (Box : System.Address) return Gtk.Enums.Gtk_Baseline_Position;
+      pragma Import (C, Internal, "gtk_box_get_baseline_position");
+   begin
+      return Internal (Get_Object (Box));
+   end Get_Baseline_Position;
+
+   -----------------------
+   -- Get_Center_Widget --
+   -----------------------
+
+   function Get_Center_Widget
+      (Box : not null access Gtk_Box_Record) return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Box : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_box_get_center_widget");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Box)), Stub_Gtk_Widget));
+   end Get_Center_Widget;
+
    ---------------
    -- Get_Child --
    ---------------
@@ -302,6 +331,36 @@ package body Gtk.Box is
    begin
       Internal (Get_Object (Box), Get_Object (Child), Position);
    end Reorder_Child;
+
+   ---------------------------
+   -- Set_Baseline_Position --
+   ---------------------------
+
+   procedure Set_Baseline_Position
+      (Box      : not null access Gtk_Box_Record;
+       Position : Gtk.Enums.Gtk_Baseline_Position)
+   is
+      procedure Internal
+         (Box      : System.Address;
+          Position : Gtk.Enums.Gtk_Baseline_Position);
+      pragma Import (C, Internal, "gtk_box_set_baseline_position");
+   begin
+      Internal (Get_Object (Box), Position);
+   end Set_Baseline_Position;
+
+   -----------------------
+   -- Set_Center_Widget --
+   -----------------------
+
+   procedure Set_Center_Widget
+      (Box    : not null access Gtk_Box_Record;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Box : System.Address; Widget : System.Address);
+      pragma Import (C, Internal, "gtk_box_set_center_widget");
+   begin
+      Internal (Get_Object (Box), Get_Object_Or_Null (GObject (Widget)));
+   end Set_Center_Widget;
 
    -----------------------
    -- Set_Child_Packing --

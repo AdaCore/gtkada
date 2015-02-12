@@ -104,7 +104,6 @@ package Gtk.Event_Box is
    --  gradients or pixmaps.
    --  The main reason to create a non input-only event box is if you want to
    --  set the background to a different color or draw on it.
-   --  Note:
    --  There is one unexpected issue for an invisible event box that has its
    --  window below the child. (See Gtk.Event_Box.Set_Above_Child.) Since the
    --  input-only window is not an ancestor window of any windows that

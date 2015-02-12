@@ -28,7 +28,7 @@
 --  Gtk.Box.Gtk_Box/Gtk.Box.Gtk_Hbox/Gtk.Box.Gtk_Vbox or
 --  Gtk.Scale.Gtk_Scale/Gtk.Scale.Gtk_Hscale/Gtk.Scale.Gtk_Vscale).
 --  Gtk.Orientable.Gtk_Orientable is more flexible in that it allows the
---  orientation to be changed at runtime, allowing the widgets to 'flip'.
+--  orientation to be changed at runtime, allowing the widgets to "flip".
 --
 --  Gtk.Orientable.Gtk_Orientable was introduced in GTK+ 2.16.
 --

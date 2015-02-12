@@ -22,10 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  You may wish to begin by reading the <link linkend="TextWidget">text
---  widget conceptual overview</link> which gives an overview of all the
---  objects and data types related to the text widget and how they work
---  together.
+--  You may wish to begin by reading the [text widget conceptual
+--  overview][TextWidget] which gives an overview of all the objects and data
+--  types related to the text widget and how they work together.
 --
 --  </description>
 pragma Ada_2005;
@@ -83,8 +82,8 @@ package Gtk.Text_Buffer is
    --  Adds the mark at position Where. The mark must not be added to another
    --  buffer, and if its name is not null then there must not be another mark
    --  in the buffer with the same name.
-   --  Emits the "mark-set" signal as notification of the mark's initial
-   --  placement.
+   --  Emits the Gtk.Text_Buffer.Gtk_Text_Buffer::mark-set signal as
+   --  notification of the mark's initial placement.
    --  Since: gtk+ 2.12
    --  "mark": the mark to add
    --  "where": location to place mark
@@ -189,11 +188,11 @@ package Gtk.Text_Buffer is
    --  newly-inserted text. The standard left-to-right cursor is a mark with
    --  right gravity (when you type, the cursor stays on the right side of the
    --  text you're typing).
-   --  The caller of this function does *not* own a reference to the returned
+   --  The caller of this function does not own a reference to the returned
    --  Gtk.Text_Mark.Gtk_Text_Mark, so you can ignore the return value if you
    --  like. Marks are owned by the buffer and go away when the buffer does.
-   --  Emits the "mark-set" signal as notification of the mark's initial
-   --  placement.
+   --  Emits the Gtk.Text_Buffer.Gtk_Text_Buffer::mark-set signal as
+   --  notification of the mark's initial placement.
    --  "mark_name": name for mark, or null
    --  "where": location to place mark
    --  "left_gravity": whether the mark has left gravity
@@ -227,7 +226,7 @@ package Gtk.Text_Buffer is
        End_Iter         : Gtk.Text_Iter.Gtk_Text_Iter;
        Default_Editable : Boolean;
        Result           : out Boolean);
-   --  Deletes all *editable* text in the given range. Calls
+   --  Deletes all editable text in the given range. Calls
    --  Gtk.Text_Buffer.Delete for each editable sub-range of [Start,End). Start
    --  and End are revalidated to point to the location of the last deleted
    --  range, or left untouched if no text was deleted.
@@ -244,8 +243,8 @@ package Gtk.Text_Buffer is
    --  isn't freed, most operations on Mark become invalid, until it gets added
    --  to a buffer again with Gtk.Text_Buffer.Add_Mark. Use
    --  Gtk.Text_Mark.Get_Deleted to find out if a mark has been removed from
-   --  its buffer. The "mark-deleted" signal will be emitted as notification
-   --  after the mark is deleted.
+   --  its buffer. The Gtk.Text_Buffer.Gtk_Text_Buffer::mark-deleted signal
+   --  will be emitted as notification after the mark is deleted.
    --  "mark": a Gtk.Text_Mark.Gtk_Text_Mark in Buffer
 
    procedure Delete_Mark_By_Name
@@ -325,7 +324,7 @@ package Gtk.Text_Buffer is
        return Gtk.Target_List.Gtk_Target_List;
    --  This function returns the list of targets this text buffer can provide
    --  for copying and as DND source. The targets in the list are added with
-   --  %info values from the Gtk_Text_Buffer_Target_Info enum, using
+   --  Info values from the Gtk_Text_Buffer_Target_Info enum, using
    --  gtk_target_list_add_rich_text_targets and
    --  Gtk.Target_List.Add_Text_Targets.
    --  Since: gtk+ 2.10
@@ -378,7 +377,9 @@ package Gtk.Text_Buffer is
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Gint);
-   --  Initializes Iter to the start of the given line.
+   --  Initializes Iter to the start of the given line. If Line_Number is
+   --  greater than the number of lines in the Buffer, the end iterator is
+   --  returned.
    --  "iter": iterator to initialize
    --  "line_number": line number counting from 0
 
@@ -389,8 +390,8 @@ package Gtk.Text_Buffer is
        Byte_Index  : Gint);
    --  Obtains an iterator pointing to Byte_Index within the given line.
    --  Byte_Index must be the start of a UTF-8 character, and must not be
-   --  beyond the end of the line. Note *bytes*, not characters; UTF-8 may
-   --  encode one character as multiple bytes.
+   --  beyond the end of the line. Note bytes, not characters; UTF-8 may encode
+   --  one character as multiple bytes.
    --  "iter": iterator to initialize
    --  "line_number": line number counting from 0
    --  "byte_index": byte index from start of line
@@ -402,7 +403,7 @@ package Gtk.Text_Buffer is
        Char_Offset : Gint);
    --  Obtains an iterator pointing to Char_Offset within the given line. The
    --  Char_Offset must exist, offsets off the end of the line are not allowed.
-   --  Note *characters*, not bytes; UTF-8 may encode one character as multiple
+   --  Note characters, not bytes; UTF-8 may encode one character as multiple
    --  bytes.
    --  "iter": iterator to initialize
    --  "line_number": line number counting from 0
@@ -452,7 +453,8 @@ package Gtk.Text_Buffer is
    --  last time it was saved. Whenever the buffer is saved to disk, call
    --  gtk_text_buffer_set_modified (Buffer, FALSE). When the buffer is
    --  modified, it will automatically toggled on the modified bit again. When
-   --  the modified bit flips, the buffer emits a "modified-changed" signal.
+   --  the modified bit flips, the buffer emits the
+   --  Gtk.Text_Buffer.Gtk_Text_Buffer::modified-changed signal.
    --  "setting": modification flag setting
 
    function Get_Paste_Target_List
@@ -460,7 +462,7 @@ package Gtk.Text_Buffer is
        return Gtk.Target_List.Gtk_Target_List;
    --  This function returns the list of targets this text buffer supports for
    --  pasting and as DND destination. The targets in the list are added with
-   --  %info values from the Gtk_Text_Buffer_Target_Info enum, using
+   --  Info values from the Gtk_Text_Buffer_Target_Info enum, using
    --  gtk_target_list_add_rich_text_targets and
    --  Gtk.Target_List.Add_Text_Targets.
    --  Since: gtk+ 2.10
@@ -501,7 +503,7 @@ package Gtk.Text_Buffer is
    --  (text marked with tags that set the invisibility attribute) if
    --  Include_Hidden_Chars is False. The returned string includes a 0xFFFC
    --  character whenever the buffer contains embedded images, so byte and
-   --  character indexes into the returned string *do* correspond to byte and
+   --  character indexes into the returned string do correspond to byte and
    --  character indexes into the buffer. Contrast with
    --  Gtk.Text_Buffer.Get_Text. Note that 0xFFFC can occur in normal text as
    --  well, so it is not a reliable indicator that a pixbuf or widget is in
@@ -533,7 +535,7 @@ package Gtk.Text_Buffer is
    --  (text marked with tags that set the invisibility attribute) if
    --  Include_Hidden_Chars is False. Does not include characters representing
    --  embedded images, so byte and character indexes into the returned string
-   --  do *not* correspond to byte and character indexes into the buffer.
+   --  do not correspond to byte and character indexes into the buffer.
    --  Contrast with Gtk.Text_Buffer.Get_Slice.
    --  "start": start of a range
    --  "end": end of a range
@@ -647,8 +649,9 @@ package Gtk.Text_Buffer is
       (Buffer : not null access Gtk_Text_Buffer_Record;
        Mark   : not null access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class;
        Where  : Gtk.Text_Iter.Gtk_Text_Iter);
-   --  Moves Mark to the new location Where. Emits the "mark-set" signal as
-   --  notification of the move.
+   --  Moves Mark to the new location Where. Emits the
+   --  Gtk.Text_Buffer.Gtk_Text_Buffer::mark-set signal as notification of the
+   --  move.
    --  "mark": a Gtk.Text_Mark.Gtk_Text_Mark
    --  "where": new location for Mark in Buffer
 
@@ -665,10 +668,12 @@ package Gtk.Text_Buffer is
       (Buffer           : not null access Gtk_Text_Buffer_Record;
        Clipboard        : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
        Default_Editable : Boolean := True);
-   --  Pastes the contents of a clipboard at the insertion point, or at
-   --  Override_Location. (Note: pasting is asynchronous, that is, we'll ask
-   --  for the paste data and return, and at some point later after the main
-   --  loop runs, the paste data will be inserted.)
+   --  Pastes the contents of a clipboard. If Override_Location is null, the
+   --  pasted text will be inserted at the cursor position, or the buffer
+   --  selection will be replaced if the selection is non-empty.
+   --  Note: pasting is asynchronous, that is, we'll ask for the paste data
+   --  and return, and at some point later after the main loop runs, the paste
+   --  data will be inserted.
    --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard to paste from
    --  "default_editable": whether the buffer is editable by default
 
@@ -993,9 +998,9 @@ package Gtk.Text_Buffer is
    --  Note that if your handler runs before the default handler it must not
    --  invalidate the Start and End iters (or has to revalidate them). The
    --  default signal handler revalidates the Start and End iters to both point
-   --  point to the location where text was deleted. Handlers which run after
-   --  the default handler (see g_signal_connect_after) do not have access to
-   --  the deleted text.
+   --  to the location where text was deleted. Handlers which run after the
+   --  default handler (see g_signal_connect_after) do not have access to the
+   --  deleted text.
    --
    --  See also: Gtk.Text_Buffer.Delete.
    -- 
@@ -1197,12 +1202,12 @@ package Gtk.Text_Buffer is
    --  See also: Gtk.Text_Buffer.Set_Modified.
 
    type Cb_Gtk_Text_Buffer_Gtk_Clipboard_Void is not null access procedure
-     (Self   : access Gtk_Text_Buffer_Record'Class;
-      Object : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
+     (Self      : access Gtk_Text_Buffer_Record'Class;
+      Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
 
    type Cb_GObject_Gtk_Clipboard_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Object : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
+     (Self      : access Glib.Object.GObject_Record'Class;
+      Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class);
 
    Signal_Paste_Done : constant Glib.Signal_Name := "paste-done";
    procedure On_Paste_Done

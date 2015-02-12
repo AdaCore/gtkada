@@ -22,16 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget is a widget suitable for
---  selecting files. It is the main building block of a
---  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. Most applications will
---  only need to use the latter; you can use
---  Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget as part of a larger window
---  if you have special needs.
---
---  Note that Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget does not have
---  any methods of its own. Instead, you should use the functions that work on
---  a Gtk.File_Chooser.Gtk_File_Chooser.
+--  Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget is a widget for choosing
+--  files. It exposes the Gtk.File_Chooser.Gtk_File_Chooser interface, and you
+--  should use the methods of this interface to interact with the widget.
 --
 --  </description>
 pragma Ada_2005;
@@ -133,6 +126,14 @@ package Gtk.File_Chooser_Widget is
    function Set_Current_Folder_Uri
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        URI     : UTF8_String) return Boolean;
+
+   function Get_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record)
+       return UTF8_String;
+
+   procedure Set_Current_Name
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Name    : UTF8_String);
 
    function Get_Do_Overwrite_Confirmation
       (Chooser : not null access Gtk_File_Chooser_Widget_Record)
@@ -273,10 +274,6 @@ package Gtk.File_Chooser_Widget is
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        URI     : UTF8_String) return Boolean;
 
-   procedure Set_Current_Name
-      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
-       Name    : UTF8_String);
-
    procedure Unselect_All
       (Chooser : not null access Gtk_File_Chooser_Widget_Record);
 
@@ -295,6 +292,240 @@ package Gtk.File_Chooser_Widget is
    procedure Set_Orientation
       (Self        : not null access Gtk_File_Chooser_Widget_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   -------------
+   -- Signals --
+   -------------
+
+   type Cb_Gtk_File_Chooser_Widget_Void is not null access procedure
+     (Self : access Gtk_File_Chooser_Widget_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_Desktop_Folder : constant Glib.Signal_Name := "desktop-folder";
+   procedure On_Desktop_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Desktop_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::desktop-folder signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser show the user's Desktop folder in
+   --  the file list.
+   --
+   --  The default binding for this signal is `Alt + D`.
+
+   Signal_Down_Folder : constant Glib.Signal_Name := "down-folder";
+   procedure On_Down_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Down_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::down-folder signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser go to a child of the current
+   --  folder in the file hierarchy. The subfolder that will be used is
+   --  displayed in the path bar widget of the file chooser. For example, if
+   --  the path bar is showing "/foo/bar/baz", with bar currently displayed,
+   --  then this will cause the file chooser to switch to the "baz" subfolder.
+   --
+   --  The default binding for this signal is `Alt + Down`.
+
+   Signal_Home_Folder : constant Glib.Signal_Name := "home-folder";
+   procedure On_Home_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Home_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::home-folder signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser show the user's home folder in
+   --  the file list.
+   --
+   --  The default binding for this signal is `Alt + Home`.
+
+   type Cb_Gtk_File_Chooser_Widget_UTF8_String_Void is not null access procedure
+     (Self : access Gtk_File_Chooser_Widget_Record'Class;
+      Path : UTF8_String);
+
+   type Cb_GObject_UTF8_String_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Path : UTF8_String);
+
+   Signal_Location_Popup : constant Glib.Signal_Name := "location-popup";
+   procedure On_Location_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_UTF8_String_Void;
+       After : Boolean := False);
+   procedure On_Location_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_UTF8_String_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::location-popup signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser show a "Location" prompt which
+   --  the user can use to manually type the name of the file he wishes to
+   --  select.
+   --
+   --  The default bindings for this signal are `Control + L` with a Path
+   --  string of "" (the empty string). It is also bound to `/` with a Path
+   --  string of "`/`" (a slash): this lets you type `/` and immediately type a
+   --  path name. On Unix systems, this is bound to `~` (tilde) with a Path
+   --  string of "~" itself for access to home directories.
+
+   Signal_Location_Popup_On_Paste : constant Glib.Signal_Name := "location-popup-on-paste";
+   procedure On_Location_Popup_On_Paste
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Location_Popup_On_Paste
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::location-popup-on-paste signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser show a "Location" prompt when the
+   --  user pastes Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget.
+   --
+   --  The default binding for this signal is `Control + V`.
+
+   Signal_Location_Toggle_Popup : constant Glib.Signal_Name := "location-toggle-popup";
+   procedure On_Location_Toggle_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Location_Toggle_Popup
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::location-toggle-popup signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user asks for it.
+   --
+   --  This is used to toggle the visibility of a "Location" prompt which the
+   --  user can use to manually type the name of the file he wishes to select.
+   --
+   --  The default binding for this signal is `Control + L`.
+
+   type Cb_Gtk_File_Chooser_Widget_Gint_Void is not null access procedure
+     (Self           : access Gtk_File_Chooser_Widget_Record'Class;
+      Bookmark_Index : Gint);
+
+   type Cb_GObject_Gint_Void is not null access procedure
+     (Self           : access Glib.Object.GObject_Record'Class;
+      Bookmark_Index : Gint);
+
+   Signal_Quick_Bookmark : constant Glib.Signal_Name := "quick-bookmark";
+   procedure On_Quick_Bookmark
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Gint_Void;
+       After : Boolean := False);
+   procedure On_Quick_Bookmark
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Gint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::quick-bookmark signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser switch to the bookmark specified
+   --  in the Bookmark_Index parameter. For example, if you have three
+   --  bookmarks, you can pass 0, 1, 2 to this signal to switch to each of
+   --  them, respectively.
+   --
+   --  The default binding for this signal is `Alt + 1`, `Alt + 2`, etc. until
+   --  `Alt + 0`. Note that in the default binding, that `Alt + 1` is actually
+   --  defined to switch to the bookmark at index 0, and so on successively;
+   --  `Alt + 0` is defined to switch to the bookmark at index 10.
+
+   Signal_Recent_Shortcut : constant Glib.Signal_Name := "recent-shortcut";
+   procedure On_Recent_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Recent_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::recent-shortcut signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser show the Recent location.
+   --
+   --  The default binding for this signal is `Alt + R`.
+
+   Signal_Search_Shortcut : constant Glib.Signal_Name := "search-shortcut";
+   procedure On_Search_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Search_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::search-shortcut signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser show the search entry.
+   --
+   --  The default binding for this signal is `Alt + S`.
+
+   Signal_Show_Hidden : constant Glib.Signal_Name := "show-hidden";
+   procedure On_Show_Hidden
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Show_Hidden
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::show-hidden signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser display hidden files.
+   --
+   --  The default binding for this signal is `Control + H`.
+
+   Signal_Up_Folder : constant Glib.Signal_Name := "up-folder";
+   procedure On_Up_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Up_Folder
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::up-folder signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted when the user asks for it.
+   --
+   --  This is used to make the file chooser go to the parent of the current
+   --  folder in the file hierarchy.
+   --
+   --  The default binding for this signal is `Alt + Up`.
 
    ----------------
    -- Interfaces --

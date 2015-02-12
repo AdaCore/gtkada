@@ -101,8 +101,8 @@ package Gtk.Entry_Completion is
    --  given Key, and should be displayed as a possible completion for Key.
    --  Note that Key is normalized and case-folded (see g_utf8_normalize and
    --  g_utf8_casefold). If this is not appropriate, match functions have
-   --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
-   --  (gtk_entry_completion_get_entry (<!-- -->)))'.
+   --  access to the unmodified key via `gtk_entry_get_text (GTK_ENTRY
+   --  (gtk_entry_completion_get_entry ()))`.
    --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
    --  "key": the string to match, normalized and case-folded
    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
@@ -300,8 +300,7 @@ package Gtk.Entry_Completion is
        Popup_Single_Match : Boolean);
    --  Sets whether the completion popup window will appear even if there is
    --  only a single match. You may want to set this to False if you are using
-   --  <link linkend="GtkEntryCompletion--inline-completion">inline
-   --  completion</link>.
+   --  [inline completion][GtkEntryCompletion--inline-completion].
    --  Since: gtk+ 2.8
    --  "popup_single_match": True if the popup should appear even for a single
    --  match
@@ -375,8 +374,8 @@ package Gtk.Entry_Completion is
       --  given Key, and should be displayed as a possible completion for Key.
       --  Note that Key is normalized and case-folded (see g_utf8_normalize and
       --  g_utf8_casefold). If this is not appropriate, match functions have
-      --  access to the unmodified key via 'gtk_entry_get_text (GTK_ENTRY
-      --  (gtk_entry_completion_get_entry (<!-- -->)))'.
+      --  access to the unmodified key via `gtk_entry_get_text (GTK_ENTRY
+      --  (gtk_entry_completion_get_entry ()))`.
       --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
       --  "key": the string to match, normalized and case-folded
       --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
@@ -524,8 +523,7 @@ package Gtk.Entry_Completion is
    Popup_Single_Match_Property : constant Glib.Properties.Property_Boolean;
    --  Determines whether the completions popup window will shown for a single
    --  possible completion. You probably want to set this to False if you are
-   --  using <link linkend="GtkEntryCompletion--inline-completion">inline
-   --  completion</link>.
+   --  using [inline completion][GtkEntryCompletion--inline-completion].
 
    Text_Column_Property : constant Glib.Properties.Property_Int;
    --  The column of the model containing the strings. Note that the strings
@@ -639,6 +637,26 @@ package Gtk.Entry_Completion is
    --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
    --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
    --    --  Returns True if the signal has been handled
+
+   type Cb_Gtk_Entry_Completion_Void is not null access procedure
+     (Self : access Gtk_Entry_Completion_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_No_Matches : constant Glib.Signal_Name := "no-matches";
+   procedure On_No_Matches
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_Gtk_Entry_Completion_Void;
+       After : Boolean := False);
+   procedure On_No_Matches
+      (Self  : not null access Gtk_Entry_Completion_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  Gets emitted when the filter model has zero number of rows in
+   --  completion_complete method. (In other words when GtkEntryCompletion is
+   --  out of suggestions)
 
    ----------------
    -- Interfaces --

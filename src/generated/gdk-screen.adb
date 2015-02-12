@@ -259,6 +259,22 @@ package body Gdk.Screen is
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Screen), Monitor_Num));
    end Get_Monitor_Plug_Name;
 
+   ------------------------------
+   -- Get_Monitor_Scale_Factor --
+   ------------------------------
+
+   function Get_Monitor_Scale_Factor
+      (Screen      : not null access Gdk_Screen_Record;
+       Monitor_Num : Gint) return Gint
+   is
+      function Internal
+         (Screen      : System.Address;
+          Monitor_Num : Gint) return Gint;
+      pragma Import (C, Internal, "gdk_screen_get_monitor_scale_factor");
+   begin
+      return Internal (Get_Object (Screen), Monitor_Num);
+   end Get_Monitor_Scale_Factor;
+
    --------------------------
    -- Get_Monitor_Width_Mm --
    --------------------------

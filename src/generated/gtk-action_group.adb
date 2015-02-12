@@ -262,11 +262,13 @@ package body Gtk.Action_Group is
        Data         : System.Address;
        Notify       : Glib.G_Destroy_Notify_Address);
    pragma Import (C, C_Gtk_Action_Group_Set_Translate_Func, "gtk_action_group_set_translate_func");
+   pragma Obsolescent (C_Gtk_Action_Group_Set_Translate_Func);
    --  Sets a function to be used for translating the Label and Tooltip of
-   --  Gtk_Action_Entry<!-- -->s added by gtk_action_group_add_actions.
+   --  Gtk_Action_Entrys added by gtk_action_group_add_actions.
    --  If you're using gettext, it is enough to set the translation domain
    --  with Gtk.Action_Group.Set_Translation_Domain.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.10, 1
    --  "func": a Gtk_Translate_Func
    --  "data": data to be passed to Func and Notify
    --  "notify": a Glib.G_Destroy_Notify_Address function to be called when
@@ -282,7 +284,12 @@ package body Gtk.Action_Group is
    function Internal_Gtk_Translate_Func
       (Path      : Interfaces.C.Strings.chars_ptr;
        Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+   pragma Obsolescent (Internal_Gtk_Translate_Func);
    pragma Convention (C, Internal_Gtk_Translate_Func);
+   --  Deprecated since 3.10, 1
+   --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+   --  this will be a label or tooltip from a Gtk_Action_Entry.
+   --  "func_data": user data passed in when registering the function
 
    ---------------------------------
    -- Internal_Gtk_Translate_Func --
@@ -567,7 +574,15 @@ package body Gtk.Action_Group is
       function Internal_Cb
          (Path      : Interfaces.C.Strings.chars_ptr;
           Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+      pragma Obsolescent (Internal_Cb);
       pragma Convention (C, Internal_Cb);
+      --  The function used to translate messages in e.g.
+      --  Gtk.Icon_Factory.Gtk_Icon_Factory and
+      --  Gtk.Action_Group.Gtk_Action_Group.
+      --  Deprecated since 3.10, 1
+      --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+      --  this will be a label or tooltip from a Gtk_Action_Entry.
+      --  "func_data": user data passed in when registering the function
 
       -----------------
       -- Internal_Cb --

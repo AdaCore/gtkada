@@ -22,6 +22,21 @@
 ------------------------------------------------------------------------------
 
 --  <description>
+--  The Pango.Font_Map.Pango_Font_Map represents the set of fonts available
+--  for a particular rendering system. This is a virtual object with
+--  implementations being specific to particular rendering systems. To create
+--  an implementation of a Pango.Font_Map.Pango_Font_Map, the rendering-system
+--  specific code should allocate a larger structure that contains a nested
+--  Pango.Font_Map.Pango_Font_Map, fill in the <structfield>klass</structfield>
+--  member of the nested Pango.Font_Map.Pango_Font_Map with a pointer to a
+--  appropriate Pango_Font_Map_Class, then call pango_font_map_init on the
+--  structure.
+--
+--  The Pango.Font_Map.Pango_Font_Map structure contains one member which the
+--  implementation fills in.
+--
+--  </description>
+--  <description>
 --  An object that represents the set of fonts available for a particular
 --  rendering system
 --
@@ -53,6 +68,14 @@ package Pango.Font_Map is
    -- Methods --
    -------------
 
+   procedure Changed (Self : not null access Pango_Font_Map_Record);
+   --  Forces a change in the context, which will cause any
+   --  Pango.Context.Pango_Context using this fontmap to change.
+   --  This function is only useful when implementing a new backend for Pango,
+   --  something applications won't do. Backends should call this function if
+   --  they have attached extra data to the context and such data is changed.
+   --  Since: gtk+ 1.34
+
    function Create_Context
       (Self : not null access Pango_Font_Map_Record)
        return Pango.Context.Pango_Context;
@@ -78,6 +101,12 @@ package Pango.Font_Map is
    --  This can be used to automatically detect changes to a
    --  Pango.Font_Map.Pango_Font_Map, like in Pango.Context.Pango_Context.
    --  Since: gtk+ 1.32.4
+
+   function Get_Shape_Engine_Type
+      (Self : not null access Pango_Font_Map_Record) return UTF8_String;
+   --  Returns the render ID for shape engines for this fontmap. See the
+   --  <structfield>render_type</structfield> field of Pango_Engine_Info.
+   --  Since: gtk+ 1.4
 
    function List_Families
       (Self : not null access Pango_Font_Map_Record)

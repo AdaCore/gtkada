@@ -26,6 +26,9 @@
 --  can control which state should be active by clicking the empty area, or by
 --  dragging the handle.
 --
+--  GtkSwitch can also handle situations where the underlying state changes
+--  with a delay. See Gtk.Switch.Gtk_Switch::state-set for details.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -78,6 +81,22 @@ package Gtk.Switch is
    --  Since: gtk+ 3.0
    --  "is_active": True if Sw should be active, and False otherwise
 
+   function Get_State
+      (Self : not null access Gtk_Switch_Record) return Boolean;
+   --  Gets the underlying state of the Gtk.Switch.Gtk_Switch.
+   --  Since: gtk+ 3.14
+
+   procedure Set_State
+      (Self  : not null access Gtk_Switch_Record;
+       State : Boolean);
+   --  Sets the underlying state of the Gtk.Switch.Gtk_Switch.
+   --  Normally, this is the same as Gtk.Switch.Gtk_Switch:active, unless the
+   --  switch is set up for delayed state changes. This function is typically
+   --  called from a Gtk.Switch.Gtk_Switch::state-set signal handler.
+   --  See Gtk.Switch.Gtk_Switch::state-set for details.
+   --  Since: gtk+ 3.14
+   --  "state": the new state
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -107,25 +126,31 @@ package Gtk.Switch is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Switch_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Switch_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Switch_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Switch_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Switch_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Switch_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --
@@ -135,6 +160,10 @@ package Gtk.Switch is
 
    Active_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the Gtk.Switch.Gtk_Switch widget is in its on or off state.
+
+   State_Property : constant Glib.Properties.Property_Boolean;
+   --  The backend state that is controlled by the switch. See
+   --  Gtk.Switch.Gtk_Switch::state-set for details.
 
    -------------
    -- Signals --
@@ -158,6 +187,43 @@ package Gtk.Switch is
    --  The ::activate signal on GtkSwitch is an action signal and emitting it
    --  causes the switch to animate. Applications should never connect to this
    --  signal, but use the notify::active signal.
+
+   type Cb_Gtk_Switch_Boolean_Boolean is not null access function
+     (Self  : access Gtk_Switch_Record'Class;
+      State : Boolean) return Boolean;
+
+   type Cb_GObject_Boolean_Boolean is not null access function
+     (Self  : access Glib.Object.GObject_Record'Class;
+      State : Boolean) return Boolean;
+
+   Signal_State_Set : constant Glib.Signal_Name := "state-set";
+   procedure On_State_Set
+      (Self  : not null access Gtk_Switch_Record;
+       Call  : Cb_Gtk_Switch_Boolean_Boolean;
+       After : Boolean := False);
+   procedure On_State_Set
+      (Self  : not null access Gtk_Switch_Record;
+       Call  : Cb_GObject_Boolean_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::state-set signal on GtkSwitch is emitted to change the underlying
+   --  state. It is emitted when the user changes the switch position. The
+   --  default handler keeps the state in sync with the Gtk_State:active
+   --  property.
+   --
+   --  To implement delayed state change, applications can connect to this
+   --  signal, initiate the change of the underlying state, and call
+   --  Gtk.Switch.Set_State when the underlying state change is complete. The
+   --  signal handler should return True to prevent the default handler from
+   --  running.
+   --
+   --  Visually, the underlying state is represented by the trough color of
+   --  the switch, while the Gtk.Switch.Gtk_Switch:active property is
+   --  represented by the position of the switch.
+   -- 
+   --  Callback parameters:
+   --    --  "state": the new state of the switch
+   --    --  Returns True to stop the signal emission
 
    ----------------
    -- Interfaces --
@@ -204,6 +270,8 @@ package Gtk.Switch is
    renames Implements_Gtk_Buildable.To_Object;
 
 private
+   State_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("state");
    Active_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("active");
 end Gtk.Switch;

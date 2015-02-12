@@ -48,6 +48,11 @@
 #include <ddeml.h>
 #endif
 
+// Workaround bug in gtk+ 3.14.5
+#ifndef GTK_IS_PLUG
+int GTK_IS_PLUG(void* object) { return 0; }
+#endif
+
 /********************************************************************
  *  Returns the major/minor/macro version number of Gtk+. This is
  *  needed as the windows version uses a different convention for the

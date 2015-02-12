@@ -22,20 +22,15 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.Theming_Engine.Gtk_Theming_Engine is the object used for rendering
---  themed content in GTK+ widgets. Even though GTK+ has a default
---  implementation, it can be overridden in CSS files by enforcing a
---  Gtk.Theming_Engine.Gtk_Theming_Engine object to be loaded as a module.
+--  Gtk.Theming_Engine.Gtk_Theming_Engine was the object used for rendering
+--  themed content in GTK+ widgets. It used to allow overriding GTK+'s default
+--  implementation of rendering functions by allowing engines to be loaded as
+--  modules.
 --
---  In order to implement a theming engine, a
---  Gtk.Theming_Engine.Gtk_Theming_Engine subclass must be created, alongside
---  the CSS file that will reference it, the theming engine would be created as
---  an .so library, and installed in $(gtk-modules-dir)/theming-engines/.
---
---  Gtk.Theming_Engine.Gtk_Theming_Engine<!-- -->s have limited access to the
---  object they are rendering, the Gtk.Theming_Engine.Gtk_Theming_Engine API
---  has read-only accessors to the style information contained in the rendered
---  object's Gtk.Style_Context.Gtk_Style_Context.
+--  Gtk.Theming_Engine.Gtk_Theming_Engine has been deprecated in GTK+ 3.14 and
+--  will be ignored for rendering. The advancements in CSS theming are good
+--  enough to allow themers to achieve their goals without the need to modify
+--  source code.
 --
 --  </description>
 pragma Ada_2005;
@@ -72,8 +67,10 @@ package Gtk.Theming_Engine is
       (Self  : not null access Gtk_Theming_Engine_Record;
        State : Gtk.Enums.Gtk_State_Flags;
        Color : out Gdk.RGBA.Gdk_RGBA);
+   pragma Obsolescent (Get_Background_Color);
    --  Gets the background color for a given state.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "state": state to retrieve the color for
    --  "color": return value for the background color
 
@@ -81,8 +78,10 @@ package Gtk.Theming_Engine is
       (Self   : not null access Gtk_Theming_Engine_Record;
        State  : Gtk.Enums.Gtk_State_Flags;
        Border : out Gtk.Style.Gtk_Border);
+   pragma Obsolescent (Get_Border);
    --  Gets the border for a given state as a Gtk.Style.Gtk_Border.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "state": state to retrieve the border for
    --  "border": return value for the border settings
 
@@ -90,8 +89,10 @@ package Gtk.Theming_Engine is
       (Self  : not null access Gtk_Theming_Engine_Record;
        State : Gtk.Enums.Gtk_State_Flags;
        Color : out Gdk.RGBA.Gdk_RGBA);
+   pragma Obsolescent (Get_Border_Color);
    --  Gets the border color for a given state.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "state": state to retrieve the color for
    --  "color": return value for the border color
 
@@ -99,8 +100,10 @@ package Gtk.Theming_Engine is
       (Self  : not null access Gtk_Theming_Engine_Record;
        State : Gtk.Enums.Gtk_State_Flags;
        Color : out Gdk.RGBA.Gdk_RGBA);
+   pragma Obsolescent (Get_Color);
    --  Gets the foreground color for a given state.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "state": state to retrieve the color for
    --  "color": return value for the foreground color
 
@@ -110,8 +113,7 @@ package Gtk.Theming_Engine is
    pragma Obsolescent (Get_Direction);
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use Gtk.Theming_Engine.Get_State and check for
-   --  GTK_STATE_FLAG_DIR_LTR and GTK_STATE_FLAG_DIR_RTL instead.
+   --  Deprecated since 3.8, 1
 
    function Get_Font
       (Self  : not null access Gtk_Theming_Engine_Record;
@@ -120,21 +122,25 @@ package Gtk.Theming_Engine is
    pragma Obsolescent (Get_Font);
    --  Returns the font description for a given state.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.8, Use gtk_theming_engine_get
+   --  Deprecated since 3.8, 1
    --  "state": state to retrieve the font for
 
    function Get_Junction_Sides
       (Self : not null access Gtk_Theming_Engine_Record)
        return Gtk.Enums.Gtk_Junction_Sides;
+   pragma Obsolescent (Get_Junction_Sides);
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
 
    procedure Get_Margin
       (Self   : not null access Gtk_Theming_Engine_Record;
        State  : Gtk.Enums.Gtk_State_Flags;
        Margin : out Gtk.Style.Gtk_Border);
+   pragma Obsolescent (Get_Margin);
    --  Gets the margin for a given state as a Gtk.Style.Gtk_Border.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "state": state to retrieve the border for
    --  "margin": return value for the margin settings
 
@@ -142,25 +148,31 @@ package Gtk.Theming_Engine is
       (Self    : not null access Gtk_Theming_Engine_Record;
        State   : Gtk.Enums.Gtk_State_Flags;
        Padding : out Gtk.Style.Gtk_Border);
+   pragma Obsolescent (Get_Padding);
    --  Gets the padding for a given state as a Gtk.Style.Gtk_Border.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "state": state to retrieve the padding for
    --  "padding": return value for the padding settings
 
    function Get_Path
       (Self : not null access Gtk_Theming_Engine_Record)
        return Gtk.Widget.Gtk_Widget_Path;
+   pragma Obsolescent (Get_Path);
    --  Returns the widget path used for style matching.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
 
    procedure Get_Property
       (Self     : not null access Gtk_Theming_Engine_Record;
        Property : UTF8_String;
        State    : Gtk.Enums.Gtk_State_Flags;
        Value    : out Glib.Values.GValue);
+   pragma Obsolescent (Get_Property);
    --  Gets a property value as retrieved from the style settings that apply
    --  to the currently rendered element.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "property": the property name
    --  "state": state to retrieve the value for
    --  "value": return location for the property value, you must free this
@@ -169,21 +181,27 @@ package Gtk.Theming_Engine is
    function Get_Screen
       (Self : not null access Gtk_Theming_Engine_Record)
        return Gdk.Screen.Gdk_Screen;
+   pragma Obsolescent (Get_Screen);
    --  Returns the Gdk.Screen.Gdk_Screen to which Engine currently rendering
    --  to.
+   --  Deprecated since 3.14, 1
 
    function Get_State
       (Self : not null access Gtk_Theming_Engine_Record)
        return Gtk.Enums.Gtk_State_Flags;
+   pragma Obsolescent (Get_State);
    --  returns the state used when rendering.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
 
    procedure Get_Style_Property
       (Self          : not null access Gtk_Theming_Engine_Record;
        Property_Name : UTF8_String;
-       Value         : in out Glib.Values.GValue);
+       Value         : out Glib.Values.GValue);
+   pragma Obsolescent (Get_Style_Property);
    --  Gets the value for a widget style property.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "property_name": the name of the widget style property
    --  "value": Return location for the property value, free with
    --  g_value_unset after use.
@@ -191,19 +209,23 @@ package Gtk.Theming_Engine is
    function Has_Class
       (Self        : not null access Gtk_Theming_Engine_Record;
        Style_Class : UTF8_String) return Boolean;
+   pragma Obsolescent (Has_Class);
    --  Returns True if the currently rendered contents have defined the given
    --  class name.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "style_class": class name to look up
 
    function Has_Region
       (Self         : not null access Gtk_Theming_Engine_Record;
        Style_Region : UTF8_String;
        Flags        : access Gtk.Enums.Gtk_Region_Flags) return Boolean;
+   pragma Obsolescent (Has_Region);
    --  Returns True if the currently rendered contents have the region
    --  defined. If Flags_Return is not null, it is set to the flags affecting
    --  the region.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "style_region": a region name
    --  "flags": return location for region flags
 
@@ -211,7 +233,10 @@ package Gtk.Theming_Engine is
       (Self       : not null access Gtk_Theming_Engine_Record;
        Color_Name : UTF8_String;
        Color      : access Gdk.RGBA.Gdk_RGBA) return Boolean;
+   pragma Obsolescent (Lookup_Color);
    --  Looks up and resolves a color name in the current style's color map.
+   --  Since: gtk+ 3.0
+   --  Deprecated since 3.14, 1
    --  "color_name": color name to lookup
    --  "color": Return location for the looked up color
 
@@ -228,7 +253,7 @@ package Gtk.Theming_Engine is
    --  to 1 when State is being set to True and from 1 to 0 when it's being set
    --  to False.
    --  Since: gtk+ 3.0
-   --  Deprecated since 3.6, Always returns False
+   --  Deprecated since 3.6, 1
    --  "state": a widget state
    --  "progress": return location for the transition progress
 
@@ -237,8 +262,10 @@ package Gtk.Theming_Engine is
    ---------------
 
    function Load (Name : UTF8_String) return Gtk_Theming_Engine;
+   pragma Obsolescent (Load);
    --  Loads and initializes a theming engine module from the standard
    --  directories.
+   --  Deprecated since 3.14, 1
    --  "name": Theme engine name to load
 
    ----------------
@@ -252,7 +279,7 @@ package Gtk.Theming_Engine is
    --  properties, for a theming engine named "Clearlooks" registering a
    --  "glossy" custom property, it could be referenced in the CSS file as
    --
-   --    -Clearlooks-glossy: true;
+   --  |[ -Clearlooks-glossy: true; ]|
 
 private
    Name_Property : constant Glib.Properties.Property_String :=

@@ -263,7 +263,7 @@ package Gtk.Icon_View is
    --  If Cell is not null, then focus is given to the cell specified by it.
    --  Additionally, if Start_Editing is True, then editing should be started
    --  in the specified cell.
-   --  This function is often followed by 'gtk_widget_grab_focus (icon_view)'
+   --  This function is often followed by `gtk_widget_grab_focus (icon_view)`
    --  in order to give keyboard focus to the widget. Please note that editing
    --  can only happen when the widget is realized.
    --  Since: gtk+ 2.8
@@ -496,10 +496,10 @@ package Gtk.Icon_View is
    --  Creates a list of paths of all selected items. Additionally, if you are
    --  planning on modifying the model after calling this function, you may
    --  want to convert the returned list into a list of
-   --  Gtk.Tree_Row_Reference.Gtk_Tree_Row_Reference<!-- -->s. To do this, you
-   --  can use gtk_tree_row_reference_new.
-   --  To free the return value, use: |[ g_list_free_full (list,
-   --  (GDestroyNotify) gtk_tree_path_free); ]|
+   --  Gtk_Tree_Row_References. To do this, you can use
+   --  gtk_tree_row_reference_new.
+   --  To free the return value, use: |[<!-- language="C" --> g_list_free_full
+   --  (list, (GDestroyNotify) gtk_tree_path_free); ]|
    --  Since: gtk+ 2.6
 
    function Get_Selection_Mode
@@ -559,7 +559,7 @@ package Gtk.Icon_View is
    --  Icon_View will connect a Gtk.Widget.Gtk_Widget::query-tooltip signal
    --  handler.
    --  Note that the signal handler sets the text with Gtk.Tooltip.Set_Markup,
-   --  so &amp;, <, etc have to be escaped in the text.
+   --  so &, <, etc have to be escaped in the text.
    --  Since: gtk+ 2.12
    --  "column": an integer, which is a valid column number for Icon_View's
    --  model
@@ -983,8 +983,8 @@ package Gtk.Icon_View is
        Call  : Cb_GObject_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user activates the currently focused item.
+   --  A [keybinding signal][GtkBindingSignal] which gets emitted when the
+   --  user activates the currently focused item.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control activation
@@ -1037,24 +1037,17 @@ package Gtk.Icon_View is
        Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates a cursor movement.
+   --  The ::move-cursor signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a cursor movement.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control the cursor
    --  programmatically.
    --
-   --  The default bindings for this signal include
-   --
-   --     * Arrow keys which move by individual steps
-   --
-   --     * Home/End keys which move to the first/last item
-   --
-   --     * PageUp/PageDown which move by "pages"
-   --
-   --  All of these will extend the selection when combined with the Shift
-   --  modifier.
+   --  The default bindings for this signal include - Arrow keys which move by
+   --  individual steps - Home/End keys which move to the first/last item -
+   --  PageUp/PageDown which move by "pages" All of these will extend the
+   --  selection when combined with the Shift modifier.
    -- 
    --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
@@ -1075,8 +1068,8 @@ package Gtk.Icon_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user selects all items.
+   --  A [keybinding signal][GtkBindingSignal] which gets emitted when the
+   --  user selects all items.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control selection
@@ -1094,8 +1087,8 @@ package Gtk.Icon_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user selects the item that is currently focused.
+   --  A [keybinding signal][GtkBindingSignal] which gets emitted when the
+   --  user selects the item that is currently focused.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control selection
@@ -1126,9 +1119,9 @@ package Gtk.Icon_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user toggles whether the currently focused item is
-   --  selected or not. The exact effect of this depend on the selection mode.
+   --  A [keybinding signal][GtkBindingSignal] which gets emitted when the
+   --  user toggles whether the currently focused item is selected or not. The
+   --  exact effect of this depend on the selection mode.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control selection
@@ -1146,8 +1139,8 @@ package Gtk.Icon_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user unselects all items.
+   --  A [keybinding signal][GtkBindingSignal] which gets emitted when the
+   --  user unselects all items.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control selection

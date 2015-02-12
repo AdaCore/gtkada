@@ -32,19 +32,14 @@
 --  The correct way to create a group of radio menu items is approximatively
 --  this:
 --
---  == How to create a group of radio menu items. ==
+--  ## How to create a group of radio menu items.
 --
---    GSList *group = NULL;
---    GtkWidget *item;
---    gint i;
---    for (i = 0; i < 5; i++)
---    {
---       item = gtk_radio_menu_item_new_with_label (group, "This is an example");
---       group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
---       if (i == 1)
---       gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
---    }
+--  |[<!-- language="C" --> GSList *group = NULL; GtkWidget *item; gint i;
 --
+--  for (i = 0; i < 5; i++) { item = gtk_radio_menu_item_new_with_label
+--  (group, "This is an example"); group = gtk_radio_menu_item_get_group
+--  (GTK_RADIO_MENU_ITEM (item)); if (i == 1) gtk_check_menu_item_set_active
+--  (GTK_CHECK_MENU_ITEM (item), TRUE); } ]|
 --
 --  </description>
 pragma Ada_2005;
@@ -81,6 +76,7 @@ package Gtk.Radio_Menu_Item is
        Label           : UTF8_String := "");
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose child is a
    --  simple Gtk.Label.Gtk_Label.
+   --  "group": group the radio menu item is inside, or null
    --  "label": the text for the label
 
    function Gtk_Radio_Menu_Item_New_With_Label
@@ -88,6 +84,7 @@ package Gtk.Radio_Menu_Item is
        Label : UTF8_String := "") return Gtk_Radio_Menu_Item;
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose child is a
    --  simple Gtk.Label.Gtk_Label.
+   --  "group": group the radio menu item is inside, or null
    --  "label": the text for the label
 
    procedure Gtk_New_With_Mnemonic
@@ -101,7 +98,7 @@ package Gtk.Radio_Menu_Item is
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
-   --  "group": group the radio menu item is inside
+   --  "group": group the radio menu item is inside, or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 
@@ -111,7 +108,7 @@ package Gtk.Radio_Menu_Item is
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
-   --  "group": group the radio menu item is inside
+   --  "group": group the radio menu item is inside, or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 
@@ -133,7 +130,7 @@ package Gtk.Radio_Menu_Item is
       (Radio_Menu_Item : not null access Gtk_Radio_Menu_Item_Record;
        Group           : Gtk.Widget.Widget_SList.GSlist);
    --  Sets the group of a radio menu item, or changes it.
-   --  "group": the new group.
+   --  "group": the new group, or null.
 
    ----------------------
    -- GtkAda additions --
@@ -173,25 +170,31 @@ package Gtk.Radio_Menu_Item is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Radio_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Radio_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Radio_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Radio_Menu_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Radio_Menu_Item_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Radio_Menu_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

@@ -300,6 +300,22 @@ package body Glib.Variant is
       Self.Set_Object (Tmp_Return);
    end G_New_Strv;
 
+   -----------------------
+   -- G_New_Take_String --
+   -----------------------
+
+   procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String) is
+      function Internal
+         (String : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "g_variant_new_take_string");
+      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_Return : System.Address;
+   begin
+      Tmp_Return := Internal (Tmp_String);
+      Free (Tmp_String);
+      Self.Set_Object (Tmp_Return);
+   end G_New_Take_String;
+
    ------------------
    -- G_New_Uint16 --
    ------------------
@@ -588,6 +604,24 @@ package body Glib.Variant is
       Self.Set_Object (Tmp_Return);
       return Self;
    end Gvariant_New_Strv;
+
+   ------------------------------
+   -- Gvariant_New_Take_String --
+   ------------------------------
+
+   function Gvariant_New_Take_String (String : UTF8_String) return Gvariant is
+      function Internal
+         (String : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "g_variant_new_take_string");
+      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_Return : System.Address;
+      Self       : Gvariant;
+   begin
+      Tmp_Return := Internal (Tmp_String);
+      Free (Tmp_String);
+      Self.Set_Object (Tmp_Return);
+      return Self;
+   end Gvariant_New_Take_String;
 
    -------------------------
    -- Gvariant_New_Uint16 --
@@ -1498,6 +1532,38 @@ package body Glib.Variant is
       Free (Tmp_Text);
       return From_Object (Tmp_Return);
    end Parse;
+
+   -------------------------------
+   -- Parse_Error_Print_Context --
+   -------------------------------
+
+   function Parse_Error_Print_Context
+      (Error      : Glib.Error.GError;
+       Source_Str : UTF8_String) return UTF8_String
+   is
+      function Internal
+         (Error      : Glib.Error.GError;
+          Source_Str : Interfaces.C.Strings.chars_ptr)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "g_variant_parse_error_print_context");
+      Tmp_Source_Str : Interfaces.C.Strings.chars_ptr := New_String (Source_Str);
+      Tmp_Return     : Interfaces.C.Strings.chars_ptr;
+   begin
+      Tmp_Return := Internal (Error, Tmp_Source_Str);
+      Free (Tmp_Source_Str);
+      return Gtkada.Bindings.Value_And_Free (Tmp_Return);
+   end Parse_Error_Print_Context;
+
+   -----------------------
+   -- Parse_Error_Quark --
+   -----------------------
+
+   function Parse_Error_Quark return Glib.GQuark is
+      function Internal return Glib.GQuark;
+      pragma Import (C, Internal, "g_variant_parse_error_quark");
+   begin
+      return Internal;
+   end Parse_Error_Quark;
 
    ----------------------------
    -- Parser_Get_Error_Quark --

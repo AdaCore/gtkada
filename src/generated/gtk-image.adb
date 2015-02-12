@@ -188,6 +188,19 @@ package body Gtk.Image is
       return Image;
    end Gtk_Image_New_From_Stock;
 
+   --------------------------------
+   -- Gtk_Image_New_From_Surface --
+   --------------------------------
+
+   function Gtk_Image_New_From_Surface
+      (Surface : Cairo.Cairo_Surface) return Gtk_Image
+   is
+      Image : constant Gtk_Image := new Gtk_Image_Record;
+   begin
+      Gtk.Image.Initialize_From_Surface (Image, Surface);
+      return Image;
+   end Gtk_Image_New_From_Surface;
+
    -------------
    -- Gtk_New --
    -------------
@@ -302,6 +315,19 @@ package body Gtk.Image is
       Image := new Gtk_Image_Record;
       Gtk.Image.Initialize_From_Resource (Image, Resource_Path);
    end Gtk_New_From_Resource;
+
+   --------------------------
+   -- Gtk_New_From_Surface --
+   --------------------------
+
+   procedure Gtk_New_From_Surface
+      (Image   : out Gtk_Image;
+       Surface : Cairo.Cairo_Surface)
+   is
+   begin
+      Image := new Gtk_Image_Record;
+      Gtk.Image.Initialize_From_Surface (Image, Surface);
+   end Gtk_New_From_Surface;
 
    ----------------
    -- Initialize --
@@ -475,6 +501,23 @@ package body Gtk.Image is
          Set_Object (Image, Tmp_Return);
       end if;
    end Initialize_From_Resource;
+
+   -----------------------------
+   -- Initialize_From_Surface --
+   -----------------------------
+
+   procedure Initialize_From_Surface
+      (Image   : not null access Gtk_Image_Record'Class;
+       Surface : Cairo.Cairo_Surface)
+   is
+      function Internal
+         (Surface : Cairo.Cairo_Surface) return System.Address;
+      pragma Import (C, Internal, "gtk_image_new_from_surface");
+   begin
+      if not Image.Is_Created then
+         Set_Object (Image, Internal (Surface));
+      end if;
+   end Initialize_From_Surface;
 
    -----------
    -- Clear --
@@ -732,6 +775,22 @@ package body Gtk.Image is
       Internal (Get_Object (Image), Tmp_Resource_Path);
       Free (Tmp_Resource_Path);
    end Set_From_Resource;
+
+   ----------------------
+   -- Set_From_Surface --
+   ----------------------
+
+   procedure Set_From_Surface
+      (Image   : not null access Gtk_Image_Record;
+       Surface : Cairo.Cairo_Surface)
+   is
+      procedure Internal
+         (Image   : System.Address;
+          Surface : Cairo.Cairo_Surface);
+      pragma Import (C, Internal, "gtk_image_set_from_surface");
+   begin
+      Internal (Get_Object (Image), Surface);
+   end Set_From_Surface;
 
    --------------------
    -- Set_Pixel_Size --

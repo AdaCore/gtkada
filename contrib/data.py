@@ -16,7 +16,7 @@ enums = ("GtkEnums",
 interfaces = (
     "Actionable",
     "Activatable",
-    #  "AppChooser",
+    # "AppChooser",
     "--Atk.ImplementorIface",
     "Buildable",
     "CellEditable",
@@ -40,33 +40,33 @@ interfaces = (
     "Action",
     "ActionGroup",
     "ActionMap",
-    "--AppInfo",               # Not tested yet, from Gio
-    "--AsyncInitable",         # Not tested yet, from Gio
-    "--AsyncResult",           # Not tested yet, from Gio
-    "--Converter",             # Not tested yet, from Gio
-    "--DBusInterface",         # Not tested yet, from Gio
-    "--DBusObject",            # Not tested yet, from Gio
-    "--DBusObjectManager",     # Not tested yet, from Gio
+    "--AppInfo",  # Not tested yet, from Gio
+    "--AsyncInitable",  # Not tested yet, from Gio
+    "--AsyncResult",  # Not tested yet, from Gio
+    "--Converter",  # Not tested yet, from Gio
+    "--DBusInterface",  # Not tested yet, from Gio
+    "--DBusObject",  # Not tested yet, from Gio
+    "--DBusObjectManager",  # Not tested yet, from Gio
     "--DesktopAppInfoLookup",  # Not tested yet, from Gio
-    "--Drive",                 # Not tested yet, from Gio
-    "--File",                  # Not tested yet, from Gio
-    "--FileDescriptorBased",   # Not tested yet, from Gio
-    "--Initable",              # Not tested yet, from Gio
-    "--LoadableIcon",          # Not tested yet, from Gio
-    "--Mount",                 # Not tested yet, from Gio
-    "--NetworkMonitor",        # Not tested yet, from Gio
-    "--PollableInputStream",   # Not tested yet, from Gio
+    "--Drive",  # Not tested yet, from Gio
+    "--File",  # Not tested yet, from Gio
+    "--FileDescriptorBased",  # Not tested yet, from Gio
+    "--Initable",  # Not tested yet, from Gio
+    "--LoadableIcon",  # Not tested yet, from Gio
+    "--Mount",  # Not tested yet, from Gio
+    "--NetworkMonitor",  # Not tested yet, from Gio
+    "--PollableInputStream",  # Not tested yet, from Gio
     "--PollableOutputStream",  # Not tested yet, from Gio
-    "--Proxy",                 # Not tested yet, from Gio
-    "--ProxyResolver",         # Not tested yet, from Gio
-    "--RemoteActionGroup",     # Not tested yet, from Gio
-    "--Seekable",              # Not tested yet, from Gio
-    "--SocketConnectable",     # Not tested yet, from Gio
-    "--TlsBackend",            # Not tested yet, from Gio
-    "--TlsClientConnection",   # Not tested yet, from Gio
-    "--TlsFileDatabase",       # Not tested yet, from Gio
-    "--TlsServerConnection",   # Not tested yet, from Gio
-    "--Volume"                 # Not tested yet, from Gio
+    "--Proxy",  # Not tested yet, from Gio
+    "--ProxyResolver",  # Not tested yet, from Gio
+    "--RemoteActionGroup",  # Not tested yet, from Gio
+    "--Seekable",  # Not tested yet, from Gio
+    "--SocketConnectable",  # Not tested yet, from Gio
+    "--TlsBackend",  # Not tested yet, from Gio
+    "--TlsClientConnection",  # Not tested yet, from Gio
+    "--TlsFileDatabase",  # Not tested yet, from Gio
+    "--TlsServerConnection",  # Not tested yet, from Gio
+    "--Volume",  # Not tested yet, from Gio
 )
 
 # List of widgets to bind.
@@ -88,16 +88,16 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
 
            "GApplication",
            "GApplicationCommandLine",
-           "--GBytes",                  # Function returning arrays
-           "--GBufferedInputStream",    # Not tested yet, from Gio
-           "--GBufferedOutputStream",   # Not tested yet, from Gio
+           "--GBytes",   # Function returning arrays
+           "--GBufferedInputStream",  # Not tested yet, from Gio
+           "--GBufferedOutputStream",  # Not tested yet, from Gio
            "GCancellable",
-           "--GCharsetConverter",       # Not tested yet, from Gio
-           "--GConverterInputStream",   # Not tested yet, from Gio
+           "--GCharsetConverter",  # Not tested yet, from Gio
+           "--GConverterInputStream",  # Not tested yet, from Gio
            "--GConverterOutputStream",  # Not tested yet, from Gio
-           "--GCredentials",            # Not tested yet, from Giov
-           "--GDBusActionGroup",        # Not tested yet, from Gio
-           "--GDBusAnnotationInfo",     # Not tested yet, from Gio
+           "--GCredentials",  # Not tested yet, from Giov
+           "--GDBusActionGroup",  # Not tested yet, from Gio
+           "--GDBusAnnotationInfo",  # Not tested yet, from Gio
            "--GDBusArgInfo",  # Not tested yet, from Gio
            "--GDBusAuthObserver",  # Not tested yet, from Gio
            "--GDBusConnection",  # Not tested yet, from Gio
@@ -154,8 +154,36 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GNativeVolumeMonitor",  # Not tested yet, from Gio
            "--GNetworkAddress",  # Not tested yet, from Gio
            "--GNetworkService",  # Not tested yet, from Gio
+           "GNotification",
            "--GOutputStream",  # Not tested yet, from Gio
            "GOptionContext",
+
+           "--GParamSpec",   # Bound manually
+           "--GParamSpecBoolean",   # Bound manually
+           "--GParamSpecBoxed",   # Bound manually
+           "--GParamSpecChar",   # Bound manually
+           "--GParamSpecDouble",   # Bound manually
+           "--GParamSpecEnum",   # Bound manually
+           "--GParamSpecFlags",   # Bound manually
+           "--GParamSpecFloat",   # Bound manually
+           "--GParamSpecGType",   # Bound manually
+           "--GParamSpecInt",   # Bound manually
+           "--GParamSpecInt64",   # Bound manually
+           "--GParamSpecLong",   # Bound manually
+           "--GParamSpecObject",   # Bound manually
+           "--GParamSpecOverride",   # Bound manually
+           "--GParamSpecParam",   # Bound manually
+           "--GParamSpecPointer",   # Bound manually
+           "--GParamSpecPool",   # Bound manually
+           "--GParamSpecString",   # Bound manually
+           "--GParamSpecUChar",   # Bound manually
+           "--GParamSpecUInt",   # Bound manually
+           "--GParamSpecUInt64",   # Bound manually
+           "--GParamSpecULong",   # Bound manually
+           "--GParamSpecUnichar",   # Bound manually
+           "--GParamSpecValueArray",   # Bound manually
+           "--GParamSpecVariant",   # Bound manually
+
            "--GPermission",  # Not tested yet, from Gio
            "--GProxyAddress",  # Not tested yet, from Gio
            "--GProxyAddressEnumerator",  # Not tested yet, from Gio
@@ -236,17 +264,19 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkAccelGroup",
            "GtkAccelLabel",
            "GtkAccelMap",
-           # "GtkAccessible",  # Needs ATK
+           "--GtkAccessible",  # Needs ATK
            "GtkAction",
            "GtkActionGroup",
+           "GtkActionBar",
            "GtkAdjustment",
            "GtkAlignment",
-           # "GtkAppChooserButton",  # Needs GFile
-           # "GtkAppChooserDialog",  # Needs GFile
-           # "GtkAppChooserWidget",  # Needs GFile
+           "--GtkAppChooserButton",  # Needs GFile
+           "--GtkAppChooserDialog",  # Needs GFile
+           "--GtkAppChooserWidget",  # Needs GFile
            "GtkApplication",
            "GtkApplicationWindow",
            "GtkArrow",
+           "--GtkArrowAccessible",  # We do not support atk
            "GtkAspectFrame",
            "GtkAssistant",
            "GtkBin",
@@ -254,10 +284,13 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkBindingSet",
            "GtkBorder",
            "GtkBox",
+           "--GtkBooleanCellAccessible",  # We do not support atk
            "GtkBuilder",
            "GtkButton",
+           "--GtkButtonAccessible",  # We do not support atk
            "GtkButtonBox",
            "GtkCalendar",
+           "--GtkCellAccessible",  # We do not support atk
            "GtkCellArea",
            "GtkCellAreaBox",
            "--GtkCellAreaClass",
@@ -275,6 +308,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkCellView",
            "GtkCheckButton",
            "GtkCheckMenuItem",
+           "--GtkCheckMenuItemAccessible",  # We do not support atk
            "GtkClipboard",
            "GtkColorButton",
            "GtkColorChooserDialog",
@@ -282,34 +316,56 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkColorSelection",
            "GtkColorSelectionDialog",
            "GtkComboBox",
+           "--GtkComboBoxAccessible",  # We do not support atk
            "GtkComboBoxText",
            "GtkContainer",
+           "--GtkContainerAccessible",  # We do not support atk
+           "--GtkContainerCellAccessible",  # We do not support atk
            "--GtkContainerClass",
            "GtkCssProvider",
            "GtkCssSection",
            "GtkDialog",
            "GtkDrawingArea",
            "GtkEntry",
+           "--GtkEntryAccessible",  # We do not support atk
            "GtkEntryBuffer",
            "GtkEntryCompletion",
+           "--GtkEntryIconAccessible",  # We do not support atk
            "GtkEventBox",
+           "GtkEventController",
            "GtkExpander",
+           "--GtkExpanderAccessible",  # We do not support atk
            "GtkFileChooserButton",
            "GtkFileChooserDialog",
            "GtkFileChooserWidget",
            "GtkFileFilter",
            "GtkFixed",
+           "GtkFlowBox",
+           "--GtkFlowBoxAccessible",  # We do not support atk
+           "GtkFlowBoxChild",
+           "--GtkFlowBoxChildAccessible",  # We do not support atk
            "GtkFontButton",
            "GtkFontChooserDialog",
            "GtkFontChooserWidget",
            "GtkFontSelection",
            "GtkFontSelectionDialog",
            "GtkFrame",
+           "--GtkFrameAccessible",  # We do not support atk
+           "GtkGesture",
+           "GtkGestureDrag",
+           "GtkGestureLongPress",
+           "GtkGestureMultiPress",
+           "GtkGesturePan",
+           "GtkGestureRotate",
+           "GtkGestureSingle",
+           "GtkGestureSwipe",
+           "GtkGestureZoom",
            "GtkGradient",
            "GtkGrid",
            "GtkHandleBox",
            "GtkHBox",
            "GtkHButtonBox",
+           "GtkHeaderBar",
            "GtkHPaned",
            "GtkHScale",
            "GtkHScrollbar",
@@ -321,46 +377,71 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkIconSource",
            "GtkIconTheme",
            "GtkIconView",
+           "--GtkIconViewAccessible",  # We do not support atk
            "GtkIMContext",
            "GtkIMContextSimple",
            "GtkIMMulticontext",
            "GtkImage",
+           "--GtkImageAccessible",  # We do not support atk
+           "--GtkImageCellAccessible",  # We do not support atk
            "GtkImageMenuItem",
            "GtkInfoBar",
            "GtkInvisible",
            "GtkLabel",
+           "--GtkLabelAccessible",  # We do not support atk
            "GtkLayout",
            "GtkLevelBar",
+           "--GtkLevelBarAccessible",  # We do not support atk
            "GtkLinkButton",
+           "--GtkLinkButtonAccessible",  # We do not support atk
+           "GtkListBox",
+           "--GtkListBoxAccessible",  # We do not support atk
+           "GtkListBoxRow",
+           "--GtkListBoxRowAccessible",  # We do not support atk
            "GtkListStore",
-           # "GtkLockButton",  # requires GPermission
+           "--GtkLockButton",  # requires GPermission
+           "--GtkLockButtonAccessible",  # We do not support atk
            "GtkMain",
            "GtkMisc",
            "GtkMenu",
+           "--GtkMenuAccessible",  # We do not support atk
            "GtkMenuBar",
            "GtkMenuButton",
+           "--GtkMenuButtonAccessible",  # We do not support atk
            "GtkMenuItem",
+           "--GtkMenuItemAccessible",  # We do not support atk
            "GtkMenuShell",
+           "--GtkMenuShellAccessible",  # We do not support atk
            "GtkMenuToolButton",
            "GtkMessageDialog",
-           # "GtkMountOperation",  # Requires a lot of GIO
+           "--GtkMountOperation",  # Requires a lot of GIO
            "GtkNotebook",
-           # "GtkNumerableIcon",   # Requires a lot of GIO
+           "--GtkNotebookAccessible",  # We do not support atk
+           "--GtkNotebookPageAccessible",  # We do not support atk
+           "--GtkNumerableIcon",   # Requires a lot of GIO
            "GtkOffscreenWindow",
            "GtkOverlay",
            "GtkPaned",
+           "--GtkPanedAccessible",  # We do not support atk
            "GtkPageSetup",
            "GtkPaperSize",
+           "--GtkPlacesSidebar",  # Requires GFile
+           "GtkPopover",
+           "--GtkPopoverAccessible",  # We do not support atk
            "GtkPrintContext",
            "GtkPrintOperation",
            "GtkPrintSettings",
            "--GtkPlug",  # X11-specific, no binding
            "GtkProgressBar",
+           "--GtkProgressBarAccessible",  # We do not support atk
            "GtkRadioAction",
            "GtkRadioButton",
+           "--GtkRadioButtonAccessible",  # We do not support atk
            "GtkRadioMenuItem",
+           "--GtkRadioMenuItemAccessible",  # We do not support atk
            "GtkRadioToolButton",
            "GtkRange",
+           "--GtkRangeAccessible",  # We do not support atk
            "--GtkRcStyle",  # manual binding for these deprecated routines
            "GtkRecentAction",
            "GtkRecentChooserDialog",
@@ -369,8 +450,13 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkRecentFilter",
            "GtkRecentInfo",
            "GtkRecentManager",
+           "--GtkRendererCellAccessible",  # We do not support atk
+           "GtkRevealer",
            "GtkScale",
+           "--GtkScaleAccessible",  # We do not support atk
            "GtkScaleButton",
+           "--GtkScaleButtonAccessible",  # We do not support atk
+           "GtkSearchBar",
            "GtkSearchEntry",
            "GtkSelectionData",
            "GtkSeparator",
@@ -379,17 +465,24 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkSizeGroup",
            "GtkScrollbar",
            "GtkScrolledWindow",
+           "--GtkScrolledWindowAccessible",  # We do not support atk
            "GtkSettings",
            "--GtkSocket",  # X11-specific, no binding
            "GtkSpinner",
+           "--GtkSpinnerAccessible",  # We do not support atk
            "GtkSpinButton",
+           "--GtkSpinButtonAccessible",  # We do not support atk
+           "GtkStack",
+           "GtkStackSwitcher",
            "GtkStatusbar",
+           "--GtkStatusbarAccessible",  # We do not support atk
            "GtkStatusIcon",
            "GtkStockItem",
            "GtkStyle",
            "GtkStyleContext",
            "GtkStyleProperties",
            "GtkSwitch",
+           "--GtkSwitchAccessible",  # We do not support atk
            "GtkSymbolicColor",
            "GtkTable",
            "GtkTargetEntry",
@@ -397,12 +490,14 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkTearoffMenuItem",
            "GtkTextAttributes",
            "GtkTextBuffer",
+           "--GtkTextCellAccessible",  # We do not support atk
            "GtkTextChildAnchor",
            "GtkTextIter",
            "GtkTextMark",
            "GtkTextTag",
            "GtkTextTagTable",
            "GtkTextView",
+           "--GtkTextViewAccessible",  # We do not support atk
            "GtkThemingEngine",
            "GtkTreeIter",
            "GtkTreeModelFilter",
@@ -412,9 +507,11 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkTreeSelection",
            "GtkTreeStore",
            "GtkTreeView",
+           "--GtkTreeViewAccessible",  # We do not support atk
            "GtkTreeViewColumn",
            "GtkToggleAction",
            "GtkToggleButton",
+           "--GtkToggleButtonAccessible",  # We do not support atk
            "GtkToggleToolButton",
            "GtkToolButton",
            "GtkToolbar",
@@ -422,6 +519,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkToolItemGroup",
            "GtkTooltip",
            "GtkToolPalette",
+           "--GtkToplevelAccessible",  # We do not support atk
            "GtkUIManager",
            "GtkVBox",
            "GtkVButtonBox",
@@ -432,8 +530,10 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkViewport",
            "GtkVolumeButton",
            "GtkWidget",
+           "--GtkWidgetAccessible",  # We do not support atk
            "GtkWidgetClass",
            "GtkWindow",
+           "--GtkWindowAccessible",  # We do not support atk
            "GtkWindowGroup",
            )
 
@@ -501,6 +601,7 @@ naming.girname_to_ctype = {
     "Gdk.EventKey":        "GdkEventKey*",
     "Gdk.EventCrossing":   "GdkEventCrossing*",
     "Gdk.EventScroll":     "GdkEventScroll*",
+    "Gdk.EventSequence":   "GdkEventSequence*",
     "Gdk.EventWindowState": "GdkEventWindowState*",
     "Gdk.EventVisibility":  "GdkEventVisibility*",
     "Gdk.EventSelection":   "GdkEventSelection*",
@@ -597,6 +698,7 @@ naming.type_exceptions = {
     "GdkEvent*": Proxy("Gdk.Event.Gdk_Event", ""),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
+    "cairo_format_t":        Proxy("Cairo.Cairo_Format"),
     "cairo_rectangle_int_t*": Proxy("Cairo.Region.Cairo_Rectangle_Int"),
     "cairo_content_t":       Proxy("Cairo.Cairo_Content"),
     "cairo_pattern_t*":      Proxy("Cairo.Cairo_Pattern"),
@@ -604,7 +706,8 @@ naming.type_exceptions = {
     "cairo_region_t*":       Proxy("Cairo.Region.Cairo_Region"),
     "cairo_font_options_t":  Proxy("Cairo.Cairo_Font_Options"),
 
-    "GtkWidgetClass": Proxy("Glib.Object.GObject_Class"),
+    "GtkWidgetClass":    Proxy("Glib.Object.GObject_Class"),
+    "GtkWidgetClass*":   Proxy("Glib.Object.GObject_Class"),
 
     # Force mapping to a Proxy. This is also hard-coded in GITClass.__init__
     "PangoFontDescription": Proxy("Pango.Font.Pango_Font_Description",
@@ -628,6 +731,9 @@ naming.type_exceptions = {
     "GVariantType":      Proxy("Glib.Variant.Gvariant_Type"),
     "GVariantType*":     Proxy("Glib.Variant.Gvariant_Type"),
     "GVariantIter":      Proxy("Glib.Variant.Gvariant_Iter"),
+
+    # Proper generation of lists
+    "GdkEventSequence":  Proxy("Gdk.Event.Gdk_Event_Sequence"),
 
     # Specific to this binding generator (referenced from binding.xml)
     "VisualList":  List("Gdk.Visual.Gdk_Visual_List.Glist"),
@@ -690,6 +796,4 @@ naming.type_exceptions = {
     "GdkCursor*":        Proxy("Gdk.Gdk_Cursor"),
     "GdkWindow":         Proxy("Gdk.Gdk_Window"),
     "GdkWindow*":        Proxy("Gdk.Gdk_Window"),
-
-    "GdkEventSequence*": Proxy("System.Address"),
 }

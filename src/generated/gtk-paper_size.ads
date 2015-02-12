@@ -22,15 +22,16 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  GtkPaperSize handles paper sizes. It uses the standard called <ulink
---  url="http://www.pwg.org/standards.html">"PWG 5101.1-2002 PWG: Standard for
---  Media Standardized Names"</ulink> to name the paper sizes (and to get the
---  data for the page sizes). In addition to standard paper sizes, GtkPaperSize
---  allows to construct custom paper sizes with arbitrary dimensions.
+--  GtkPaperSize handles paper sizes. It uses the standard called [PWG
+--  5101.1-2002 PWG: Standard for Media Standardized
+--  Names](http://www.pwg.org/standards.html) to name the paper sizes (and to
+--  get the data for the page sizes). In addition to standard paper sizes,
+--  GtkPaperSize allows to construct custom paper sizes with arbitrary
+--  dimensions.
 --
 --  The Gtk.Paper_Size.Gtk_Paper_Size object stores not only the dimensions
 --  (width and height) of a paper size and its name, it also provides default
---  <link linkend="print-margins">print margins</link>.
+--  [print margins][print-margins].
 --
 --  Printing support has been added in GTK+ 2.10.
 --
@@ -57,9 +58,9 @@ package Gtk.Paper_Size is
    ------------------
 
    procedure Gtk_New (Widget : out Gtk_Paper_Size; Name : UTF8_String := "");
-   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by parsing a <ulink
-   --  url="ftp://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn10-20020226-5101.1.pdf">PWG
-   --  5101.1-2002</ulink> paper name.
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by parsing a [PWG
+   --  5101.1-2002](ftp://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn10-20020226-5101.1.pdf)
+   --  paper name.
    --  If Name is null, the default paper size is returned, see
    --  Gtk.Paper_Size.Get_Default.
    --  Since: gtk+ 2.10
@@ -67,9 +68,9 @@ package Gtk.Paper_Size is
 
    function Gtk_Paper_Size_New
       (Name : UTF8_String := "") return Gtk_Paper_Size;
-   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by parsing a <ulink
-   --  url="ftp://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn10-20020226-5101.1.pdf">PWG
-   --  5101.1-2002</ulink> paper name.
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by parsing a [PWG
+   --  5101.1-2002](ftp://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn10-20020226-5101.1.pdf)
+   --  paper name.
    --  If Name is null, the default paper size is returned, see
    --  Gtk.Paper_Size.Get_Default.
    --  Since: gtk+ 2.10

@@ -22,39 +22,55 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  You may wish to begin by reading the <link linkend="TextWidget">text
---  widget conceptual overview</link> which gives an overview of all the
---  objects and data types related to the text widget and how they work
---  together.
+--  You may wish to begin by reading the [text widget conceptual
+--  overview][TextWidget] which gives an overview of all the objects and data
+--  types related to the text widget and how they work together.
 --
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;                   use Gdk;
-with Gdk.Event;             use Gdk.Event;
-with Gdk.Rectangle;         use Gdk.Rectangle;
-with Glib;                  use Glib;
-with Glib.Object;           use Glib.Object;
-with Glib.Properties;       use Glib.Properties;
-with Glib.Types;            use Glib.Types;
-with Gtk.Adjustment;        use Gtk.Adjustment;
-with Gtk.Buildable;         use Gtk.Buildable;
-with Gtk.Container;         use Gtk.Container;
-with Gtk.Enums;             use Gtk.Enums;
-with Gtk.Scrollable;        use Gtk.Scrollable;
-with Gtk.Text_Attributes;   use Gtk.Text_Attributes;
-with Gtk.Text_Buffer;       use Gtk.Text_Buffer;
-with Gtk.Text_Child_Anchor; use Gtk.Text_Child_Anchor;
-with Gtk.Text_Iter;         use Gtk.Text_Iter;
-with Gtk.Text_Mark;         use Gtk.Text_Mark;
-with Gtk.Widget;            use Gtk.Widget;
-with Pango.Tabs;            use Pango.Tabs;
+with Cairo;                   use Cairo;
+with Gdk;                     use Gdk;
+with Gdk.Event;               use Gdk.Event;
+with Gdk.Rectangle;           use Gdk.Rectangle;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Adjustment;          use Gtk.Adjustment;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Container;           use Gtk.Container;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Scrollable;          use Gtk.Scrollable;
+with Gtk.Text_Attributes;     use Gtk.Text_Attributes;
+with Gtk.Text_Buffer;         use Gtk.Text_Buffer;
+with Gtk.Text_Child_Anchor;   use Gtk.Text_Child_Anchor;
+with Gtk.Text_Iter;           use Gtk.Text_Iter;
+with Gtk.Text_Mark;           use Gtk.Text_Mark;
+with Gtk.Widget;              use Gtk.Widget;
+with Pango.Tabs;              use Pango.Tabs;
 
 package Gtk.Text_View is
 
    type Gtk_Text_View_Record is new Gtk_Container_Record with null record;
    type Gtk_Text_View is access all Gtk_Text_View_Record'Class;
+
+   type Gtk_Text_View_Layer is (
+      Text_View_Layer_Below,
+      Text_View_Layer_Above);
+   pragma Convention (C, Gtk_Text_View_Layer);
+   --  Used to reference the layers of Gtk.Text_View.Gtk_Text_View for the
+   --  purpose of customized drawing with the ::draw_layer vfunc.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Text_View_Layer_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Text_View_Layer);
+   type Property_Gtk_Text_View_Layer is new Gtk_Text_View_Layer_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -123,14 +139,11 @@ package Gtk.Text_View is
    --  Adds a child at fixed coordinates in one of the text widget's windows.
    --  The window must have nonzero size (see
    --  Gtk.Text_View.Set_Border_Window_Size). Note that the child coordinates
-   --  are given relative to the Gdk.Gdk_Window in question, and that these
-   --  coordinates have no sane relationship to scrolling. When placing a child
-   --  in GTK_TEXT_WINDOW_WIDGET, scrolling is irrelevant, the child floats
-   --  above all scrollable areas. But when placing a child in one of the
-   --  scrollable windows (border windows or text window), you'll need to
-   --  compute the child's correct position in buffer coordinates any time
-   --  scrolling occurs or buffer changes occur, and then call
-   --  Gtk.Text_View.Move_Child to update the child's position.
+   --  are given relative to scrolling. When placing a child in
+   --  GTK_TEXT_WINDOW_WIDGET, scrolling is irrelevant, the child floats above
+   --  all scrollable areas. But when placing a child in one of the scrollable
+   --  windows (border windows or text window) it will move with the scrolling
+   --  as needed.
    --  "child": a Gtk.Widget.Gtk_Widget
    --  "which_window": which window the child should appear in
    --  "xpos": X position of child in window coordinates
@@ -388,7 +401,7 @@ package Gtk.Text_View is
    --  event, you have to convert those to buffer coordinates with
    --  Gtk.Text_View.Window_To_Buffer_Coords.
    --  Note that this is different from Gtk.Text_View.Get_Iter_At_Location,
-   --  which returns cursor locations, i.e. positions *between* characters.
+   --  which returns cursor locations, i.e. positions between characters.
    --  Since: gtk+ 2.6
    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter
    --  "trailing": if non-null, location to store an integer indicating where
@@ -557,7 +570,7 @@ package Gtk.Text_View is
        Window : Gdk.Gdk_Window) return Gtk.Enums.Gtk_Text_Window_Type;
    --  Usually used to find out which window an event corresponds to. If you
    --  connect to an event signal on Text_View, this function should be called
-   --  on 'event->window' to see which window it was.
+   --  on `event->window` to see which window it was.
    --  "window": a window type
 
    function Get_Wrap_Mode
@@ -582,11 +595,12 @@ package Gtk.Text_View is
    --  overriding key event handling. This is needed in the case when you need
    --  to insert your own key handling between the input method and the default
    --  key event handling of the Gtk.Text_View.Gtk_Text_View.
-   --  |[ static gboolean gtk_foo_bar_key_press_event (GtkWidget *widget,
-   --  GdkEventKey *event) { if ((key->keyval == GDK_KEY_Return || key->keyval
-   --  == GDK_KEY_KP_Enter)) { if (gtk_text_view_im_context_filter_keypress
-   --  (GTK_TEXT_VIEW (view), event)) return TRUE; }
-   --  /* Do some stuff */
+   --  |[<!-- language="C" --> static gboolean gtk_foo_bar_key_press_event
+   --  (GtkWidget *widget, GdkEventKey *event) { if ((key->keyval ==
+   --  GDK_KEY_Return || key->keyval == GDK_KEY_KP_Enter)) { if
+   --  (gtk_text_view_im_context_filter_keypress (GTK_TEXT_VIEW (view), event))
+   --  return TRUE; }
+   --  // Do some stuff
    --  return GTK_WIDGET_CLASS (gtk_foo_bar_parent_class)->key_press_event
    --  (widget, event); } ]|
    --  Since: gtk+ 2.22
@@ -804,6 +818,9 @@ package Gtk.Text_View is
    Pixels_Inside_Wrap_Property : constant Glib.Properties.Property_Int;
 
    Populate_All_Property : constant Glib.Properties.Property_Boolean;
+   --  If :populate-all is True, the
+   --  Gtk.Text_View.Gtk_Text_View::populate-popup signal is also emitted for
+   --  touch popups.
 
    Right_Margin_Property : constant Glib.Properties.Property_Int;
 
@@ -831,9 +848,8 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::backspace signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user asks for it.
+   --  The ::backspace signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted when the user asks for it.
    --
    --  The default bindings for this signal are Backspace and Shift-Backspace.
 
@@ -847,9 +863,8 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::copy-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to copy the selection to the clipboard.
+   --  The ::copy-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to copy the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-c and Ctrl-Insert.
 
@@ -863,9 +878,8 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::cut-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to cut the selection to the clipboard.
+   --  The ::cut-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to cut the selection to the clipboard.
    --
    --  The default bindings for this signal are Ctrl-x and Shift-Delete.
 
@@ -889,9 +903,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Gtk_Delete_Type_Gint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::delete-from-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates a text deletion.
+   --  The ::delete-from-cursor signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user initiates a
+   --  text deletion.
    --
    --  If the Type is Gtk.Enums.Delete_Chars, GTK+ deletes the selection if
    --  there is one, otherwise it deletes the requested number of characters.
@@ -922,9 +936,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_UTF8_String_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::insert-at-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates the insertion of a fixed string at the cursor.
+   --  The ::insert-at-cursor signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted when the user initiates the
+   --  insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
 
@@ -950,10 +964,10 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates a cursor movement. If the cursor is not visible
-   --  in Text_View, this signal causes the viewport to be moved instead.
+   --  The ::move-cursor signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a cursor movement. If the
+   --  cursor is not visible in Text_View, this signal causes the viewport to
+   --  be moved instead.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control the cursor
@@ -962,17 +976,10 @@ package Gtk.Text_View is
    --  The default bindings for this signal come in two variants, the variant
    --  with the Shift modifier extends the selection, the variant without the
    --  Shift modifer does not. There are too many key combinations to list them
-   --  all here.
-   --
-   --     * Arrow keys move by individual characters/lines
-   --
-   --     * Ctrl-arrow key combinations move by words/paragraphs
-   --
-   --     * Home/End keys move to the ends of the buffer
-   --
-   --     * PageUp/PageDown keys move vertically by pages
-   --
-   --     * Ctrl-PageUp/PageDown keys move horizontally by pages
+   --  all here. - Arrow keys move by individual characters/lines - Ctrl-arrow
+   --  key combinations move by words/paragraphs - Home/End keys move to the
+   --  ends of the buffer - PageUp/PageDown keys move vertically by pages -
+   --  Ctrl-PageUp/PageDown keys move horizontally by pages
    -- 
    --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
@@ -999,10 +1006,10 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Gtk_Scroll_Step_Gint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-viewport signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which can be bound
-   --  to key combinations to allow the user to move the viewport, i.e. change
-   --  what part of the text view is visible in a containing scrolled window.
+   --  The ::move-viewport signal is a [keybinding signal][GtkBindingSignal]
+   --  which can be bound to key combinations to allow the user to move the
+   --  viewport, i.e. change what part of the text view is visible in a
+   --  containing scrolled window.
    --
    --  There are no default bindings for this signal.
    -- 
@@ -1020,9 +1027,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::paste-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to paste the contents of the clipboard into the text view.
+   --  The ::paste-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to paste the contents of the clipboard into the text
+   --  view.
    --
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
 
@@ -1051,7 +1058,7 @@ package Gtk.Text_View is
    --  and append your items to the Popup, which will be a Gtk.Menu.Gtk_Menu in
    --  this case.
    --
-   --  If Gtk.GEntry.Gtk_Entry::populate-toolbar is True, this signal will
+   --  If Gtk.Text_View.Gtk_Text_View:populate-all is True, this signal will
    --  also be emitted to populate touch popups. In this case, Popup will be a
    --  different container, e.g. a Gtk.Toolbar.Gtk_Toolbar.
    --
@@ -1094,9 +1101,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Boolean_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::select-all signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to select or unselect the complete contents of the text view.
+   --  The ::select-all signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to select or unselect the complete contents of the
+   --  text view.
    --
    --  The default bindings for this signal are Ctrl-a and Ctrl-/ for
    --  selecting and Shift-Ctrl-a and Ctrl-\ for unselecting.
@@ -1111,10 +1118,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::set-anchor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates setting the "anchor" mark. The "anchor" mark
-   --  gets placed at the same position as the "insert" mark.
+   --  The ::set-anchor signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates setting the "anchor" mark.
+   --  The "anchor" mark gets placed at the same position as the "insert" mark.
    --
    --  This signal has no default bindings.
 
@@ -1128,9 +1134,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::toggle-cursor-visible signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to toggle the visibility of the cursor.
+   --  The ::toggle-cursor-visible signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted to toggle the visibility of
+   --  the cursor.
    --
    --  The default binding for this signal is F7.
 
@@ -1144,9 +1150,9 @@ package Gtk.Text_View is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::toggle-overwrite signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to toggle the overwrite mode of the text view.
+   --  The ::toggle-overwrite signal is a [keybinding
+   --  signal][GtkBindingSignal] which gets emitted to toggle the overwrite
+   --  mode of the text view.
    --
    --  The default bindings for this signal is Insert.
 
@@ -1180,6 +1186,27 @@ package Gtk.Text_View is
      (Interf : Gtk.Scrollable.Gtk_Scrollable)
    return Gtk_Text_View
    renames Implements_Gtk_Scrollable.To_Object;
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Draw_Layer is access procedure
+     (View  : System.Address;
+      Layer : Gtk_Text_View_Layer;
+      Cr    : Cairo.Cairo_Context);
+   pragma Convention (C, Virtual_Draw_Layer);
+   --  The draw_layer virtual function is called before and after the text
+   --  view is drawing its own text. Applications can override this vfunc in a
+   --  subclass to draw customized content underneath or above the text. Since:
+   --  3.14
+
+   subtype Text_View_Interface_Descr is Glib.Object.Interface_Description;
+   procedure Set_Draw_Layer
+     (Self    : Glib.Object.GObject_Class;
+      Handler : Virtual_Draw_Layer);
+   pragma Import (C, Set_Draw_Layer, "gtkada_Text_View_set_draw_layer");
+   --  See Glib.Object.Add_Interface
 
 private
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=

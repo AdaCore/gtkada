@@ -69,11 +69,10 @@ package Gdk.Screen is
       (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window;
    --  Returns the screen's currently active window.
    --  On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property on
-   --  the root window, as described in the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink>. If there is no currently currently active window,
-   --  or the window manager does not support the _NET_ACTIVE_WINDOW hint, this
-   --  function returns null.
+   --  the root window, as described in the [Extended Window Manager
+   --  Hints](http://www.freedesktop.org/Standards/wm-spec). If there is no
+   --  currently currently active window, or the window manager does not
+   --  support the _NET_ACTIVE_WINDOW hint, this function returns null.
    --  On other platforms, this function may return null, depending on whether
    --  it is implementable on that platform.
    --  The returned window should be unrefed using g_object_unref when no
@@ -163,6 +162,19 @@ package Gdk.Screen is
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
+   function Get_Monitor_Scale_Factor
+      (Screen      : not null access Gdk_Screen_Record;
+       Monitor_Num : Gint) return Gint;
+   --  Returns the internal scale factor that maps from monitor coordiantes to
+   --  the actual device pixels. On traditional systems this is 1, but on very
+   --  high density outputs this can be a higher value (often 2).
+   --  This can be used if you want to create pixel based data for a particula
+   --  monitor, but most of the time you're drawing to a window where it is
+   --  better to use Gdk.Window.Get_Scale_Factor instead.
+   --  Since: gtk+ 3.10
+   --  "monitor_num": number of the monitor, between 0 and
+   --  gdk_screen_get_n_monitors (screen)
+
    function Get_Monitor_Width_Mm
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Gint) return Gint;
@@ -180,6 +192,9 @@ package Gdk.Screen is
    --  The work area should be considered when positioning menus and similar
    --  popups, to avoid placing them below panels, docks or other desktop
    --  components.
+   --  Note that not all backends may have a concept of workarea. This
+   --  function will return the monitor geometry if a workarea is not
+   --  available, or does not apply.
    --  Monitor numbers start at 0. To obtain the number of monitors of Screen,
    --  use Gdk.Screen.Get_N_Monitors.
    --  Since: gtk+ 3.4
@@ -201,7 +216,7 @@ package Gdk.Screen is
    function Get_Primary_Monitor
       (Screen : not null access Gdk_Screen_Record) return Gint;
    --  Gets the primary monitor for Screen. The primary monitor is considered
-   --  the monitor where the 'main desktop' lives. While normal application
+   --  the monitor where the "main desktop" lives. While normal application
    --  windows typically allow the window manager to place the windows,
    --  specialized desktop applications such as panels should place themselves
    --  on the primary monitor.

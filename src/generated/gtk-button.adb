@@ -38,6 +38,20 @@ package body Gtk.Button is
      (Get_Type'Access, Gtk_Button_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Button);
 
+   -----------------------------------
+   -- Gtk_Button_New_From_Icon_Name --
+   -----------------------------------
+
+   function Gtk_Button_New_From_Icon_Name
+      (Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size) return Gtk_Button
+   is
+      Button : constant Gtk_Button := new Gtk_Button_Record;
+   begin
+      Gtk.Button.Initialize_From_Icon_Name (Button, Icon_Name, Size);
+      return Button;
+   end Gtk_Button_New_From_Icon_Name;
+
    -------------------------------
    -- Gtk_Button_New_From_Stock --
    -------------------------------
@@ -86,6 +100,20 @@ package body Gtk.Button is
       Button := new Gtk_Button_Record;
       Gtk.Button.Initialize (Button, Label);
    end Gtk_New;
+
+   ----------------------------
+   -- Gtk_New_From_Icon_Name --
+   ----------------------------
+
+   procedure Gtk_New_From_Icon_Name
+      (Button    : out Gtk_Button;
+       Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size)
+   is
+   begin
+      Button := new Gtk_Button_Record;
+      Gtk.Button.Initialize_From_Icon_Name (Button, Icon_Name, Size);
+   end Gtk_New_From_Icon_Name;
 
    ------------------------
    -- Gtk_New_From_Stock --
@@ -138,6 +166,29 @@ package body Gtk.Button is
          Set_Object (Button, Tmp_Return);
       end if;
    end Initialize;
+
+   -------------------------------
+   -- Initialize_From_Icon_Name --
+   -------------------------------
+
+   procedure Initialize_From_Icon_Name
+      (Button    : not null access Gtk_Button_Record'Class;
+       Icon_Name : UTF8_String;
+       Size      : Gtk.Enums.Gtk_Icon_Size)
+   is
+      function Internal
+         (Icon_Name : Interfaces.C.Strings.chars_ptr;
+          Size      : Gtk.Enums.Gtk_Icon_Size) return System.Address;
+      pragma Import (C, Internal, "gtk_button_new_from_icon_name");
+      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Return    : System.Address;
+   begin
+      if not Button.Is_Created then
+         Tmp_Return := Internal (Tmp_Icon_Name, Size);
+         Free (Tmp_Icon_Name);
+         Set_Object (Button, Tmp_Return);
+      end if;
+   end Initialize_From_Icon_Name;
 
    ---------------------------
    -- Initialize_From_Stock --
@@ -481,15 +532,15 @@ package body Gtk.Button is
    ----------------
 
    procedure Set_Relief
-      (Button   : not null access Gtk_Button_Record;
-       Newstyle : Gtk.Enums.Gtk_Relief_Style)
+      (Button : not null access Gtk_Button_Record;
+       Relief : Gtk.Enums.Gtk_Relief_Style)
    is
       procedure Internal
-         (Button   : System.Address;
-          Newstyle : Gtk.Enums.Gtk_Relief_Style);
+         (Button : System.Address;
+          Relief : Gtk.Enums.Gtk_Relief_Style);
       pragma Import (C, Internal, "gtk_button_set_relief");
    begin
-      Internal (Get_Object (Button), Newstyle);
+      Internal (Get_Object (Button), Relief);
    end Set_Relief;
 
    -------------------

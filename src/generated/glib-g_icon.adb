@@ -42,6 +42,17 @@ package body Glib.G_Icon is
    end Equal;
 
    ---------------
+   -- Serialize --
+   ---------------
+
+   function Serialize (Self : G_Icon) return Glib.Variant.Gvariant is
+      function Internal (Self : G_Icon) return System.Address;
+      pragma Import (C, Internal, "g_icon_serialize");
+   begin
+      return From_Object (Internal (Self));
+   end Serialize;
+
+   ---------------
    -- To_String --
    ---------------
 
@@ -52,6 +63,17 @@ package body Glib.G_Icon is
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
    end To_String;
+
+   -----------------
+   -- Deserialize --
+   -----------------
+
+   function Deserialize (Value : Glib.Variant.Gvariant) return G_Icon is
+      function Internal (Value : System.Address) return G_Icon;
+      pragma Import (C, Internal, "g_icon_deserialize");
+   begin
+      return Internal (Get_Object (Value));
+   end Deserialize;
 
    --------------------
    -- New_For_String --

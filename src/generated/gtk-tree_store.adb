@@ -662,11 +662,11 @@ Iter := Gtk.Tree_Model.Null_Iter;
    is
       procedure Internal
          (Tree_Store : System.Address;
-          Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Parent     : System.Address;
           New_Order  : Gint_Array);
       pragma Import (C, Internal, "gtk_tree_store_reorder");
    begin
-      Internal (Get_Object (Tree_Store), Parent, New_Order);
+      Internal (Get_Object (Tree_Store), Iter_Or_Null (Parent'Address), New_Order);
    end Reorder;
 
    ----------------------
@@ -728,7 +728,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
       --  it must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
-      --  'price_of(A) - price_of(B)'.
+      --  `price_of(A) - price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -812,7 +812,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
       --  it must be reflexive, antisymmetric and transitive.
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
-      --  'price_of(A) - price_of(B)'.
+      --  `price_of(A) - price_of(B)`.
       --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
       --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -1421,6 +1421,28 @@ Iter := Gtk.Tree_Model.Null_Iter;
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path), Iter, New_Order);
    end Rows_Reordered;
+
+   --------------------------------
+   -- Rows_Reordered_With_Length --
+   --------------------------------
+
+   procedure Rows_Reordered_With_Length
+      (Tree_Model : not null access Gtk_Tree_Store_Record;
+       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+       New_Order  : Gint_Array;
+       Length     : Gint)
+   is
+      procedure Internal
+         (Tree_Model : System.Address;
+          Path       : System.Address;
+          Iter       : System.Address;
+          New_Order  : System.Address;
+          Length     : Gint);
+      pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
+   begin
+      Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);
+   end Rows_Reordered_With_Length;
 
    ------------------------
    -- Set_Sort_Column_Id --

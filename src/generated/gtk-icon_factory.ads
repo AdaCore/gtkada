@@ -22,10 +22,6 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Browse the available stock icons in the list of stock IDs found <link
---  linkend="gtk-Stock-Items">here</link>. You can also use the
---  <application>gtk-demo</application> application for this purpose.
---
 --  An icon factory manages a collection of Gtk.Icon_Set.Gtk_Icon_Set; a
 --  Gtk.Icon_Set.Gtk_Icon_Set manages a set of variants of a particular icon
 --  (i.e. a Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes and
@@ -44,53 +40,47 @@
 --  Gtk.Widget.Render_Icon. These functions take the theme into account when
 --  looking up the icon to use for a given stock ID.
 --
---  == GtkIconFactory as GtkBuildable ==
+--  # GtkIconFactory as GtkBuildable #
+--  {Gtk.Icon_Factory.Gtk_Icon_Factory-BUILDER-UI}
 --
 --  GtkIconFactory supports a custom <sources> element, which can contain
 --  multiple <source> elements. The following attributes are allowed:
 --
---  'stock-id'
+--  - stock-id
 --
---     * The stock id of the source, a string. This attribute is mandatory
+--  The stock id of the source, a string. This attribute is mandatory
 --
---  'filename'
+--  - filename
 --
---     * The filename of the source, a string. This attribute is optional
+--  The filename of the source, a string. This attribute is optional
 --
---  'icon-name'
+--  - icon-name
 --
---     * The icon name for the source, a string. This attribute is optional.
+--  The icon name for the source, a string. This attribute is optional.
 --
---  'size'
+--  - size
 --
---     * Size of the icon, a Gtk.Enums.Gtk_Icon_Size enum value. This
+--  Size of the icon, a Gtk.Enums.Gtk_Icon_Size enum value. This attribute is
+--  optional.
+--
+--  - direction
+--
+--  Direction of the source, a Gtk.Enums.Gtk_Text_Direction enum value. This
 --  attribute is optional.
 --
---  'direction'
+--  - state
 --
---     * Direction of the source, a Gtk.Enums.Gtk_Text_Direction enum value.
---  This attribute is optional.
+--  State of the source, a Gtk.Enums.Gtk_State_Type enum value. This attribute
+--  is optional.
 --
---  'state'
+--  ## A Gtk.Icon_Factory.Gtk_Icon_Factory UI definition fragment. ##
 --
---     * State of the source, a Gtk.Enums.Gtk_State_Type enum value. This
---  attribute is optional.
+--  |[ <object class="GtkIconFactory" id="iconfactory1"> <sources> <source
+--  stock-id="apple-red" filename="apple-red.png"/> </sources> </object>
+--  <object class="GtkWindow" id="window1"> <child> <object class="GtkButton"
+--  id="apple_button"> <property name="label">apple-red</property> <property
+--  name="use-stock">True</property> </object> </child> </object> ]|
 --
---  == A Gtk.Icon_Factory.Gtk_Icon_Factory UI definition fragment. ==
---
---    <object class="GtkIconFactory" id="iconfactory1">
---    <sources>
---    <source stock-id="apple-red" filename="apple-red.png"/>
---    </sources>
---    </object>
---    <object class="GtkWindow" id="window1">
---    <child>
---    <object class="GtkButton" id="apple_button">
---    <property name="label">apple-red</property>
---    <property name="use-stock">True</property>
---    </object>
---    </child>
---    </object>
 --  </description>
 pragma Ada_2005;
 
@@ -118,35 +108,33 @@ package Gtk.Icon_Factory is
    procedure Initialize
       (Self : not null access Gtk_Icon_Factory_Record'Class);
    --  Creates a new Gtk.Icon_Factory.Gtk_Icon_Factory. An icon factory
-   --  manages a collection of Gtk.Icon_Set.Gtk_Icon_Set<!-- -->s; a
-   --  Gtk.Icon_Set.Gtk_Icon_Set manages a set of variants of a particular icon
-   --  (i.e. a Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes
-   --  and widget states). Icons in an icon factory are named by a stock ID,
-   --  which is a simple string identifying the icon. Each Gtk.Style.Gtk_Style
-   --  has a list of Gtk.Icon_Factory.Gtk_Icon_Factory<!-- -->s derived from
-   --  the current theme; those icon factories are consulted first when
-   --  searching for an icon. If the theme doesn't set a particular icon, GTK+
-   --  looks for the icon in a list of default icon factories, maintained by
-   --  Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Remove_Default.
-   --  Applications with icons should add a default icon factory with their
-   --  icons, which will allow themes to override the icons for the
-   --  application.
+   --  manages a collection of Gtk_Icon_Sets; a Gtk.Icon_Set.Gtk_Icon_Set
+   --  manages a set of variants of a particular icon (i.e. a
+   --  Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes and
+   --  widget states). Icons in an icon factory are named by a stock ID, which
+   --  is a simple string identifying the icon. Each Gtk.Style.Gtk_Style has a
+   --  list of Gtk_Icon_Factorys derived from the current theme; those icon
+   --  factories are consulted first when searching for an icon. If the theme
+   --  doesn't set a particular icon, GTK+ looks for the icon in a list of
+   --  default icon factories, maintained by Gtk.Icon_Factory.Add_Default and
+   --  Gtk.Icon_Factory.Remove_Default. Applications with icons should add a
+   --  default icon factory with their icons, which will allow themes to
+   --  override the icons for the application.
 
    function Gtk_Icon_Factory_New return Gtk_Icon_Factory;
    --  Creates a new Gtk.Icon_Factory.Gtk_Icon_Factory. An icon factory
-   --  manages a collection of Gtk.Icon_Set.Gtk_Icon_Set<!-- -->s; a
-   --  Gtk.Icon_Set.Gtk_Icon_Set manages a set of variants of a particular icon
-   --  (i.e. a Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes
-   --  and widget states). Icons in an icon factory are named by a stock ID,
-   --  which is a simple string identifying the icon. Each Gtk.Style.Gtk_Style
-   --  has a list of Gtk.Icon_Factory.Gtk_Icon_Factory<!-- -->s derived from
-   --  the current theme; those icon factories are consulted first when
-   --  searching for an icon. If the theme doesn't set a particular icon, GTK+
-   --  looks for the icon in a list of default icon factories, maintained by
-   --  Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Remove_Default.
-   --  Applications with icons should add a default icon factory with their
-   --  icons, which will allow themes to override the icons for the
-   --  application.
+   --  manages a collection of Gtk_Icon_Sets; a Gtk.Icon_Set.Gtk_Icon_Set
+   --  manages a set of variants of a particular icon (i.e. a
+   --  Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes and
+   --  widget states). Icons in an icon factory are named by a stock ID, which
+   --  is a simple string identifying the icon. Each Gtk.Style.Gtk_Style has a
+   --  list of Gtk_Icon_Factorys derived from the current theme; those icon
+   --  factories are consulted first when searching for an icon. If the theme
+   --  doesn't set a particular icon, GTK+ looks for the icon in a list of
+   --  default icon factories, maintained by Gtk.Icon_Factory.Add_Default and
+   --  Gtk.Icon_Factory.Remove_Default. Applications with icons should add a
+   --  default icon factory with their icons, which will allow themes to
+   --  override the icons for the application.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_icon_factory_get_type");
@@ -159,6 +147,7 @@ package Gtk.Icon_Factory is
       (Self     : not null access Gtk_Icon_Factory_Record;
        Stock_Id : UTF8_String;
        Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set);
+   pragma Obsolescent (Add);
    --  Adds the given Icon_Set to the icon factory, under the name Stock_Id.
    --  Stock_Id should be namespaced for your application, e.g.
    --  "myapp-whatever-icon". Normally applications create a
@@ -169,31 +158,38 @@ package Gtk.Icon_Factory is
    --  override your application's default icons. If an icon already existed in
    --  Factory for Stock_Id, it is unreferenced and replaced with the new
    --  Icon_Set.
+   --  Deprecated since 3.10, 1
    --  "stock_id": icon name
    --  "icon_set": icon set
 
    procedure Add_Default (Self : not null access Gtk_Icon_Factory_Record);
+   pragma Obsolescent (Add_Default);
    --  Adds an icon factory to the list of icon factories searched by
    --  gtk_style_lookup_icon_set. This means that, for example,
    --  Gtk.Image.Gtk_New will be able to find icons in Factory. There will
    --  normally be an icon factory added for each library or application that
    --  comes with icons. The default icon factories can be overridden by
    --  themes.
+   --  Deprecated since 3.10, 1
 
    function Lookup
       (Self     : not null access Gtk_Icon_Factory_Record;
        Stock_Id : UTF8_String) return Gtk.Icon_Set.Gtk_Icon_Set;
+   pragma Obsolescent (Lookup);
    --  Looks up Stock_Id in the icon factory, returning an icon set if found,
    --  otherwise null. For display to the user, you should use
    --  gtk_style_lookup_icon_set on the Gtk.Style.Gtk_Style for the widget that
    --  will display the icon, instead of using this function directly, so that
    --  themes are taken into account.
+   --  Deprecated since 3.10, 1
    --  "stock_id": an icon name
 
    procedure Remove_Default (Self : not null access Gtk_Icon_Factory_Record);
+   pragma Obsolescent (Remove_Default);
    --  Removes an icon factory from the list of default icon factories. Not
    --  normally used; you might use it for a library that can be unloaded or
    --  shut down.
+   --  Deprecated since 3.10, 1
 
    ----------------------
    -- GtkAda additions --
@@ -213,10 +209,12 @@ package Gtk.Icon_Factory is
 
    function Lookup_Default
       (Stock_Id : UTF8_String) return Gtk.Icon_Set.Gtk_Icon_Set;
+   pragma Obsolescent (Lookup_Default);
    --  Looks for an icon in the list of default icon factories. For display to
    --  the user, you should use gtk_style_lookup_icon_set on the
    --  Gtk.Style.Gtk_Style for the widget that will display the icon, instead
    --  of using this function directly, so that themes are taken into account.
+   --  Deprecated since 3.10, 1
    --  "stock_id": an icon name
 
    procedure Icon_Size_Lookup
@@ -224,16 +222,13 @@ package Gtk.Icon_Factory is
        Width  : out Gint;
        Height : out Gint;
        Result : out Boolean);
-   --  Obtains the pixel size of a semantic icon size, possibly modified by
-   --  user preferences for the default Gtk.Settings.Gtk_Settings. (See
-   --  Gtk.Icon_Factory.Icon_Size_Lookup_For_Settings.) Normally Size would be
+   --  Obtains the pixel size of a semantic icon size Size:
    --  GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_BUTTON, etc. This function isn't
-   --  normally needed, Gtk.Widget.Render_Icon_Pixbuf is the usual way to get
-   --  an icon for rendering, then just look at the size of the rendered
-   --  pixbuf. The rendered pixbuf may not even correspond to the width/height
-   --  returned by Gtk.Icon_Factory.Icon_Size_Lookup, because themes are free
-   --  to render the pixbuf however they like, including changing the usual
-   --  size.
+   --  normally needed, Gtk.Icon_Theme.Load_Icon is the usual way to get an
+   --  icon for rendering, then just look at the size of the rendered pixbuf.
+   --  The rendered pixbuf may not even correspond to the width/height returned
+   --  by Gtk.Icon_Factory.Icon_Size_Lookup, because themes are free to render
+   --  the pixbuf however they like, including changing the usual size.
    --  "size": an icon size
    --  "width": location to store icon width
    --  "height": location to store icon height
@@ -244,6 +239,7 @@ package Gtk.Icon_Factory is
        Width    : out Gint;
        Height   : out Gint;
        Result   : out Boolean);
+   pragma Obsolescent (Icon_Size_Lookup_For_Settings);
    --  Obtains the pixel size of a semantic icon size, possibly modified by
    --  user preferences for a particular Gtk.Settings.Gtk_Settings. Normally
    --  Size would be GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_BUTTON, etc. This
@@ -254,6 +250,7 @@ package Gtk.Icon_Factory is
    --  themes are free to render the pixbuf however they like, including
    --  changing the usual size.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.10, 1
    --  "settings": a Gtk.Settings.Gtk_Settings object, used to determine which
    --  set of user preferences to used.
    --  "size": an icon size
@@ -264,8 +261,10 @@ package Gtk.Icon_Factory is
       (Name   : UTF8_String;
        Width  : Gint;
        Height : Gint) return Gtk.Enums.Gtk_Icon_Size;
+   pragma Obsolescent (Icon_Size_Register);
    --  Registers a new icon size, along the same lines as GTK_ICON_SIZE_MENU,
    --  etc. Returns the integer value for the size.
+   --  Deprecated since 3.10, 1
    --  "name": name of the icon size
    --  "width": the icon width
    --  "height": the icon height
@@ -273,8 +272,10 @@ package Gtk.Icon_Factory is
    procedure Icon_Size_Register_Alias
       (Alias  : UTF8_String;
        Target : Gtk.Enums.Gtk_Icon_Size);
+   pragma Obsolescent (Icon_Size_Register_Alias);
    --  Registers Alias as another name for Target. So calling
    --  gtk_icon_size_from_name with Alias as argument will return Target.
+   --  Deprecated since 3.10, 1
    --  "alias": an alias for Target
    --  "target": an existing icon size
 

@@ -30,37 +30,35 @@
 --  Gtk.Tree_View.Gtk_Tree_View row or cell, you will have to do a little more
 --  work:
 --
---     * Set the Gtk.Widget.Gtk_Widget:has-tooltip property to True, this will
+--  - Set the Gtk.Widget.Gtk_Widget:has-tooltip property to True, this will
 --  make GTK+ monitor the widget for motion and related events which are needed
 --  to determine when and where to show a tooltip.
 --
---     * Connect to the Gtk.Widget.Gtk_Widget::query-tooltip signal. This
---  signal will be emitted when a tooltip is supposed to be shown. One of the
+--  - Connect to the Gtk.Widget.Gtk_Widget::query-tooltip signal. This signal
+--  will be emitted when a tooltip is supposed to be shown. One of the
 --  arguments passed to the signal handler is a GtkTooltip object. This is the
 --  object that we are about to display as a tooltip, and can be manipulated in
 --  your callback using functions like Gtk.Tooltip.Set_Icon. There are
---  functions for setting the tooltip's markup, setting an image from a stock
+--  functions for setting the tooltip's markup, setting an image from a named
 --  icon, or even putting in a custom widget.
 --
---     * Return True from your query-tooltip handler. This causes the tooltip
---  to be show. If you return False, it will not be shown.
+--  Return True from your query-tooltip handler. This causes the tooltip to be
+--  show. If you return False, it will not be shown.
 --
 --  In the probably rare case where you want to have even more control over
 --  the tooltip that is about to be shown, you can set your own
 --  Gtk.Window.Gtk_Window which will be used as tooltip window. This works as
 --  follows:
 --
---     * Set Gtk.Widget.Gtk_Widget:has-tooltip and connect to
---  Gtk.Widget.Gtk_Widget::query-tooltip as before.
+--  - Set Gtk.Widget.Gtk_Widget:has-tooltip and connect to
+--  Gtk.Widget.Gtk_Widget::query-tooltip as before. Use
+--  Gtk.Widget.Set_Tooltip_Window to set a Gtk.Window.Gtk_Window created by you
+--  as tooltip window.
 --
---     * Use Gtk.Widget.Set_Tooltip_Window to set a Gtk.Window.Gtk_Window
---  created by you as tooltip window.
---
---     * In the Gtk.Widget.Gtk_Widget::query-tooltip callback you can access
---  your window using Gtk.Widget.Get_Tooltip_Window and manipulate as you wish.
---  The semantics of the return value are exactly as before, return True to
---  show the window, False to not show it.
---
+--  - In the Gtk.Widget.Gtk_Widget::query-tooltip callback you can access your
+--  window using Gtk.Widget.Get_Tooltip_Window and manipulate as you wish. The
+--  semantics of the return value are exactly as before, return True to show
+--  the window, False to not show it.
 --
 --  </description>
 pragma Ada_2005;
@@ -137,10 +135,12 @@ package Gtk.Tooltip is
       (Self     : not null access Gtk_Tooltip_Record;
        Stock_Id : UTF8_String := "";
        Size     : Gtk.Enums.Gtk_Icon_Size);
+   pragma Obsolescent (Set_Icon_From_Stock);
    --  Sets the icon of the tooltip (which is in front of the text) to be the
    --  stock item indicated by Stock_Id with the size indicated by Size. If
    --  Stock_Id is null, the image will be hidden.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.10, 1
    --  "stock_id": a stock id, or null
    --  "size": a stock icon size
 
@@ -148,11 +148,11 @@ package Gtk.Tooltip is
       (Self   : not null access Gtk_Tooltip_Record;
        Markup : UTF8_String := "");
    --  Sets the text of the tooltip to be Markup, which is marked up with the
-   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>. If
-   --  Markup is null, the label will be hidden.
+   --  [Pango text markup language][PangoMarkupFormat]. If Markup is null, the
+   --  label will be hidden.
    --  Since: gtk+ 2.12
-   --  "markup": a markup string (see <link linkend="PangoMarkupFormat">Pango
-   --  markup format</link>) or null
+   --  "markup": a markup string (see [Pango markup
+   --  format][PangoMarkupFormat]) or null
 
    procedure Set_Text
       (Self : not null access Gtk_Tooltip_Record;

@@ -25,16 +25,16 @@
 --  GtkSettings provide a mechanism to share global settings between
 --  applications.
 --
---  On the X window system, this sharing is realized by an <ulink
---  url="http://www.freedesktop.org/wiki/Specifications/xsettings-spec">XSettings</ulink>
+--  On the X window system, this sharing is realized by an
+--  [XSettings](http://www.freedesktop.org/wiki/Specifications/xsettings-spec)
 --  manager that is usually part of the desktop environment, along with
 --  utilities that let the user change these settings. In the absence of an
 --  Xsettings manager, GTK+ reads default values for settings from
---  'settings.ini' files in '/etc/gtk-3.0', '$XDG_CONFIG_DIRS/gtk-3.0' and
---  '$XDG_CONFIG_HOME/gtk-3.0'. These files must be valid key files (see
+--  `settings.ini` files in `/etc/gtk-3.0`, `$XDG_CONFIG_DIRS/gtk-3.0` and
+--  `$XDG_CONFIG_HOME/gtk-3.0`. These files must be valid key files (see
 --  Gkey.File.Gkey_File), and have a section called Settings. Themes can also
---  provide default values for settings by installing a 'settings.ini' file
---  next to their 'gtk.css' file.
+--  provide default values for settings by installing a `settings.ini` file
+--  next to their `gtk.css` file.
 --
 --  Applications can override system-wide settings with
 --  Gtk.Settings.Set_String_Property, Gtk.Settings.Set_Long_Property, etc. This
@@ -42,12 +42,14 @@
 --  an application configuration facility. When doing so, you need to be aware
 --  that settings that are specific to individual widgets may not be available
 --  before the widget type has been realized at least once. The following
---  example demonstrates a way to do this:
+--  example demonstrates a way to do this: |[<!-- language="C" --> gtk_init
+--  (&argc, &argv);
 --
---    gtk_init (&argc, &argv);
---    /* make sure the type is realized */
---    g_type_class_unref (g_type_class_ref (GTK_TYPE_IMAGE_MENU_ITEM));
---    g_object_set (gtk_settings_get_default (), "gtk-menu-images", FALSE, NULL);
+--  // make sure the type is realized g_type_class_unref (g_type_class_ref
+--  (GTK_TYPE_IMAGE_MENU_ITEM));
+--
+--  g_object_set (gtk_settings_get_default (), "gtk-enable-animations", FALSE,
+--  NULL); ]|
 --
 --  There is one GtkSettings instance per screen. It can be obtained with
 --  Gtk.Settings.Get_For_Screen, but in many cases, it is more convenient to
@@ -112,6 +114,15 @@ package Gtk.Settings is
       Value    : GValue;
       Origin   : String);
 
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+   return Gtk_Settings;
+   --  Get the settings object holding the settings used for this widget.
+   --
+   --  Note that this function can only be called when the widget is
+   --  attached to a toplevel, since the settings object is specific to a
+   --  particular Gdk.Screen.Gdk_Screen.
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -152,7 +163,7 @@ package Gtk.Settings is
    --  Type: GLib.Hash_Table
    --  Holds a hash table representation of the
    --  Gtk.Settings.Gtk_Settings:gtk-color-scheme setting, mapping color names
-   --  to Gdk.Color.Gdk_Color<!-- -->s.
+   --  to Gdk_Colors.
 
    Gtk_Alternative_Button_Order_Property : constant Glib.Properties.Property_Boolean;
 
@@ -182,19 +193,16 @@ package Gtk.Settings is
    Gtk_Button_Images_Property : constant Glib.Properties.Property_Boolean;
 
    Gtk_Can_Change_Accels_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether menu accelerators can be changed by pressing a key over the
+   --  menu item.
 
    Gtk_Color_Palette_Property : constant Glib.Properties.Property_String;
+   --  Palette to use in the deprecated color selector.
 
    Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String;
    --  A palette of named colors for use in themes. The format of the string
-   --  is
-   --
-   --    name1: color1
-   --    name2: color2
-   --    ...
-   --
-   --  Color names must be acceptable as identifiers in the <link
-   --  linkend="gtk-Resource-Files">gtkrc</link> syntax, and color
+   --  is |[ name1: color1 name2: color2 ... ]| Color names must be acceptable
+   --  as identifiers in the [gtkrc][gtk3-Resource-Files] syntax, and color
    --  specifications must be in the format accepted by gdk_color_parse.
    --
    --  Note that due to the way the color tables from different sources are
@@ -202,9 +210,7 @@ package Gtk.Settings is
    --  getting this property.
    --
    --  Starting with GTK+ 2.12, the entries can alternatively be separated by
-   --  ';' instead of newlines:
-   --
-   --    name1: color1; name2: color2; ...
+   --  ';' instead of newlines: |[ name1: color1; name2: color2; ... ]|
 
    Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the cursor should blink.
@@ -225,6 +231,34 @@ package Gtk.Settings is
 
    Gtk_Cursor_Theme_Size_Property : constant Glib.Properties.Property_Int;
 
+   Gtk_Decoration_Layout_Property : constant Glib.Properties.Property_String;
+   --  This setting determines which buttons should be put in the titlebar of
+   --  client-side decorated windows, and whether they should be placed at the
+   --  left of right.
+   --
+   --  The format of the string is button names, separated by commas. A colon
+   --  separates the buttons that should appear on the left from those on the
+   --  right. Recognized button names are minimize, maximize, close, icon (the
+   --  window icon) and menu (a menu button for the fallback app menu).
+   --
+   --  For example, "menu:minimize,maximize,close" specifies a menu on the
+   --  left, and minimize, maximize and close buttons on the right.
+   --
+   --  Note that buttons will only be shown when they are meaningful. E.g. a
+   --  menu button only appears when the desktop shell does not show the app
+   --  menu, and a close button only appears on a window that can be closed.
+   --
+   --  Also note that the setting can be overridden with the
+   --  Gtk.Header_Bar.Gtk_Header_Bar:decoration-layout property.
+
+   Gtk_Dialogs_Use_Header_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether builtin GTK+ dialogs such as the file chooser, the color
+   --  chooser or the font chooser will use a header bar at the top to show
+   --  action widgets, or an action area at the bottom.
+   --
+   --  This setting does not affect custom dialogs using GtkDialog directly,
+   --  or message dialogs.
+
    Gtk_Dnd_Drag_Threshold_Property : constant Glib.Properties.Property_Int;
 
    Gtk_Double_Click_Distance_Property : constant Glib.Properties.Property_Int;
@@ -240,10 +274,9 @@ package Gtk.Settings is
    Gtk_Enable_Event_Sounds_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to play any event sounds at all.
    --
-   --  See the <ulink
-   --  url="http://www.freedesktop.org/wiki/Specifications/sound-theme-spec">Sound
-   --  Theme spec</ulink> for more information on event sounds and sound
-   --  themes.
+   --  See the [Sound Theme
+   --  Specifications](http://www.freedesktop.org/wiki/Specifications/sound-theme-spec)
+   --  for more information on event sounds and sound themes.
    --
    --  GTK+ itself does not support event sounds, you have to use a loadable
    --  module like the one that comes with libcanberra.
@@ -251,10 +284,9 @@ package Gtk.Settings is
    Gtk_Enable_Input_Feedback_Sounds_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to play event sounds as feedback to user input.
    --
-   --  See the <ulink
-   --  url="http://www.freedesktop.org/wiki/Specifications/sound-theme-spec">Sound
-   --  Theme spec</ulink> for more information on event sounds and sound
-   --  themes.
+   --  See the [Sound Theme
+   --  Specifications](http://www.freedesktop.org/wiki/Specifications/sound-theme-spec)
+   --  for more information on event sounds and sound themes.
    --
    --  GTK+ itself does not support event sounds, you have to use a loadable
    --  module like the one that comes with libcanberra.
@@ -284,8 +316,10 @@ package Gtk.Settings is
    --  ways, such as flashing the window or similar visual effects.
 
    Gtk_Fallback_Icon_Theme_Property : constant Glib.Properties.Property_String;
+   --  Name of a icon theme to fall back to.
 
    Gtk_File_Chooser_Backend_Property : constant Glib.Properties.Property_String;
+   --  Name of the GtkFileChooser backend to use by default.
 
    Gtk_Font_Name_Property : constant Glib.Properties.Property_String;
 
@@ -295,8 +329,8 @@ package Gtk.Settings is
    --  A list of icon sizes. The list is separated by colons, and item has the
    --  form:
    --
-   --  <replaceable>size-name</replaceable> = <replaceable>width</replaceable>
-   --  , <replaceable>height</replaceable>
+   --  `size-name` = `width` , `height`
+   --
    --  E.g. "gtk-menu=16,16:gtk-button=20,20:gtk-dialog=48,48". GTK+ itself
    --  use the following named icon sizes: gtk-menu, gtk-button,
    --  gtk-small-toolbar, gtk-large-toolbar, gtk-dnd, gtk-dialog. Applications
@@ -312,14 +346,15 @@ package Gtk.Settings is
    --  colon-separated list of input methods, which GTK+ will try in turn until
    --  it finds one available on the system.
    --
-   --  See Gtk.IM_Context.Gtk_IM_Context and see the
-   --  Gtk.Settings.Gtk_Settings:gtk-show-input-method-menu property.
+   --  See Gtk.IM_Context.Gtk_IM_Context.
 
    Gtk_Im_Preedit_Style_Property : constant Glib.Properties.Property_Boxed;
    --  Type: IMPreedit_Style
+   --  How to draw the input method preedit string.
 
    Gtk_Im_Status_Style_Property : constant Glib.Properties.Property_Boxed;
    --  Type: IMStatus_Style
+   --  How to draw the input method statusbar.
 
    Gtk_Key_Theme_Name_Property : constant Glib.Properties.Property_String;
 
@@ -334,15 +369,24 @@ package Gtk.Settings is
 
    Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean;
 
+   Gtk_Long_Press_Time_Property : constant Glib.Properties.Property_Uint;
+   --  The time for a button or touch press to be considered a "long press".
+
    Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String;
+   --  Keybinding to activate the menu bar.
 
    Gtk_Menu_Bar_Popup_Delay_Property : constant Glib.Properties.Property_Int;
+   --  Delay before the submenus of a menu bar appear.
 
    Gtk_Menu_Images_Property : constant Glib.Properties.Property_Boolean;
 
    Gtk_Menu_Popdown_Delay_Property : constant Glib.Properties.Property_Int;
+   --  The time before hiding a submenu when the pointer is moving towards the
+   --  submenu.
 
    Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int;
+   --  Minimum time the pointer must stay over a menu item before the submenu
+   --  appear.
 
    Gtk_Modules_Property : constant Glib.Properties.Property_String;
 
@@ -357,9 +401,9 @@ package Gtk.Settings is
 
    Gtk_Print_Preview_Command_Property : constant Glib.Properties.Property_String;
    --  A command to run for displaying the print preview. The command should
-   --  contain a %f placeholder, which will get replaced by the path to the pdf
-   --  file. The command may also contain a %s placeholder, which will get
-   --  replaced by the path to a file containing the print settings in the
+   --  contain a `%f` placeholder, which will get replaced by the path to the
+   --  pdf file. The command may also contain a `%s` placeholder, which will
+   --  get replaced by the path to a file containing the print settings in the
    --  format produced by Gtk.Print_Settings.To_File.
    --
    --  The preview application is responsible for removing the pdf file and
@@ -387,6 +431,8 @@ package Gtk.Settings is
 
    Gtk_Shell_Shows_App_Menu_Property : constant Glib.Properties.Property_Boolean;
 
+   Gtk_Shell_Shows_Desktop_Property : constant Glib.Properties.Property_Boolean;
+
    Gtk_Shell_Shows_Menubar_Property : constant Glib.Properties.Property_Boolean;
 
    Gtk_Show_Input_Method_Menu_Property : constant Glib.Properties.Property_Boolean;
@@ -396,10 +442,9 @@ package Gtk.Settings is
    Gtk_Sound_Theme_Name_Property : constant Glib.Properties.Property_String;
    --  The XDG sound theme to use for event sounds.
    --
-   --  See the <ulink
-   --  url="http://www.freedesktop.org/wiki/Specifications/sound-theme-spec">Sound
-   --  Theme spec</ulink> for more information on event sounds and sound
-   --  themes.
+   --  See the [Sound Theme
+   --  Specifications](http://www.freedesktop.org/wiki/Specifications/sound-theme-spec)
+   --  for more information on event sounds and sound themes.
    --
    --  GTK+ itself does not support event sounds, you have to use a loadable
    --  module like the one that comes with libcanberra.
@@ -413,6 +458,24 @@ package Gtk.Settings is
    Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int;
 
    Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int;
+
+   Gtk_Titlebar_Double_Click_Property : constant Glib.Properties.Property_String;
+   --  This setting determines the action to take when a double-click occurs
+   --  on the titlebar of client-side decorated windows.
+   --
+   --  Recognized actions are minimize, toggle-maximize, menu, lower or none.
+
+   Gtk_Titlebar_Middle_Click_Property : constant Glib.Properties.Property_String;
+   --  This setting determines the action to take when a middle-click occurs
+   --  on the titlebar of client-side decorated windows.
+   --
+   --  Recognized actions are minimize, toggle-maximize, menu, lower or none.
+
+   Gtk_Titlebar_Right_Click_Property : constant Glib.Properties.Property_String;
+   --  This setting determines the action to take when a right-click occurs on
+   --  the titlebar of client-side decorated windows.
+   --
+   --  Recognized actions are minimize, toggle-maximize, menu, lower or none.
 
    Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size;
    --  The size of icons in default toolbars.
@@ -504,6 +567,12 @@ private
      Gtk.Enums.Build ("gtk-toolbar-style");
    Gtk_Toolbar_Icon_Size_Property : constant Gtk.Enums.Property_Gtk_Icon_Size :=
      Gtk.Enums.Build ("gtk-toolbar-icon-size");
+   Gtk_Titlebar_Right_Click_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-titlebar-right-click");
+   Gtk_Titlebar_Middle_Click_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-titlebar-middle-click");
+   Gtk_Titlebar_Double_Click_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-titlebar-double-click");
    Gtk_Timeout_Repeat_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("gtk-timeout-repeat");
    Gtk_Timeout_Initial_Property : constant Glib.Properties.Property_Int :=
@@ -522,6 +591,8 @@ private
      Glib.Properties.Build ("gtk-show-input-method-menu");
    Gtk_Shell_Shows_Menubar_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-shell-shows-menubar");
+   Gtk_Shell_Shows_Desktop_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-shell-shows-desktop");
    Gtk_Shell_Shows_App_Menu_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-shell-shows-app-menu");
    Gtk_Scrolled_Window_Placement_Property : constant Gtk.Enums.Property_Gtk_Corner_Type :=
@@ -550,6 +621,8 @@ private
      Glib.Properties.Build ("gtk-menu-bar-popup-delay");
    Gtk_Menu_Bar_Accel_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-menu-bar-accel");
+   Gtk_Long_Press_Time_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("gtk-long-press-time");
    Gtk_Label_Select_On_Focus_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-label-select-on-focus");
    Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean :=
@@ -602,6 +675,10 @@ private
      Glib.Properties.Build ("gtk-double-click-distance");
    Gtk_Dnd_Drag_Threshold_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("gtk-dnd-drag-threshold");
+   Gtk_Dialogs_Use_Header_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-dialogs-use-header");
+   Gtk_Decoration_Layout_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("gtk-decoration-layout");
    Gtk_Cursor_Theme_Size_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("gtk-cursor-theme-size");
    Gtk_Cursor_Theme_Name_Property : constant Glib.Properties.Property_String :=

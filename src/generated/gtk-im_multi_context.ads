@@ -55,9 +55,11 @@ package Gtk.IM_Multi_Context is
    procedure Append_Menuitems
       (Self      : not null access Gtk_IM_Multi_Context_Record;
        Menushell : not null access Gtk.Menu_Shell.Gtk_Menu_Shell_Record'Class);
+   pragma Obsolescent (Append_Menuitems);
    --  Add menuitems for various available input methods to a menu; the
    --  menuitems, when selected, will switch the input method for the context
    --  and the global default input method.
+   --  Deprecated since 3.10, 1
    --  "menushell": a Gtk.Menu_Shell.Gtk_Menu_Shell
 
    function Get_Context_Id

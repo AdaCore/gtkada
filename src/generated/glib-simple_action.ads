@@ -146,6 +146,7 @@ package Glib.Simple_Action is
    --  the action should not attempt to directly modify the 'state' property.
    --  Instead, they should call Glib.Action.Change_State to request the
    --  change.
+   --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
    --  "value": the new Glib.Variant.Gvariant for the state
 
@@ -240,6 +241,16 @@ package Glib.Simple_Action is
    --
    --  Parameter will always be of the expected type. In the event that an
    --  incorrect type was given, no signal will be emitted.
+   --
+   --  Since GLib 2.40, if no handler is connected to this signal then the
+   --  default behaviour for boolean-stated actions with a null parameter type
+   --  is to toggle them via the
+   --  Glib.Simple_Action.Gsimple_Action::change-state signal. For stateful
+   --  actions where the state type is equal to the parameter type, the default
+   --  is to forward them directly to
+   --  Glib.Simple_Action.Gsimple_Action::change-state. This should allow
+   --  almost all users of Glib.Simple_Action.Gsimple_Action to connect only
+   --  one handler or the other.
 
    Signal_Change_State : constant Glib.Signal_Name := "change-state";
    procedure On_Change_State
@@ -262,19 +273,14 @@ package Glib.Simple_Action is
    --  If the state should change then you must call
    --  Glib.Simple_Action.Set_State from the handler.
    --
-   --  == Example 'change-state' handler ==
+   --  An example of a 'change-state' handler: |[<!-- language="C" --> static
+   --  void change_volume_state (GSimpleAction *action, GVariant *value,
+   --  gpointer user_data) { gint requested;
    --
-   --    static void
-   --    change_volume_state (GSimpleAction *action,
-   --       GVariant      *value,
-   --       gpointer       user_data)
-   --    {
-   --       gint requested;
-   --       requested = g_variant_get_int32 (value);
-   --       // Volume only goes from 0 to 10
-   --       if (0 <= requested && requested <= 10)
-   --       g_simple_action_set_state (action, value);
-   --    }
+   --  requested = g_variant_get_int32 (value);
+   --
+   --  // Volume only goes from 0 to 10 if (0 <= requested && requested <= 10)
+   --  g_simple_action_set_state (action, value); } ]|
    --
    --  The handler need not set the state to the requested value. It could set
    --  it to any value at all, or take some other action.

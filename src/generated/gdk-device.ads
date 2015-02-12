@@ -54,9 +54,8 @@ package Gdk.Device is
       Gdk_Device_Type_Slave,
       Gdk_Device_Type_Floating);
    pragma Convention (C, Gdk_Device_Type);
-   --  Indicates the device type. See <link
-   --  linkend="GdkDeviceManager.description">above</link> for more information
-   --  about the meaning of these device types.
+   --  Indicates the device type. See [above][GdkDeviceManager.description]
+   --  for more information about the meaning of these device types.
 
    function Convert (R : Gdk.Device.Gdk_Device) return System.Address;
    function Convert (R : System.Address) return Gdk.Device.Gdk_Device;
@@ -123,6 +122,15 @@ package Gdk.Device is
    --  Determines whether the pointer follows device motion.
    --  Since: gtk+ 2.20
 
+   function Get_Last_Event_Window
+      (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Window;
+   --  Gets information about which window the given pointer device is in,
+   --  based on that have been received so far from the display server. If
+   --  another application has a pointer grab, or this application has a grab
+   --  with owner_events = False, null may be returned even if the pointer is
+   --  physically over one of this application's windows.
+   --  Since: gtk+ 3.12
+
    function Get_Mode
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Mode;
    --  Determines the mode of the device.
@@ -134,6 +142,9 @@ package Gdk.Device is
    --  Sets a the mode of an input device. The mode controls if the device is
    --  active and whether the device's range is mapped to the entire screen or
    --  to a single window.
+   --  Note: This is only meaningful for floating devices, master devices (and
+   --  slaves connected to these) drive the pointer cursor, which is not
+   --  limited by the input mode.
    --  "mode": the input mode.
 
    function Get_N_Axes
@@ -151,6 +162,21 @@ package Gdk.Device is
    --  Determines the name of the device.
    --  Since: gtk+ 2.20
 
+   procedure Get_Position_Double
+      (Self   : not null access Gdk_Device_Record;
+       Screen : out Gdk.Screen.Gdk_Screen;
+       X      : out Gdouble;
+       Y      : out Gdouble);
+   --  Gets the current location of Device in double precision. As a slave
+   --  device's coordinates are those of its master pointer, this function may
+   --  not be called on devices of type Gdk.Device.Gdk_Device_Type_Slave,
+   --  unless there is an ongoing grab on them. See Gdk.Device.Grab.
+   --  Since: gtk+ 3.10
+   --  "screen": location to store the Gdk.Screen.Gdk_Screen the Device is on,
+   --  or null.
+   --  "x": location to store root window X coordinate of Device, or null.
+   --  "y": location to store root window Y coordinate of Device, or null.
+
    function Get_Source
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Source;
    --  Determines the type of the device.
@@ -159,16 +185,35 @@ package Gdk.Device is
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
        Window : Gdk.Gdk_Window;
-       Axes   : in out Gdouble;
-       Mask   : in out Gdk.Types.Gdk_Modifier_Type);
+       Axes   : Gdouble_Array;
+       Mask   : out Gdk.Types.Gdk_Modifier_Type);
    --  Gets the current state of a pointer device relative to Window. As a
-   --  slave device coordinates are those of its master pointer, This function
-   --  may not be called on devices of type Gdk.Device.Gdk_Device_Type_Slave,
-   --  unless there is an ongoing grab on them, see Gdk.Device.Grab.
+   --  slave device's coordinates are those of its master pointer, this
+   --  function may not be called on devices of type
+   --  Gdk.Device.Gdk_Device_Type_Slave, unless there is an ongoing grab on
+   --  them. See Gdk.Device.Grab.
    --  "window": a Gdk.Gdk_Window.
    --  "axes": an array of doubles to store the values of the axes of Device
    --  in, or null.
    --  "mask": location to store the modifiers, or null.
+
+   function Get_Window_At_Position_Double
+      (Self  : not null access Gdk_Device_Record;
+       Win_X : access Gdouble;
+       Win_Y : access Gdouble) return Gdk.Gdk_Window;
+   --  Obtains the window underneath Device, returning the location of the
+   --  device in Win_X and Win_Y in double precision. Returns null if the
+   --  window tree under Device is not known to GDK (for example, belongs to
+   --  another application).
+   --  As a slave device coordinates are those of its master pointer, This
+   --  function may not be called on devices of type
+   --  Gdk.Device.Gdk_Device_Type_Slave, unless there is an ongoing grab on
+   --  them, see Gdk.Device.Grab.
+   --  Since: gtk+ 3.0
+   --  "win_x": return location for the X coordinate of the device location,
+   --  relative to the window origin, or null.
+   --  "win_y": return location for the Y coordinate of the device location,
+   --  relative to the window origin, or null.
 
    function Grab
       (Self           : not null access Gdk_Device_Record;

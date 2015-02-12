@@ -29,31 +29,31 @@
 --  is that these affect the actual layout of the page, and thus need to be set
 --  long before user prints.
 --
---  <para id="print-margins"> The margins specified in this object are the
+--  ## Margins ## {print-margins} The margins specified in this object are the
 --  "print margins", i.e. the parts of the page that the printer cannot print
 --  on. These are different from the layout margins that a word processor uses;
---  they are typically used to determine the *minimal* size for the layout
+--  they are typically used to determine the minimal size for the layout
 --  margins.
+--
 --  To obtain a Gtk.Page_Setup.Gtk_Page_Setup use Gtk.Page_Setup.Gtk_New to
 --  get the defaults, or use gtk_print_run_page_setup_dialog to show the page
 --  setup dialog and receive the resulting page setup.
 --
---  == A page setup dialog ==
+--  ## A page setup dialog
 --
---    static GtkPrintSettings *settings = NULL;
---    static GtkPageSetup *page_setup = NULL;
---    static void
---    do_page_setup (void)
---    {
---       GtkPageSetup *new_page_setup;
---       if (settings == NULL)
---       settings = gtk_print_settings_new (<!-- -->);
---             new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW (main_window),
---          page_setup, settings);
---       if (page_setup)
---       g_object_unref (page_setup);
---       page_setup = new_page_setup;
---    }
+--  |[<!-- language="C" --> static GtkPrintSettings *settings = NULL; static
+--  GtkPageSetup *page_setup = NULL;
+--
+--  static void do_page_setup (void) { GtkPageSetup *new_page_setup;
+--
+--  if (settings == NULL) settings = gtk_print_settings_new ();
+--
+--  new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW
+--  (main_window), page_setup, settings);
+--
+--  if (page_setup) g_object_unref (page_setup);
+--
+--  page_setup = new_page_setup; } ]|
 --
 --  Printing support was added in GTK+ 2.10.
 --

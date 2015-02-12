@@ -142,53 +142,66 @@ package Gtk.Image_Menu_Item is
 
    function Get_Always_Show_Image
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Always_Show_Image);
    --  Returns whether the menu item will ignore the
    --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show the
    --  image, if available.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
 
    procedure Set_Always_Show_Image
       (Self        : not null access Gtk_Image_Menu_Item_Record;
        Always_Show : Boolean);
+   pragma Obsolescent (Set_Always_Show_Image);
    --  If True, the menu item will ignore the
    --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show the
    --  image, if available.
    --  Use this property if the menuitem would be useless or hard to use
    --  without the image.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
    --  "always_show": True if the menuitem should always show the image
 
    function Get_Image
       (Self : not null access Gtk_Image_Menu_Item_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Image);
    --  Gets the widget that is currently set as the image of Image_Menu_Item.
    --  See Gtk.Image_Menu_Item.Set_Image.
+   --  Deprecated since 3.10, 1
 
    procedure Set_Image
       (Self  : not null access Gtk_Image_Menu_Item_Record;
        Image : access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent (Set_Image);
    --  Sets the image of Image_Menu_Item to the given widget. Note that it
    --  depends on the show-menu-images setting whether the image will be
    --  displayed or not.
+   --  Deprecated since 3.10, 1
    --  "image": a widget to set as the image for the menu item.
 
    function Get_Use_Stock
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Stock);
    --  Checks whether the label set in the menuitem is used as a stock id to
    --  select the stock item for the item.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
 
    procedure Set_Use_Stock
       (Self      : not null access Gtk_Image_Menu_Item_Record;
        Use_Stock : Boolean);
+   pragma Obsolescent (Set_Use_Stock);
    --  If True, the label set in the menuitem is used as a stock id to select
    --  the stock item for the item.
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
    --  "use_stock": True if the menuitem should use a stock item
 
    procedure Set_Accel_Group
       (Self        : not null access Gtk_Image_Menu_Item_Record;
        Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
+   pragma Obsolescent (Set_Accel_Group);
    --  Specifies an Accel_Group to add the menu items accelerator to (this
    --  only applies to stock items so a stock item must already be set, make
    --  sure to call Gtk.Image_Menu_Item.Set_Use_Stock and
@@ -196,6 +209,7 @@ package Gtk.Image_Menu_Item is
    --  If you want this menu item to have changeable accelerators then you
    --  shouldnt need this (see Gtk.Image_Menu_Item.Gtk_New_From_Stock).
    --  Since: gtk+ 2.16
+   --  Deprecated since 3.10, 1
    --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group
 
    ---------------------------------------------
@@ -227,25 +241,31 @@ package Gtk.Image_Menu_Item is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Image_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Image_Menu_Item_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Image_Menu_Item_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Image_Menu_Item_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Image_Menu_Item_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --
@@ -259,15 +279,14 @@ package Gtk.Image_Menu_Item is
    --  The Accel Group to use for stock accelerator keys
 
    Always_Show_Image_Property : constant Glib.Properties.Property_Boolean;
-   --  If True, the menu item will ignore the
-   --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting and always show the
-   --  image, if available.
+   --  If True, the menu item will always show the image, if available.
    --
-   --  Use this property if the menuitem would be useless or hard to use
+   --  Use this property only if the menuitem would be useless or hard to use
    --  without the image.
 
    Image_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
+   --  Child widget to appear next to the menu text.
 
    Use_Stock_Property : constant Glib.Properties.Property_Boolean;
    --  If True, the label set in the menuitem is used as a stock id to select

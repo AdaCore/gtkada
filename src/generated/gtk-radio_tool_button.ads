@@ -31,10 +31,7 @@
 --  Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button. Use
 --  gtk_radio_tool_button_new_from_widget to create a new
 --  Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button that is part of the same group
---  as an existing Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button. Use
---  Gtk.Radio_Tool_Button.Gtk_New_From_Stock or
---  gtk_radio_tool_button_new_with_stock_from_widget create a new
---  Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button containing a stock item.
+--  as an existing Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button.
 --
 --  </description>
 pragma Ada_2005;
@@ -125,7 +122,7 @@ package Gtk.Radio_Tool_Button is
        Group : Gtk.Widget.Widget_SList.GSlist);
    --  Adds Button to Group, removing it from the group it belonged to before.
    --  Since: gtk+ 2.4
-   --  "group": an existing radio button group
+   --  "group": an existing radio button group, or null
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -157,25 +154,31 @@ package Gtk.Radio_Tool_Button is
    procedure Do_Set_Related_Action
       (Self   : not null access Gtk_Radio_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Do_Set_Related_Action);
 
    function Get_Related_Action
       (Self : not null access Gtk_Radio_Tool_Button_Record)
        return Gtk.Action.Gtk_Action;
+   pragma Obsolescent (Get_Related_Action);
 
    procedure Set_Related_Action
       (Self   : not null access Gtk_Radio_Tool_Button_Record;
        Action : not null access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Set_Related_Action);
 
    function Get_Use_Action_Appearance
       (Self : not null access Gtk_Radio_Tool_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Use_Action_Appearance);
 
    procedure Set_Use_Action_Appearance
       (Self           : not null access Gtk_Radio_Tool_Button_Record;
        Use_Appearance : Boolean);
+   pragma Obsolescent (Set_Use_Action_Appearance);
 
    procedure Sync_Action_Properties
       (Self   : not null access Gtk_Radio_Tool_Button_Record;
        Action : access Gtk.Action.Gtk_Action_Record'Class);
+   pragma Obsolescent (Sync_Action_Properties);
 
    ----------------
    -- Properties --

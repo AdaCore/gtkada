@@ -116,6 +116,21 @@ package body Gtk.Menu_Button is
       return Glib.Menu_Model.Gmenu_Model (Get_User_Data (Internal (Get_Object (Self)), Stub_Gmenu_Model));
    end Get_Menu_Model;
 
+   -----------------
+   -- Get_Popover --
+   -----------------
+
+   function Get_Popover
+      (Self : not null access Gtk_Menu_Button_Record)
+       return Gtk.Popover.Gtk_Popover
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_button_get_popover");
+      Stub_Gtk_Popover : Gtk.Popover.Gtk_Popover_Record;
+   begin
+      return Gtk.Popover.Gtk_Popover (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Popover));
+   end Get_Popover;
+
    ---------------
    -- Get_Popup --
    ---------------
@@ -130,6 +145,19 @@ package body Gtk.Menu_Button is
    begin
       return Gtk.Menu.Gtk_Menu (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Menu));
    end Get_Popup;
+
+   ---------------------
+   -- Get_Use_Popover --
+   ---------------------
+
+   function Get_Use_Popover
+      (Self : not null access Gtk_Menu_Button_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_menu_button_get_use_popover");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Use_Popover;
 
    ----------------------
    -- Set_Align_Widget --
@@ -179,19 +207,49 @@ package body Gtk.Menu_Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Menu_Model)));
    end Set_Menu_Model;
 
+   -----------------
+   -- Set_Popover --
+   -----------------
+
+   procedure Set_Popover
+      (Self    : not null access Gtk_Menu_Button_Record;
+       Popover : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Popover : System.Address);
+      pragma Import (C, Internal, "gtk_menu_button_set_popover");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Popover)));
+   end Set_Popover;
+
    ---------------
    -- Set_Popup --
    ---------------
 
    procedure Set_Popup
-      (Self  : not null access Gtk_Menu_Button_Record;
-       Popup : access Gtk.Widget.Gtk_Widget_Record'Class)
+      (Self : not null access Gtk_Menu_Button_Record;
+       Menu : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      procedure Internal (Self : System.Address; Popup : System.Address);
+      procedure Internal (Self : System.Address; Menu : System.Address);
       pragma Import (C, Internal, "gtk_menu_button_set_popup");
    begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Popup)));
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Menu)));
    end Set_Popup;
+
+   ---------------------
+   -- Set_Use_Popover --
+   ---------------------
+
+   procedure Set_Use_Popover
+      (Self        : not null access Gtk_Menu_Button_Record;
+       Use_Popover : Boolean)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Use_Popover : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_menu_button_set_use_popover");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Use_Popover));
+   end Set_Use_Popover;
 
    ---------------------------
    -- Do_Set_Related_Action --

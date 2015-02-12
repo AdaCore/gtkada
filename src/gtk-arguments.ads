@@ -46,6 +46,7 @@ with Glib.Object;
 with Glib.Types;
 with Gdk.Event;
 with Gdk.RGBA;
+with Gdk.Rectangle;
 with Gdk.Types;
 with Gtk.Dialog;
 with Gtk.Enums;
@@ -123,6 +124,9 @@ package Gtk.Arguments is
      (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA;
    function Unchecked_To_Gdk_Key_Type
      (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type;
+   function Unchecked_To_Gdk_Event_Sequence
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Gdk.Event.Gdk_Event_Sequence;
    function Unchecked_To_Gdk_Event_Button
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Button);
    function Unchecked_To_Gdk_Event_Owner_Change
@@ -169,6 +173,10 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Type);
    function Unchecked_To_Gtk_Text_Direction
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Text_Direction);
+   function Unchecked_To_Gtk_Pan_Direction
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Pan_Direction);
+   function Unchecked_To_Gtk_Event_Sequence_State
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
    function Unchecked_To_Gtk_Direction_Type
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Direction_Type);
    function Unchecked_To_Gtk_Widget_Help_Type
@@ -211,6 +219,14 @@ package Gtk.Arguments is
    function Unchecked_To_Cairo_Rectangle_Int
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Cairo.Region.Cairo_Rectangle_Int;
+   function Unchecked_To_Gtk_Allocation
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Gtk.Widget.Gtk_Allocation
+     renames Unchecked_To_Cairo_Rectangle_Int;
+   function Unchecked_To_Gdk_Rectangle_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return access Gdk.Rectangle.Gdk_Rectangle
+     renames Unchecked_To_Cairo_Rectangle_Int_Access;
    pragma Inline (Unchecked_To_Object);
    pragma Inline (Unchecked_To_Boolean);
    pragma Inline (Unchecked_To_Gint);

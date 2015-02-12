@@ -23,7 +23,7 @@
 
 --  <description>
 --  GtkOverlay is a container which contains a single main child, on top of
---  which it can place 'overlay' widgets. The position of each overlay widget
+--  which it can place "overlay" widgets. The position of each overlay widget
 --  is determined by its Gtk.Widget.Gtk_Widget:halign and
 --  Gtk.Widget.Gtk_Widget:valign properties. E.g. a widget with both alignments
 --  set to Gtk.Widget.Align_Start will be placed at the top left corner of the
@@ -35,18 +35,17 @@
 --  More complicated placement of overlays is possible by connecting to the
 --  Gtk.Overlay.Gtk_Overlay::get-child-position signal.
 --
---  == GtkOverlay as GtkBuildable ==
+--  # GtkOverlay as GtkBuildable
 --
 --  The GtkOverlay implementation of the GtkBuildable interface supports
 --  placing a child as an overlay by specifying "overlay" as the "type"
---  attribute of a <tag class="starttag">child</tag> element.
---
+--  attribute of a `<child>` element.
 --
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo.Region;  use Cairo.Region;
+with Gdk.Rectangle; use Gdk.Rectangle;
 with Glib;          use Glib;
 with Glib.Object;   use Glib.Object;
 with Glib.Types;    use Glib.Types;
@@ -95,26 +94,26 @@ package Gtk.Overlay is
    -- Signals --
    -------------
 
-   type Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Int_Boolean is not null access function
+   type Cb_Gtk_Overlay_Gtk_Widget_Gdk_Rectangle_Boolean is not null access function
      (Self       : access Gtk_Overlay_Record'Class;
       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Allocation : access Cairo.Region.Cairo_Rectangle_Int)
+      Allocation : access Gdk.Rectangle.Gdk_Rectangle)
    return Boolean;
 
-   type Cb_GObject_Gtk_Widget_Cairo_Rectangle_Int_Boolean is not null access function
+   type Cb_GObject_Gtk_Widget_Gdk_Rectangle_Boolean is not null access function
      (Self       : access Glib.Object.GObject_Record'Class;
       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Allocation : access Cairo.Region.Cairo_Rectangle_Int)
+      Allocation : access Gdk.Rectangle.Gdk_Rectangle)
    return Boolean;
 
    Signal_Get_Child_Position : constant Glib.Signal_Name := "get-child-position";
    procedure On_Get_Child_Position
       (Self  : not null access Gtk_Overlay_Record;
-       Call  : Cb_Gtk_Overlay_Gtk_Widget_Cairo_Rectangle_Int_Boolean;
+       Call  : Cb_Gtk_Overlay_Gtk_Widget_Gdk_Rectangle_Boolean;
        After : Boolean := False);
    procedure On_Get_Child_Position
       (Self  : not null access Gtk_Overlay_Record;
-       Call  : Cb_GObject_Gtk_Widget_Cairo_Rectangle_Int_Boolean;
+       Call  : Cb_GObject_Gtk_Widget_Gdk_Rectangle_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::get-child-position signal is emitted to determine the position
@@ -128,12 +127,11 @@ package Gtk.Overlay is
    --  overlay to be full-width/height). If the main child is a
    --  Gtk.Scrolled_Window.Gtk_Scrolled_Window, the overlays are placed
    --  relative to its contents.
-   --
-   --  Return: True if the Allocation has been filled
    -- 
    --  Callback parameters:
    --    --  "widget": the child widget to position
    --    --  "allocation": return location for the allocation
+   --    --  Returns True if the Allocation has been filled
 
    ----------------
    -- Interfaces --

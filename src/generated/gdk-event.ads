@@ -22,32 +22,25 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The Gdk.Event.Gdk_Event struct contains a union of all of the event
---  structs, and allows access to the data fields in a number of ways.
+--  A Gdk.Event.Gdk_Event contains a union of all of the event types, and
+--  allows access to the data fields in a number of ways.
 --
---  The event type is always the first field in all of the event structs, and
+--  The event type is always the first field in all of the event types, and
 --  can always be accessed with the following code, no matter what type of
---  event it is:
+--  event it is: |[<!-- language="C" --> GdkEvent *event; GdkEventType type;
 --
---    GdkEvent *event;
---    GdkEventType type;
---    type = event->type;
+--  type = event->type; ]|
 --
---  To access other fields of the event structs, the pointer to the event can
---  be cast to the appropriate event struct pointer, or the union member name
---  can be used. For example if the event type is Gdk.Event.Button_Press then
---  the x coordinate of the button press can be accessed with:
+--  To access other fields of the event, the pointer to the event can be cast
+--  to the appropriate event type, or the union member name can be used. For
+--  example if the event type is Gdk.Event.Button_Press then the x coordinate
+--  of the button press can be accessed with: |[<!-- language="C" --> GdkEvent
+--  *event; gdouble x;
 --
---    GdkEvent *event;
---    gdouble x;
---    x = ((GdkEventButton*)event)->x;
+--  x = ((GdkEventButton*)event)->x; ]| or: |[<!-- language="C" --> GdkEvent
+--  *event; gdouble x;
 --
---  or:
---
---    GdkEvent *event;
---    gdouble x;
---    x = event->button.x;
---
+--  x = event->button.x; ]|
 --
 --  </description>
 --  <group>Gdk, the low-level API</group>
@@ -116,7 +109,7 @@ package Gdk.Event is
    --
    --  In some language bindings, the values Gdk.Event.Gdk_2button_Press and
    --  Gdk.Event.Gdk_3button_Press would translate into something syntactically
-   --  invalid (eg 'Gdk.EventType.2ButtonPress', where a symbol is not allowed
+   --  invalid (eg `Gdk.EventType.2ButtonPress`, where a symbol is not allowed
    --  to start with a number). In that case, the aliases
    --  GDK_DOUBLE_BUTTON_PRESS and GDK_TRIPLE_BUTTON_PRESS can be used instead.
 
@@ -169,16 +162,18 @@ package Gdk.Event is
    --  Most of these masks map onto one or more of the Gdk.Event.Gdk_Event_Type
    --  event types above.
    --
-   --  Gdk.Event.Pointer_Motion_Hint_Mask is a special mask which is used to
-   --  reduce the number of Gdk.Event.Motion_Notify events received. Normally a
-   --  Gdk.Event.Motion_Notify event is received each time the mouse moves.
-   --  However, if the application spends a lot of time processing the event
-   --  (updating the display, for example), it can lag behind the position of
-   --  the mouse. When using Gdk.Event.Pointer_Motion_Hint_Mask, fewer
-   --  Gdk.Event.Motion_Notify events will be sent, some of which are marked as
-   --  a hint (the is_hint member is True). To receive more motion events after
-   --  a motion hint event, the application needs to asks for more, by calling
+   --  Gdk.Event.Pointer_Motion_Hint_Mask is deprecated. It is a special mask
+   --  to reduce the number of Gdk.Event.Motion_Notify events received. When
+   --  using Gdk.Event.Pointer_Motion_Hint_Mask, fewer Gdk.Event.Motion_Notify
+   --  events will be sent, some of which are marked as a hint (the is_hint
+   --  member is True). To receive more motion events after a motion hint
+   --  event, the application needs to asks for more, by calling
    --  Gdk.Event.Request_Motions.
+   --
+   --  Since GTK 3.8, motion events are already compressed by default,
+   --  independent of this mechanism. This compression can be disabled with
+   --  Gdk.Window.Set_Event_Compression. See the documentation of that function
+   --  for details.
    --
    --  If Gdk.Event.Touch_Mask is enabled, the window will receive touch
    --  events from touch-enabled devices. Those will come as sequences of
@@ -239,8 +234,8 @@ package Gdk.Event is
    pragma Convention (C, Gdk_Notify_Type);
    --  Specifies the kind of crossing for Gdk.Event.Gdk_Event_Crossing.
    --
-   --  See the X11 protocol specification of <type>LeaveNotify</type> for full
-   --  details of crossing event generation.
+   --  See the X11 protocol specification of LeaveNotify for full details of
+   --  crossing event generation.
 
    type Gdk_Crossing_Mode is (
       Crossing_Normal,
@@ -274,6 +269,7 @@ package Gdk.Event is
    Window_State_Above : constant Gdk_Window_State := 32;
    Window_State_Below : constant Gdk_Window_State := 64;
    Window_State_Focused : constant Gdk_Window_State := 128;
+   Window_State_Tiled : constant Gdk_Window_State := 256;
 
    type Gdk_Setting_Action is (
       Setting_Action_New,
@@ -289,6 +285,11 @@ package Gdk.Event is
       Owner_Change_Close);
    pragma Convention (C, Gdk_Owner_Change);
    --  Specifies why a selection ownership was changed.
+
+   type Gdk_Event_Sequence is new Glib.C_Proxy;
+   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence;
+   pragma Inline (From_Object_Free);
+
 
    type Gdk_Event_Any is record
       The_Type : Gdk_Event_Type;
@@ -328,15 +329,9 @@ package Gdk.Event is
    --  Double and triple-clicks result in a sequence of events being received.
    --  For double-clicks the order of events will be:
    --
-   --     * Gdk.Event.Button_Press
-   --
-   --     * Gdk.Event.Button_Release
-   --
-   --     * Gdk.Event.Button_Press
-   --
-   --     * Gdk.Event.Gdk_2button_Press
-   --
-   --     * Gdk.Event.Button_Release
+   --  - Gdk.Event.Button_Press - Gdk.Event.Button_Release -
+   --  Gdk.Event.Button_Press - Gdk.Event.Gdk_2button_Press -
+   --  Gdk.Event.Button_Release
    --
    --  Note that the first click is received just like a normal button press,
    --  while the second click results in a Gdk.Event.Gdk_2button_Press being
@@ -346,21 +341,10 @@ package Gdk.Event is
    --  Gdk.Event.Gdk_3button_Press is inserted after the third click. The order
    --  of the events is:
    --
-   --     * Gdk.Event.Button_Press
-   --
-   --     * Gdk.Event.Button_Release
-   --
-   --     * Gdk.Event.Button_Press
-   --
-   --     * Gdk.Event.Gdk_2button_Press
-   --
-   --     * Gdk.Event.Button_Release
-   --
-   --     * Gdk.Event.Button_Press
-   --
-   --     * Gdk.Event.Gdk_3button_Press
-   --
-   --     * Gdk.Event.Button_Release
+   --  - Gdk.Event.Button_Press - Gdk.Event.Button_Release -
+   --  Gdk.Event.Button_Press - Gdk.Event.Gdk_2button_Press -
+   --  Gdk.Event.Button_Release - Gdk.Event.Button_Press -
+   --  Gdk.Event.Gdk_3button_Press - Gdk.Event.Button_Release
    --
    --  For a double click to occur, the second button press must occur within
    --  1/4 of a second of the first. For a triple click to occur, the third
@@ -437,7 +421,7 @@ package Gdk.Event is
    --  usually configured to generate button press events for buttons 4 and 5
    --  when the wheel is turned.
    --
-   --  Some GDK backends can also generate 'smooth' scroll events, which can
+   --  Some GDK backends can also generate "smooth" scroll events, which can
    --  be recognized by the Gdk.Event.Scroll_Smooth scroll direction. For
    --  these, the scroll deltas can be obtained with
    --  Gdk.Event.Get_Scroll_Deltas.
@@ -629,7 +613,7 @@ package Gdk.Event is
       Y : Gdouble;
       Axes : access Gdouble;
       State : Gdk.Types.Gdk_Modifier_Type;
-      Sequence : System.Address;
+      Sequence : Gdk_Event_Sequence;
       Emulating_Pointer : Boolean;
       Device : System.Address;
       X_Root : Gdouble;
@@ -648,11 +632,6 @@ package Gdk.Event is
    --  number of Gdk.Event.Touch_Update events, and ends with a
    --  Gdk.Event.Touch_End (or Gdk.Event.Touch_Cancel) event. With multitouch
    --  devices, there may be several active sequences at the same time.
-
-   type Gdk_Event_Sequence is new Glib.C_Proxy;
-   function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence;
-   pragma Inline (From_Object_Free);
-
 
    type Gdk_Event_Grab_Broken is record
       The_Type : Gdk_Event_Type;
@@ -760,33 +739,25 @@ package Gdk.Event is
 
    function From_Object_Free (B : access Gdk_Event_Record) return Gdk_Event_Record;
    pragma Inline (From_Object_Free);
-   --  The Gdk.Event.Gdk_Event struct contains a union of all of the event
-   --  structs, and allows access to the data fields in a number of ways.
+   --  A Gdk.Event.Gdk_Event contains a union of all of the event types, and
+   --  allows access to the data fields in a number of ways.
    --
-   --  The event type is always the first field in all of the event structs,
-   --  and can always be accessed with the following code, no matter what type
-   --  of event it is:
+   --  The event type is always the first field in all of the event types, and
+   --  can always be accessed with the following code, no matter what type of
+   --  event it is: |[<!-- language="C" --> GdkEvent *event; GdkEventType type;
    --
-   --    GdkEvent *event;
-   --    GdkEventType type;
-   --    type = event->type;
+   --  type = event->type; ]|
    --
-   --  To access other fields of the event structs, the pointer to the event
-   --  can be cast to the appropriate event struct pointer, or the union member
-   --  name can be used. For example if the event type is
-   --  Gdk.Event.Button_Press then the x coordinate of the button press can be
-   --  accessed with:
+   --  To access other fields of the event, the pointer to the event can be
+   --  cast to the appropriate event type, or the union member name can be
+   --  used. For example if the event type is Gdk.Event.Button_Press then the x
+   --  coordinate of the button press can be accessed with: |[<!-- language="C"
+   --  --> GdkEvent *event; gdouble x;
    --
-   --    GdkEvent *event;
-   --    gdouble x;
-   --    x = ((GdkEventButton*)event)->x;
+   --  x = ((GdkEventButton*)event)->x; ]| or: |[<!-- language="C" -->
+   --  GdkEvent *event; gdouble x;
    --
-   --  or:
-   --
-   --    GdkEvent *event;
-   --    gdouble x;
-   --    x = event->button.x;
-   --
+   --  x = event->button.x; ]|
 
    type Gdk_Event is access all Gdk_Event_Record;
    pragma No_Strict_Aliasing (Gdk_Event);
@@ -932,13 +903,18 @@ package Gdk.Event is
    --  "x_win": location to put event window x coordinate
    --  "y_win": location to put event window y coordinate
 
-   function Get_Event_Sequence (Event : Gdk_Event) return System.Address;
+   function Get_Event_Sequence (Event : Gdk_Event) return Gdk_Event_Sequence;
    pragma Import (C, Get_Event_Sequence, "gdk_event_get_event_sequence");
    --  If Event if of type Gdk.Event.Touch_Begin, Gdk.Event.Touch_Update,
    --  Gdk.Event.Touch_End or Gdk.Event.Touch_Cancel, returns the
    --  Gdk.Event.Gdk_Event_Sequence to which the event belongs. Otherwise,
    --  return null.
    --  Since: gtk+ 3.4
+
+   function Get_Event_Type (Event : Gdk_Event) return Gdk_Event_Type;
+   pragma Import (C, Get_Event_Type, "gdk_event_get_event_type");
+   --  Retrieves the type of the event.
+   --  Since: gtk+ 3.10
 
    procedure Get_Root_Coords
       (Event  : Gdk_Event;
@@ -972,6 +948,11 @@ package Gdk.Event is
    --  Returns the time stamp from Event, if there is one; otherwise returns
    --  GDK_CURRENT_TIME. If Event is null, returns GDK_CURRENT_TIME.
 
+   function Get_Window (Event : Gdk_Event) return Gdk.Gdk_Window;
+   pragma Import (C, Get_Window, "gdk_event_get_window");
+   --  Extracts the Gdk.Gdk_Window associated with an event.
+   --  Since: gtk+ 3.10
+
    procedure Put (Event : Gdk_Event);
    pragma Import (C, Put, "gdk_event_put");
    --  Appends a copy of the given event onto the front of the event queue for
@@ -1004,14 +985,6 @@ package Gdk.Event is
    function Get_Keycode (Event : Gdk_Event) return Guint;
    pragma Import (C, Get_Keycode, "ada_gdk_event_get_keycode");
    --  Hardware key code of the key that was pressed
-
-   function Get_Event_Type (Event : Gdk_Event) return Gdk_Event_Type;
-   pragma Import (C, Get_Event_Type, "ada_gdk_event_get_event_type");
-   --  The type of the event
-
-   function Get_Window (Event : Gdk_Event) return Gdk.Gdk_Window;
-   pragma Import (C, Get_Window, "ada_gdk_event_get_window");
-   --  The window to which the event was sent
 
    procedure Handler_Set
       (Func   : Gdk_Event_Func;
@@ -1126,9 +1099,9 @@ package Gdk.Event is
    --  core pointer. Coordinate extraction, processing and requesting more
    --  motion events from a Gdk.Event.Motion_Notify event usually works like
    --  this:
-   --  |[ { /* motion_event handler */ x = motion_event->x; y =
-   --  motion_event->y; /* handle (x,y) motion */ gdk_event_request_motions
-   --  (motion_event); /* handles is_hint events */ } ]|
+   --  |[<!-- language="C" --> { // motion_event handler x = motion_event->x;
+   --  y = motion_event->y; // handle (x,y) motion gdk_event_request_motions
+   --  (motion_event); // handles is_hint events } ]|
    --  Since: gtk+ 2.12
    --  "event": a valid Gdk.Event.Gdk_Event
 
@@ -1138,7 +1111,7 @@ package Gdk.Event is
    procedure Set_Show_Events (Show_Events : Boolean);
    --  Sets whether a trace of received events is output. Note that GTK+ must
    --  be compiled with debugging (that is, configured using the
-   --  <option>--enable-debug</option> option) to use this option.
+   --  `--enable-debug` option) to use this option.
    --  "show_events": True to output event debugging information.
 
    function Get_Show_Events return Boolean;

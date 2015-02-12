@@ -894,6 +894,33 @@ package body Gtk.Assistant is
       Connect_Slot (Self, "close" & ASCII.NUL, Call, After, Slot);
    end On_Close;
 
+   ---------------
+   -- On_Escape --
+   ---------------
+
+   procedure On_Escape
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_Gtk_Assistant_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "escape" & ASCII.NUL, Call, After);
+   end On_Escape;
+
+   ---------------
+   -- On_Escape --
+   ---------------
+
+   procedure On_Escape
+      (Self  : not null access Gtk_Assistant_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "escape" & ASCII.NUL, Call, After, Slot);
+   end On_Escape;
+
    ----------------
    -- On_Prepare --
    ----------------

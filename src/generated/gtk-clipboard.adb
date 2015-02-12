@@ -82,12 +82,33 @@ package body Gtk.Clipboard is
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Contents, "gtk_clipboard_request_contents");
+   --  Requests the contents of clipboard as the given target. When the
+   --  results of the result are later received the supplied callback will be
+   --  called.
+   --  "target": an atom representing the form into which the clipboard owner
+   --  should convert the selection.
+   --  "callback": A function to call when the results are received (or the
+   --  retrieval fails). If the retrieval fails the length field of
+   --  Selection_Data will be negative.
+   --  "user_data": user data to pass to Callback
 
    procedure C_Gtk_Clipboard_Request_Image
       (Clipboard : System.Address;
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Image, "gtk_clipboard_request_image");
+   --  Requests the contents of the clipboard as image. When the image is
+   --  later received, it will be converted to a Gdk.Pixbuf.Gdk_Pixbuf, and
+   --  Callback will be called.
+   --  The Pixbuf parameter to Callback will contain the resulting
+   --  Gdk.Pixbuf.Gdk_Pixbuf if the request succeeded, or null if it failed.
+   --  This could happen for various reasons, in particular if the clipboard
+   --  was empty or if the contents of the clipboard could not be converted
+   --  into an image.
+   --  Since: gtk+ 2.6
+   --  "callback": a function to call when the image is received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+   --  "user_data": user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Rich_Text
       (Clipboard : System.Address;
@@ -95,24 +116,64 @@ package body Gtk.Clipboard is
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Rich_Text, "gtk_clipboard_request_rich_text");
+   --  Requests the contents of the clipboard as rich text. When the rich text
+   --  is later received, Callback will be called.
+   --  The Text parameter to Callback will contain the resulting rich text if
+   --  the request succeeded, or null if it failed. The Length parameter will
+   --  contain Text's length. This function can fail for various reasons, in
+   --  particular if the clipboard was empty or if the contents of the
+   --  clipboard could not be converted into rich text form.
+   --  Since: gtk+ 2.10
+   --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
+   --  "callback": a function to call when the text is received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+   --  "user_data": user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Targets
       (Clipboard : System.Address;
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Targets, "gtk_clipboard_request_targets");
+   --  Requests the contents of the clipboard as list of supported targets.
+   --  When the list is later received, Callback will be called.
+   --  The Targets parameter to Callback will contain the resulting targets if
+   --  the request succeeded, or null if it failed.
+   --  Since: gtk+ 2.4
+   --  "callback": a function to call when the targets are received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+   --  "user_data": user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Text
       (Clipboard : System.Address;
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Text, "gtk_clipboard_request_text");
+   --  Requests the contents of the clipboard as text. When the text is later
+   --  received, it will be converted to UTF-8 if necessary, and Callback will
+   --  be called.
+   --  The Text parameter to Callback will contain the resulting text if the
+   --  request succeeded, or null if it failed. This could happen for various
+   --  reasons, in particular if the clipboard was empty or if the contents of
+   --  the clipboard could not be converted into text form.
+   --  "callback": a function to call when the text is received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+   --  "user_data": user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Uris
       (Clipboard : System.Address;
        Callback  : System.Address;
        User_Data : System.Address);
    pragma Import (C, C_Gtk_Clipboard_Request_Uris, "gtk_clipboard_request_uris");
+   --  Requests the contents of the clipboard as URIs. When the URIs are later
+   --  received Callback will be called.
+   --  The Uris parameter to Callback will contain the resulting array of URIs
+   --  if the request succeeded, or null if it failed. This could happen for
+   --  various reasons, in particular if the clipboard was empty or if the
+   --  contents of the clipboard could not be converted into URI form.
+   --  Since: gtk+ 2.14
+   --  "callback": a function to call when the URIs are received, or the
+   --  retrieval fails. (It will always be called one way or the other.)
+   --  "user_data": user data to pass to Callback.
 
    function To_Gtk_Clipboard_Received_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Clipboard_Received_Func);
@@ -173,14 +234,20 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
        Format    : Gdk.Types.Gdk_Atom;
-       Text      : in out Guint8;
+       Text      : Interfaces.C.Strings.chars_ptr;
        Length    : Gsize;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Rich_Text_Received_Func);
+   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+   --  "format": The format of the rich text
+   --  "text": the rich text received, as a UTF-8 encoded string, or null if
+   --  retrieving the data failed.
+   --  "length": Length of the text.
+   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
 
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
-       Atoms     : in out Gdk.Types.Gdk_Atom;
+       Atoms     : System.Address;
        N_Atoms   : Gint;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Targets_Received_Func);
@@ -205,6 +272,9 @@ package body Gtk.Clipboard is
        Uris      : chars_ptr_array_access;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Urireceived_Func);
+   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+   --  "uris": the received URIs
+   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
 
    ------------------------------------------------
    -- Internal_Gtk_Clipboard_Image_Received_Func --
@@ -244,14 +314,14 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
        Format    : Gdk.Types.Gdk_Atom;
-       Text      : in out Guint8;
+       Text      : Interfaces.C.Strings.chars_ptr;
        Length    : Gsize;
        Data      : System.Address)
    is
       Func               : constant Gtk_Clipboard_Rich_Text_Received_Func := To_Gtk_Clipboard_Rich_Text_Received_Func (Data);
       Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Text, Length);
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Gtkada.Bindings.Value_Allowing_Null (Text), Length);
    end Internal_Gtk_Clipboard_Rich_Text_Received_Func;
 
    --------------------------------------------------
@@ -260,14 +330,14 @@ package body Gtk.Clipboard is
 
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
-       Atoms     : in out Gdk.Types.Gdk_Atom;
+       Atoms     : System.Address;
        N_Atoms   : Gint;
        Data      : System.Address)
    is
       Func               : constant Gtk_Clipboard_Targets_Received_Func := To_Gtk_Clipboard_Targets_Received_Func (Data);
       Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
    begin
-      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atoms, N_Atoms);
+      Func (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atom_Arrays.To_Array (Atom_Arrays.Convert (Atoms), Integer (N_Atoms)), N_Atoms);
    end Internal_Gtk_Clipboard_Targets_Received_Func;
 
    -----------------------------------------------
@@ -527,10 +597,20 @@ package body Gtk.Clipboard is
       procedure Internal_Cb
          (Clipboard : System.Address;
           Format    : Gdk.Types.Gdk_Atom;
-          Text      : in out Guint8;
+          Text      : Interfaces.C.Strings.chars_ptr;
           Length    : Gsize;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
+      --  A function to be called when the results of
+      --  Gtk.Clipboard.Request_Rich_Text are received, or when the request
+      --  fails.
+      --  Since: gtk+ 2.10
+      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+      --  "format": The format of the rich text
+      --  "text": the rich text received, as a UTF-8 encoded string, or null
+      --  if retrieving the data failed.
+      --  "length": Length of the text.
+      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
 
       -----------------
       -- Internal_Cb --
@@ -539,14 +619,14 @@ package body Gtk.Clipboard is
       procedure Internal_Cb
          (Clipboard : System.Address;
           Format    : Gdk.Types.Gdk_Atom;
-          Text      : in out Guint8;
+          Text      : Interfaces.C.Strings.chars_ptr;
           Length    : Gsize;
           Data      : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Rich_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Text, Length, D.Data.all);
+         To_Gtk_Clipboard_Rich_Text_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Format, Gtkada.Bindings.Value_Allowing_Null (Text), Length, D.Data.all);
       end Internal_Cb;
 
       -----------------------
@@ -598,7 +678,7 @@ package body Gtk.Clipboard is
 
       procedure Internal_Cb
          (Clipboard : System.Address;
-          Atoms     : in out Gdk.Types.Gdk_Atom;
+          Atoms     : System.Address;
           N_Atoms   : Gint;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -618,14 +698,14 @@ package body Gtk.Clipboard is
 
       procedure Internal_Cb
          (Clipboard : System.Address;
-          Atoms     : in out Gdk.Types.Gdk_Atom;
+          Atoms     : System.Address;
           N_Atoms   : Gint;
           Data      : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (Data);
          Stub_Gtk_Clipboard : Gtk.Clipboard.Gtk_Clipboard_Record;
       begin
-         To_Gtk_Clipboard_Targets_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atoms, N_Atoms, D.Data.all);
+         To_Gtk_Clipboard_Targets_Received_Func (D.Func) (Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Clipboard, Stub_Gtk_Clipboard)), Atom_Arrays.To_Array (Atom_Arrays.Convert (Atoms), Integer (N_Atoms)), N_Atoms, D.Data.all);
       end Internal_Cb;
 
       ---------------------
@@ -752,6 +832,12 @@ package body Gtk.Clipboard is
           Uris      : chars_ptr_array_access;
           Data      : System.Address);
       pragma Convention (C, Internal_Cb);
+      --  A function to be called when the results of
+      --  Gtk.Clipboard.Request_Uris are received, or when the request fails.
+      --  Since: gtk+ 2.14
+      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
+      --  "uris": the received URIs
+      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
 
       -----------------
       -- Internal_Cb --
@@ -909,7 +995,7 @@ package body Gtk.Clipboard is
          (Clipboard : System.Address) return chars_ptr_array_access;
       pragma Import (C, Internal, "gtk_clipboard_wait_for_uris");
    begin
-      return To_String_List (Internal (Get_Object (Clipboard)).all);
+      return To_String_List_And_Free (Internal (Get_Object (Clipboard)));
    end Wait_For_Uris;
 
    -----------------------------
@@ -1021,45 +1107,45 @@ package body Gtk.Clipboard is
    use type System.Address;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Clipboard_Gdk_Event_Void, System.Address);
+     (Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Clipboard_Gdk_Event_Void);
+     (System.Address, Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gdk_Event_Void, System.Address);
+     (Cb_GObject_Gdk_Event_Owner_Change_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gdk_Event_Void);
+     (System.Address, Cb_GObject_Gdk_Event_Owner_Change_Void);
 
    procedure Connect
       (Object  : access Gtk_Clipboard_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Clipboard_Gdk_Event_Void;
+       Handler : Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void;
        After   : Boolean);
 
    procedure Connect_Slot
       (Object  : access Gtk_Clipboard_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gdk_Event_Void;
+       Handler : Cb_GObject_Gdk_Event_Owner_Change_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
-   procedure Marsh_GObject_Gdk_Event_Void
+   procedure Marsh_GObject_Gdk_Event_Owner_Change_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gdk_Event_Void);
+   pragma Convention (C, Marsh_GObject_Gdk_Event_Owner_Change_Void);
 
-   procedure Marsh_Gtk_Clipboard_Gdk_Event_Void
+   procedure Marsh_Gtk_Clipboard_Gdk_Event_Owner_Change_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Clipboard_Gdk_Event_Void);
+   pragma Convention (C, Marsh_Gtk_Clipboard_Gdk_Event_Owner_Change_Void);
 
    -------------
    -- Connect --
@@ -1068,14 +1154,14 @@ package body Gtk.Clipboard is
    procedure Connect
       (Object  : access Gtk_Clipboard_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Clipboard_Gdk_Event_Void;
+       Handler : Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Clipboard_Gdk_Event_Void'Access,
+         Marshaller  => Marsh_Gtk_Clipboard_Gdk_Event_Owner_Change_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1087,7 +1173,7 @@ package body Gtk.Clipboard is
    procedure Connect_Slot
       (Object  : access Gtk_Clipboard_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gdk_Event_Void;
+       Handler : Cb_GObject_Gdk_Event_Owner_Change_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -1095,17 +1181,17 @@ package body Gtk.Clipboard is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gdk_Event_Void'Access,
+         Marshaller  => Marsh_GObject_Gdk_Event_Owner_Change_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
-   ----------------------------------
-   -- Marsh_GObject_Gdk_Event_Void --
-   ----------------------------------
+   -----------------------------------------------
+   -- Marsh_GObject_Gdk_Event_Owner_Change_Void --
+   -----------------------------------------------
 
-   procedure Marsh_GObject_Gdk_Event_Void
+   procedure Marsh_GObject_Gdk_Event_Owner_Change_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1114,18 +1200,18 @@ package body Gtk.Clipboard is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gdk_Event_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_Gdk_Event_Owner_Change_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
-      H (Obj, Unchecked_To_Gdk_Event (Params, 1));
+      H (Obj, Unchecked_To_Gdk_Event_Owner_Change (Params, 1));
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Gdk_Event_Void;
+   end Marsh_GObject_Gdk_Event_Owner_Change_Void;
 
-   ----------------------------------------
-   -- Marsh_Gtk_Clipboard_Gdk_Event_Void --
-   ----------------------------------------
+   -----------------------------------------------------
+   -- Marsh_Gtk_Clipboard_Gdk_Event_Owner_Change_Void --
+   -----------------------------------------------------
 
-   procedure Marsh_Gtk_Clipboard_Gdk_Event_Void
+   procedure Marsh_Gtk_Clipboard_Gdk_Event_Owner_Change_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1134,12 +1220,12 @@ package body Gtk.Clipboard is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Clipboard_Gdk_Event_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Clipboard := Gtk_Clipboard (Unchecked_To_Object (Params, 0));
    begin
-      H (Obj, Unchecked_To_Gdk_Event (Params, 1));
+      H (Obj, Unchecked_To_Gdk_Event_Owner_Change (Params, 1));
       exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Clipboard_Gdk_Event_Void;
+   end Marsh_Gtk_Clipboard_Gdk_Event_Owner_Change_Void;
 
    ---------------------
    -- On_Owner_Change --
@@ -1147,7 +1233,7 @@ package body Gtk.Clipboard is
 
    procedure On_Owner_Change
       (Self  : not null access Gtk_Clipboard_Record;
-       Call  : Cb_Gtk_Clipboard_Gdk_Event_Void;
+       Call  : Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void;
        After : Boolean := False)
    is
    begin
@@ -1160,7 +1246,7 @@ package body Gtk.Clipboard is
 
    procedure On_Owner_Change
       (Self  : not null access Gtk_Clipboard_Record;
-       Call  : Cb_GObject_Gdk_Event_Void;
+       Call  : Cb_GObject_Gdk_Event_Owner_Change_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

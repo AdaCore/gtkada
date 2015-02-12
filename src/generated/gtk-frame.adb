@@ -191,14 +191,14 @@ package body Gtk.Frame is
 
    procedure Set_Label_Widget
       (Frame        : not null access Gtk_Frame_Record;
-       Label_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Frame        : System.Address;
           Label_Widget : System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label_widget");
    begin
-      Internal (Get_Object (Frame), Get_Object (Label_Widget));
+      Internal (Get_Object (Frame), Get_Object_Or_Null (GObject (Label_Widget)));
    end Set_Label_Widget;
 
    ---------------------

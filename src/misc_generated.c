@@ -320,3 +320,6 @@ void gtkada_Application_set_command_line(GApplicationClass* iface, void* handler
 void gtkada_Application_set_local_command_line(GApplicationClass* iface, void* handler) {
     iface->local_command_line = handler;
 }
+void gtkada_Text_View_set_draw_layer(GtkTextViewClass* iface, void* handler) {
+    iface->draw_layer = handler;
+}

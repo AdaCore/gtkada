@@ -23,9 +23,8 @@
 
 --  <description>
 --  A Gtk.Tool_Item_Group.Gtk_Tool_Item_Group is used together with
---  Gtk.Tool_Palette.Gtk_Tool_Palette to add Gtk.Tool_Item.Gtk_Tool_Item<!--
---  -->s to a palette like container with different categories and drag and
---  drop support.
+--  Gtk.Tool_Palette.Gtk_Tool_Palette to add Gtk_Tool_Items to a palette like
+--  container with different categories and drag and drop support.
 --
 --  </description>
 pragma Ada_2005;

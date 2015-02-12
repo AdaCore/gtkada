@@ -266,7 +266,7 @@ package body Gtk.Selection_Data is
          (Selection : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_selection_data_get_text");
    begin
-      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Selection)));
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Selection)));
    end Get_Text;
 
    --------------

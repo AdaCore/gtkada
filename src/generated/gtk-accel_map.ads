@@ -28,15 +28,8 @@
 --  considered "low-level". You'll want to use them if you're manually creating
 --  menus that should have user-configurable accelerators.
 --
---  Accelerator is uniquely defined by:
---
--- 
---
---     * accelerator path
---
---     * accelerator key
---
---     * accelerator modifiers
+--  An accelerator is uniquely defined by: - accelerator path - accelerator
+--  key - accelerator modifiers
 --
 --  The accelerator path must consist of
 --  "<WINDOWTYPE>/Category1/Category2/.../Action", where WINDOWTYPE should be a
@@ -50,11 +43,10 @@
 --  Options...".
 --
 --  All accelerators are stored inside one global Gtk.Accel_Map.Gtk_Accel_Map
---  that can be obtained using Gtk.Accel_Map.Get. See <link
---  linkend="monitoring-changes">Monitoring changes</link> for additional
---  details.
+--  that can be obtained using Gtk.Accel_Map.Get. See [Monitoring
+--  changes][monitoring-changes] for additional details.
 --
---  == Manipulating accelerators ==
+--  # Manipulating accelerators
 --
 --  New accelerators can be added using Gtk.Accel_Map.Add_Entry. To search for
 --  specific accelerator, use Gtk.Accel_Map.Lookup_Entry. Modifications of
@@ -64,7 +56,7 @@
 --  using Gtk.Accel_Map.Lock_Path. Unlocking is done using
 --  Gtk.Accel_Map.Unlock_Path.
 --
---  == Saving and loading accelerator maps ==
+--  # Saving and loading accelerator maps
 --
 --  Accelerator maps can be saved to and loaded from some external resource.
 --  For simple saving and loading from file, Gtk.Accel_Map.Save and
@@ -72,14 +64,13 @@
 --  providing file descriptor to Gtk.Accel_Map.Save_Fd and
 --  Gtk.Accel_Map.Load_Fd.
 --
---  == Monitoring changes ==
+--  # Monitoring changes
 --
 --  Gtk.Accel_Map.Gtk_Accel_Map object is only useful for monitoring changes
 --  of accelerators. By connecting to Gtk.Accel_Map.Gtk_Accel_Map::changed
 --  signal, one can monitor changes of all accelerators. It is also possible to
 --  monitor only single accelerator path by using it as a detail of the
 --  Gtk.Accel_Map.Gtk_Accel_Map::changed signal.
---
 --
 --  </description>
 pragma Ada_2005;
@@ -346,7 +337,7 @@ package Gtk.Accel_Map is
        After : Boolean := False);
    --  Notifies of a change in the global accelerator map. The path is also
    --  used as the detail for the signal, so it is possible to connect to
-   --  changed::<replaceable>accel_path</replaceable>.
+   --  changed::`accel_path`.
    -- 
    --  Callback parameters:
    --    --  "accel_path": the path of the accelerator that changed

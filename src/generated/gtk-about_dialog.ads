@@ -26,33 +26,33 @@
 --  program like its logo, name, copyright, website and license. It is also
 --  possible to give credits to the authors, documenters, translators and
 --  artists who have worked on the program. An about dialog is typically opened
---  when the user selects the 'About' option from the 'Help' menu. All parts of
+--  when the user selects the `About` option from the `Help` menu. All parts of
 --  the dialog are optional.
 --
---  About dialog often contain links and email addresses. GtkAboutDialog
+--  About dialogs often contain links and email addresses. GtkAboutDialog
 --  displays these as clickable links. By default, it calls gtk_show_uri() when
 --  a user clicks one. The behaviour can be overridden with the
 --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal.
+--
+--  To specify a person with an email address, use a string like "Edgar Allan
+--  Poe <edgarPoe.com>". To specify a website with a title, use a string like
+--  "GTK+ team http://www.gtk.org".
 --
 --  To make constructing a GtkAboutDialog as convenient as possible, you can
 --  use the function gtk_show_about_dialog which constructs and shows a dialog
 --  and keeps it around so that it can be shown again.
 --
---  Note that GTK+ sets a default title of '_("About %s")' on the dialog
---  window (where %s is replaced by the name of the application, but in order
+--  Note that GTK+ sets a default title of `_("About %s")` on the dialog
+--  window (where \%s is replaced by the name of the application, but in order
 --  to ensure proper translation of the title, applications should set the
 --  title property explicitly when constructing a GtkAboutDialog, as shown in
---  the following example:
---
---    gtk_show_about_dialog (NULL,
---       "program-name", "ExampleCode",
---       "logo", example_logo,
---       "title" _("About ExampleCode"),
---       NULL);
+--  the following example: |[<!-- language="C" --> gtk_show_about_dialog (NULL,
+--  "program-name", "ExampleCode", "logo", example_logo, "title" _("About
+--  ExampleCode"), NULL); ]|
 --
 --  It is also possible to show a Gtk.About_Dialog.Gtk_About_Dialog like any
 --  other Gtk.Dialog.Gtk_Dialog, e.g. using Gtk.Dialog.Run. In this case, you
---  might need to know that the 'Close' button returns the GTK_RESPONSE_CANCEL
+--  might need to know that the "Close" button returns the GTK_RESPONSE_CANCEL
 --  response id.
 --
 --  </description>
@@ -85,7 +85,11 @@ package Gtk.About_Dialog is
       License_Lgpl_3_0,
       License_Bsd,
       License_Mit_X11,
-      License_Artistic);
+      License_Artistic,
+      License_Gpl_2_0_Only,
+      License_Gpl_3_0_Only,
+      License_Lgpl_2_1_Only,
+      License_Lgpl_3_0_Only);
    pragma Convention (C, Gtk_License);
    --  The type of license for an application.
    --
@@ -283,8 +287,8 @@ package Gtk.About_Dialog is
    --  translators tab of the secondary credits dialog.
    --  The intended use for this string is to display the translator of the
    --  language which is currently used in the user interface. Using gettext, a
-   --  simple way to achieve that is to mark the string for translation: |[
-   --  gtk_about_dialog_set_translator_credits (about,
+   --  simple way to achieve that is to mark the string for translation: |[<!--
+   --  language="C" --> gtk_about_dialog_set_translator_credits (about,
    --  _("translator-credits")); ]| It is a good idea to use the customary
    --  msgid "translator-credits" for this purpose, since translators will
    --  already know the purpose of that msgid, and since
@@ -394,8 +398,8 @@ package Gtk.About_Dialog is
 
    Logo_Property : constant Glib.Properties.Property_Object;
    --  Type: Gdk.Pixbuf.Gdk_Pixbuf
-   --  A logo for the about box. If this is not set, it defaults to
-   --  Gtk.Window.Get_Default_Icon_List.
+   --  A logo for the about box. If it is null, the default window icon set
+   --  with Gtk.Window.Set_Default_Icon will be used.
 
    Logo_Icon_Name_Property : constant Glib.Properties.Property_String;
    --  A named icon to use as the logo for the about box. This property

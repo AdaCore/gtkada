@@ -21,6 +21,15 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Attributes.Pango_Attribute structure represents the common
+--  portions of all attributes. Particular types of attributes include this
+--  structure as their initial portion. The common portion of the attribute
+--  holds the range to which the value in the type-specific part of the
+--  attribute applies and should be initialized using pango_attribute_init. By
+--  default an attribute will have an all-inclusive range of [0,G_MAXUINT].
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -32,7 +41,13 @@ package Pango.Attributes is
    type Pango_Attribute is new Glib.C_Proxy;
    function From_Object_Free (B : access Pango_Attribute) return Pango_Attribute;
    pragma Inline (From_Object_Free);
-
+   --  The Pango.Attributes.Pango_Attribute structure represents the common
+   --  portions of all attributes. Particular types of attributes include this
+   --  structure as their initial portion. The common portion of the attribute
+   --  holds the range to which the value in the type-specific part of the
+   --  attribute applies and should be initialized using pango_attribute_init.
+   --  By default an attribute will have an all-inclusive range of
+   --  [0,G_MAXUINT].
 
    type Pango_Attr_List is new Glib.C_Boxed with null record;
    Null_Pango_Attr_List : constant Pango_Attr_List;

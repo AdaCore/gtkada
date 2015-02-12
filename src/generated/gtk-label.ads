@@ -27,33 +27,30 @@
 --  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a
 --  Gtk.Combo_Box.Gtk_Combo_Box.
 --
---  == GtkLabel as GtkBuildable ==
+--  # GtkLabel as GtkBuildable
 --
 --  The GtkLabel implementation of the GtkBuildable interface supports a
 --  custom <attributes> element, which supports any number of <attribute>
---  elements. the <attribute> element has attributes named name, value, start
---  and end and allows you to specify Pango.Attributes.Pango_Attribute values
---  for this label.
+--  elements. The <attribute> element has attributes named "name", "value",
+--  "start" and "end" and allows you to specify
+--  Pango.Attributes.Pango_Attribute values for this label.
 --
---  == A UI definition fragment specifying Pango attributes ==
+--  An example of a UI definition fragment specifying Pango attributes: |[
+--  <object class="GtkLabel"> <attributes> <attribute name="weight"
+--  value="PANGO_WEIGHT_BOLD"/> <attribute name="background" value="red"
+--  start="5" end="10"/>" </attributes> </object> ]|
 --
---    <object class="GtkLabel">
---    <attributes>
---    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
---    <attribute name="background" value="red" start="5" end="10"/>"
---    </attributes>
---    </object>
 --  The start and end attributes specify the range of characters to which the
 --  Pango attribute applies. If start and end are not specified, the attribute
 --  is applied to the whole text. Note that specifying ranges does not make
 --  much sense with translatable attributes. Use markup embedded in the
 --  translatable content instead.
 --
---  == Mnemonics ==
+--  # Mnemonics
 --
---  Labels may contain 'mnemonics'. Mnemonics are underlined characters in the
+--  Labels may contain "mnemonics". Mnemonics are underlined characters in the
 --  label, used for keyboard navigation. Mnemonics are created by providing a
---  string with an underscore before the mnemonic character, such as '"_File"',
+--  string with an underscore before the mnemonic character, such as `"_File"`,
 --  to the functions Gtk.Label.Gtk_New_With_Mnemonic or
 --  Gtk.Label.Set_Text_With_Mnemonic.
 --
@@ -63,42 +60,39 @@
 --  Gtk.Label.Set_Mnemonic_Widget. Here's a simple example where the label is
 --  inside a button:
 --
---    // Pressing Alt+H will activate this button
---    button = gtk_button_new (<!-- -->);
---       label = gtk_label_new_with_mnemonic ("_Hello");
---       gtk_container_add (GTK_CONTAINER (button), label);
+--  |[<!-- language="C" --> // Pressing Alt+H will activate this button button
+--  = gtk_button_new (); label = gtk_label_new_with_mnemonic ("_Hello");
+--  gtk_container_add (GTK_CONTAINER (button), label); ]|
 --
 --  There's a convenience function to create buttons with a mnemonic label
 --  already inside:
 --
---    // Pressing Alt+H will activate this button
---    button = gtk_button_new_with_mnemonic ("_Hello");
+--  |[<!-- language="C" --> // Pressing Alt+H will activate this button button
+--  = gtk_button_new_with_mnemonic ("_Hello"); ]|
 --
 --  To create a mnemonic for a widget alongside the label, such as a
 --  Gtk.GEntry.Gtk_Entry, you have to point the label at the entry with
 --  Gtk.Label.Set_Mnemonic_Widget:
 --
---    // Pressing Alt+H will focus the entry
---    entry = gtk_entry_new (<!-- -->);
---       label = gtk_label_new_with_mnemonic ("_Hello");
---       gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
+--  |[<!-- language="C" --> // Pressing Alt+H will focus the entry entry =
+--  gtk_entry_new (); label = gtk_label_new_with_mnemonic ("_Hello");
+--  gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry); ]|
 --
---  == Markup (styled text) ==
+--  # Markup (styled text)
 --
 --  To make it easy to format text in a label (changing colors, fonts, etc.),
---  label text can be provided in a simple <link
---  linkend="PangoMarkupFormat">markup format</link>. Here's how to create a
---  label with a small font:
+--  label text can be provided in a simple [markup format][PangoMarkupFormat].
 --
---    label = gtk_label_new (NULL);
---    gtk_label_set_markup (GTK_LABEL (label), "<small>Small text</small>");
+--  Here's how to create a label with a small font: |[<!-- language="C" -->
+--  label = gtk_label_new (NULL); gtk_label_set_markup (GTK_LABEL (label),
+--  "<small>Small text</small>"); ]|
 --
---  (See <link linkend="PangoMarkupFormat">complete documentation</link> of
---  available tags in the Pango manual.)
+--  (See [complete documentation][PangoMarkupFormat] of available tags in the
+--  Pango manual.)
 --
 --  The markup passed to Gtk.Label.Set_Markup must be valid; for example,
---  literal <, > and &amp; characters must be escaped as \<, \gt;, and \&amp;.
---  If you pass text obtained from the user, file, or a network to
+--  literal <, > and & characters must be escaped as <, >, and &amp;. If you
+--  pass text obtained from the user, file, or a network to
 --  Gtk.Label.Set_Markup, you'll want to escape it with g_markup_escape_text or
 --  g_markup_printf_escaped.
 --
@@ -112,14 +106,14 @@
 --  Pango.Attributes.Pango_Attribute requires knowledge of the exact string
 --  being displayed, so translations will cause problems.
 --
---  == Selectable labels ==
+--  # Selectable labels
 --
 --  Labels can be made selectable with Gtk.Label.Set_Selectable. Selectable
 --  labels allow the user to copy the label contents to the clipboard. Only
---  labels that contain useful-to-copy information &mdash; such as error
---  messages &mdash; should be made selectable.
+--  labels that contain useful-to-copy information — such as error messages —
+--  should be made selectable.
 --
---  == Text layout ==
+--  # Text layout # {label-text-layout}
 --
 --  A label can contain any number of paragraphs, but will have performance
 --  problems if it contains more than a small number. Paragraphs are separated
@@ -129,7 +123,8 @@
 --
 --  Gtk.Label.Set_Justify sets how the lines in a label align with one
 --  another. If you want to set how the label as a whole aligns in its
---  available space, see Gtk.Misc.Set_Alignment.
+--  available space, see the Gtk.Widget.Gtk_Widget::halign and
+--  Gtk.Widget.Gtk_Widget:valign properties.
 --
 --  The Gtk.Label.Gtk_Label:width-chars and
 --  Gtk.Label.Gtk_Label:max-width-chars properties can be used to control the
@@ -141,28 +136,27 @@
 --  max-width-chars specified, wrapping labels will be rewrapped to use all of
 --  the available width.
 --
---  Note:
---
 --  Note that the interpretation of Gtk.Label.Gtk_Label:width-chars and
 --  Gtk.Label.Gtk_Label:max-width-chars has changed a bit with the introduction
---  of <link linkend="geometry-management">width-for-height geometry
---  management.</link>
+--  of [width-for-height geometry management.][geometry-management]
 --
---  == Links ==
+--  # Links
 --
 --  Since 2.18, GTK+ supports markup for clickable hyperlinks in addition to
 --  regular Pango markup. The markup for links is borrowed from HTML, using the
---  <tag>a</tag> with href and title attributes. GTK+ renders links similar to
---  the way they appear in web browsers, with colored, underlined text. The
---  title attribute is displayed as a tooltip on the link. An example looks
---  like this:
+--  `<a>` with "href" and "title" attributes. GTK+ renders links similar to the
+--  way they appear in web browsers, with colored, underlined text. The "title"
+--  attribute is displayed as a tooltip on the link.
 --
---    gtk_label_set_markup (label, "Go to the <a href="http://www.gtk.org" title="<i>Our</i> website">GTK+ website</a> for more...");
+--  An example looks like this:
+--
+--  |[<!-- language="C" --> const gchar *text = "Go to the" "<a
+--  href=\"http://www.gtk.org title="<i>Our</i> website\">" "GTK+ website</a>
+--  for more..."; gtk_label_set_markup (label, text); ]|
 --
 --  It is possible to implement custom handling for links and their tooltips
 --  with the Gtk.Label.Gtk_Label::activate-link signal and the
 --  Gtk.Label.Get_Current_Uri function.
---
 --
 --  </description>
 --  <screenshot>gtk-label</screenshot>
@@ -208,10 +202,10 @@ package Gtk.Label is
 
    procedure Gtk_New_With_Mnemonic
       (Label : out Gtk_Label;
-       Str   : UTF8_String);
+       Str   : UTF8_String := "");
    procedure Initialize_With_Mnemonic
       (Label : not null access Gtk_Label_Record'Class;
-       Str   : UTF8_String);
+       Str   : UTF8_String := "");
    --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str.
    --  If characters in Str are preceded by an underscore, they are
    --  underlined. If you need a literal underscore character in a label, use
@@ -227,7 +221,8 @@ package Gtk.Label is
    --  "str": The text of the label, with an underscore in front of the
    --  mnemonic character
 
-   function Gtk_Label_New_With_Mnemonic (Str : UTF8_String) return Gtk_Label;
+   function Gtk_Label_New_With_Mnemonic
+      (Str : UTF8_String := "") return Gtk_Label;
    --  Creates a new Gtk.Label.Gtk_Label, containing the text in Str.
    --  If characters in Str are preceded by an underscore, they are
    --  underlined. If you need a literal underscore character in a label, use
@@ -280,7 +275,6 @@ package Gtk.Label is
        Attrs : Pango.Attributes.Pango_Attr_List);
    --  Sets a Pango.Attributes.Pango_Attr_List; the attributes in the list are
    --  applied to the label text.
-   --  Note:
    --  The attributes set with this function will be applied and merged with
    --  any other attributes previously effected by way of the
    --  Gtk.Label.Gtk_Label:use-underline or Gtk.Label.Gtk_Label:use-markup
@@ -325,7 +319,7 @@ package Gtk.Label is
    --  Sets the alignment of the lines in the text of the label relative to
    --  each other. Gtk.Enums.Justify_Left is the default value when the widget
    --  is first created with Gtk.Label.Gtk_New. If you instead want to set the
-   --  alignment of the label as a whole, use Gtk.Misc.Set_Alignment instead.
+   --  alignment of the label as a whole, use Gtk.Widget.Set_Halign instead.
    --  Gtk.Label.Set_Justify has no effect on labels containing only a single
    --  line.
    --  "jtype": a Gtk.Enums.Gtk_Justification
@@ -403,6 +397,21 @@ package Gtk.Label is
    --  which means wrap on word boundaries.
    --  Since: gtk+ 2.10
    --  "wrap_mode": the line wrapping mode
+
+   function Get_Lines (Label : not null access Gtk_Label_Record) return Gint;
+   --  Gets the number of lines to which an ellipsized, wrapping label should
+   --  be limited. See Gtk.Label.Set_Lines.
+   --  Since: gtk+ 3.10
+
+   procedure Set_Lines
+      (Label : not null access Gtk_Label_Record;
+       Lines : Gint);
+   --  Sets the number of lines to which an ellipsized, wrapping label should
+   --  be limited. This has no effect if the label is not wrapping or
+   --  ellipsized. Set this to -1 if you don't want to limit the number of
+   --  lines.
+   --  Since: gtk+ 3.10
+   --  "lines": the desired number of lines, or -1
 
    function Get_Max_Width_Chars
       (Label : not null access Gtk_Label_Record) return Gint;
@@ -510,15 +519,14 @@ package Gtk.Label is
    function Get_Use_Markup
       (Label : not null access Gtk_Label_Record) return Boolean;
    --  Returns whether the label's text is interpreted as marked up with the
-   --  <link linkend="PangoMarkupFormat">Pango text markup language</link>. See
+   --  [Pango text markup language][PangoMarkupFormat]. See
    --  gtk_label_set_use_markup ().
 
    procedure Set_Use_Markup
       (Label   : not null access Gtk_Label_Record;
        Setting : Boolean);
-   --  Sets whether the text of the label contains markup in <link
-   --  linkend="PangoMarkupFormat">Pango's text markup language</link>. See
-   --  Gtk.Label.Set_Markup.
+   --  Sets whether the text of the label contains markup in [Pango's text
+   --  markup language][PangoMarkupFormat]. See Gtk.Label.Set_Markup.
    --  "setting": True if the label's text should be parsed for markup.
 
    function Get_Use_Underline
@@ -560,30 +568,27 @@ package Gtk.Label is
    procedure Set_Markup
       (Label : not null access Gtk_Label_Record;
        Str   : UTF8_String);
-   --  Parses Str which is marked up with the <link
-   --  linkend="PangoMarkupFormat">Pango text markup language</link>, setting
-   --  the label's text and attribute list based on the parse results. If the
-   --  Str is external data, you may need to escape it with
-   --  g_markup_escape_text or g_markup_printf_escaped<!-- -->: |[ char
-   --  *markup;
-   --  markup = g_markup_printf_escaped ("<span style=\"italic\">%s</span>",
-   --  str); gtk_label_set_markup (GTK_LABEL (label), markup); g_free (markup);
-   --  ]|
-   --  "str": a markup string (see <link linkend="PangoMarkupFormat">Pango
-   --  markup format</link>)
+   --  Parses Str which is marked up with the [Pango text markup
+   --  language][PangoMarkupFormat], setting the label's text and attribute
+   --  list based on the parse results. If the Str is external data, you may
+   --  need to escape it with g_markup_escape_text or g_markup_printf_escaped:
+   --  |[<!-- language="C" --> const char *format = "<span
+   --  style=\"italic\">\%s</span>"; char *markup;
+   --  markup = g_markup_printf_escaped (format, str); gtk_label_set_markup
+   --  (GTK_LABEL (label), markup); g_free (markup); ]|
+   --  "str": a markup string (see [Pango markup format][PangoMarkupFormat])
 
    procedure Set_Markup_With_Mnemonic
       (Label : not null access Gtk_Label_Record;
        Str   : UTF8_String);
-   --  Parses Str which is marked up with the <link
-   --  linkend="PangoMarkupFormat">Pango text markup language</link>, setting
-   --  the label's text and attribute list based on the parse results. If
-   --  characters in Str are preceded by an underscore, they are underlined
-   --  indicating that they represent a keyboard accelerator called a mnemonic.
+   --  Parses Str which is marked up with the [Pango text markup
+   --  language][PangoMarkupFormat], setting the label's text and attribute
+   --  list based on the parse results. If characters in Str are preceded by an
+   --  underscore, they are underlined indicating that they represent a
+   --  keyboard accelerator called a mnemonic.
    --  The mnemonic key can be used to activate another widget, chosen
    --  automatically, or explicitly using Gtk.Label.Set_Mnemonic_Widget.
-   --  "str": a markup string (see <link linkend="PangoMarkupFormat">Pango
-   --  markup format</link>)
+   --  "str": a markup string (see [Pango markup format][PangoMarkupFormat])
 
    procedure Set_Pattern
       (Label   : not null access Gtk_Label_Record;
@@ -635,7 +640,7 @@ package Gtk.Label is
    --  Pango.Layout.Ellipsize_None has the side-effect that the label requests
    --  only enough space to display the ellipsis "...". In particular, this
    --  means that ellipsizing labels do not work well in notebook tabs, unless
-   --  the tab's Gtk.Notebook.Gtk_Notebook:tab-expand property is set to True.
+   --  the Gtk.Notebook.Gtk_Notebook tab-expand child property is set to True.
    --  Other ways to set a label's width are Gtk.Widget.Set_Size_Request and
    --  Gtk.Label.Set_Width_Chars.
 
@@ -643,14 +648,19 @@ package Gtk.Label is
 
    Label_Property : constant Glib.Properties.Property_String;
 
+   Lines_Property : constant Glib.Properties.Property_Int;
+   --  The number of lines to which an ellipsized, wrapping label should be
+   --  limited. This property has no effect if the label is not wrapping or
+   --  ellipsized. Set this property to -1 if you don't want to limit the
+   --  number of lines.
+
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int;
    --  The desired maximum width of the label, in characters. If this property
    --  is set to -1, the width will be calculated automatically.
    --
-   --  See the section on <link linkend="label-text-layout">text layout</link>
-   --  for details of how Gtk.Label.Gtk_Label:width-chars and
-   --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
-   --  and wrapped labels.
+   --  See the section on [text layout][label-text-layout] for details of how
+   --  Gtk.Label.Gtk_Label:width-chars and Gtk.Label.Gtk_Label:max-width-chars
+   --  determine the width of ellipsized and wrapped labels.
 
    Mnemonic_Keyval_Property : constant Glib.Properties.Property_Uint;
 
@@ -673,8 +683,8 @@ package Gtk.Label is
 
    Track_Visited_Links_Property : constant Glib.Properties.Property_Boolean;
    --  Set this property to True to make the label track which links have been
-   --  clicked. It will then apply the ::visited-link-color color, instead of
-   --  ::link-color.
+   --  visited. It will then apply the GTK_STATE_FLAG_VISITED when rendering
+   --  this link, in addition to GTK_STATE_FLAG_LINK.
 
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
 
@@ -684,10 +694,9 @@ package Gtk.Label is
    --  The desired width of the label, in characters. If this property is set
    --  to -1, the width will be calculated automatically.
    --
-   --  See the section on <link linkend="label-text-layout">text layout</link>
-   --  for details of how Gtk.Label.Gtk_Label:width-chars and
-   --  Gtk.Label.Gtk_Label:max-width-chars determine the width of ellipsized
-   --  and wrapped labels.
+   --  See the section on [text layout][label-text-layout] for details of how
+   --  Gtk.Label.Gtk_Label:width-chars and Gtk.Label.Gtk_Label:max-width-chars
+   --  determine the width of ellipsized and wrapped labels.
 
    Wrap_Property : constant Glib.Properties.Property_Boolean;
 
@@ -716,8 +725,8 @@ package Gtk.Label is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  A <link linkend="keybinding-signals">keybinding signal</link> which
-   --  gets emitted when the user activates a link in the label.
+   --  A [keybinding signal][GtkBindingSignal] which gets emitted when the
+   --  user activates a link in the label.
    --
    --  Applications may also emit the signal with g_signal_emit_by_name if
    --  they need to control activation of URIs programmatically.
@@ -760,9 +769,8 @@ package Gtk.Label is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::copy-clipboard signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  to copy the selection to the clipboard.
+   --  The ::copy-clipboard signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to copy the selection to the clipboard.
    --
    --  The default binding for this signal is Ctrl-c.
 
@@ -788,10 +796,10 @@ package Gtk.Label is
        Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::move-cursor signal is a <link
-   --  linkend="keybinding-signals">keybinding signal</link> which gets emitted
-   --  when the user initiates a cursor movement. If the cursor is not visible
-   --  in Entry, this signal causes the viewport to be moved instead.
+   --  The ::move-cursor signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a cursor movement. If the
+   --  cursor is not visible in Entry, this signal causes the viewport to be
+   --  moved instead.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control the cursor
@@ -800,13 +808,9 @@ package Gtk.Label is
    --  The default bindings for this signal come in two variants, the variant
    --  with the Shift modifier extends the selection, the variant without the
    --  Shift modifer does not. There are too many key combinations to list them
-   --  all here.
-   --
-   --     * Arrow keys move by individual characters/lines
-   --
-   --     * Ctrl-arrow key combinations move by words/paragraphs
-   --
-   --     * Home/End keys move to the ends of the buffer
+   --  all here. - Arrow keys move by individual characters/lines - Ctrl-arrow
+   --  key combinations move by words/paragraphs - Home/End keys move to the
+   --  ends of the buffer
    -- 
    --  Callback parameters:
    --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
@@ -882,6 +886,8 @@ private
      Glib.Properties.Build ("mnemonic-keyval");
    Max_Width_Chars_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("max-width-chars");
+   Lines_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("lines");
    Label_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("label");
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification :=

@@ -25,8 +25,8 @@
 --  Gtk.Info_Bar.Gtk_Info_Bar is a widget that can be used to show messages to
 --  the user without showing a dialog. It is often temporarily shown at the top
 --  or bottom of a document. In contrast to Gtk.Dialog.Gtk_Dialog, which has a
---  horizontal action area at the bottom, Gtk.Info_Bar.Gtk_Info_Bar has a
---  vertical action area at the side.
+--  action area at the bottom, Gtk.Info_Bar.Gtk_Info_Bar has an action area at
+--  the side.
 --
 --  The API of Gtk.Info_Bar.Gtk_Info_Bar is very similar to
 --  Gtk.Dialog.Gtk_Dialog, allowing you to add buttons to the action area with
@@ -39,33 +39,28 @@
 --  Similar to Gtk.Message_Dialog.Gtk_Message_Dialog, the contents of a
 --  Gtk.Info_Bar.Gtk_Info_Bar can by classified as error message, warning,
 --  informational message, etc, by using Gtk.Info_Bar.Set_Message_Type. GTK+
---  uses the message type to determine the background color of the message
---  area.
+--  may use the message type to determine how the message is displayed.
 --
---  == Simple GtkInfoBar usage. ==
+--  A simple example for using a GtkInfoBar: |[<!-- language="C" --> // set up
+--  info bar GtkWidget *widget; GtkInfoBar *bar;
 --
---    /* set up info bar */
---    info_bar = gtk_info_bar_new ();
---    gtk_widget_set_no_show_all (info_bar, TRUE);
---    message_label = gtk_label_new ("");
---    gtk_widget_show (message_label);
---    content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (info_bar));
---    gtk_container_add (GTK_CONTAINER (content_area), message_label);
---    gtk_info_bar_add_button (GTK_INFO_BAR (info_bar),
---       GTK_STOCK_OK, GTK_RESPONSE_OK);
---    g_signal_connect (info_bar, "response",
---       G_CALLBACK (gtk_widget_hide), NULL);
---    gtk_grid_attach (GTK_GRID (grid),
---       info_bar,
---       0, 2, 1, 1);
---    /* ... */
---    /* show an error message */
---    gtk_label_set_text (GTK_LABEL (message_label), error_message);
---    gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar),
---       GTK_MESSAGE_ERROR);
---    gtk_widget_show (info_bar);
+--  widget = gtk_info_bar_new (); bar = GTK_INFO_BAR (bar);
 --
---  == GtkInfoBar as GtkBuildable ==
+--  gtk_widget_set_no_show_all (widget, TRUE); message_label = gtk_label_new
+--  (""); gtk_widget_show (message_label); content_area =
+--  gtk_info_bar_get_content_area (bar); gtk_container_add (GTK_CONTAINER
+--  (content_area), message_label); gtk_info_bar_add_button (bar, _("_OK"),
+--  GTK_RESPONSE_OK); g_signal_connect (bar, "response", G_CALLBACK
+--  (gtk_widget_hide), NULL); gtk_grid_attach (GTK_GRID (grid), widget, 0, 2,
+--  1, 1);
+--
+--  ...
+--
+--  // show an error message gtk_label_set_text (GTK_LABEL (message_label),
+--  message); gtk_info_bar_set_message_type (bar, GTK_MESSAGE_ERROR);
+--  gtk_widget_show (bar); ]|
+--
+--  # GtkInfoBar as GtkBuildable
 --
 --  The GtkInfoBar implementation of the GtkBuildable interface exposes the
 --  content area and action area as internal children with the names
@@ -76,13 +71,13 @@
 --  numeric response, and the content of the element is the id of widget (which
 --  should be a child of the dialogs Action_Area).
 --
---
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
 with Glib.Object;        use Glib.Object;
+with Glib.Properties;    use Glib.Properties;
 with Glib.Types;         use Glib.Types;
 with Gtk.Box;            use Gtk.Box;
 with Gtk.Buildable;      use Gtk.Buildable;
@@ -133,13 +128,12 @@ package Gtk.Info_Bar is
       (Self        : not null access Gtk_Info_Bar_Record;
        Button_Text : UTF8_String;
        Response_Id : Gint) return Gtk.Widget.Gtk_Widget;
-   --  Adds a button with the given text (or a stock button, if button_text is
-   --  a stock ID) and sets things up so that clicking the button will emit the
-   --  "response" signal with the given response_id. The button is appended to
-   --  the end of the info bars's action area. The button widget is returned,
-   --  but usually you don't need it.
+   --  Adds a button with the given text and sets things up so that clicking
+   --  the button will emit the "response" signal with the given response_id.
+   --  The button is appended to the end of the info bars's action area. The
+   --  button widget is returned, but usually you don't need it.
    --  Since: gtk+ 2.18
-   --  "button_text": text of button, or stock ID
+   --  "button_text": text of button
    --  "response_id": response ID for the button
 
    function Get_Action_Area
@@ -168,10 +162,23 @@ package Gtk.Info_Bar is
    --  Since: gtk+ 2.18
    --  "message_type": a Gtk.Message_Dialog.Gtk_Message_Type
 
+   function Get_Show_Close_Button
+      (Self : not null access Gtk_Info_Bar_Record) return Boolean;
+   --  Returns whether the widget will display a standard close button.
+   --  Since: gtk+ 3.10
+
+   procedure Set_Show_Close_Button
+      (Self    : not null access Gtk_Info_Bar_Record;
+       Setting : Boolean);
+   --  If true, a standard close button is shown. When clicked it emits the
+   --  response GTK_RESPONSE_CLOSE.
+   --  Since: gtk+ 3.10
+   --  "setting": True to include a close button
+
    procedure Response
       (Self        : not null access Gtk_Info_Bar_Record;
        Response_Id : Gint);
-   --  Emits the 'response' signal with the given Response_Id.
+   --  Emits the "response" signal with the given Response_Id.
    --  Since: gtk+ 2.18
    --  "response_id": a response ID
 
@@ -222,14 +229,10 @@ package Gtk.Info_Bar is
    --  Type: Gtk.Message_Dialog.Gtk_Message_Type
    --  The type of the message.
    --
-   --  The type is used to determine the colors to use in the info bar. The
-   --  following symbolic color names can by used to customize these colors:
-   --  "info_fg_color", "info_bg_color", "warning_fg_color",
-   --  "warning_bg_color", "question_fg_color", "question_bg_color",
-   --  "error_fg_color", "error_bg_color". "other_fg_color", "other_bg_color".
-   --
-   --  If the type is GTK_MESSAGE_OTHER, no info bar is painted but the colors
-   --  are still set.
+   --  The type may be used to determine the appearance of the info bar.
+
+   Show_Close_Button_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether to include a standard close button.
 
    -------------
    -- Signals --
@@ -250,9 +253,8 @@ package Gtk.Info_Bar is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  The ::close signal is a <link linkend="keybinding-signals">keybinding
-   --  signal</link> which gets emitted when the user uses a keybinding to
-   --  dismiss the info bar.
+   --  The ::close signal is a [keybinding signal][GtkBindingSignal] which
+   --  gets emitted when the user uses a keybinding to dismiss the info bar.
    --
    --  The default binding for this signal is the Escape key.
 
@@ -310,6 +312,8 @@ package Gtk.Info_Bar is
    renames Implements_Gtk_Orientable.To_Object;
 
 private
+   Show_Close_Button_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-close-button");
    Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type :=
      Gtk.Message_Dialog.Build ("message-type");
 end Gtk.Info_Bar;

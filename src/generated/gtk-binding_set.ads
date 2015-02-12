@@ -101,7 +101,7 @@ package Gtk.Binding_Set is
    --  This function was used internally by the GtkRC parsing mechanism to
    --  assign match patterns to Gtk.Binding_Set.Gtk_Binding_Set structures.
    --  In GTK+ 3, these match patterns are unused.
-   --  Deprecated since None, 3.0
+   --  Deprecated since 3.0, 1
    --  "path_type": path type the pattern applies to
    --  "path_pattern": the actual match pattern
    --  "priority": binding priority

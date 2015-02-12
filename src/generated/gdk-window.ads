@@ -73,7 +73,8 @@ package Gdk.Window is
       Window_Child,
       Window_Temp,
       Window_Foreign,
-      Window_Offscreen);
+      Window_Offscreen,
+      Window_Subsurface);
    pragma Convention (C, Gdk_Window_Type);
    --  Describes the kind of window.
 
@@ -139,9 +140,9 @@ package Gdk.Window is
    --  determining decoration and behaviour of the window. The hint must be set
    --  before mapping the window.
    --
-   --  See the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink> specification for more details about window types.
+   --  See the [Extended Window Manager
+   --  Hints](http://www.freedesktop.org/Standards/wm-spec) specification for
+   --  more details about window types.
 
    type Gdk_WMDecoration is mod 2 ** Integer'Size;
    pragma Convention (C, Gdk_WMDecoration);
@@ -184,9 +185,9 @@ package Gdk.Window is
    pragma Convention (C, Gdk_Gravity);
    --  Defines the reference point of a window and the meaning of coordinates
    --  passed to Gtk.Window.Move. See Gtk.Window.Move and the "implementation
-   --  notes" section of the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink> specification for more details.
+   --  notes" section of the [Extended Window Manager
+   --  Hints](http://www.freedesktop.org/Standards/wm-spec) specification for
+   --  more details.
 
    for Gdk_Gravity use (
       Gravity_North_West => 1,
@@ -259,19 +260,16 @@ package Gdk.Window is
    --  assuming a terminal area widget called "terminal" and a toplevel window
    --  "toplevel":
    --
-   --    GdkGeometry hints;
-   --    hints.base_width = terminal->char_width;
-   --    hints.base_height = terminal->char_height;
-   --    hints.min_width = terminal->char_width;
-   --    hints.min_height = terminal->char_height;
-   --    hints.width_inc = terminal->char_width;
-   --    hints.height_inc = terminal->char_height;
-   --    gtk_window_set_geometry_hints (GTK_WINDOW (toplevel),
-   --       GTK_WIDGET (terminal),
-   --       &hints,
-   --       GDK_HINT_RESIZE_INC |
-   --       GDK_HINT_MIN_SIZE |
-   --       GDK_HINT_BASE_SIZE);
+   --  |[<!-- language="C" --> GdkGeometry hints;
+   --
+   --  hints.base_width = terminal->char_width; hints.base_height =
+   --  terminal->char_height; hints.min_width = terminal->char_width;
+   --  hints.min_height = terminal->char_height; hints.width_inc =
+   --  terminal->char_width; hints.height_inc = terminal->char_height;
+   --
+   --  gtk_window_set_geometry_hints (GTK_WINDOW (toplevel), GTK_WIDGET
+   --  (terminal), &hints, GDK_HINT_RESIZE_INC | GDK_HINT_MIN_SIZE |
+   --  GDK_HINT_BASE_SIZE); ]|
    --
    --  The other useful fields are the Min_Aspect and Max_Aspect fields; these
    --  contain a width/height ratio as a floating point number. If a geometry
@@ -293,6 +291,20 @@ package Gdk.Window is
    --  Gdk.Window.Invalidate_Maybe_Recurse. It gets called for each child of
    --  the window to determine whether to recursively invalidate it or now.
    --  "window": a Gdk.Gdk_Window
+
+   type Gdk_Window_Invalidate_Handler_Func is access procedure
+     (Window : Gdk.Gdk_Window;
+      Region : Cairo.Region.Cairo_Region);
+   --  Whenever some area of the window is invalidated (directly in the window
+   --  or in a child window) this gets called with Region in the coordinate
+   --  space of Window. You can use Region to just keep track of the dirty
+   --  region, or you can actually change Region in case you are doing display
+   --  tricks like showing a child in multiple places.
+   --  Since: gtk+ 3.10
+   --  "window": a Gdk.Gdk_Window
+   --  "region": a cairo_region_t
+
+   pragma Convention (C, Gdk_Window_Invalidate_Handler_Func);
 
    ----------------------------
    -- Enumeration Properties --
@@ -394,7 +406,8 @@ package Gdk.Window is
    --  This function assumes that the drag is controlled by the client pointer
    --  device, use Gdk.Window.Begin_Move_Drag_For_Device to begin a drag with a
    --  different device.
-   --  "button": the button being used to drag
+   --  "button": the button being used to drag, or 0 for a keyboard-initiated
+   --  drag
    --  "root_x": root window X coordinate of mouse click that began the drag
    --  "root_y": root window Y coordinate of mouse click that began the drag
    --  "timestamp": timestamp of mouse click that began the drag
@@ -408,13 +421,13 @@ package Gdk.Window is
        Timestamp : Guint32);
    --  Begins a window move operation (for a toplevel window). You might use
    --  this function to implement a "window move grip," for example. The
-   --  function works best with window managers that support the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink>, but has a fallback implementation for other
-   --  window managers.
+   --  function works best with window managers that support the [Extended
+   --  Window Manager Hints](http://www.freedesktop.org/Standards/wm-spec) but
+   --  has a fallback implementation for other window managers.
    --  Since: gtk+ 3.4
    --  "device": the device used for the operation
-   --  "button": the button being used to drag
+   --  "button": the button being used to drag, or 0 for a keyboard-initiated
+   --  drag
    --  "root_x": root window X coordinate of mouse click that began the drag
    --  "root_y": root window Y coordinate of mouse click that began the drag
    --  "timestamp": timestamp of mouse click that began the drag
@@ -480,7 +493,8 @@ package Gdk.Window is
    --  device, use Gdk.Window.Begin_Resize_Drag_For_Device to begin a drag with
    --  a different device.
    --  "edge": the edge or corner from which the drag is started
-   --  "button": the button being used to drag
+   --  "button": the button being used to drag, or 0 for a keyboard-initiated
+   --  drag
    --  "root_x": root window X coordinate of mouse click that began the drag
    --  "root_y": root window Y coordinate of mouse click that began the drag
    --  "timestamp": timestamp of mouse click that began the drag (use
@@ -497,14 +511,14 @@ package Gdk.Window is
    --  Begins a window resize operation (for a toplevel window). You might use
    --  this function to implement a "window resize grip," for example; in fact
    --  Gtk.Status_Bar.Gtk_Status_Bar uses it. The function works best with
-   --  window managers that support the <ulink
-   --  url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
-   --  Manager Hints</ulink>, but has a fallback implementation for other
-   --  window managers.
+   --  window managers that support the [Extended Window Manager
+   --  Hints](http://www.freedesktop.org/Standards/wm-spec) but has a fallback
+   --  implementation for other window managers.
    --  Since: gtk+ 3.4
    --  "edge": the edge or corner from which the drag is started
    --  "device": the device used for the operation
-   --  "button": the button being used to drag
+   --  "button": the button being used to drag, or 0 for a keyboard-initiated
+   --  drag
    --  "root_x": root window X coordinate of mouse click that began the drag
    --  "root_y": root window Y coordinate of mouse click that began the drag
    --  "timestamp": timestamp of mouse click that began the drag (use
@@ -515,7 +529,7 @@ package Gdk.Window is
    pragma Obsolescent (Configure_Finished);
    --  Does nothing, present only for compatiblity.
    --  Since: gtk+ 2.6
-   --  Deprecated since 3.8, this function is no longer needed
+   --  Deprecated since 3.8, 1
 
    procedure Coords_From_Parent
       (Self     : Gdk.Gdk_Window;
@@ -569,6 +583,23 @@ package Gdk.Window is
    --  "parent_y": return location for Y coordinate in parent's coordinate
    --  system, or null
 
+   function Create_Similar_Image_Surface
+      (Self   : Gdk.Gdk_Window;
+       Format : Cairo.Cairo_Format;
+       Width  : Gint;
+       Height : Gint;
+       Scale  : Gint) return Cairo.Cairo_Surface;
+   pragma Import (C, Create_Similar_Image_Surface, "gdk_window_create_similar_image_surface");
+   --  Create a new image surface that is efficient to draw on the given
+   --  Window.
+   --  Initially the surface contents are all 0 (transparent if contents have
+   --  transparency, black otherwise.)
+   --  Since: gtk+ 3.10
+   --  "format": the format for the new surface
+   --  "width": width of the new surface
+   --  "height": height of the new surface
+   --  "scale": the scale of the new surface, or 0 to use same as Window
+
    function Create_Similar_Surface
       (Self    : Gdk.Gdk_Window;
        Content : Cairo.Cairo_Content;
@@ -614,7 +645,7 @@ package Gdk.Window is
    pragma Obsolescent (Enable_Synchronized_Configure);
    --  Does nothing, present only for compatiblity.
    --  Since: gtk+ 2.6
-   --  Deprecated since 3.8, this function is no longer needed
+   --  Deprecated since 3.8, 1
 
    procedure End_Paint (Self : Gdk.Gdk_Window);
    pragma Import (C, End_Paint, "gdk_window_end_paint");
@@ -634,19 +665,10 @@ package Gdk.Window is
 
    procedure Flush (Self : Gdk.Gdk_Window);
    pragma Import (C, Flush, "gdk_window_flush");
-   --  Flush all outstanding cached operations on a window, leaving the window
-   --  in a state which reflects all that has been drawn before.
-   --  Gdk uses multiple kinds of caching to get better performance and nicer
-   --  drawing. For instance, during exposes all paints to a window using
-   --  double buffered rendering are keep on a surface until the last window
-   --  has been exposed. It also delays window moves/scrolls until as long as
-   --  possible until next update to avoid tearing when moving windows.
-   --  Normally this should be completely invisible to applications, as we
-   --  automatically flush the windows when required, but this might be needed
-   --  if you for instance mix direct native drawing with gdk drawing. For Gtk
-   --  widgets that don't use double buffering this will be called
-   --  automatically before sending the expose event.
+   pragma Obsolescent (Flush);
+   --  This function does nothing.
    --  Since: gtk+ 2.18
+   --  Deprecated since 3.14, 1
 
    procedure Focus (Self : Gdk.Gdk_Window; Timestamp : Guint32);
    pragma Import (C, Focus, "gdk_window_focus");
@@ -722,7 +744,7 @@ package Gdk.Window is
    pragma Import (C, Set_Background_Pattern, "gdk_window_set_background_pattern");
    --  Sets the background of Window.
    --  A background of null means that the window will inherit its background
-   --  form its parent window.
+   --  from its parent window.
    --  The windowing system will normally fill a window with its background
    --  when the window is obscured then exposed.
    --  "pattern": a pattern to use, or null
@@ -755,8 +777,7 @@ package Gdk.Window is
    --  redirected to an offscreen buffer and an expose event is emitted on the
    --  parent of the composited window. It is the responsibility of the
    --  parent's expose handler to manually merge the off-screen content onto
-   --  the screen in whatever way it sees fit. See <xref
-   --  linkend="composited-window-example"/> for an example.
+   --  the screen in whatever way it sees fit.
    --  It only makes sense for child windows to be composited; see
    --  Gdk.Window.Set_Opacity if you need translucent toplevel windows.
    --  An additional effect of this call is that the area of this window is no
@@ -868,7 +889,24 @@ package Gdk.Window is
        Window : out Gdk.Gdk_Window);
    --  Obtains the current device position and modifier state. The position is
    --  given in coordinates relative to the upper left corner of Window.
+   --  Use Gdk.Window.Get_Device_Position_Double if you need subpixel
+   --  precision.
    --  Since: gtk+ 3.0
+   --  "device": pointer Gdk.Device.Gdk_Device to query to.
+   --  "x": return location for the X coordinate of Device, or null.
+   --  "y": return location for the Y coordinate of Device, or null.
+   --  "mask": return location for the modifier mask, or null.
+
+   function Get_Device_Position_Double
+      (Self   : Gdk.Gdk_Window;
+       Device : not null access Gdk.Device.Gdk_Device_Record'Class;
+       X      : access Gdouble;
+       Y      : access Gdouble;
+       Mask   : access Gdk.Types.Gdk_Modifier_Type) return Gdk.Gdk_Window;
+   --  Obtains the current device position in doubles and modifier state. The
+   --  position is given in coordinates relative to the upper left corner of
+   --  Window.
+   --  Since: gtk+ 3.10
    --  "device": pointer Gdk.Device.Gdk_Device to query to.
    --  "x": return location for the X coordinate of Device, or null.
    --  "y": return location for the Y coordinate of Device, or null.
@@ -896,6 +934,22 @@ package Gdk.Window is
    --  embedder as its parent, using Gdk.Window.Get_Effective_Parent.
    --  See also: gdk_offscreen_window_get_embedder
    --  Since: gtk+ 2.22
+
+   function Get_Event_Compression (Self : Gdk.Gdk_Window) return Boolean;
+   --  Get the current event compression setting for this window.
+   --  Since: gtk+ 3.12
+
+   procedure Set_Event_Compression
+      (Self              : Gdk.Gdk_Window;
+       Event_Compression : Boolean);
+   --  Determines whether or not extra unprocessed motion events in the event
+   --  queue can be discarded. If True only the most recent event will be
+   --  delivered.
+   --  Some types of applications, e.g. paint programs, need to see all motion
+   --  events and will benefit from turning off event compression.
+   --  By default, event compression is enabled.
+   --  Since: gtk+ 3.12
+   --  "event_compression": True if motion events should be compressed
 
    function Get_Events
       (Self : Gdk.Gdk_Window) return Gdk.Event.Gdk_Event_Mask;
@@ -995,7 +1049,7 @@ package Gdk.Window is
    --  position of Window delivered in the most-recently-processed
    --  Gdk.Event.Gdk_Event_Configure. Gdk.Window.Get_Position in contrast gets
    --  the position from the most recent configure event.
-   --  Note: If Window is not a toplevel, it is *much* better to call
+   --  Note: If Window is not a toplevel, it is much better to call
    --  Gdk.Window.Get_Position, Gdk.Window.Get_Width and Gdk.Window.Get_Height
    --  instead, because it avoids the roundtrip to the X server and because
    --  these functions support the full 32-bit coordinate space, whereas
@@ -1076,7 +1130,7 @@ package Gdk.Window is
    pragma Obsolescent (Get_Pointer);
    --  Obtains the current pointer position and modifier state. The position
    --  is given in coordinates relative to the upper left corner of Window.
-   --  Deprecated since 3.0, Use Gdk.Window.Get_Device_Position instead.
+   --  Deprecated since 3.0, 1
    --  "x": return location for X coordinate of pointer or null to not return
    --  the X coordinate
    --  "y": return location for Y coordinate of pointer or null to not return
@@ -1123,6 +1177,20 @@ package Gdk.Window is
    --  coordinates.
    --  "x": return location for X position of window frame
    --  "y": return location for Y position of window frame
+
+   function Get_Scale_Factor (Self : Gdk.Gdk_Window) return Gint;
+   pragma Import (C, Get_Scale_Factor, "gdk_window_get_scale_factor");
+   --  Returns the internal scale factor that maps from window coordiantes to
+   --  the actual device pixels. On traditional systems this is 1, but on very
+   --  high density outputs this can be a higher value (often 2).
+   --  A higher value means that drawing is automatically scaled up to a
+   --  higher resolution, so any code doing drawing will automatically look
+   --  nicer. However, if you are supplying pixel-based data the scale value
+   --  can be used to determine whether to use a pixel resource with higher
+   --  resolution data.
+   --  The scale of a window may change during runtime, if this happens a
+   --  configure event will be sent to the toplevel window.
+   --  Since: gtk+ 3.10
 
    function Get_Screen (Self : Gdk.Gdk_Window) return Gdk.Screen.Gdk_Screen;
    --  Gets the Gdk.Screen.Gdk_Screen associated with a Gdk.Gdk_Window.
@@ -1563,7 +1631,7 @@ package Gdk.Window is
    --  application - or Gtk.Style.Set_Background - if you're implementing a
    --  custom widget.)
    --  See also Gdk.Window.Set_Background_Pattern.
-   --  Deprecated since 3.4, Use Gdk.Window.Set_Background_Rgba instead.
+   --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color
 
    procedure Set_Background_Rgba
@@ -1640,6 +1708,18 @@ package Gdk.Window is
    --  Gdk.Window.Set_Title will again update the icon title as well.
    --  "name": name of window while iconified (minimized)
 
+   procedure Set_Invalidate_Handler
+      (Self    : Gdk.Gdk_Window;
+       Handler : Gdk_Window_Invalidate_Handler_Func);
+   --  Registers an invalidate handler for a specific window. This will get
+   --  called whenever a region in the window or its children is invalidated.
+   --  This can be used to record the invalidated region, which is useful if
+   --  you are keeping an offscreen copy of some region and want to keep it up
+   --  to date. You can also modify the invalidated region in case you're doing
+   --  some effect where e.g. a child widget appears in multiple places.
+   --  Since: gtk+ 3.10
+   --  "handler": a Gdk_Window_Invalidate_Handler_Func callback function
+
    procedure Set_Keep_Above (Self : Gdk.Gdk_Window; Setting : Boolean);
    --  Set if Window must be kept above other windows. If the window was
    --  already above, then this function does nothing.
@@ -1680,6 +1760,23 @@ package Gdk.Window is
    --  Since: gtk+ 2.12
    --  "opacity": opacity
 
+   procedure Set_Opaque_Region
+      (Self   : Gdk.Gdk_Window;
+       Region : Cairo.Region.Cairo_Region);
+   pragma Import (C, Set_Opaque_Region, "gdk_window_set_opaque_region");
+   --  For optimizization purposes, compositing window managers may like to
+   --  not draw obscured regions of windows, or turn off blending during for
+   --  these regions. With RGB windows with no transparency, this is just the
+   --  shape of the window, but with ARGB32 windows, the compositor does not
+   --  know what regions of the window are transparent or not.
+   --  This function only works for toplevel windows.
+   --  GTK+ will automatically update this property automatically if the
+   --  Window background is opaque, as we know where the opaque regions are. If
+   --  your window background is not opaque, please update this property in
+   --  your Gtk.Widget.Gtk_Widget::style-updated handler.
+   --  Since: gtk+ 3.10
+   --  "region": a region
+
    procedure Set_Override_Redirect
       (Self              : Gdk.Gdk_Window;
        Override_Redirect : Boolean);
@@ -1705,6 +1802,27 @@ package Gdk.Window is
    --  you have a different role for each non-interchangeable kind of window.
    --  "role": a string indicating its role
 
+   procedure Set_Shadow_Width
+      (Self   : Gdk.Gdk_Window;
+       Left   : Gint;
+       Right  : Gint;
+       Top    : Gint;
+       Bottom : Gint);
+   pragma Import (C, Set_Shadow_Width, "gdk_window_set_shadow_width");
+   --  Newer GTK+ windows using client-side decorations use extra geometry
+   --  around their frames for effects like shadows and invisible borders.
+   --  Window managers that want to maximize windows or snap to edges need to
+   --  know where the extents of the actual frame lie, so that users don't feel
+   --  like windows are snapping against random invisible edges.
+   --  Note that this property is automatically updated by GTK+, so this
+   --  function should only be used by applications which do not use GTK+ to
+   --  create toplevel windows.
+   --  Since: gtk+ 3.12
+   --  "left": The left extent
+   --  "right": The right extent
+   --  "top": The top extent
+   --  "bottom": The bottom extent
+
    procedure Set_Skip_Pager_Hint
       (Self        : Gdk.Gdk_Window;
        Skips_Pager : Boolean);
@@ -1712,9 +1830,9 @@ package Gdk.Window is
    --  or other desktop utility program that displays a small thumbnail
    --  representation of the windows on the desktop). If a window's semantic
    --  type as specified with Gdk.Window.Set_Type_Hint already fully describes
-   --  the window, this function should *not* be called in addition, instead
-   --  you should allow the window to be treated according to standard policy
-   --  for its semantic type.
+   --  the window, this function should not be called in addition, instead you
+   --  should allow the window to be treated according to standard policy for
+   --  its semantic type.
    --  Since: gtk+ 2.2
    --  "skips_pager": True to skip the pager
 
@@ -1723,7 +1841,7 @@ package Gdk.Window is
        Skips_Taskbar : Boolean);
    --  Toggles whether a window should appear in a task list or window list.
    --  If a window's semantic type as specified with Gdk.Window.Set_Type_Hint
-   --  already fully describes the window, this function should *not* be called
+   --  already fully describes the window, this function should not be called
    --  in addition, instead you should allow the window to be treated according
    --  to standard policy for its semantic type.
    --  Since: gtk+ 2.2
@@ -1822,6 +1940,17 @@ package Gdk.Window is
    --  also updates some internal GDK state, which means that you can't really
    --  use XMapWindow directly on a GDK window).
 
+   function Show_Window_Menu
+      (Self  : Gdk.Gdk_Window;
+       Event : Gdk.Event.Gdk_Event) return Boolean;
+   --  Asks the windowing system to show the window menu. The window menu is
+   --  the menu shown when right-clicking the titlebar on traditional windows
+   --  managed by the window manager. This is useful for windows using
+   --  client-side decorations, activating it with a right-click on the window
+   --  decorations.
+   --  Since: gtk+ 3.14
+   --  "event": a Gdk.Event.Gdk_Event to show the menu for
+
    procedure Stick (Self : Gdk.Gdk_Window);
    pragma Import (C, Stick, "gdk_window_stick");
    --  "Pins" a window such that it's on all workspaces and does not scroll
@@ -1919,13 +2048,13 @@ package Gdk.Window is
    --  gdk_window_foreign_new)
    --  NOTE: For multihead-aware widgets or applications use
    --  gdk_display_get_window_at_pointer instead.
-   --  Deprecated since 3.0, Use gdk_device_get_window_at_position instead.
+   --  Deprecated since 3.0, 1
    --  "win_x": return location for origin of the window under the pointer
    --  "win_y": return location for origin of the window under the pointer
 
    procedure Constrain_Size
       (Geometry   : Gdk_Geometry;
-       Flags      : Guint;
+       Flags      : Gdk_Window_Hints;
        Width      : Gint;
        Height     : Gint;
        New_Width  : out Gint;
@@ -1981,10 +2110,10 @@ package Gdk.Window is
 
    Signal_Create_Surface : constant Glib.Signal_Name := "create-surface";
    --  The ::create-surface signal is emitted when an offscreen window needs
-   --  its surface (re)created, which happens either when the the window is
-   --  first drawn to, or when the window is being resized. The first signal
-   --  handler that returns a non-null surface will stop any further signal
-   --  emission, and its surface will be used.
+   --  its surface (re)created, which happens either when the window is first
+   --  drawn to, or when the window is being resized. The first signal handler
+   --  that returns a non-null surface will stop any further signal emission,
+   --  and its surface will be used.
    --
    --  Note that it is not possible to access the window's previous surface
    --  from within any callback of this signal. Calling
@@ -2003,7 +2132,7 @@ package Gdk.Window is
    --  The ::from-embedder signal is emitted to translate coordinates in the
    --  embedder of an offscreen window to the offscreen window.
    --
-   --  See also Gtk.Window.Gtk_Window::to-embedder.
+   --  See also Gdk.Gdk_Window::to-embedder.
    --    procedure Handler
    --       (Self        : Gdk_Window;
    --        Embedder_X  : Gdouble;
@@ -2030,13 +2159,14 @@ package Gdk.Window is
    --  Callback parameters:
    --    --  "x": x coordinate in the window
    --    --  "y": y coordinate in the window
-   --    --  Returns the Gdk.Gdk_Window of the embedded child at X, Y, or null
+   --    --  Returns the Gdk.Gdk_Window of the
+   --     embedded child at X, Y, or null
 
    Signal_To_Embedder : constant Glib.Signal_Name := "to-embedder";
    --  The ::to-embedder signal is emitted to translate coordinates in an
    --  offscreen window to its embedder.
    --
-   --  See also Gtk.Window.Gtk_Window::from-embedder.
+   --  See also Gdk.Gdk_Window::from-embedder.
    --    procedure Handler
    --       (Self        : Gdk_Window;
    --        Offscreen_X : Gdouble;

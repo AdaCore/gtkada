@@ -63,7 +63,7 @@ package Gdk.Frame_Timings is
    --  functions for Gdk.Frame_Timings.Gdk_Frame_Timings can return 0 to
    --  indicate an unavailable value for two reasons: either because the
    --  information is not yet available, or because it isn't available at all.
-   --  Once gdk_frame_timings_complete returns True for a frame, you can be
+   --  Once Gdk.Frame_Timings.Get_Complete returns True for a frame, you can be
    --  certain that no further values will become available and be stored in
    --  the Gdk.Frame_Timings.Gdk_Frame_Timings.
    --  Since: gtk+ 3.8

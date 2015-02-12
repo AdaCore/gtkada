@@ -22,8 +22,8 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.Recent_Info.Gtk_Recent_Info is an opaque data structure whose members
---  can only be accessed using the provided API.
+--  Gtk.Recent_Info.Gtk_Recent_Info-struct contains private data only, and
+--  should be accessed using the provided API.
 --
 --  Gtk.Recent_Info.Gtk_Recent_Info constains all the meta-data associated
 --  with an entry in the recently used files list.
@@ -111,8 +111,8 @@ package Gtk.Recent_Info is
    --  Since: gtk+ 2.10
 
    function Get_Modified (Self : Gtk_Recent_Info) return time_t;
-   --  Gets the timestamp (seconds from system's Epoch) when the resource was
-   --  last modified.
+   --  Gets the timestamp (seconds from system's Epoch) when the meta-data for
+   --  the resource was last modified.
    --  Since: gtk+ 2.10
 
    function Get_Private_Hint (Self : Gtk_Recent_Info) return Boolean;
@@ -138,8 +138,8 @@ package Gtk.Recent_Info is
    --  Since: gtk+ 2.10
 
    function Get_Visited (Self : Gtk_Recent_Info) return time_t;
-   --  Gets the timestamp (seconds from system's Epoch) when the resource was
-   --  last visited.
+   --  Gets the timestamp (seconds from system's Epoch) when the meta-data for
+   --  the resource was last visited.
    --  Since: gtk+ 2.10
 
    function Has_Application
@@ -170,8 +170,8 @@ package Gtk.Recent_Info is
    function Match
       (Self   : Gtk_Recent_Info;
        Info_B : Gtk_Recent_Info) return Boolean;
-   --  Checks whether two Gtk.Recent_Info.Gtk_Recent_Info structures point to
-   --  the same resource.
+   --  Checks whether two Gtk.Recent_Info.Gtk_Recent_Info-struct point to the
+   --  same resource.
    --  Since: gtk+ 2.10
    --  "info_b": a Gtk.Recent_Info.Gtk_Recent_Info
 

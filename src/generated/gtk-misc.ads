@@ -32,12 +32,13 @@
 --  The horizontal and vertical alignment attributes enable the widget to be
 --  positioned within its allocated area. Note that if the widget is added to a
 --  container in such a way that it expands automatically to fill its allocated
---  area, the alignment settings will not alter the widgets position.
+--  area, the alignment settings will not alter the widget's position.
 --
---  Note: Note that the desired effect can in most cases be achieved by using
---  the Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
+--  Note that the desired effect can in most cases be achieved by using the
+--  Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
 --  Gtk.Widget.Gtk_Widget:margin properties on the child widget, so GtkMisc
---  should not be used in new code.
+--  should not be used in new code. To reflect this fact, all Gtk.Misc.Gtk_Misc
+--  API has been deprecated.
 --
 --  </description>
 --  <group>Abstract base classes</group>
@@ -70,8 +71,10 @@ package Gtk.Misc is
       (Misc   : not null access Gtk_Misc_Record;
        Xalign : out Gfloat;
        Yalign : out Gfloat);
+   pragma Obsolescent (Get_Alignment);
    --  Gets the X and Y alignment of the widget within its allocation. See
    --  Gtk.Misc.Set_Alignment.
+   --  Deprecated since 3.14, 1
    --  "xalign": location to store X alignment of Misc, or null
    --  "yalign": location to store Y alignment of Misc, or null
 
@@ -79,6 +82,7 @@ package Gtk.Misc is
       (Misc   : not null access Gtk_Misc_Record;
        Xalign : Gfloat;
        Yalign : Gfloat);
+   pragma Obsolescent (Set_Alignment);
    --  Modify the alignment for the widget. Xalign and Yalign are both values
    --  between 0.0 and 1.0 that specify the alignment: if Xalign is 0.0, the
    --  widget will be left aligned; if it is 0.5, the widget will be centered;
@@ -86,6 +90,7 @@ package Gtk.Misc is
    --  to bottom (1.0). Both Xalign and Yalign will be constrained to the range
    --  0.0 .. 1.0 Note that if the widget fills its allocated area, these two
    --  parameters won't have any effect.
+   --  Deprecated since 3.14, 1
    --  "xalign": the horizontal alignment, from 0 (left) to 1 (right).
    --  "yalign": the vertical alignment, from 0 (top) to 1 (bottom).
 
@@ -93,8 +98,10 @@ package Gtk.Misc is
       (Misc : not null access Gtk_Misc_Record;
        Xpad : out Gint;
        Ypad : out Gint);
+   pragma Obsolescent (Get_Padding);
    --  Gets the padding in the X and Y directions of the widget. See
    --  Gtk.Misc.Set_Padding.
+   --  Deprecated since 3.14, 1
    --  "xpad": location to store padding in the X direction, or null
    --  "ypad": location to store padding in the Y direction, or null
 
@@ -102,7 +109,9 @@ package Gtk.Misc is
       (Misc : not null access Gtk_Misc_Record;
        Xpad : Gint;
        Ypad : Gint);
+   pragma Obsolescent (Set_Padding);
    --  Sets the amount of space to add around the widget.
+   --  Deprecated since 3.14, 1
    --  "xpad": the amount of space to add on the left and right of the widget,
    --  in pixels.
    --  "ypad": the amount of space to add on the top and bottom of the widget,

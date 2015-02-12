@@ -34,7 +34,10 @@ package Pango.Enums is
       Pango_Align_Center,
       Pango_Align_Right);
    pragma Convention (C, Alignment);
-
+   --  A Pango.Enums.Alignment describes how to align the lines of a
+   --  Pango.Layout.Pango_Layout within the available space. If the
+   --  Pango.Layout.Pango_Layout is set to justify using
+   --  Pango.Layout.Set_Justify, this only has effect for partial lines.
 
    type Attr_Type is (
       Pango_Attr_Invalid,
@@ -61,7 +64,11 @@ package Pango.Enums is
       Pango_Attr_Gravity,
       Pango_Attr_Gravity_Hint);
    pragma Convention (C, Attr_Type);
-
+   --  The Pango.Enums.Attr_Type distinguishes between different types of
+   --  attributes. Along with the predefined values, it is possible to allocate
+   --  additional values for custom attributes using pango_attr_type_register.
+   --  The predefined values are given below. The type of structure used to
+   --  store the attribute is listed in parentheses after the description.
 
    type Coverage_Level is (
       Pango_Coverage_None,
@@ -69,7 +76,8 @@ package Pango.Enums is
       Pango_Coverage_Approximate,
       Pango_Coverage_Exact);
    pragma Convention (C, Coverage_Level);
-
+   --  Used to indicate how well a font can represent a particular Unicode
+   --  character point for a particular script.
 
    type Direction is (
       Pango_Direction_Ltr,
@@ -98,7 +106,8 @@ package Pango.Enums is
 
    type Font_Mask is mod 2 ** Integer'Size;
    pragma Convention (C, Font_Mask);
-
+   --  The bits in a Pango.Enums.Font_Mask correspond to fields in a
+   --  Pango.Font.Pango_Font_Description that have been set.
 
    Pango_Font_Mask_Family : constant Font_Mask := 1;
    Pango_Font_Mask_Style : constant Font_Mask := 2;
@@ -149,7 +158,8 @@ package Pango.Enums is
       Pango_Stretch_Extra_Expanded,
       Pango_Stretch_Ultra_Expanded);
    pragma Convention (C, Stretch);
-
+   --  An enumeration specifying the width of the font relative to other
+   --  designs within a family.
 
    type Style is (
       Pango_Style_Normal,
@@ -165,18 +175,20 @@ package Pango.Enums is
       Pango_Underline_Low,
       Pango_Underline_Error);
    pragma Convention (C, Underline);
-
+   --  The Pango.Enums.Underline enumeration is used to specify whether text
+   --  should be underlined, and if so, the type of underlining.
 
    type Variant is (
       Pango_Variant_Normal,
       Pango_Variant_Small_Caps);
    pragma Convention (C, Variant);
-
+   --  An enumeration specifying capitalization variant of the font.
 
    type Weight is (
       Pango_Weight_Thin,
       Pango_Weight_Ultralight,
       Pango_Weight_Light,
+      Pango_Weight_Semilight,
       Pango_Weight_Book,
       Pango_Weight_Normal,
       Pango_Weight_Medium,
@@ -186,12 +198,15 @@ package Pango.Enums is
       Pango_Weight_Heavy,
       Pango_Weight_Ultraheavy);
    pragma Convention (C, Weight);
-
+   --  An enumeration specifying the weight (boldness) of a font. This is a
+   --  numerical value ranging from 100 to 1000, but there are some predefined
+   --  values:
 
    for Weight use (
       Pango_Weight_Thin => 100,
       Pango_Weight_Ultralight => 200,
       Pango_Weight_Light => 300,
+      Pango_Weight_Semilight => 350,
       Pango_Weight_Book => 380,
       Pango_Weight_Normal => 400,
       Pango_Weight_Medium => 500,
@@ -206,6 +221,8 @@ package Pango.Enums is
       Pango_Wrap_Char,
       Pango_Wrap_Word_Char);
    pragma Convention (C, Wrap_Mode);
+   --  A Pango.Enums.Wrap_Mode describes how to wrap the lines of a
+   --  Pango.Layout.Pango_Layout to the desired width.
 
    ----------------------------
    -- Enumeration Properties --

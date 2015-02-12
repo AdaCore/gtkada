@@ -35,19 +35,31 @@
 --
 --  To check if two GIcons are equal, see Glib.G_Icon.Equal.
 --
---  For serializing a Glib.G_Icon.G_Icon, use Glib.G_Icon.To_String and
---  Glib.G_Icon.New_For_String.
+--  For serializing a Glib.G_Icon.G_Icon, use Glib.G_Icon.Serialize and
+--  Glib.G_Icon.Deserialize.
+--
+--  If you want to consume Glib.G_Icon.G_Icon (for example, in a toolkit) you
+--  must be prepared to handle at least the three following cases:
+--  Gloadable.Icon.Gloadable_Icon, Gthemed.Icon.Gthemed_Icon and
+--  Gemblemed.Icon.Gemblemed_Icon. It may also make sense to have fast-paths
+--  for other cases (like handling Gdk.Pixbuf.Gdk_Pixbuf directly, for example)
+--  but all compliant Glib.G_Icon.G_Icon implementations outside of GIO must
+--  implement Gloadable.Icon.Gloadable_Icon.
 --
 --  If your application or library provides one or more Glib.G_Icon.G_Icon
---  implementations you need to ensure that each GType is registered with the
---  type system prior to calling Glib.G_Icon.New_For_String.
+--  implementations you need to ensure that your new implementation also
+--  implements Gloadable.Icon.Gloadable_Icon. Additionally, you must provide an
+--  implementation of Glib.G_Icon.Serialize that gives a result that is
+--  understood by Glib.G_Icon.Deserialize, yielding one of the built-in icon
+--  types.
 --
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;       use Glib;
-with Glib.Types; use Glib.Types;
+with Glib;         use Glib;
+with Glib.Types;   use Glib.Types;
+with Glib.Variant; use Glib.Variant;
 
 package Glib.G_Icon is
 
@@ -69,6 +81,15 @@ package Glib.G_Icon is
    --  Checks if two icons are equal.
    --  "icon2": pointer to the second Glib.G_Icon.G_Icon.
 
+   function Serialize (Self : G_Icon) return Glib.Variant.Gvariant;
+   --  Serializes a Glib.G_Icon.G_Icon into a Glib.Variant.Gvariant. An
+   --  equivalent Glib.G_Icon.G_Icon can be retrieved back by calling
+   --  Glib.G_Icon.Deserialize on the returned value. As serialization will
+   --  avoid using raw icon data when possible, it only makes sense to transfer
+   --  the Glib.Variant.Gvariant between processes on the same machine, (as
+   --  opposed to over the network), and within the same file system namespace.
+   --  Since: gtk+ 2.38
+
    function To_String (Self : G_Icon) return UTF8_String;
    --  Generates a textual representation of Icon that can be used for
    --  serialization such as when passing Icon to a different process or saving
@@ -76,18 +97,24 @@ package Glib.G_Icon is
    --  back from the returned string.
    --  The encoding of the returned string is proprietary to
    --  Glib.G_Icon.G_Icon except in the following two cases
-   --     * If Icon is a Gfile.Icon.Gfile_Icon, the returned string is a
-   --  native path (such as '/path/to/my icon.png') without escaping if the
+   --  - If Icon is a Gfile.Icon.Gfile_Icon, the returned string is a native
+   --  path (such as `/path/to/my icon.png`) without escaping if the
    --  Gfile.Gfile for Icon is a native file. If the file is not native, the
    --  returned string is the result of g_file_get_uri (such as
-   --  'sftp://path/to/my%20icon.png').
-   --     * If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name, the
-   --  encoding is simply the name (such as 'network-server').
+   --  `sftp://path/to/my%20icon.png`).
+   --  - If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name, the
+   --  encoding is simply the name (such as `network-server`).
    --  Since: gtk+ 2.20
 
    ---------------
    -- Functions --
    ---------------
+
+   function Deserialize (Value : Glib.Variant.Gvariant) return G_Icon;
+   --  Deserializes a Glib.G_Icon.G_Icon previously serialized using
+   --  Glib.G_Icon.Serialize.
+   --  Since: gtk+ 2.38
+   --  "value": a Glib.Variant.Gvariant created with Glib.G_Icon.Serialize
 
    function Hash (Icon : G_Icon) return Guint;
    pragma Import (C, Hash, "g_icon_hash");

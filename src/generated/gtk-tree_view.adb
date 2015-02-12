@@ -105,7 +105,7 @@ package body Gtk.Tree_View is
    --  This function should almost never be used. It is meant for private use
    --  by ATK for determining the number of visible children that are removed
    --  when the user collapses a row, or a row is deleted.
-   --  Deprecated since 3.4, Accessibility does not need the function anymore.
+   --  Deprecated since 3.4, 1
    --  "func": Function to be called when a view row is destroyed, or null
    --  "data": User data to be passed to Func, or null
    --  "destroy": Destroy notifier for Data, or null

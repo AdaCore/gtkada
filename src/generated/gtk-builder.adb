@@ -105,6 +105,46 @@ package body Gtk.Builder is
       return Builder;
    end Gtk_Builder_New;
 
+   -------------------------------
+   -- Gtk_Builder_New_From_File --
+   -------------------------------
+
+   function Gtk_Builder_New_From_File
+      (Filename : UTF8_String) return Gtk_Builder
+   is
+      Builder : constant Gtk_Builder := new Gtk_Builder_Record;
+   begin
+      Gtk.Builder.Initialize_From_File (Builder, Filename);
+      return Builder;
+   end Gtk_Builder_New_From_File;
+
+   -----------------------------------
+   -- Gtk_Builder_New_From_Resource --
+   -----------------------------------
+
+   function Gtk_Builder_New_From_Resource
+      (Resource_Path : UTF8_String) return Gtk_Builder
+   is
+      Builder : constant Gtk_Builder := new Gtk_Builder_Record;
+   begin
+      Gtk.Builder.Initialize_From_Resource (Builder, Resource_Path);
+      return Builder;
+   end Gtk_Builder_New_From_Resource;
+
+   ---------------------------------
+   -- Gtk_Builder_New_From_String --
+   ---------------------------------
+
+   function Gtk_Builder_New_From_String
+      (String : UTF8_String;
+       Length : Gssize) return Gtk_Builder
+   is
+      Builder : constant Gtk_Builder := new Gtk_Builder_Record;
+   begin
+      Gtk.Builder.Initialize_From_String (Builder, String, Length);
+      return Builder;
+   end Gtk_Builder_New_From_String;
+
    -------------
    -- Gtk_New --
    -------------
@@ -114,6 +154,46 @@ package body Gtk.Builder is
       Builder := new Gtk_Builder_Record;
       Gtk.Builder.Initialize (Builder);
    end Gtk_New;
+
+   -----------------------
+   -- Gtk_New_From_File --
+   -----------------------
+
+   procedure Gtk_New_From_File
+      (Builder  : out Gtk_Builder;
+       Filename : UTF8_String)
+   is
+   begin
+      Builder := new Gtk_Builder_Record;
+      Gtk.Builder.Initialize_From_File (Builder, Filename);
+   end Gtk_New_From_File;
+
+   ---------------------------
+   -- Gtk_New_From_Resource --
+   ---------------------------
+
+   procedure Gtk_New_From_Resource
+      (Builder       : out Gtk_Builder;
+       Resource_Path : UTF8_String)
+   is
+   begin
+      Builder := new Gtk_Builder_Record;
+      Gtk.Builder.Initialize_From_Resource (Builder, Resource_Path);
+   end Gtk_New_From_Resource;
+
+   -------------------------
+   -- Gtk_New_From_String --
+   -------------------------
+
+   procedure Gtk_New_From_String
+      (Builder : out Gtk_Builder;
+       String  : UTF8_String;
+       Length  : Gssize)
+   is
+   begin
+      Builder := new Gtk_Builder_Record;
+      Gtk.Builder.Initialize_From_String (Builder, String, Length);
+   end Gtk_New_From_String;
 
    ----------------
    -- Initialize --
@@ -127,6 +207,72 @@ package body Gtk.Builder is
          Set_Object (Builder, Internal);
       end if;
    end Initialize;
+
+   --------------------------
+   -- Initialize_From_File --
+   --------------------------
+
+   procedure Initialize_From_File
+      (Builder  : not null access Gtk_Builder_Record'Class;
+       Filename : UTF8_String)
+   is
+      function Internal
+         (Filename : Interfaces.C.Strings.chars_ptr) return System.Address;
+      pragma Import (C, Internal, "gtk_builder_new_from_file");
+      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Return   : System.Address;
+   begin
+      if not Builder.Is_Created then
+         Tmp_Return := Internal (Tmp_Filename);
+         Free (Tmp_Filename);
+         Set_Object (Builder, Tmp_Return);
+      end if;
+   end Initialize_From_File;
+
+   ------------------------------
+   -- Initialize_From_Resource --
+   ------------------------------
+
+   procedure Initialize_From_Resource
+      (Builder       : not null access Gtk_Builder_Record'Class;
+       Resource_Path : UTF8_String)
+   is
+      function Internal
+         (Resource_Path : Interfaces.C.Strings.chars_ptr)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_builder_new_from_resource");
+      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Return        : System.Address;
+   begin
+      if not Builder.Is_Created then
+         Tmp_Return := Internal (Tmp_Resource_Path);
+         Free (Tmp_Resource_Path);
+         Set_Object (Builder, Tmp_Return);
+      end if;
+   end Initialize_From_Resource;
+
+   ----------------------------
+   -- Initialize_From_String --
+   ----------------------------
+
+   procedure Initialize_From_String
+      (Builder : not null access Gtk_Builder_Record'Class;
+       String  : UTF8_String;
+       Length  : Gssize)
+   is
+      function Internal
+         (String : Interfaces.C.Strings.chars_ptr;
+          Length : Gssize) return System.Address;
+      pragma Import (C, Internal, "gtk_builder_new_from_string");
+      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_Return : System.Address;
+   begin
+      if not Builder.Is_Created then
+         Tmp_Return := Internal (Tmp_String, Length);
+         Free (Tmp_String);
+         Set_Object (Builder, Tmp_Return);
+      end if;
+   end Initialize_From_String;
 
    -------------------
    -- Add_From_File --
@@ -487,6 +633,24 @@ package body Gtk.Builder is
       Free (Tmp_Type_Name);
       return Tmp_Return;
    end Get_Type_From_Name;
+
+   ----------------------------
+   -- Lookup_Callback_Symbol --
+   ----------------------------
+
+   procedure Lookup_Callback_Symbol
+      (Builder       : not null access Gtk_Builder_Record;
+       Callback_Name : UTF8_String)
+   is
+      procedure Internal
+         (Builder       : System.Address;
+          Callback_Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_builder_lookup_callback_symbol");
+      Tmp_Callback_Name : Interfaces.C.Strings.chars_ptr := New_String (Callback_Name);
+   begin
+      Internal (Get_Object (Builder), Tmp_Callback_Name);
+      Free (Tmp_Callback_Name);
+   end Lookup_Callback_Symbol;
 
    ----------------------------
    -- Set_Translation_Domain --

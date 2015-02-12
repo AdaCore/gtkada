@@ -22,9 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  A Gtk.Target_Entry.Gtk_Target_Entry structure represents a single type of
---  data than can be supplied for by a widget for a selection or for supplied
---  or received during drag-and-drop.
+--  A Gtk.Target_Entry.Gtk_Target_Entry represents a single type of data than
+--  can be supplied for by a widget for a selection or for supplied or received
+--  during drag-and-drop.
 --
 --  </description>
 pragma Ada_2005;
@@ -45,9 +45,9 @@ package Gtk.Target_Entry is
 
    function From_Object_Free (B : access Gtk_Target_Entry) return Gtk_Target_Entry;
    pragma Inline (From_Object_Free);
-   --  A Gtk.Target_Entry.Gtk_Target_Entry structure represents a single type
-   --  of data than can be supplied for by a widget for a selection or for
-   --  supplied or received during drag-and-drop.
+   --  A Gtk.Target_Entry.Gtk_Target_Entry represents a single type of data
+   --  than can be supplied for by a widget for a selection or for supplied or
+   --  received during drag-and-drop.
 
    ------------------
    -- Constructors --
@@ -58,7 +58,7 @@ package Gtk.Target_Entry is
        Target       : UTF8_String;
        Flags        : Gtk.Enums.Gtk_Target_Flags;
        Info         : Guint);
-   --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry structure.
+   --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry.
    --  "target": String identifier for target
    --  "flags": Set of flags, see Gtk.Enums.Gtk_Target_Flags
    --  "info": an ID that will be passed back to the application
@@ -67,7 +67,7 @@ package Gtk.Target_Entry is
       (Target : UTF8_String;
        Flags  : Gtk.Enums.Gtk_Target_Flags;
        Info   : Guint) return Gtk_Target_Entry;
-   --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry structure.
+   --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry.
    --  "target": String identifier for target
    --  "flags": Set of flags, see Gtk.Enums.Gtk_Target_Flags
    --  "info": an ID that will be passed back to the application
@@ -81,7 +81,7 @@ package Gtk.Target_Entry is
 
    procedure Free (Target_Entry : Gtk_Target_Entry);
    pragma Import (C, Free, "gtk_target_entry_free");
-   --  Frees a Gtk.Target_Entry.Gtk_Target_Entry structure returned from
+   --  Frees a Gtk.Target_Entry.Gtk_Target_Entry returned from
    --  gtk_target_entry_new or gtk_target_entry_copy.
 
 end Gtk.Target_Entry;

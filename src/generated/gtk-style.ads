@@ -25,8 +25,9 @@
 --  A Gtk.Style.Gtk_Style object encapsulates the information that provides
 --  the look and feel for a widget.
 --
---  <warning> In GTK+ 3.0, GtkStyle has been deprecated and replaced by
---  Gtk.Style_Context.Gtk_Style_Context. </warning>
+--  > In GTK+ 3.0, GtkStyle has been deprecated and replaced by >
+--  Gtk.Style_Context.Gtk_Style_Context.
+--
 --  Each Gtk.Widget.Gtk_Widget has an associated Gtk.Style.Gtk_Style object
 --  that is used when rendering that widget. Also, a Gtk.Style.Gtk_Style holds
 --  information for the five possible widget states though not every widget
@@ -84,12 +85,12 @@ package Gtk.Style is
    pragma Import (C, Get_Type, "gtk_style_get_type");
 
    procedure Gtk_New (Self : out Gtk_Border);
-   --  Allocates a new Gtk.Style.Gtk_Border structure and initializes its
+   --  Allocates a new Gtk.Style.Gtk_Border-struct and initializes its
    --  elements to zero.
    --  Since: gtk+ 2.14
 
    function Gtk_Border_New return Gtk_Border;
-   --  Allocates a new Gtk.Style.Gtk_Border structure and initializes its
+   --  Allocates a new Gtk.Style.Gtk_Border-struct and initializes its
    --  elements to zero.
    --  Since: gtk+ 2.14
 
@@ -110,7 +111,7 @@ package Gtk.Style is
        Width      : Gint;
        Height     : Gint);
    pragma Obsolescent (Apply_Default_Background);
-   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, 1
 
    function Attach
       (Style  : not null access Gtk_Style_Record;
@@ -121,26 +122,26 @@ package Gtk.Style is
    --  visual. The process may involve the creation of a new style if the style
    --  has already been attached to a window with a different style and visual.
    --  Since this function may return a new object, you have to use it in the
-   --  following way: 'style = gtk_style_attach (style, window)'
-   --  Deprecated since 3.0, Use Gtk.Widget.Style_Attach instead
+   --  following way: `style = gtk_style_attach (style, window)`
+   --  Deprecated since 3.0, 1
    --  "window": a Gdk.Gdk_Window.
 
    function Copy (Style : not null access Gtk_Style_Record) return Gtk_Style;
    pragma Obsolescent (Copy);
    --  Creates a copy of the passed in Gtk.Style.Gtk_Style object.
-   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, 1
 
    procedure Detach (Style : not null access Gtk_Style_Record);
    pragma Obsolescent (Detach);
    --  Detaches a style from a window. If the style is not attached to any
    --  windows anymore, it is unrealized. See Gtk.Style.Attach.
-   --  Deprecated since 3.0, Use Gtk.Style_Context.Gtk_Style_Context instead
+   --  Deprecated since 3.0, 1
 
    procedure Get_Style_Property
       (Style         : not null access Gtk_Style_Record;
        Widget_Type   : GType;
        Property_Name : UTF8_String;
-       Value         : in out Glib.Values.GValue);
+       Value         : out Glib.Values.GValue);
    --  Queries the value of a style property corresponding to a widget class
    --  is in the given style.
    --  Since: gtk+ 2.16
@@ -166,7 +167,7 @@ package Gtk.Style is
    --  cache the found mapping, because it depends on the Gtk.Style.Gtk_Style
    --  and might change when a theme switch occurs.
    --  Since: gtk+ 2.10
-   --  Deprecated since 3.0, Use Gtk.Style_Context.Lookup_Color instead
+   --  Deprecated since 3.0, 1
    --  "color_name": the name of the logical color to look up
    --  "color": the Gdk.Color.Gdk_Color to fill in
 
@@ -177,7 +178,7 @@ package Gtk.Style is
    pragma Obsolescent (Set_Background);
    --  Sets the background of Window to the background color or pixmap
    --  specified by Style for the given state.
-   --  Deprecated since 3.0, Use Gtk.Style_Context.Set_Background instead
+   --  Deprecated since 3.0, 1
    --  "window": a Gdk.Gdk_Window
    --  "state_type": a state
 

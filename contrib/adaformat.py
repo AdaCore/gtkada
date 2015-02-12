@@ -756,6 +756,20 @@ class AdaTypeArray(CType):
     def convert_to_c(self, pkg=None):
         return "%(var)s (%(var)s'First)'Address"
 
+    def convert_from_c(self):
+        # ??? This implementation is specialized for the Gtk.Clipboard pkg,
+        # which is the only place where we use it
+        c = ("Atom_Arrays.To_Array " +
+             "(Atom_Arrays.Convert (%(var)s), Integer (N_Atoms))")
+
+        return (self.param,       # name of Ada type
+                self.cparam,      # name of C type
+                c,                # convert from C to Ada
+                [                 # list of temporary variables needed
+                ],
+                self.cparam,      # name of C type for out parameters
+                c)                # convert from previous line to Ada type
+
 
 class AdaNaming(object):
 
@@ -808,7 +822,7 @@ class AdaNaming(object):
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
 
-    def case(self, name):
+    def case(self, name, protect=True):
         """Return the proper casing to use for 'name', taking keywords
            into account. This is for packages.
         """
@@ -816,7 +830,10 @@ class AdaNaming(object):
         if name.endswith("_"):
             name = name[:-1]
 
-        return self.protect_keywords(name)
+        if protect:
+            return self.protect_keywords(name)
+        else:
+            return name
 
     def protect_keywords(self, name):
         return ".".join(self.exceptions.get(n, n) for n in name.split("."))
@@ -890,8 +907,14 @@ class AdaNaming(object):
             t = UTF8_List()
         elif (cname in ("gint**", "int**")
               or name in ("array_of_gint", "array_of_guint", "array_of_gint8",
-                          "array_of_guint8")):
+                          "array_of_guint8", "array_of_guint16")):
             t = AdaTypeArray("gint")
+            isArray = True
+        elif name in ("array_of_Gdk.Atom", ):
+            t = AdaTypeArray("Gdk_Atom")
+            isArray = True
+        elif name in ("array_of_gdouble", ):
+            t = AdaTypeArray("gdouble")
             isArray = True
         elif cname == "void":
             return None
@@ -1865,7 +1888,7 @@ class Section(object):
 
         iscode = False
 
-        if isinstance(obj, str):
+        if isinstance(obj, str) or isinstance(obj, unicode):
             obj = Code(obj)
             iscode = True
         elif isinstance(obj, Package):
@@ -1903,11 +1926,12 @@ class Section(object):
                 if not in_spec:
                     continue
 
-                if isinstance(obj, Code):
+                if isinstance(obj, Code) or isinstance(obj, unicode):
                     code.append([obj])
 
-                else:
-                    name = base_name(obj.name).replace("Get_", "") \
+                elif isinstance(obj, Subprogram) or isinstance(obj, Package):
+                    b = base_name(obj.name)
+                    name = b.replace("Get_", "") \
                         .replace("Query_", "") \
                         .replace("Gtk_New", "") \
                         .replace("Gdk_New", "") \
@@ -1915,13 +1939,13 @@ class Section(object):
                         .replace("Set_From_", "") \
                         .replace("Set_", "")
 
-                    if base_name(obj.name) in ("Gtk_New", "Gdk_New", "G_New"):
+                    if b in ("Gtk_New", "Gdk_New", "G_New"):
                         # Always create a new group for Gtk_New, since they all
                         # have different parameters. But we still want to group
                         # Gtk_New and Initialize.
                         t = tmp["Gtk_New%d" % gtk_new_index] = [obj]
                         subprograms.append(t)
-                    elif base_name(obj.name) == "Initialize":
+                    elif b == "Initialize":
                         tmp["Gtk_New%d" % gtk_new_index].append(obj)
                         gtk_new_index += 1
                     elif name in tmp:
@@ -1929,6 +1953,10 @@ class Section(object):
                     else:
                         tmp[name] = [obj]
                         subprograms.append(tmp[name])
+
+                else:
+                    print("Unexpected contents in package %s\n" %
+                          (type(obj), ))
 
             return code + subprograms
 
@@ -1964,11 +1992,18 @@ class Section(object):
                     result += obj.spec(pkg=pkg,
                                        show_doc=show_doc,
                                        indent=indent).strip("\n") + "\n"
-                    add_newline = (obj.add_newline and show_doc)
+                    add_newline = (hasattr(obj, "add_newline")
+                                   and obj.add_newline
+                                   and show_doc)
 
-                else:
+                elif isinstance(obj, Package):
                     result += obj.spec().strip("\n") + "\n"
-                    add_newline = obj.add_newline
+                    add_newline = (hasattr(obj, "add_newline")
+                                   and obj.add_newline)
+
+                elif isinstance(obj, unicode):
+                    print("Not adding unicode to package: %s\n" % (
+                        obj.encode('UTF-8'), ))
 
         if add_newline:
             result += "\n"

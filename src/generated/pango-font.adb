@@ -66,6 +66,7 @@ package body Pango.Font is
       Enums.Pango_Weight_Medium      => "Medium    ",
       Enums.Pango_Weight_Semibold    => "Semi-Bold ",
       Enums.Pango_Weight_Bold        => "Bold      ",
+      Enums.Pango_Weight_Semilight   => "Semi-Light",
       Enums.Pango_Weight_Ultrabold   => "Bold      ",
       Enums.Pango_Weight_Ultraheavy  => "Ultraheavy",
       Enums.Pango_Weight_Heavy       => "Heavy     ");

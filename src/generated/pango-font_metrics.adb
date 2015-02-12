@@ -42,6 +42,30 @@ package body Pango.Font_Metrics is
       return S;
    end From_Object;
 
+   -------------
+   -- Gdk_New --
+   -------------
+
+   procedure Gdk_New (Self : out Pango_Font_Metrics) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "pango_font_metrics_new");
+   begin
+      Self.Set_Object (Internal);
+   end Gdk_New;
+
+   ----------------------------
+   -- Pango_Font_Metrics_New --
+   ----------------------------
+
+   function Pango_Font_Metrics_New return Pango_Font_Metrics is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "pango_font_metrics_new");
+      Self : Pango_Font_Metrics;
+   begin
+      Self.Set_Object (Internal);
+      return Self;
+   end Pango_Font_Metrics_New;
+
    --------------------------------
    -- Get_Approximate_Char_Width --
    --------------------------------

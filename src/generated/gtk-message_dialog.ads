@@ -22,12 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.Message_Dialog.Gtk_Message_Dialog presents a dialog with an image
---  representing the type of message (Error, Question, etc.) alongside some
---  message text. It's simply a convenience widget; you could construct the
---  equivalent of Gtk.Message_Dialog.Gtk_Message_Dialog from
---  Gtk.Dialog.Gtk_Dialog without too much effort, but
---  Gtk.Message_Dialog.Gtk_Message_Dialog saves typing.
+--  Gtk.Message_Dialog.Gtk_Message_Dialog presents a dialog with some message
+--  text. It's simply a convenience widget; you could construct the equivalent
+--  of Gtk.Message_Dialog.Gtk_Message_Dialog from Gtk.Dialog.Gtk_Dialog without
+--  too much effort, but Gtk.Message_Dialog.Gtk_Message_Dialog saves typing.
 --
 --  One difference from Gtk.Dialog.Gtk_Dialog is that
 --  Gtk.Message_Dialog.Gtk_Message_Dialog sets the
@@ -39,37 +37,29 @@
 --  automatically makes the dialog modal and waits for the user to respond to
 --  it. Gtk.Dialog.Run returns when any dialog button is clicked.
 --
---  == A modal dialog. ==
---
---    dialog = gtk_message_dialog_new (main_application_window,
---       GTK_DIALOG_DESTROY_WITH_PARENT,
---       GTK_MESSAGE_ERROR,
---       GTK_BUTTONS_CLOSE,
---       "Error loading file '%s': %s",
---       filename, g_strerror (errno));
---    gtk_dialog_run (GTK_DIALOG (dialog));
---    gtk_widget_destroy (dialog);
+--  An example for using a modal dialog: |[<!-- language="C" -->
+--  GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT; dialog =
+--  gtk_message_dialog_new (parent_window, flags, GTK_MESSAGE_ERROR,
+--  GTK_BUTTONS_CLOSE, "Error reading "%s": %s", filename, g_strerror (errno));
+--  gtk_dialog_run (GTK_DIALOG (dialog)); gtk_widget_destroy (dialog); ]|
 --
 --  You might do a non-modal Gtk.Message_Dialog.Gtk_Message_Dialog as follows:
 --
---  == A non-modal dialog. ==
+--  An example for a non-modal dialog: |[<!-- language="C" --> GtkDialogFlags
+--  flags = GTK_DIALOG_DESTROY_WITH_PARENT; dialog = gtk_message_dialog_new
+--  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "Error reading
+--  "%s": %s", filename, g_strerror (errno));
 --
---    dialog = gtk_message_dialog_new (main_application_window,
---       GTK_DIALOG_DESTROY_WITH_PARENT,
---       GTK_MESSAGE_ERROR,
---       GTK_BUTTONS_CLOSE,
---       "Error loading file '%s': %s",
---       filename, g_strerror (errno));
---    /* Destroy the dialog when the user responds to it (e.g. clicks a button) */
---    g_signal_connect_swapped (dialog, "response",
---       G_CALLBACK (gtk_widget_destroy),
---       dialog);
+--  // Destroy the dialog when the user responds to it // (e.g. clicks a
+--  button)
 --
---  == GtkMessageDialog as GtkBuildable ==
+--  g_signal_connect_swapped (dialog, "response", G_CALLBACK
+--  (gtk_widget_destroy), dialog); ]|
+--
+--  # GtkMessageDialog as GtkBuildable
 --
 --  The GtkMessageDialog implementation of the GtkBuildable interface exposes
 --  the message area as an internal child with the name "message_area".
---
 --
 --  </description>
 pragma Ada_2005;
@@ -110,10 +100,11 @@ package Gtk.Message_Dialog is
    --  appropriate, simply use Gtk.Message_Dialog.Buttons_None then call
    --  gtk_dialog_add_buttons.
    --
-   --  Note: Please note that Gtk.Message_Dialog.Buttons_Ok,
-   --  Gtk.Message_Dialog.Buttons_Yes_No and
-   --  Gtk.Message_Dialog.Buttons_Ok_Cancel are discouraged by the <ulink
-   --  url="http://library.gnome.org/devel/hig-book/stable/">GNOME HIG</ulink>.
+   --  > Please note that Gtk.Message_Dialog.Buttons_Ok,
+   --  Gtk.Message_Dialog.Buttons_Yes_No > and
+   --  Gtk.Message_Dialog.Buttons_Ok_Cancel are discouraged by the > [GNOME
+   --  Human Interface
+   --  Guidelines](http://library.gnome.org/devel/hig-book/stable/).
 
    ----------------------------
    -- Enumeration Properties --
@@ -137,16 +128,14 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "";
-       Arg5     : System.Address);
+       Message  : UTF8_String := "");
    procedure Initialize
       (Dialog   : not null access Gtk_Message_Dialog_Record'Class;
        Parent   : access Gtk.Window.Gtk_Window_Record'Class;
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "";
-       Arg5     : System.Address);
+       Message  : UTF8_String := "");
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text the user
    --  may want to see. When the user clicks a button a "response" signal is
@@ -163,8 +152,7 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "";
-       Arg5     : System.Address) return Gtk_Message_Dialog;
+       Message  : UTF8_String := "") return Gtk_Message_Dialog;
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text the user
    --  may want to see. When the user clicks a button a "response" signal is
@@ -182,33 +170,30 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "";
-       Arg5     : System.Address);
+       Message  : UTF8_String := "");
    procedure Initialize_With_Markup
       (Dialog   : not null access Gtk_Message_Dialog_Record'Class;
        Parent   : access Gtk.Window.Gtk_Window_Record'Class;
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "";
-       Arg5     : System.Address);
+       Message  : UTF8_String := "");
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text which is
-   --  marked up with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>. When the user clicks a button a "response" signal is
-   --  emitted with response IDs from Gtk_Response_Type. See
-   --  Gtk.Dialog.Gtk_Dialog for more details.
+   --  marked up with the [Pango text markup language][PangoMarkupFormat]. When
+   --  the user clicks a button a "response" signal is emitted with response
+   --  IDs from Gtk_Response_Type. See Gtk.Dialog.Gtk_Dialog for more details.
    --  Special XML characters in the printf arguments passed to this function
    --  will automatically be escaped as necessary. (See g_markup_printf_escaped
    --  for how this is implemented.) Usually this is what you want, but if you
    --  have an existing Pango markup string that you want to use literally as
    --  the label, then you need to use Gtk.Message_Dialog.Set_Markup instead,
    --  since you can't pass the markup string either as the format (it might
-   --  contain '%' characters) or as a string argument. |[ GtkWidget *dialog;
-   --  dialog = gtk_message_dialog_new (main_application_window,
-   --  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-   --  NULL); gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
-   --  markup); ]|
+   --  contain "%" characters) or as a string argument. |[<!-- language="C" -->
+   --  GtkWidget *dialog; GtkDialogFlags flags =
+   --  GTK_DIALOG_DESTROY_WITH_PARENT; dialog = gtk_message_dialog_new
+   --  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL);
+   --  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup); ]|
    --  Since: gtk+ 2.4
    --  "parent": transient parent, or null for none
    --  "flags": flags
@@ -221,25 +206,23 @@ package Gtk.Message_Dialog is
        Flags    : Gtk_Dialog_Flags;
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
-       Message  : UTF8_String := "";
-       Arg5     : System.Address) return Gtk_Message_Dialog;
+       Message  : UTF8_String := "") return Gtk_Message_Dialog;
    --  Creates a new message dialog, which is a simple dialog with an icon
    --  indicating the dialog type (error, warning, etc.) and some text which is
-   --  marked up with the <link linkend="PangoMarkupFormat">Pango text markup
-   --  language</link>. When the user clicks a button a "response" signal is
-   --  emitted with response IDs from Gtk_Response_Type. See
-   --  Gtk.Dialog.Gtk_Dialog for more details.
+   --  marked up with the [Pango text markup language][PangoMarkupFormat]. When
+   --  the user clicks a button a "response" signal is emitted with response
+   --  IDs from Gtk_Response_Type. See Gtk.Dialog.Gtk_Dialog for more details.
    --  Special XML characters in the printf arguments passed to this function
    --  will automatically be escaped as necessary. (See g_markup_printf_escaped
    --  for how this is implemented.) Usually this is what you want, but if you
    --  have an existing Pango markup string that you want to use literally as
    --  the label, then you need to use Gtk.Message_Dialog.Set_Markup instead,
    --  since you can't pass the markup string either as the format (it might
-   --  contain '%' characters) or as a string argument. |[ GtkWidget *dialog;
-   --  dialog = gtk_message_dialog_new (main_application_window,
-   --  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-   --  NULL); gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
-   --  markup); ]|
+   --  contain "%" characters) or as a string argument. |[<!-- language="C" -->
+   --  GtkWidget *dialog; GtkDialogFlags flags =
+   --  GTK_DIALOG_DESTROY_WITH_PARENT; dialog = gtk_message_dialog_new
+   --  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL);
+   --  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup); ]|
    --  Since: gtk+ 2.4
    --  "parent": transient parent, or null for none
    --  "flags": flags
@@ -256,34 +239,37 @@ package Gtk.Message_Dialog is
 
    procedure Format_Secondary_Markup
       (Dialog  : not null access Gtk_Message_Dialog_Record;
-       Message : UTF8_String := "";
-       Arg2    : System.Address);
+       Message : UTF8_String := "");
    --  Sets the secondary text of the message dialog to be Message_Format
-   --  (with printf-style), which is marked up with the <link
-   --  linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  (with printf-style), which is marked up with the [Pango text markup
+   --  language][PangoMarkupFormat].
    --  Due to an oversight, this function does not escape special XML
    --  characters like Gtk.Message_Dialog.Gtk_New_With_Markup does. Thus, if
    --  the arguments may contain special XML characters, you should use
    --  g_markup_printf_escaped to escape it.
-   --    gchar *msg;
-   --    msg = g_markup_printf_escaped (message_format, ...);
-   --    gtk_message_dialog_format_secondary_markup (message_dialog, "%s", msg);
-   --    g_free (msg);
+   --  |[<!-- language="C" --> gchar *msg;
+   --  msg = g_markup_printf_escaped (message_format, ...);
+   --  gtk_message_dialog_format_secondary_markup (message_dialog, "%s", msg);
+   --  g_free (msg); ]|
    --  Since: gtk+ 2.6
-   --  "message": printf-style markup string (see <link
-   --  linkend="PangoMarkupFormat">Pango markup format</link>), or null
+   --  "message": printf-style markup string (see [Pango markup
+   --  format][PangoMarkupFormat]), or null
 
    function Get_Image
       (Dialog : not null access Gtk_Message_Dialog_Record)
        return Gtk.Widget.Gtk_Widget;
+   pragma Obsolescent (Get_Image);
    --  Gets the dialog's image.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.12, 1
 
    procedure Set_Image
       (Dialog : not null access Gtk_Message_Dialog_Record;
        Image  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   pragma Obsolescent (Set_Image);
    --  Sets the dialog's image to Image.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.12, 1
    --  "image": the image
 
    function Get_Message_Area
@@ -291,20 +277,18 @@ package Gtk.Message_Dialog is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the message area of the dialog. This is the box where the
    --  dialog's primary and secondary labels are packed. You can add your own
-   --  extra content to that box and it will appear below those labels, on the
-   --  right side of the dialog's image (or on the left for right-to-left
-   --  languages). See Gtk.Dialog.Get_Content_Area for the corresponding
-   --  function in the parent Gtk.Dialog.Gtk_Dialog.
+   --  extra content to that box and it will appear below those labels. See
+   --  Gtk.Dialog.Get_Content_Area for the corresponding function in the parent
+   --  Gtk.Dialog.Gtk_Dialog.
    --  Since: gtk+ 2.22
 
    procedure Set_Markup
       (Dialog : not null access Gtk_Message_Dialog_Record;
        Str    : UTF8_String);
    --  Sets the text of the message dialog to be Str, which is marked up with
-   --  the <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+   --  the [Pango text markup language][PangoMarkupFormat].
    --  Since: gtk+ 2.4
-   --  "str": markup string (see <link linkend="PangoMarkupFormat">Pango
-   --  markup format</link>)
+   --  "str": markup string (see [Pango markup format][PangoMarkupFormat])
 
    ----------------
    -- Properties --
@@ -322,15 +306,13 @@ package Gtk.Message_Dialog is
 
    Message_Area_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
-   --  The Gtk.Box.Gtk_Vbox that corresponds to the message area of this
+   --  The Gtk.Box.Gtk_Box that corresponds to the message area of this
    --  dialog. See Gtk.Message_Dialog.Get_Message_Area for a detailed
    --  description of this area.
 
    Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type;
    --  Type: Gtk_Message_Type
-   --  The type of the message. The type is used to determine the image that
-   --  is shown in the dialog, unless the image is explicitly set by the
-   --  ::image property.
+   --  The type of the message.
 
    Secondary_Text_Property : constant Glib.Properties.Property_String;
    --  The secondary text of the message dialog.

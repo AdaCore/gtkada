@@ -104,6 +104,20 @@ package body Gtk.Arguments is
       return Gtk_Notebook_Page (Get_Proxy (Nth (Args, Guint (Num))));
    end To_Notebook_Page;
 
+   -------------------------------------
+   -- Unchecked_To_Gdk_Event_Sequence --
+   -------------------------------------
+
+   function Unchecked_To_Gdk_Event_Sequence
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Gdk.Event.Gdk_Event_Sequence
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gdk.Event.Gdk_Event_Sequence (Get_Proxy (Val));
+   end Unchecked_To_Gdk_Event_Sequence;
+
    ----------------
    -- To_Address --
    ----------------

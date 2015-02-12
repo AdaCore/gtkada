@@ -34,6 +34,8 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
+with Cairo;             use Cairo;
+with Gdk;               use Gdk;
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
 with Glib;              use Glib;
 with Gtk.Enums;         use Gtk.Enums;
@@ -109,6 +111,7 @@ package Gtk.Icon_Set is
    procedure Add_Source
       (Self   : Gtk_Icon_Set;
        Source : Gtk.Icon_Source.Gtk_Icon_Source);
+   pragma Obsolescent (Add_Source);
    --  Icon sets have a list of Gtk.Icon_Source.Gtk_Icon_Source, which they
    --  use as base icons for rendering icons in different states and sizes.
    --  Icons are scaled, made to look insensitive, etc. in
@@ -130,17 +133,24 @@ package Gtk.Icon_Set is
    --  sources to the icon set does not matter.
    --  gtk_icon_set_new_from_pixbuf creates a new icon set with a default icon
    --  source based on the given pixbuf.
+   --  Deprecated since 3.10, 1
    --  "source": a Gtk.Icon_Source.Gtk_Icon_Source
 
    function Copy (Self : Gtk_Icon_Set) return Gtk_Icon_Set;
+   pragma Obsolescent (Copy);
    --  Copies Icon_Set by value.
+   --  Deprecated since 3.10, 1
 
    function Get_Sizes (Self : Gtk_Icon_Set) return Gint_Array;
+   pragma Obsolescent (Get_Sizes);
    --  Obtains a list of icon sizes this icon set can render. The returned
    --  array must be freed with g_free.
+   --  Deprecated since 3.10, 1
 
    function Ref (Self : Gtk_Icon_Set) return Gtk_Icon_Set;
+   pragma Obsolescent (Ref);
    --  Increments the reference count on Icon_Set.
+   --  Deprecated since 3.10, 1
 
    function Render_Icon
       (Self      : Gtk_Icon_Set;
@@ -157,7 +167,7 @@ package Gtk.Icon_Set is
    --  returns null; if the icon can't be rendered (perhaps because an image
    --  file fails to load), a default "missing image" icon will be returned
    --  instead.
-   --  Deprecated since 3.0, Use Gtk.Icon_Set.Render_Icon_Pixbuf instead
+   --  Deprecated since 3.0, 1
    --  "style": a Gtk.Style.Gtk_Style associated with Widget, or null
    --  "direction": text direction
    --  "state": widget state
@@ -173,6 +183,7 @@ package Gtk.Icon_Set is
       (Self    : Gtk_Icon_Set;
        Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
        Size    : Gtk.Enums.Gtk_Icon_Size) return Gdk.Pixbuf.Gdk_Pixbuf;
+   pragma Obsolescent (Render_Icon_Pixbuf);
    --  Renders an icon using gtk_render_icon_pixbuf. In most cases,
    --  Gtk.Widget.Render_Icon_Pixbuf is better, since it automatically provides
    --  most of the arguments from the current widget settings. This function
@@ -180,13 +191,36 @@ package Gtk.Icon_Set is
    --  image file fails to load), a default "missing image" icon will be
    --  returned instead.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.10, 1
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "size": icon size. A size of (GtkIconSize)-1 means render at the size
    --  of the source and don't scale.
 
+   function Render_Icon_Surface
+      (Self       : Gtk_Icon_Set;
+       Context    : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       Size       : Gtk.Enums.Gtk_Icon_Size;
+       Scale      : Gint;
+       For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface;
+   pragma Obsolescent (Render_Icon_Surface);
+   --  Renders an icon using gtk_render_icon_pixbuf and converts it to a cairo
+   --  surface.
+   --  This function never returns null; if the icon can't be rendered
+   --  (perhaps because an image file fails to load), a default "missing image"
+   --  icon will be returned instead.
+   --  Since: gtk+ 3.10
+   --  Deprecated since 3.10, 1
+   --  "context": a Gtk.Style_Context.Gtk_Style_Context
+   --  "size": icon size. A size of (GtkIconSize)-1 means render at the size
+   --  of the source and don't scale.
+   --  "scale": the window scale to render for
+   --  "for_window": Gdk.Gdk_Window to optimize drawing for, or null
+
    procedure Unref (Self : Gtk_Icon_Set);
+   pragma Obsolescent (Unref);
    --  Decrements the reference count on Icon_Set, and frees memory if the
    --  reference count reaches 0.
+   --  Deprecated since 3.10, 1
 
    ----------------------
    -- GtkAda additions --

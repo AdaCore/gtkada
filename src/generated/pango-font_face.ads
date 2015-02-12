@@ -21,6 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  The Pango.Font_Face.Pango_Font_Face structure is used to represent a group
+--  of fonts with the same family, slant, weight, width, but varying sizes.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
