@@ -747,6 +747,8 @@ package body Gtkada.MDI is
       then
          Set_Focus_Child (C);
       end if;
+
+      C.MDI.Delay_Before_Focus_Id := No_Source_Id;
       return False;
    end After_Focus_Child_MDI_Floating;
 
