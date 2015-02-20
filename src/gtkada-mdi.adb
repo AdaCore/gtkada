@@ -842,6 +842,20 @@ package body Gtkada.MDI is
          Win.Set_Focus (null);
       end if;
 
+      --  However, we still want to report that the child was unselected.
+      --  In the context of GPS for instance, this means that pressing
+      --  Backspace in a dialog (codepeer messages) correctly sends it to
+      --  the dialog, and not to the last editor that had the focus.
+      --
+      --  This might break contextual menus though, since they steal the
+      --  focus but still need to know the previous context.
+      --  So in GPS we ended up doing our own GPS_Dialog which connects to
+      --  Focus_In and disables the child selection in the MDI.
+
+      if False then
+         Child_Selected (M, null);
+      end if;
+
       return False;
    end Toplevel_Focus_Out;
 
