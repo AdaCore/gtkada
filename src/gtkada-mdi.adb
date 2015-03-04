@@ -4411,10 +4411,18 @@ package body Gtkada.MDI is
       begin
          if Child.Icon_Name = null then
             Gtk_New (Child.Tab_Icon);
+            Child.Tab_Icon.Hide;
          else
             Gtk_New_From_Icon_Name
-               (Child.Tab_Icon, Child.Icon_Name.all, Icon_Size_In_Tabs);
+              (Child.Tab_Icon, Child.Icon_Name.all, Icon_Size_In_Tabs);
+            Child.Tab_Icon.Show_All;
          end if;
+
+         --  The visibility of the Tab_Icon should be controlled by
+         --  the actual presence of the icon. Set it to No_Show_All
+         --  so that it does not take up space if the icon is not set.
+         Child.Tab_Icon.Set_No_Show_All (No_Show_All => True);
+
          Box.Pack_Start (Child.Tab_Icon, Expand => False, Padding => 1);
       end Add_Icon;
 
