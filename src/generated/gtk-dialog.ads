@@ -406,6 +406,16 @@ package Gtk.Dialog is
    --  with the following line:
    --    gtk-dialogs-use-header=0
 
+   procedure G_New_Dialog
+     (Self  : not null access Gtk_Dialog_Record'Class;
+      Flags : Gtk_Dialog_Flags;
+      Typ   : Glib.GType := Gtk.Dialog.Get_Type);
+   --  Equivalent of Glib.Object.G_New for a dialog. This function should be
+   --  used when you are subclassing the dialog class (for instance to add new
+   --  signals). The Use_Header_Bar flag can only have an impact before the
+   --  dialog is created, so this function will take that into account as
+   --  appropriate. Other flags (Modal and Destroy_With_Parent) are ignored.
+
    ----------------
    -- Properties --
    ----------------

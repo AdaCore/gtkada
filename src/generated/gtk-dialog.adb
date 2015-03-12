@@ -35,6 +35,20 @@ pragma Warnings(On);
 
 package body Gtk.Dialog is
 
+   procedure G_New_Dialog
+     (Self  : not null access Gtk_Dialog_Record'Class;
+      Flags : Gtk_Dialog_Flags;
+      Typ   : Glib.GType := Gtk.Dialog.Get_Type)
+   is
+      function Internal
+        (Typ : GType; Flags : Gtk_Dialog_Flags) return System.Address;
+      pragma Import (C, Internal, "ada_g_dialog_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Typ, Flags));
+      end if;
+   end G_New_Dialog;
+
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
       New_Order : Response_Type_Array)

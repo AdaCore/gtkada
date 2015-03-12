@@ -260,6 +260,15 @@ ada_g_object_new (GType object_type)
   return g_object_new (object_type, NULL);
 }
 
+gpointer
+ada_g_dialog_new (GType object_type, GtkDialogFlags flags)
+{
+   return g_object_new
+      (object_type,
+       "use-header-bar", (flags & GTK_DIALOG_USE_HEADER_BAR) != 0,
+       NULL);
+}
+
 void
 ada_g_object_get_ulong (gpointer object,
 		        const gchar *property_name,

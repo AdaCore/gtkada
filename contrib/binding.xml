@@ -1394,11 +1394,35 @@ See Gtk_Text_View for a multiple-line text editing widget.
    --    $HOME/.config/gtk-3.0/settings.ini
    --  with the following line:
    --    gtk-dialogs-use-header=0
+
+   procedure G_New_Dialog
+      (Self  : not null access Gtk_Dialog_Record'Class;
+       Flags : Gtk_Dialog_Flags;
+       Typ   : Glib.GType := Gtk.Dialog.Get_Type);
+   --  Equivalent of Glib.Object.G_New for a dialog. This function should be
+   --  used when you are subclassing the dialog class (for instance to add new
+   --  signals). The Use_Header_Bar flag can only have an impact before the
+   --  dialog is created, so this function will take that into account as
+   --  appropriate. Other flags (Modal and Destroy_With_Parent) are ignored.
         </spec>
 
         <with_body pkg="Gtk.Settings" />
         <with_body pkg="Glib.Properties" />
         <body>
+   procedure G_New_Dialog
+      (Self  : not null access Gtk_Dialog_Record'Class;
+       Flags : Gtk_Dialog_Flags;
+       Typ   : Glib.GType := Gtk.Dialog.Get_Type)
+   is
+      function Internal
+         (Typ : GType; Flags : Gtk_Dialog_Flags) return System.Address;
+      pragma Import (C, Internal, "ada_g_dialog_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Typ, Flags));
+      end if;
+   end G_New_Dialog;
+
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
       New_Order : Response_Type_Array)
