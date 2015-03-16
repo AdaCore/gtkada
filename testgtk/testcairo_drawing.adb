@@ -103,7 +103,7 @@ package body Testcairo_Drawing is
       case Win.Test is
          when Image =>
             if Background = null then
-               Gdk_New_From_File (Background, "background.jpg", Error);
+               Gdk_New_From_File (Background, "background.png", Error);
             end if;
 
             Gdk.Cairo.Set_Source_Pixbuf (Cr, Background, 10.0, 10.0);

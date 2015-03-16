@@ -58,7 +58,7 @@ package body Create_Pixbuf is
       7 => new String'("gnome-gsame.png"),
       8 => new String'("gnu-keys.png"));
 
-   Background_Name : constant String := "background.jpg";
+   Background_Name : constant String := "background.png";
    Gif_Image       : constant String := "dancing-penguin.gif";
 
    Frame_Delay : constant Guint := 40;
