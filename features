@@ -9,6 +9,29 @@ An ISO date (YYYY-MM-DD) appears in parentheses after the
 description line. This date shows the implementation date
 of the feature.
 
+New features in GtkAda 3.14.1
+-----------------------------
+
+N606-015 Transition to Gtk 3.14 (2015-03-06)
+
+   GtkAda now supports Gtk+ 3.14.x.
+   A number of new APIs have been introduced in existing packages.
+
+   The following new packages have been introduced:
+
+    Glib.Notification
+    Gtk.Action_Bar
+    Gtk.Event_Controller
+    Gtk.Flow_Box
+    Gtk.Flow_Box_Child
+    Gtk.Gesture    (and a number of Gtk.Gesture_*)
+    Gtk.Header_Bar
+    Gtk.List_Box
+    Gtk.Popover
+    Gtk.Revealer
+    Gtk.Stack
+    Gtk.Stack_Switcher
+
 New features in GtkAda 3.8.3
 ----------------------------
 
