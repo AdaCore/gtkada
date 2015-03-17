@@ -2091,6 +2091,13 @@ ada_gtk_application_shutdown (GtkApplication *application) {
 #endif
 }
 
+void
+ada_gtk_app_activate (void){
+#ifdef GDK_WINDOWING_QUARTZ
+  ada_activate_app();
+#endif
+}
+
 #ifdef GDK_WINDOWING_QUARTZ
 /* Enable the full-screen button on OSX for the main window */
 static void

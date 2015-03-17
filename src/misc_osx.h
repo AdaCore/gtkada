@@ -59,4 +59,8 @@ init_osx_open_files_event_handler
  */
 void ada_gtk_osx_allow_fullscreen (GtkWindow *window);
 
+/* Activates the app
+ */
+void ada_activate_app(void);
+
 #endif

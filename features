@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 3.14.1
 -----------------------------
 
+O317-025 New API for Activating the application under Mac OS (2015-03-17)
+
+   A new API Glib.Main.Activate_Application can be used to give
+   the focus to the frontmost window of the executable udner Mac OS X.
+
 N606-015 Transition to Gtk 3.14 (2015-03-06)
 
    GtkAda now supports Gtk+ 3.14.x.

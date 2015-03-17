@@ -268,3 +268,13 @@ void ada_gtk_osx_allow_fullscreen (GtkWindow *window)
     }
 }
 
+/********************
+ * ada_activate_app *
+ ********************/
+
+void ada_activate_app (void)
+{
+  if (![NSApp isActive])
+     [NSApp activateIgnoringOtherApps:YES];
+}
+

@@ -319,4 +319,15 @@ package body Glib.Main is
       return Boolean'Val (Internal (Source));
    end Get_Can_Recurse;
 
+   --------------------------
+   -- Activate_Application --
+   --------------------------
+
+   procedure Activate_Application is
+      procedure Internal;
+      pragma Import (C, Internal, "ada_gtk_app_activate");
+   begin
+      Internal;
+   end Activate_Application;
+
 end Glib.Main;

@@ -395,6 +395,16 @@ package Glib.Main is
       pragma Convention (C, General_Cb);
    end Generic_Sources;
 
+   --------------------------
+   -- Application handling --
+   --------------------------
+
+   procedure Activate_Application;
+   --  Under Mac OS X, calling this is the equivalent of activating the
+   --  application: the frontmost window gains the input focus and active
+   --  decorations.
+   --  Under other platform, this has no effects.
+
 private
    No_Source_Id : constant G_Source_Id := 0;
 
