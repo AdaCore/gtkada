@@ -1055,6 +1055,11 @@ package body Glib.Graphs.Layouts is
       is
          Info : Layout_Info;
       begin
+         --  If the graph is empty, nothing to do
+         if Max_Index (G) = -1 then
+            return;
+         end if;
+
          Info.Horizontal           := Horizontal;
          Info.Space_Between_Items  := Space_Between_Items;
          Info.Space_Between_Layers := Space_Between_Layers;

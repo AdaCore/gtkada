@@ -64,7 +64,7 @@ package body Glib.Graphs is
    -- Max_Index --
    ---------------
 
-   function Max_Index (G : Graph) return Natural is
+   function Max_Index (G : Graph) return Integer is
    begin
       return G.Last_Vertex_Index - 1;
    end Max_Index;

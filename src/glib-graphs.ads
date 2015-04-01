@@ -134,8 +134,9 @@ package Glib.Graphs is
    --  Return the uniq index associated with the vertex. Each vertex has a
    --  different index from Min_Vertex_Index to Max_Index (Graph)
 
-   function Max_Index (G : Graph) return Natural;
+   function Max_Index (G : Graph) return Integer;
    --  Return the maximum index used for vertices in the graph.
+   --  Return -1 if the graph is empty.
 
    --------------------------
    -- Breadth First Search --
