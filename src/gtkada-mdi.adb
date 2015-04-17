@@ -3917,14 +3917,19 @@ package body Gtkada.MDI is
    begin
       Note.Set_Tab_Pos (Pos);
 
+      Get_Style_Context (Note).Remove_Class ("rightTabs");
+      Get_Style_Context (Note).Remove_Class ("leftTabs");
+      Get_Style_Context (Note).Remove_Class ("bottomTabs");
+
       case Pos is
-         when Pos_Top | Pos_Bottom =>
-            Get_Style_Context (Note).Remove_Class ("rightTabs");
-            Get_Style_Context (Note).Remove_Class ("leftTabs");
+         when Pos_Top =>
+            null;
          when Pos_Left =>
             Get_Style_Context (Note).Add_Class ("leftTabs");
          when Pos_Right =>
             Get_Style_Context (Note).Add_Class ("rightTabs");
+         when Pos_Bottom =>
+            Get_Style_Context (Note).Add_Class ("bottomTabs");
       end case;
 
       On_Tab_Orientation (Note, MDI_Notebook (Note).Tab_Orientation);
