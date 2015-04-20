@@ -17,6 +17,11 @@ O317-025 New API for Activating the application under Mac OS (2015-03-17)
    A new API Glib.Main.Activate_Application can be used to give
    the focus to the frontmost window of the executable under Mac OS X.
 
+N701-030 New API for adding fonts to an application (2015-04-20)
+
+   A new package Fontconfig has been added, adding an API to add fonts
+   to the application.
+
 N606-015 Transition to Gtk 3.14 (2015-03-06)
 
    GtkAda now supports Gtk+ 3.14.x.

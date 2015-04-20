@@ -276,7 +276,7 @@ AC_DEFUN(AM_PATH_GTK,
     
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
-    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
+    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 fontconfig --libs`
 
     dnl force some explicit flags, like -framework Cocoa. On some machines,
     dnl these are added automatically by pkg-config, but not systematically.

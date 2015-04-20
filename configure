@@ -3603,7 +3603,7 @@ $as_echo_n "checking for GTK - version >= $min_gtk_version... " >&6; }
 
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
-    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 --libs`
+    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 fontconfig --libs`
 
             GTK_LIBS="$GTK_LIBS $LDFLAGS"
 
