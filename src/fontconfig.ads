@@ -29,5 +29,6 @@ package Fontconfig is
    --  Adds an application-specific font to the configuration.
    --  Return True if the font was added successfully.
    --  Filename is the full path to the font file.
+   --  This only works on UNIX/Linux.
 
 end Fontconfig;
