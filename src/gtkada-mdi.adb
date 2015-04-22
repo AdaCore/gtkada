@@ -4164,6 +4164,12 @@ package body Gtkada.MDI is
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy = Always);
       end if;
 
+      if Notebook.Get_Show_Tabs then
+         Get_Style_Context (Notebook).Remove_Class ("noTabs");
+      else
+         Get_Style_Context (Notebook).Add_Class ("noTabs");
+      end if;
+
       Child := MDI_Child (Get_Nth_Page (Notebook, 0));
       if Child /= null then
          Set_Property
