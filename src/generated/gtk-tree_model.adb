@@ -183,8 +183,16 @@ package body Gtk.Tree_Model is
       else
          declare
             S : constant String := Interfaces.C.Strings.Value (A);
+
+            procedure C_Free (S : Interfaces.C.Strings.chars_ptr);
+            pragma Import (C, C_Free, "free");
+
          begin
-            Interfaces.C.Strings.Free (A);
+            --  Since A was allocated by gtk+ via malloc(), and not via
+            --  System.Memory, we should not be using Interfaces.C.Strings.Free
+            --  which goes through System.Memory. So we call free() directly
+            --  instead.
+            C_Free (A);
             return S;
          end;
       end if;

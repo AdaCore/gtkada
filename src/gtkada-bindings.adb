@@ -186,10 +186,17 @@ package body Gtkada.Bindings is
       end if;
 
       declare
+         procedure C_Free (S : chars_ptr);
+         pragma Import (C, C_Free, "free");
+
          Val : constant String := Value (Str);
-         Tmp : chars_ptr := Str;
       begin
-         Free (Tmp);
+         --  Since Str was allocated by gtk+ via malloc(), and not via
+         --  System.Memory, we should not be using Interfaces.C.Strings.Free
+         --  which goes through System.Memory. So we call free() directly
+         --  instead.
+         C_Free (Str);
+
          return Val;
       end;
    end Value_And_Free;
