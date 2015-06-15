@@ -21,20 +21,35 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../gtkada";
 with "../../shared";
+with "../gtkada";
 
-project Tools is
-   for Main use ("gdialog.adb");
-   for Object_Dir use "../obj/tools/";
+library project GtkAda_GL is
+   case Shared.Build_Opengl is
+       when "True"  =>
+          for Source_Dirs use (".");
+          for Languages use ("Ada", "C");
+       when "False" =>
+          for Source_Dirs use ("no_opengl");
+   end case;
 
-   package Builder  is
-      for Switches ("Ada") use Shared.Builder'Switches ("Ada");
-      for Executable ("gdialog.adb") use "gtkada-dialog";
-   end Builder;
+   for Library_Kind use Shared.Library_Kind;
+   for Library_Name use "gtkada_gl";
+   for Object_Dir use "../obj/" & Project'Library_Name & "/" & Project'Library_Kind;
+   for Library_Dir use "../lib/" & Project'Library_Name & "/" & Project'Library_Kind;
+   for Library_Version use
+      "lib" & Project'Library_Name & Shared.So_Ext & "." & Shared.Version;
 
-   package Compiler renames Shared.Compiler;
-   package Binder   renames Shared.Binder;
+   package Builder  renames Shared.Builder;
+   package Compiler is
+      for Switches ("C") use Shared.Compiler'Switches ("C")
+         & Shared.GL_Include;
+      for Switches ("Ada") use Shared.Compiler'Switches ("Ada");
+   end Compiler;
+
    package IDE      renames Shared.IDE;
 
-end Tools;
+   package Linker is
+      for Linker_Options use Shared.GL_Libs;
+   end Linker;
+end GtkAda_GL;

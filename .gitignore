@@ -5,11 +5,10 @@
 *.pyc
 b__conftest.ad?
 auto.cgpr
+autom4te.cache/
 /Makefile
-docs/gtkada_rm/Makefile
 docs/gtkada_rm/doc_obj/
 docs/gtkada_ug/_build
-docs/Makefile
 src/Makefile
 src/gnome/Makefile
 src/gtkextra/Makefile
@@ -24,13 +23,6 @@ config.status
 shared.gpr
 contrib/generated/*.ad?
 contrib/generated/tmp.ada
-projects/Makefile
-projects/gtkada.gpr
-projects/gtkada_gl.gpr
-projects/gtkada.pc
-projects/gtkada_install_dynamic.gpr
-projects/gtkada_install_dynamic_gl.gpr
-projects/gtkada_gnome.gpr
 src/Makefile.common
 src/config.h
 src/gtkada-intl.adb
@@ -40,7 +32,6 @@ src/obj
 src/gnome/obj/libgnomeada-*
 src/opengl/obj/libgtkada_gl-*
 src/tools/gate
-src/tools/gtkada-config
 src/tools/obj
 testgtk.exe
 testgtk/obj
@@ -56,5 +47,3 @@ docs/gtkada_ug/gtkada_ug.html
 docs/gtkada_ug/gtkada_ug.info
 docs/gtkada_ug/gtkada_ug.ps
 docs/gtkada_ug/gtkada_ug.txt
-
-

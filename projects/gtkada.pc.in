@@ -1,8 +1,0 @@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-Name: GtkAda
-Description: Ada binding for gtk+-2.0
-Version: @PACKAGE_VERSION@
-Requires: gtk+-2.0
-Libs: -L@libdir@ -lgtkada
-Cflags: -aI@includedir@/gtkada -aO@libdir@/gtkada

@@ -5,34 +5,24 @@ SHELL=/bin/sh
 	clean distclean mostlyclean maintainer-clean \
 	install src tests docs generate tools
 
-doc_dir     = docs
-projects_dir = projects
-PYTHON       = python
-CP           = cp -p -f
-MKDIR        = mkdir -p
-CHMOD        = chmod
-INSTALL      = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-
-ifeq (${OS}, Windows_NT)
-LN_S         = ${CP}
-EXEEXT       = .exe
-else
-LN_S         = ln -s
-EXEEXT       =
-endif
+doc_dir = docs
+PYTHON  = python
 
 TARGET=@TARGET@
 ifeq ($(TARGET),)
 GPRBUILD=@GPRBUILD@
+GPRINSTALL=@GPRINSTALL@
 else
 GPRBUILD=@GPRBUILD@ --target=${TARGET}
+GPRINSTALL=@GPRINSTALL@ --target=${TARGET}
 endif
 
 # Number of parallel compilation
 PROCESSORS   = 0
 
 GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p
+GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=lib/gnat \
+	--build-var=LIBRARY_TYPE
 
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
@@ -50,11 +40,8 @@ bindir=${DESTDIR}@bindir@
 datadir=${DESTDIR}@datadir@
 datarootdir=${DESTDIR}@datarootdir@
 exampledir=${DESTDIR}${prefix}/share/examples/gtkada/testgtk
-gpsdir=${DESTDIR}${prefix}/share/gps/plug-ins/
 
 all:
-
-install: install_dirs
 
 ifeq (${BUILD_STATIC}, yes)
 all: static
@@ -76,9 +63,9 @@ tools:
 
 build_library_type/%:  src/gtkada-intl.adb
 	@echo "====== Building $(@F) libraries ====="
-	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/gtkada_src.gpr
+	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
 ifeq (${HAVE_OPENGL}, True)
-	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/opengl/opengl.gpr
+	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/opengl/gtkada_gl.gpr
 endif
 
 src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
@@ -91,69 +78,31 @@ tests: testgtk/opengl/view_gl.adb static
 	@echo "====== Building tests ====="
 	${GPRBUILD_FULL} -XLIBRARY_TYPE=static -Ptestgtk/testgtk.gpr
 
-install/static/%: force
-	@${MKDIR} ${libdir}/${TARNAME}/static/
-	${CP} src/lib/$(@F)/static/* ${libdir}/${TARNAME}/static/
-	${CHMOD} ugo-w ${libdir}/${TARNAME}/static/*.ali
-
-install/relocatable/%: force
-	@${MKDIR} ${libdir}/${TARNAME}/relocatable/
-	${CP} src/lib/${@F}/relocatable/* ${libdir}/${TARNAME}/relocatable
-	${CHMOD} ugo-w ${libdir}/${TARNAME}/relocatable/*.ali
-	cd ${libdir}; ${RM} lib$(@F)@SO_EXT@ lib$(@F)@SO_EXT@.${basename ${VERSION}} lib$(@F)@SO_EXT@.${VERSION}
-ifneq (${OS},Windows_NT)
-	${RM} ${libdir}/${TARNAME}/relocatable/lib$(@F)@SO_EXT@
-	${RM} ${libdir}/${TARNAME}/relocatable/lib$(@F)@SO_EXT@.${basename ${VERSION}}
-	cd ${libdir}/${TARNAME}/relocatable; ${LN_S} lib$(@F)@SO_EXT@.${VERSION} lib$(@F)@SO_EXT@
-	cd ${libdir}/${TARNAME}/relocatable; ${LN_S} lib$(@F)@SO_EXT@.${VERSION} lib$(@F)@SO_EXT@.${basename ${VERSION}}
-	cd ${libdir}; ${LN_S} ${TARNAME}/relocatable/lib$(@F)@SO_EXT@.${VERSION} lib$(@F)@SO_EXT@.${basename ${VERSION}}
-	cd ${libdir}; ${LN_S} ${TARNAME}/relocatable/lib$(@F)@SO_EXT@.${VERSION} lib$(@F)@SO_EXT@.${VERSION}
-else
-	${CP} ${libdir}/${TARNAME}/relocatable/lib$(@F)@SO_EXT@ ${bindir}/
+install/%: force
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
+		--sources-subdir=include/gtkada/gtkada.$(@F) \
+		--lib-subdir=lib/gtkada/gtkada.$(@F) \
+		-Psrc/gtkada.gpr
+ifeq (${HAVE_OPENGL}, True)
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) \
+		--install-name=gtkada  --build-name=$(@F) \
+		--sources-subdir=include/gtkada/gtkada_gl.$(@F) \
+		--lib-subdir=lib/gtkada/gtkada_gl.$(@F) \
+		-Psrc/opengl/gtkada_gl.gpr
 endif
 
-ifeq (${HAVE_OPENGL},True)
-install/static: install/static/gtkada_gl
-install/relocatable: install/relocatable/gtkada_gl
+install-clean:
+ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/gtkada))
+	-$(GPRINSTALL) --uninstall -f --prefix=$(prefix) \
+		--project-subdir=lib/gnat gtkada
 endif
 
-install/static: install/static/gtkada
-install/relocatable: install/relocatable/gtkada
-
-install_dirs:
-	${MKDIR} ${includedir}/${TARNAME}
-	${MKDIR} ${DESTDIR}${prefix}/lib/gnat/${TARNAME}
-	${MKDIR} ${bindir}
-	${MKDIR} ${gpsdir}
-	${MKDIR} ${exampledir}
-
-SRCDIRS=src/ src/generated/
-
-install:
-	@${CP} ${wildcard ${addsuffix *.ad[bs], ${SRCDIRS}}} ${includedir}/${TARNAME}
-ifeq (${OS},Windows_NT)
-	@${CP} ${wildcard ${addsuffix *.[hc], ${SRCDIRS}}} ${includedir}/${TARNAME}
-endif
-	@cd ${includedir}/${TARNAME}; ls ${notdir ${wildcard ${addsuffix *.ad[bs], ${SRCDIRS}}}} > ${DESTDIR}${prefix}/lib/gnat/${TARNAME}/gtkada.lgpr
-
-ifeq (${HAVE_OPENGL},True)
-	@${CP} ${wildcard ${addsuffix *.ad[bs], src/opengl/}} ${includedir}/${TARNAME}
-	@cd ${includedir}/${TARNAME}; ls ${notdir ${wildcard ${addsuffix *.ad[bs], src/opengl/}}} > ${DESTDIR}${prefix}/lib/gnat/${TARNAME}/gtkada_gl.lgpr
-endif
-
-	@# install executables
-	${INSTALL_PROGRAM} src/tools/gtkada-config ${bindir}
-	${INSTALL_PROGRAM} src/obj/tools/gtkada-dialog${EXEEXT} ${bindir}
-
-	@# install testgtk
-	-${INSTALL_PROGRAM} testgtk/testgtk${EXEEXT} ${exampledir}
-	${CP} testgtk/*.ad? testgtk/*.xpm testgtk/*.png testgtk/*.gif testgtk/*.lwo testgtk/*.xml testgtk/*.css testgtk/*.ui ${exampledir}
-
-	$(MAKE) -C $(projects_dir) install
-	$(MAKE) -C $(doc_dir) install
-
-	@# install GPS support
-	${CP} xml/gtkada.xml ${gpsdir}
+install: install-clean
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static --install-name=gtkada \
+		--mode=usage -Psrc/tools/tools.gpr
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static --install-name=gtkada \
+		--mode=usage --exec-subdir=${exampledir} \
+		-Ptestgtk/testgtk.gpr
 
 	@echo '-----------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                                   --'
@@ -191,7 +140,7 @@ mostlyclean-generic: clean-generic
 
 clean/%: force
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/tools/tools.gpr
-	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/opengl/opengl.gpr
+	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/opengl/gtkada_gl.gpr
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Ptestgtk/testgtk.gpr
 
 clean: clean-generic clean/static clean/relocatable
@@ -199,7 +148,6 @@ clean: clean-generic clean/static clean/relocatable
 distclean: mostlyclean-generic
 	-${RM} config.cache config.log config.status
 	-$(MAKE) -C $(doc_dir) distclean
-	-$(MAKE) -C $(projects_dir) distclean
 	-$(MAKE) -C po distclean
 
 mostlyclean: mostlyclean-generic

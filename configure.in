@@ -18,7 +18,6 @@ case $build_os in
 esac
 
 AM_PATH_GNAT
-AC_PROG_INSTALL
 
 CHECK_BUILD_TYPE     # are we in devel mode ?
 
@@ -37,7 +36,7 @@ AM_CHECK_OPENGL
 
 libdir='${prefix}/lib'
 
-AC_OUTPUT(Makefile shared.gpr src/tools/gtkada-config projects/Makefile docs/Makefile docs/gtkada_rm/Makefile po/Makefile src/config.h projects/gtkada.gpr projects/gtkada_gl.gpr projects/gtkada.pc projects/gtkada_install_dynamic.gpr projects/gtkada_install_dynamic_gl.gpr)
+AC_OUTPUT(Makefile shared.gpr po/Makefile src/config.h)
 
 AC_MSG_NOTICE([--------- Summary for Gtkada $PACKAGE_VERSION -----------------])
 AC_MSG_NOTICE(AC_HELP_STRING(

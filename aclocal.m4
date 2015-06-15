@@ -175,6 +175,7 @@ conftest_ok="conftest.ok"
 AC_DEFUN(AM_PATH_GNAT,
 [
    AC_PATH_PROG(GPRBUILD, gprbuild, no)
+   AC_PATH_PROG(GPRINSTALL, gprinstall, no)
 
    if test x$GPRBUILD = xno ; then
       AC_MSG_ERROR(I could not find gprbuild. See the file 'INSTALL' for more details.)
@@ -273,7 +274,7 @@ AC_DEFUN(AM_PATH_GTK,
     if test $? != 0 ; then
        AC_MSG_ERROR([old version detected])
     fi
-    
+
     GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
     GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
     GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 fontconfig --libs`
