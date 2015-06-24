@@ -260,8 +260,6 @@ package body Gtkada.Canvas_View.Views is
       X, Y    : Model_Coordinate;
    begin
       if Self.Model /= null
-        and then (Event.Event_Type = Button_Press
-                  or else Event.Event_Type = In_Drag)
         and then Event.Button = 1
         and then Event.Toplevel_Item = null
       then
