@@ -260,10 +260,11 @@ package body Gtkada.Canvas_View.Views is
       X, Y    : Model_Coordinate;
    begin
       if Self.Model /= null
-        and then Event.Button = 1
         and then Event.Toplevel_Item = null
       then
-         if Event.Event_Type = Button_Press then
+         if Event.Event_Type = Button_Press
+           and then Event.Button = 1
+         then
             --  Enable scrolling by dragging the background. However, there is
             --  no point showing an area where there is no item, so we limit
             --  the scrolling.
