@@ -794,6 +794,7 @@ package body Gtkada.Canvas_View is
       Self.In_Drag := False;
       Self.Dragged_Items.Clear;
       Self.Last_Button_Press.Allowed_Drag_Area := No_Drag_Allowed;
+      Self.Grab_Remove;
    end Cancel_Drag;
 
    ---------------------
@@ -818,10 +819,7 @@ package body Gtkada.Canvas_View is
             return False;
          elsif Details.Event_Type = Button_Press then
             Cancel_Inline_Editing (Self);
-            Self.Grab_Add;
             Self.Grab_Focus;
-         elsif Details.Event_Type = Button_Release then
-            Self.Grab_Remove;
          end if;
 
          if Event.The_Type = Gdk.Event.Button_Release
@@ -928,6 +926,7 @@ package body Gtkada.Canvas_View is
                Dummy := Self.Item_Event (Details'Unchecked_Access);
 
                Self.Topleft_At_Drag_Start := Self.Topleft;
+               Self.Grab_Add;
 
                --  ??? Should add all selected items
                if Details.Toplevel_Item /= null
