@@ -22,7 +22,7 @@ PROCESSORS   = 0
 
 GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p
 GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=lib/gnat \
-	--build-var=LIBRARY_TYPE
+	--build-var=LIBRARY_TYPE --install-name=gtkada --prefix=$(prefix)
 
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
@@ -84,8 +84,7 @@ install/%: force
 		--lib-subdir=lib/gtkada/gtkada.$(@F) \
 		-Psrc/gtkada.gpr
 ifeq (${HAVE_OPENGL}, True)
-	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) \
-		--install-name=gtkada  --build-name=$(@F) \
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
 		--sources-subdir=include/gtkada/gtkada_gl.$(@F) \
 		--lib-subdir=lib/gtkada/gtkada_gl.$(@F) \
 		-Psrc/opengl/gtkada_gl.gpr
@@ -98,9 +97,9 @@ ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/gtkada))
 endif
 
 install: install-clean
-	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static --install-name=gtkada \
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static \
 		--mode=usage -Psrc/tools/tools.gpr
-	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static --install-name=gtkada \
+	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static \
 		--mode=usage --exec-subdir=${exampledir} \
 		-Ptestgtk/testgtk.gpr
 
