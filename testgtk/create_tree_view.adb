@@ -250,17 +250,19 @@ package body Create_Tree_View is
       Gtk_New (Toggle_Render);
 
       Gtk_New (Col);
+      Col.Set_Resizable (True);
       Num := Append_Column (Tree, Col);
       Set_Sort_Column_Id (Col, Text_Column);
       Set_Title (Col, "First column");
       Pack_Start (Col, Text_Render, True);
-      Set_Sizing (Col, Tree_View_Column_Autosize);
+      --  Set_Sizing (Col, Tree_View_Column_Autosize);
       Add_Attribute (Col, Text_Render, "text", Text_Column);
       Add_Attribute (Col, Text_Render, "strikethrough", Strike_Column);
       Add_Attribute (Col, Text_Render, "editable", Editable_Column);
       Add_Attribute (Col, Text_Render, "foreground", Foreground_Column);
 
       Gtk_New (Col);
+      Col.Set_Resizable (True);
       Set_Sort_Column_Id (Col, -1);  --  unsortable
       Num := Append_Column (Tree, Col);
       Set_Title (Col, "Second column");
