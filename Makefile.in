@@ -76,7 +76,7 @@ testgtk/opengl/view_gl.adb: testgtk/opengl/view_gl.gpb Makefile
 
 tests: testgtk/opengl/view_gl.adb static
 	@echo "====== Building tests ====="
-	${GPRBUILD_FULL} -XLIBRARY_TYPE=static -Ptestgtk/testgtk.gpr
+	cd testgtk; ${GPRBUILD_FULL} -XLIBRARY_TYPE=static -Ptestgtk.gpr -aP ../src
 
 install/%: force
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
@@ -99,9 +99,9 @@ endif
 install: install-clean
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static \
 		--mode=usage -Psrc/tools/tools.gpr
-	${GPRINSTALL_FULL} -XLIBRARY_TYPE=static \
+	cd testgtk; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=static \
 		--mode=usage --exec-subdir=${exampledir} \
-		-Ptestgtk/testgtk.gpr
+		-Ptestgtk.gpr -aP ../src
 
 	@echo '-----------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                                   --'
