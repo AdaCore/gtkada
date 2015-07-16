@@ -429,9 +429,9 @@ ada_gdk_pixbuf_save (GdkPixbuf  *pixbuf,
 void
 ada_g_log (const gchar    *log_domain,
 	   GLogLevelFlags  log_level,
-	   const gchar    *format)
+	   const gchar    *message)
 {
-  g_log (log_domain, log_level, format);
+  g_log (log_domain, log_level, "%s", message);
 }
 
 void

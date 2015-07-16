@@ -81,8 +81,10 @@ package body Glib.Option is
          Error : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_option_context_parse");
 
+      pragma Warnings (Off, "possible aliasing problem for*");
       function Convert is new Ada.Unchecked_Conversion
         (System.Address, chars_ptr_array_access);
+      pragma Warnings (On, "possible aliasing problem for*");
 
       Argc : aliased Glib.Gint;
       Argv : chars_ptr_array_access;

@@ -252,8 +252,10 @@ package body Gtkada.Canvas_View is
 
    function GValue_To_Abstract_Item (Value : GValue) return Abstract_Item is
       S : constant System.Address := Get_Address (Value);
+      pragma Warnings (Off, "possible aliasing problem*");
       function Unchecked_Convert is new Ada.Unchecked_Conversion
         (System.Address, Abstract_Item);
+      pragma Warnings (On, "possible aliasing problem*");
    begin
       return Unchecked_Convert (S);
    end GValue_To_Abstract_Item;
@@ -264,8 +266,10 @@ package body Gtkada.Canvas_View is
 
    function GValue_To_EDA (Value : GValue) return Event_Details_Access is
       S : constant System.Address := Get_Address (Value);
+      pragma Warnings (Off, "possible aliasing problem*");
       function Unchecked_Convert is new Ada.Unchecked_Conversion
         (System.Address, Event_Details_Access);
+      pragma Warnings (On, "possible aliasing problem*");
    begin
       return Unchecked_Convert (S);
    end GValue_To_EDA;
