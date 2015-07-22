@@ -239,21 +239,6 @@ AC_DEFUN(AM_PATH_GNATPREP,
 
 #############################################################
 #
-#  Checking for Perl
-#
-#############################################################
-
-AC_DEFUN(AM_PATH_PERL,
-[
-   AC_PATH_PROGS(PERL, perl5 perl)
-
-   ### We don't really have any need for a specific version
-   ### of perl for the moment, so we don't verify it.
-
-])
-
-#############################################################
-#
 # Configure paths for GTK+
 # Input:
 #    $1=minimal version of gtk+ needed
