@@ -39,6 +39,7 @@ library project GtkAda_GL is
    for Library_Dir use "../lib/" & Project'Library_Name & "/" & Project'Library_Kind;
    for Library_Version use
       "lib" & Project'Library_Name & Shared.So_Ext & "." & Shared.Version;
+   for Library_Options use Shared.GL_Libs;
 
    package Builder  renames Shared.Builder;
    package Compiler is
