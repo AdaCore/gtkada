@@ -25,7 +25,7 @@ PRJDIR=lib/gnat
 
 GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p
 GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=$(PRJDIR) \
-	--build-var=LIBRARY_TYPE --install-name=gtkada --prefix=$(prefix)
+	--build-var=LIBRARY_TYPE --install-name=gtkada --prefix=${DESTDIR}$(prefix)
 
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
@@ -37,12 +37,10 @@ VERSION=@PACKAGE_VERSION@
 DESTDIR=
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-includedir=${DESTDIR}@includedir@
-libdir=${DESTDIR}@libdir@
-bindir=${DESTDIR}@bindir@
-datadir=${DESTDIR}@datadir@
-datarootdir=${DESTDIR}@datarootdir@
-exampledir=${DESTDIR}${prefix}/share/examples/gtkada/testgtk
+libdir=@libdir@
+datadir=@datadir@
+datarootdir=@datarootdir@
+exampledir=${datadir}/examples/gtkada/testgtk
 
 all:
 
@@ -94,7 +92,7 @@ install/%: force
 ifeq (${HAVE_OPENGL}, True)
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
 		--sources-subdir=include/gtkada/gtkada_gl.$(@F) \
-		--lib-subdir=lib/gtkada/gtkada_gl.$(@F) \
+		--lib-subdir=${libdir}/gtkada/gtkada_gl.$(@F) \
 		-Psrc/opengl/gtkada_gl.gpr
 endif
 
