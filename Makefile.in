@@ -20,8 +20,11 @@ endif
 # Number of parallel compilation
 PROCESSORS   = 0
 
+# Location (under $prefix) where the project files should be copied
+PRJDIR=lib/gnat
+
 GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p
-GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=lib/gnat \
+GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=$(PRJDIR) \
 	--build-var=LIBRARY_TYPE --install-name=gtkada --prefix=$(prefix)
 
 GETTEXT_INTL=@GETTEXT_INTL@
