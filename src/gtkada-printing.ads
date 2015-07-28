@@ -136,7 +136,7 @@ package Gtkada.Printing is
    --  Gtk.Print_Operation.Set_Unit before starting the print operation to set
    --  up the transformation of the cairo context according to your needs.
    --
-   --  This is the main printing handler. This has to be overriden for the
+   --  This is the main printing handler. This has to be overridden for the
    --  printing operation to work.
 
    procedure Begin_Print

@@ -164,7 +164,7 @@ package Gtkada.MDI is
    --  This default CSS renders the active tab of the active notebook with the
    --  color defined in Focus_Title_Color. Same for the color of the title
    --  bar (uses Title_Bar_Color for non-active title bar).
-   --  This behavior can at any point be overriden by users by defining
+   --  This behavior can at any point be overridden by users by defining
    --  their own and load it at run-time.
    --
    --  Since the move to gtk3, the highlighting of the current tab is left to
@@ -448,7 +448,7 @@ package Gtkada.MDI is
 
    procedure Child_Drag_Finished (Child  : access MDI_Child_Record);
    --  Called when a drag operation is either aborted or completed. It should
-   --  be overriden if special cleanup should be done.
+   --  be overridden if special cleanup should be done.
 
    -----------
    -- Menus --

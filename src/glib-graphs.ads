@@ -84,7 +84,7 @@ package Glib.Graphs is
 
    procedure Destroy (V : in out Vertex) is null;
    --  Destroy the memory occupied by the vertex. This doesn't remove the
-   --  vertex from the graph. This subprogram must be overriden.
+   --  vertex from the graph. This subprogram must be overridden.
    --  This subprogram shouldn't (and in fact can't) free V itself.
 
    procedure Destroy (G : in out Graph);

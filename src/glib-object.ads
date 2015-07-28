@@ -593,7 +593,7 @@ package Glib.Object is
       type Data_Type (<>) is private;
    package User_Data is
       type On_Destroyed_Callback is access procedure (Data : Data_Type);
-      --  On_Destroyed is called when the data is overriden in the object, by
+      --  On_Destroyed is called when the data is overridden in the object, by
       --  an other object with the same ID, or when the object itself is
       --  destroyed
 

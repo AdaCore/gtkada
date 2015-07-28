@@ -256,9 +256,9 @@ package Gtkada.Canvas is
    procedure Draw_Background
      (Canvas : access Interactive_Canvas_Record;
       Cr     : Cairo.Cairo_Context);
-   --  Draw the background of the canvas. This procedure should be overriden if
-   --  you want to draw something else on the background. It must first clear
-   --  the area on the screen.
+   --  Draw the background of the canvas. This procedure should be overridden
+   --  if you want to draw something else on the background. It must first
+   --  clear the area on the screen.
    --
    --  The default implementation draws a grid.
    --
@@ -731,7 +731,7 @@ package Gtkada.Canvas is
       X1, Y1    : Glib.Gdouble;
       Dest_Side : Item_Side;
       X2, Y2    : Glib.Gdouble);
-   --  Draw a straight link between two points. This could be overriden if you
+   --  Draw a straight link between two points. This could be overridden if you
    --  need to draw an something along the link.
    --  The links goes from (Src, X1, Y1) to (Dest, X2, Y2), in canvas
    --  coordinates. The coordinates have already been clipped so that they do
@@ -791,7 +791,7 @@ package Gtkada.Canvas is
       X, Y : Glib.Gint) return Boolean;
    --  This function should return True if (X, Y) is inside the item. X and Y
    --  are in world coordinates.
-   --  This function is meant to be overriden for non-rectangular items, since
+   --  This function is meant to be overridden for non-rectangular items, since
    --  the default behavior works for rectangular items.
    --  This function is never called for invisible items
 
