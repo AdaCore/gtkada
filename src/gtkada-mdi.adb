@@ -3640,6 +3640,21 @@ package body Gtkada.MDI is
       --  Note: the following works because we are connected after the standard
       --  keypress event. Otherwise, standard keys in the child (space in
       --  editors most notably) will not work as expected.
+
+      --  We do not want to forward to the main window any event.
+      --  For instance, a simple character key press sent to a floating
+      --  tree view should not be sent to a docked editor.
+
+      --  We are interested in forwarding only a very specific set of
+      --  key events, for instance the alt-<character> combinations that
+      --  would open a menu.
+      --  The test below is a coarse-grain for this.
+      --  ??? We should probably do the opposite: rather than passing all
+      --  events, only pass those that are known to be of interest.
+      if Get_State (Event) = 0 then
+         return False;
+      end if;
+
       if Get_Event_Type (Event) = Key_Press then
          return Return_Callback.Emit_By_Name
            (Win, Signal_Key_Press_Event, Event);
