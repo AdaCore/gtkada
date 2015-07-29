@@ -831,6 +831,7 @@ package body Gtkada.MDI is
       pragma Unreferenced (Event);
       M   : constant MDI_Window := MDI_Window (MDI);
       Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (M));
+      Focus_Child : constant MDI_Child := M.Get_Focus_Child;
    begin
       --  This doesn't work, because the current MDI child remains valid,
       --  but will no longer have the focus when the main window gains the
@@ -854,6 +855,15 @@ package body Gtkada.MDI is
 
       if False then
          Child_Selected (M, null);
+      end if;
+
+      --  When we are focusing out of the toplevel, we need to remember
+      --  which child had the focus, so we can give the focus back to this
+      --  child as soon as the main window gets the focus back.
+      if Focus_Child /= null
+        and then Focus_Child.Get_Widget.Get_Toplevel = Gtk_Widget (Win)
+      then
+         M.Focus_Child_In_Main_Window := Focus_Child;
       end if;
 
       return False;
@@ -929,14 +939,11 @@ package body Gtkada.MDI is
          if M.Focus_Child = null then
             Win.Set_Focus (null);
          elsif M.Focus_Child.State = Floating then
-            W := Win.Get_Focus;
-            if W /= null then
-               C := Find_MDI_Child_From_Widget (W);
-               if C = null then
-                  null;
-               else
-                  Win.Set_Focus (null);
-               end if;
+            if M.Focus_Child_In_Main_Window /= null then
+               --  Give the focus back to the widget that last had the focus
+               --  in the main window.
+               Give_Focus_To_Child (M.Focus_Child_In_Main_Window);
+               M.Set_Focus_Child (M.Focus_Child_In_Main_Window);
             else
                Win.Set_Focus (null);
             end if;
@@ -1840,6 +1847,10 @@ package body Gtkada.MDI is
       --  since Give_Focus_To_Previous_Child has been called already
       if C = MDI.Focus_Child then
          MDI.Focus_Child := null;
+      end if;
+
+      if C = MDI.Focus_Child_In_Main_Window then
+         MDI.Focus_Child_In_Main_Window := null;
       end if;
 
       In_Selection_Dialog := MDI.Selection_Dialog /= null
