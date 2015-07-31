@@ -1721,6 +1721,7 @@ package body Gtkada.MDI is
       MDI   : constant MDI_Window := Child.MDI;
       Event : Gdk_Event;
       Prevent_Delete : Boolean;
+      Focus_Child : MDI_Child;
    begin
       --  Don't do anything for now if the MDI isn't realized, since we
       --  can't send create the event anyway.
@@ -1773,7 +1774,16 @@ package body Gtkada.MDI is
                Give_Focus_To_Previous_Child (Child);
             end if;
 
+            --  The call to Float_Child below will change the focus_child
+            --  to the child we are about to destroy! Save the focus_child
+            --  here...
+            Focus_Child := MDI.Focus_Child;
+
+            --  ... unfloat...
             Float_Child (Child, False);
+
+            --- ... and restore the focus child.
+            MDI.Set_Focus_Child (Focus_Child);
 
             Print_Debug ("Close_Child: about to destroy " & Get_Title (Child));
             Destroy (Child);
