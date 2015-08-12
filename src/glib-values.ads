@@ -125,12 +125,19 @@ package Glib.Values is
    procedure Set_Uchar (Value : in out GValue; V_Uchar : Guchar);
    function  Get_Uchar (Value : GValue) return Guchar;
 
+   procedure Init_Set_Boolean (Value : in out GValue; V : Boolean);
    procedure Set_Boolean (Value : in out GValue; V_Boolean : Boolean);
    function  Get_Boolean (Value : GValue) return Boolean;
+   --  Set_Boolean must only be called when Init has already been used.
+   --  Otherwise use Init_Set_Boolean.
 
+   procedure Init_Set_Int (Value : in out GValue; V : Gint);
    procedure Set_Int (Value : in out GValue; V_Int : Gint);
    function  Get_Int (Value : GValue) return Gint;
+   --  Set_Int must only be called when Init has already been used.
+   --  Otherwise use Init_Set_Int.
 
+   procedure Init_Set_Uint (Value : in out GValue; V : Guint);
    procedure Set_Uint (Value : in out GValue; V_Uint : Guint);
    function  Get_Uint (Value : GValue) return Guint;
 
@@ -146,6 +153,7 @@ package Glib.Values is
    procedure Set_Double (Value : in out GValue; V_Double : Gdouble);
    function  Get_Double (Value : GValue) return Gdouble;
 
+   procedure Init_Set_String (Value : in out GValue; V : String);
    procedure Set_String (Value : in out GValue; V_String : String);
    function  Get_String (Value : GValue) return String;
    function  Get_String (Value : GValue; Length : Gint) return String;

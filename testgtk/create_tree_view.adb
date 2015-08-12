@@ -158,23 +158,14 @@ package body Create_Tree_View is
          --  is more efficient in practice since gtk+ does not have to traverse
          --  the tree for each cell, only once for each row
 
-         Init (Values (Text_Column), GType_String);
-         Set_String (Values (Text_Column), Text);
-
-         Init (Values (Strike_Column), GType_Boolean);
-         Set_Boolean (Values (Strike_Column), Striken);
-
-         Init (Values (Editable_Column), GType_Boolean);
-         Set_Boolean (Values (Editable_Column), Editable);
-
-         Init (Values (Active_Column), GType_Boolean);
-         Set_Boolean (Values (Active_Column), Active);
-
-         Init (Values (Foreground_Column), GType_String);
+         Init_Set_String (Values (Text_Column), Text);
+         Init_Set_Boolean (Values (Strike_Column), Striken);
+         Init_Set_Boolean (Values (Editable_Column), Editable);
+         Init_Set_Boolean (Values (Active_Column), Active);
          if Editable then
-            Set_String (Values (Foreground_Column), "red");
+            Init_Set_String (Values (Foreground_Column), "red");
          else
-            Set_String (Values (Foreground_Column), "black");
+            Init_Set_String (Values (Foreground_Column), "black");
          end if;
 
          Model.Set (Iter, Values);
@@ -187,7 +178,6 @@ package body Create_Tree_View is
          Set (Model, Iter, Strike_Column, Striken);
          Set (Model, Iter, Active_Column, Active);
          Set (Model, Iter, Editable_Column, Editable);
-
          if Editable then
             Set (Model, Iter, Foreground_Column, "red");
          else

@@ -139,6 +139,16 @@ package body Glib.Values is
       Internal (Value, Boolean'Pos (V_Boolean));
    end Set_Boolean;
 
+   ----------------------
+   -- Init_Set_Boolean --
+   ----------------------
+
+   procedure Init_Set_Boolean (Value : in out GValue; V : Boolean) is
+   begin
+      Init (Value, GType_Boolean);
+      Set_Boolean (Value, V);
+   end Init_Set_Boolean;
+
    ----------------
    -- Set_Object --
    ----------------
@@ -154,6 +164,36 @@ package body Glib.Values is
    begin
       Internal (Value, Glib.Object.Convert (Glib.Object.GObject (To)));
    end Set_Object;
+
+   ---------------------
+   -- Init_Set_String --
+   ---------------------
+
+   procedure Init_Set_String (Value : in out GValue; V : String) is
+   begin
+      Init (Value, GType_String);
+      Set_String (Value, V);
+   end Init_Set_String;
+
+   ------------------
+   -- Init_Set_Int --
+   ------------------
+
+   procedure Init_Set_Int (Value : in out GValue; V : Gint) is
+   begin
+      Init (Value, GType_Int);
+      Set_Int (Value, V);
+   end Init_Set_Int;
+
+   -------------------
+   -- Init_Set_Uint --
+   -------------------
+
+   procedure Init_Set_Uint (Value : in out GValue; V : Guint) is
+   begin
+      Init (Value, GType_Uint);
+      Set_Uint (Value, V);
+   end Init_Set_Uint;
 
    ----------------
    -- Set_String --
