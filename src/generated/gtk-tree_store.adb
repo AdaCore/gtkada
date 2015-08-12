@@ -201,6 +201,40 @@ package body Gtk.Tree_Store is
       end if;
    end Set;
 
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array)
+   is
+      procedure Internal
+        (Self       : System.Address;
+         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Columns    : System.Address;
+         Values     : System.Address;
+         N_Values   : Gint);
+      pragma Import (C, Internal, "gtk_tree_store_set_valuesv");
+   begin
+      if Columns'Length = Values'Length then
+         Internal (Get_Object (Self), Iter,
+            Columns (Columns'First)'Address,
+            Values (Values'First)'Address, Values'Length);
+      end if;
+   end Set;
+
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array)
+   is
+      Columns : Gint_Array (Integer (Values'First) .. Integer (Values'Last));
+   begin
+      for C in Columns'Range loop
+         Columns (C) := Gint (C);
+      end loop;
+      Set (Self, Iter, Columns, Values);
+   end Set;
+
    procedure C_Gtk_Tree_Model_Foreach
       (Tree_Model : System.Address;
        Func       : System.Address;

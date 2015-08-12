@@ -501,6 +501,22 @@ package Gtk.List_Store is
       Column     : Gint;
       Value      : Gdk.Pixbuf.Gdk_Pixbuf);
 
+   procedure Set
+     (Self       : not null access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array);
+   pragma Precondition (Columns'Length = Values'Length);
+   --  A variant of Set which takes the columns and valus as two arrays.
+   --  This is more efficient when changing multiple values than calling
+   --  one of the Set procedures above multiple times.
+
+   procedure Set
+     (Self       : not null access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array);
+   --  A variant of the above that is used to set all the columns.
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------

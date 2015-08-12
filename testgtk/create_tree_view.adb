@@ -146,24 +146,55 @@ package body Create_Tree_View is
       Active   : Boolean := False;
       Parent   : Gtk_Tree_Iter := Null_Iter) return Gtk_Tree_Iter
    is
-      Iter : Gtk_Tree_Iter;
-   begin
-      --  The implementation here is not the most efficient: it is often easier
-      --  to import yourself the function gtk_tree_store_set with the correct
-      --  set of arguments, as shown in the example in gtk-tree_store.ads
+      Example1 : constant Boolean := True;
 
+      Iter : Gtk_Tree_Iter;
+      Values : GValue_Array (Text_Column .. Foreground_Column);
+   begin
       Append (Model, Iter, Parent);
 
-      Set (Model, Iter, Text_Column, Text);
-      Set (Model, Iter, Strike_Column, Striken);
-      Set (Model, Iter, Active_Column, Active);
-      Set (Model, Iter, Editable_Column, Editable);
+      if Example1 then
+         --  First approach: set an GValue_Array. This requires more code, but
+         --  is more efficient in practice since gtk+ does not have to traverse
+         --  the tree for each cell, only once for each row
 
-      if Editable then
-         Set (Model, Iter, Foreground_Column, "red");
+         Init (Values (Text_Column), GType_String);
+         Set_String (Values (Text_Column), Text);
+
+         Init (Values (Strike_Column), GType_Boolean);
+         Set_Boolean (Values (Strike_Column), Striken);
+
+         Init (Values (Editable_Column), GType_Boolean);
+         Set_Boolean (Values (Editable_Column), Editable);
+
+         Init (Values (Active_Column), GType_Boolean);
+         Set_Boolean (Values (Active_Column), Active);
+
+         Init (Values (Foreground_Column), GType_String);
+         if Editable then
+            Set_String (Values (Foreground_Column), "red");
+         else
+            Set_String (Values (Foreground_Column), "black");
+         end if;
+
+         Model.Set (Iter, Values);
+
       else
-         Set (Model, Iter, Foreground_Column, "black");
+         --  Second approach: set each cell individually. This is somewhat
+         --  easier to code, but might be slower.
+
+         Set (Model, Iter, Text_Column, Text);
+         Set (Model, Iter, Strike_Column, Striken);
+         Set (Model, Iter, Active_Column, Active);
+         Set (Model, Iter, Editable_Column, Editable);
+
+         if Editable then
+            Set (Model, Iter, Foreground_Column, "red");
+         else
+            Set (Model, Iter, Foreground_Column, "black");
+         end if;
       end if;
+
       return Iter;
    end Add_Line;
 

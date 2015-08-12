@@ -511,6 +511,22 @@ package Gtk.Tree_Store is
       Column     : Gint;
       Value      : Glib.Object.GObject);
 
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array);
+   pragma Precondition (Columns'Length = Values'Length);
+   --  A variant of Set which takes the columns and valus as two arrays.
+   --  This is more efficient when changing multiple values than calling
+   --  one of the Set procedures above multiple times.
+
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array);
+   --  A variant of the above that is used to set all the columns.
+
    function Freeze_Sort
      (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class)
    return Gint;

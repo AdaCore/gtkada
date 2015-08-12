@@ -7143,7 +7143,7 @@ direction, widget state, or icon size.
        <parameter name="value" ctype="GValue" />
      </method>
      <method id="gtk_list_store_set_valist" bind="False"/> <!-- valist -->
-     <method id="gtk_list_store_set_valuesv" bind="False"/> <!-- valist -->
+     <method id="gtk_list_store_set_valuesv" bind="False"/> <!-- manually -->
      <method id="gtk_list_store_remove" return="void">
        <parameter name="iter" direction="inout"/>
        <body>%(auto)s
@@ -7173,6 +7173,23 @@ Iter := Gtk.Tree_Model.Null_Iter;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : Gdk.Pixbuf.Gdk_Pixbuf);
+
+   procedure Set
+     (Self       : not null access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array);
+   pragma Precondition (Columns'Length = Values'Length);
+   --  A variant of Set which takes the columns and valus as two arrays.
+   --  This is more efficient when changing multiple values than calling
+   --  one of the Set procedures above multiple times.
+
+   procedure Set
+     (Self       : not null access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array);
+   --  A variant of the above that is used to set all the columns.
+
        </spec>
        <body>
    procedure Set
@@ -7238,6 +7255,40 @@ Iter := Gtk.Tree_Model.Null_Iter;
    begin
       Internal (Get_Object (Tree_Store), Iter, Column, Get_Object (Value));
    end Set;
+
+   procedure Set
+     (Self       : not null access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array)
+   is
+      procedure Internal
+         (Self       : System.Address;
+          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Columns    : System.Address;
+          Values     : System.Address;
+          N_Values   : Gint);
+      pragma Import (C, Internal, "gtk_tree_store_set_valuesv");
+   begin
+      if Columns'Length = Values'Length then
+         Internal (Get_Object (Self), Iter,
+                   Columns (Columns'First)'Address,
+                   Values (Values'First)'Address, Values'Length);
+      end if;
+   end Set;
+
+   procedure Set
+     (Self       : not null access Gtk_List_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array)
+   is
+      Columns : Gint_Array (Integer (Values'First) .. Integer (Values'Last));
+   begin
+      for C in Columns'Range loop
+         Columns (C) := Gint (C);
+      end loop;
+      Set (Self, Iter, Columns, Values);
+   end Set;
        </body>
      </extra>
    </package>
@@ -7266,7 +7317,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
      </method>
      <method id="gtk_tree_store_insert_with_valuesv" bind="False"/> <!-- valist -->
      <method id="gtk_tree_store_set_valist" bind="False"/> <!-- valist -->
-     <method id="gtk_tree_store_set_valuesv" bind="False"/> <!-- valist -->
+     <method id="gtk_tree_store_set_valuesv" bind="False"/> <!-- manually -->
      <extra>
        <spec>
    generic
@@ -7334,6 +7385,22 @@ Iter := Gtk.Tree_Model.Null_Iter;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : Glib.Object.GObject);
+
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array);
+   pragma Precondition (Columns'Length = Values'Length);
+   --  A variant of Set which takes the columns and valus as two arrays.
+   --  This is more efficient when changing multiple values than calling
+   --  one of the Set procedures above multiple times.
+
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array);
+   --  A variant of the above that is used to set all the columns.
 
    function Freeze_Sort
      (Tree : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class)
@@ -7515,6 +7582,41 @@ package body Generic_Set is
          Internal (Get_Object (Tree_Store), Iter, Column, Get_Object (Value));
       end if;
    end Set;
+
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns    : Glib.Gint_Array;
+      Values     : Glib.Values.GValue_Array)
+   is
+      procedure Internal
+         (Self       : System.Address;
+          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Columns    : System.Address;
+          Values     : System.Address;
+          N_Values   : Gint);
+      pragma Import (C, Internal, "gtk_tree_store_set_valuesv");
+   begin
+      if Columns'Length = Values'Length then
+         Internal (Get_Object (Self), Iter,
+                   Columns (Columns'First)'Address,
+                   Values (Values'First)'Address, Values'Length);
+      end if;
+   end Set;
+
+   procedure Set
+     (Self       : not null access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values     : Glib.Values.GValue_Array)
+   is
+      Columns : Gint_Array (Integer (Values'First) .. Integer (Values'Last));
+   begin
+      for C in Columns'Range loop
+         Columns (C) := Gint (C);
+      end loop;
+      Set (Self, Iter, Columns, Values);
+   end Set;
+
        </body>
      </extra>
    </package>
