@@ -197,7 +197,7 @@ package Glib.Generic_Properties is
       --  Unset_Value is raised if the property is not set
 
       procedure Set_Value
-        (Value  : out Glib.Values.GValue;
+        (Value  : in out Glib.Values.GValue;
          Val    : Boxed_Type);
       --  Store Val in Value. The latter is properly initialized, and reference
       --  counting is handled automatically. You must Unset Value when you are

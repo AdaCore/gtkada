@@ -37,6 +37,7 @@ with Gtk.Tree_Store;           use Gtk.Tree_Store;
 with Gtk.Tree_View_Column;     use Gtk.Tree_View_Column;
 with Gtk.Frame;                use Gtk.Frame;
 with Gtk.Handlers;             use Gtk.Handlers;
+with Pango.Font;               use Pango.Font;
 
 package body Create_Tree_View is
 
@@ -47,6 +48,9 @@ package body Create_Tree_View is
    Editable_Column   : constant := 2;
    Active_Column     : constant := 3;
    Foreground_Column : constant := 4;
+   Font_Column       : constant := 5;
+
+   Base_Font, Small_Font : Pango_Font_Description;
 
    function Add_Line
      (Model    : access Gtk_Tree_Store_Record'Class;
@@ -149,7 +153,7 @@ package body Create_Tree_View is
       Example1 : constant Boolean := True;
 
       Iter : Gtk_Tree_Iter;
-      Values : GValue_Array (Text_Column .. Foreground_Column);
+      Values : GValue_Array (Text_Column .. Font_Column);
    begin
       Append (Model, Iter, Parent);
 
@@ -164,8 +168,12 @@ package body Create_Tree_View is
          Init_Set_Boolean (Values (Active_Column), Active);
          if Editable then
             Init_Set_String (Values (Foreground_Column), "red");
+            Pango.Font.Desc_Properties.Set_Value
+               (Values (Font_Column), Small_Font);
          else
             Init_Set_String (Values (Foreground_Column), "black");
+            Pango.Font.Desc_Properties.Set_Value
+               (Values (Font_Column), Base_Font);
          end if;
 
          Model.Set (Iter, Values);
@@ -252,7 +260,8 @@ package body Create_Tree_View is
                 Strike_Column     => GType_Boolean,
                 Editable_Column   => GType_Boolean,
                 Active_Column     => GType_Boolean,
-                Foreground_Column => GType_String));
+                Foreground_Column => GType_String,
+                Font_Column       => Pango.Font.Get_Type));
 
       --  Create the view: it shows two columns, the first contains some text,
       --  the second contains a toggle button. In each column, a renderer is
@@ -281,6 +290,7 @@ package body Create_Tree_View is
       Add_Attribute (Col, Text_Render, "strikethrough", Strike_Column);
       Add_Attribute (Col, Text_Render, "editable", Editable_Column);
       Add_Attribute (Col, Text_Render, "foreground", Foreground_Column);
+      Add_Attribute (Col, Text_Render, "font-desc", Font_Column);
 
       Gtk_New (Col);
       Col.Set_Resizable (True);
@@ -290,6 +300,9 @@ package body Create_Tree_View is
       Pack_Start (Col, Toggle_Render, False);
       Add_Attribute (Col, Toggle_Render, "active", Active_Column);
       Add_Attribute (Col, Toggle_Render, "activatable", Editable_Column);
+
+      Base_Font := From_String ("sans 16px");
+      Small_Font := From_String ("sans 12px");
 
       --  Make the tree sortable (see also calls to Set_Sort_Column_Id above).
       --  The default sort is alphabetical. For the fun of it, we implement

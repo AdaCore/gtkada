@@ -139,7 +139,7 @@ package Gdk.RGBA is
    --  the name of the subprogram.
    --  In Ada2012, these could be replaced with expression functions instead.
 
-   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA);
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA);
    function  Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA;
    --  Conversion functions for storing a Gdk_RGBA as a GValue.
 

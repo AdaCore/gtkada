@@ -119,6 +119,11 @@ package Glib.Values is
    --  to Init. You only need to call this function in cases where you have
    --  called Init yourself.
 
+   function Type_Of (Value : GValue) return Glib.GType;
+   pragma Inline (Type_Of);
+   --  Return the type of data that Value contains.
+   --  It returns GType_Invalid if Value was not initialized
+
    procedure Set_Char (Value : in out GValue; V_Char : Gchar);
    function  Get_Char (Value : GValue) return Gchar;
 

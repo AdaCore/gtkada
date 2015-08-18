@@ -3198,7 +3198,7 @@ __PRE__
    --  the name of the subprogram.
    --  In Ada2012, these could be replaced with expression functions instead.
 
-   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA);
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA);
    function  Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA;
    --  Conversion functions for storing a Gdk_RGBA as a GValue.
        </spec>
@@ -3235,7 +3235,7 @@ __PRE__
 
    function Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA
      renames RGBA_Properties.Get_Value;
-   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA)
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA)
      renames RGBA_Properties.Set_Value;
 
    function To_Address

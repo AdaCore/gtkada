@@ -244,6 +244,15 @@ package body Glib.Values is
       return T'Val (Get_Int (Val));
    end Unsafe_Enum_Nth;
 
+   -------------
+   -- Type_Of --
+   -------------
+
+   function Type_Of (Value : GValue) return Glib.GType is
+   begin
+      return Value.g_type;
+   end Type_Of;
+
    function C_Gvalue_Size return Natural;
    pragma Import (C, C_Gvalue_Size, "ada_c_gvalue_size");
 

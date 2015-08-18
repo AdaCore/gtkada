@@ -69,7 +69,7 @@ package body Gdk.RGBA is
 
    function Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA
    renames RGBA_Properties.Get_Value;
-   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_RGBA)
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA)
    renames RGBA_Properties.Set_Value;
 
    function To_Address

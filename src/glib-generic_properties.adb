@@ -213,10 +213,12 @@ package body Glib.Generic_Properties is
       ---------------
 
       procedure Set_Value
-        (Value  : out Glib.Values.GValue;
+        (Value  : in out Glib.Values.GValue;
          Val    : Boxed_Type)
       is
          V : constant System.Address := To_Address (Val, Val'Address);
+         T : Glib.GType := Type_Of (Value);
+         T2 : Glib.GType := Get_Type;
       begin
          --  Do not do an actual copy with gdk_color_copy, or
          --  pango_font_description_copy: it is in fact done
@@ -225,7 +227,13 @@ package body Glib.Generic_Properties is
          --   ("GdkColor",(GBoxedCopyFunc)gdk_color_copy,
          --    (GBoxedFreeFunc)gdk_color_free);
 
-         Init (Value, Get_Type);
+         if T = GType_Invalid then
+            Init (Value, T2);
+         elsif T /= T2 then
+            Unset (Value);
+            Init (Value, Get_Type);
+         end if;
+
          Set_Boxed (Value, V);
       end Set_Value;
 

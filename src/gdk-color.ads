@@ -151,7 +151,7 @@ package Gdk.Color is
      (Object : access Glib.Object.GObject_Record'Class;
       Name   : Property_Gdk_Color) return Gdk_Color;
 
-   procedure Set_Value (Value : out Glib.Values.GValue; Val : Gdk_Color);
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_Color);
    function  Get_Value (Value : Glib.Values.GValue) return Gdk_Color;
    --  Store or retrieve a color from a value
 
