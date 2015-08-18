@@ -217,8 +217,8 @@ package body Glib.Generic_Properties is
          Val    : Boxed_Type)
       is
          V : constant System.Address := To_Address (Val, Val'Address);
-         T : Glib.GType := Type_Of (Value);
-         T2 : Glib.GType := Get_Type;
+         T : constant Glib.GType := Type_Of (Value);
+         T2 : constant Glib.GType := Get_Type;
       begin
          --  Do not do an actual copy with gdk_color_copy, or
          --  pango_font_description_copy: it is in fact done
