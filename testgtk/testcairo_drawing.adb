@@ -106,7 +106,10 @@ package body Testcairo_Drawing is
                Gdk_New_From_File (Background, "background.png", Error);
             end if;
 
-            Gdk.Cairo.Set_Source_Pixbuf (Cr, Background, 10.0, 10.0);
+            if Background /= null then
+               Gdk.Cairo.Set_Source_Pixbuf (Cr, Background, 10.0, 10.0);
+            end if;
+
             Cairo.Paint (Cr);
 
          when Rectangles =>
