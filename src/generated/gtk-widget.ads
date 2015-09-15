@@ -2565,6 +2565,7 @@ package Gtk.Widget is
    --  Sets the foreground color for a widget in a particular state.
    --  All other style values are left untouched. See also
    --  gtk_widget_modify_style.
+   --  Only states between State_Normal and State_Insensitive are valid.
    --  Deprecated since 3.0, 1
    --  "state": the state for which to set the foreground color
    --  "color": the color to assign (does not need to be allocated), or null
