@@ -533,7 +533,7 @@ package Gtk.Tree_View_Column is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record)
-       return Glib.Object.Object_Simple_List.Glist;
+       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;

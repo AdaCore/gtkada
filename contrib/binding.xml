@@ -1992,7 +1992,7 @@ __PRE__
      <!-- in Gtk.Cell_Area -->
 
      <method id="gtk_cell_layout_set_attributes" bind="False"/>
-     <method id="gtk_cell_layout_get_cells" return="ObjectList"/>
+     <method id="gtk_cell_layout_get_cells" return="GtkCellRendererList"/>
   </package>
 
   <package id="GtkAssistant">

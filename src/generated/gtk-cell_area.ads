@@ -1043,7 +1043,7 @@ package Gtk.Cell_Area is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Cell_Area_Record)
-       return Glib.Object.Object_Simple_List.Glist;
+       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Cell_Area_Record;

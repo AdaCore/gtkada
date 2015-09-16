@@ -60,7 +60,6 @@ pragma Ada_2005;
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;         use Gdk.Event;
 with Glib;              use Glib;
-with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
 with Gtk.Buildable;     use Gtk.Buildable;
 with Gtk.Cell_Editable; use Gtk.Cell_Editable;
@@ -295,7 +294,7 @@ package Gtk.Combo_Box_Text is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record)
-       return Glib.Object.Object_Simple_List.Glist;
+       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;

@@ -107,7 +107,6 @@ pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
-with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
 with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
 with Gtk.Tree_Model;    use Gtk.Tree_Model;
@@ -178,7 +177,7 @@ package Gtk.Cell_Layout is
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
-       return Glib.Object.Object_Simple_List.Glist;
+       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
    --  Returns the cell renderers which have been added to Cell_Layout.
    --  Since: gtk+ 2.12
 

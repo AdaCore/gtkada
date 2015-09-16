@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Object;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
 pragma Warnings(On);
@@ -129,14 +130,14 @@ package body Gtk.Cell_Layout is
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
-       return Glib.Object.Object_Simple_List.Glist
+       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist
    is
       function Internal
          (Cell_Layout : Gtk_Cell_Layout) return System.Address;
       pragma Import (C, Internal, "gtk_cell_layout_get_cells");
-      Tmp_Return : Glib.Object.Object_Simple_List.Glist;
+      Tmp_Return : Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
    begin
-      Glib.Object.Object_Simple_List.Set_Object (Tmp_Return, Internal (Cell_Layout));
+      Gtk.Cell_Renderer.Cell_Renderer_List.Set_Object (Tmp_Return, Internal (Cell_Layout));
       return Tmp_Return;
    end Get_Cells;
 

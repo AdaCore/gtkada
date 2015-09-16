@@ -48,7 +48,6 @@ with Gdk.Color;             use Gdk.Color;
 with Gdk.Pixbuf;            use Gdk.Pixbuf;
 with Gdk.RGBA;              use Gdk.RGBA;
 with Glib;                  use Glib;
-with Glib.Object;           use Glib.Object;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gtk.Buildable;         use Gtk.Buildable;
@@ -367,7 +366,7 @@ package Gtk.Cell_View is
 
    function Get_Cells
       (Cell_Layout : not null access Gtk_Cell_View_Record)
-       return Glib.Object.Object_Simple_List.Glist;
+       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
 
    procedure Pack_End
       (Cell_Layout : not null access Gtk_Cell_View_Record;
