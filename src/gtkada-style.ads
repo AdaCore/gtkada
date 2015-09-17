@@ -304,8 +304,8 @@ package Gtkada.Style is
 
    type Shadow_Style is record
       Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
-      X_Offset : Glib.Gdouble := 5.0;
-      Y_Offset : Glib.Gdouble := 5.0;
+      X_Offset : Glib.Gdouble := 2.0;
+      Y_Offset : Glib.Gdouble := 2.0;
    end record;
    No_Shadow : constant Shadow_Style := (Gdk.RGBA.Null_RGBA, 5.0, 5.0);
 

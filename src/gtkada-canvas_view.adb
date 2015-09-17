@@ -3254,10 +3254,21 @@ package body Gtkada.Canvas_View is
       Max_Height : Gdouble := Gdouble'Last)
    is
    begin
-      Self.Min_Width := Min_Width;
-      Self.Min_Height := Min_Height;
-      Self.Max_Width := Max_Width;
-      Self.Max_Height := Max_Height;
+      if Min_Width >= 0.0 then
+         Self.Min_Width := Min_Width;
+      end if;
+
+      if Min_Height >= 0.0 then
+         Self.Min_Height := Min_Height;
+      end if;
+
+      if Max_Width >= 0.0 then
+         Self.Max_Width := Max_Width;
+      end if;
+
+      if Max_Height >= 0.0 then
+         Self.Max_Height := Max_Height;
+      end if;
    end Set_Size_Range;
 
    ----------------

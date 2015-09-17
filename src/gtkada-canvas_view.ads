@@ -1379,6 +1379,7 @@ package Gtkada.Canvas_View is
       Max_Width  : Gdouble := Gdouble'Last;
       Max_Height : Gdouble := Gdouble'Last);
    --  Specify a minimal size for the item, along both axis.
+   --  Any negative value is ignored
 
    procedure Size_Request
      (Self    : not null access Container_Item_Record;
