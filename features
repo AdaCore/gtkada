@@ -12,6 +12,11 @@ of the feature.
 New features in GtkAda 3.14.1
 -----------------------------
 
+O916-009 Gtk.Cell_Layout.Get_Cells returns a Cell_Renderer_List (2015-09-21)
+
+   This function used to return a generic Object_List, but now returns a
+   more specialized Cell_Renderer_List, which avoids type casts in user code.
+
 O317-025 New API for Activating the application under Mac OS (2015-03-17)
 
    A new API Glib.Main.Activate_Application can be used to give
