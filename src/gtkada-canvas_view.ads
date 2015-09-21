@@ -1058,7 +1058,7 @@ package Gtkada.Canvas_View is
       Scale    : Gdouble := 1.0;
       Preserve : Model_Point := No_Point);
    --  Changes the scaling factor for Self.
-   --  This also scrolsl the view so that either Preserve or the current center
+   --  This also scrolls the view so that either Preserve or the current center
    --  of the view remains at the same location in the widget, as if the user
    --  was zooming towards that specific point.
    --  See also Gtkada.Canvas_View.Views.Animate_Scale for a way to do this
