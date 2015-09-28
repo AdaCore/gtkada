@@ -150,7 +150,7 @@ package body Create_Canvas_View_Items is
          Large_Font := Gtk_New
            (Stroke => Null_RGBA,
             Sloppy => Sloppy,
-            Font   => (Name   => From_String (Font_Name (Sloppy) & " 25"),
+            Font   => (Name   => From_String (Font_Name (Sloppy) & " 16"),
                        others => <>));
 
          It := Gtk_New_Polyline
@@ -298,7 +298,7 @@ package body Create_Canvas_View_Items is
            (Font, "Position of items can be the center of the item" & ASCII.LF
             & "The three boxes have the same position, but not the same"
             & " anchors");
-         Text.Set_Position ((X, Y));
+         Text.Set_Position ((X + 150.0, Y + 80.0));
          Model.Add (Text);
 
          It := Gtk_New_Rect (Black, Width => 40.0, Height => 40.0);
@@ -416,15 +416,15 @@ package body Create_Canvas_View_Items is
          Rect2.Add_Child (Image);
       end if;
 
-      Add_UML_Actor (False, 0.0,   100.0);
-      Add_UML_Block (False, 100.0, 100.0);
-      Add_Sum_Block (False, 280.0, 100.0);
+      Add_UML_Actor (False, 0.0,   120.0);
+      Add_UML_Block (False, 100.0, 120.0);
+      Add_Sum_Block (False, 380.0, 120.0);
 
-      Add_UML_Actor (True,  0.0,   250.0);
-      Add_UML_Block (True,  100.0, 250.0);
-      Add_Sum_Block (True,  280.0, 250.0);
+      Add_UML_Actor (True,  0.0,   320.0);
+      Add_UML_Block (True,  100.0, 320.0);
+      Add_Sum_Block (True,  380.0, 320.0);
 
-      Add_Alignment (0.0, 400.0);
+      Add_Alignment (0.0, 490.0);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.

@@ -1157,7 +1157,7 @@ package Gtkada.Canvas_View is
 
    type Canvas_Event_Type is
      (Button_Press, Button_Release, Double_Click,
-      Start_Drag, In_Drag, End_Drag, Key_Press, Scroll);
+      Start_Drag, In_Drag, End_Drag, Key_Press, Scroll, Custom);
    --  The event types that are emitted for the Item_Event signal:
    --  * Button_Press is called when the user presses any mouse buttton either
    --    on an item or in the background.
@@ -1191,6 +1191,8 @@ package Gtkada.Canvas_View is
    --    to start a drag from this event.
    --    In the Canvas_Event_Details, the button is set to either 5 or 6,
    --    depending on the direction of the scrolling.
+   --
+   --  * Custom is used when generating a custom event from the code.
 
    type Canvas_Event_Details is record
       Event_Type     : Canvas_Event_Type;
@@ -1243,6 +1245,12 @@ package Gtkada.Canvas_View is
    type Event_Details_Access is not null access all Canvas_Event_Details;
    --  This record describes high-level aspects of user interaction with the
    --  canvas.
+
+   procedure Initialize_Details
+     (Self    : not null access Canvas_View_Record'Class;
+      Details : out Canvas_Event_Details);
+   --  Initialize Details for a Custom event type.
+   --  When you have a real Gtk event, better to use Set_Details below.
 
    procedure Set_Details
      (Self    : not null access Canvas_View_Record'Class;
@@ -1331,7 +1339,9 @@ package Gtkada.Canvas_View is
    --  either to its left/top (when Align_Start), to both sides (when
    --  Align_Center), or to its right/bottom (when Align_End)..
    --
-   --  Alignment does not apply to floating children.
+   --  Alignment does not apply to floating children, nor to children with
+   --  a specific position given along a specific axis (in which case the
+   --  Anchor_X or Anchor_Y might be used for a slightly similar effect).
 
    type Overflow_Style is (Overflow_Prevent, Overflow_Hide);
    --  An overflow situation occurs when an item's contents is larger than its
@@ -1356,11 +1366,18 @@ package Gtkada.Canvas_View is
    --  automatically based on the container's policy (either below the previous
    --  child, or to its right).
    --
+   --  When Pack_End is true, the child will be added at the end of the
+   --  parent's area (right or bottom depending on orientation). If the
+   --  parent's size is larger than that needed by all its children, there
+   --  will thus be an empty space between children with Pack_End=>False and
+   --  children with Pack_End => True.
+   --
    --  When Pack_End is True, the children are put in reverse order starting
    --  from the end of Self: for a vertical layout, for instance, the first
    --  pack_end child will appear at the bottom of Self.
    --
-   --  Margins are added to each size of the child.
+   --  Margin are added to each size of the child. The child's width, as set
+   --  via Set_Size, does not include the margins.
    --
    --  A floating child does not participate in the stacking: it will still be
    --  displayed below or to the right of the previous child, but the next
@@ -1372,14 +1389,70 @@ package Gtkada.Canvas_View is
        In_Model : not null access Canvas_Model_Record'Class);
    --  Remove all children of Self
 
-   procedure Set_Size_Range
-     (Self       : not null access Container_Item_Record;
-      Min_Width  : Gdouble := 1.0;
-      Min_Height : Gdouble := 1.0;
-      Max_Width  : Gdouble := Gdouble'Last;
-      Max_Height : Gdouble := Gdouble'Last);
-   --  Specify a minimal size for the item, along both axis.
-   --  Any negative value is ignored
+   type Size_Unit is (Unit_Pixels, Unit_Percent, Unit_Auto, Unit_Fit);
+   --  A size can be expressed either in actual screen pixels, or
+   --  proportionnaly to the parent's size.
+   --  When the unit is Unit_Auto, the size of the item is computed
+   --  automatically based on its children or its own intrinsic needs
+   --  (for a text, this is the size needed to display the text in the given
+   --  font).
+   --  When the unit is Unit_Fit: this sets the width of a child so that
+   --  this width plus the child's margins take the full width of the parent
+   --  container. Setting a width to 100% using Unit_Percent would not take
+   --  the margins into account, so that the full size (margins+width) might
+   --  actually be wider than the parent. When the parent layout is
+   --  horizontal, the above description applies to the height of the child.
+   --  In both cases, Unit_Fit is ignored for the other axis (height for
+   --  a vertical layout), in which case the child's height will be that
+   --  computed from the children.
+
+   type Size (Unit : Size_Unit := Unit_Pixels) is record
+      case Unit is
+         when Unit_Auto | Unit_Fit =>
+            null;
+         when Unit_Pixels =>
+            Length : Model_Coordinate;
+         when Unit_Percent =>
+            Value  : Percent;
+      end case;
+   end record;
+
+   Auto_Size : constant Size := (Unit => Unit_Auto);
+   Fit_Size : constant Size := (Unit => Unit_Fit);
+   --  See the descriptions for Size_Unit.
+
+   procedure Set_Width_Range
+     (Self     : not null access Container_Item_Record;
+      Min, Max : Size := Auto_Size);
+   procedure Set_Height_Range
+     (Self     : not null access Container_Item_Record;
+      Min, Max : Size := Auto_Size);
+   --  Specify a minimal and maximal size for the item, along each axis.
+   --  The default is for items to occupy the full width of their parent
+   --  (in vertical layout) or the full height (in horizontal layout),
+   --  and the child required by their children for the other axis.
+   --  Calling this procedure overrides any specific size set via
+   --  Set_Size or one of the constructors for the items, like rectangles
+   --  and ellipsis, for that axis.
+
+   procedure Set_Size
+      (Self : not null access Container_Item_Record;
+       Width, Height : Size := Auto_Size);
+   --  Force a specific size for the item if any of the dimensions is positive.
+   --  When Auto_Size is given, the size along that axis will be computed
+   --  automatically.
+   --  Calling this procedure cancels effects from Set_Size_Range.
+   --  The size of a container is influenced by its children as follows:
+   --     * the preferred size for each child is computed, based on its own
+   --       intrinsic needs (given size for rectangles, text size,...)
+   --     * if the child has a min and max size given in pixels, these
+   --       constraints are applied immediately.
+   --     * the container will then use the maximal computed size amongst
+   --       its children.
+   --     * Once the size of the container is known, the size for its
+   --       children is recomputed when the size or the size constraints
+   --       were given as percent of the parent size. It means that sizees
+   --       given in percent do not influence the parent's size computation.
 
    procedure Size_Request
      (Self    : not null access Container_Item_Record;
@@ -1451,8 +1524,8 @@ package Gtkada.Canvas_View is
    procedure Set_Position
      (Self     : not null access Container_Item_Record;
       Pos      : Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
-      Anchor_X : Gdouble;
-      Anchor_Y : Gdouble);
+      Anchor_X : Percent;
+      Anchor_Y : Percent);
    --  Anchor_X and Anchor_Y indicate which part of the item is at the given
    --  coordinates. For instance, (0, 0) indicates that Pos is the location of
    --  the top-left corner of the item, but (0.5, 0.5) indicates that Pos is
@@ -1486,20 +1559,26 @@ package Gtkada.Canvas_View is
    --  A predefined type object which displays itself as a rectangle or a
    --  rectangle with rounded corners.
 
+   Fit_Size_As_Double  : constant Model_Coordinate := -1.0;
+   Auto_Size_As_Double : constant Model_Coordinate := -2.0;
+   --  See the description of Fit_Size and Auto_Size.
+   --  These are used for parameters that take a Double instead of a Size
+   --  for backward compatibility (consider using Set_Size instead).
+
    function Gtk_New_Rect
      (Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0;
+      Width, Height : Model_Coordinate := Fit_Size_As_Double;
       Radius        : Model_Coordinate := 0.0)
       return Rect_Item;
    procedure Initialize_Rect
      (Self          : not null access Rect_Item_Record'Class;
       Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0;
+      Width, Height : Model_Coordinate := Fit_Size_As_Double;
       Radius        : Model_Coordinate := 0.0);
    --  Create a new rectangle item.
-   --  If either Width or Height are negative, they will be computed based on
-   --  the children's requested size (if there are no children, a default size
-   --  is used).
+   --  Specifying the size should rather be done with a call to
+   --  Set_Size, which provides more flexibility with regards to the units
+   --  used to describe the size.
 
    overriding procedure Draw
      (Self    : not null access Rect_Item_Record;
@@ -1520,12 +1599,12 @@ package Gtkada.Canvas_View is
 
    function Gtk_New_Ellipse
      (Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Ellipse_Item;
    procedure Initialize_Ellipse
      (Self          : not null access Ellipse_Item_Record'Class;
       Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0);
+      Width, Height : Model_Coordinate := Fit_Size_As_Double);
    --  Create a new ellipse item.
    --  If either Width or Height are negative, they will be computed based on
    --  the children's requested size (if there are no children, a default size
@@ -1554,14 +1633,14 @@ package Gtkada.Canvas_View is
      (Style  : Gtkada.Style.Drawing_Style;
       Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Image_Item;
    procedure Initialize_Image
      (Self   : not null access Image_Item_Record'Class;
       Style  : Gtkada.Style.Drawing_Style;
       Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0);
+      Width, Height : Model_Coordinate := Fit_Size_As_Double);
    --  Create a new image item.
    --  By default, the size is computed from the image, but if self is
    --  actually allocated a different size, the image will be rescaled as
@@ -1572,14 +1651,14 @@ package Gtkada.Canvas_View is
      (Style  : Gtkada.Style.Drawing_Style;
       Icon_Name : String;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Image_Item;
    procedure Initialize_Image
      (Self   : not null access Image_Item_Record'Class;
       Style  : Gtkada.Style.Drawing_Style;
       Icon_Name : String;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0);
+      Width, Height : Model_Coordinate := Fit_Size_As_Double);
    --  Same as buffer, but the image is created from one of the files given
    --  by the Gtk.Icon_Theme. This will often result in better (more sharp)
    --  rendering.
@@ -1660,14 +1739,14 @@ package Gtkada.Canvas_View is
      (Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
       Directed : Text_Arrow_Direction := No_Text_Arrow;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Text_Item;
    procedure Initialize_Text
      (Self     : not null access Text_Item_Record'Class;
       Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
       Directed : Text_Arrow_Direction := No_Text_Arrow;
-      Width, Height : Model_Coordinate := -1.0);
+      Width, Height : Model_Coordinate := Fit_Size_As_Double);
    --  Create a new text item
    --
    --  Directed indicates whether the text should be followed (or preceded)
@@ -1921,7 +2000,8 @@ private
 
    type Container_Item_Record is abstract new Canvas_Item_Record with record
       Width, Height : Model_Coordinate;
-      --  Computed by Size_Request
+      --  Computed by Size_Request. Always expressed in pixels.
+      --  These do not include the margins.
 
       Computed_Position : Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
       --  The position within the parent, as computed in Size_Allocate.
@@ -1930,9 +2010,10 @@ private
       --  This is always the position of the top-left corner, no matter what
       --  Anchor_X and Anchor_Y are set to.
 
-      Anchor_X : Gdouble := 0.0;
-      Anchor_Y : Gdouble := 0.0;
-      --  The position within the item that Self.Position points to.
+      Anchor_X : Percent := 0.0;
+      Anchor_Y : Percent := 0.0;
+      --  The position within the item that Self.Position points to. This
+      --  is only relevant when an explicit position was given by the user.
 
       Margin : Margins := No_Margins;
       --  Margins around the child
@@ -1940,10 +2021,10 @@ private
       Parent : Container_Item;
       --  The parent item
 
-      Min_Width, Min_Height : Gdouble := 1.0;
-      Max_Width, Max_Height : Gdouble := Gdouble'Last;
-      --  Size constraints for the child. If Max_* if negative, then the child
-      --  is constrained to have Min_* has a specific size.
+      Min_Width, Min_Height : Size := (Unit_Pixels, 1.0);
+      Max_Width, Max_Height : Size := Fit_Size;
+      --  Size constraints for the child. If Max_* if Fixed_Size, then the
+      --  child is constrained to have Min_* has a specific size.
 
       Pack_End : Boolean := False;
       Layout   : Child_Layout_Strategy := Vertical_Stack;
@@ -1977,7 +2058,6 @@ private
    type Text_Item_Record is new Container_Item_Record with record
       Text     : GNAT.Strings.String_Access;
       Directed : Text_Arrow_Direction;
-      Requested_Width, Requested_Height : Model_Coordinate;
    end record;
 
    type Editable_Text_Item_Record is new Text_Item_Record with null record;

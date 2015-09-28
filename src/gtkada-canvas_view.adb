@@ -87,6 +87,10 @@ package body Gtkada.Canvas_View is
    --  Minimal amount the mouse should move before we start dragging (this is
    --  the square).
 
+   Fixed_Size : constant Size := (Unit_Pixels, Gdouble'First);
+   --  When this is set for the max size of an item, it indicates that the min
+   --  size is in fact a hard-coded size that the widget must respect.
+
    function On_View_Draw
      (View : System.Address; Cr : Cairo_Context) return Gboolean;
    pragma Convention (C, On_View_Draw);
@@ -223,10 +227,26 @@ package body Gtkada.Canvas_View is
    procedure Cancel_Drag (Self : not null access Canvas_View_Record'Class);
    --  Cancel any drag currently in place.
 
-   procedure Force_Size
-      (Self : not null access Container_Item_Record'Class;
-       Forced_Width, Forced_Height : Gdouble := -1.0);
-   --  Force a specific size for the item if any of the dimensions is positive
+   function Size_From_Value (Value : Model_Coordinate) return Size;
+   pragma Inline (Size_From_Value);
+   --  Return a size suitable for internal use, given a size (in pixels)
+   --  given by the user. When the user provides a negative size, it is
+   --  meant to indicate an automatic sizing (backward compatibility)
+
+   ---------------------
+   -- Size_From_Value --
+   ---------------------
+
+   function Size_From_Value (Value : Model_Coordinate) return Size is
+   begin
+      if Value = Fit_Size_As_Double then
+         return Fit_Size;
+      elsif Value = Auto_Size_As_Double then
+         return Auto_Size;
+      else
+         return (Unit_Pixels, Value);
+      end if;
+   end Size_From_Value;
 
    ----------------------
    -- Destroy_And_Free --
@@ -678,6 +698,29 @@ package body Gtkada.Canvas_View is
       end if;
       return False;
    end On_Scroll_Event;
+
+   ------------------------
+   -- Initialize_Details --
+   ------------------------
+
+   procedure Initialize_Details
+      (Self    : not null access Canvas_View_Record'Class;
+       Details : out Canvas_Event_Details) is
+   begin
+      Details :=
+        (Event_Type => Custom,
+         Button     => 1,
+         Key        => 0,
+         State      => 0,
+         Root_Point => (0.0, 0.0),
+         M_Point    => (0.0, 0.0),
+         T_Point    => No_Item_Point,
+         I_Point    => No_Item_Point,
+         Item       => null,
+         Toplevel_Item     => null,
+         Allow_Snapping    => True,
+         Allowed_Drag_Area => No_Drag_Allowed);
+   end Initialize_Details;
 
    -----------------
    -- Set_Details --
@@ -3102,8 +3145,7 @@ package body Gtkada.Canvas_View is
       Pack_End : Boolean := False;
       Margin   : Margins := No_Margins;
       Float    : Boolean := False;
-      Overflow : Overflow_Style := Overflow_Prevent)
-   is
+      Overflow : Overflow_Style := Overflow_Prevent) is
    begin
       Child.Margin   := Margin;
       Child.Parent   := Container_Item (Self);
@@ -3232,8 +3274,8 @@ package body Gtkada.Canvas_View is
    procedure Set_Position
      (Self     : not null access Container_Item_Record;
       Pos      : Gtkada.Style.Point := (Gdouble'First, Gdouble'First);
-      Anchor_X : Gdouble;
-      Anchor_Y : Gdouble)
+      Anchor_X : Percent;
+      Anchor_Y : Percent)
    is
    begin
       Self.Computed_Position := Pos;
@@ -3242,60 +3284,54 @@ package body Gtkada.Canvas_View is
       Canvas_Item_Record (Self.all).Set_Position (Pos);  --  inherited
    end Set_Position;
 
-   --------------------
-   -- Set_Size_Range --
-   --------------------
+   ---------------------
+   -- Set_Width_Range --
+   ---------------------
 
-   procedure Set_Size_Range
-     (Self       : not null access Container_Item_Record;
-      Min_Width  : Gdouble := 1.0;
-      Min_Height : Gdouble := 1.0;
-      Max_Width  : Gdouble := Gdouble'Last;
-      Max_Height : Gdouble := Gdouble'Last)
-   is
+   procedure Set_Width_Range
+     (Self     : not null access Container_Item_Record;
+      Min, Max : Size := Auto_Size) is
    begin
-      if Min_Width >= 0.0 then
-         Self.Min_Width := Min_Width;
-      end if;
+      Self.Min_Width := Min;
+      Self.Max_Width := Max;
+   end Set_Width_Range;
 
-      if Min_Height >= 0.0 then
-         Self.Min_Height := Min_Height;
-      end if;
+   ----------------------
+   -- Set_Height_Range --
+   ----------------------
 
-      if Max_Width >= 0.0 then
-         Self.Max_Width := Max_Width;
-      end if;
-
-      if Max_Height >= 0.0 then
-         Self.Max_Height := Max_Height;
-      end if;
-   end Set_Size_Range;
-
-   ----------------
-   -- Force_Size --
-   ----------------
-
-   procedure Force_Size
-      (Self : not null access Container_Item_Record'Class;
-       Forced_Width, Forced_Height : Gdouble := -1.0)
-   is
+   procedure Set_Height_Range
+     (Self     : not null access Container_Item_Record;
+      Min, Max : Size := Auto_Size) is
    begin
-      if Forced_Width >= 0.0 then
-         Self.Max_Width := -1.0;
-         Self.Min_Width := Forced_Width;
+      Self.Min_Height := Min;
+      Self.Max_Height := Max;
+   end Set_Height_Range;
+
+   --------------
+   -- Set_Size --
+   --------------
+
+   procedure Set_Size
+      (Self : not null access Container_Item_Record;
+       Width, Height : Size := Auto_Size) is
+   begin
+      if Width = Auto_Size or else Width = Fit_Size then
+         Self.Min_Width := (Unit_Pixels, 1.0);
+         Self.Max_Width := Width;
       else
-         Self.Max_Width := Gdouble'Last;
-         Self.Min_Width := 1.0;
+         Self.Min_Width := Width;
+         Self.Max_Width := Fixed_Size;
       end if;
 
-      if Forced_Height >= 0.0 then
-         Self.Max_Height := -1.0;
-         Self.Min_Height := Forced_Height;
+      if Height = Auto_Size or else Height = Fit_Size then
+         Self.Min_Height := (Unit_Pixels, 1.0);
+         Self.Max_Height := Height;
       else
-         Self.Max_Height := Gdouble'Last;
-         Self.Min_Height := 1.0;
+         Self.Min_Height := Height;
+         Self.Max_Height := Fixed_Size;
       end if;
-   end Force_Size;
+   end Set_Size;
 
    ------------------
    -- Size_Request --
@@ -3338,9 +3374,7 @@ package body Gtkada.Canvas_View is
                   Tmp2 := Tmp + Child.Height;
                end if;
 
-               Tmp2 := Tmp2 + Child.Computed_Position.Y
-                 + Child.Margin.Top + Child.Margin.Bottom;
-
+               Tmp2 := Tmp2 + Child.Margin.Top + Child.Margin.Bottom;
                Self.Height := Model_Coordinate'Max (Self.Height, Tmp2);
 
                if not Child.Float then
@@ -3352,8 +3386,9 @@ package body Gtkada.Canvas_View is
                case Child.Overflow is
                   when Overflow_Prevent =>
                      Self.Height := Model_Coordinate'Max
-                       (Child.Height + Child.Margin.Top + Child.Margin.Bottom,
-                        Self.Height);
+                        (Child.Height + Child.Margin.Top
+                         + Child.Margin.Bottom,
+                         Self.Height);
                   when Overflow_Hide =>
                      null;
                end case;
@@ -3364,9 +3399,7 @@ package body Gtkada.Canvas_View is
                   Tmp2 := Tmp + Child.Width;
                end if;
 
-               Tmp2 := Tmp2 + Child.Computed_Position.X
-                 + Child.Margin.Left + Child.Margin.Right;
-
+               Tmp2 := Tmp2 + Child.Margin.Left + Child.Margin.Right;
                Self.Width := Model_Coordinate'Max (Self.Width, Tmp2);
 
                if not Child.Float then
@@ -3377,21 +3410,43 @@ package body Gtkada.Canvas_View is
          Next (C);
       end loop;
 
-      --  Ignore the previous computation when a size is forced. It was
-      --  still needed to make sure all children have a size.
+      --  The previous computation was for the standalone / ideal size for
+      --  the children and Self.
+      --  But we now need to take the size constraints into account. When
+      --  they are given in pixels, we apply them immediately. When they are
+      --  given in units relative to the parent's size, we can only apply
+      --  them in Size_Allocate.
 
-      if Self.Max_Width < 0.0 then
-         Self.Width := Self.Min_Width;
-      else
-         Self.Width := Model_Coordinate'Max (Self.Width, Self.Min_Width);
-         Self.Width := Model_Coordinate'Min (Self.Width, Self.Max_Width);
+      if Self.Min_Width.Unit = Unit_Pixels then
+         if Self.Max_Width = Fixed_Size then
+            Self.Width := Self.Min_Width.Length;
+         else
+            Self.Width := Model_Coordinate'Max
+               (Self.Width, Self.Min_Width.Length);
+         end if;
       end if;
 
-      if Self.Max_Height < 0.0 then
-         Self.Height := Self.Min_Height;
-      else
-         Self.Height := Model_Coordinate'Max (Self.Height, Self.Min_Height);
-         Self.Height := Model_Coordinate'Min (Self.Height, Self.Max_Height);
+      if Self.Max_Width.Unit = Unit_Pixels
+         and then Self.Max_Width /= Fixed_Size
+      then
+         Self.Width := Model_Coordinate'Min
+            (Self.Width, Self.Max_Width.Length);
+      end if;
+
+      if Self.Min_Height.Unit = Unit_Pixels then
+         if Self.Max_Height = Fixed_Size then
+            Self.Height := Self.Min_Height.Length;
+         else
+            Self.Height := Model_Coordinate'Max
+               (Self.Height, Self.Min_Height.Length);
+         end if;
+      end if;
+
+      if Self.Max_Height.Unit = Unit_Pixels
+         and then Self.Max_Height /= Fixed_Size
+      then
+         Self.Height := Model_Coordinate'Min
+            (Self.Height, Self.Max_Height.Length);
       end if;
    end Size_Request;
 
@@ -3421,73 +3476,115 @@ package body Gtkada.Canvas_View is
      (Self  : not null access Container_Item_Record)
    is
       use Items_Lists;
-      C     : Items_Lists.Cursor := Self.Children.First;
-      Child : Container_Item;
-      Tmp   : Model_Coordinate := 0.0;
+      C       : Items_Lists.Cursor := Self.Children.First;
+      Child   : Container_Item;
+      Tmp     : Model_Coordinate := 0.0;
       Tmp_End : Model_Coordinate;
    begin
-      if Self.Layout = Vertical_Stack then
-         Tmp_End := Self.Height;
-      else
-         Tmp_End := Self.Width;
-      end if;
+      case Self.Layout is
+         when Vertical_Stack   => Tmp_End := Self.Height;
+         when Horizontal_Stack => Tmp_End := Self.Width;
+      end case;
 
       while Has_Element (C) loop
          Child := Container_Item (Element (C));
 
+         --  Apply size constraints when they are proportional to the
+         --  parent's size.
+
+         case Child.Min_Width.Unit is
+            when Unit_Auto | Unit_Fit => null; --  Only relevant for Max_Width
+            when Unit_Pixels => null; --  Taken care of in Size_Request
+            when Unit_Percent =>
+               if Child.Max_Width = Fixed_Size then
+                  Child.Width := Child.Min_Width.Value * Self.Width;
+               else
+                  Child.Width := Model_Coordinate'Max
+                     (Child.Width, Child.Min_Width.Value * Self.Width);
+               end if;
+         end case;
+
+         case Child.Max_Width.Unit is
+            when Unit_Pixels  => null;  --  Taken care of in Size_Request
+            when Unit_Percent =>        --  Not Fixed_Size
+               Child.Width := Model_Coordinate'Min
+                  (Child.Width, Child.Max_Width.Value * Self.Width);
+            when Unit_Fit     =>        --  Use full parent size
+               if Self.Layout = Vertical_Stack then
+                  Child.Width :=
+                     Self.Width - Child.Margin.Left - Child.Margin.Right;
+               end if;
+            when Unit_Auto    =>  --  Use size computed in Size_Request
+               null;
+         end case;
+
+         case Child.Min_Height.Unit is
+            when Unit_Auto | Unit_Fit => null; --  Only relevant for Max_Width
+            when Unit_Pixels => null; --  Taken care of in Size_Request
+            when Unit_Percent =>
+               if Child.Max_Height = Fixed_Size then
+                  Child.Height := Child.Min_Height.Value * Self.Height;
+               else
+                  Child.Height := Model_Coordinate'Max
+                     (Child.Height, Child.Min_Height.Value * Self.Height);
+               end if;
+         end case;
+
+         case Child.Max_Height.Unit is
+            when Unit_Pixels  => null;  --  taken care of in Size_Request
+            when Unit_Percent =>        --  not Fixed_Size
+               Child.Height := Model_Coordinate'Min
+                  (Child.Height, Child.Max_Height.Value * Self.Height);
+            when Unit_Fit    => --  Use full parent size
+               if Self.Layout = Horizontal_Stack then
+                  Child.Height :=
+                     Self.Height - Child.Margin.Top - Child.Margin.Bottom;
+               end if;
+            when Unit_Auto    =>  --  Use size computed in Size_Request
+               null;
+         end case;
+
+         --  Now compute the position for the child
+
          case Self.Layout is
             when Vertical_Stack =>
                if Child.Position.Y /= Gdouble'First then
-                  Child.Computed_Position.Y := Child.Position.Y;
+                  Child.Computed_Position.Y :=
+                    Child.Position.Y + Child.Margin.Top
+                    - Child.Height * Child.Anchor_Y;
                else
-                  Child.Computed_Position.Y := Tmp + Child.Margin.Top;
+                  if Child.Pack_End then
+                     Child.Computed_Position.Y :=
+                        Tmp_End - Child.Height - Child.Margin.Bottom;
+                  else
+                     Child.Computed_Position.Y := Tmp + Child.Margin.Top;
+                  end if;
                end if;
 
                if Child.Position.X /= Gdouble'First then
-                  Child.Computed_Position.X := Child.Position.X;
+                  Child.Computed_Position.X :=
+                    Child.Position.X + Child.Margin.Left
+                    - Child.Width * Child.Anchor_X;
                else
-                  Child.Computed_Position.X := Child.Margin.Left;
+                  case Child.Align is
+                     when Align_Start =>
+                        Child.Computed_Position.X := Child.Margin.Left;
+
+                     when Align_Center =>
+                        Child.Computed_Position.X :=
+                           (Self.Width - Child.Width) / 2.0;
+
+                     when Align_End =>
+                        Child.Computed_Position.X :=
+                          Self.Width - Child.Width - Child.Margin.Right;
+                  end case;
                end if;
-
-               --  No size constraint applied ?
-               if not Child.Float and then Child.Max_Width >= 0.0 then
-                  Child.Width := Self.Width
-                    - Child.Margin.Right
-                    - Child.Computed_Position.X;
-               end if;
-
-               Child.Computed_Position.X :=
-                 Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
-
-               if Child.Pack_End then
-                  Child.Computed_Position.Y :=
-                    Tmp_End - Child.Height - Child.Margin.Bottom;
-               else
-                  Child.Computed_Position.Y :=
-                    Child.Computed_Position.Y
-                      - (Child.Height * Child.Anchor_Y);
-               end if;
-
-               case Child.Align is
-                  when Align_Start =>
-                     null;
-
-                  when Align_Center =>
-                     Child.Computed_Position.X :=
-                       Child.Computed_Position.X +
-                         (Self.Width - Child.Computed_Position.X
-                          - Child.Width - Child.Margin.Right) / 2.0;
-
-                  when Align_End =>
-                     Child.Computed_Position.X :=
-                       Self.Width - Child.Width - Child.Margin.Right;
-               end case;
 
                Child.Size_Allocate;
 
                if not Child.Float then
                   if Child.Pack_End then
-                     Tmp_End := Child.Computed_Position.Y;
+                     Tmp_End := Child.Computed_Position.Y - Child.Margin.Top;
                   else
                      Tmp := Child.Computed_Position.Y
                        + Child.Height + Child.Margin.Bottom;
@@ -3496,55 +3593,42 @@ package body Gtkada.Canvas_View is
 
             when Horizontal_Stack =>
                if Child.Position.X /= Gdouble'First then
-                  Child.Computed_Position.X := Child.Position.X;
+                  Child.Computed_Position.X :=
+                    Child.Position.X + Child.Margin.Left
+                    - Child.Width * Child.Anchor_X;
                else
-                  Child.Computed_Position.X := Tmp + Child.Margin.Left;
+                  if Child.Pack_End then
+                     Child.Computed_Position.X :=
+                        Tmp_End - Child.Width - Child.Margin.Right;
+                  else
+                     Child.Computed_Position.X := Tmp + Child.Margin.Left;
+                  end if;
                end if;
 
                if Child.Position.Y /= Gdouble'First then
-                  Child.Computed_Position.Y := Child.Position.Y;
+                  Child.Computed_Position.Y :=
+                    Child.Position.Y + Child.Margin.Top
+                    - Child.Height * Child.Anchor_Y;
                else
-                  Child.Computed_Position.Y := Child.Margin.Top;
+                  case Child.Align is
+                     when Align_Start =>
+                        Child.Computed_Position.Y := Child.Margin.Top;
+
+                     when Align_Center =>
+                        Child.Computed_Position.Y :=
+                            (Self.Height - Child.Height) / 2.0;
+
+                     when Align_End =>
+                        Child.Computed_Position.Y :=
+                          Self.Height - Child.Height - Child.Margin.Bottom;
+                  end case;
                end if;
-
-               --  No size constraint ?
-               if not Child.Float and then Child.Max_Height >= 0.0 then
-                  Child.Height := Self.Height
-                    - Child.Margin.Bottom
-                    - Child.Computed_Position.Y;
-               end if;
-
-               if Child.Pack_End then
-                  Child.Computed_Position.X :=
-                    Tmp_End - Child.Width - Child.Margin.Right;
-               else
-                  Child.Computed_Position.X :=
-                    Child.Computed_Position.X - (Child.Width * Child.Anchor_X);
-               end if;
-
-               Child.Computed_Position.Y :=
-                 Child.Computed_Position.Y - (Child.Height * Child.Anchor_Y);
-
-               case Child.Align is
-                  when Align_Start =>
-                     null;
-
-                  when Align_Center =>
-                     Child.Computed_Position.Y :=
-                       Child.Computed_Position.Y +
-                         (Self.Height - Child.Computed_Position.Y
-                          - Child.Height - Child.Margin.Bottom) / 2.0;
-
-                  when Align_End =>
-                     Child.Computed_Position.Y :=
-                       Self.Height - Child.Height - Child.Margin.Bottom;
-               end case;
 
                Child.Size_Allocate;
 
                if not Child.Float then
                   if Child.Pack_End then
-                     Tmp_End := Child.Computed_Position.X;
+                     Tmp_End := Child.Computed_Position.X - Child.Margin.Left;
                   else
                      Tmp := Child.Computed_Position.X
                        + Child.Width + Child.Margin.Right;
@@ -3599,7 +3683,7 @@ package body Gtkada.Canvas_View is
      (Style  : Gtkada.Style.Drawing_Style;
       Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Image_Item
    is
       R : constant Image_Item := new Image_Item_Record;
@@ -3616,7 +3700,7 @@ package body Gtkada.Canvas_View is
      (Style  : Gtkada.Style.Drawing_Style;
       Icon_Name : String;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Image_Item
    is
       R : constant Image_Item := new Image_Item_Record;
@@ -3634,13 +3718,13 @@ package body Gtkada.Canvas_View is
       Style  : Gtkada.Style.Drawing_Style;
       Image  : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0) is
+      Width, Height : Model_Coordinate := Fit_Size_As_Double) is
    begin
       Self.Style := Style;
       Self.Image := Gdk_Pixbuf (Image);
       Self.Allow_Rescale := Allow_Rescale;
       Ref (Self.Image);
-      Force_Size (Self, Width, Height);
+      Self.Set_Size (Size_From_Value (Width), Size_From_Value (Height));
    end Initialize_Image;
 
    ----------------------
@@ -3652,12 +3736,12 @@ package body Gtkada.Canvas_View is
       Style  : Gtkada.Style.Drawing_Style;
       Icon_Name  : String;
       Allow_Rescale : Boolean := True;
-      Width, Height : Model_Coordinate := -1.0) is
+      Width, Height : Model_Coordinate := Fit_Size_As_Double) is
    begin
       Self.Style := Style;
       Self.Icon_Name := new String'(Icon_Name);
       Self.Allow_Rescale := Allow_Rescale;
-      Force_Size (Self, Width, Height);
+      Self.Set_Size (Size_From_Value (Width), Size_From_Value (Height));
    end Initialize_Image;
 
    -------------
@@ -3744,7 +3828,7 @@ package body Gtkada.Canvas_View is
 
    function Gtk_New_Rect
      (Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0;
+      Width, Height : Model_Coordinate := Fit_Size_As_Double;
       Radius        : Model_Coordinate := 0.0)
       return Rect_Item
    is
@@ -3761,13 +3845,13 @@ package body Gtkada.Canvas_View is
    procedure Initialize_Rect
      (Self          : not null access Rect_Item_Record'Class;
       Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0;
+      Width, Height : Model_Coordinate := Fit_Size_As_Double;
       Radius        : Model_Coordinate := 0.0)
    is
    begin
       Self.Style         := Style;
       Self.Radius        := Radius;
-      Force_Size (Self, Width, Height);
+      Self.Set_Size (Size_From_Value (Width), Size_From_Value (Height));
    end Initialize_Rect;
 
    -------------------------
@@ -4010,7 +4094,7 @@ package body Gtkada.Canvas_View is
 
    function Gtk_New_Ellipse
      (Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Ellipse_Item
    is
       R : constant Ellipse_Item := new Ellipse_Item_Record;
@@ -4026,11 +4110,11 @@ package body Gtkada.Canvas_View is
    procedure Initialize_Ellipse
      (Self          : not null access Ellipse_Item_Record'Class;
       Style         : Gtkada.Style.Drawing_Style;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
    is
    begin
       Self.Style := Style;
-      Force_Size (Self, Width, Height);
+      Self.Set_Size (Size_From_Value (Width), Size_From_Value (Height));
    end Initialize_Ellipse;
 
    ----------
@@ -4098,7 +4182,7 @@ package body Gtkada.Canvas_View is
      (Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
       Directed : Text_Arrow_Direction := No_Text_Arrow;
-      Width, Height : Model_Coordinate := -1.0)
+      Width, Height : Model_Coordinate := Fit_Size_As_Double)
       return Text_Item
    is
       R : constant Text_Item := new Text_Item_Record;
@@ -4116,12 +4200,12 @@ package body Gtkada.Canvas_View is
       Style    : Gtkada.Style.Drawing_Style;
       Text     : Glib.UTF8_String;
       Directed : Text_Arrow_Direction := No_Text_Arrow;
-      Width, Height : Model_Coordinate := -1.0) is
+      Width, Height : Model_Coordinate := Fit_Size_As_Double) is
    begin
       Self.Style := Style;
       Self.Text  := new String'(Text);
       Self.Directed := Directed;
-      Force_Size (Self, Width, Height);
+      Self.Set_Size (Size_From_Value (Width), Size_From_Value (Height));
    end Initialize_Text;
 
    --------------
@@ -4233,12 +4317,7 @@ package body Gtkada.Canvas_View is
    begin
       if Context.Layout /= null then
          Self.Style.Measure_Text
-           (Context.Layout,
-            Text,
-            Width => Self.Requested_Width,
-            Height => Self.Requested_Height);
-         Self.Width  := Self.Requested_Width;
-         Self.Height := Self.Requested_Height;
+           (Context.Layout, Text, Width => Self.Width, Height => Self.Height);
       else
          Self.Width := 0.0;
          Self.Height := 0.0;

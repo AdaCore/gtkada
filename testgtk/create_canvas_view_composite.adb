@@ -50,13 +50,28 @@ package body Create_Canvas_View_Composite is
         & " third is laid out at the same vertical position, and thus on top"
         & " of them."
         & ASCII.LF
-        & "The third item illustrates @balignment@B. The first three children"
-        & " specify an explicit width, and therefore the alignment property"
-        & " has a visible effect. The next three children do not specify"
-        & " a width, and therefore end up with their parent's width, and the"
-        & " alignment has no effect. All children have extra @bmargins@B,"
-        & " which explains why there is an empty space to their left and"
-        & " right.";
+        & "The third item illustrates @balignment@B."
+        & ASCII.LF
+        & "The first child is a title bar, made up of four small text items"
+        & " (which would be buttons in a real application). The two on the"
+        & " right or bottom are added with @bPack_End@B set to True, which"
+        & " ensures that they will always be at the end of the parent"
+        & " container, whatever its size. There is no hard-coding of"
+        & " positions."
+        & ASCII.LF
+        & "The first three children"
+        & " specify an explicit width in pixels. Since they do not occupy the"
+        & " full width, the remaining extra space is distributed around them"
+        & " based on the alignment property."
+        & ASCII.LF
+        & "The next three children specify a width of 100% that of their"
+        & " parent container. But they also include margins, so in fact they"
+        & " extend to the right of their parent."
+        & ASCII.LF
+        & "The next three children do not specify a width at all, so they"
+        & " use all of the parent's width (modulo their specific margins)."
+        & " Since they occupy all available space, the alignment has no"
+        & " effect.";
    end Help;
 
    ---------
@@ -77,11 +92,15 @@ package body Create_Canvas_View_Composite is
       is
          M : Margins;
          W, H, W2, H2 : Model_Coordinate;
+         SW, SH       : Size;
          Rect, Rect2  : Rect_Item;
+         Toolbar      : Rect_Item;
+         Toolbar_Layout : Child_Layout_Strategy;
          Text         : Text_Item;
          Anchor_X, Anchor_Y : Gdouble := 0.0;
       begin
-         --  rectangle 1
+         --  rectangle 1: the size of the rectangle is computed from the size
+         --  of its children.
 
          Rect := Gtk_New_Rect (Red, Radius => 4.0);
          Rect.Set_Child_Layout (Layout);
@@ -100,7 +119,9 @@ package body Create_Canvas_View_Composite is
          Rect2 := Gtk_New_Rect (Green, 10.0, 10.0);
          Rect.Add_Child (Rect2, Margin => M);
 
-         --  rectangle 2: testing floating items
+         --  rectangle 2: testing floating items. A floating item is outside
+         --  of the normal flow, so that later children are displayed at the
+         --  same coordinates as the floating item.
 
          Rect := Gtk_New_Rect (Green);
          Model.Add (Rect);
@@ -125,12 +146,14 @@ package body Create_Canvas_View_Composite is
 
          case Layout is
             when Horizontal_Stack =>
+               Toolbar_Layout := Vertical_Stack;
                M := (Top => 10.0, Bottom => 10.0, others => 0.0);
                W2 := -1.0;
                H2 := 100.0;
                W := 30.0;
                H := -1.0;
             when Vertical_Stack =>
+               Toolbar_Layout := Horizontal_Stack;
                M := (Left => 10.0, Right => 10.0, others => 0.0);
                W2 := -1.0; --  100.0;
                H2 := -1.0;
@@ -143,66 +166,117 @@ package body Create_Canvas_View_Composite is
          Rect.Set_Child_Layout (Layout);
          Rect.Set_Position ((X + 220.0, Y + 0.0));
 
+         --  A title bar, with buttons distributed on both sides, depending
+         --  on the size of the parent container.
+
+         Toolbar := Gtk_New_Rect (Blue);   --  Automatic sizing
+         Toolbar.Set_Child_Layout (Toolbar_Layout);
+         Rect.Add_Child (Toolbar);
+
+         Text := Gtk_New_Text (Font, "A");
+         Toolbar.Add_Child (Text);
+         Text := Gtk_New_Text (Font, "B");
+         Toolbar.Add_Child (Text);
+         Text := Gtk_New_Text (Font, "C");
+         Toolbar.Add_Child (Text, Pack_End => True);
+         Text := Gtk_New_Text (Font, "D");
+         Toolbar.Add_Child (Text, Pack_End => True);
+
+         --  First series: items have specific sizes, so alignment has a
+         --  large influence.
+
          if Layout = Vertical_Stack then
             Text := Gtk_New_Text (Font, "Alignments (forced size)");
             Rect.Add_Child (Text);
          end if;
 
-         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
+         Rect2 := Gtk_New_Rect (Red, 15.0, 15.0);
          Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
 
-         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
+         Rect2 := Gtk_New_Rect (Red, 15.0, 15.0);
          Rect.Add_Child (Rect2, Align  => Align_Center, Margin => M);
 
-         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
+         Rect2 := Gtk_New_Rect (Red, 15.0, 15.0);
          Rect.Add_Child (Rect2, Align  => Align_End, Margin => M);
 
-         if Layout = Vertical_Stack then
-            Text := Gtk_New_Text (Font, "Alignments (automatic size)");
-            Rect.Add_Child (Text);
-         end if;
+         --  Second series: items have the same width (resp. height)
+         --  as their container. As a result, alignment has no effect
 
-         Rect2 := Gtk_New_Rect (Green, W, H);
+         case Layout is
+            when Vertical_Stack =>
+               Text := Gtk_New_Text (Font, "Alignments (size 100%)");
+               Rect.Add_Child (Text);
+               SW := (Unit_Percent, 1.0);
+               SH := (Unit_Pixels, 15.0);
+            when Horizontal_Stack =>
+               SW := (Unit_Pixels, 15.0);
+               SH := (Unit_Percent, 1.0);
+         end case;
+
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
          Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
 
-         Rect2 := Gtk_New_Rect (Green, W, H);
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
          Rect.Add_Child (Rect2, Align  => Align_Center, Margin => M);
 
-         Rect2 := Gtk_New_Rect (Green, W, H);
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
          Rect.Add_Child (Rect2, Align  => Align_End, Margin => M);
 
-         --  Playing with the anchors. We do not set a position for the
-         --  items, so this position is the one that is computed automatically
-         --  by the layout (horizontal or vertical).
+         --  Third series: automatic size. Since there are no children,
+         --  the width is a minimal 1px.
 
-         if Layout = Vertical_Stack then
-            Text := Gtk_New_Text (Font, "Anchors (positions)");
-            Rect.Add_Child (Text);
-         end if;
+         case Layout is
+            when Vertical_Stack =>
+               Text := Gtk_New_Text (Font, "Alignments (size auto)");
+               Rect.Add_Child (Text);
+               SW := Auto_Size;
+               SH := (Unit_Pixels, 15.0);
+            when Horizontal_Stack =>
+               SW := (Unit_Pixels, 15.0);
+               SH := Auto_Size;
+         end case;
 
-         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
-         Rect2.Set_Position (Anchor_X => Anchor_X, Anchor_Y => Anchor_Y);
-         Rect.Add_Child (Rect2, Margin => M);
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
+         Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
 
-         if Layout = Vertical_Stack then
-            Anchor_X := 0.5;
-         else
-            Anchor_Y := 0.5;
-         end if;
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
+         Rect.Add_Child (Rect2, Align  => Align_Center, Margin => M);
 
-         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
-         Rect2.Set_Position (Anchor_X => Anchor_X, Anchor_Y => Anchor_Y);
-         Rect.Add_Child (Rect2, Margin => M);
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
+         Rect.Add_Child (Rect2, Align  => Align_End, Margin => M);
 
-         if Layout = Vertical_Stack then
-            Anchor_X := 1.0;
-         else
-            Anchor_Y := 1.0;
-         end if;
+         --  Fourth series: fit size. Children occupy the full width of
+         --  the parent container.
 
-         Rect2 := Gtk_New_Rect (Red, 30.0, 30.0);
-         Rect2.Set_Position (Anchor_X => Anchor_X, Anchor_Y => Anchor_Y);
-         Rect.Add_Child (Rect2, Margin => M);
+         case Layout is
+            when Vertical_Stack =>
+               Text := Gtk_New_Text (Font, "Alignments (size fit)");
+               Rect.Add_Child (Text);
+               SW := Fit_Size;
+               SH := (Unit_Pixels, 15.0);
+            when Horizontal_Stack =>
+               SW := (Unit_Pixels, 15.0);
+               SH := Fit_Size;
+         end case;
+
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
+         Rect.Add_Child (Rect2, Align  => Align_Start, Margin => M);
+
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
+         Rect.Add_Child (Rect2, Align  => Align_Center, Margin => M);
+
+         Rect2 := Gtk_New_Rect (Green);
+         Rect2.Set_Size (Width => SW, Height => SH);
+         Rect.Add_Child (Rect2, Align  => Align_End, Margin => M);
+
       end Do_Example;
 
    begin
