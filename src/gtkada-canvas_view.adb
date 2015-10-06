@@ -706,6 +706,7 @@ package body Gtkada.Canvas_View is
    procedure Initialize_Details
       (Self    : not null access Canvas_View_Record'Class;
        Details : out Canvas_Event_Details) is
+      pragma Unreferenced (Self);
    begin
       Details :=
         (Event_Type => Custom,
