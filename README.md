@@ -24,12 +24,12 @@ for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada
 as the programming language.
 
-This library has been tested using Gtk+ 3.14.5 on the following systems:
+This library has been tested using Gtk+ 3.14.15 on the following systems:
 
   - GNU Linux/x86
   - GNU Linux/x86-64
   - Solaris/sparc
-  - Windows XP/Vista/7
+  - Windows 7 and 8.1
 
 License
 -------
