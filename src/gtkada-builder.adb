@@ -46,7 +46,7 @@ package body Gtkada.Builder is
    procedure Wrapper_Callback
      (Builder        : not null access Gtk_Builder_Record'Class;
       Object         : not null access Glib.Object.GObject_Record'Class;
-      Signal_Name    : UTF8_String;
+      Signal_Name    : Glib.Signal_Name;
       Handler_Name   : UTF8_String;
       Connect_Object : access Glib.Object.GObject_Record'Class;
       Flags          : Glib.G_Connect_Flags);
@@ -151,7 +151,7 @@ package body Gtkada.Builder is
    procedure Wrapper_Callback
      (Builder        : not null access Gtk_Builder_Record'Class;
       Object         : not null access Glib.Object.GObject_Record'Class;
-      Signal_Name    : UTF8_String;
+      Signal_Name    : Glib.Signal_Name;
       Handler_Name   : UTF8_String;
       Connect_Object : access Glib.Object.GObject_Record'Class;
       Flags          : Glib.G_Connect_Flags)
@@ -182,7 +182,7 @@ package body Gtkada.Builder is
       Connect (Handler_Name => Handler_Name,
                Handler     => The_Marshaller.all,
                Base_Object => GObject (Object),
-               Signal      => Glib.Signal_Name (Signal_Name),
+               Signal      => Signal_Name,
                After       => After,
                The_Builder => GBuilder,
                Slot_Object => GObject (Connect_Object));

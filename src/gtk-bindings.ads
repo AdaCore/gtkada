@@ -162,24 +162,24 @@ package Gtk.Bindings is
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String);
+      Signal_Name : Glib.Signal_Name);
    procedure Add_Signal
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String;
+      Signal_Name : Glib.Signal_Name;
       Arg1        : Gint);
    procedure Add_Signal
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String;
+      Signal_Name : Glib.Signal_Name;
       Arg1        : Boolean);
    procedure Add_Signal
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String;
+      Signal_Name : Glib.Signal_Name;
       Arg1        : Gint;
       Arg2        : Gint);
    --  Override or install a new key binding for keyval with modifiers on

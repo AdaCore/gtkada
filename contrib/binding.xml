@@ -2171,13 +2171,11 @@ __PRE__
 
       <method id="gtk_status_icon_position_menu">
         <parameter name="user_data" ada="Icon" type="Glib.Object.GObject"/>
-        <parameter name="x" direction="inout" />
-        <parameter name="y" direction="inout" />
         <body>
       procedure Internal
          (Menu    : System.Address;
-          X       : in out Gint;
-          Y       : in out Gint;
+          X       : out Gint;
+          Y       : out Gint;
           Push_In : out Integer;
           Icon    : System.Address);
       pragma Import (C, Internal, "gtk_status_icon_position_menu");
@@ -2534,6 +2532,7 @@ __PRE__
      </method>
      <method id="gtk_widget_add_accelerator">
        <parameter name="Accel_Key" ctype="GdkKeyType" />
+       <parameter name="Accel_Signal" ctype="SignalName" />
      </method>
      <method id="gtk_widget_remove_accelerator">
        <parameter name="Accel_Key" ctype="GdkKeyType" />
@@ -3122,14 +3121,16 @@ __PRE__
 
    <package id="GtkMenu">
      <parameter name="self" ada="Menu"/>
+     <callback id="Gtk_Menu_Position_Func">
+        <parameter name="x" direction="out"/>
+        <parameter name="y" direction="out"/>
+     </callback>
      <method id="gtk_menu_get_active" return="GtkMenuItem"/>
      <method id="gtk_menu_popup">
        <parameter name="parent_menu_shell" ctype="GtkMenuShell" default="null"/>
        <parameter name="parent_menu_item" ctype="GtkMenuItem" default="null"/>
        <parameter name="func" default="null"/>
        <parameter name="button" default="1"/>
-       <parameter name="x" direction="inout" />
-       <parameter name="y" direction="inout" />
        <parameter name="activate_time" default="0"/>
      </method>
      <method id="gtk_menu_get_for_attach_widget" return="WidgetList*"/>
@@ -5455,6 +5456,9 @@ text. Since: 3.14
    <package id="GtkBuilder">
      <parameter name="self" ada="Builder"/>
      <parameter name="error" direction="out" />
+     <callback id="Gtk_Builder_Connect_Func">
+        <parameter name="signal_name" ctype="SignalName"/>
+     </callback>
      <method id="gtk_builder_add_from_string">
        <parameter name="length" default="-1" ada=""/>
      </method>

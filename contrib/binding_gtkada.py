@@ -223,6 +223,10 @@ class GtkAdaPackage(object):
         else:
             self.bindtype = True
 
+    def __repr__(self):
+        return "<GtkAdaPackage name=%s>" % (
+            self.node.get("id") if self.node else "")
+
     def register_types(self, adapkg):
         """If we are going to generate some enumerations in the package, we
            need to register them now, so that all places where the enumeration
@@ -397,6 +401,10 @@ class GtkAdaPackage(object):
             for f in self.node.findall("virtual-method"):
                 if f.get("id") == cname:
                     return GtkAdaMethod(f, self)
+            for cb in self.node.findall("callback"):
+                if cb.get("id") == cname:
+                    return GtkAdaMethod(cb, self)
+
         return GtkAdaMethod(None, self)
 
     def get_type(self, name):

@@ -81,13 +81,11 @@ class CType(object):
     """
 
     def __init__(self, ada, property):
-        self.ada = ada       # Fully qualified Ada type
+        self.set_ada_name(ada)
         self.property = property
         self.default_record_field_value = None
 
         self.is_ptr = False
-        self.param = ada     # type as parameter
-        self.cparam = ada    # type for Ada subprograms binding to C
 
         self.cleanup = None
         # If set, a tmp variable is created to hold the result of convert
@@ -108,6 +106,11 @@ class CType(object):
         # If True, the value returned from C must be freed by the caller
 
         self.transfer_ownership = False
+
+    def set_ada_name(self, ada):
+        self.ada = ada       # Fully qualified Ada type
+        self.param = ada     # type as parameter
+        self.cparam = ada    # type for Ada subprograms binding to C
 
     def convert_from_c(self):
         """How to convert the value returned from C to Ada.
@@ -516,6 +519,19 @@ class UTF8(CType):
                          might_be_unused=True)
 
 
+class SignalName(UTF8):
+    """
+    A special kind of utf8 used for signal names
+    """
+    def __init__(self):
+        super(SignalName, self).__init__()
+        self.set_ada_name("Glib.Signal_Name")
+        self.cparam = "Interfaces.C.Strings.chars_ptr"
+
+    def convert_to_c(self, pkg=None):
+        return "New_String (String (%(var)s))"
+
+
 class UTF8_List(CType):
 
     def __init__(self):
@@ -920,6 +936,8 @@ class AdaNaming(object):
             return None
         elif name == "utf8" or cname == "gchar*" or cname == "char*":
             t = UTF8()
+        elif name == "SignalName":
+            t = SignalName()
         elif cname:
             # Check whether the C type, including trailing "*", maps
             # directly to an Ada type.

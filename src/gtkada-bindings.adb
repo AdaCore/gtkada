@@ -216,6 +216,17 @@ package body Gtkada.Bindings is
       return Interfaces.C.Strings.Value (Str);
    end Value_Allowing_Null;
 
+   function Value_Allowing_Null
+     (Str : Interfaces.C.Strings.chars_ptr) return Glib.Signal_Name
+   is
+   begin
+      if Str = Null_Ptr then
+         return "";
+      end if;
+
+      return Glib.Signal_Name (String'(Interfaces.C.Strings.Value (Str)));
+   end Value_Allowing_Null;
+
    ---------------------------------
    -- Unchecked_Do_Signal_Connect --
    ---------------------------------

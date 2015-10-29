@@ -1087,8 +1087,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             raise Exception(
                 "No GIR node for %s in callback %s" % (cb.type.ada, cname))
 
+        cbgtk = self.gtkpkg.get_method(cbname)
+
         cb_profile = SubprogramProfile.parse(
-            cb_gir_node, gtkmethod=gtkmethod, pkg=self.pkg)
+            cb_gir_node, gtkmethod=cbgtk, pkg=self.pkg)
 
         user_data = profile.callback_user_data()
         cb_user_data = cb_profile.find_param(user_data_params)

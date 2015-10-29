@@ -203,7 +203,7 @@ package Gtk.Builder is
    type Gtk_Builder_Connect_Func is access procedure
      (Builder        : not null access Gtk_Builder_Record'Class;
       Object         : not null access Glib.Object.GObject_Record'Class;
-      Signal_Name    : UTF8_String;
+      Signal_Name    : Glib.Signal_Name;
       Handler_Name   : UTF8_String;
       Connect_Object : access Glib.Object.GObject_Record'Class;
       Flags          : Glib.G_Connect_Flags);
@@ -481,7 +481,7 @@ package Gtk.Builder is
       type Gtk_Builder_Connect_Func is access procedure
         (Builder        : not null access Gtk.Builder.Gtk_Builder_Record'Class;
          Object         : not null access Glib.Object.GObject_Record'Class;
-         Signal_Name    : UTF8_String;
+         Signal_Name    : Glib.Signal_Name;
          Handler_Name   : UTF8_String;
          Connect_Object : access Glib.Object.GObject_Record'Class;
          Flags          : Glib.G_Connect_Flags;

@@ -34,13 +34,13 @@ package body Gtk.Bindings is
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String)
+      Signal_Name : Glib.Signal_Name)
    is
       procedure Internal
         (Binding_Set : Gtk_Binding_Set;
          Keyval      : Guint;
          Modifiers   : Gdk_Modifier_Type;
-         Signal_Name : String);
+         Signal_Name : Glib.Signal_Name);
       pragma Import (C, Internal, "ada_gtk_binding_entry_add_signal_NO");
    begin
       Internal (Binding_Set, Keyval, Modifiers, Signal_Name & ASCII.NUL);
@@ -54,14 +54,14 @@ package body Gtk.Bindings is
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String;
+      Signal_Name : Glib.Signal_Name;
       Arg1        : Gint)
    is
       procedure Internal
         (Binding_Set : Gtk_Binding_Set;
          Keyval      : Guint;
          Modifiers   : Gdk_Modifier_Type;
-         Signal_Name : String;
+         Signal_Name : Glib.Signal_Name;
          Arg1        : Gint);
       pragma Import (C, Internal, "ada_gtk_binding_entry_add_signal_int");
    begin
@@ -76,7 +76,7 @@ package body Gtk.Bindings is
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String;
+      Signal_Name : Glib.Signal_Name;
       Arg1        : Gint;
       Arg2        : Gint)
    is
@@ -84,7 +84,7 @@ package body Gtk.Bindings is
         (Binding_Set : Gtk_Binding_Set;
          Keyval      : Guint;
          Modifiers   : Gdk_Modifier_Type;
-         Signal_Name : String;
+         Signal_Name : Glib.Signal_Name;
          Arg1, Arg2  : Gint);
       pragma Import (C, Internal, "ada_gtk_binding_entry_add_signal_int_int");
    begin
@@ -100,14 +100,14 @@ package body Gtk.Bindings is
      (Binding_Set : Gtk_Binding_Set;
       Keyval      : Guint;
       Modifiers   : Gdk.Types.Gdk_Modifier_Type;
-      Signal_Name : String;
+      Signal_Name : Glib.Signal_Name;
       Arg1        : Boolean)
    is
       procedure Internal
         (Binding_Set : Gtk_Binding_Set;
          Keyval      : Guint;
          Modifiers   : Gdk_Modifier_Type;
-         Signal_Name : String;
+         Signal_Name : Glib.Signal_Name;
          Arg1        : Gboolean);
       pragma Import (C, Internal, "ada_gtk_binding_entry_add_signal_bool");
    begin

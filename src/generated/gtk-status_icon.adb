@@ -722,15 +722,15 @@ package body Gtk.Status_Icon is
 
    procedure Position_Menu
       (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-       X       : in out Gint;
-       Y       : in out Gint;
+       X       : out Gint;
+       Y       : out Gint;
        Push_In : out Boolean;
        Icon    : Glib.Object.GObject)
    is
       procedure Internal
          (Menu    : System.Address;
-          X       : in out Gint;
-          Y       : in out Gint;
+          X       : out Gint;
+          Y       : out Gint;
           Push_In : out Integer;
           Icon    : System.Address);
       pragma Import (C, Internal, "gtk_status_icon_position_menu");

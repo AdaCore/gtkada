@@ -1,5 +1,16 @@
 Known problems fixed in GtkAda 3.8.2
 
+- OA28-059 Inconsistent signal names
+  Problem:    A number of functions were taking signal names as a UTF8_String,
+              rather than a Glib.Signal_Name. Also, the definition of
+              Gtk.Menu.Gtk_Menu_Position_Func was inconsistent depending on
+              whether you had specified user data or not. It now always
+              takes "out" parameters for X and Y, instead of sometimes taking
+              "in out" parameters.
+
+  Workaround: Existing code might need minor changes to adapt to the fixes in
+              the API.
+
 - N326-016 Implementing an interface raises gtk+ warnings
   Problem:    When you create custom widgets that implement an interface, for
               instance GtkScrollable, and add properties, gtk+ complains that

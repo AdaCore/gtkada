@@ -70,8 +70,7 @@ package body Gtk.Handlers is
    is
       Q  : Signal_Query;
       Id : constant Signal_Id :=
-        Lookup (Get_Type (Object), String (Signal) & ASCII.NUL);
-
+         Lookup (Get_Type (Object), Signal & ASCII.NUL);
    begin
       if Id = Invalid_Signal_Id then
          return 0;

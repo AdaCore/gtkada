@@ -351,7 +351,7 @@ package body Gtk.Widget is
 
    procedure Add_Accelerator
       (Widget       : not null access Gtk_Widget_Record;
-       Accel_Signal : UTF8_String;
+       Accel_Signal : Glib.Signal_Name;
        Accel_Group  : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
        Accel_Key    : Gdk.Types.Gdk_Key_Type;
        Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
@@ -365,7 +365,7 @@ package body Gtk.Widget is
           Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
           Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
-      Tmp_Accel_Signal : Interfaces.C.Strings.chars_ptr := New_String (Accel_Signal);
+      Tmp_Accel_Signal : Interfaces.C.Strings.chars_ptr := New_String (String (Accel_Signal));
    begin
       Internal (Get_Object (Widget), Tmp_Accel_Signal, Get_Object (Accel_Group), Accel_Key, Accel_Mods, Accel_Flags);
       Free (Tmp_Accel_Signal);
