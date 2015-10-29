@@ -59,6 +59,8 @@ package Gtkada.Bindings is
 
    function Value_Allowing_Null
      (Str : Interfaces.C.Strings.chars_ptr) return String;
+   function Value_Allowing_Null
+     (Str : Interfaces.C.Strings.chars_ptr) return Glib.Signal_Name;
    --  Return the value stored in Str, and an empty string if Str is null.
 
    -------------

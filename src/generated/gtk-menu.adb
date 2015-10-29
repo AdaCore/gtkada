@@ -131,8 +131,8 @@ package body Gtk.Menu is
 
    procedure Internal_Gtk_Menu_Position_Func
       (Menu      : System.Address;
-       X         : in out Gint;
-       Y         : in out Gint;
+       X         : out Gint;
+       Y         : out Gint;
        Push_In   : out Glib.Gboolean;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Menu_Position_Func);
@@ -159,8 +159,8 @@ package body Gtk.Menu is
 
    procedure Internal_Gtk_Menu_Position_Func
       (Menu      : System.Address;
-       X         : in out Gint;
-       Y         : in out Gint;
+       X         : out Gint;
+       Y         : out Gint;
        Push_In   : out Glib.Gboolean;
        User_Data : System.Address)
    is
@@ -563,8 +563,8 @@ package body Gtk.Menu is
 
       procedure Internal_Cb
          (Menu      : System.Address;
-          X         : in out Gint;
-          Y         : in out Gint;
+          X         : out Gint;
+          Y         : out Gint;
           Push_In   : out Glib.Gboolean;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -597,8 +597,8 @@ package body Gtk.Menu is
 
       procedure Internal_Cb
          (Menu      : System.Address;
-          X         : in out Gint;
-          Y         : in out Gint;
+          X         : out Gint;
+          Y         : out Gint;
           Push_In   : out Glib.Gboolean;
           User_Data : System.Address)
       is

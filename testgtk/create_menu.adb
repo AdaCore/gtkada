@@ -48,15 +48,15 @@ package body Create_Menu is
 
    procedure Position_At_0
      (Menu : not null access Gtk_Menu_Record'Class;
-      X    : in out Gint;
-      Y    : in out Gint;
+      X    : out Gint;
+      Y    : out Gint;
       Push_In : out Boolean);
    --  Position function at coordinates 0,0.
 
    procedure Position_At_Data
      (Menu : not null access Gtk_Menu_Record'Class;
-      X    : in out Gint;
-      Y    : in out Gint;
+      X    : out Gint;
+      Y    : out Gint;
       Push_In : out Boolean;
       Val  : Gint);
    --  Position function at coordinates Val,Val.
@@ -73,8 +73,8 @@ package body Create_Menu is
 
    procedure Position_At_0
      (Menu : not null access Gtk_Menu_Record'Class;
-      X    : in out Gint;
-      Y    : in out Gint;
+      X    : out Gint;
+      Y    : out Gint;
       Push_In : out Boolean)
    is
       pragma Unreferenced (Menu);
@@ -90,8 +90,8 @@ package body Create_Menu is
 
    procedure Position_At_Data
      (Menu : not null access Gtk_Menu_Record'Class;
-      X    : in out Gint;
-      Y    : in out Gint;
+      X    : out Gint;
+      Y    : out Gint;
       Push_In : out Boolean;
       Val  : Gint)
    is

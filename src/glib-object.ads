@@ -185,7 +185,7 @@ package Glib.Object is
    type Signal_Query is private;
 
    function Lookup
-     (Object : Glib.GType; Signal : String) return Glib.Signal_Id;
+     (Object : Glib.GType; Signal : Signal_Name) return Glib.Signal_Id;
    --  Returns the signal Id associated with a specific Object/Signal pair.
    --  Null_Signal_Id is returned if no such signal exists for Object.
    --  You can then use the Query procedure to get more information on the

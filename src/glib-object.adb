@@ -484,10 +484,12 @@ package body Glib.Object is
    -- Lookup --
    ------------
 
-   function Lookup (Object : GType; Signal : String) return Glib.Signal_Id is
-      function Internal (Signal : String; Object : GType) return Signal_Id;
+   function Lookup
+      (Object : GType; Signal : Glib.Signal_Name) return Glib.Signal_Id
+   is
+      function Internal
+         (Signal : Glib.Signal_Name; Object : GType) return Signal_Id;
       pragma Import (C, Internal, "g_signal_lookup");
-
    begin
       return Internal (Signal & ASCII.NUL, Object);
    end Lookup;

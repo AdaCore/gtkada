@@ -99,7 +99,7 @@ package body Create_Builder is
    procedure Connect_Signals
       (Builder        : not null access Gtk_Builder_Record'Class;
        Object         : not null access Glib.Object.GObject_Record'Class;
-       Signal_Name    : UTF8_String;
+       Signal_Name    : Glib.Signal_Name;
        Handler_Name   : UTF8_String;
        Connect_Object : access Glib.Object.GObject_Record'Class;
        Flags          : Glib.G_Connect_Flags;
@@ -113,7 +113,7 @@ package body Create_Builder is
    procedure Connect_Signals
       (Builder        : not null access Gtk_Builder_Record'Class;
        Object         : not null access Glib.Object.GObject_Record'Class;
-       Signal_Name    : UTF8_String;
+       Signal_Name    : Glib.Signal_Name;
        Handler_Name   : UTF8_String;
        Connect_Object : access Glib.Object.GObject_Record'Class;
        Flags          : Glib.G_Connect_Flags;
@@ -129,7 +129,7 @@ package body Create_Builder is
       --  Tell the console what we are up to.
       Put_Line ("Connect_Signals callback invoked: ");
       Put_Line ("   object " & System.Address_Image (Object.Get_Object)
-                & " emitting " & Signal_Name);
+                & " emitting " & String (Signal_Name));
       Put_Line ("   to " & Handler_Name & ", with flags:"
                 & Glib.G_Connect_Flags'Image (Flags));
 
