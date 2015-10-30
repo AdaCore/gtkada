@@ -182,7 +182,7 @@ package body Gtkada.Builder is
       Connect (Handler_Name => Handler_Name,
                Handler     => The_Marshaller.all,
                Base_Object => GObject (Object),
-               Signal      => Glib.Signal_Name (Signal_Name),
+               Signal      => Signal_Name,
                After       => After,
                The_Builder => GBuilder,
                Slot_Object => GObject (Connect_Object));
