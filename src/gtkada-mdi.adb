@@ -3674,6 +3674,20 @@ package body Gtkada.MDI is
       end if;
    end Key_Event_In_Floating;
 
+   ------------------------------------------
+   -- Set_Default_Size_For_Floating_Window --
+   ------------------------------------------
+
+   procedure Set_Default_Size_For_Floating_Window
+     (Child : not null access MDI_Child_Record;
+      Win   : not null access Gtk_Window_Record'Class;
+      Width, Height : Glib.Gint)
+   is
+      pragma Unreferenced (Child);
+   begin
+      Win.Set_Default_Size (Width, Height);
+   end Set_Default_Size_For_Floating_Window;
+
    -----------------
    -- Float_Child --
    -----------------
@@ -3813,7 +3827,7 @@ package body Gtkada.MDI is
             Set_Title (Win, Locale_From_UTF8 (Child.Title.all));
          end if;
 
-         Set_Default_Size (Win, W, H);
+         Child.Set_Default_Size_For_Floating_Window (Win, W, H);
 
          --  Memorize the MDI_Child associated with the window, for faster
          --  lookup for instance in Find_MDI_Child_From_Widget.

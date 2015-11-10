@@ -623,6 +623,16 @@ package Gtkada.MDI is
      (Child : access MDI_Child_Record'Class) return Boolean;
    --  Return True if Child is currently in a separate window
 
+   procedure Set_Default_Size_For_Floating_Window
+     (Child : not null access MDI_Child_Record;
+      Win   : not null access Gtk.Window.Gtk_Window_Record'Class;
+      Width, Height : Glib.Gint);
+   --  Set the default size for a floating window.
+   --  Width and Height are the values that have bee computed, from either
+   --  the non-floating size of the child, or from the child's preferred
+   --  size. This procedure can be overridden, though, to force other
+   --  values, for instance if you would like to restore a specific size.
+
    procedure Close_Child
      (Child : access MDI_Child_Record'Class;
       Force : Boolean := False);
