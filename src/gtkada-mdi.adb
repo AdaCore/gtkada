@@ -5625,6 +5625,10 @@ package body Gtkada.MDI is
          Persp   : Perspective_Menu_Item;
          Group   : Widget_SList.GSlist := Widget_SList.Null_List;
       begin
+         if MDI.Perspective_Menu_Item = null then
+            return;
+         end if;
+
          Print_Debug ("Create_Perspective_Menu", Debug_Increase);
 
          --  Prevent changing perspective when setting "Active" on the buttons
