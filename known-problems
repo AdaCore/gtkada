@@ -1,3 +1,10 @@
+Known problems fixed in GtkAda 17.0
+
+- OB19-053 Wrong binding for Gtk.Tree_Store.Remove
+  Problem:    The binding for this function set Iter to null, instead of
+              setting it to a valid iter.
+  Workaround: None known.
+
 Known problems fixed in GtkAda 3.8.2
 
 - N326-016 Implementing an interface raises gtk+ warnings
