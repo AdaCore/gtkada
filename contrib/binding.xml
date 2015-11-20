@@ -7313,9 +7313,6 @@ Iter := Gtk.Tree_Model.Null_Iter;
      </method>
      <method id="gtk_tree_store_remove" return="void">
        <parameter name="iter" direction="inout"/>
-       <body>%(auto)s
-Iter := Gtk.Tree_Model.Null_Iter;
-       </body>
      </method>
      <method id="gtk_tree_store_reorder">
        <parameter name="new_order" type="Gint_Array"/>

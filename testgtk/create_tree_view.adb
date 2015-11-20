@@ -21,6 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Exceptions;
+
 with Glib;                     use Glib;
 with Glib.Object;              use Glib.Object;
 with Glib.Values;              use Glib.Values;
@@ -244,6 +246,7 @@ package body Create_Tree_View is
       Text_Render   : Gtk_Cell_Renderer_Text;
       Toggle_Render : Gtk_Cell_Renderer_Toggle;
       Parent, Iter  : Gtk_Tree_Iter;
+      Value         : Glib.Values.GValue;
       pragma Unreferenced (Num);
       pragma Warnings (Off, Iter);
 
@@ -358,6 +361,49 @@ package body Create_Tree_View is
 
          Parent := Iter;
       end loop;
+
+      --  Test Gtk_Tree_Store.remove
+      begin
+         Parent := Model.Get_Iter_First;
+         Model.Append (Iter => Iter, Parent => Parent);
+         Model.Set (Iter, 0, "1");
+         Model.Append (Iter => Iter, Parent => Parent);
+         Model.Set (Iter, 0, "2");
+         Model.Append (Iter => Iter, Parent => Parent);
+         Model.Set
+           (Iter, 0, "if You see this, Gtk_Tree_Store.remove works incorrect");
+
+         Iter := Model.Nth_Child (Parent, 0);
+         Model.Remove (Iter); -- Iter must be set on the 2 after remove
+
+         --  Was iterator set on second node?
+         Model.Get_Value (Iter, 0, Value);
+         if Glib.Values.Get_String (Value) /= "2" then
+            raise Constraint_Error with "Iterator not set on the next node";
+         end if;
+
+         Model.Remove (Iter); -- Iter must be set on the warning after remove
+         Model.Remove (Iter); -- remove last test node
+
+         --  Was iterator set to null?
+         if Iter /= Null_Iter then
+            raise Constraint_Error with
+              "Iterator not set to null afer last node";
+         end if;
+
+         Iter := Add_Line
+           (Model, "Gtk_Tree_Store.remove works correctly",
+            Editable => False, Striken => False, Active => True,
+            Parent => Null_Iter);
+
+      exception
+         when E : others =>
+            Iter := Add_Line
+              (Model, "Test for Gtk_Tree_Store.remove raised:" &
+                 Ada.Exceptions.Exception_Information (E),
+               Editable => False, Striken => False, Active => True,
+               Parent => Null_Iter);
+      end;
 
       --  Insert the view in the frame
 

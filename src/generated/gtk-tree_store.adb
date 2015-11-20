@@ -673,7 +673,7 @@ package body Gtk.Tree_Store is
       (Tree_Store : not null access Gtk_Tree_Store_Record;
        Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter)
    is
-            procedure Internal
+      procedure Internal
          (Tree_Store : System.Address;
           Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_tree_store_remove");
@@ -681,8 +681,6 @@ package body Gtk.Tree_Store is
    begin
       Internal (Get_Object (Tree_Store), Tmp_Iter);
       Iter := Tmp_Iter;
-
-Iter := Gtk.Tree_Model.Null_Iter;
    end Remove;
 
    -------------
