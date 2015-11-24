@@ -220,8 +220,11 @@ provide::
          --  Install some custom style properties
          Install_Style_Property (Self, Gnew_Int (...));
    
-         --  Override some the inherited methods
+         --  Override some the inherited methods (how to draw the widget)
          Set_Default_Draw_Handler (Self, On_Draw'Access);
+
+         --  Override the primitives to compute the widget size
+         Set_Default_Get_Preferred_Width (Self, ...);
       end Class_Init;
       
       function Get_Type return GType is
@@ -351,38 +354,3 @@ three or four arguments:
         "missed" & ASCII.NUL, 1, 2);
 
   will emit the "missed" signal with the two parameters 1 and 2.
-
-Then of course `Initialize` should set up some signal handlers for
-the functions you want to redefine.
-Three signals are especially useful:
-
-
-* "size_request"
-
-  This callback is passed one parameter, as in ::
-
-    procedure Size_Request
-       (Widget      : access My_Widget_Record;
-        Requisition : in out Gtk.Widget.Gtk_Requisition);
-    
-  This function should modify Requisition to specify the widget's ideal
-  size. This might not be the exact size that will be set, since some
-  containers might decide to enlarge or to shrink it.
-
-* "size_allocate"
-
-  This callback is called every time the widget is moved in its parent
-  window, or it is resized. It is passed one paramater, as in ::
-
-    procedure Size_Allocate
-       (Widget     : access My_Widget_Record;
-        Allocation : in out Gtk.Widget.Gtk_Allocation)
-    
-  This function should take the responsability to move the widget, using
-  for instance `Gdk.Window.Move_Resize`.
-
-* "expose_event"
-
-  This callback is called every time the widget needs to be redrawn. It
-  is passed one parameter, the area to be redrawn (to speed things up, you
-  don't need to redraw the whole widget, just this area).

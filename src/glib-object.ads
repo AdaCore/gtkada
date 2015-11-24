@@ -400,7 +400,7 @@ package Glib.Object is
    --          Class_Record => Klass'Access,
    --          Type_Name    => "My_Widget",
    --          Class_Init   => Class_Init'Access)
-   --      begin
+   --      then
    --         Info := new GInterface_Info'(null, null, System.Null_Address);
    --         Add_Interface (Klass, Gtk.Scrollable.Get_Type, Info);
    --      end if;
