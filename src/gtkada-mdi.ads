@@ -42,6 +42,7 @@ with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
 with Gtk.Box;
+with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Event_Box;
 with Gtk.Handlers;
@@ -611,9 +612,9 @@ package Gtkada.MDI is
    --  Return the child pointed to by Iterator.
    --  If Iterator is no longer valid, null is returned.
 
-   -----------------------------------
-   -- Floating and closing children --
-   -----------------------------------
+   -----------------------
+   -- Floating children --
+   -----------------------
 
    procedure Float_Child
      (Child : access MDI_Child_Record'Class; Float : Boolean);
@@ -633,11 +634,6 @@ package Gtkada.MDI is
    --  size. This procedure can be overridden, though, to force other
    --  values, for instance if you would like to restore a specific size.
 
-   procedure Close_Child
-     (Child : access MDI_Child_Record'Class;
-      Force : Boolean := False);
-   --  Same as Close, but applies directly to a MDI_Child.
-
    procedure Set_All_Floating_Mode
      (MDI : access MDI_Window_Record; All_Floating : Boolean);
    --  If All_Floating is set to true, the MDI will have a size of 0x0, and all
@@ -650,6 +646,29 @@ package Gtkada.MDI is
    --  If Short_Titles is set to true, only short titles will ever be used
    --  either in the title bars (in notebooks) or as the title for floating
    --  windows.
+
+   procedure Create_Float_Window_For_Child
+      (Child     : not null access MDI_Child_Record;
+       Win       : out Gtk.Window.Gtk_Window;
+       Container : out Gtk.Container.Gtk_Container);
+   --  Creates the window to use when a child is made floating.
+   --  This procedure provides reasonable default, but can be overridden in
+   --  your application if you have special needs (like creating a window
+   --  with specific menubar or decorations for instance).
+   --  Win must be set to the window that has been created, and Container
+   --  to the area of the window that will contain Child.
+   --  The window's title will be set automatically.
+   --  The window's size will be set by the MDI by calling
+   --  Child.Set_Default_Size_For_Floating_Window.
+
+   ----------------------
+   -- Closing children --
+   ----------------------
+
+   procedure Close_Child
+     (Child : access MDI_Child_Record'Class;
+      Force : Boolean := False);
+   --  Same as Close, but applies directly to a MDI_Child.
 
    ---------------------------
    -- Reorganizing children --
@@ -752,7 +771,6 @@ package Gtkada.MDI is
       --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
       --  User is used for the callbacks on perspective changes, and passed to
       --  Load_Perspective
-      --  If Registration is specified, call it for
 
       type Save_Desktop_Function is access function
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;

@@ -3700,6 +3700,66 @@ package body Gtkada.MDI is
         (Child, Float, Position_At_Mouse => True, X => 0, Y => 0);
    end Float_Child;
 
+   -----------------------------------
+   -- Create_Float_Window_For_Child --
+   -----------------------------------
+
+   procedure Create_Float_Window_For_Child
+      (Child     : not null access MDI_Child_Record;
+       Win       : out Gtk_Window;
+       Container : out Gtk_Container)
+   is
+   begin
+      if (Child.Flags and Float_As_Transient) /= 0
+          or else (Child.Flags and Float_To_Main) /= 0
+      then
+         declare
+            Diag   : Gtk_Dialog;
+            Parent : Gtk_Window := null;
+            Item   : Widget_List.Glist;
+            It     : MDI_Child;
+         begin
+            --  If the current child is floating, and the mode is
+            --  Float_As_Transient, we want to float the dialog as
+            --  transient for the current child.
+
+            if (Child.Flags and Float_As_Transient) /= 0 then
+               Item := Child.MDI.Items;
+               while Item /= Widget_List.Null_List loop
+                  It := MDI_Child (Get_Data (Item));
+
+                  if It /= MDI_Child (Child) then
+                     if It.State = Floating
+                       and then It.Initial.Get_Realized
+                     then
+                        Parent := Gtk_Window (Get_Toplevel (It.Initial));
+                     else
+                        Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+                     end if;
+
+                     exit;
+                  end if;
+
+                  Item := Widget_List.Next (Item);
+               end loop;
+            elsif (Child.Flags and Float_To_Main) /= 0 then
+               Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+            end if;
+
+            Gtk_New (Diag,
+                     Title  => "",
+                     Parent => Parent,
+                     Flags  => Use_Header_Bar_From_Settings (Child.MDI)
+                        or Destroy_With_Parent);
+            Win  := Gtk_Window (Diag);
+            Container := Gtk_Container (Get_Content_Area (Diag));
+         end;
+      else
+         Gtk_New (Win);
+         Container := Gtk_Container (Win);
+      end if;
+   end Create_Float_Window_For_Child;
+
    --------------------------
    -- Internal_Float_Child --
    --------------------------
@@ -3712,7 +3772,6 @@ package body Gtkada.MDI is
       Width, Height     : Gint := -1)
    is
       use Object_List;
-      Diag        : Gtk_Dialog;
       Win         : Gtk_Window;
       Cont        : Gtk_Container;
       Widget      : Gtk_Widget;
@@ -3729,37 +3788,37 @@ package body Gtkada.MDI is
             Debug_Increase);
       end if;
 
-      --  If the Child already has a window, the resulting floating window
-      --  should have the same size.
-      --  Otherwise, ask the Child for its requisiton.
-
-      if Width /= -1 and then Height /= -1 then
-         W := Width;
-         H := Height;
-         if Traces then
-            Print_Debug ("Forced size:" & Gint'Image (W) & "x"
-                         & Gint'Image (H));
-         end if;
-
-      elsif Child.Get_Mapped then
-         W := Child.Get_Parent.Get_Allocated_Width;
-         H := Child.Get_Parent.Get_Allocated_Height;
-         if Traces then
-            Print_Debug ("Size from allocated:" & Gint'Image (W) & "x"
-                         & Gint'Image (H));
-         end if;
-
-      else
-         Child.Get_Preferred_Size (Min, Requisition);
-         W := Requisition.Width;
-         H := Requisition.Height;
-         if Traces then
-            Print_Debug ("Use preferred size:" & Gint'Image (W) & "x"
-                         & Gint'Image (H));
-         end if;
-      end if;
-
       if Child.State /= Floating and then Float then
+         --  If the Child already has a window, the resulting floating window
+         --  should have the same size.
+         --  Otherwise, ask the Child for its requisiton.
+
+         if Width /= -1 and then Height /= -1 then
+            W := Width;
+            H := Height;
+            if Traces then
+               Print_Debug ("Forced size:" & Gint'Image (W) & "x"
+                            & Gint'Image (H));
+            end if;
+
+         elsif Child.Get_Mapped then
+            W := Child.Get_Parent.Get_Allocated_Width;
+            H := Child.Get_Parent.Get_Allocated_Height;
+            if Traces then
+               Print_Debug ("Size from allocated:" & Gint'Image (W) & "x"
+                            & Gint'Image (H));
+            end if;
+
+         else
+            Child.Get_Preferred_Size (Min, Requisition);
+            W := Requisition.Width;
+            H := Requisition.Height;
+            if Traces then
+               Print_Debug ("Use preferred size:" & Gint'Image (W) & "x"
+                            & Gint'Image (H));
+            end if;
+         end if;
+
          --  Ref is removed when the child is unfloated
 
          Ref (Child);
@@ -3771,63 +3830,14 @@ package body Gtkada.MDI is
             Remove (Gtk_Container (Get_Parent (Child)), Child);
          end if;
 
-         if (Child.Flags and Float_As_Transient) /= 0
-             or else (Child.Flags and Float_To_Main) /= 0
-         then
-            declare
-               Parent : Gtk_Window := null;
-               Item   : Widget_List.Glist;
-               It     : MDI_Child;
-            begin
-
-               --  If the current child is floating, and the mode is
-               --  Float_As_Transient, we want to float the dialog as
-               --  transient for the current child.
-
-               if (Child.Flags and Float_As_Transient) /= 0 then
-                  Item := Child.MDI.Items;
-                  while Item /= Widget_List.Null_List loop
-                     It := MDI_Child (Get_Data (Item));
-
-                     if It /= MDI_Child (Child) then
-                        if It.State = Floating
-                          and then It.Initial.Get_Realized
-                        then
-                           Parent := Gtk_Window (Get_Toplevel (It.Initial));
-                        else
-                           Parent := Gtk_Window (Get_Toplevel (Child.MDI));
-                        end if;
-
-                        exit;
-                     end if;
-
-                     Item := Widget_List.Next (Item);
-                  end loop;
-               elsif (Child.Flags and Float_To_Main) /= 0 then
-                  Parent := Gtk_Window (Get_Toplevel (Child.MDI));
-               end if;
-
-               Gtk_New (Diag,
-                        Title  => "",
-                        Parent => Parent,
-                        Flags  => Use_Header_Bar_From_Settings (Child.MDI)
-                           or Destroy_With_Parent);
-            end;
-
-            Win  := Gtk_Window (Diag);
-            Cont := Gtk_Container (Get_Content_Area (Diag));
-         else
-            Gtk_New (Win);
-            Cont := Gtk_Container (Win);
-         end if;
+         Child.Create_Float_Window_For_Child (Win, Cont);
+         Child.Set_Default_Size_For_Floating_Window (Win, W, H);
 
          if Child.MDI.Use_Short_Titles_For_Floats then
             Set_Title (Win, Locale_From_UTF8 (Child.Short_Title.all));
          else
             Set_Title (Win, Locale_From_UTF8 (Child.Title.all));
          end if;
-
-         Child.Set_Default_Size_For_Floating_Window (Win, W, H);
 
          --  Memorize the MDI_Child associated with the window, for faster
          --  lookup for instance in Find_MDI_Child_From_Widget.
@@ -3891,11 +3901,12 @@ package body Gtkada.MDI is
 
          Set_State (Child, Floating);
          Update_Float_Menu (Child);
+         Show_All (Win);
+
          Emit_By_Name_Child
            (Get_Object (Child.MDI), String (Signal_Float_Child) & ASCII.NUL,
             Get_Object (Child));
          Widget_Callback.Emit_By_Name (Child, Signal_Float_Child);
-         Show_All (Win);
 
       elsif Child.State = Floating and then not Float then
          --  Reassign the widget to Child instead of the notebook
