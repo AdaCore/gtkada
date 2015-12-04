@@ -494,6 +494,8 @@ package Gtkada.MDI is
    --  Grab_Focus for the child in all cases, since you might want to give the
    --  focus to some specific part of your widget (an entry field,...) in some
    --  cases.
+   --  Call this with Containing = null to explicitly unset the current focus
+   --  child.
 
    procedure Set_Focus_Child (Child : access MDI_Child_Record);
    --  Make Child the active widget, and raise it at the top.

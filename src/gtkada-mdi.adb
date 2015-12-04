@@ -5367,17 +5367,21 @@ package body Gtkada.MDI is
      (MDI        : access MDI_Window_Record;
       Containing : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
-      pragma Unreferenced (MDI);
       Parent : Gtk_Widget := Gtk_Widget (Containing);
    begin
-      while Parent /= null
-        and then not (Parent.all in MDI_Child_Record'Class)
-      loop
-         Parent := Get_Parent (Parent);
-      end loop;
+      if Containing = null then
+         MDI.Focus_Child := null;
+         Child_Selected (MDI, null);
+      else
+         while Parent /= null
+           and then not (Parent.all in MDI_Child_Record'Class)
+         loop
+            Parent := Get_Parent (Parent);
+         end loop;
 
-      if Parent /= null then
-         Set_Focus_Child (MDI_Child (Parent));
+         if Parent /= null then
+            Set_Focus_Child (MDI_Child (Parent));
+         end if;
       end if;
    end Set_Focus_Child;
 
