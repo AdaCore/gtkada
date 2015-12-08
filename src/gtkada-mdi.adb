@@ -32,6 +32,7 @@
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
 
+with Ada.Containers.Vectors;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
@@ -48,10 +49,13 @@ with GNAT.Strings;            use GNAT.Strings;
 with Glib.Convert;            use Glib.Convert;
 with Glib.Error;              use Glib.Error;
 with Glib.Main;               use Glib.Main;
+with Glib.Menu;               use Glib.Menu;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with Glib.Simple_Action;      use Glib.Simple_Action;
 with Glib.Unicode;            use Glib.Unicode;
 with Glib.Values;             use Glib.Values;
+with Glib.Variant;            use Glib.Variant;
 
 with Cairo;                   use Cairo;
 
@@ -76,6 +80,7 @@ with Gdk.Window;              use Gdk.Window;
 with Gtk;                     use Gtk;
 with Gtk.Accel_Group;         use Gtk.Accel_Group;
 with Gtk.Accel_Label;         use Gtk.Accel_Label;
+with Gtk.Application;         use Gtk.Application;
 with Gtk.Arguments;           use Gtk.Arguments;
 with Gtk.Box;                 use Gtk.Box;
 with Gtk.Button;              use Gtk.Button;
@@ -87,6 +92,7 @@ with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
 with Gtk.Frame;               use Gtk.Frame;
 with Gtk.GEntry;              use Gtk.GEntry;
+with Gtk.Handlers;
 with Gtk.Image;               use Gtk.Image;
 with Gtk.Image_Menu_Item;     use Gtk.Image_Menu_Item;
 with Gtk.Label;               use Gtk.Label;
@@ -150,7 +156,8 @@ package body Gtkada.MDI is
       5 => New_String (String (Signal_Child_Removed)),
       6 => New_String (String (Signal_Child_Icon_Changed)),
       7 => New_String (String (Signal_Children_Reorganized)),
-      8 => New_String (String (Signal_Perspective_Changed)));
+      8 => New_String (String (Signal_Perspective_Changed)),
+      9 => New_String (String (Signal_Unfloat_Child)));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String (String (Signal_Float_Child)),
@@ -169,6 +176,32 @@ package body Gtkada.MDI is
       Icon          : Gtk.Image.Gtk_Image;
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
+
+   type MDI_Check_Menu_Item_Record is new Gtk_Check_Menu_Item_Record with
+      record
+         MDI : MDI_Window;
+      end record;
+   type MDI_Check_Menu_Item is access all MDI_Check_Menu_Item_Record'Class;
+
+   type Child_Menu_Item_Record is new Gtk_Image_Menu_Item_Record with record
+      Child : MDI_Child;
+   end record;
+   type Child_Menu_Item is access all Child_Menu_Item_Record'Class;
+   --  A menu item used in a contextual menu, to switch to an existing notebook
+   --  page.
+
+   type Menu_Item_For_Child_Record is new Gtk_Radio_Menu_Item_Record with
+      record
+         Child : MDI_Child;
+      end record;
+   type Menu_Item_For_Child is access all Menu_Item_For_Child_Record'Class;
+   --  The special type of item added to the /Window menu. We use a special
+   --  widget so that we know which items to remove when we refresh the menu.
+
+   type MDI_Menu_Record is new Gtk_Menu_Record with record
+      MDI : MDI_Window;
+   end record;
+   type MDI_Menu is access all MDI_Menu_Record'Class;
 
    type MDI_Tab_Record is new Gtk_Event_Box_Record with record
       Timestamp : Natural := 0;
@@ -193,6 +226,16 @@ package body Gtkada.MDI is
    procedure Tab_Class_Init (Self : GObject_Class);
    pragma Convention (C, Tab_Class_Init);
    --  Initialize the gtk+ class fields
+
+   function Short_Title_Less_Than (C1, C2 : MDI_Child) return Boolean;
+   function Short_Title_Less_Than (C1, C2 : MDI_Child) return Boolean is
+   begin
+      return C1.Get_Short_Title < C2.Get_Short_Title;
+   end Short_Title_Less_Than;
+
+   package Child_Vectors is new Ada.Containers.Vectors (Natural, MDI_Child);
+   package Vector_Sort is new Child_Vectors.Generic_Sorting
+      (Short_Title_Less_Than);
 
    procedure Tab_Get_Preferred_Width
      (Label : System.Address; Minimum_Size, Natural_Size : out Gint);
@@ -226,15 +269,8 @@ package body Gtkada.MDI is
    type MDI_Notebook is access all MDI_Notebook_Record'Class;
    --  The type of notebooks used in the MDI.
 
-   type MDI_Menu_Item_Record is new Gtk_Image_Menu_Item_Record with record
-      Child : MDI_Child;
-   end record;
-   type MDI_Menu_Item is access all MDI_Menu_Item_Record'Class;
-   --  A menu item used in a contextual menu, to switch to an existing notebook
-   --  page.
-
    procedure Menu_Switch_Page (Item : access Gtk_Widget_Record'Class);
-   --  Called when a MDI_Menu_Item is activated
+   --  Called when a Child_Menu_Item is activated
 
    package Child_User_Data is new Glib.Object.User_Data (MDI_Child);
 
@@ -309,6 +345,16 @@ package body Gtkada.MDI is
    --  that fact at the MDI_Child level, no matter whether the child is
    --  currently floating or not.
 
+   procedure On_Select_Child_Update_Close_Menu
+      (Item   : access Gtk_Widget_Record'Class;
+       Params : GValues);
+   --  Called to update the "Close" menu item, when a new child is selected
+
+   procedure On_Float_Child_Update_Menu
+      (Check : access Gtk_Widget_Record'Class);
+   --  Updates the "/Window/Floating" menu item when a child is floated or
+   --  unfloated. The argument is a MDI_Check_Menu_Item
+
    function Insert_Child_If_Needed
      (MDI   : access MDI_Window_Record'Class;
       Child : MDI_Child) return MDI_Child;
@@ -350,13 +396,6 @@ package body Gtkada.MDI is
 
    procedure Destroy_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the MDI is destroyed
-
-   procedure Menu_Entry_Destroyed
-      (Child : access Gtk_Widget_Record'Class);
-   --  Called when the Menu_Item associated with a Child is destroyed
-
-   procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class);
-   --  Called when the Menu associated with a MDI is destroyed
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class);
    --  Called when the child is realized
@@ -414,15 +453,42 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class) return MDI_Notebook;
    --  Return the notebook that directly contains Child
 
-   procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class);
-   --  Add an entry to the MDI menu that provides easy activation of Child
+   procedure Get_Sorted_List_Of_Visible_Children
+      (MDI  : not null access MDI_Window_Record'Class;
+       Vec  : out Child_Vectors.Vector);
+   --  Return the list of visible children in Vec.
+
+   procedure Update_Menu_Model_List_Of_Children
+      (MDI : not null access MDI_Window_Record'Class);
+   procedure On_Child_Changed_Update_Menu
+      (Menu : access Gtk_Widget_Record'Class);
+   procedure On_Child_Selected_Update_Menu
+      (Item : access Gtk_Widget_Record'Class);
+   --  Update the contents of the menu with the list of children.
 
    procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class);
    procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class);
-   procedure Float_Cb   (MDI   : access Gtk_Widget_Record'Class);
+   procedure Float_Cb   (MDI   : access GObject_Record'Class);
    procedure Close_Cb   (MDI   : access Gtk_Widget_Record'Class);
-   procedure Focus_Cb   (Child : access Gtk_Widget_Record'Class);
+   procedure Focus_Cb   (Item  : access Gtk_Check_Menu_Item_Record'Class);
    --  Callbacks for the menu
+
+   procedure On_Action_Floating
+     (MDI       : access GObject_Record'Class;
+      Parameter : Glib.Variant.Gvariant);
+   procedure On_Action_Close
+     (MDI       : access GObject_Record'Class;
+      Parameter : Glib.Variant.Gvariant);
+   procedure On_Action_Split_H
+     (MDI       : access GObject_Record'Class;
+      Parameter : Glib.Variant.Gvariant);
+   procedure On_Action_Split_V
+     (MDI       : access GObject_Record'Class;
+      Parameter : Glib.Variant.Gvariant);
+   procedure On_Action_Select
+     (MDI       : access GObject_Record'Class;
+      Parameter : Glib.Variant.Gvariant);
+   --  Callbacks for the Gaction associated with menus.
 
    procedure Set_Focus_Child_MDI
      (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args);
@@ -499,10 +565,6 @@ package body Gtkada.MDI is
    procedure Update_Tab_Label
      (Child : access MDI_Child_Record'Class);
    --  Return the tab to use in the notebooks containing Child
-
-   procedure Update_Menu_Item
-     (Child : access MDI_Child_Record'Class);
-   --  Update the menu entry for Child
 
    function Find_Current_In_Central
      (Pane             : access Gtkada_Multi_Paned_Record'Class;
@@ -988,7 +1050,8 @@ package body Gtkada.MDI is
    --------------
 
    function Get_Type return Glib.GType is
-      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
+      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types
+         (Integer (MDI_Signals'First) .. Integer (MDI_Signals'Last), 1 .. 1) :=
         (1 => (1 => GType_Pointer),
          2 => (1 => GType_Pointer),
          3 => (1 => GType_Pointer),
@@ -996,7 +1059,8 @@ package body Gtkada.MDI is
          5 => (1 => GType_Pointer),
          6 => (1 => GType_Pointer),
          7 => (1 => GType_None),
-         8 => (1 => GType_None));
+         8 => (1 => GType_None),
+         9 => (1 => GType_Pointer));
    begin
       Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtkada.Multi_Paned.Get_Type,
@@ -1682,10 +1746,6 @@ package body Gtkada.MDI is
          Unref (M.Cursor_Cross);
       end if;
 
-      if M.Menu /= null then
-         Destroy (M.Menu);
-      end if;
-
       Free (M.Dnd_Message);
       Free (M.Perspectives);
       Free (M.View_Contents);
@@ -1831,9 +1891,7 @@ package body Gtkada.MDI is
       --  The child of the MDI_Child has now been taken care of, thus we need
       --  to take care of the MDI_Child itself now.
 
-      if C.Menu_Item /= null then
-         Destroy (C.Menu_Item);
-      end if;
+      Update_Menu_Model_List_Of_Children (MDI);
 
       if not C.MDI.In_Destruction then
          --  Do not unfloat the child, since the toplevel is no longer a
@@ -2876,9 +2934,7 @@ package body Gtkada.MDI is
       Prepend (MDI.Items, Gtk_Widget (Child));
       Unref (Child);
 
-      if MDI.Menu /= null then
-         Create_Menu_Entry (Child);
-      end if;
+      Update_Menu_Model_List_Of_Children (MDI);
 
       --  Restore the keyboard focus, which might have been stolen if the new
       --  child was added to a notebook.
@@ -2945,44 +3001,6 @@ package body Gtkada.MDI is
       return Child.Short_Title.all;
    end Get_Short_Title;
 
-   ----------------------
-   -- Update_Menu_Item --
-   ----------------------
-
-   procedure Update_Menu_Item (Child : access MDI_Child_Record'Class) is
-      Label  : Gtk_Accel_Label;
-      Pixmap : Gtk_Image;
-      Box    : Gtk_Box;
-      Pixbuf : Gdk_Pixbuf;
-   begin
-      if Child.Menu_Item /= null then
-         if Get_Child (Child.Menu_Item) /= null then
-            Remove (Child.Menu_Item, Get_Child (Child.Menu_Item));
-         end if;
-
-         Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
-
-         Pixbuf := Child.Title_Icon.Get;   --  still owned by the image
-         if Pixbuf /= null then
-            Gtk_New (Pixmap, Pixbuf);
-            Pack_Start (Box, Pixmap, Expand => False);
-         end if;
-
-         Gtk_New (Label, Child.Short_Title.all);
-         Set_Alignment (Label, 0.0, 0.5);
-         Set_Accel_Widget (Label, Child.Menu_Item);
-         Pack_Start (Box, Label,  Expand => True, Fill => True);
-
-         Show_All (Box);
-         Add (Child.Menu_Item, Box);
-
-         Set_Accel_Path
-           (Child.Menu_Item, Child.MDI.Accel_Path_Prefix.all
-            & "/window/child/" & Child.Short_Title.all,
-            Child.MDI.Group);
-      end if;
-   end Update_Menu_Item;
-
    --------------
    -- Set_Icon --
    --------------
@@ -3008,7 +3026,7 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      Update_Menu_Item (Child);
+      Update_Menu_Model_List_Of_Children (Child.MDI);
       Emit_By_Name_Child
         (Get_Object (Child.MDI),
          String (Signal_Child_Icon_Changed) & ASCII.NUL,
@@ -3042,7 +3060,7 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      Update_Menu_Item (Child);
+      Update_Menu_Model_List_Of_Children (Child.MDI);
       Emit_By_Name_Child
         (Get_Object (Child.MDI),
          String (Signal_Child_Icon_Changed) & ASCII.NUL,
@@ -3163,9 +3181,8 @@ package body Gtkada.MDI is
          --  Update the menu, if it exists. We need to recreate the menu item
          --  to keep it sorted
 
-         if Child.Menu_Item /= null then
-            Destroy (Child.Menu_Item);
-            Create_Menu_Entry (Child);
+         if Child.MDI /= null then
+            Update_Menu_Model_List_Of_Children (Child.MDI);
          end if;
       end if;
 
@@ -3451,12 +3468,9 @@ package body Gtkada.MDI is
 
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class) is
    begin
-      if Child.MDI.Float_Menu_Item /= null then
-         Gtk.Handlers.Handler_Block
-           (Child.MDI.Float_Menu_Item, Child.MDI.Float_Menu_Item_Id);
-         Set_Active (Child.MDI.Float_Menu_Item, Child.State = Floating);
-         Gtk.Handlers.Handler_Unblock
-           (Child.MDI.Float_Menu_Item, Child.MDI.Float_Menu_Item_Id);
+      if Child.MDI.Action_Float /= null then
+         Child.MDI.Action_Float.Set_State
+            (Gvariant_New_Boolean (Child.State = Floating));
       end if;
    end Update_Float_Menu;
 
@@ -3589,13 +3603,12 @@ package body Gtkada.MDI is
 
       Update_Float_Menu (C);
 
-      if C.MDI.Close_Menu_Item /= null then
-         Set_Sensitive
-           (C.MDI.Close_Menu_Item, (C.Flags and Destroy_Button) /= 0);
+      if C.MDI.Action_Close /= null then
+         C.MDI.Action_Close.Set_Enabled ((C.Flags and Destroy_Button) /= 0);
       end if;
 
-      if C.Menu_Item /= null then
-         Set_Active (C.Menu_Item, True);
+      if C.MDI.Action_Select /= null then
+         C.MDI.Action_Select.Set_State (Gvariant_New_String (C.Get_Title));
       end if;
 
       --  It would be nice to find the first child of C.Initial that
@@ -3930,6 +3943,10 @@ package body Gtkada.MDI is
 
          Update_Float_Menu (Child);
          Unref (Child);
+
+         Emit_By_Name_Child
+           (Get_Object (Child.MDI), String (Signal_Unfloat_Child) & ASCII.NUL,
+            Get_Object (Child));
          Widget_Callback.Emit_By_Name (Child, Signal_Unfloat_Child);
       end if;
 
@@ -4031,7 +4048,7 @@ package body Gtkada.MDI is
       Submenu : Gtk_Menu;
       Sep  : Gtk_Separator_Menu_Item;
       Item : Gtk_Menu_Item;
-      MItem : MDI_Menu_Item;
+      MItem : Child_Menu_Item;
       Widget : MDI_Child;
       Image  : Gtk_Image;
       Current : Gint;
@@ -4043,7 +4060,7 @@ package body Gtkada.MDI is
 
          for P in 1 .. Note.Get_N_Pages loop
             Widget := MDI_Child (Note.Get_Nth_Page (P - 1));
-            MItem := new MDI_Menu_Item_Record;
+            MItem := new Child_Menu_Item_Record;
             MItem.Child := Widget;
             Gtk.Image_Menu_Item.Initialize
               (MItem, Label => Widget.Short_Title.all);
@@ -4160,7 +4177,7 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Menu_Switch_Page (Item : access Gtk_Widget_Record'Class) is
-      It : constant MDI_Menu_Item := MDI_Menu_Item (Item);
+      It : constant Child_Menu_Item := Child_Menu_Item (Item);
    begin
       It.Child.Set_Focus_Child;
    end Menu_Switch_Page;
@@ -4919,7 +4936,9 @@ package body Gtkada.MDI is
             exit when List = Null_List;
          end loop;
 
-         Set_Sensitive (MDI.Float_Menu_Item, not All_Floating);
+         if MDI.Action_Float /= null then
+            MDI.Action_Float.Set_Enabled (not All_Floating);
+         end if;
 
          Set_Child_Visible (MDI, not All_Floating);
 
@@ -5188,32 +5207,51 @@ package body Gtkada.MDI is
            ("Unexpected exception: " & Exception_Information (E));
    end Split_V_Cb;
 
+   ---------------------------------------
+   -- On_Select_Child_Update_Close_Menu --
+   ---------------------------------------
+
+   procedure On_Select_Child_Update_Close_Menu
+      (Item   : access Gtk_Widget_Record'Class;
+       Params : GValues)
+   is
+      C : constant MDI_Child :=
+         MDI_Child (Get_User_Data_Or_Null (To_Address (Params, 1)));
+   begin
+      if C = null then
+         Item.Set_Sensitive (False);
+      else
+         Item.Set_Sensitive ((C.Flags and Destroy_Button) /= 0);
+      end if;
+   end On_Select_Child_Update_Close_Menu;
+
+   --------------------------------
+   -- On_Float_Child_Update_Menu --
+   --------------------------------
+
+   procedure On_Float_Child_Update_Menu
+      (Check : access Gtk_Widget_Record'Class)
+   is
+      C : constant MDI_Check_Menu_Item := MDI_Check_Menu_Item (Check);
+      Focus : constant MDI_Child := C.MDI.Get_Focus_Child;
+   begin
+      C.MDI.Freeze_Float_Menu := True;
+      C.Set_Active (Focus /= null and then Focus.State = Floating);
+      C.MDI.Freeze_Float_Menu := False;
+   end On_Float_Child_Update_Menu;
+
    --------------
    -- Float_Cb --
    --------------
 
-   procedure Float_Cb (MDI : access Gtk_Widget_Record'Class) is
-      C : MDI_Child;
+   procedure Float_Cb (MDI : access GObject_Record'Class) is
+      C : constant MDI_Child := Get_Focus_Child (MDI_Window (MDI));
    begin
-      if MDI.all in MDI_Window_Record'Class then
-         C := Get_Focus_Child (MDI_Window (MDI));
-      else
-         C := MDI_Child (MDI);
-      end if;
-
-      if C /= null then
+      if not MDI_Window (MDI).Freeze_Float_Menu and then C /= null then
          Float_Child (C, C.State /= Floating);
          Set_Focus_Child (C);
          Raise_Child (C, False);
       end if;
-
-   exception
-      when E : others =>
-         --  Silently ignore the exceptions for now, to avoid crashes.
-         --  The application using the MDI can not do it, since this callback
-         --  is called directly from the menu in Create_Menu.
-         Print_Debug
-           ("Unexpected exception: " & Exception_Information (E));
    end Float_Cb;
 
    --------------
@@ -5249,115 +5287,139 @@ package body Gtkada.MDI is
    -- Focus_Cb --
    --------------
 
-   procedure Focus_Cb (Child : access Gtk_Widget_Record'Class) is
-      C : constant MDI_Child := MDI_Child (Child);
+   procedure Focus_Cb (Item  : access Gtk_Check_Menu_Item_Record'Class) is
+      It : constant Menu_Item_For_Child := Menu_Item_For_Child (Item);
    begin
-      if Get_Active (C.Menu_Item) then
+      if It.Get_Active then
          --  If C is floating, raise the window.
-         if C.State = Floating then
-            Raise_Child (C, True);
+         if It.Child.State = Floating then
+            Raise_Child (It.Child, True);
          end if;
-
-         Set_Focus_Child (C);
+         Set_Focus_Child (It.Child);
       end if;
    end Focus_Cb;
 
-   --------------------------
-   -- Menu_Entry_Destroyed --
-   --------------------------
+   -----------------------------------------
+   -- Get_Sorted_List_Of_Visible_Children --
+   -----------------------------------------
 
-   procedure Menu_Entry_Destroyed
-      (Child : access Gtk_Widget_Record'Class) is
+   procedure Get_Sorted_List_Of_Visible_Children
+      (MDI  : not null access MDI_Window_Record'Class;
+       Vec  : out Child_Vectors.Vector)
+   is
+      use Child_Vectors;
+      Tmp   : Widget_List.Glist;
+      Child : MDI_Child;
    begin
-      MDI_Child (Child).Menu_Item := null;
-   end Menu_Entry_Destroyed;
+      Vec.Clear;
+      Tmp := First (MDI.Items);
+      while Tmp /= Null_List loop
+         Child := MDI_Child (Get_Data (Tmp));
+         if Child.State /= Invisible then
+            Vec.Append (Child);
+         end if;
+         Tmp := Next (Tmp);
+      end loop;
 
-   -----------------------
-   -- Create_Menu_Entry --
-   -----------------------
+      Vector_Sort.Sort (Vec);
+   end Get_Sorted_List_Of_Visible_Children;
 
-   procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class) is
-      use Widget_SList;
+   -----------------------------------
+   -- On_Child_Selected_Update_Menu --
+   -----------------------------------
 
-      G           : Widget_SList.GSlist := Widget_SList.Null_List;
-      First_Child : MDI_Child;
-      Tmp         : Widget_List.Glist;
-      Position    : Gint;
-      Children    : Widget_List.Glist;
-      Item        : Gtk_Menu_Item;
-      Ref         : String_Access;
-
+   procedure On_Child_Selected_Update_Menu
+      (Item : access Gtk_Widget_Record'Class)
+   is
+      It : constant Menu_Item_For_Child := Menu_Item_For_Child (Item);
    begin
-      if Child.Menu_Item = null
-        and then Child.Short_Title.all /= ""
-      then
-         --  Find the group to which the radio menu items should belong. We
-         --  cannot save this group into a variable, since it might change when
-         --  the first child is removed from the MDI.
+      It.Set_Active (It.Child = It.Child.MDI.Get_Focus_Child);
+   end On_Child_Selected_Update_Menu;
 
-         Tmp := Child.MDI.Items;
+   ----------------------------------
+   -- On_Child_Changed_Update_Menu --
+   ----------------------------------
 
-         while Tmp /= Widget_List.Null_List loop
-            First_Child := MDI_Child (Get_Data (Tmp));
+   procedure On_Child_Changed_Update_Menu
+      (Menu : access Gtk_Widget_Record'Class)
+   is
+      M : constant MDI_Menu := MDI_Menu (Menu);
 
-            if First_Child.Menu_Item /= null then
-               G := Get_Group (First_Child.Menu_Item);
+      --  ??? Some code duplication with Update_Menu_Model_List_Of_Children,
+      --  but this code will be removed when we only support menu models.
+      use Child_Vectors;
+      G      : Widget_SList.GSlist := Widget_SList.Null_List;
+      Vec    : Child_Vectors.Vector;
+      Curs   : Child_Vectors.Cursor;
+      Child  : MDI_Child;
+      It     : Gtk_Radio_Menu_Item;
+      Box    : Gtk_Box;
+      Pixbuf : Gdk_Pixbuf;
+      Pixmap : Gtk_Image;
+      Label  : Gtk_Accel_Label;
+      Children, L : Widget_List.Glist;
+      W      : Gtk_Widget;
+   begin
+      --  Remove all items
 
-               --  Find the closest menu item, to keep the Window menu sorted
-               if First_Child.Short_Title.all > Child.Short_Title.all
-                 and then (Ref = null
-                           or else First_Child.Short_Title.all < Ref.all)
-               then
-                  Ref := First_Child.Short_Title;
-                  Item := Gtk_Menu_Item (First_Child.Menu_Item);
-               end if;
-            end if;
+      Children := M.Get_Children;
+      L := Children;
+      while L /= Null_List loop
+         W := Get_Data (L);
+         L := Next (L);
+         if W.all in Menu_Item_For_Child_Record'Class then
+            W.Destroy;
+         end if;
+      end loop;
+      Free (Children);
 
-            Tmp := Next (Tmp);
-         end loop;
+      --  Add the list of children
 
-         --  Insert the new item sorted in the Window menu
-         if Item = null then
-            Position := -1;
-         else
-            Position := 0;
-            Children := Get_Children (Child.MDI.Menu);
-            Tmp := Children;
-            while Tmp /= Widget_List.Null_List loop
-               exit when Gtk_Menu_Item (Get_Data (Tmp)) = Item;
-               Position := Position + 1;
-               Tmp := Next (Tmp);
-            end loop;
-            Free (Children);
+      Get_Sorted_List_Of_Visible_Children (M.MDI, Vec);
+
+      Curs := First (Vec);
+      while Has_Element (Curs) loop
+         Child := Element (Curs);
+
+         It := new Menu_Item_For_Child_Record'
+            (Gtk_Radio_Menu_Item_Record with Child => Child);
+         Gtk.Radio_Menu_Item.Initialize (It, G, "");
+         G := It.Get_Group;
+         M.Add (It);
+
+         It.Remove (It.Get_Child);
+
+         Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
+         It.Add (Box);
+
+         Pixbuf := Child.Title_Icon.Get;   --  still owned by the image
+         if Pixbuf /= null then
+            Gtk_New (Pixmap, Pixbuf);
+            Box.Pack_Start (Pixmap, Expand => False);
          end if;
 
-         Gtk_New (Child.Menu_Item, G, "");
-         Update_Menu_Item (Child);
+         Gtk_New (Label, Child.Short_Title.all);
+         Label.Set_Alignment (0.0, 0.5);
+         Label.Set_Accel_Widget (It);
+         Box.Pack_Start (Label, Expand => True, Fill => True);
 
-         Insert (Child.MDI.Menu, Child.Menu_Item, Position);
-         Set_Active
-           (Child.Menu_Item, MDI_Child (Child) = Child.MDI.Focus_Child);
-         Show_All (Child.Menu_Item);
+         It.Set_Active (Child = Child.MDI.Focus_Child);
+         It.On_Toggled (Focus_Cb'Access, After => True);
          Widget_Callback.Object_Connect
-           (Child.Menu_Item, Gtk.Menu_Item.Signal_Activate,
-            Widget_Callback.To_Marshaller (Focus_Cb'Access), Child,
-            After => True);
-         Widget_Callback.Object_Connect
-           (Child.Menu_Item, Signal_Destroy,
-            Widget_Callback.To_Marshaller (Menu_Entry_Destroyed'Access),
-            Child);
-      end if;
-   end Create_Menu_Entry;
+            (M.MDI, Signal_Child_Selected,
+             On_Child_Selected_Update_Menu'Access, It,
+             After => True);
 
-   --------------------
-   -- Menu_Destroyed --
-   --------------------
+         It.Set_Accel_Path
+           (Child.MDI.Accel_Path_Prefix.all
+            & "/window/child/" & Child.Short_Title.all,
+            Child.MDI.Group);
 
-   procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class) is
-   begin
-      MDI_Window (MDI).Menu := null;
-      MDI_Window (MDI).Float_Menu_Item := null;
-   end Menu_Destroyed;
+         Next (Curs);
+      end loop;
+
+      M.Show_All;
+   end On_Child_Changed_Update_Menu;
 
    ---------------------
    -- Set_Focus_Child --
@@ -5384,6 +5446,79 @@ package body Gtkada.MDI is
          end if;
       end if;
    end Set_Focus_Child;
+
+   ------------------------
+   -- On_Action_Floating --
+   ------------------------
+
+   procedure On_Action_Floating
+      (MDI       : access GObject_Record'Class;
+       Parameter : Glib.Variant.Gvariant)
+   is
+      pragma Unreferenced (Parameter);
+   begin
+      Float_Cb (MDI_Window (MDI));
+   end On_Action_Floating;
+
+   ---------------------
+   -- On_Action_Close --
+   ---------------------
+
+   procedure On_Action_Close
+      (MDI       : access GObject_Record'Class;
+       Parameter : Glib.Variant.Gvariant)
+   is
+      pragma Unreferenced (Parameter);
+   begin
+      Close_Cb (MDI_Window (MDI));
+   end On_Action_Close;
+
+   -----------------------
+   -- On_Action_Split_H --
+   -----------------------
+
+   procedure On_Action_Split_H
+      (MDI       : access GObject_Record'Class;
+       Parameter : Glib.Variant.Gvariant)
+   is
+      pragma Unreferenced (Parameter);
+   begin
+      Split_H_Cb (MDI_Window (MDI));
+   end On_Action_Split_H;
+
+   -----------------------
+   -- On_Action_Split_V --
+   -----------------------
+
+   procedure On_Action_Split_V
+      (MDI       : access GObject_Record'Class;
+       Parameter : Glib.Variant.Gvariant)
+   is
+      pragma Unreferenced (Parameter);
+   begin
+      Split_V_Cb (MDI_Window (MDI));
+   end On_Action_Split_V;
+
+   ----------------------
+   -- On_Action_Select --
+   ----------------------
+
+   procedure On_Action_Select
+     (MDI       : access GObject_Record'Class;
+      Parameter : Glib.Variant.Gvariant)
+   is
+      M      : constant MDI_Window := MDI_Window (MDI);
+      Length : aliased Gsize;
+      Name   : constant String := Get_String (Parameter, Length'Access);
+      C      : constant MDI_Child := M.Find_MDI_Child_By_Name (Name);
+   begin
+      if C /= null then
+         if C.State = Floating then
+            Raise_Child (C, True);
+         end if;
+         C.Set_Focus_Child;
+      end if;
+   end On_Action_Select;
 
    -------------
    -- Desktop --
@@ -5502,14 +5637,28 @@ package body Gtkada.MDI is
       --  by Node, since the size returned is the one really available for
       --  sharing between the children (thus omitting the resize handles)
 
-      procedure Create_Perspective_Menu
-        (MDI  : access MDI_Window_Record'Class;
+      type MDI_Menu_Item_Record is new Gtk_Menu_Item_Record with record
+         MDI  : MDI_Window;
+         User : User_Data;
+      end record;
+      type MDI_Menu_Item is access all MDI_Menu_Item_Record'Class;
+      --  A menu item that stores a reference to the MDI and user data
+
+      procedure Update_Perspective_Menu_Model
+         (MDI : not null access MDI_Window_Record'Class);
+      --  Update the menu model for /Window/Perspectives
+      --
+      procedure Create_Perspective_Query_Name
+        (MDI  : not null access MDI_Window_Record'Class;
          User : User_Data);
-      --  Create the /Window/Perspectives submenu
+      --  Ask the user for the name of a new perspective, and create it
 
       procedure Recompute_Perspective_Names
         (MDI : access MDI_Window_Record'Class);
       --  Recompute the name of all perspectives, and cache them
+
+      package MDI_User_Data_Cb is new Gtk.Handlers.User_Callback
+         (MDI_Window_Record, User_Data);
 
       ------------------------
       -- Change_Perspective --
@@ -5535,15 +5684,14 @@ package body Gtkada.MDI is
          end if;
       end Change_Perspective;
 
-      ---------------------------
-      -- Create_Perspective_CB --
-      ---------------------------
+      -----------------------------------
+      -- Create_Perspective_Query_Name --
+      -----------------------------------
 
-      procedure Create_Perspective_CB
-        (Item : access Gtk_Widget_Record'Class)
+      procedure Create_Perspective_Query_Name
+        (MDI  : not null access MDI_Window_Record'Class;
+         User : User_Data)
       is
-         Persp : constant Perspective_Menu_Item :=
-           Perspective_Menu_Item (Item);
          Dialog : Gtk_Dialog;
          Label  : Gtk_Label;
          Ent    : Gtk_Entry;
@@ -5551,7 +5699,7 @@ package body Gtkada.MDI is
          pragma Warnings (Off, Button);
       begin
          Gtk_New (Dialog, Title => "Enter perspective name",
-                  Parent => Gtk_Window (Get_Toplevel (Persp.MDI)),
+                  Parent => Gtk_Window (Get_Toplevel (MDI)),
                   Flags  => Modal and Destroy_With_Parent);
          Button := Add_Button (Dialog, Stock_Ok, Gtk_Response_OK);
          Button := Add_Button (Dialog, Stock_Cancel, Gtk_Response_Cancel);
@@ -5567,10 +5715,23 @@ package body Gtkada.MDI is
          Show_All (Dialog);
 
          if Run (Dialog) = Gtk_Response_OK then
-            Create_Perspective (Persp.MDI, Get_Text (Ent), Persp.User);
+            Create_Perspective (MDI, Get_Text (Ent), User);
          end if;
 
          Destroy (Dialog);
+      end Create_Perspective_Query_Name;
+
+      ---------------------------
+      -- Create_Perspective_CB --
+      ---------------------------
+
+      procedure Create_Perspective_CB
+        (Item : access Gtk_Widget_Record'Class)
+      is
+         Persp : constant Perspective_Menu_Item :=
+           Perspective_Menu_Item (Item);
+      begin
+         Create_Perspective_Query_Name (Persp.MDI, Persp.User);
       end Create_Perspective_CB;
 
       ------------------------
@@ -5591,10 +5752,7 @@ package body Gtkada.MDI is
          Free (Central);
 
          Recompute_Perspective_Names (MDI);
-         Create_Perspective_Menu (MDI, User);
-
-         Emit_By_Name
-           (Get_Object (MDI), String (Signal_Perspective_Changed) & ASCII.NUL);
+         Update_Perspective_Menu_Model (MDI);
       end Create_Perspective;
 
       ------------------------
@@ -5606,6 +5764,7 @@ package body Gtkada.MDI is
          XML          : Glib.Xml_Int.Node_Ptr;
          User         : User_Data)
       is
+         pragma Unreferenced (User);
          Name : constant String := Get_Attribute (XML, "name");
          Tmp : Node_Ptr;
       begin
@@ -5625,45 +5784,42 @@ package body Gtkada.MDI is
          end loop;
 
          Add_Child (MDI.Perspectives, Deep_Copy (XML), Append => True);
-         Create_Perspective_Menu (MDI, User);
+         Update_Perspective_Menu_Model (MDI);
       end Define_Perspective;
 
-      -----------------------------
-      -- Create_Perspective_Menu --
-      -----------------------------
+      ----------------------------------------
+      -- On_Perspective_Changed_Update_Menu --
+      ----------------------------------------
 
-      procedure Create_Perspective_Menu
-        (MDI  : access MDI_Window_Record'Class;
-         User : User_Data)
+      procedure On_Perspective_Changed_Update_Menu
+         (Menu : access Gtk_Widget_Record'Class)
       is
+         M : constant MDI_Menu_Item := MDI_Menu_Item (Menu);
          Submenu : Gtk_Menu;
          Persp   : Perspective_Menu_Item;
          Group   : Widget_SList.GSlist := Widget_SList.Null_List;
       begin
-         if MDI.Perspective_Menu_Item = null then
-            return;
-         end if;
-
          Print_Debug ("Create_Perspective_Menu", Debug_Increase);
 
          --  Prevent changing perspective when setting "Active" on the buttons
-         MDI.Loading_Desktop := True;
+         M.MDI.Loading_Desktop := True;
 
          Gtk_New (Submenu);
-         Set_Submenu (MDI.Perspective_Menu_Item, Submenu);
+         Set_Submenu (M, Submenu);
 
-         if MDI.Perspective_Names /= null then
-            for N in MDI.Perspective_Names'Range loop
+         if M.MDI.Perspective_Names /= null then
+            for N in M.MDI.Perspective_Names'Range loop
                Persp := new Perspective_Menu_Item_Record;
-               Persp.MDI  := MDI_Window (MDI);
+               Persp.MDI  := M.MDI;
                Persp.Name := N;
-               Persp.User := User;
+               Persp.User := M.User;
 
-               Initialize (Persp, Group, MDI.Perspective_Names (N).all);
-               Set_Active (Persp,
-                           MDI.Current_Perspective /= null
-                           and then MDI.Perspective_Names (N).all =
-                             Get_Attribute (MDI.Current_Perspective, "name"));
+               Initialize (Persp, Group, M.MDI.Perspective_Names (N).all);
+               Set_Active
+                  (Persp,
+                   M.MDI.Current_Perspective /= null
+                   and then M.MDI.Perspective_Names (N).all =
+                     Get_Attribute (M.MDI.Current_Perspective, "name"));
                Group := Get_Group (Persp);
                Append (Submenu, Persp);
                Widget_Callback.Connect
@@ -5672,8 +5828,8 @@ package body Gtkada.MDI is
          end if;
 
          Persp := new Perspective_Menu_Item_Record;
-         Persp.MDI  := MDI_Window (MDI);
-         Persp.User := User;
+         Persp.MDI  := M.MDI;
+         Persp.User := M.User;
          Gtk.Menu_Item.Initialize (Persp, "<create new>");
 
          Widget_Callback.Connect
@@ -5681,12 +5837,44 @@ package body Gtkada.MDI is
          Append (Submenu, Persp);
 
          Show_All (Submenu);
-         Show (MDI.Perspective_Menu_Item);
+         Show (Menu);
 
-         MDI.Loading_Desktop := False;
-
+         M.MDI.Loading_Desktop := False;
          Print_Debug ("", Debug_Decrease);
-      end Create_Perspective_Menu;
+      end On_Perspective_Changed_Update_Menu;
+
+      -----------------------------------
+      -- Update_Perspective_Menu_Model --
+      -----------------------------------
+
+      procedure Update_Perspective_Menu_Model
+         (MDI : not null access MDI_Window_Record'Class)
+      is
+      begin
+         if MDI.Perspectives_Menu /= null then
+            MDI.Perspectives_Menu.Remove_All;
+
+            if MDI.Perspective_Names /= null then
+               for N in MDI.Perspective_Names'Range loop
+                  MDI.Perspectives_Menu.Append
+                      (MDI.Perspective_Names (N).all,
+                       "app.mdi_set_perspective("""
+                       & MDI.Perspective_Names (N).all
+                       & """)");
+               end loop;
+            end if;
+
+            MDI.Perspectives_Menu.Append
+               ("<create new>", "app.mdi_create_perspective");
+
+            MDI.Action_Select_Perspective.Set_State
+               (Gvariant_New_String
+                   (Get_Attribute (MDI.Current_Perspective, "name")));
+         end if;
+
+         Emit_By_Name
+           (Get_Object (MDI), String (Signal_Perspective_Changed) & ASCII.NUL);
+      end Update_Perspective_Menu_Model;
 
       -----------------
       -- Create_Menu --
@@ -5699,9 +5887,9 @@ package body Gtkada.MDI is
          Registration      : Menu_Registration_Procedure := null)
          return Gtk.Menu.Gtk_Menu
       is
+         Menu  : MDI_Menu;
          Item  : Gtk_Menu_Item;
-         Child : MDI_Child;
-         Tmp   : Widget_List.Glist;
+         Check : Gtk_Check_Menu_Item;
          Sep   : Gtk_Separator_Menu_Item;
 
          procedure Connect_Menu
@@ -5722,7 +5910,7 @@ package body Gtkada.MDI is
             Full_Accel_Path : constant String :=
                                 Accel_Path_Prefix & "/window/" & Accel_Path;
          begin
-            Append (MDI.Menu, Item);
+            Append (Menu, Item);
             Widget_Callback.Object_Connect
               (Item, Gtk.Menu_Item.Signal_Activate,
                Widget_Callback.To_Marshaller (Callback), MDI);
@@ -5733,68 +5921,80 @@ package body Gtkada.MDI is
          end Connect_Menu;
 
       begin
-         if MDI.Menu = null then
+         if MDI.Accel_Path_Prefix = null then
             MDI.Accel_Path_Prefix := new String'(Accel_Path_Prefix);
-            Gtk_New (MDI.Menu);
-
-            Gtk_New (MDI.Perspective_Menu_Item, "Perspectives");
-            Append (MDI.Menu, MDI.Perspective_Menu_Item);
-            Create_Perspective_Menu (MDI, User);
-
-            Gtk_New (Item, "Split Side-by-Side");
-            Connect_Menu (Item, Split_H_Cb'Access, "split_horizontal");
-
-            Gtk_New (Item, "Split Up-Down");
-            Connect_Menu (Item, Split_V_Cb'Access, "split_vertical");
-
-            Gtk_New (Sep);
-            Append (MDI.Menu, Sep);
-
-            Gtk_New (MDI.Float_Menu_Item, "Floating");
-            Append (MDI.Menu, MDI.Float_Menu_Item);
-            Set_Active (MDI.Float_Menu_Item,
-                        MDI.Focus_Child /= null
-                        and then MDI.Focus_Child.State = Floating);
-            MDI.Float_Menu_Item_Id := Widget_Callback.Object_Connect
-              (MDI.Float_Menu_Item, Signal_Toggled,
-               Widget_Callback.To_Marshaller (Float_Cb'Access), MDI);
-            Set_Accel_Path
-              (MDI.Float_Menu_Item, Accel_Path_Prefix
-               & "/window/floating", MDI.Group);
-            if Registration /= null then
-               Registration
-                 (User, "Floating", Accel_Path_Prefix & "/window/floating");
-            end if;
-
-            Gtk_New (Sep);
-            Append (MDI.Menu, Sep);
-
-            Gtk_New (MDI.Close_Menu_Item, "Close");
-            Connect_Menu (MDI.Close_Menu_Item, Close_Cb'Access, "close");
-
-            Gtk_New (Sep);
-            Append (MDI.Menu, Sep);
-
-            Tmp := First (MDI.Items);
-
-            while Tmp /= Null_List loop
-               Child := MDI_Child (Get_Data (Tmp));
-               Create_Menu_Entry (Child);
-               Tmp := Next (Tmp);
-            end loop;
-
-            Widget_Callback.Object_Connect
-              (MDI.Menu, Signal_Destroy,
-               Widget_Callback.To_Marshaller (Menu_Destroyed'Access), MDI);
-
-         elsif Accel_Path_Prefix /= MDI.Accel_Path_Prefix.all then
-            Put_Line
-              ("Accel_Path_Prefix must have the same prefix across calls"
-               & " to Create_Menu");
          end if;
 
-         Show_All (MDI.Menu);
-         return MDI.Menu;
+         Menu := new MDI_Menu_Record;
+         Menu.MDI := MDI_Window (MDI);
+         Gtk.Menu.Initialize (Menu);
+
+         Item := new MDI_Menu_Item_Record'
+            (Gtk_Menu_Item_Record with
+             MDI => MDI_Window (MDI), User => User);
+         Gtk.Menu_Item.Initialize (Item, "Perspectives");
+         Append (Menu, Item);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Perspective_Changed,
+             On_Perspective_Changed_Update_Menu_Access, Item);
+         On_Perspective_Changed_Update_Menu (Item);
+
+         Gtk_New (Item, "Split Side-by-Side");
+         Connect_Menu (Item, Split_H_Cb'Access, "split_horizontal");
+
+         Gtk_New (Item, "Split Up-Down");
+         Connect_Menu (Item, Split_V_Cb'Access, "split_vertical");
+
+         Gtk_New (Sep);
+         Append (Menu, Sep);
+
+         Check := new MDI_Check_Menu_Item_Record'
+            (Gtk_Check_Menu_Item_Record with MDI => MDI_Window (MDI));
+         Gtk.Check_Menu_Item.Initialize (Check, "Floating");
+         Append (Menu, Check);
+         Check.On_Toggled (Float_Cb'Access, MDI);
+         Check.Set_Accel_Path
+            (Accel_Path_Prefix & "/window/floating", MDI.Group);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Float_Child,
+             Widget_Callback.To_Marshaller
+                (On_Float_Child_Update_Menu'Access), Check);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Unfloat_Child,
+             Widget_Callback.To_Marshaller
+                (On_Float_Child_Update_Menu'Access), Check);
+
+         Gtk_New (Sep);
+         Append (Menu, Sep);
+
+         Gtk_New (Item, "Close");
+         Connect_Menu (Item, Close_Cb'Access, "close");
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Child_Selected,
+             On_Select_Child_Update_Close_Menu'Access, Item);
+
+         Gtk_New (Sep);
+         Append (Menu, Sep);
+
+         On_Child_Changed_Update_Menu (Menu);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Child_Removed,
+             On_Child_Changed_Update_Menu'Access, Menu);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Child_Added,
+             On_Child_Changed_Update_Menu'Access, Menu);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Child_Icon_Changed,
+             On_Child_Changed_Update_Menu'Access, Menu);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Child_Title_Changed,
+             On_Child_Changed_Update_Menu'Access, Menu);
+         Widget_Callback.Object_Connect
+            (MDI, Signal_Perspective_Changed,
+             On_Child_Changed_Update_Menu'Access, Menu);
+
+         Show_All (Menu);
+         return Gtk_Menu (Menu);
       end Create_Menu;
 
       --------------------------------
@@ -7364,10 +7564,6 @@ package body Gtkada.MDI is
                   end if;
 
                   Set_State (C, Invisible);
-
-                  if C.Menu_Item /= null then
-                     Destroy (C.Menu_Item);
-                  end if;
                end if;
 
                L := Next (L);
@@ -7516,7 +7712,10 @@ package body Gtkada.MDI is
          Queue_Resize (MDI);
 
          --  Update to show which menu is active
-         Create_Perspective_Menu (MDI, User);
+         Update_Menu_Model_List_Of_Children (MDI);
+
+         Emit_By_Name
+           (Get_Object (MDI), String (Signal_Perspective_Changed) & ASCII.NUL);
 
          --  Realize the window while frozen, so that windows that insist on
          --  setting their own size when realized (eg. the search window in
@@ -7581,7 +7780,175 @@ package body Gtkada.MDI is
             Do_Size_Allocate => False);
       end Load_Perspective;
 
+      ----------------------------------
+      -- On_Action_Select_Perspective --
+      ----------------------------------
+
+      procedure On_Action_Select_Perspective
+         (MDI       : access MDI_Window_Record'Class;
+          Params    : GValues;
+          User      : User_Data)
+      is
+         Length : aliased Gsize;
+         Val    : constant Gvariant := From_Object (To_Address (Params, 1));
+         Name   : constant String := Get_String (Val, Length'Access);
+      begin
+         if not MDI.Loading_Desktop then
+            Print_Debug ("++++ Change_Perspective to " & Name);
+            Load_Perspective (MDI, Name, User);
+         end if;
+      end On_Action_Select_Perspective;
+
+      ----------------------------------
+      -- On_Action_Create_Perspective --
+      ----------------------------------
+
+      procedure On_Action_Create_Perspective
+         (MDI       : access MDI_Window_Record'Class;
+          Params    : GValues;
+          User      : User_Data)
+      is
+         pragma Unreferenced (Params);
+      begin
+         Create_Perspective_Query_Name (MDI, User);
+      end On_Action_Create_Perspective;
+
+      --------------------
+      -- Set_Menu_Model --
+      --------------------
+
+      procedure Set_Menu_Model
+        (MDI   : not null access MDI_Window_Record'Class;
+         App   : not null access Gtk.Application.Gtk_Application_Record'Class;
+         Model : access Glib.Menu.Gmenu_Record'Class;
+         User  : User_Data)
+      is
+         Section : Gmenu;
+         Act     : Gsimple_Action;
+      begin
+         if Gmenu (Model) /= MDI.Menu_Model
+            and then MDI.Menu_Model /= null
+         then
+            Unref (MDI.Menu_Model);
+            Unref (MDI.Menu_Items_Section);
+            MDI.Menu_Model := null;
+            MDI.Menu_Items_Section := null;
+         end if;
+
+         MDI.Menu_Model := Gmenu (Model);
+         MDI.Application := Gtk_Application (App);
+
+         Ref (MDI.Menu_Model);
+
+         --  Create the actions if necessary (the first time)
+
+         if MDI.Action_Close = null then
+            G_New (Act, "mdi_split_h", null);
+            Act.On_Activate (On_Action_Split_H'Access, MDI);
+            App.Add_Action (+Act);
+
+            G_New (Act, "mdi_split_v", null);
+            Act.On_Activate (On_Action_Split_V'Access, MDI);
+            App.Add_Action (+Act);
+
+            G_New_Stateful
+               (MDI.Action_Float, "mdi_floating",
+                Parameter_Type => null,
+                State          => Gvariant_New_Boolean (False));
+            MDI.Action_Float.On_Activate (On_Action_Floating'Access, MDI);
+            App.Add_Action (+MDI.Action_Float);
+
+            G_New (MDI.Action_Close, "mdi_close", null);
+            MDI.Action_Close.On_Activate (On_Action_Close'Access, MDI);
+            App.Add_Action (+MDI.Action_Close);
+
+            G_New_Stateful
+               (MDI.Action_Select_Perspective, "mdi_set_perspective",
+                Parameter_Type => Gvariant_Type_String,
+                State          => Gvariant_New_String (""));
+            MDI_User_Data_Cb.Object_Connect
+               (MDI.Action_Select_Perspective,
+                Glib.Simple_Action.Signal_Activate,
+                On_Action_Select_Perspective'Access, MDI, User);
+            App.Add_Action (+MDI.Action_Select_Perspective);
+
+            G_New (Act, "mdi_create_perspective", null);
+            MDI_User_Data_Cb.Object_Connect
+               (Act, Glib.Simple_Action.Signal_Activate,
+                On_Action_Create_Perspective'Access, MDI, User);
+            App.Add_Action (+Act);
+
+            G_New_Stateful
+               (MDI.Action_Select, "mdi_select",
+                Parameter_Type => Gvariant_Type_String,
+                State          => Gvariant_New_String (""));
+            MDI.Action_Select.On_Activate (On_Action_Select'Access, MDI);
+            App.Add_Action (+MDI.Action_Select);
+         end if;
+
+         --  Create the menus
+
+         if Model /= null then
+            MDI.Menu_Model.Remove_All;
+
+            Section := Gmenu_New;
+            MDI.Menu_Model.Append_Section ("", Section);
+
+            MDI.Perspectives_Menu := Gmenu_New;
+            Section.Append_Submenu ("Perspectives", MDI.Perspectives_Menu);
+
+            Section.Append ("Split Side-by-Side", "app.mdi_split_h");
+            Section.Append ("Split Up-Down", "app.mdi_split_v");
+
+            Section := Gmenu_New;
+            MDI.Menu_Model.Append_Section ("", Section);
+
+            Section.Append ("Floating", "app.mdi_floating");
+            Section.Append ("Close", "app.mdi_close");
+
+            MDI.Menu_Items_Section := Gmenu_New;
+            MDI.Menu_Model.Append_Section ("", MDI.Menu_Items_Section);
+
+            Update_Menu_Model_List_Of_Children (MDI);
+         end if;
+      end Set_Menu_Model;
+
    end Desktop;
+
+   ----------------------------------------
+   -- Update_Menu_Model_List_Of_Children --
+   ----------------------------------------
+
+   procedure Update_Menu_Model_List_Of_Children
+      (MDI : not null access MDI_Window_Record'Class)
+   is
+      use Child_Vectors;
+      Child   : MDI_Child;
+      Vec     : Child_Vectors.Vector;
+      Curs    : Child_Vectors.Cursor;
+   begin
+      if MDI.Menu_Items_Section /= null then
+         MDI.Menu_Items_Section.Remove_All;
+
+         Get_Sorted_List_Of_Visible_Children (MDI, Vec);
+
+         Curs := First (Vec);
+         while Has_Element (Curs) loop
+            Child := Element (Curs);
+            MDI.Menu_Items_Section.Append
+               (Child.Get_Short_Title,
+                "app.mdi_select(""" & Child.Get_Title & """)");
+            Next (Curs);
+         end loop;
+
+         if MDI.Focus_Child = null then
+            MDI.Action_Select.Set_State (Gvariant_New_String (""));
+         else
+            MDI.Action_Select.Set_State
+               (Gvariant_New_String (MDI.Focus_Child.Get_Title));
+         end if;
+      end if;
+   end Update_Menu_Model_List_Of_Children;
 
    -----------------
    -- First_Child --
@@ -7800,27 +8167,6 @@ package body Gtkada.MDI is
          then
             return;
          end if;
-      end if;
-
-      --  Might be null if we haven't created the MDI menu yet
-
-      if Child.Menu_Item /= null then
-         declare
-            Children : Widget_List.Glist := Get_Children
-              (Gtk_Box (Get_Child (Child.Menu_Item)));
-            Tmp      : Widget_List.Glist := Children;
-
-         begin
-            while Tmp /= Null_List loop
-               if Get_Data (Tmp).all'Tag = Gtk_Accel_Label_Record'Tag then
-                  Override (Get_Data (Tmp));
-               end if;
-
-               Tmp := Next (Tmp);
-            end loop;
-
-            Free (Children);
-         end;
       end if;
 
       if Child.Tab_Label /= null then

@@ -34,24 +34,25 @@ with Ada.Tags;
 with Cairo;
 with GNAT.Strings;
 with Glib;        use Glib;
+with Glib.Simple_Action;
 with Glib.Main;
+with Glib.Menu;
 with Glib.Xml_Int;
+with Glib.Values;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gtk.Accel_Group;
+with Gtk.Application;
 with Gtk.Box;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Event_Box;
-with Gtk.Handlers;
 with Gtk.Image;
 with Gtk.Label;
 with Gtk.Menu;
-with Gtk.Menu_Item;
 with Gtk.Notebook;
-with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Css_Provider;
 with Gtk.Widget;
@@ -757,6 +758,15 @@ package Gtkada.MDI is
       --  Function used to register in the application a static menu
       --  created by the MDI.
 
+      procedure Set_Menu_Model
+         (MDI   : not null access MDI_Window_Record'Class;
+          App   : not null access Gtk.Application.Gtk_Application_Record'Class;
+          Model : access Glib.Menu.Gmenu_Record'Class;
+          User  : User_Data);
+      --  Associates a menu model with the MDI.
+      --  This model will be filled and maintained by the MDI, to provide
+      --  useful actions like floating/docking items, selecting items,...
+
       function Create_Menu
         (MDI               : access MDI_Window_Record'Class;
          Accel_Path_Prefix : String := "<gtkada>";
@@ -766,13 +776,15 @@ package Gtkada.MDI is
       --  Create a dynamic menu that can then be inserted into a menu bar. This
       --  menu is dynamic, ie its content will changed based on the focus
       --  child.
-      --  If this function is called several times, the same menu is returned
+      --  If this function is called several times, a new menu is created
       --  every time. Accel_Path_Prefix must be the same for every call.
       --  Accel_Path_Prefix is used so that the key shortcuts associated with
       --  these menu items can be changed dynamically by the user (see
       --  gtk-accel_map.ads). The prefix must start with "<" and end with ">".
       --  User is used for the callbacks on perspective changes, and passed to
       --  Load_Perspective
+      --  With recent versions of gtk+, the use of Glib.Menu_Model.Gmenu_Model
+      --  is encouraged, so you should use Set_Menu_Model above instead.
 
       type Save_Desktop_Function is access function
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -909,6 +921,21 @@ package Gtkada.MDI is
         Gtkada.Handlers.Widget_Callback.To_Marshaller
           (Create_Perspective_CB'Access);
 
+      procedure On_Action_Select_Perspective
+        (MDI       : access MDI_Window_Record'Class;
+         Params    : Glib.Values.GValues;
+         User      : User_Data);
+      procedure On_Action_Create_Perspective
+        (MDI       : access MDI_Window_Record'Class;
+         Params    : Glib.Values.GValues;
+         User      : User_Data);
+      procedure On_Perspective_Changed_Update_Menu
+         (Menu     : access Gtk.Widget.Gtk_Widget_Record'Class);
+
+      On_Perspective_Changed_Update_Menu_Access : constant
+         Gtkada.Handlers.Widget_Callback.Simple_Handler :=
+            On_Perspective_Changed_Update_Menu'Access;
+
       Registers : Register_Node;
       --  Global variable that contains the list of functions that have been
       --  registered.
@@ -947,6 +974,7 @@ package Gtkada.MDI is
    --    Child might be null if no child has the focus anymore
    --
    --  - "float_child"
+   --  - "unfloat_child"
    --    procedure Handler
    --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
    --
@@ -1090,9 +1118,6 @@ private
       --  directly from Get_Parent since some children are actually floating
       --  and do not belong to the MDI anymore.
 
-      Menu_Item     : Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item;
-      --  The item in the dynamic menu that represents this child.
-
       Flags         : Child_Flags;
 
       Focus_Widget  : Gtk.Widget.Gtk_Widget;
@@ -1181,12 +1206,16 @@ private
       Accel_Path_Prefix   : String_Access;
       --  The Accel path used for the dynamic menu
 
-      Menu                : Gtk.Menu.Gtk_Menu;
-      Float_Menu_Item     : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
-      Float_Menu_Item_Id  : Gtk.Handlers.Handler_Id;
-      Close_Menu_Item     : Gtk.Menu_Item.Gtk_Menu_Item;
-      --  The dynamic menu used to provide access to the most common
-      --  functions of MDI.
+      Menu_Model          : Glib.Menu.Gmenu;
+      Menu_Items_Section  : Glib.Menu.Gmenu;
+      Application         : Gtk.Application.Gtk_Application;
+      Action_Float        : Glib.Simple_Action.Gsimple_Action;
+      Action_Select       : Glib.Simple_Action.Gsimple_Action;
+      Action_Close        : Glib.Simple_Action.Gsimple_Action;
+      Action_Select_Perspective : Glib.Simple_Action.Gsimple_Action;
+      Perspectives_Menu   : Glib.Menu.Gmenu;
+
+      Freeze_Float_Menu   : Boolean := False;
 
       Tab_Factory         : Tab_Contextual_Menu_Factory;
       --  Build the contextual menu when right-clicking on tabs
@@ -1249,7 +1278,6 @@ private
       --  The allowed areas during a drag
 
       --  Loaded perspectives
-      Perspective_Menu_Item  : Gtk.Menu_Item.Gtk_Menu_Item;
       Perspectives           : Glib.Xml_Int.Node_Ptr;
       View_Contents          : Glib.Xml_Int.Node_Ptr;
       Perspective_Names      : GNAT.Strings.String_List_Access;
