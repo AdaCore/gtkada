@@ -199,28 +199,6 @@ package Gtk.Accel_Group is
    --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
    --  "find_func": a function to filter the entries of Accel_Group with
 
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Find_User_Data is
-
-      type Gtk_Accel_Group_Find_Func is access function
-        (Key     : Gtk.Accel_Group.Gtk_Accel_Key;
-         Closure : System.Address;
-         Data    : User_Data_Type) return Boolean;
-      --  Since: gtk+ 2.2
-
-      function Find
-         (Accel_Group : not null access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class;
-          Find_Func   : Gtk_Accel_Group_Find_Func;
-          Data        : User_Data_Type) return Gtk.Accel_Group.Gtk_Accel_Key;
-      --  Finds the first entry in an accelerator group for which Find_Func
-      --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
-      --  "find_func": a function to filter the entries of Accel_Group with
-      --  "data": data to pass to Find_Func
-
-   end Find_User_Data;
-
    function Get_Is_Locked
       (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean;
    --  Locks are added and removed using Gtk.Accel_Group.Lock and

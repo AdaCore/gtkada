@@ -336,11 +336,13 @@ package body Gtk.Calendar is
           Func     : Gtk_Calendar_Detail_Func;
           Data     : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Calendar_Set_Detail_Func (Get_Object (Calendar), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Detail_Func;
 

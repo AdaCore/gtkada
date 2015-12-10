@@ -473,49 +473,6 @@ package Gtk.Builder is
    --  Since: gtk+ 2.12
    --  "func": the function used to connect the signals
 
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Connect_Signals_Full_User_Data is
-
-      type Gtk_Builder_Connect_Func is access procedure
-        (Builder        : not null access Gtk.Builder.Gtk_Builder_Record'Class;
-         Object         : not null access Glib.Object.GObject_Record'Class;
-         Signal_Name    : Glib.Signal_Name;
-         Handler_Name   : UTF8_String;
-         Connect_Object : access Glib.Object.GObject_Record'Class;
-         Flags          : Glib.G_Connect_Flags;
-         User_Data      : User_Data_Type);
-      --  This is the signature of a function used to connect signals. It is used
-      --  by the Gtk.Builder.Connect_Signals and Gtk.Builder.Connect_Signals_Full
-      --  methods. It is mainly intended for interpreted language bindings, but
-      --  could be useful where the programmer wants more control over the signal
-      --  connection process. Note that this function can only be called once,
-      --  subsequent calls will do nothing.
-      --  Since: gtk+ 2.12
-      --  "builder": a Gtk.Builder.Gtk_Builder
-      --  "object": object to connect a signal to
-      --  "signal_name": name of the signal
-      --  "handler_name": name of the handler
-      --  "connect_object": a Glib.Object.GObject, if non-null, use
-      --  g_signal_connect_object
-      --  "flags": Glib.G_Connect_Flags to use
-      --  "user_data": user data
-
-      procedure Connect_Signals_Full
-         (Builder   : not null access Gtk.Builder.Gtk_Builder_Record'Class;
-          Func      : Gtk_Builder_Connect_Func;
-          User_Data : User_Data_Type);
-      --  This function can be thought of the interpreted language binding
-      --  version of Gtk.Builder.Connect_Signals, except that it does not
-      --  require GModule to function correctly.
-      --  Since: gtk+ 2.12
-      --  "func": the function used to connect the signals
-      --  "user_data": arbitrary data that will be passed to the connection
-      --  function
-
-   end Connect_Signals_Full_User_Data;
-
    procedure Expose_Object
       (Builder : not null access Gtk_Builder_Record;
        Name    : UTF8_String;

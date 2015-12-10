@@ -454,11 +454,13 @@ package body Gtk.Assistant is
           Page_Func : Gtk_Assistant_Page_Func;
           Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Page_Func = null then
             C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Cb'Address, Users.Build (To_Address (Page_Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Page_Func), Data);
+            C_Gtk_Assistant_Set_Forward_Page_Func (Get_Object (Assistant), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Forward_Page_Func;
 

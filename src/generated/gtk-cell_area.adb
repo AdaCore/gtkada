@@ -612,11 +612,14 @@ package body Gtk.Cell_Area is
           Callback        : Gtk_Cell_Alloc_Callback;
           Callback_Data   : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Callback = null then
             C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
+            D := Users.Build (To_Address (Callback), Callback_Data);
+            C_Gtk_Cell_Area_Foreach_Alloc (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Cell_Area, Background_Area, Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach_Alloc;
 
@@ -668,11 +671,14 @@ package body Gtk.Cell_Area is
           Callback      : Gtk_Cell_Callback;
           Callback_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Callback = null then
             C_Gtk_Cell_Area_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
+            D := Users.Build (To_Address (Callback), Callback_Data);
+            C_Gtk_Cell_Area_Foreach (Get_Object (Self), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 
@@ -1145,11 +1151,13 @@ package body Gtk.Cell_Area is
           Func        : Gtk_Cell_Layout_Data_Func;
           Func_Data   : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Func_Data);
+            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Cell_Data_Func;
 

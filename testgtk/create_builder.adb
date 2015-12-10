@@ -93,8 +93,10 @@ package body Create_Builder is
    --  Callbacks referenced by our XML UI definition.  These match the
    --  items in the Callback_Function_Name enumeration.
 
-   package Connects is new Connect_Signals_Full_User_Data
-      (User_Data_Type => Widget_Collection);
+   type Test_Builder_Record is new Gtk_Builder_Record with record
+      Widgets : Widget_Collection;
+   end record;
+   type Test_Builder is access all Test_Builder_Record'Class;
 
    procedure Connect_Signals
       (Builder        : not null access Gtk_Builder_Record'Class;
@@ -102,8 +104,7 @@ package body Create_Builder is
        Signal_Name    : Glib.Signal_Name;
        Handler_Name   : UTF8_String;
        Connect_Object : access Glib.Object.GObject_Record'Class;
-       Flags          : Glib.G_Connect_Flags;
-       Widgets        : Widget_Collection);
+       Flags          : Glib.G_Connect_Flags);
    --  Subprogram to perform signal connections.
 
    ---------------------
@@ -116,10 +117,9 @@ package body Create_Builder is
        Signal_Name    : Glib.Signal_Name;
        Handler_Name   : UTF8_String;
        Connect_Object : access Glib.Object.GObject_Record'Class;
-       Flags          : Glib.G_Connect_Flags;
-       Widgets        : Widget_Collection)
+       Flags          : Glib.G_Connect_Flags)
    is
-      pragma Unreferenced (Builder);
+      B : constant Test_Builder := Test_Builder (Builder);
       Widget        : constant GObject := GObject (Object);
       After         : constant Boolean := (Flags and G_Connect_After) /= 0;
       Function_Name : constant Callback_Function_Name :=
@@ -147,7 +147,7 @@ package body Create_Builder is
                Name        => "clicked",
                Marsh       => Widget_Collection_Cb.To_Marshaller
                                 (On_Btn_Concatenate_Clicked'Access),
-               Slot_Object => Widgets,
+               Slot_Object => B.Widgets,
                After       => After);
 
          when On_Window1_Delete_Event =>
@@ -156,7 +156,7 @@ package body Create_Builder is
                Name        => "delete_event",
                Marsh       => Widget_Collection_Return_Cb.To_Marshaller
                                 (On_Window1_Delete_Event'Access),
-               Slot_Object => Widgets,
+               Slot_Object => B.Widgets,
                After       => After);
 
          when On_Window1_Destroy =>
@@ -165,7 +165,7 @@ package body Create_Builder is
                Name        => "destroy",
                Marsh       => Widget_Collection_Cb.To_Marshaller
                                 (On_Window1_Destroy'Access),
-               Slot_Object => Widgets,
+               Slot_Object => B.Widgets,
                After       => After);
 
          when On_Btn_Console_Greeting_Clicked =>
@@ -174,7 +174,7 @@ package body Create_Builder is
                Name        => "clicked",
                Marsh       => Widget_Collection_Cb.To_Marshaller
                                 (On_Btn_Console_Greeting_Clicked'Access),
-               Slot_Object => Widgets,
+               Slot_Object => B.Widgets,
                After       => After);
 
          when On_Print_To_Console =>
@@ -183,7 +183,7 @@ package body Create_Builder is
                Name        => "clicked",
                Marsh       => Widget_Collection_Cb.To_Marshaller
                                 (On_Print_To_Console_Clicked'Access),
-               Slot_Object => Widgets,
+               Slot_Object => B.Widgets,
                After       => After);
 
       end case;
@@ -198,16 +198,16 @@ package body Create_Builder is
    is
       pragma Unreferenced (Button);
 
-      Builder1 : Gtk_Builder;
+      Builder1 : Test_Builder;
       Error    : aliased GError;
-      Widgets  : Widget_Collection;
    begin
       --  Create a new Gtk_Builder object
-      Gtk_New (Builder1);
+      Builder1 := new Test_Builder_Record;
+      Gtk.Builder.Initialize (Builder1);
 
       --  Allocate memory for our Widgets_Collection
-      Widgets := new Widget_Collection_Record;
-      Glib.Object.Initialize (Widgets);
+      Builder1.Widgets := new Widget_Collection_Record;
+      Glib.Object.Initialize (Builder1.Widgets);
 
       --  Read in our XML file
       if Builder1.Add_From_File (Default_Filename, Error'Access) = 0 then
@@ -218,14 +218,15 @@ package body Create_Builder is
 
       --  Look up widgets for which we have callbacks, and store the
       --  information in Widget_Collection_Record structure.
-      Widgets.Term1 := Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term1"));
-      Widgets.Term2 := Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term2"));
-      Widgets.Text_Field := Gtk.Text_View.Gtk_Text_View
+      Builder1.Widgets.Term1 :=
+         Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term1"));
+      Builder1.Widgets.Term2 :=
+         Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term2"));
+      Builder1.Widgets.Text_Field := Gtk.Text_View.Gtk_Text_View
         (Builder1.Get_Object ("textField"));
 
       --  Connect signal handlers
-      Connects.Connect_Signals_Full
-        (Builder1, Connect_Signals'Access, Widgets);
+      Builder1.Connect_Signals_Full (Connect_Signals'Access);
 
       --  Find our main window, then display it and all of its children.
       Gtk.Widget.Gtk_Widget (Builder1.Get_Object ("window1")).Show_All;

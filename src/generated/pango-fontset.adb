@@ -122,11 +122,14 @@ package body Pango.Fontset is
           Func : Pango_Fontset_Foreach_Func;
           Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Pango_Fontset_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
          else
-            C_Pango_Fontset_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Func), Data));
+            D := Users.Build (To_Address (Func), Data);
+            C_Pango_Fontset_Foreach (Get_Object (Self), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 

@@ -204,40 +204,6 @@ package Gtk.Clipboard is
    --  retrieval fails). If the retrieval fails the length field of
    --  Selection_Data will be negative.
 
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Request_Contents_User_Data is
-
-      type Gtk_Clipboard_Received_Func is access procedure
-        (Clipboard      : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
-         Data           : User_Data_Type);
-      --  A function to be called when the results of
-      --  Gtk.Clipboard.Request_Contents are received, or when the request fails.
-      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-      --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data containing
-      --  the data was received. If retrieving the data failed, then then length
-      --  field of Selection_Data will be negative.
-      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Contents.
-
-      procedure Request_Contents
-         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Target    : Gdk.Types.Gdk_Atom;
-          Callback  : Gtk_Clipboard_Received_Func;
-          User_Data : User_Data_Type);
-      --  Requests the contents of clipboard as the given target. When the
-      --  results of the result are later received the supplied callback will
-      --  be called.
-      --  "target": an atom representing the form into which the clipboard
-      --  owner should convert the selection.
-      --  "callback": A function to call when the results are received (or the
-      --  retrieval fails). If the retrieval fails the length field of
-      --  Selection_Data will be negative.
-      --  "user_data": user data to pass to Callback
-
-   end Request_Contents_User_Data;
-
    procedure Request_Image
       (Clipboard : not null access Gtk_Clipboard_Record;
        Callback  : Gtk_Clipboard_Image_Received_Func);
@@ -252,41 +218,6 @@ package Gtk.Clipboard is
    --  Since: gtk+ 2.6
    --  "callback": a function to call when the image is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Request_Image_User_Data is
-
-      type Gtk_Clipboard_Image_Received_Func is access procedure
-        (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class;
-         Data      : User_Data_Type);
-      --  A function to be called when the results of Gtk.Clipboard.Request_Image
-      --  are received, or when the request fails.
-      --  Since: gtk+ 2.6
-      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-      --  "pixbuf": the received image
-      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Image.
-
-      procedure Request_Image
-         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Callback  : Gtk_Clipboard_Image_Received_Func;
-          User_Data : User_Data_Type);
-      --  Requests the contents of the clipboard as image. When the image is
-      --  later received, it will be converted to a Gdk.Pixbuf.Gdk_Pixbuf, and
-      --  Callback will be called.
-      --  The Pixbuf parameter to Callback will contain the resulting
-      --  Gdk.Pixbuf.Gdk_Pixbuf if the request succeeded, or null if it failed.
-      --  This could happen for various reasons, in particular if the clipboard
-      --  was empty or if the contents of the clipboard could not be converted
-      --  into an image.
-      --  Since: gtk+ 2.6
-      --  "callback": a function to call when the image is received, or the
-      --  retrieval fails. (It will always be called one way or the other.)
-      --  "user_data": user data to pass to Callback.
-
-   end Request_Image_User_Data;
 
    procedure Request_Rich_Text
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -304,47 +235,6 @@ package Gtk.Clipboard is
    --  "callback": a function to call when the text is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
 
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Request_Rich_Text_User_Data is
-
-      type Gtk_Clipboard_Rich_Text_Received_Func is access procedure
-        (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Format    : Gdk.Types.Gdk_Atom;
-         Text      : UTF8_String := "";
-         Length    : Gsize;
-         Data      : User_Data_Type);
-      --  A function to be called when the results of
-      --  Gtk.Clipboard.Request_Rich_Text are received, or when the request fails.
-      --  Since: gtk+ 2.10
-      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-      --  "format": The format of the rich text
-      --  "text": the rich text received, as a UTF-8 encoded string, or null if
-      --  retrieving the data failed.
-      --  "length": Length of the text.
-      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
-
-      procedure Request_Rich_Text
-         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Buffer    : not null access Glib.Object.GObject_Record'Class;
-          Callback  : Gtk_Clipboard_Rich_Text_Received_Func;
-          User_Data : User_Data_Type);
-      --  Requests the contents of the clipboard as rich text. When the rich
-      --  text is later received, Callback will be called.
-      --  The Text parameter to Callback will contain the resulting rich text
-      --  if the request succeeded, or null if it failed. The Length parameter
-      --  will contain Text's length. This function can fail for various
-      --  reasons, in particular if the clipboard was empty or if the contents
-      --  of the clipboard could not be converted into rich text form.
-      --  Since: gtk+ 2.10
-      --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
-      --  "callback": a function to call when the text is received, or the
-      --  retrieval fails. (It will always be called one way or the other.)
-      --  "user_data": user data to pass to Callback.
-
-   end Request_Rich_Text_User_Data;
-
    procedure Request_Targets
       (Clipboard : not null access Gtk_Clipboard_Record;
        Callback  : Gtk_Clipboard_Targets_Received_Func);
@@ -355,40 +245,6 @@ package Gtk.Clipboard is
    --  Since: gtk+ 2.4
    --  "callback": a function to call when the targets are received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Request_Targets_User_Data is
-
-      type Gtk_Clipboard_Targets_Received_Func is access procedure
-        (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Atoms     : Gdk_Atom_Array;
-         N_Atoms   : Gint;
-         Data      : User_Data_Type);
-      --  A function to be called when the results of
-      --  Gtk.Clipboard.Request_Targets are received, or when the request fails.
-      --  Since: gtk+ 2.4
-      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-      --  "atoms": the supported targets, as array of Gdk.Types.Gdk_Atom, or null
-      --  if retrieving the data failed.
-      --  "n_atoms": the length of the Atoms array.
-      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Targets.
-
-      procedure Request_Targets
-         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Callback  : Gtk_Clipboard_Targets_Received_Func;
-          User_Data : User_Data_Type);
-      --  Requests the contents of the clipboard as list of supported targets.
-      --  When the list is later received, Callback will be called.
-      --  The Targets parameter to Callback will contain the resulting targets
-      --  if the request succeeded, or null if it failed.
-      --  Since: gtk+ 2.4
-      --  "callback": a function to call when the targets are received, or the
-      --  retrieval fails. (It will always be called one way or the other.)
-      --  "user_data": user data to pass to Callback.
-
-   end Request_Targets_User_Data;
 
    procedure Request_Text
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -403,39 +259,6 @@ package Gtk.Clipboard is
    --  "callback": a function to call when the text is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
 
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Request_Text_User_Data is
-
-      type Gtk_Clipboard_Text_Received_Func is access procedure
-        (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Text      : UTF8_String := "";
-         Data      : User_Data_Type);
-      --  A function to be called when the results of Gtk.Clipboard.Request_Text
-      --  are received, or when the request fails.
-      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-      --  "text": the text received, as a UTF-8 encoded string, or null if
-      --  retrieving the data failed.
-      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Text.
-
-      procedure Request_Text
-         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Callback  : Gtk_Clipboard_Text_Received_Func;
-          User_Data : User_Data_Type);
-      --  Requests the contents of the clipboard as text. When the text is
-      --  later received, it will be converted to UTF-8 if necessary, and
-      --  Callback will be called.
-      --  The Text parameter to Callback will contain the resulting text if
-      --  the request succeeded, or null if it failed. This could happen for
-      --  various reasons, in particular if the clipboard was empty or if the
-      --  contents of the clipboard could not be converted into text form.
-      --  "callback": a function to call when the text is received, or the
-      --  retrieval fails. (It will always be called one way or the other.)
-      --  "user_data": user data to pass to Callback.
-
-   end Request_Text_User_Data;
-
    procedure Request_Uris
       (Clipboard : not null access Gtk_Clipboard_Record;
        Callback  : Gtk_Clipboard_Urireceived_Func);
@@ -448,40 +271,6 @@ package Gtk.Clipboard is
    --  Since: gtk+ 2.14
    --  "callback": a function to call when the URIs are received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Request_Uris_User_Data is
-
-      type Gtk_Clipboard_Urireceived_Func is access procedure
-        (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-         Uris      : GNAT.Strings.String_List;
-         Data      : User_Data_Type);
-      --  A function to be called when the results of Gtk.Clipboard.Request_Uris
-      --  are received, or when the request fails.
-      --  Since: gtk+ 2.14
-      --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-      --  "uris": the received URIs
-      --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
-
-      procedure Request_Uris
-         (Clipboard : not null access Gtk.Clipboard.Gtk_Clipboard_Record'Class;
-          Callback  : Gtk_Clipboard_Urireceived_Func;
-          User_Data : User_Data_Type);
-      --  Requests the contents of the clipboard as URIs. When the URIs are
-      --  later received Callback will be called.
-      --  The Uris parameter to Callback will contain the resulting array of
-      --  URIs if the request succeeded, or null if it failed. This could
-      --  happen for various reasons, in particular if the clipboard was empty
-      --  or if the contents of the clipboard could not be converted into URI
-      --  form.
-      --  Since: gtk+ 2.14
-      --  "callback": a function to call when the URIs are received, or the
-      --  retrieval fails. (It will always be called one way or the other.)
-      --  "user_data": user data to pass to Callback.
-
-   end Request_Uris_User_Data;
 
    procedure Set_Can_Store
       (Clipboard : not null access Gtk_Clipboard_Record;

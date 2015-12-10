@@ -577,11 +577,14 @@ package body Gdk.Window is
           Child_Func : Gdk_Window_Child_Func;
           User_Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Child_Func = null then
             C_Gdk_Window_Invalidate_Maybe_Recurse (Self, Region, System.Null_Address, System.Null_Address);
          else
-            C_Gdk_Window_Invalidate_Maybe_Recurse (Self, Region, Internal_Cb'Address, Users.Build (To_Address (Child_Func), User_Data));
+            D := Users.Build (To_Address (Child_Func), User_Data);
+            C_Gdk_Window_Invalidate_Maybe_Recurse (Self, Region, Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Invalidate_Maybe_Recurse;
 

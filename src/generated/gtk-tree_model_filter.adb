@@ -386,11 +386,14 @@ package body Gtk.Tree_Model_Filter is
           Func       : Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Cb'Address, Users.Build (To_Address (Func), User_Data));
+            D := Users.Build (To_Address (Func), User_Data);
+            C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 
@@ -511,11 +514,13 @@ package body Gtk.Tree_Model_Filter is
           Func  : Gtk_Tree_Model_Filter_Modify_Func;
           Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Tree_Model_Filter_Set_Modify_Func (Get_Object (Self), Types'Length, Types, Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Modify_Func;
 
@@ -598,11 +603,13 @@ package body Gtk.Tree_Model_Filter is
           Func : Gtk_Tree_Model_Filter_Visible_Func;
           Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Tree_Model_Filter_Set_Visible_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Visible_Func;
 

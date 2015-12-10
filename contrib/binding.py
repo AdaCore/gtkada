@@ -364,7 +364,7 @@ class SubprogramProfile(object):
         self.destroy_param = -1   # index of the parameter to destroy data
 
     def __repr__(self):
-        return "<SubprogramProfile %s>" % self.node
+        return "<SubprogramProfile %s>" % self.node.get('name')
 
     @staticmethod
     def parse(node, gtkmethod, pkg=None, ignore_return=False):
@@ -1031,7 +1031,8 @@ class GIRClass(object):
             return
         cb = cb[0]
 
-        def call_to_c(gtk_func, values):
+        def call_to_c(gtk_func, values,
+                      user_data_setup='', user_data_cleanup=''):
             """Implement the call to the C function.
                If the user passes a null callback, we always want to pass null
                to C rather than passing our Internal_Callback'Address.
@@ -1061,6 +1062,10 @@ class GIRClass(object):
             call2 = gtk_func.call_to_string(exec2, lang="ada->c")
             if not call2.endswith(";"):
                 call2 += ";"
+            if user_data_setup:
+                call2 = user_data_setup + '\n' + call2
+            if user_data_cleanup:
+                call2 += '\n' + user_data_cleanup
 
             return ("""if %s = null then
    %s
@@ -1229,66 +1234,95 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         user_data2 = cb_profile.find_param(user_data_params)
 
         if user_data2 is not None:
-            self.pkg.add_with("Glib.Object", do_use=False, specs=False)
+            # If we have no "destroy" callback, so any memory we allocate via
+            # User.Build would be leaked. Better not to provide a binding
+            # in such a case.
+            # As a special case, some functions do not need to keep the data
+            # after their execution, so we can still bind those.
 
-            pkg2 = Package(name="%s_User_Data" % adaname)
-            section.add(pkg2)
-            pkg2.formal_params = """type User_Data_Type (<>) is private;
+            if profile.callback_destroy() is None \
+               and '_for' not in cname \
+               and cname not in ('gtk_tree_view_map_expanded_rows',
+                                 'pango_attributes_filter',
+                                 'gdk_window_invalidate_maybe_recurse',
+                                 'gtk_menu_popup'):
+                pass
+
+            else:
+                self.pkg.add_with("Glib.Object", do_use=False, specs=False)
+
+                pkg2 = Package(name="%s_User_Data" % adaname)
+                section.add(pkg2)
+                pkg2.formal_params = """type User_Data_Type (<>) is private;
       with procedure Destroy (Data : in out User_Data_Type) is null;"""
 
-            sect2 = pkg2.section("")
-            sect2.add("""package Users is new Glib.Object.User_Data_Closure
+                sect2 = pkg2.section("")
+                sect2.add("""package Users is new Glib.Object.User_Data_Closure
          (User_Data_Type, Destroy);""", in_spec=False)
 
-            sect2.add(
-                ("function To_%s is new Ada.Unchecked_Conversion\n"
-                 + "   (System.Address, %s);\n") % (funcname, funcname),
-                in_spec=False)
-            sect2.add(
-                ("function To_Address is new Ada.Unchecked_Conversion\n"
-                 + "   (%s, System.Address);\n") % (funcname,),
-                in_spec=False)
+                sect2.add(
+                    ("function To_%s is new Ada.Unchecked_Conversion\n"
+                     + "   (System.Address, %s);\n") % (funcname, funcname),
+                    in_spec=False)
+                sect2.add(
+                    ("function To_Address is new Ada.Unchecked_Conversion\n"
+                     + "   (%s, System.Address);\n") % (funcname,),
+                    in_spec=False)
 
-            cb_profile2 = copy.deepcopy(cb_profile)
-            cb_profile2.replace_param(user_data2, "User_Data_Type")
-            cb2 = cb_profile2.subprogram(name="")
-            sect2.add(
-                "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
+                cb_profile2 = copy.deepcopy(cb_profile)
+                cb_profile2.replace_param(user_data2, "User_Data_Type")
+                cb2 = cb_profile2.subprogram(name="")
+                sect2.add(
+                    "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
 
-            values = {user_data2.lower(): "D.Data.all"}
-            user_cb = cb_profile2.subprogram(name="To_%s (D.Func)" % funcname)
-            user_cb_call = user_cb.call(
-                in_pkg=self.pkg,
-                lang="c->ada",
-                extra_postcall="".join(call), values=values)
+                values = {user_data2.lower(): "D.Data.all"}
+                user_cb = cb_profile2.subprogram(
+                    name="To_%s (D.Func)" % funcname)
+                user_cb_call = user_cb.call(
+                    in_pkg=self.pkg,
+                    lang="c->ada",
+                    extra_postcall="".join(call), values=values)
 
-            internal_cb = cb_profile.subprogram(
-                name="Internal_Cb",
-                local_vars=[
-                    Local_Var("D", "constant Users.Internal_Data_Access",
-                              "Users.Convert (%s)" % user_data2)]
-                + user_cb_call[2],
-                convention="C",
-                lang="c->ada",
-                code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
-            sect2.add(internal_cb, in_spec=False)
+                internal_cb = cb_profile.subprogram(
+                    name="Internal_Cb",
+                    local_vars=[
+                        Local_Var("D", "constant Users.Internal_Data_Access",
+                                  "Users.Convert (%s)" % user_data2)]
+                    + user_cb_call[2],
+                    convention="C",
+                    lang="c->ada",
+                    code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
+                sect2.add(internal_cb, in_spec=False)
 
-            values = {destroy: "Users.Free_Data'Address",
-                      cb.name.lower(): "%s'Address" % internal_cb.name,
-                      user_data.lower():
-                          "Users.Build (To_Address (%s), %s)" % (
-                          cb.name, user_data)}
+                values = {destroy: "Users.Free_Data'Address",
+                          cb.name.lower(): "%s'Address" % internal_cb.name,
+                          user_data.lower(): "D"}
 
-            full_profile = copy.deepcopy(profile)
-            full_profile.set_class_wide()
-            full_profile.remove_param(destroy_data_params)
-            full_profile.replace_param(cb.name, funcname)
-            full_profile.replace_param(user_data, "User_Data_Type")
-            c_call = call_to_c(gtk_func, values)
-            subp2 = full_profile.subprogram(
-                name=adaname, local_vars=c_call[1],
-                code=c_call[0])
-            sect2.add(subp2)
+                full_profile = copy.deepcopy(profile)
+                full_profile.set_class_wide()
+                full_profile.remove_param(destroy_data_params)
+                full_profile.replace_param(cb.name, funcname)
+                full_profile.replace_param(user_data, "User_Data_Type")
+
+                if profile.callback_destroy() is None:
+                    c_call = call_to_c(
+                        gtk_func, values,
+                        user_data_setup=
+                            "D := Users.Build (To_Address (%s), %s);" %
+                            (cb.name, user_data),
+                        user_data_cleanup="Users.Free_Data (D);")
+                else:
+                    c_call = call_to_c(
+                        gtk_func, values,
+                        user_data_setup=
+                            "D := Users.Build (To_Address (%s), %s);" %
+                            (cb.name, user_data))
+
+                subp2 = full_profile.subprogram(
+                    name=adaname,
+                    local_vars=c_call[1] + [Local_Var("D", "System.Address")],
+                    code=c_call[0])
+                sect2.add(subp2)
 
         return subp
 

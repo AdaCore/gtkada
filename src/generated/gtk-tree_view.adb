@@ -1459,13 +1459,15 @@ package body Gtk.Tree_View is
       is
          Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
          Tmp_Return : Gint;
+         D          : System.Address;
       begin
          if Func = null then
             Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Tree_View), Position, Tmp_Title, Get_Object (Cell), System.Null_Address, System.Null_Address, Dnotify);
             Free (Tmp_Title);
             return Tmp_Return;
          else
-            Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Tree_View), Position, Tmp_Title, Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Dnotify);
+            D := Users.Build (To_Address (Func), Data);
+            Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Tree_View), Position, Tmp_Title, Get_Object (Cell), Internal_Cb'Address, D, Dnotify);
             Free (Tmp_Title);
             return Tmp_Return;
          end if;
@@ -1614,11 +1616,14 @@ package body Gtk.Tree_View is
           Func      : Gtk_Tree_View_Mapping_Func;
           Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_View_Map_Expanded_Rows (Get_Object (Tree_View), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Tree_View_Map_Expanded_Rows (Get_Object (Tree_View), Internal_Cb'Address, Users.Build (To_Address (Func), Data));
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Tree_View_Map_Expanded_Rows (Get_Object (Tree_View), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Map_Expanded_Rows;
 
@@ -1829,11 +1834,13 @@ package body Gtk.Tree_View is
           Func      : Gtk_Tree_View_Column_Drop_Func;
           User_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_View_Set_Column_Drag_Function (Get_Object (Tree_View), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_View_Set_Column_Drag_Function (Get_Object (Tree_View), Internal_Cb'Address, Users.Build (To_Address (Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), User_Data);
+            C_Gtk_Tree_View_Set_Column_Drag_Function (Get_Object (Tree_View), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Column_Drag_Function;
 
@@ -1940,11 +1947,13 @@ package body Gtk.Tree_View is
           Func      : Gtk_Tree_Destroy_Count_Func;
           Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_View_Set_Destroy_Count_Func (Get_Object (Tree_View), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_View_Set_Destroy_Count_Func (Get_Object (Tree_View), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Tree_View_Set_Destroy_Count_Func (Get_Object (Tree_View), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Destroy_Count_Func;
 
@@ -2219,11 +2228,13 @@ package body Gtk.Tree_View is
           Func      : Gtk_Tree_View_Row_Separator_Func;
           Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_View_Set_Row_Separator_Func (Get_Object (Tree_View), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_View_Set_Row_Separator_Func (Get_Object (Tree_View), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Tree_View_Set_Row_Separator_Func (Get_Object (Tree_View), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Row_Separator_Func;
 
@@ -2363,11 +2374,13 @@ package body Gtk.Tree_View is
           Search_User_Data  : User_Data_Type;
           Search_Destroy    : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Search_Equal_Func = null then
             C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Tree_View), System.Null_Address, System.Null_Address, Search_Destroy);
          else
-            C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Tree_View), Internal_Cb'Address, Users.Build (To_Address (Search_Equal_Func), Search_User_Data), Search_Destroy);
+            D := Users.Build (To_Address (Search_Equal_Func), Search_User_Data);
+            C_Gtk_Tree_View_Set_Search_Equal_Func (Get_Object (Tree_View), Internal_Cb'Address, D, Search_Destroy);
          end if;
       end Set_Search_Equal_Func;
 
@@ -2431,11 +2444,13 @@ package body Gtk.Tree_View is
           Func      : Gtk_Tree_View_Search_Position_Func;
           Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_View_Set_Search_Position_Func (Get_Object (Tree_View), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_View_Set_Search_Position_Func (Get_Object (Tree_View), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Tree_View_Set_Search_Position_Func (Get_Object (Tree_View), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Search_Position_Func;
 

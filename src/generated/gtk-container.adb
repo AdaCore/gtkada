@@ -237,11 +237,14 @@ package body Gtk.Container is
           Callback      : Gtk_Callback;
           Callback_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Callback = null then
             C_Gtk_Container_Forall (Get_Object (Container), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Container_Forall (Get_Object (Container), Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
+            D := Users.Build (To_Address (Callback), Callback_Data);
+            C_Gtk_Container_Forall (Get_Object (Container), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Forall;
 
@@ -301,11 +304,14 @@ package body Gtk.Container is
           Callback      : Gtk_Callback;
           Callback_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Callback = null then
             C_Gtk_Container_Foreach (Get_Object (Container), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Container_Foreach (Get_Object (Container), Internal_Cb'Address, Users.Build (To_Address (Callback), Callback_Data));
+            D := Users.Build (To_Address (Callback), Callback_Data);
+            C_Gtk_Container_Foreach (Get_Object (Container), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 

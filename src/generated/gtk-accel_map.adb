@@ -162,11 +162,14 @@ package body Gtk.Accel_Map is
          (Data         : User_Data_Type;
           Foreach_Func : Gtk_Accel_Map_Foreach)
       is
+         D : System.Address;
       begin
          if Foreach_Func = null then
             C_Gtk_Accel_Map_Foreach_Unfiltered (System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Accel_Map_Foreach_Unfiltered (Users.Build (To_Address (Foreach_Func), Data), Internal_Cb'Address);
+            D := Users.Build (To_Address (Foreach_Func), Data);
+            C_Gtk_Accel_Map_Foreach_Unfiltered (D, Internal_Cb'Address);
+            Users.Free_Data (D);
          end if;
       end Foreach_Unfiltered;
 
@@ -223,11 +226,14 @@ package body Gtk.Accel_Map is
          (Data         : User_Data_Type;
           Foreach_Func : Gtk_Accel_Map_Foreach)
       is
+         D : System.Address;
       begin
          if Foreach_Func = null then
             C_Gtk_Accel_Map_Foreach (System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Accel_Map_Foreach (Users.Build (To_Address (Foreach_Func), Data), Internal_Cb'Address);
+            D := Users.Build (To_Address (Foreach_Func), Data);
+            C_Gtk_Accel_Map_Foreach (D, Internal_Cb'Address);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 

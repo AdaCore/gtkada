@@ -173,11 +173,13 @@ package body Gtk.File_Filter is
           Data   : User_Data_Type;
           Notify : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, System.Null_Address, System.Null_Address, Notify);
          else
-            C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Notify);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, D, Notify);
          end if;
       end Add_Custom;
 

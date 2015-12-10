@@ -1,5 +1,28 @@
 Known problems fixed in GtkAda 17.0
 
+- OC10-015 Memory leaks in *_foreach
+
+  Problem:    In some cases, gtk+ functions accept some user data, but do not
+              provide a way to know when it can be freed. This resulted in
+              memory leaks. In some cases, we could fix the binding by freeing
+              the no-longer needed user data. However, some functions no
+              longer have a binding, since that would always lead to memory
+              leaks. Here is the full list:
+                 gtk.accel_group.find_user_data
+                 gtk.builder.connect_signals_full_user_data
+                 gtk.clipboard.request_contents_user_data
+                 gtk.clipboard.request_image_user_data
+                 gtk.clipboard.request_rich_test_user_data
+                 gtk.clipboard.request_targets_user_data
+                 gtk.clipboard.request_text_user_data
+                 gtk.clipboard.request_uris_user_data
+                 gtk.main.key_snooper_install_user_data
+                 pango.attributes.filter_user_data
+
+  Workaround: If you were using these functions, consider storing the user
+              data in a new tagged type derived from the widget. Most of the
+              time this should be applicable.
+
 - OB19-053 Wrong binding for Gtk.Tree_Store.Remove
   Problem:    The binding for this function set Iter to null, instead of
               setting it to a valid iter.

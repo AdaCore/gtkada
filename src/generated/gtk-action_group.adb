@@ -607,11 +607,13 @@ package body Gtk.Action_Group is
           Data         : User_Data_Type;
           Notify       : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), System.Null_Address, System.Null_Address, Notify);
          else
-            C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Notify);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), Internal_Cb'Address, D, Notify);
          end if;
       end Set_Translate_Func;
 

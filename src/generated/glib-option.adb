@@ -476,11 +476,13 @@ package body Glib.Option is
           Data           : User_Data_Type;
           Destroy_Notify : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_G_Option_Context_Set_Translate_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Destroy_Notify);
          else
-            C_G_Option_Context_Set_Translate_Func (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Destroy_Notify);
+            D := Users.Build (To_Address (Func), Data);
+            C_G_Option_Context_Set_Translate_Func (Get_Object (Self), Internal_Cb'Address, D, Destroy_Notify);
          end if;
       end Set_Translate_Func;
 

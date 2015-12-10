@@ -201,11 +201,13 @@ package body Gtk.Font_Chooser is
           Filter    : Gtk_Font_Filter_Func;
           User_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Filter = null then
             C_Gtk_Font_Chooser_Set_Filter_Func (Self, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Font_Chooser_Set_Filter_Func (Self, Internal_Cb'Address, Users.Build (To_Address (Filter), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Filter), User_Data);
+            C_Gtk_Font_Chooser_Set_Filter_Func (Self, Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Filter_Func;
 

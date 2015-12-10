@@ -394,11 +394,13 @@ package body Gdk.Event is
           Data   : User_Data_Type;
           Notify : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gdk_Event_Handler_Set (System.Null_Address, System.Null_Address, Notify);
          else
-            C_Gdk_Event_Handler_Set (Internal_Cb'Address, Users.Build (To_Address (Func), Data), Notify);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gdk_Event_Handler_Set (Internal_Cb'Address, D, Notify);
          end if;
       end Handler_Set;
 

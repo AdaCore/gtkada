@@ -362,11 +362,14 @@ package body Gtk.List_Store is
           Func       : Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Cb'Address, Users.Build (To_Address (Func), User_Data));
+            D := Users.Build (To_Address (Func), User_Data);
+            C_Gtk_Tree_Model_Foreach (Get_Object (Tree_Model), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 
@@ -643,11 +646,13 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Sort_Func : Gtk_Tree_Iter_Compare_Func;
           User_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Sort_Func = null then
             C_Gtk_Tree_Sortable_Set_Default_Sort_Func (Get_Object (Sortable), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_Sortable_Set_Default_Sort_Func (Get_Object (Sortable), Internal_Cb'Address, Users.Build (To_Address (Sort_Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Sort_Func), User_Data);
+            C_Gtk_Tree_Sortable_Set_Default_Sort_Func (Get_Object (Sortable), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Default_Sort_Func;
 
@@ -728,11 +733,13 @@ Iter := Gtk.Tree_Model.Null_Iter;
           Sort_Func      : Gtk_Tree_Iter_Compare_Func;
           User_Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Sort_Func = null then
             C_Gtk_Tree_Sortable_Set_Sort_Func (Get_Object (Sortable), Sort_Column_Id, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_Sortable_Set_Sort_Func (Get_Object (Sortable), Sort_Column_Id, Internal_Cb'Address, Users.Build (To_Address (Sort_Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Sort_Func), User_Data);
+            C_Gtk_Tree_Sortable_Set_Sort_Func (Get_Object (Sortable), Sort_Column_Id, Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Sort_Func;
 

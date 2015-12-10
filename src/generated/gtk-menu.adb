@@ -540,11 +540,13 @@ package body Gtk.Menu is
           Button            : Guint;
           Activate_Time     : Guint32)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), System.Null_Address, System.Null_Address, Users.Free_Data'Address, Button, Activate_Time);
          else
-            C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Users.Free_Data'Address, Button, Activate_Time);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Menu_Popup_For_Device (Get_Object (Menu), Get_Object_Or_Null (GObject (Device)), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, D, Users.Free_Data'Address, Button, Activate_Time);
          end if;
       end Popup_For_Device;
 
@@ -623,11 +625,14 @@ package body Gtk.Menu is
           Button            : Guint := 1;
           Activate_Time     : Guint32 := 0)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), System.Null_Address, System.Null_Address, Button, Activate_Time);
          else
-            C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, Users.Build (To_Address (Func), Data), Button, Activate_Time);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Cb'Address, D, Button, Activate_Time);
+            Users.Free_Data (D);
          end if;
       end Popup;
 

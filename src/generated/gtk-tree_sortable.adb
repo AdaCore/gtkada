@@ -183,11 +183,13 @@ package body Gtk.Tree_Sortable is
           Sort_Func : Gtk_Tree_Iter_Compare_Func;
           User_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Sort_Func = null then
             C_Gtk_Tree_Sortable_Set_Default_Sort_Func (Sortable, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_Sortable_Set_Default_Sort_Func (Sortable, Internal_Cb'Address, Users.Build (To_Address (Sort_Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Sort_Func), User_Data);
+            C_Gtk_Tree_Sortable_Set_Default_Sort_Func (Sortable, Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Default_Sort_Func;
 
@@ -268,11 +270,13 @@ package body Gtk.Tree_Sortable is
           Sort_Func      : Gtk_Tree_Iter_Compare_Func;
           User_Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Sort_Func = null then
             C_Gtk_Tree_Sortable_Set_Sort_Func (Sortable, Sort_Column_Id, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Tree_Sortable_Set_Sort_Func (Sortable, Sort_Column_Id, Internal_Cb'Address, Users.Build (To_Address (Sort_Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Sort_Func), User_Data);
+            C_Gtk_Tree_Sortable_Set_Sort_Func (Sortable, Sort_Column_Id, Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Sort_Func;
 

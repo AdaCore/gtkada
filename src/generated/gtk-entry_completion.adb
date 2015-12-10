@@ -532,11 +532,13 @@ package body Gtk.Entry_Completion is
           Func        : Gtk_Cell_Layout_Data_Func;
           Func_Data   : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Func_Data);
+            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Cell_Data_Func;
 
@@ -643,11 +645,13 @@ package body Gtk.Entry_Completion is
           Func       : Gtk_Entry_Completion_Match_Func;
           Func_Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Func_Data);
+            C_Gtk_Entry_Completion_Set_Match_Func (Get_Object (Completion), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Match_Func;
 

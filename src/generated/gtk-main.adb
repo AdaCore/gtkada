@@ -24,7 +24,6 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Glib.Object;
 with Gtkada.Bindings;          use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
@@ -107,61 +106,6 @@ package body Gtk.Main is
          return C_Gtk_Key_Snooper_Install (Internal_Gtk_Key_Snoop_Func'Address, To_Address (Snooper));
       end if;
    end Key_Snooper_Install;
-
-   package body Key_Snooper_Install_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-
-      function To_Gtk_Key_Snoop_Func is new Ada.Unchecked_Conversion
-        (System.Address, Gtk_Key_Snoop_Func);
-
-      function To_Address is new Ada.Unchecked_Conversion
-        (Gtk_Key_Snoop_Func, System.Address);
-
-      function Internal_Cb
-         (Grab_Widget : System.Address;
-          Event       : access Gdk.Event.Gdk_Event_Key;
-          Func_Data   : System.Address) return Gint;
-      pragma Convention (C, Internal_Cb);
-      --  Key snooper functions are called before normal event delivery. They
-      --  can be used to implement custom key event handling.
-      --  "grab_widget": the widget to which the event will be delivered
-      --  "event": the key event
-      --  "func_data": data supplied to Gtk.Main.Key_Snooper_Install
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      function Internal_Cb
-         (Grab_Widget : System.Address;
-          Event       : access Gdk.Event.Gdk_Event_Key;
-          Func_Data   : System.Address) return Gint
-      is
-         D               : constant Users.Internal_Data_Access := Users.Convert (Func_Data);
-         Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
-      begin
-         return To_Gtk_Key_Snoop_Func (D.Func) (Gtk.Widget.Gtk_Widget (Get_User_Data (Grab_Widget, Stub_Gtk_Widget)), Event.all, D.Data.all);
-      end Internal_Cb;
-
-      -------------------------
-      -- Key_Snooper_Install --
-      -------------------------
-
-      function Key_Snooper_Install
-         (Snooper   : Gtk_Key_Snoop_Func;
-          Func_Data : User_Data_Type) return Guint
-      is
-      begin
-         if Snooper = null then
-            return C_Gtk_Key_Snooper_Install (System.Null_Address, System.Null_Address);
-         else
-            return C_Gtk_Key_Snooper_Install (Internal_Cb'Address, Users.Build (To_Address (Snooper), Func_Data));
-         end if;
-      end Key_Snooper_Install;
-
-   end Key_Snooper_Install_User_Data;
 
    -------------------
    -- Check_Version --

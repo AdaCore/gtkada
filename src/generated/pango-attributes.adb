@@ -24,7 +24,6 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Glib.Object;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
 pragma Warnings(On);
@@ -170,57 +169,6 @@ package body Pango.Attributes is
          return From_Object (C_Pango_Attr_List_Filter (Get_Object (Self), Internal_Pango_Attr_Filter_Func'Address, To_Address (Func)));
       end if;
    end Filter;
-
-   package body Filter_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-
-      function To_Pango_Attr_Filter_Func is new Ada.Unchecked_Conversion
-        (System.Address, Pango_Attr_Filter_Func);
-
-      function To_Address is new Ada.Unchecked_Conversion
-        (Pango_Attr_Filter_Func, System.Address);
-
-      function Internal_Cb
-         (Attribute : Pango.Attributes.Pango_Attribute;
-          User_Data : System.Address) return Glib.Gboolean;
-      pragma Convention (C, Internal_Cb);
-      --  Type of a function filtering a list of attributes.
-      --  "attribute": a Pango attribute
-      --  "user_data": user data passed to the function
-
-      ------------
-      -- Filter --
-      ------------
-
-      function Filter
-         (Self : Pango.Attributes.Pango_Attr_List;
-          Func : Pango_Attr_Filter_Func;
-          Data : User_Data_Type) return Pango.Attributes.Pango_Attr_List
-      is
-      begin
-         if Func = null then
-            return From_Object (C_Pango_Attr_List_Filter (Get_Object (Self), System.Null_Address, System.Null_Address));
-         else
-            return From_Object (C_Pango_Attr_List_Filter (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Func), Data)));
-         end if;
-      end Filter;
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      function Internal_Cb
-         (Attribute : Pango.Attributes.Pango_Attribute;
-          User_Data : System.Address) return Glib.Gboolean
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-      begin
-         return Boolean'Pos (To_Pango_Attr_Filter_Func (D.Func) (Attribute, D.Data.all));
-      end Internal_Cb;
-
-   end Filter_User_Data;
 
    ------------
    -- Insert --

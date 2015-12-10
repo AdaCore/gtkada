@@ -458,11 +458,14 @@ package body Gtk.Flow_Box is
           Func : Gtk_Flow_Box_Foreach_Func;
           Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Flow_Box_Selected_Foreach (Get_Object (Self), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Flow_Box_Selected_Foreach (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Func), Data));
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Flow_Box_Selected_Foreach (Get_Object (Self), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Selected_Foreach;
 
@@ -557,11 +560,13 @@ package body Gtk.Flow_Box is
           Filter_Func : Gtk_Flow_Box_Filter_Func;
           User_Data   : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Filter_Func = null then
             C_Gtk_Flow_Box_Set_Filter_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Flow_Box_Set_Filter_Func (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Filter_Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Filter_Func), User_Data);
+            C_Gtk_Flow_Box_Set_Filter_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Filter_Func;
 
@@ -720,11 +725,13 @@ package body Gtk.Flow_Box is
           Sort_Func : Gtk_Flow_Box_Sort_Func;
           User_Data : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Sort_Func = null then
             C_Gtk_Flow_Box_Set_Sort_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Flow_Box_Set_Sort_Func (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Sort_Func), User_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Sort_Func), User_Data);
+            C_Gtk_Flow_Box_Set_Sort_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Sort_Func;
 

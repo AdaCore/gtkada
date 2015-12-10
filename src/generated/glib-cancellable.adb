@@ -172,11 +172,13 @@ package body Glib.Cancellable is
           Data              : User_Data_Type;
           Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
       is
+         D : System.Address;
       begin
          if Callback = null then
             return C_G_Cancellable_Connect (Get_Object (Self), System.Null_Address, System.Null_Address, Data_Destroy_Func);
          else
-            return C_G_Cancellable_Connect (Get_Object (Self), Internal_Cb'Address, Users.Build (To_Address (Callback), Data), Data_Destroy_Func);
+            D := Users.Build (To_Address (Callback), Data);
+            return C_G_Cancellable_Connect (Get_Object (Self), Internal_Cb'Address, D, Data_Destroy_Func);
          end if;
       end Connect;
 

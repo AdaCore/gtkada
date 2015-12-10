@@ -248,11 +248,13 @@ package body Gtk.Recent_Chooser_Menu is
           Sort_Data    : User_Data_Type;
           Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Sort_Func = null then
             C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), System.Null_Address, System.Null_Address, Data_Destroy);
          else
-            C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), Internal_Cb'Address, Users.Build (To_Address (Sort_Func), Sort_Data), Data_Destroy);
+            D := Users.Build (To_Address (Sort_Func), Sort_Data);
+            C_Gtk_Recent_Chooser_Set_Sort_Func (Get_Object (Chooser), Internal_Cb'Address, D, Data_Destroy);
          end if;
       end Set_Sort_Func;
 

@@ -470,11 +470,13 @@ package body Gtk.Widget is
           User_Data : User_Data_Type;
           Notify    : Glib.G_Destroy_Notify_Address) return Guint
       is
+         D : System.Address;
       begin
          if Callback = null then
             return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Notify);
          else
-            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, Users.Build (To_Address (Callback), User_Data), Notify);
+            D := Users.Build (To_Address (Callback), User_Data);
+            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, D, Notify);
          end if;
       end Add_Tick_Callback;
 
@@ -3204,11 +3206,13 @@ package body Gtk.Widget is
           Connect_Data         : User_Data_Type;
           Connect_Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Connect_Func = null then
             C_Gtk_Widget_Class_Set_Connect_Func (Self, System.Null_Address, System.Null_Address, Connect_Data_Destroy);
          else
-            C_Gtk_Widget_Class_Set_Connect_Func (Self, Internal_Cb'Address, Users.Build (To_Address (Connect_Func), Connect_Data), Connect_Data_Destroy);
+            D := Users.Build (To_Address (Connect_Func), Connect_Data);
+            C_Gtk_Widget_Class_Set_Connect_Func (Self, Internal_Cb'Address, D, Connect_Data_Destroy);
          end if;
       end Set_Connect_Func;
 

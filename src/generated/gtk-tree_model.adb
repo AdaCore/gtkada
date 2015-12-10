@@ -614,11 +614,14 @@ package body Gtk.Tree_Model is
           Func       : Gtk_Tree_Model_Foreach_Func;
           User_Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Tree_Model_Foreach (Tree_Model, System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Tree_Model_Foreach (Tree_Model, Internal_Cb'Address, Users.Build (To_Address (Func), User_Data));
+            D := Users.Build (To_Address (Func), User_Data);
+            C_Gtk_Tree_Model_Foreach (Tree_Model, Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 

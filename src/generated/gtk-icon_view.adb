@@ -956,11 +956,14 @@ package body Gtk.Icon_View is
           Func      : Gtk_Icon_View_Foreach_Func;
           Data      : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Icon_View_Selected_Foreach (Get_Object (Icon_View), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Icon_View_Selected_Foreach (Get_Object (Icon_View), Internal_Cb'Address, Users.Build (To_Address (Func), Data));
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Icon_View_Selected_Foreach (Get_Object (Icon_View), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Selected_Foreach;
 
@@ -1053,11 +1056,13 @@ package body Gtk.Icon_View is
           Func        : Gtk_Cell_Layout_Data_Func;
           Func_Data   : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
-            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, Users.Build (To_Address (Func), Func_Data), Users.Free_Data'Address);
+            D := Users.Build (To_Address (Func), Func_Data);
+            C_Gtk_Cell_Layout_Set_Cell_Data_Func (Get_Object (Cell_Layout), Get_Object (Cell), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Cell_Data_Func;
 

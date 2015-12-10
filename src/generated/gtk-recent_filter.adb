@@ -218,11 +218,13 @@ package body Gtk.Recent_Filter is
           Data         : User_Data_Type;
           Data_Destroy : Glib.G_Destroy_Notify_Address)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, System.Null_Address, System.Null_Address, Data_Destroy);
          else
-            C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, Users.Build (To_Address (Func), Data), Data_Destroy);
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Recent_Filter_Add_Custom (Get_Object (Filter), Needed, Internal_Cb'Address, D, Data_Destroy);
          end if;
       end Add_Custom;
 

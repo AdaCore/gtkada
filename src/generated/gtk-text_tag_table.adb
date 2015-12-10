@@ -167,11 +167,14 @@ package body Gtk.Text_Tag_Table is
           Func  : Gtk_Text_Tag_Table_Foreach;
           Data  : User_Data_Type)
       is
+         D : System.Address;
       begin
          if Func = null then
             C_Gtk_Text_Tag_Table_Foreach (Get_Object (Table), System.Null_Address, System.Null_Address);
          else
-            C_Gtk_Text_Tag_Table_Foreach (Get_Object (Table), Internal_Cb'Address, Users.Build (To_Address (Func), Data));
+            D := Users.Build (To_Address (Func), Data);
+            C_Gtk_Text_Tag_Table_Foreach (Get_Object (Table), Internal_Cb'Address, D);
+            Users.Free_Data (D);
          end if;
       end Foreach;
 
