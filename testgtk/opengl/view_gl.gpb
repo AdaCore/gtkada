@@ -46,6 +46,28 @@ package body View_Gl is
 
    VIEW_ASPECT : constant Float := 1.3;
 
+   procedure Init_GL;
+
+   function Glarea_Expose
+     (Self : access Gtk_Widget_Record'Class;
+      Cr   : Cairo.Cairo_Context) return Boolean;
+
+   function Configure
+     (Area : access My_Glarea_Record'Class; Event : Gdk_Event) return Boolean;
+
+   procedure GlArea_Destroy (Area : access My_Glarea_Record'Class);
+
+   function Button_Press
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+
+   function Motion_Notify
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Motion) return Boolean;
+
+   procedure Show_Lwobject
+     (Frame : access Gtk_Frame_Record'Class; Lwobject_Name : String);
+
    -------------
    -- Init_GL --
    -------------

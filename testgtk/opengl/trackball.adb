@@ -1,16 +1,59 @@
+------------------------------------------------------------------------------
+--               GtkAda - Ada95 binding for the Gimp Toolkit                --
+--                                                                          --
+--                     Copyright (C) 1998-2015, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
+
 pragma Warnings (Off);
 with Ada.Numerics.Aux; use Ada.Numerics.Aux;
 pragma Warnings (On);
 
 package body Trackball is
 
-   package Ana renames Ada.Numerics.Aux;
-
    TRACKBALLSIZE : constant Float := 0.8;
    --  This size should really be based on the distance from the center of
    --  rotation to the point on the object underneath the mouse.  That point
    --  would then track the mouse as closely as possible.  This is a simple
    --  example, though, so that is left as an Exercise for the Programmer.
+
+   procedure Vsub (Src1, Src2 : Vector; Dst : out Vector);
+
+   procedure Vcross (V1, V2 : Vector; Cross : out Vector);
+
+   function Vlength (V : Vector) return Float;
+
+   procedure Vscale (V : in out Vector; Div : Float);
+
+   procedure Vnormal (V : in out Vector);
+
+   function Vdot (V1, V2 : Vector) return Float;
+
+   procedure Vadd (Src1, Src2 : Vector; Dst : out Vector);
+
+   function Project_To_Sphere (R, X, Y : Float) return Float;
+
+   procedure Normalize_Quat (Q : in out Quaternion);
+
+   ----------
+   -- Vsub --
+   ----------
 
    procedure Vsub (Src1, Src2 : Vector; Dst : out Vector) is
    begin
@@ -28,9 +71,9 @@ package body Trackball is
 
    function Vlength (V : Vector) return Float is
    begin
-      return Float (Sqrt (Ana.Double (V (0) * V (0)
-                                      + V (1) * V (1)
-                                      + V (2) * V (2))));
+      return Float (Sqrt (Double (V (0) * V (0)
+                                  + V (1) * V (1)
+                                  + V (2) * V (2))));
    end Vlength;
 
    procedure Vscale (V : in out Vector; Div : Float) is
@@ -87,9 +130,9 @@ package body Trackball is
    function Project_To_Sphere (R, X, Y : Float) return Float is
       D, T : Float;
    begin
-      D := Float (Sqrt (Ana.Double (X * X + Y * Y)));
+      D := Float (Sqrt (Double (X * X + Y * Y)));
       if D < R * 0.70710678118654752440 then  --  inside sphere
-         return Float (Sqrt (Ana.Double (R * R - D * D)));
+         return Float (Sqrt (Double (R * R - D * D)));
       else   --  on hyperbola
          T := R / 1.41421356237309504880;
          return T * T / D;
@@ -145,7 +188,7 @@ package body Trackball is
          T := -1.0;
       end if;
 
-      Phi := 2.0 * Float (Asin (Ana.Double (T)));
+      Phi := 2.0 * Float (Asin (Double (T)));
 
       Axis_To_Quat (A, Phi, Q);
    end Trackball;
@@ -229,9 +272,9 @@ package body Trackball is
    begin
       V := A;
       Vnormal (V);
-      Vscale (V, Float (Sin (Ana.Double (Phi / 2.0))));
+      Vscale (V, Float (Sin (Double (Phi / 2.0))));
       Q := (V (0), V (1), V (2),
-            Float (Cos (Ana.Double (Phi / 2.0))));
+            Float (Cos (Double (Phi / 2.0))));
    end Axis_To_Quat;
 
 end Trackball;
