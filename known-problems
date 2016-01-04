@@ -1,5 +1,15 @@
 Known problems fixed in GtkAda 17.0
 
+- OB27-029 GtkProgressBar CSS styling not working
+
+  Problem:    The -GtkProgressBar-min-horizontal-bar-height and
+              -GtkProgressBar-min-vertical-bar-width CSS properties are not
+              taken into account with Gtk 3.14 version. Hard-coded default
+              values are used instead to define the progress bar's size, making
+              it thin by default.
+
+  Workaround: None known.
+
 - OC10-015 Memory leaks in *_foreach
 
   Problem:    In some cases, gtk+ functions accept some user data, but do not
