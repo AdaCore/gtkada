@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2000-2015, AdaCore                     --
+--                     Copyright (C) 2000-2016, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -73,7 +73,7 @@ package body Create_Plot_3D is
       pragma Warnings (Off, Set);
    begin
       Error.all := 0;
-      return Cos (((X - 0.5) * (X - 0.5) + (Y - 0.5) *(Y - 0.5)) * 24.0)
+      return Cos (((X - 0.5) * (X - 0.5) + (Y - 0.5) * (Y - 0.5)) * 24.0)
         / 4.0 + 0.5;
    end My_Function;
 
