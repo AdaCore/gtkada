@@ -53,7 +53,8 @@ package body View_Gl is
       Cr   : Cairo.Cairo_Context) return Boolean;
 
    function Configure
-     (Area : access My_Glarea_Record'Class; Event : Gdk_Event) return Boolean;
+     (Area : access My_Glarea_Record'Class; Event : Gdk_Event)
+     return Boolean;
 
    procedure GlArea_Destroy (Area : access My_Glarea_Record'Class);
 
