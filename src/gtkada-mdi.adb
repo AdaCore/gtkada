@@ -1886,6 +1886,21 @@ package body Gtkada.MDI is
          MDI.Delay_Before_Focus_Id := No_Source_Id;
       end if;
 
+      --  Do not transfer the focus elsewhere: for an interactive close, this
+      --  is done in Close_Child, otherwise we do not want to change the focus.
+      --  No need to send a signal to signal that a new child has been selected
+      --  since Give_Focus_To_Previous_Child has been called already
+      --
+      --  P111-059: Focus child should be reset before any manipulation with
+      --  widget tree, otherwise GPS can use it to recompute selection context.
+      if C = MDI.Focus_Child then
+         MDI.Focus_Child := null;
+      end if;
+
+      if C = MDI.Focus_Child_In_Main_Window then
+         MDI.Focus_Child_In_Main_Window := null;
+      end if;
+
       C.Tab_Label := null;
 
       --  The child of the MDI_Child has now been taken care of, thus we need
@@ -1908,18 +1923,6 @@ package body Gtkada.MDI is
       end if;
 
       C.Initial := null;
-
-      --  Do not transfer the focus elsewhere: for an interactive close, this
-      --  is done in Close_Child, otherwise we do not want to change the focus.
-      --  No need to send a signal to signal that a new child has been selected
-      --  since Give_Focus_To_Previous_Child has been called already
-      if C = MDI.Focus_Child then
-         MDI.Focus_Child := null;
-      end if;
-
-      if C = MDI.Focus_Child_In_Main_Window then
-         MDI.Focus_Child_In_Main_Window := null;
-      end if;
 
       In_Selection_Dialog := MDI.Selection_Dialog /= null
         and then C = MDI_Child (Get_Data (Selection_Dialog_Access
