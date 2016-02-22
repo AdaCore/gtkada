@@ -28,9 +28,6 @@ project Shared is
    type Build_Type is ("Debug", "Production");
    Build : Build_Type := external ("BUILD", "@BUILD_TYPE@");
 
-   Processors := external ("PROCESSORS", "0");
-   --  Number of parallel compilations that should be performed
-
    type Boolean_Type is ("True", "False");
    Build_Opengl : Boolean_Type := "@HAVE_OPENGL@";
 
@@ -76,7 +73,7 @@ project Shared is
    end Compiler;
 
    package Builder is
-      for Switches ("Ada") use ("-m", "-j" & Processors);
+      for Switches ("Ada") use ("-m");
 
       case Build is
          when "Debug" =>

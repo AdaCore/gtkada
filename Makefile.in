@@ -8,13 +8,16 @@ SHELL=/bin/sh
 doc_dir = docs
 PYTHON  = python
 
+GPRBUILD_OPTIONS=
+GPRINSTALL_OPTIONS=
+
 TARGET=@TARGET@
 ifeq ($(TARGET),)
-GPRBUILD=@GPRBUILD@
-GPRINSTALL=@GPRINSTALL@
+GPRBUILD=@GPRBUILD@ $(GPRBUILD_OPTIONS)
+GPRINSTALL=@GPRINSTALL@ $(GPRINSTALL_OPTIONS)
 else
-GPRBUILD=@GPRBUILD@ --target=${TARGET}
-GPRINSTALL=@GPRINSTALL@ --target=${TARGET}
+GPRBUILD=@GPRBUILD@ --target=${TARGET} $(GPRBUILD_OPTIONS)
+GPRINSTALL=@GPRINSTALL@ --target=${TARGET} $(GPRINSTALL_OPTIONS)
 endif
 
 # Number of parallel compilation
@@ -141,8 +144,8 @@ clean-generic:
 	-${RM} .\#*
 
 mostlyclean-generic: clean-generic
-	-${RM} Makefile
-	-${RM} testgtk/Makefile
+	-${RM} Makefile src/config.h shared.gpr
+	-${RM} testgtk/opengl/view_gl.adb
 
 clean/%: force
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/tools/tools.gpr
@@ -151,7 +154,7 @@ clean/%: force
 
 clean: clean-generic clean/static clean/relocatable
 
-distclean: mostlyclean-generic
+distclean: clean mostlyclean-generic
 	-${RM} config.cache config.log config.status
 	-$(MAKE) -C $(doc_dir) distclean
 	-$(MAKE) -C po distclean

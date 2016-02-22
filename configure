@@ -3300,6 +3300,7 @@ end Conftest;
 EOF
 
    $GPRBUILD -q -P conftest.gpr > /dev/null
+   rm -f auto.cgpr b__conftest.*
 
    if ( test ! -x conftest ) then
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5

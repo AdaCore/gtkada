@@ -34,7 +34,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include <glib-object.h>
 #include <pango/pango.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
