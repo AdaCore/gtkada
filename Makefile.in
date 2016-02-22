@@ -151,6 +151,7 @@ clean/%: force
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/tools/tools.gpr
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/opengl/gtkada_gl.gpr
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Ptestgtk/testgtk.gpr
+	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
 
 clean: clean-generic clean/static clean/relocatable
 

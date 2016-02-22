@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 with "testgtk/testgtk";
-with "src/gtkada_src";
+with "src/gtkada";
 with "src/opengl/opengl";
 with "src/tools/tools";
 with "shared";

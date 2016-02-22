@@ -15,4 +15,6 @@ clean: docgen_clean
 	$(RM) generated.texi generated_menu.texi
 	$(RM) -rf gtkada_rm/
 
+distclean: clean
+
 force:

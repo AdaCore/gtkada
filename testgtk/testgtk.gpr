@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "gtkada";
+with "../src/gtkada";
 with "opengl/testgtk_opengl";
 
 project TestGtk is
