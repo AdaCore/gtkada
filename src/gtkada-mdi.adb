@@ -2921,6 +2921,7 @@ package body Gtkada.MDI is
       end if;
 
       Set_State (Child, Normal);
+
       Float_Child (Child, Float);
 
       if not Float then
@@ -3210,7 +3211,13 @@ package body Gtkada.MDI is
       Child : MDI_Child) return MDI_Child is
    begin
       if Child /= null and then Child.State = Invisible then
+         Set_State (Child, Normal);
          Put (MDI, Child);
+
+         --  When a child is made invisible, it is Ref'ed - we need to Unref to
+         --  remove this reference, and we need to do this after the Put so
+         --  that the child doesn't get destroyed.
+         Unref (Child);
       end if;
 
       return Child;
