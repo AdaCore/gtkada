@@ -8149,38 +8149,24 @@ package body Gtkada.MDI is
    procedure Highlight_Child
      (Child : access MDI_Child_Record; Highlight : Boolean := True)
    is
-      procedure Override (Widget : not null access Gtk_Widget_Record'Class);
-
-      procedure Override (Widget : not null access Gtk_Widget_Record'Class) is
-         C : Gdk_RGBA;
-      begin
-         if Highlight then
-            C := Child.MDI.Focus_Title_Color;
-         else
-            C := Null_RGBA;
-         end if;
-
-         Override_Color (Widget, Gtk_State_Flag_Normal, C);
-         Override_Color (Widget, Gtk_State_Flag_Active, C);
-         Override_Color (Widget, Gtk_State_Flag_Prelight, C);
-         Override_Color (Widget, Gtk_State_Flag_Selected, C);
-         Override_Color (Widget, Gtk_State_Flag_Focused, C);
-      end Override;
-
-      Note  : constant MDI_Notebook := Get_Notebook (Child);
+      Note      : constant MDI_Notebook := Get_Notebook (Child);
    begin
-      if Highlight then
-         Show (Child);  --  Make sure the child is visible
-
-         if Note /= null
-           and then Get_Current_Page (Note) = Page_Num (Note, Child)
-         then
-            return;
-         end if;
+      --  Do nothing if Child is not in a notebook, if it has no tab label, or
+      --  if it already has the focus.
+      if Note = null
+        or else Child.Tab_Label = null
+        or else (Highlight
+                   and then Note.Get_Current_Page = Note.Page_Num (Child))
+      then
+         return;
       end if;
 
-      if Child.Tab_Label /= null then
-         Override (Child.Tab_Label);
+      if Highlight then
+         Get_Style_Context (Child.Tab_Label).Add_Class
+           ("mdi-highlighted-tab");
+      else
+         Get_Style_Context (Child.Tab_Label).Remove_Class
+           ("mdi-highlighted-tab");
       end if;
    end Highlight_Child;
 
