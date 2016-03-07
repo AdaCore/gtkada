@@ -294,12 +294,17 @@ package Gtkada.MDI is
    --     - Else the window is put on top of the currently selected window
 
    procedure Put
-     (MDI              : access MDI_Window_Record;
-      Child            : access MDI_Child_Record'Class;
-      Initial_Position : Child_Position := Position_Automatic);
+     (MDI               : access MDI_Window_Record;
+      Child             : access MDI_Child_Record'Class;
+      Initial_Position  : Child_Position := Position_Automatic;
+      Position_At_Mouse : Boolean := True;
+      X, Y              : Gint := 0);
    --  Add a new child to the MDI window, and return its embedding widget.
    --  Calling Put does not give the focus to the newly inserted widget.
    --  To do that, you should call Set_Focus_Child.
+   --  If Initial_Position is Position_Float, then position the floating window
+   --  under the mouse cursor, unless Position_At_Mouse is False, in which
+   --  case position the window at X, Y.
 
    function Save_Desktop
      (Self : not null access MDI_Child_Record) return Glib.Xml_Int.Node_Ptr;
@@ -620,8 +625,15 @@ package Gtkada.MDI is
    -----------------------
 
    procedure Float_Child
-     (Child : access MDI_Child_Record'Class; Float : Boolean);
-   --  Change the floating state of a child
+     (Child             : access MDI_Child_Record'Class;
+      Float             : Boolean;
+      Position_At_Mouse : Boolean := True;
+      X, Y              : Gint := 0);
+   --  Change the floating state of a child.
+   --  If Float is True:
+   --     - if Position_At_Mouse is True, position the window
+   --       under the mouse pointer.
+   --     - if Position_At_Mouse is False, use position the window at X, Y.
 
    function Is_Floating
      (Child : access MDI_Child_Record'Class) return Boolean;

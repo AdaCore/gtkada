@@ -2899,7 +2899,9 @@ package body Gtkada.MDI is
    procedure Put
      (MDI              : access MDI_Window_Record;
       Child            : access MDI_Child_Record'Class;
-      Initial_Position : Child_Position := Position_Automatic)
+      Initial_Position : Child_Position := Position_Automatic;
+      Position_At_Mouse : Boolean := True;
+      X, Y              : Gint := 0)
    is
       Float : constant Boolean :=
          MDI.All_Floating_Mode
@@ -2922,7 +2924,7 @@ package body Gtkada.MDI is
 
       Set_State (Child, Normal);
 
-      Float_Child (Child, Float);
+      Float_Child (Child, Float, Position_At_Mouse, X, Y);
 
       if not Float then
          Put_In_Notebook (MDI, Child, Initial_Position => Initial_Position);
@@ -3717,10 +3719,12 @@ package body Gtkada.MDI is
 
    procedure Float_Child
      (Child : access MDI_Child_Record'Class;
-      Float : Boolean) is
+      Float             : Boolean;
+      Position_At_Mouse : Boolean := True;
+      X, Y              : Gint := 0) is
    begin
       Internal_Float_Child
-        (Child, Float, Position_At_Mouse => True, X => 0, Y => 0);
+        (Child, Float, Position_At_Mouse => Position_At_Mouse, X => X, Y => Y);
    end Float_Child;
 
    -----------------------------------
