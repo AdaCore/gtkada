@@ -49,3 +49,9 @@ The GtkAda User's Guide can be found:
 The GtkAda Reference Manual can be found:
 
   - HTML version: in `gtkada_rm/gtkada_rm/index.html`
+
+Patches
+-------
+
+We are very happy to receive and look at patches.
+Please use github's Pull Requests feature to contribute those.
