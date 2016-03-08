@@ -1,0 +1,19 @@
+========================
+GTKADA NEW FEATURES LIST
+========================
+
+Copyright (C) 2010-2016, AdaCore
+
+This file contains a list of new features introduced in GtkAda.
+
+An ISO date (YYYY-MM-DD) appears in parentheses after the
+description line. This date shows the implementation date
+of the feature.
+
+New features in GtkAda 17
+-------------------------
+
+NF-17-OC21-020 additions to Gtkada.MDI.Float_Child and Gtkada.MDI.Put
+
+   New parameters allow controlling the position of the child as it is
+   being put in the MDI or when it is being floated.
