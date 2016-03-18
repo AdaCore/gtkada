@@ -17,3 +17,9 @@ NF-17-OC21-020 additions to Gtkada.MDI.Float_Child and Gtkada.MDI.Put
 
    New parameters allow controlling the position of the child as it is
    being put in the MDI or when it is being floated.
+
+NF-17-P315-053 Make notebook tabs orientation configurable
+
+   New parameter in Gtkada.MDI.Configure allows controlling the orientation of
+   the notebook tabs. Varians are Automatic, Horizontal, Bottom_To_Top and
+   Top_To_Bottom.

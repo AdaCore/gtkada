@@ -129,6 +129,9 @@ package Gtkada.MDI is
    type Show_Tabs_Policy_Enum is (Always, Never, Automatic);
    type Title_Bars_Policy     is (Always, Never, Central_Only);
 
+   type Tab_Orientation_Type is
+     (Automatic, Horizontal, Bottom_To_Top, Top_To_Bottom);
+
    procedure Configure
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean := False;
@@ -139,7 +142,8 @@ package Gtkada.MDI is
       Draw_Title_Bars    : Title_Bars_Policy   := Always;
       Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Top;
       Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic;
-      Homogeneous_Tabs   : Boolean := True);
+      Homogeneous_Tabs   : Boolean := True;
+      Tabs_Orientation   : Tab_Orientation_Type := Automatic);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it (unless its flag
@@ -152,6 +156,7 @@ package Gtkada.MDI is
    --  screen. However, the notebook tabs will be highlighted with
    --  Title_Bar_Color in exchange.
    --  Tabs_Position indicates where the notebook tabs should be put.
+   --  Tabs_Orientation indicates how the notebook tabs should be rotated.
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
    --
    --  If Homogeneous_Tabs is true, then the notebook tabs will only use their
@@ -1254,6 +1259,7 @@ private
 
       Draw_Title_Bars   : Title_Bars_Policy := Always;
       Tabs_Position     : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Top;
+      Tabs_Orientation  : Tab_Orientation_Type := Automatic;
       Show_Tabs_Policy  : Show_Tabs_Policy_Enum := Automatic;
 
       Selection_Dialog : Gtk.Widget.Gtk_Widget;

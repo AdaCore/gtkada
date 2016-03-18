@@ -244,8 +244,6 @@ package body Gtkada.MDI is
      (Label : System.Address; Minimum_Size, Natural_Size : out Gint);
    pragma Convention (C, Tab_Get_Preferred_Height);
 
-   type Tab_Orientation_Type is
-     (Automatic, Horizontal, Bottom_To_Top, Top_To_Bottom);
    package Tab_Orientation_Callback is new Gtk.Handlers.User_Callback
      (Gtk_Notebook_Record, Tab_Orientation_Type);
 
@@ -1495,13 +1493,16 @@ package body Gtkada.MDI is
       Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
         Gtk.Enums.Pos_Top;
       Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic;
-      Homogeneous_Tabs          : Boolean := True)
+      Homogeneous_Tabs          : Boolean := True;
+      Tabs_Orientation          : Tab_Orientation_Type := Automatic)
    is
       C            : MDI_Child;
       Need_Redraw  : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
       Iter         : Child_Iterator;
       Old_Tabs_Pos : constant Gtk_Position_Type := MDI.Tabs_Position;
       Pos_Changed  : constant Boolean := Old_Tabs_Pos /= Tabs_Position;
+      Old_Tabs_Rot : constant Tab_Orientation_Type := MDI.Tabs_Orientation;
+      Rot_Changed  : constant Boolean := Old_Tabs_Rot /= Tabs_Orientation;
       Note         : Gtk_Notebook;
       Success      : Boolean;
       pragma Unreferenced (Success);
@@ -1513,6 +1514,7 @@ package body Gtkada.MDI is
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
       MDI.Draw_Title_Bars  := Draw_Title_Bars;
       MDI.Tabs_Position    := Tabs_Position;
+      MDI.Tabs_Orientation := Tabs_Orientation;
       MDI.Show_Tabs_Policy := Show_Tabs_Policy;
       MDI.Homogeneous_Tabs := Homogeneous_Tabs;
 
@@ -1604,6 +1606,10 @@ package body Gtkada.MDI is
                  and then Get_Tab_Pos (Note) = Old_Tabs_Pos
                then
                   On_Tab_Pos (Note, MDI.Tabs_Position);
+               elsif Rot_Changed
+                 and then MDI_Notebook (Note).Tab_Orientation = Old_Tabs_Rot
+               then
+                  On_Tab_Orientation (Note, MDI.Tabs_Orientation);
                end if;
 
                Configure_Notebook_Tabs (MDI, Note);
@@ -4206,6 +4212,7 @@ package body Gtkada.MDI is
       Notebook : MDI_Notebook;
    begin
       Notebook := new MDI_Notebook_Record;
+      Notebook.Tab_Orientation := MDI.Tabs_Orientation;
       Gtk.Notebook.Initialize (Notebook);
       Configure_Notebook_Tabs (MDI, Notebook);
       Set_Border_Width (Notebook, 0);
