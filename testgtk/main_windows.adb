@@ -94,6 +94,7 @@ with Create_File_Chooser;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Flow_Box;
+with Create_Font_Chooser;
 with Create_Font_Selection;
 with Create_Gestures;
 with Create_Icon_View;
@@ -349,6 +350,10 @@ package body Main_Windows is
                                          Create_Fixed.Help'Access),
       (NS ("flow box"), Box,
        Create_Flow_Box.Run'Access, Create_Flow_Box.Help'Access),
+      (NS ("font chooser"),
+                                         Colors_And_Fonts,
+                                         Create_Font_Chooser.Run'Access,
+                                         Create_Font_Chooser.Help'Access),
       (NS ("font selection (obsolescent)"),
                                          Colors_And_Fonts,
                                          Create_Font_Selection.Run'Access,
