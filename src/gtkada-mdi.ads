@@ -35,7 +35,6 @@ with Cairo;
 with GNAT.Strings;
 with Glib;        use Glib;
 with Glib.Simple_Action;
-with Glib.Main;
 with Glib.Menu;
 with Glib.Xml_Int;
 with Glib.Values;
@@ -1198,15 +1197,6 @@ private
       --  Whether we are currently loading the desktop. This impacts a number
       --  of focus and sizing parameters, so that the desktop can be restored
       --  as accurately as possible.
-
-      Delay_Before_Focus_Id : Glib.Main.G_Source_Id := Glib.Main.No_Source_Id;
-      Delay_Before_Focus : Glib.Guint := 700;
-      --  Delay in ms before a floating window gains the GPS focus, after the
-      --  "focus_in" event. In all floating mode, this ensures that when the
-      --  user is passing briefly over floating windows they do not gain the
-      --  focus, thus potentially leaving the focus to the window that had it
-      --  at the beginning of the move.
-      --  Set to 0 to remove any delay.
 
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will

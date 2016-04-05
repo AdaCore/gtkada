@@ -48,7 +48,6 @@ with GNAT.Strings;            use GNAT.Strings;
 
 with Glib.Convert;            use Glib.Convert;
 with Glib.Error;              use Glib.Error;
-with Glib.Main;               use Glib.Main;
 with Glib.Menu;               use Glib.Menu;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -495,13 +494,6 @@ package body Gtkada.MDI is
    --  Called when the widget that has the keyboard focus has changed. This is
    --  used to automatically select its parent MDI_Child.
 
-   package Widget_Sources is new Glib.Main.Generic_Sources (Gtk_Widget);
-   function After_Focus_Child_MDI_Floating
-     (Child : Gtk_Widget) return Boolean;
-   --  Called after a short delay when a floating window has received the
-   --  "focus_in" event. This ensure we only give the MDI focus if the user
-   --  has left the mouse on top of that window, not just passing through.
-
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean;
    --  Same as Set_Focus_Child_MDI, but for floating windows
@@ -791,27 +783,6 @@ package body Gtkada.MDI is
       end if;
    end Set_Focus_Child_Notebook;
 
-   ------------------------------------
-   -- After_Focus_Child_MDI_Floating --
-   ------------------------------------
-
-   function After_Focus_Child_MDI_Floating
-     (Child : Gtk_Widget) return Boolean
-   is
-      C : constant MDI_Child := MDI_Child (Child);
-      Top : constant Gtk_Widget := Get_Toplevel (Get_Widget (C));
-   begin
-      if Top /= null
-        and then Top.all in Gtk_Window_Record'Class
-        and then Has_Toplevel_Focus (Gtk_Window (Top))
-      then
-         Set_Focus_Child (C);
-      end if;
-
-      C.MDI.Delay_Before_Focus_Id := No_Source_Id;
-      return False;
-   end After_Focus_Child_MDI_Floating;
-
    ----------------------------------
    -- Set_Focus_Child_MDI_Floating --
    ----------------------------------
@@ -822,20 +793,7 @@ package body Gtkada.MDI is
       C  : constant MDI_Child := MDI_Child (Child);
    begin
       Print_Debug ("Set_Focus_Child_MDI_Floating");
-
-      if C.MDI.Delay_Before_Focus = 0 then
-         Set_Focus_Child (C);
-      else
-         if C.MDI.Delay_Before_Focus_Id /= No_Source_Id then
-            Remove (C.MDI.Delay_Before_Focus_Id);
-            C.MDI.Delay_Before_Focus_Id := No_Source_Id;
-         end if;
-
-         C.MDI.Delay_Before_Focus_Id := Widget_Sources.Timeout_Add
-           (C.MDI.Delay_Before_Focus,
-            After_Focus_Child_MDI_Floating'Access, Gtk_Widget (Child));
-      end if;
-
+      Set_Focus_Child (C);
       return False;
    end Set_Focus_Child_MDI_Floating;
 
@@ -1712,11 +1670,6 @@ package body Gtkada.MDI is
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
 
-      if M.Delay_Before_Focus_Id /= No_Source_Id then
-         Remove (M.Delay_Before_Focus_Id);
-         M.Delay_Before_Focus_Id := No_Source_Id;
-      end if;
-
       while Tmp /= Null_List loop
          --  Get the next field first, since Destroy will actually destroy Tmp
 
@@ -1886,11 +1839,6 @@ package body Gtkada.MDI is
       Print_Debug ("Destroy_Child " & Get_Title (C));
 
       Ref (C);
-
-      if MDI.Delay_Before_Focus_Id /= No_Source_Id then
-         Remove (MDI.Delay_Before_Focus_Id);
-         MDI.Delay_Before_Focus_Id := No_Source_Id;
-      end if;
 
       --  Do not transfer the focus elsewhere: for an interactive close, this
       --  is done in Close_Child, otherwise we do not want to change the focus.
