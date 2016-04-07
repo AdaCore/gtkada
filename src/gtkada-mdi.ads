@@ -1202,6 +1202,9 @@ private
       --  The child that currently has the focus. Some default actions will
       --  apply to this child only.
 
+      Focus_Freeze : Natural := 0;
+      --  We should not emit any focus change if this is > 0.
+
       Focus_Child_In_Main_Window : MDI_Child := null;
       --  The child, if any, known to have the focus in the main window. This
       --  is used to remember which child to give the focus to when the focus
@@ -1293,6 +1296,10 @@ private
 
       Current_Perspective    : Glib.Xml_Int.Node_Ptr;
       --  pointer into Perspectives
+
+      Internal_Updating_Menu : Boolean := False;
+      --  Flag to prevent giving focus to a child in response to a menu being
+      --  toggled when it is the MDI itself that toggles the menu.
    end record;
 
    pragma Inline (Get_Widget);

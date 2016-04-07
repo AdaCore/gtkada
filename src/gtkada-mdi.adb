@@ -33,6 +33,7 @@
 --  - contextual menu in the title bar of children to dock them, float them,...
 
 with Ada.Containers.Vectors;
+with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
@@ -605,6 +606,14 @@ package body Gtkada.MDI is
    procedure Move_To_Next_Notebook (Iterator : in out Child_Iterator);
    --  Move to the next notebook for this iterator (does nothing if Iterator
    --  already points to a notebook).
+
+   procedure Freeze_Focus (MDI : access MDI_Window_Record'Class);
+   --  Freeze emission of focus changes. Each of these calls should correspond
+   --  to a call to Thaw_Focus below.
+
+   procedure Thaw_Focus (MDI : access MDI_Window_Record'Class);
+   --  Unfreeze the emission of the focus, and do the actual focus change on
+   --  the current child.
 
    package Close_Button is
 
@@ -3510,8 +3519,13 @@ package body Gtkada.MDI is
          return;
       end if;
 
-      Show (C);  --  Make sure the child is visible
       Child.MDI.Focus_Child := C;
+
+      if Child.MDI.Focus_Freeze > 0 then
+         return;
+      end if;
+
+      Show (C);  --  Make sure the child is visible
 
       if Traces then
          Print_Debug ("Set_Focus_Child on " & Get_Title (C));
@@ -4880,14 +4894,25 @@ package body Gtkada.MDI is
       C    : MDI_Child;
    begin
       if All_Floating /= MDI.All_Floating_Mode then
+         MDI.All_Floating_Mode := All_Floating;
+
          --  We cannot do a simple loop here. When a child is floated, it
          --  can happen that the mouse enters the window, and the focus changes
          --  immediately, resulting in a change in the order of children in the
          --  list, even though not all windows have been floated yet.
+         --  To fix this, we do two loops: one to list all the widgets, and
+         --  one to float them.
 
-         MDI.All_Floating_Mode := All_Floating;
-
-         loop
+         MDI.Freeze_Focus;
+         declare
+            package Child_List is new Ada.Containers.Doubly_Linked_Lists
+              (MDI_Child);
+            --  ??? We should use this to implement MDI.Items, rather than
+            --  a Widget_List.Glist.
+            use Child_List;
+            To_Process : Child_List.List;
+            Cursor     : Child_List.Cursor;
+         begin
             List := First (MDI.Items);
 
             while List /= Null_List loop
@@ -4895,15 +4920,25 @@ package body Gtkada.MDI is
                if (C.State /= Floating and then All_Floating)
                  or else (C.State = Floating and then not All_Floating)
                then
-                  Float_Child (C, All_Floating);
-                  exit;
+                  To_Process.Append (C);
                end if;
-
                List := Next (List);
             end loop;
 
-            exit when List = Null_List;
-         end loop;
+            Cursor := To_Process.First;
+            while Has_Element (Cursor) loop
+               Float_Child (Element (Cursor), All_Floating);
+               Next (Cursor);
+            end loop;
+
+            To_Process.Clear;
+
+            MDI.Thaw_Focus;
+         exception
+            when others =>
+               MDI.Thaw_Focus;
+               raise;
+         end;
 
          if MDI.Action_Float /= null then
             MDI.Action_Float.Set_Enabled (not All_Floating);
@@ -5259,6 +5294,10 @@ package body Gtkada.MDI is
    procedure Focus_Cb (Item  : access Gtk_Check_Menu_Item_Record'Class) is
       It : constant Menu_Item_For_Child := Menu_Item_For_Child (Item);
    begin
+      if It.Child.MDI.Internal_Updating_Menu then
+         return;
+      end if;
+
       if It.Get_Active then
          --  If C is floating, raise the window.
          if It.Child.State = Floating then
@@ -5302,7 +5341,9 @@ package body Gtkada.MDI is
    is
       It : constant Menu_Item_For_Child := Menu_Item_For_Child (Item);
    begin
+      It.Child.MDI.Internal_Updating_Menu := True;
       It.Set_Active (It.Child = It.Child.MDI.Get_Focus_Child);
+      It.Child.MDI.Internal_Updating_Menu := False;
    end On_Child_Selected_Update_Menu;
 
    ----------------------------------
@@ -6629,40 +6670,43 @@ package body Gtkada.MDI is
                       & Gint'Image (Full_Width) & "x"
                       & Gint'Image (Full_Height), Debug_Increase);
 
-         while Child_Node /= null loop
-            if Traces then
-               Print_Debug
-                 ("Restore_Multi_Pane, got child """
-                  & Child_Node.Tag.all & """");
-            end if;
+         MDI.Freeze_Focus;
+         declare
+         begin
+            while Child_Node /= null loop
+               if Traces then
+                  Print_Debug
+                    ("Restore_Multi_Pane, got child """
+                     & Child_Node.Tag.all & """");
+               end if;
 
-            if Child_Node.Tag.all = "Pane" then
-               Parse_Pane_Node
-                 (Pane,
-                  MDI                   => MDI,
-                  Node                  => Child_Node,
-                  Focus_Child           => Focus_Child,
-                  Parent_Width          => Full_Width,
-                  Parent_Height         => Full_Height,
-                  Parent_Children_Count => 1,
-                  Parent_Orientation    => Orientation_Horizontal,
-                  User                  => User,
-                  Initial_Ref_Child     => null,
-                  To_Raise              => To_Raise,
-                  To_Hide               => To_Hide,
-                  Empty_Notebook_Filler => Empty_Notebook_Filler);
+               if Child_Node.Tag.all = "Pane" then
+                  Parse_Pane_Node
+                    (Pane,
+                     MDI                   => MDI,
+                     Node                  => Child_Node,
+                     Focus_Child           => Focus_Child,
+                     Parent_Width          => Full_Width,
+                     Parent_Height         => Full_Height,
+                     Parent_Children_Count => 1,
+                     Parent_Orientation    => Orientation_Horizontal,
+                     User                  => User,
+                     Initial_Ref_Child     => null,
+                     To_Raise              => To_Raise,
+                     To_Hide               => To_Hide,
+                     Empty_Notebook_Filler => Empty_Notebook_Filler);
 
-            elsif Child_Node.Tag.all = "Child" then
-               --  Used for floating children, and children in the default
-               --  desktop (see Add_To_Tree)
+               elsif Child_Node.Tag.all = "Child" then
+                  --  Used for floating children, and children in the default
+                  --  desktop (see Add_To_Tree)
 
-               Parse_Child_Node
-                 (MDI, Child_Node, User,
-                  Focus_Child, X, Y, W, H, Raised, State, Child,
-                  To_Hide => To_Hide);
+                  Parse_Child_Node
+                    (MDI, Child_Node, User,
+                     Focus_Child, X, Y, W, H, Raised, State, Child,
+                     To_Hide => To_Hide);
 
-               if Child /= null then
-                  case State is
+                  if Child /= null then
+                     case State is
                      when Floating =>
                         Internal_Float_Child
                           (Child, True, Position_At_Mouse => False,
@@ -6673,16 +6717,22 @@ package body Gtkada.MDI is
 
                      when Normal =>
                         Float_Child (Child, False);
-                  end case;
+                     end case;
+                  end if;
+
+               elsif Child_Node.Tag.all = "central" then
+                  Add_Child (MDI, MDI.Central,
+                             Width => Full_Width, Height => Full_Height);
                end if;
 
-            elsif Child_Node.Tag.all = "central" then
-               Add_Child (MDI, MDI.Central,
-                          Width => Full_Width, Height => Full_Height);
-            end if;
-
-            Child_Node := Child_Node.Next;
-         end loop;
+               Child_Node := Child_Node.Next;
+            end loop;
+            MDI.Thaw_Focus;
+         exception
+            when others =>
+               MDI.Thaw_Focus;
+               raise;
+         end;
 
          if Empty_Notebook_Filler /= null then
             --  The empty notebook has been created during the desktop load
@@ -6860,6 +6910,7 @@ package body Gtkada.MDI is
          --  Close all existing windows (internal_load_perspective would try to
          --  preserve them, but they do not apply to the current desktop)
 
+         MDI.Freeze_Focus;
          declare
             Tmp              : Widget_List.Glist := MDI.Items;
             Tmp2             : Widget_List.Glist;
@@ -6893,6 +6944,11 @@ package body Gtkada.MDI is
 
                Tmp := Next (Tmp);
             end loop;
+            MDI.Thaw_Focus;
+         exception
+            when others =>
+               MDI.Thaw_Focus;
+               raise;
          end;
 
          --  Prepare the contents of the central area. This will automatically
@@ -7563,6 +7619,8 @@ package body Gtkada.MDI is
          Tmp_Persp : Node_Ptr;
 
       begin
+         MDI.Freeze_Focus;
+
          --  Find the right perspective node
 
          Tmp_Persp := MDI.Perspectives.Child;
@@ -7704,6 +7762,12 @@ package body Gtkada.MDI is
          if Traces then
             Print_Debug ("Done loading perspective", Debug_Decrease);
          end if;
+
+         MDI.Thaw_Focus;
+      exception
+         when others =>
+            MDI.Thaw_Focus;
+            raise;
       end Internal_Load_Perspective;
 
       ----------------------
@@ -8707,5 +8771,35 @@ package body Gtkada.MDI is
          return Get_Attribute (MDI.Current_Perspective, "name", "");
       end if;
    end Current_Perspective;
+
+   ------------------
+   -- Freeze_Focus --
+   ------------------
+
+   procedure Freeze_Focus (MDI : access MDI_Window_Record'Class) is
+   begin
+      MDI.Focus_Freeze := MDI.Focus_Freeze + 1;
+   end Freeze_Focus;
+
+   ----------------
+   -- Thaw_Focus --
+   ----------------
+
+   procedure Thaw_Focus (MDI : access MDI_Window_Record'Class) is
+   begin
+      if MDI.Focus_Freeze = 0 then
+         if Traces then
+            Print_Debug ("Calls to (Freeze|Thaw)_Focus do not match");
+         end if;
+         return;
+      end if;
+
+      MDI.Focus_Freeze := MDI.Focus_Freeze - 1;
+      if MDI.Focus_Freeze = 0
+        and then MDI.Focus_Child /= null
+      then
+         MDI.Set_Focus_Child (MDI.Focus_Child);
+      end if;
+   end Thaw_Focus;
 
 end Gtkada.MDI;
