@@ -386,6 +386,9 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean;
    --  Forward a delete_event from the toplevel window to the child
 
+   procedure On_Close_Floating_Dialog (Child : access GObject_Record'Class);
+   --  Called when the user presses ESC in a floating window
+
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class);
    procedure Destroy_Initial_Child
       (Child : access Gtk_Widget_Record'Class);
@@ -3748,12 +3751,25 @@ package body Gtkada.MDI is
                         or Destroy_With_Parent);
             Win  := Gtk_Window (Diag);
             Container := Gtk_Container (Get_Content_Area (Diag));
+
+            --  Closing the dialog should give the focus to the previous child
+
+            Diag.On_Close (On_Close_Floating_Dialog'Access, Child);
          end;
       else
          Gtk_New (Win);
          Container := Gtk_Container (Win);
       end if;
    end Create_Float_Window_For_Child;
+
+   ------------------------------
+   -- On_Close_Floating_Dialog --
+   ------------------------------
+
+   procedure On_Close_Floating_Dialog (Child : access GObject_Record'Class) is
+   begin
+      Close_Child (MDI_Child (Child), Force => True);
+   end On_Close_Floating_Dialog;
 
    --------------------------
    -- Internal_Float_Child --
