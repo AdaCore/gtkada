@@ -207,7 +207,7 @@ package body Gtk.Widget is
       (Widget    : System.Address;
        Callback  : System.Address;
        User_Data : System.Address;
-       Notify    : Glib.G_Destroy_Notify_Address) return Guint;
+       Notify    : System.Address) return Guint;
    pragma Import (C, C_Gtk_Widget_Add_Tick_Callback, "gtk_widget_add_tick_callback");
    --  Queues an animation frame update and adds a callback to be called
    --  before each frame. Until the tick callback is removed, it will be called
@@ -425,14 +425,13 @@ package body Gtk.Widget is
 
    function Add_Tick_Callback
       (Widget   : not null access Gtk_Widget_Record;
-       Callback : Gtk_Tick_Callback;
-       Notify   : Glib.G_Destroy_Notify_Address) return Guint
+       Callback : Gtk_Tick_Callback) return Guint
    is
    begin
       if Callback = null then
-         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Notify);
+         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Gtk_Tick_Callback'Address, To_Address (Callback), Notify);
+         return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Gtk_Tick_Callback'Address, To_Address (Callback), System.Null_Address);
       end if;
    end Add_Tick_Callback;
 
@@ -467,16 +466,15 @@ package body Gtk.Widget is
       function Add_Tick_Callback
          (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
           Callback  : Gtk_Tick_Callback;
-          User_Data : User_Data_Type;
-          Notify    : Glib.G_Destroy_Notify_Address) return Guint
+          User_Data : User_Data_Type) return Guint
       is
          D : System.Address;
       begin
          if Callback = null then
-            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Notify);
+            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Callback), User_Data);
-            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, D, Notify);
+            return C_Gtk_Widget_Add_Tick_Callback (Get_Object (Widget), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Add_Tick_Callback;
 

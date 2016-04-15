@@ -542,7 +542,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
 # these specific parameters.
 
 user_data_params = ["Data", "Func_Data", "User_Data", "D", "Search_Data"]
-destroy_data_params = ["destroy", "func_notify"]
+destroy_data_params = ["destroy", "func_notify", "notify"]
 
 # Maps c methods to Ada subprograms or enumeration (for docs).
 # All methods that are generated automatically will be added

@@ -41,7 +41,7 @@ package body Gtk.File_Filter is
        Needed : Gtk_File_Filter_Flags;
        Func   : System.Address;
        Data   : System.Address;
-       Notify : Glib.G_Destroy_Notify_Address);
+       Notify : System.Address);
    pragma Import (C, C_Gtk_File_Filter_Add_Custom, "gtk_file_filter_add_custom");
    --  Adds rule to a filter that allows files based on a custom callback
    --  function. The bitfield Needed which is passed in provides information
@@ -130,14 +130,13 @@ package body Gtk.File_Filter is
    procedure Add_Custom
       (Self   : not null access Gtk_File_Filter_Record;
        Needed : Gtk_File_Filter_Flags;
-       Func   : Gtk_File_Filter_Func;
-       Notify : Glib.G_Destroy_Notify_Address)
+       Func   : Gtk_File_Filter_Func)
    is
    begin
       if Func = null then
-         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, System.Null_Address, System.Null_Address, Notify);
+         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Gtk_File_Filter_Func'Address, To_Address (Func), Notify);
+         C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Gtk_File_Filter_Func'Address, To_Address (Func), System.Null_Address);
       end if;
    end Add_Custom;
 
@@ -170,16 +169,15 @@ package body Gtk.File_Filter is
          (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
           Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
-          Data   : User_Data_Type;
-          Notify : Glib.G_Destroy_Notify_Address)
+          Data   : User_Data_Type)
       is
          D : System.Address;
       begin
          if Func = null then
-            C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, System.Null_Address, System.Null_Address, Notify);
+            C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Func), Data);
-            C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, D, Notify);
+            C_Gtk_File_Filter_Add_Custom (Get_Object (Self), Needed, Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Add_Custom;
 

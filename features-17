@@ -13,6 +13,17 @@ of the feature.
 New features in GtkAda 17
 -------------------------
 
+NF-17-J810-010 Improving handling of User_Data
+
+   The following generic packages were modified:
+     Gdk.Event.Handler_Set_User_Data
+     Gtk.Action_Group.Set_Translate_Func_User_Data
+     Gtk.File_Filter.Add_Custom_User_Data
+     Gtk.Widget.Add_Tick_Callback_User_Data
+
+   The Notify parameter was removed from the public API. Instead,
+   GtkAda will call the Destroy procedure to release User_Data.
+
 NF-17-OC21-020 additions to Gtkada.MDI.Float_Child and Gtkada.MDI.Put
 
    New parameters allow controlling the position of the child as it is

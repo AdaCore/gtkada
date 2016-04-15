@@ -252,8 +252,7 @@ package Gtk.Action_Group is
 
    procedure Set_Translate_Func
       (Action_Group : not null access Gtk_Action_Group_Record;
-       Func         : Gtk_Translate_Func;
-       Notify       : Glib.G_Destroy_Notify_Address);
+       Func         : Gtk_Translate_Func);
    pragma Obsolescent (Set_Translate_Func);
    --  Sets a function to be used for translating the Label and Tooltip of
    --  Gtk_Action_Entrys added by gtk_action_group_add_actions.
@@ -262,9 +261,6 @@ package Gtk.Action_Group is
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
    --  "func": a Gtk_Translate_Func
-   --  "notify": a Glib.G_Destroy_Notify_Address function to be called when
-   --  Action_Group is destroyed and when the translation function is changed
-   --  again
 
    generic
       type User_Data_Type (<>) is private;
@@ -283,8 +279,7 @@ package Gtk.Action_Group is
       procedure Set_Translate_Func
          (Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
           Func         : Gtk_Translate_Func;
-          Data         : User_Data_Type;
-          Notify       : Glib.G_Destroy_Notify_Address);
+          Data         : User_Data_Type);
       pragma Obsolescent (Set_Translate_Func);
       --  Sets a function to be used for translating the Label and Tooltip of
       --  Gtk_Action_Entrys added by gtk_action_group_add_actions.
@@ -294,9 +289,6 @@ package Gtk.Action_Group is
       --  Deprecated since 3.10, 1
       --  "func": a Gtk_Translate_Func
       --  "data": data to be passed to Func and Notify
-      --  "notify": a Glib.G_Destroy_Notify_Address function to be called when
-      --  Action_Group is destroyed and when the translation function is
-      --  changed again
 
    end Set_Translate_Func_User_Data;
 

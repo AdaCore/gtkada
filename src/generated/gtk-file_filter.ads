@@ -148,8 +148,7 @@ package Gtk.File_Filter is
    procedure Add_Custom
       (Self   : not null access Gtk_File_Filter_Record;
        Needed : Gtk_File_Filter_Flags;
-       Func   : Gtk_File_Filter_Func;
-       Notify : Glib.G_Destroy_Notify_Address);
+       Func   : Gtk_File_Filter_Func);
    --  Adds rule to a filter that allows files based on a custom callback
    --  function. The bitfield Needed which is passed in provides information
    --  about what sorts of information that the filter function needs; this
@@ -160,7 +159,6 @@ package Gtk.File_Filter is
    --  filter function needs.
    --  "func": callback function; if the function returns True, then the file
    --  will be displayed.
-   --  "notify": function to call to free Data when it is no longer needed.
 
    generic
       type User_Data_Type (<>) is private;
@@ -180,8 +178,7 @@ package Gtk.File_Filter is
          (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
           Needed : Gtk.File_Filter.Gtk_File_Filter_Flags;
           Func   : Gtk_File_Filter_Func;
-          Data   : User_Data_Type;
-          Notify : Glib.G_Destroy_Notify_Address);
+          Data   : User_Data_Type);
       --  Adds rule to a filter that allows files based on a custom callback
       --  function. The bitfield Needed which is passed in provides information
       --  about what sorts of information that the filter function needs; this
@@ -193,7 +190,6 @@ package Gtk.File_Filter is
       --  "func": callback function; if the function returns True, then the
       --  file will be displayed.
       --  "data": data to pass to Func
-      --  "notify": function to call to free Data when it is no longer needed.
 
    end Add_Custom_User_Data;
 

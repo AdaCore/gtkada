@@ -260,7 +260,7 @@ package body Gtk.Action_Group is
       (Action_Group : System.Address;
        Func         : System.Address;
        Data         : System.Address;
-       Notify       : Glib.G_Destroy_Notify_Address);
+       Notify       : System.Address);
    pragma Import (C, C_Gtk_Action_Group_Set_Translate_Func, "gtk_action_group_set_translate_func");
    pragma Obsolescent (C_Gtk_Action_Group_Set_Translate_Func);
    --  Sets a function to be used for translating the Label and Tooltip of
@@ -549,14 +549,13 @@ package body Gtk.Action_Group is
 
    procedure Set_Translate_Func
       (Action_Group : not null access Gtk_Action_Group_Record;
-       Func         : Gtk_Translate_Func;
-       Notify       : Glib.G_Destroy_Notify_Address)
+       Func         : Gtk_Translate_Func)
    is
    begin
       if Func = null then
-         C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), System.Null_Address, System.Null_Address, Notify);
+         C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), Internal_Gtk_Translate_Func'Address, To_Address (Func), Notify);
+         C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), Internal_Gtk_Translate_Func'Address, To_Address (Func), System.Null_Address);
       end if;
    end Set_Translate_Func;
 
@@ -604,16 +603,15 @@ package body Gtk.Action_Group is
       procedure Set_Translate_Func
          (Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
           Func         : Gtk_Translate_Func;
-          Data         : User_Data_Type;
-          Notify       : Glib.G_Destroy_Notify_Address)
+          Data         : User_Data_Type)
       is
          D : System.Address;
       begin
          if Func = null then
-            C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), System.Null_Address, System.Null_Address, Notify);
+            C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Func), Data);
-            C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), Internal_Cb'Address, D, Notify);
+            C_Gtk_Action_Group_Set_Translate_Func (Get_Object (Action_Group), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Translate_Func;
 

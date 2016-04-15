@@ -215,7 +215,7 @@ package body Gdk.Event is
    procedure C_Gdk_Event_Handler_Set
       (Func   : System.Address;
        Data   : System.Address;
-       Notify : Glib.G_Destroy_Notify_Address);
+       Notify : System.Address);
    pragma Import (C, C_Gdk_Event_Handler_Set, "gdk_event_handler_set");
    --  Sets the function to call to handle all events from GDK.
    --  Note that GTK+ uses this to install its own event handler, so it is
@@ -352,15 +352,12 @@ package body Gdk.Event is
    -- Handler_Set --
    -----------------
 
-   procedure Handler_Set
-      (Func   : Gdk_Event_Func;
-       Notify : Glib.G_Destroy_Notify_Address)
-   is
+   procedure Handler_Set (Func : Gdk_Event_Func) is
    begin
       if Func = null then
-         C_Gdk_Event_Handler_Set (System.Null_Address, System.Null_Address, Notify);
+         C_Gdk_Event_Handler_Set (System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_Gdk_Event_Handler_Set (Internal_Gdk_Event_Func'Address, To_Address (Func), Notify);
+         C_Gdk_Event_Handler_Set (Internal_Gdk_Event_Func'Address, To_Address (Func), System.Null_Address);
       end if;
    end Handler_Set;
 
@@ -389,18 +386,14 @@ package body Gdk.Event is
       -- Handler_Set --
       -----------------
 
-      procedure Handler_Set
-         (Func   : Gdk_Event_Func;
-          Data   : User_Data_Type;
-          Notify : Glib.G_Destroy_Notify_Address)
-      is
+      procedure Handler_Set (Func : Gdk_Event_Func; Data : User_Data_Type) is
          D : System.Address;
       begin
          if Func = null then
-            C_Gdk_Event_Handler_Set (System.Null_Address, System.Null_Address, Notify);
+            C_Gdk_Event_Handler_Set (System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Func), Data);
-            C_Gdk_Event_Handler_Set (Internal_Cb'Address, D, Notify);
+            C_Gdk_Event_Handler_Set (Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Handler_Set;
 

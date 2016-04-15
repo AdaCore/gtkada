@@ -557,8 +557,7 @@ package Gtk.Widget is
 
    function Add_Tick_Callback
       (Widget   : not null access Gtk_Widget_Record;
-       Callback : Gtk_Tick_Callback;
-       Notify   : Glib.G_Destroy_Notify_Address) return Guint;
+       Callback : Gtk_Tick_Callback) return Guint;
    --  Queues an animation frame update and adds a callback to be called
    --  before each frame. Until the tick callback is removed, it will be called
    --  frequently (usually at the frame rate of the output device or as quickly
@@ -579,8 +578,6 @@ package Gtk.Widget is
    --  when a Gdk.Frame_Clock.Gdk_Frame_Clock is assigned to a widget.
    --  Since: gtk+ 3.8
    --  "callback": function to call for updating animations
-   --  "notify": function to call to free User_Data when the callback is
-   --  removed.
 
    generic
       type User_Data_Type (<>) is private;
@@ -602,8 +599,7 @@ package Gtk.Widget is
       function Add_Tick_Callback
          (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
           Callback  : Gtk_Tick_Callback;
-          User_Data : User_Data_Type;
-          Notify    : Glib.G_Destroy_Notify_Address) return Guint;
+          User_Data : User_Data_Type) return Guint;
       --  Queues an animation frame update and adds a callback to be called
       --  before each frame. Until the tick callback is removed, it will be
       --  called frequently (usually at the frame rate of the output device or
@@ -626,8 +622,6 @@ package Gtk.Widget is
       --  Since: gtk+ 3.8
       --  "callback": function to call for updating animations
       --  "user_data": data to pass to Callback
-      --  "notify": function to call to free User_Data when the callback is
-      --  removed.
 
    end Add_Tick_Callback_User_Data;
 

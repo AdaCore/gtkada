@@ -986,17 +986,13 @@ package Gdk.Event is
    pragma Import (C, Get_Keycode, "ada_gdk_event_get_keycode");
    --  Hardware key code of the key that was pressed
 
-   procedure Handler_Set
-      (Func   : Gdk_Event_Func;
-       Notify : Glib.G_Destroy_Notify_Address);
+   procedure Handler_Set (Func : Gdk_Event_Func);
    --  Sets the function to call to handle all events from GDK.
    --  Note that GTK+ uses this to install its own event handler, so it is
    --  usually not useful for GTK+ applications. (Although an application can
    --  call this function then call Gtk.Main.Main_Do_Event to pass events to
    --  GTK+.)
    --  "func": the function to call to handle events from GDK.
-   --  "notify": the function to call when the handler function is removed,
-   --  i.e. when Gdk.Event.Handler_Set is called with another event handler.
 
    generic
       type User_Data_Type (<>) is private;
@@ -1010,10 +1006,7 @@ package Gdk.Event is
       --  "data": user data set when the event handler was installed with
       --  Gdk.Event.Handler_Set.
 
-      procedure Handler_Set
-         (Func   : Gdk_Event_Func;
-          Data   : User_Data_Type;
-          Notify : Glib.G_Destroy_Notify_Address);
+      procedure Handler_Set (Func : Gdk_Event_Func; Data : User_Data_Type);
       --  Sets the function to call to handle all events from GDK.
       --  Note that GTK+ uses this to install its own event handler, so it is
       --  usually not useful for GTK+ applications. (Although an application
@@ -1021,8 +1014,6 @@ package Gdk.Event is
       --  events to GTK+.)
       --  "func": the function to call to handle events from GDK.
       --  "data": user data to pass to the function.
-      --  "notify": the function to call when the handler function is removed,
-      --  i.e. when Gdk.Event.Handler_Set is called with another event handler.
 
    end Handler_Set_User_Data;
 
