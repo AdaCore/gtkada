@@ -112,9 +112,10 @@ The list of libraries needed is :file:`<gtkada-prefix>/lib/lib*.so.?` or
 LD_LIBRARY_PATH.
 
 You may also need the :file:`libgtkada-xxx.so` file. This dependency is
-optional since gtkada supports both static and dynamic linking, so by e.g.
-using `gtkada-config --static` or by using :file:`gtkada_static.gpr`, you will
-end up linking with :file:`libgtkada.a`.
+optional since gtkada supports both static and dynamic linking, depending
+on how your project sets up the library type in :file:`gtkada.gpr`. You
+might chose to link with the static library :file:`libgtkada.a` for
+convenience.
 
 Under Windows, you need to distribute the following files and directories
 along with your application, and respect the original directory set up:
@@ -189,11 +190,6 @@ How to compile an application with GtkAda
 
 This section explains how you can compile your own applications.
 
-There are several ways to use GtkAda in your applications
-
-Using project files
--------------------
-
 A set of project files is installed along with GtkAda. If you have installed
 GtkAda in the same location as GNAT itself, nothing else needs to be done.
 
@@ -231,63 +227,6 @@ environment variable::
 
 before launching the compiler or linker, which will force it to use the
 static library instead.
-
-Using the command line
-----------------------
-
-The procedure is system-dependent, and thus is divided into two
-subsections.
-
-Unix systems
-^^^^^^^^^^^^
-
-On Unix systems, a script called `gtkada-config` is automatically
-created when you build GtkAda. This script is copied in a subdirectory
-:file:`bin/` in the installation directory.
-
-The easiest and recommended way to build a GtkAda application is to
-use the `gnatmake` program distributed with GNAT, that takes care of
-all the dependencies for you. Use the `gtkada-config` to specify
-where GtkAda and gtk+ libraries have been installed::
-
-  > gnatmake <main-file> `gtkada-config`
-  
-Note the use of back-ticks around gtkada-config, which force the shell to
-evaluate the script and put the output on the command line.
-
-However, on complex systems, gnatmake might not be enough. Users frequently
-like to create `Makefile`s. The script `gtkada-config` remains
-useful in that case, since you can call it from your Makefile (same
-syntax as above with the back-ticks) to create variables like FLAGS and
-LIBS. See the switches of `gtkada-config` below for more information.
-
-The script `gtkada-config` understands the following command line
-switches (chosen to be compatible with the ones set by `gtk-config`):
-
-* `--cflags`: Output only the compiler flags, i.e the  include
-  directories where the GtkAda spec files are found. This should be used
-  if you only want to compile your files, but do not want to bind or link
-  them.
-* `--libs`: Output only the switches for the linker. This lists
-  the directories where all the GtkAda, gtk+, and dependant libraries are
-  found. For instance, if GtkAda was compiled with support for OpenGL,
-  the OpenGL libraries will automatically be present.
-* `--static`: Forces linking with the static gtkada library. This
-  option will still use the dynamic gtk+ libraries.
-
-Windows systems
-^^^^^^^^^^^^^^^
-
-Things are somewhat easier on Windows systems. You don't have access to the
-`gtkada-config` script. On the other hand you also don't
-have to specify which libraries to use or where to find them.
-
-The only thing you should specify on the `gnatmake` command line is
-where the GtkAda spec files are found, as in::
-
-  > gnatmake <main-file> -Ic:\\gtkada\\include\\gtkada
-  
-if GtkAda was installed under :file:`c:\\gtkada`.
 
 Architecture of the toolkit
 ===========================

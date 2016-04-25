@@ -6,10 +6,9 @@ How to report bugs
 
 GtkAda is a mature, stable toolkit that is heavily and widely used on a variety
 of platforms.  We test GtkAda using an Ada version of the :file:`testgtk.c`
-file found in the gtk+ distribution, as well as by generating a significant
-number of interfaces using the GUI builder and Gate.  For code examples that
-demonstrate the use of this toolkit, look within the :file:`testgtk/`
-directory.
+file found in the gtk+ distribution.
+For code examples that demonstrate the use of this toolkit, look within the
+:file:`testgtk/` directory.
 
 There are two kinds of problems you can encounter:
 
@@ -21,7 +20,7 @@ There are two kinds of problems you can encounter:
   Then run your program as usual, using the `run` command. Then send us the
   result of the `where` command. Here is a summary::
 
-    $ gnatmake -f -g <your_program_name> `gtkada-config`
+    $ gprbuild -Pyour_project.gpr -g
     $ gdb <your_program_name>
     (gdb) break main
     (gdb) run
@@ -44,6 +43,6 @@ problem, in a  format usable  by `gnatchop`  (basically, insert all  the
 required sources at  the end of  the mail). Please  try to provide as small as
 possible a  subset of your sources.
 
-Of course, we will  welcome any patch   you can provide, so  that this toolkit
+Of course, we will  welcome any patch you can provide, so  that this toolkit
 may be as useful as possible.
 
