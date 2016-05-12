@@ -1024,9 +1024,9 @@ package body Gtkada.Canvas_View is
       end if;
 
       Self.Model := Canvas_Model (Model);
-      Ref (Self.Model);
 
       if Self.Model /= null then
+         Ref (Self.Model);
          Self.Id_Layout_Changed := Model.On_Layout_Changed
             (On_Layout_Changed_For_View'Access, Self);
          Self.Id_Selection_Changed := Model.On_Selection_Changed
