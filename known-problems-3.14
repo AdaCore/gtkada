@@ -17,6 +17,17 @@ in this document.
 Known problems fixed in GtkAda 17.0
 -----------------------------------
 
+KP-314-P411-032 Unable to launch glade
+
+  Problem:    The glade executable does not launch, with messages of the form
+              Unable to load image (Failed to open file
+               '<some_path>/install/share/glade/pixmaps/plus.png':
+                No such file or directory)
+
+  Status:     This was fixed in GtkAda 17.0
+
+  Workaround: Create a symlink from your GtkAda install to <some_path>.
+
 KP-314-OC10-015 Memory leaks in *_foreach
 
   Problem:    In some cases, gtk+ functions accept some user data, but do not
