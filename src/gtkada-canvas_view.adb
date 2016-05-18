@@ -4222,6 +4222,16 @@ package body Gtkada.Canvas_View is
       Self.Text := new String'(Text);
    end Set_Text;
 
+   --------------
+   -- Get_Text --
+   --------------
+
+   function Get_Text
+     (Self : not null access Text_Item_Record) return String is
+   begin
+      return Self.Text.all;
+   end Get_Text;
+
    ------------------
    -- Compute_Text --
    ------------------
@@ -4931,6 +4941,36 @@ package body Gtkada.Canvas_View is
    begin
       return Self.Selection_Style;
    end Get_Selection_Style;
+
+   ---------------
+   -- Get_Label --
+   ---------------
+
+   function Get_Label
+     (Self : not null access Canvas_Link_Record) return Container_Item is
+   begin
+      return Self.Label;
+   end Get_Label;
+
+   --------------------
+   -- Get_Label_From --
+   --------------------
+
+   function Get_Label_From
+     (Self : not null access Canvas_Link_Record) return Container_Item is
+   begin
+      return Self.Label_From;
+   end Get_Label_From;
+
+   ------------------
+   -- Get_Label_To --
+   ------------------
+
+   function Get_Label_To
+     (Self : not null access Canvas_Link_Record) return Container_Item is
+   begin
+      return Self.Label_To;
+   end Get_Label_To;
 
    --------------
    -- Get_From --

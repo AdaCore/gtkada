@@ -1763,6 +1763,8 @@ package Gtkada.Canvas_View is
    procedure Set_Text
      (Self : not null access Text_Item_Record;
       Text : String);
+   function Get_Text
+     (Self : not null access Text_Item_Record) return String;
    --  Change the text displayed in the item.
    --  This does not force a refresh of the item, and it is likely that you
    --  will need to call the Model's Refresh_Layout method to properly
@@ -1889,6 +1891,14 @@ package Gtkada.Canvas_View is
    function Get_To
      (Self : not null access Canvas_Link_Record) return Abstract_Item;
    --  Return both ends of the link
+
+   function Get_Label
+     (Self : not null access Canvas_Link_Record) return Container_Item;
+   function Get_Label_From
+     (Self : not null access Canvas_Link_Record) return Container_Item;
+   function Get_Label_To
+     (Self : not null access Canvas_Link_Record) return Container_Item;
+   --  Retrieve the various label items
 
    procedure Set_Offset
      (Self    : not null access Canvas_Link_Record;
