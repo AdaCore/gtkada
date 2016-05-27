@@ -1945,7 +1945,7 @@ package Gtkada.Canvas_View is
      (Self     : not null access Canvas_Link_Record;
       At_Point : Model_Point;
       Context  : Draw_Context)
-      return Abstract_Item is (null);
+      return Abstract_Item is (Self);
    overriding function Parent
      (Self : not null access Canvas_Link_Record)
       return Abstract_Item is (null);
