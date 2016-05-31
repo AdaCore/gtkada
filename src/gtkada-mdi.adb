@@ -4494,6 +4494,30 @@ package body Gtkada.MDI is
         (Self, Tab_Get_Preferred_Height'Access);
    end Tab_Class_Init;
 
+   -----------------
+   -- Get_Tooltip --
+   -----------------
+
+   function Get_Tooltip
+     (Child : not null access MDI_Child_Record) return String
+   is
+      pragma Unreferenced (Child);
+   begin
+      return "";
+   end Get_Tooltip;
+
+   ---------------------------
+   -- Get_Tooltip_Is_Markup --
+   ---------------------------
+
+   function Get_Tooltip_Is_Markup
+     (Child : not null access MDI_Child_Record) return Boolean
+   is
+      pragma Unreferenced (Child);
+   begin
+      return False;
+   end Get_Tooltip_Is_Markup;
+
    ----------------------
    -- Update_Tab_Label --
    ----------------------
@@ -4543,7 +4567,19 @@ package body Gtkada.MDI is
       begin
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
          Box.Pack_Start (Child.Tab_Label, Expand => True, Fill => True);
-         Child.Tab_Label.Set_Tooltip_Text (Child.Title.all);
+
+         declare
+            Tooltip : constant String := Child.Get_Tooltip;
+         begin
+            if Tooltip = "" then
+               Child.Tab_Label.Set_Tooltip_Text (Child.Title.all);
+            elsif Child.Get_Tooltip_Is_Markup then
+               Child.Tab_Label.Set_Tooltip_Markup (Tooltip);
+            else
+               Child.Tab_Label.Set_Tooltip_Text (Tooltip);
+            end if;
+         end;
+
          if Child.MDI.Homogeneous_Tabs then
             Child.Tab_Label.Set_Ellipsize (Pango.Layout.Ellipsize_Middle);
          end if;

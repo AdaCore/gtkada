@@ -389,6 +389,20 @@ package Gtkada.MDI is
      (Child : not null access MDI_Child_Record'Class) return Allowed_Areas;
    --  What areas the child can be put int
 
+   function Get_Tooltip
+     (Child : not null access MDI_Child_Record)
+     return String;
+   --  Return the text to use in tooltips for the notebook tabs.
+   --  The default (or if this function returns the empty string) the title
+   --  of the child (Get_Title above).
+
+   function Get_Tooltip_Is_Markup
+     (Child : not null access MDI_Child_Record)
+     return Boolean;
+   --  Should return True if Get_Tooltip returns a string with special
+   --  markup like "<b>" for bold text. When this is True, special
+   --  characters like "<" and ">" must be quoted with backslashes.
+
    procedure Set_Icon
      (Child : access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf);
