@@ -13,7 +13,18 @@ of the feature.
 New features in GtkAda 17
 -------------------------
 
-NF-17-J810-010 Improving handling of User_Data
+NF-17-P315-053 Make notebook tabs orientation configurable (2016-03-18)
+
+   New parameter in Gtkada.MDI.Configure allows controlling the orientation of
+   the notebook tabs. Varians are Automatic, Horizontal, Bottom_To_Top and
+   Top_To_Bottom.
+
+NF-17-OC21-020 Additions to Float_Child and Put in Gtkada.MDI (2016-03-08)
+
+   New parameters allow controlling the position of the child as it is
+   being put in the MDI or when it is being floated.
+
+NF-17-J810-010 Improving handling of User_Data (2016-04-15)
 
    The following generic packages were modified:
      Gdk.Event.Handler_Set_User_Data
@@ -23,14 +34,3 @@ NF-17-J810-010 Improving handling of User_Data
 
    The Notify parameter was removed from the public API. Instead,
    GtkAda will call the Destroy procedure to release User_Data.
-
-NF-17-OC21-020 additions to Gtkada.MDI.Float_Child and Gtkada.MDI.Put
-
-   New parameters allow controlling the position of the child as it is
-   being put in the MDI or when it is being floated.
-
-NF-17-P315-053 Make notebook tabs orientation configurable
-
-   New parameter in Gtkada.MDI.Configure allows controlling the orientation of
-   the notebook tabs. Varians are Automatic, Horizontal, Bottom_To_Top and
-   Top_To_Bottom.
