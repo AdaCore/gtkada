@@ -861,7 +861,6 @@ package body Gtkada.MDI is
       pragma Unreferenced (Event);
       M   : constant MDI_Window := MDI_Window (MDI);
       Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (M));
-      Focus_Child : constant MDI_Child := M.Get_Focus_Child;
    begin
       --  This doesn't work, because the current MDI child remains valid,
       --  but will no longer have the focus when the main window gains the
@@ -885,15 +884,6 @@ package body Gtkada.MDI is
 
       if False then
          Child_Selected (M, null);
-      end if;
-
-      --  When we are focusing out of the toplevel, we need to remember
-      --  which child had the focus, so we can give the focus back to this
-      --  child as soon as the main window gets the focus back.
-      if Focus_Child /= null
-        and then Focus_Child.Get_Widget.Get_Toplevel = Gtk_Widget (Win)
-      then
-         M.Focus_Child_In_Main_Window := Focus_Child;
       end if;
 
       return False;
@@ -969,14 +959,31 @@ package body Gtkada.MDI is
          if M.Focus_Child = null then
             Win.Set_Focus (null);
          elsif M.Focus_Child.State = Floating then
-            if M.Focus_Child_In_Main_Window /= null then
-               --  Give the focus back to the widget that last had the focus
-               --  in the main window.
-               Give_Focus_To_Child (M.Focus_Child_In_Main_Window);
-               M.Set_Focus_Child (M.Focus_Child_In_Main_Window);
-            else
-               Win.Set_Focus (null);
-            end if;
+            --  Give the focus back to the widget that last had the focus
+            --  in the main window.
+            declare
+               List : Widget_List.Glist;
+               C    : MDI_Child;
+               W    : constant Gtk_Widget := Gtk_Widget (Win);
+               To_Focus : MDI_Child := null;
+            begin
+               List := First (M.Items);
+               while List /= Null_List loop
+                  C := MDI_Child (Get_Data (List));
+                  if C.Initial.Get_Toplevel = W then
+                     To_Focus := C;
+                     exit;
+                  end if;
+                  List := Widget_List.Next (List);
+               end loop;
+
+               if To_Focus /= null then
+                  Give_Focus_To_Child (To_Focus);
+                  M.Set_Focus_Child (To_Focus);
+               else
+                  Win.Set_Focus (null);
+               end if;
+            end;
          else
             --  Make sure the keyboard focus is correctly restored, for
             --  instance if we had open a temporary dialog and then closed it
@@ -1861,10 +1868,6 @@ package body Gtkada.MDI is
       --  widget tree, otherwise GPS can use it to recompute selection context.
       if C = MDI.Focus_Child then
          MDI.Focus_Child := null;
-      end if;
-
-      if C = MDI.Focus_Child_In_Main_Window then
-         MDI.Focus_Child_In_Main_Window := null;
       end if;
 
       C.Tab_Label := null;

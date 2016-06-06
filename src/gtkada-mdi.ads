@@ -1219,11 +1219,6 @@ private
       Focus_Freeze : Natural := 0;
       --  We should not emit any focus change if this is > 0.
 
-      Focus_Child_In_Main_Window : MDI_Child := null;
-      --  The child, if any, known to have the focus in the main window. This
-      --  is used to remember which child to give the focus to when the focus
-      --  comes back to the main window.
-
       Dnd_Message : String_Access;
       --  The message displayed during a dnd operation (see Set_Dnd_Message)
 
