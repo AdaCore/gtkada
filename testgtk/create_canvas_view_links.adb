@@ -276,13 +276,16 @@ package body Create_Canvas_View_Links is
 
       procedure Label_Example
         (X, Y : Model_Coordinate; Style : Drawing_Style;
+         Hide     : Boolean := False;
          Directed : Text_Arrow_Direction := No_Text_Arrow);
       procedure Label_Example
         (X, Y : Model_Coordinate; Style : Drawing_Style;
+         Hide     : Boolean := False;
          Directed : Text_Arrow_Direction := No_Text_Arrow)
       is
          It1, It2 : Rect_Item;
          L        : Canvas_Link;
+         Label, Label_From, Label_To : Text_Item;
       begin
          It1 := Gtk_New_Rect (Black, 20.0, 20.0);
          It1.Set_Position ((X, Y));
@@ -292,10 +295,18 @@ package body Create_Canvas_View_Links is
          It2.Set_Position ((X + 200.0, Y + 50.0));
          Model.Add (It2);
 
+         Label      := Gtk_New_Text (Style, "label", Directed);
+         Label_From := Gtk_New_Text (Style, "labelFrom");
+         Label_To   := Gtk_New_Text (Style, "labelTo");
+         if Hide then
+            Label.Hide;
+            Label_From.Hide;
+            Label_To.Hide;
+         end if;
          L := Gtk_New (It1, It2, Black, Straight,
-                       Label      => Gtk_New_Text (Style, "label", Directed),
-                       Label_From => Gtk_New_Text (Style, "labelFrom"),
-                       Label_To   => Gtk_New_Text (Style, "labelTo"));
+                       Label      => Label,
+                       Label_From => Label_From,
+                       Label_To   => Label_To);
          Model.Add (L);
       end Label_Example;
 
@@ -342,6 +353,7 @@ package body Create_Canvas_View_Links is
       end Distance_Example;
 
       Text : Text_Item;
+      Y : Gdouble;
    begin
       Gtk_New (Model);
 
@@ -449,22 +461,28 @@ package body Create_Canvas_View_Links is
          Waypoints          => ((80.0, 30.0), (0.0, 20.0)),
          Relative_Waypoints => True);
 
+      ---------------------
+      -- Labels on links --
+      ---------------------
+
+      Y := 680.0;
+
       Text := Gtk_New_Text (Font, "Labels on links");
-      Text.Set_Position ((0.0, 680.0));
+      Text.Set_Position ((0.0, Y));
       Model.Add (Text);
 
-      Label_Example (0.0, 700.0, Gtk_New
+      Label_Example (0.0, Y + 20.0, Gtk_New
                      (Font => (Name   => From_String ("sans 7"),
                                Color  => Black_RGBA,
                                others => <>),
                       Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.2))));
-      Label_Example (300.0, 700.0, Gtk_New
+      Label_Example (300.0, Y + 20.0, Gtk_New
                      (Stroke => Null_RGBA,
                       Fill => Create_Rgba_Pattern ((1.0, 1.0, 1.0, 0.7)),
                       Font   => (Name   => From_String ("sans 8"),
                                  Color  => (1.0, 0.0, 0.0, 1.0),
                                  others => <>)));
-      Label_Example (0.0, 800.0, Gtk_New
+      Label_Example (0.0, Y + 120.0, Gtk_New
                      (Stroke => Null_RGBA,
                       Fill => Create_Rgba_Pattern ((1.0, 1.0, 1.0, 0.7)),
                       Font   => (Name   => From_String ("sans 8"),
@@ -472,13 +490,51 @@ package body Create_Canvas_View_Links is
                                  others => <>)),
                      Directed => Left_Text_Arrow);
 
-      Text := Gtk_New_Text (Font, "Links can stop a distance from the items");
-      Text.Set_Position ((0.0, 880.0));
+      -------------------
+      -- Hidden labels --
+      -------------------
+
+      Y := Y + 200.0;
+
+      Text := Gtk_New_Text (Font, "Hidden labels on links");
+      Text.Set_Position ((0.0, Y));
       Model.Add (Text);
 
-      Distance_Example (0.0, 900.0, Distance => 0.0);
-      Distance_Example (190.0, 900.0, Distance => 10.0);
-      Distance_Example (380.0, 900.0, Distance => 30.0);
+      Label_Example (0.0, Y + 20.0, Gtk_New
+                     (Font => (Name   => From_String ("sans 7"),
+                               Color  => Black_RGBA,
+                               others => <>),
+                      Fill => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.2))),
+                     Hide => True);
+      Label_Example (300.0, Y + 20.0, Gtk_New
+                     (Stroke => Null_RGBA,
+                      Fill => Create_Rgba_Pattern ((1.0, 1.0, 1.0, 0.7)),
+                      Font   => (Name   => From_String ("sans 8"),
+                                 Color  => (1.0, 0.0, 0.0, 1.0),
+                                 others => <>)),
+                     Hide => True);
+      Label_Example (0.0, Y + 120.0, Gtk_New
+                     (Stroke => Null_RGBA,
+                      Fill => Create_Rgba_Pattern ((1.0, 1.0, 1.0, 0.7)),
+                      Font   => (Name   => From_String ("sans 8"),
+                                 Color  => (1.0, 0.0, 0.0, 1.0),
+                                 others => <>)),
+                     Hide     => True,
+                     Directed => Left_Text_Arrow);
+
+      -------------------------------------
+      -- Distance between link and label --
+      -------------------------------------
+
+      Y := Y + 200.0;
+
+      Text := Gtk_New_Text (Font, "Links can stop a distance from the items");
+      Text.Set_Position ((0.0, Y));
+      Model.Add (Text);
+
+      Distance_Example (0.0,   Y + 20.0, Distance => 0.0);
+      Distance_Example (190.0, Y + 20.0, Distance => 10.0);
+      Distance_Example (380.0, Y + 20.0, Distance => 30.0);
 
       --  Create the view once the model is populated, to avoid a refresh
       --  every time a new item is added.
