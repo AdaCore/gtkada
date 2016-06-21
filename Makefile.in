@@ -26,7 +26,10 @@ PROCESSORS   = 0
 # Location (under $prefix) where the project files should be copied
 PRJDIR=lib/gnat
 
-GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p
+# This variable can be overridden with "-d" to get progress output
+GPRBUILD_SWITCHES=
+
+GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p ${GPRBUILD_SWITCHES}
 GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=$(PRJDIR) \
 	--build-var=LIBRARY_TYPE --install-name=gtkada --prefix=${DESTDIR}$(prefix) \
 	-XGTK_PREFIX=${prefix}
