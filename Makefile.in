@@ -8,7 +8,9 @@ SHELL=/bin/sh
 doc_dir = docs
 PYTHON  = python
 
+# This variable can be overridden with "-d" to get progress output
 GPRBUILD_OPTIONS=
+
 GPRINSTALL_OPTIONS=
 
 TARGET=@TARGET@
@@ -25,9 +27,6 @@ PROCESSORS   = 0
 
 # Location (under $prefix) where the project files should be copied
 PRJDIR=lib/gnat
-
-# This variable can be overridden with "-d" to get progress output
-GPRBUILD_SWITCHES=
 
 GPRBUILD_FULL = ${GPRBUILD} -j${PROCESSORS} -m -p ${GPRBUILD_SWITCHES}
 GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=$(PRJDIR) \
