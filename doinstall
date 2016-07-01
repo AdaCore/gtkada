@@ -125,7 +125,7 @@ install_binaries() {
   if [ "$?" != "0" ]; then
      echo ""
      echo "An error occurred. Please see install.log."""
-     exit
+     exit 1
   fi
 }
 
