@@ -130,7 +130,7 @@ package Gtk.Dnd is
    procedure Dest_Set
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags   : Dest_Defaults := Dest_No_Default;
-      Targets : Target_Entry_Array := Any_Target_Entry;
+      Targets : Target_Entry_Array := No_Target_Entry;
       Actions : Drag_Action := Action_Any);
    --  Set a widget as a potential drop destination.
    --
@@ -219,7 +219,7 @@ package Gtk.Dnd is
    procedure Source_Set
      (Widget            : access Gtk.Widget.Gtk_Widget_Record'Class;
       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-      Targets           : Target_Entry_Array;
+      Targets           : Target_Entry_Array := No_Target_Entry;
       Actions           : Drag_Action);
    --  Set up a widget so that GtkAda will start a drag operation when the
    --  user clicks and drags on the widget. The widget must have a window.

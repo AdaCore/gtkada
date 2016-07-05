@@ -305,7 +305,7 @@ package body Gtk.Dnd is
    procedure Dest_Set
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags   : Dest_Defaults := Dest_No_Default;
-      Targets : Target_Entry_Array := Any_Target_Entry;
+      Targets : Target_Entry_Array := No_Target_Entry;
       Actions : Drag_Action := Action_Any)
    is
       procedure Internal
@@ -370,7 +370,7 @@ package body Gtk.Dnd is
    procedure Source_Set
      (Widget            : access Gtk.Widget.Gtk_Widget_Record'Class;
       Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
-      Targets           : Target_Entry_Array;
+      Targets           : Target_Entry_Array := No_Target_Entry;
       Actions           : Drag_Action)
    is
       procedure Internal
@@ -382,10 +382,15 @@ package body Gtk.Dnd is
       pragma Import (C, Internal, "gtk_drag_source_set");
 
    begin
-      Internal (Get_Object (Widget), Start_Button_Mask,
-                Targets (Targets'First)'Address,
-                Targets'Length,
-                Actions);
+      if Targets'Length = 0 then
+         Internal (Get_Object (Widget), Start_Button_Mask,
+                   System.Null_Address, 0, Actions);
+      else
+         Internal (Get_Object (Widget), Start_Button_Mask,
+                   Targets (Targets'First)'Address,
+                   Targets'Length,
+                   Actions);
+      end if;
    end Source_Set;
 
    ------------------

@@ -134,8 +134,14 @@ package Gtk.Target_List is
 
    type Target_Entry_Array is array (Natural range <>) of Gtk_Target_Entry;
 
-   Any_Target_Entry : Target_Entry_Array (1 .. 0);
-   --  To be used for drop sites that accept any kind of data.
+   No_Target_Entry : Target_Entry_Array (1 .. 0);
+   --  To be used for drop sites that accept no data.
+   --  You will in general need to call Gtk.Dnd.Add_Text_Targets or some such
+
+   Any_Target_Entry : constant Target_Entry_Array := No_Target_Entry;
+   pragma Obsolescent (Any_Target_Entry);
+   --  Old name for this constant, which leads to confusion. You should use
+   --  No_Target_Entry instead.
 
    procedure Gtk_New
      (List   : out Gtk_Target_List;
