@@ -27,6 +27,10 @@ with Cairo;            use Cairo;
 with Glib;             use Glib;
 with Gdk;              use Gdk;
 with Gdk.Cursor;       use Gdk.Cursor;
+
+with Gdk.Device_Manager; use Gdk.Device_Manager;
+with Gdk.Display;
+
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
@@ -110,11 +114,24 @@ package body Create_Cursors is
       C      : Gint := Get_Value_As_Int (Spinner);
       Window : constant Gdk_Window := Get_Window (Widget);
       Cursor : Gdk_Cursor := null;
+
+      Device_Manager : constant Gdk_Device_Manager :=
+        Get_Device_Manager (Gdk.Display.Get_Default);
+
    begin
       C := C mod 154;
       Gdk_New (Cursor, To_Cursor (C));
-      Set_Cursor (Window, Cursor);
       Set_Text (Spinner.Label, Gdk_Cursor_Type'Image (To_Cursor (C)));
+
+      Set_Device_Cursor (Self   => Window,
+                         Device => Device_Manager.Get_Client_Pointer,
+                         Cursor => Cursor);
+
+      --  The cursor change is asynchronous: if you plan to do a blocking
+      --  operation right after setting this, it is useful to call
+      --  Process_All_Updates in order for impacted windows to have the new
+      --  cursor.
+      Process_All_Updates;
 
       --  Note: the cursor pixmap is copied to the server, which keeps it as
       --  long at it needs. On the client side, it is possible to delete the
