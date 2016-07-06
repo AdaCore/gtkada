@@ -51,6 +51,34 @@ package body Gtk.Gesture is
       return Gdk.Event.Gdk_Event_Sequence(Glib.C_Proxy'(Glib.To_Proxy (R)));
    end Convert;
 
+   procedure Set_State
+     (Self : not null access Gtk_Gesture_Record'Class;
+      State : Gtk.Enums.Gtk_Event_Sequence_State := Event_Sequence_Denied)
+   is
+      Dummy : Boolean;
+   begin
+      Dummy := Set_State (Self, State);
+   end Set_State;
+
+   procedure On_Widget_Destroyed (Gesture, Object : System.Address);
+   pragma Convention (C, On_Widget_Destroyed);
+   procedure On_Widget_Destroyed (Gesture, Object : System.Address) is
+      pragma Unreferenced (Object);
+      procedure Internal (Object : System.Address);
+      pragma Import (C, Internal, "g_object_unref");
+   begin
+      Internal (Gesture);
+   end On_Widget_Destroyed;
+
+   procedure Watch
+     (Self   : not null access Gtk_Gesture_Record'Class;
+      Object : not null access GObject_Record'Class)
+   is
+   begin
+      Weak_Ref (Object, Notify => On_Widget_Destroyed'Access,
+         Data => Get_Object (Self));
+   end Watch;
+
    package Type_Conversion_Gtk_Gesture is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Gesture_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Gesture);

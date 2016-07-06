@@ -107,6 +107,34 @@
 --  Gdk.Event.Gdk_Event_Sequence.
 --
 --  </description>
+--  <description>
+--  GtkAda
+--
+--  Gesture events are meant to replace low-level handling in most cases. For
+--  instance, you should move away from direct use of "button_press" event, and
+--  instead use a Gtk.Gesture.Multi_Press gesture. They give you more control
+--  (on the area for which a double click is valid for instance), work with
+--  touchpad in addition to mouse events, and you can have multiple gestures
+--  associated with the same widget, and that won't compete with each other.
+--
+--  For instance, having drag-and-drop on a widget which also manipulates
+--  low-level "button_press" events is hard to get rid, since the latter
+--  callback will often consume the events needed by gtk+ to detect that a drag
+--  operation is about to take place.
+--
+--  Gestures are objects in their full rights, and therefore needs to be
+--  Unref-ed to free memory. GtkAda provides a convenient function for this, so
+--  that the typical workflow is:
+--
+--  Gesture : Gtk_Gesture_Multi_Press;
+--
+--  Gtk_New (Gesture, Widget); Gesture.Watch (Widget); -- Destroy Gesture when
+--  Widget is destroyed Gesture.On_Pressed (On_Pressed'Access, Slot => Widget);
+--
+--  Without the call to Watch, Gesture would be kept in memory for ever, ready
+--  to be attached to some other widget.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -324,6 +352,29 @@ package Gtk.Gesture is
    procedure Ungroup (Self : not null access Gtk_Gesture_Record);
    --  Separates Gesture into an isolated group.
    --  Since: gtk+ 3.14
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   procedure Set_State
+     (Self : not null access Gtk_Gesture_Record'Class;
+      State : Gtk.Enums.Gtk_Event_Sequence_State := Event_Sequence_Denied);
+   pragma Inline (Set_State);
+   --  Same as the function Set_State, but ignore the return value.
+   --  This is in general call in a gesture callback to stop monitoring the
+   --  current sequence of events. For instance, when you have a multipress
+   --  gesture, you could call Set_State when the number of clicks is greater
+   --  than 2 and you will never be interested in triple clicks or more.
+
+   procedure Watch
+     (Self   : not null access Gtk_Gesture_Record'Class;
+      Object : not null access GObject_Record'Class);
+   --  Automatically unref Self when Widget is destroyed.
+   --  This is a convenience function, since attaching a gesture to a widget
+   --  does not automatically free the gesture when the widget is destroyed
+   --  (presumably so that you can reuse the gesture and its settings for
+   --  another widget).
 
    ----------------
    -- Properties --
