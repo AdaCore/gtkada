@@ -85,7 +85,7 @@ package body Gtk.Tree_Drag_Source is
       (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
        Tree_Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
        Path           : out Gtk.Tree_Model.Gtk_Tree_Path;
-       succes         : out Boolean)
+       Success        : out Boolean)
    is
       function Internal
          (Selection_Data : System.Address;
@@ -101,7 +101,7 @@ package body Gtk.Tree_Drag_Source is
       Acc_Path := From_Object (Tmp_Acc_Path);
       Tree_Model := Acc_Tree_Model;
       Path := Acc_Path;
-      succes := Tmp_Return /= 0;
+      Success := Tmp_Return /= 0;
    end Get_Row_Drag_Data;
 
    -----------------------

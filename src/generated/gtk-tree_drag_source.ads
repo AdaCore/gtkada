@@ -95,7 +95,7 @@ package Gtk.Tree_Drag_Source is
       (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
        Tree_Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
        Path           : out Gtk.Tree_Model.Gtk_Tree_Path;
-       succes         : out Boolean);
+       Success        : out Boolean);
    --  Obtains a Tree_Model and Path from selection data of target type
    --  GTK_TREE_MODEL_ROW. Normally called from a drag_data_received handler.
    --  This function can only be used if Selection_Data originates from the

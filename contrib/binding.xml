@@ -6484,7 +6484,7 @@ direction, widget state, or icon size.
 
    <package id="GtkTreeDragSource">
      <function id="gtk_tree_set_row_drag_data" ada="Set_Row_Drag_Data"/>
-     <function id="gtk_tree_get_row_drag_data" ada="Get_Row_Drag_Data" return_as_param="succes"/>
+     <function id="gtk_tree_get_row_drag_data" ada="Get_Row_Drag_Data" return_as_param="Success"/>
    </package>
 
    <package id="GtkTreeModel">
