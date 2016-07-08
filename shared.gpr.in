@@ -36,7 +36,7 @@ project Shared is
 
    for Source_Files use ();
 
-   type Library_Kinds is ("relocatable", "static");
+   type Library_Kinds is ("relocatable", "static", "static-pic");
    Library_Kind : Library_Kinds := external ("LIBRARY_TYPE", "@DEFAULT_LIBRARY_TYPE@");
 
    So_Ext      := "@SO_EXT@";

@@ -52,7 +52,7 @@ all:
 
 ifeq (${BUILD_STATIC}, yes)
 all tools tests: static
-install: install/static
+install: install/static install/static-pic
 endif
 
 ifeq (${BUILD_SHARED},yes)
@@ -66,7 +66,7 @@ LIBRARY_TYPE_FOR_TOOLS=static
 endif
 
 all: tools tests
-static: build_library_type/static
+static: build_library_type/static build_library_type/static-pic
 relocatable: build_library_type/relocatable
 
 tools:
@@ -155,7 +155,7 @@ clean/%: force
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Ptestgtk/testgtk.gpr
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
 
-clean: clean-generic clean/static clean/relocatable
+clean: clean-generic clean/static clean/static-pic clean/relocatable
 
 distclean: clean mostlyclean-generic
 	-${RM} config.cache config.log config.status
