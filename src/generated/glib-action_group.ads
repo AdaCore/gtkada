@@ -616,58 +616,72 @@ package Glib.Action_Group is
    --  "state": the current state, or null if stateless
 
    subtype Action_Group_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Action_Added
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Action_Added);
    pragma Import (C, Set_Action_Added, "gtkada_Action_Group_set_action_added");
+
    procedure Set_Action_Enabled_Changed
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Action_Enabled_Changed);
    pragma Import (C, Set_Action_Enabled_Changed, "gtkada_Action_Group_set_action_enabled_changed");
+
    procedure Set_Action_Removed
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Action_Removed);
    pragma Import (C, Set_Action_Removed, "gtkada_Action_Group_set_action_removed");
+
    procedure Set_Action_State_Changed
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Action_State_Changed);
    pragma Import (C, Set_Action_State_Changed, "gtkada_Action_Group_set_action_state_changed");
+
    procedure Set_Activate_Action
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Activate_Action);
    pragma Import (C, Set_Activate_Action, "gtkada_Action_Group_set_activate_action");
+
    procedure Set_Change_Action_State
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Change_Action_State);
    pragma Import (C, Set_Change_Action_State, "gtkada_Action_Group_set_change_action_state");
+
    procedure Set_Get_Action_Enabled
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Get_Action_Enabled);
    pragma Import (C, Set_Get_Action_Enabled, "gtkada_Action_Group_set_get_action_enabled");
+
    procedure Set_Get_Action_Parameter_Type
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Get_Action_Parameter_Type);
    pragma Import (C, Set_Get_Action_Parameter_Type, "gtkada_Action_Group_set_get_action_parameter_type");
+
    procedure Set_Get_Action_State
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Get_Action_State);
    pragma Import (C, Set_Get_Action_State, "gtkada_Action_Group_set_get_action_state");
+
    procedure Set_Get_Action_State_Hint
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Get_Action_State_Hint);
    pragma Import (C, Set_Get_Action_State_Hint, "gtkada_Action_Group_set_get_action_state_hint");
+
    procedure Set_Get_Action_State_Type
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Get_Action_State_Type);
    pragma Import (C, Set_Get_Action_State_Type, "gtkada_Action_Group_set_get_action_state_type");
+
    procedure Set_Has_Action
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Has_Action);
    pragma Import (C, Set_Has_Action, "gtkada_Action_Group_set_has_action");
+
    procedure Set_List_Actions
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_List_Actions);
    pragma Import (C, Set_List_Actions, "gtkada_Action_Group_set_list_actions");
+
    procedure Set_Query_Action
      (Self    : Action_Group_Interface_Descr;
       Handler : Virtual_Query_Action);

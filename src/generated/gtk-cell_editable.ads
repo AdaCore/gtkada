@@ -162,14 +162,17 @@ package Gtk.Cell_Editable is
    --  "event": A Gdk.Event.Gdk_Event, or null
 
    subtype Cell_Editable_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Editing_Done
      (Self    : Cell_Editable_Interface_Descr;
       Handler : Virtual_Editing_Done);
    pragma Import (C, Set_Editing_Done, "gtkada_Cell_Editable_set_editing_done");
+
    procedure Set_Remove_Widget
      (Self    : Cell_Editable_Interface_Descr;
       Handler : Virtual_Remove_Widget);
    pragma Import (C, Set_Remove_Widget, "gtkada_Cell_Editable_set_remove_widget");
+
    procedure Set_Start_Editing
      (Self    : Cell_Editable_Interface_Descr;
       Handler : Virtual_Start_Editing);

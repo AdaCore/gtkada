@@ -1550,28 +1550,31 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     has_iface = True
                     section = self.pkg.section("Virtual Methods")
 
-                info += 'procedure Set_%s\n' % basename
-
-                if self.is_interface:
-                    info += '   (Self    : %s_Interface_Descr;\n' % ifacename
-                else:
-                    info += '   (Self    : Glib.Object.GObject_Class;\n'
-
-                info += '    Handler : %s);\n' % adaname
-                info += 'pragma Import (C, Set_%s, "gtkada_%s_set_%s");\n' % (
-                    basename, ifacename, basename.lower())
+                info += """
+   procedure Set_%(basename)s
+      (Self    : %(type)s;
+       Handler : %(adaname)s);
+   pragma Import (C, Set_%(basename)s, "gtkada_%(ifacename)s_set_%(method)s");
+""" % {"basename": basename,
+       "type": "%s_Interface_Descr" % ifacename
+               if self.is_interface
+               else "Glib.Object.GObject_Class",
+       "adaname": adaname,
+       "ifacename": ifacename,
+       "method": basename.lower()}
 
                 c_iface = '%s%s' % (
                     self.identifier_prefix,
                     self.node.get(glib_type_struct))
 
                 self.gir.ccode += """
-void gtkada_%s_set_%s(%s* iface, %s* handler) {
-    iface->%s = handler;
-}""" % (ifacename, basename.lower(),
-                    c_iface,
-                    'void',
-                    c.get('name'))
+void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
+    iface->%(field)s = handler;
+}
+""" % {"type": ifacename,
+       "method": basename.lower(),
+       "iface": c_iface,
+       "field": c.get('name')}
 
                 profile = SubprogramProfile.parse(
                     node=c,

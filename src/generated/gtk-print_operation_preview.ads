@@ -185,22 +185,27 @@ package Gtk.Print_Operation_Preview is
    --  "page_nr": the page to render
 
    subtype Print_Operation_Preview_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_End_Preview
      (Self    : Print_Operation_Preview_Interface_Descr;
       Handler : Virtual_End_Preview);
    pragma Import (C, Set_End_Preview, "gtkada_Print_Operation_Preview_set_end_preview");
+
    procedure Set_Got_Page_Size
      (Self    : Print_Operation_Preview_Interface_Descr;
       Handler : Virtual_Got_Page_Size);
    pragma Import (C, Set_Got_Page_Size, "gtkada_Print_Operation_Preview_set_got_page_size");
+
    procedure Set_Is_Selected
      (Self    : Print_Operation_Preview_Interface_Descr;
       Handler : Virtual_Is_Selected);
    pragma Import (C, Set_Is_Selected, "gtkada_Print_Operation_Preview_set_is_selected");
+
    procedure Set_Ready
      (Self    : Print_Operation_Preview_Interface_Descr;
       Handler : Virtual_Ready);
    pragma Import (C, Set_Ready, "gtkada_Print_Operation_Preview_set_ready");
+
    procedure Set_Render_Page
      (Self    : Print_Operation_Preview_Interface_Descr;
       Handler : Virtual_Render_Page);

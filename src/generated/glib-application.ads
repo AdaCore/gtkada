@@ -1038,10 +1038,12 @@ package Glib.Application is
    --  "exit_status": exit status to fill after processing the command line.
 
    subtype Application_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Command_Line
      (Self    : Glib.Object.GObject_Class;
       Handler : Virtual_Command_Line);
    pragma Import (C, Set_Command_Line, "gtkada_Application_set_command_line");
+
    procedure Set_Local_Command_Line
      (Self    : Glib.Object.GObject_Class;
       Handler : Virtual_Local_Command_Line);

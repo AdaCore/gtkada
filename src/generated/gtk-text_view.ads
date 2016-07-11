@@ -1202,6 +1202,7 @@ package Gtk.Text_View is
    --  3.14
 
    subtype Text_View_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Draw_Layer
      (Self    : Glib.Object.GObject_Class;
       Handler : Virtual_Draw_Layer);

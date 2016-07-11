@@ -211,18 +211,22 @@ package Gtk.Color_Chooser is
    --  "color": the new color
 
    subtype Color_Chooser_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Add_Palette
      (Self    : Color_Chooser_Interface_Descr;
       Handler : Virtual_Add_Palette);
    pragma Import (C, Set_Add_Palette, "gtkada_Color_Chooser_set_add_palette");
+
    procedure Set_Color_Activated
      (Self    : Color_Chooser_Interface_Descr;
       Handler : Virtual_Color_Activated);
    pragma Import (C, Set_Color_Activated, "gtkada_Color_Chooser_set_color_activated");
+
    procedure Set_Get_Rgba
      (Self    : Color_Chooser_Interface_Descr;
       Handler : Virtual_Get_Rgba);
    pragma Import (C, Set_Get_Rgba, "gtkada_Color_Chooser_set_get_rgba");
+
    procedure Set_Set_Rgba
      (Self    : Color_Chooser_Interface_Descr;
       Handler : Virtual_Set_Rgba);

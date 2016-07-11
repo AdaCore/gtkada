@@ -1178,82 +1178,102 @@ package Gtk.Tree_Model is
    --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter-struct
 
    subtype Tree_Model_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Get_Column_Type
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Get_Column_Type);
    pragma Import (C, Set_Get_Column_Type, "gtkada_Tree_Model_set_get_column_type");
+
    procedure Set_Get_Flags
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Get_Flags);
    pragma Import (C, Set_Get_Flags, "gtkada_Tree_Model_set_get_flags");
+
    procedure Set_Get_Iter
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Get_Iter);
    pragma Import (C, Set_Get_Iter, "gtkada_Tree_Model_set_get_iter");
+
    procedure Set_Get_N_Columns
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Get_N_Columns);
    pragma Import (C, Set_Get_N_Columns, "gtkada_Tree_Model_set_get_n_columns");
+
    procedure Set_Get_Path
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Get_Path);
    pragma Import (C, Set_Get_Path, "gtkada_Tree_Model_set_get_path");
+
    procedure Set_Get_Value
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Get_Value);
    pragma Import (C, Set_Get_Value, "gtkada_Tree_Model_set_get_value");
+
    procedure Set_Iter_Children
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_Children);
    pragma Import (C, Set_Iter_Children, "gtkada_Tree_Model_set_iter_children");
+
    procedure Set_Iter_Has_Child
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_Has_Child);
    pragma Import (C, Set_Iter_Has_Child, "gtkada_Tree_Model_set_iter_has_child");
+
    procedure Set_Iter_N_Children
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_N_Children);
    pragma Import (C, Set_Iter_N_Children, "gtkada_Tree_Model_set_iter_n_children");
+
    procedure Set_Iter_Next
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_Next);
    pragma Import (C, Set_Iter_Next, "gtkada_Tree_Model_set_iter_next");
+
    procedure Set_Iter_Nth_Child
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_Nth_Child);
    pragma Import (C, Set_Iter_Nth_Child, "gtkada_Tree_Model_set_iter_nth_child");
+
    procedure Set_Iter_Parent
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_Parent);
    pragma Import (C, Set_Iter_Parent, "gtkada_Tree_Model_set_iter_parent");
+
    procedure Set_Iter_Previous
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Iter_Previous);
    pragma Import (C, Set_Iter_Previous, "gtkada_Tree_Model_set_iter_previous");
+
    procedure Set_Ref_Node
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Ref_Node);
    pragma Import (C, Set_Ref_Node, "gtkada_Tree_Model_set_ref_node");
+
    procedure Set_Row_Changed
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Row_Changed);
    pragma Import (C, Set_Row_Changed, "gtkada_Tree_Model_set_row_changed");
+
    procedure Set_Row_Deleted
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Row_Deleted);
    pragma Import (C, Set_Row_Deleted, "gtkada_Tree_Model_set_row_deleted");
+
    procedure Set_Row_Has_Child_Toggled
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Row_Has_Child_Toggled);
    pragma Import (C, Set_Row_Has_Child_Toggled, "gtkada_Tree_Model_set_row_has_child_toggled");
+
    procedure Set_Row_Inserted
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Row_Inserted);
    pragma Import (C, Set_Row_Inserted, "gtkada_Tree_Model_set_row_inserted");
+
    procedure Set_Rows_Reordered
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Rows_Reordered);
    pragma Import (C, Set_Rows_Reordered, "gtkada_Tree_Model_set_rows_reordered");
+
    procedure Set_Unref_Node
      (Self    : Tree_Model_Interface_Descr;
       Handler : Virtual_Unref_Node);

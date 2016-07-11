@@ -407,42 +407,52 @@ package Gtk.Editable is
    --  "end_pos": end of region
 
    subtype Editable_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Changed
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Changed);
    pragma Import (C, Set_Changed, "gtkada_Editable_set_changed");
+
    procedure Set_Delete_Text
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Delete_Text);
    pragma Import (C, Set_Delete_Text, "gtkada_Editable_set_delete_text");
+
    procedure Set_Do_Delete_Text
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Do_Delete_Text);
    pragma Import (C, Set_Do_Delete_Text, "gtkada_Editable_set_do_delete_text");
+
    procedure Set_Do_Insert_Text
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Do_Insert_Text);
    pragma Import (C, Set_Do_Insert_Text, "gtkada_Editable_set_do_insert_text");
+
    procedure Set_Get_Chars
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Get_Chars);
    pragma Import (C, Set_Get_Chars, "gtkada_Editable_set_get_chars");
+
    procedure Set_Get_Position
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Get_Position);
    pragma Import (C, Set_Get_Position, "gtkada_Editable_set_get_position");
+
    procedure Set_Get_Selection_Bounds
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Get_Selection_Bounds);
    pragma Import (C, Set_Get_Selection_Bounds, "gtkada_Editable_set_get_selection_bounds");
+
    procedure Set_Insert_Text
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Insert_Text);
    pragma Import (C, Set_Insert_Text, "gtkada_Editable_set_insert_text");
+
    procedure Set_Set_Position
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Set_Position);
    pragma Import (C, Set_Set_Position, "gtkada_Editable_set_set_position");
+
    procedure Set_Set_Selection_Bounds
      (Self    : Editable_Interface_Descr;
       Handler : Virtual_Set_Selection_Bounds);

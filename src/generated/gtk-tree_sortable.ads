@@ -340,26 +340,32 @@ package Gtk.Tree_Sortable is
    --  on Sortable.
 
    subtype Tree_Sortable_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Get_Sort_Column_Id
      (Self    : Tree_Sortable_Interface_Descr;
       Handler : Virtual_Get_Sort_Column_Id);
    pragma Import (C, Set_Get_Sort_Column_Id, "gtkada_Tree_Sortable_set_get_sort_column_id");
+
    procedure Set_Has_Default_Sort_Func
      (Self    : Tree_Sortable_Interface_Descr;
       Handler : Virtual_Has_Default_Sort_Func);
    pragma Import (C, Set_Has_Default_Sort_Func, "gtkada_Tree_Sortable_set_has_default_sort_func");
+
    procedure Set_Set_Default_Sort_Func
      (Self    : Tree_Sortable_Interface_Descr;
       Handler : Virtual_Set_Default_Sort_Func);
    pragma Import (C, Set_Set_Default_Sort_Func, "gtkada_Tree_Sortable_set_set_default_sort_func");
+
    procedure Set_Set_Sort_Column_Id
      (Self    : Tree_Sortable_Interface_Descr;
       Handler : Virtual_Set_Sort_Column_Id);
    pragma Import (C, Set_Set_Sort_Column_Id, "gtkada_Tree_Sortable_set_set_sort_column_id");
+
    procedure Set_Set_Sort_Func
      (Self    : Tree_Sortable_Interface_Descr;
       Handler : Virtual_Set_Sort_Func);
    pragma Import (C, Set_Set_Sort_Func, "gtkada_Tree_Sortable_set_set_sort_func");
+
    procedure Set_Sort_Column_Changed
      (Self    : Tree_Sortable_Interface_Descr;
       Handler : Virtual_Sort_Column_Changed);

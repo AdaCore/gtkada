@@ -324,34 +324,42 @@ package Glib.Action is
    --  Since: gtk+ 2.28
 
    subtype Action_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Activate
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Activate);
    pragma Import (C, Set_Activate, "gtkada_Action_set_activate");
+
    procedure Set_Change_State
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Change_State);
    pragma Import (C, Set_Change_State, "gtkada_Action_set_change_state");
+
    procedure Set_Get_Enabled
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Get_Enabled);
    pragma Import (C, Set_Get_Enabled, "gtkada_Action_set_get_enabled");
+
    procedure Set_Get_Name
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Get_Name);
    pragma Import (C, Set_Get_Name, "gtkada_Action_set_get_name");
+
    procedure Set_Get_Parameter_Type
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Get_Parameter_Type);
    pragma Import (C, Set_Get_Parameter_Type, "gtkada_Action_set_get_parameter_type");
+
    procedure Set_Get_State
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Get_State);
    pragma Import (C, Set_Get_State, "gtkada_Action_set_get_state");
+
    procedure Set_Get_State_Hint
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Get_State_Hint);
    pragma Import (C, Set_Get_State_Hint, "gtkada_Action_set_get_state_hint");
+
    procedure Set_Get_State_Type
      (Self    : Action_Interface_Descr;
       Handler : Virtual_Get_State_Type);

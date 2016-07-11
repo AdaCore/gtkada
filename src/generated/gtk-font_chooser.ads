@@ -282,22 +282,27 @@ package Gtk.Font_Chooser is
    --  "destroy": function to call to free Data when it is no longer needed
 
    subtype Font_Chooser_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Font_Activated
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Font_Activated);
    pragma Import (C, Set_Font_Activated, "gtkada_Font_Chooser_set_font_activated");
+
    procedure Set_Get_Font_Face
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Get_Font_Face);
    pragma Import (C, Set_Get_Font_Face, "gtkada_Font_Chooser_set_get_font_face");
+
    procedure Set_Get_Font_Family
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Get_Font_Family);
    pragma Import (C, Set_Get_Font_Family, "gtkada_Font_Chooser_set_get_font_family");
+
    procedure Set_Get_Font_Size
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Get_Font_Size);
    pragma Import (C, Set_Get_Font_Size, "gtkada_Font_Chooser_set_get_font_size");
+
    procedure Set_Set_Filter_Func
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Set_Filter_Func);

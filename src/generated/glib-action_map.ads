@@ -204,14 +204,17 @@ package Glib.Action_Map is
    --  "action_name": the name of the action
 
    subtype Action_Map_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Add_Action
      (Self    : Action_Map_Interface_Descr;
       Handler : Virtual_Add_Action);
    pragma Import (C, Set_Add_Action, "gtkada_Action_Map_set_add_action");
+
    procedure Set_Lookup_Action
      (Self    : Action_Map_Interface_Descr;
       Handler : Virtual_Lookup_Action);
    pragma Import (C, Set_Lookup_Action, "gtkada_Action_Map_set_lookup_action");
+
    procedure Set_Remove_Action
      (Self    : Action_Map_Interface_Descr;
       Handler : Virtual_Remove_Action);

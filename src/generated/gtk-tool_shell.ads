@@ -200,38 +200,47 @@ package Gtk.Tool_Shell is
    --  Since: gtk+ 2.14
 
    subtype Tool_Shell_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Get_Ellipsize_Mode
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Ellipsize_Mode);
    pragma Import (C, Set_Get_Ellipsize_Mode, "gtkada_Tool_Shell_set_get_ellipsize_mode");
+
    procedure Set_Get_Icon_Size
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Icon_Size);
    pragma Import (C, Set_Get_Icon_Size, "gtkada_Tool_Shell_set_get_icon_size");
+
    procedure Set_Get_Orientation
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Orientation);
    pragma Import (C, Set_Get_Orientation, "gtkada_Tool_Shell_set_get_orientation");
+
    procedure Set_Get_Relief_Style
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Relief_Style);
    pragma Import (C, Set_Get_Relief_Style, "gtkada_Tool_Shell_set_get_relief_style");
+
    procedure Set_Get_Style
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Style);
    pragma Import (C, Set_Get_Style, "gtkada_Tool_Shell_set_get_style");
+
    procedure Set_Get_Text_Alignment
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Text_Alignment);
    pragma Import (C, Set_Get_Text_Alignment, "gtkada_Tool_Shell_set_get_text_alignment");
+
    procedure Set_Get_Text_Orientation
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Text_Orientation);
    pragma Import (C, Set_Get_Text_Orientation, "gtkada_Tool_Shell_set_get_text_orientation");
+
    procedure Set_Get_Text_Size_Group
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Get_Text_Size_Group);
    pragma Import (C, Set_Get_Text_Size_Group, "gtkada_Tool_Shell_set_get_text_size_group");
+
    procedure Set_Rebuild_Menu
      (Self    : Tool_Shell_Interface_Descr;
       Handler : Virtual_Rebuild_Menu);

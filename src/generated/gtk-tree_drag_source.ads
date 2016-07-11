@@ -158,14 +158,17 @@ package Gtk.Tree_Drag_Source is
    --  "path": row on which user is initiating a drag
 
    subtype Tree_Drag_Source_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Drag_Data_Delete
      (Self    : Tree_Drag_Source_Interface_Descr;
       Handler : Virtual_Drag_Data_Delete);
    pragma Import (C, Set_Drag_Data_Delete, "gtkada_Tree_Drag_Source_set_drag_data_delete");
+
    procedure Set_Drag_Data_Get
      (Self    : Tree_Drag_Source_Interface_Descr;
       Handler : Virtual_Drag_Data_Get);
    pragma Import (C, Set_Drag_Data_Get, "gtkada_Tree_Drag_Source_set_drag_data_get");
+
    procedure Set_Row_Draggable
      (Self    : Tree_Drag_Source_Interface_Descr;
       Handler : Virtual_Row_Draggable);

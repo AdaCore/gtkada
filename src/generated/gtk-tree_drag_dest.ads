@@ -115,10 +115,12 @@ package Gtk.Tree_Drag_Dest is
    --  "selection_data": the data being dragged
 
    subtype Tree_Drag_Dest_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Drag_Data_Received
      (Self    : Tree_Drag_Dest_Interface_Descr;
       Handler : Virtual_Drag_Data_Received);
    pragma Import (C, Set_Drag_Data_Received, "gtkada_Tree_Drag_Dest_set_drag_data_received");
+
    procedure Set_Row_Drop_Possible
      (Self    : Tree_Drag_Dest_Interface_Descr;
       Handler : Virtual_Row_Drop_Possible);

@@ -211,18 +211,22 @@ package Gtk.Actionable is
    --  null
 
    subtype Actionable_Interface_Descr is Glib.Object.Interface_Description;
+
    procedure Set_Get_Action_Name
      (Self    : Actionable_Interface_Descr;
       Handler : Virtual_Get_Action_Name);
    pragma Import (C, Set_Get_Action_Name, "gtkada_Actionable_set_get_action_name");
+
    procedure Set_Get_Action_Target_Value
      (Self    : Actionable_Interface_Descr;
       Handler : Virtual_Get_Action_Target_Value);
    pragma Import (C, Set_Get_Action_Target_Value, "gtkada_Actionable_set_get_action_target_value");
+
    procedure Set_Set_Action_Name
      (Self    : Actionable_Interface_Descr;
       Handler : Virtual_Set_Action_Name);
    pragma Import (C, Set_Set_Action_Name, "gtkada_Actionable_set_set_action_name");
+
    procedure Set_Set_Action_Target_Value
      (Self    : Actionable_Interface_Descr;
       Handler : Virtual_Set_Action_Target_Value);
