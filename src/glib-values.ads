@@ -212,6 +212,27 @@ package Glib.Values is
    --  Convenience function to Get and Set a Gtk_Text_Iter are
    --  also provided inside Gtk.Text_Iter.
 
+   ----------------
+   -- Parameters --
+   ----------------
+   --  When you create new widget types (see Glib.Object) you sometimes need
+   --  to set properties immediately, since they can't be set after creation.
+
+   type GParameter is record
+      Name  : Interfaces.C.Strings.chars_ptr;
+      Value : GValue;
+   end record;
+   type GParameter_Array is array (Natural range <>) of GParameter;
+
+   procedure Free (Params : in out GParameter_Array);
+   --  Free the memory used by Params
+
+   procedure G_New
+      (Object  : not null access Glib.Object.GObject_Record'Class;
+       Typ     : GType;
+       Params  : GParameter_Array);
+   --  Allocate a new object and set properties.
+
 private
    type GValue_Data is array (1 .. 2) of Guint64;
    type GValue is record

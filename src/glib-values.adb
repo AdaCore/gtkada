@@ -253,6 +253,44 @@ package body Glib.Values is
       return Value.g_type;
    end Type_Of;
 
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Params : in out GParameter_Array) is
+   begin
+      for P in Params'Range loop
+         Free (Params (P).Name);
+         Unset (Params (P).Value);
+      end loop;
+   end Free;
+
+   -----------
+   -- G_New --
+   -----------
+
+   procedure G_New
+      (Object  : not null access Glib.Object.GObject_Record'Class;
+       Typ     : GType;
+       Params  : GParameter_Array)
+   is
+      function Internal
+         (Typ      : GType;
+          N_Params : Guint;
+          Params   : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_object_newv");
+   begin
+      if not Object.Is_Created then
+         Glib.Object.Set_Object
+            (Object,
+             Internal (Typ, Params'Length, Params (Params'First)'Address));
+      end if;
+   end G_New;
+
+   -------------------
+   -- C_Gvalue_Size --
+   -------------------
+
    function C_Gvalue_Size return Natural;
    pragma Import (C, C_Gvalue_Size, "ada_c_gvalue_size");
 

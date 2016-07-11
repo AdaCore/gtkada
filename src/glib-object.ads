@@ -358,6 +358,10 @@ package Glib.Object is
    --  the C object has already been created (so that G_New can be called
    --  from Initialize (and you can call the parent's Initialize).
    --
+   --  See a variant in Glib.Values that allow you to set properties at
+   --  creation time (which is needed for some properties that cannot be set
+   --  after creating the widget).
+   --
    --  Object must have been allocated first, but you should not have called
    --  any of the Gtk_New procedures yet.
    --  This procedure is meant to be used when you create your own object
