@@ -38,6 +38,7 @@ HAVE_GETTEXT=@HAVE_GETTEXT@
 HAVE_OPENGL=@HAVE_OPENGL@
 BUILD_SHARED=@BUILD_SHARED@
 BUILD_STATIC=@BUILD_STATIC@
+BUILD_STATIC_PIC=@BUILD_STATIC_PIC@
 TARNAME=@PACKAGE_TARNAME@
 VERSION=@PACKAGE_VERSION@
 DESTDIR=
@@ -50,9 +51,15 @@ exampledir=${datadir}/examples/gtkada/testgtk
 
 all:
 
+ifeq (${BUILD_STATIC_PIC}, yes)
+all tools tests: build_library_type/static-pic
+install: install/static-pic
+LIBRARY_TYPE_FOR_TOOLS=static-pic
+endif
+
 ifeq (${BUILD_STATIC}, yes)
 all tools tests: static
-install: install/static install/static-pic
+install: install/static
 endif
 
 ifeq (${BUILD_SHARED},yes)
@@ -66,7 +73,7 @@ LIBRARY_TYPE_FOR_TOOLS=static
 endif
 
 all: tools tests
-static: build_library_type/static build_library_type/static-pic
+static: build_library_type/static
 relocatable: build_library_type/relocatable
 
 tools:

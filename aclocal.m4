@@ -25,6 +25,19 @@ AC_HELP_STRING(
       fi],
      [BUILD_STATIC=yes])
 
+   AC_ARG_ENABLE(static_pic,
+     [AC_HELP_STRING(
+        [--disable-static-pic],
+        [Disable building of static PIC libraries.])
+AC_HELP_STRING(
+        [--enable-static-pic],
+        [Build static PIC libraries (default).])],
+     [BUILD_STATIC_PIC=$enableval
+      if test $enableval = yes; then
+         DEFAULT_LIBRARY_TYPE=static-pic
+      fi],
+     [BUILD_STATIC_PIC=yes])
+
    AC_ARG_ENABLE(shared,
      [AC_HELP_STRING(
         [--disable-shared],
@@ -104,12 +117,15 @@ make them preselected in project files (static libraries are preselected by defa
    esac
 
   if test x$BUILD_SHARED = xno ; then
-     DEFAULT_LIBRARY_TYPE=static
+    if test x$BUILD_STATIC_PIC = xno ; then
+       DEFAULT_LIBRARY_TYPE=static
+    fi
   fi
 
   AC_SUBST(DEFAULT_LIBRARY_TYPE)
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
   AC_SUBST(BUILD_STATIC)
+  AC_SUBST(BUILD_STATIC_PIC)
   AC_SUBST(BUILD_SHARED)
   AC_SUBST(SO_EXT)
   AC_SUBST(SO_OPTS)

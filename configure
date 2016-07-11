@@ -618,6 +618,7 @@ TARGET_LFLAGS
 SO_OPTS
 SO_EXT
 BUILD_SHARED
+BUILD_STATIC_PIC
 BUILD_STATIC
 OS_SPECIFIC_LINK_OPTIONS
 DEFAULT_LIBRARY_TYPE
@@ -676,6 +677,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_static
+enable_static_pic
 enable_shared
 enable_build
 enable_nls
@@ -1308,6 +1310,8 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-static        Disable building of static libraries.
   --enable-static         Build static libraries (default).
+  --disable-static-pic    Disable building of static PIC libraries.
+  --enable-static-pic     Build static PIC libraries (default).
   --disable-shared        Disable building of shared libraries (default is to
                           build them if supported on the target)
   --enable-shared         Build shared libraries if supported on the target
@@ -2052,6 +2056,17 @@ else
 fi
 
 
+   # Check whether --enable-static_pic was given.
+if test "${enable_static_pic+set}" = set; then :
+  enableval=$enable_static_pic; BUILD_STATIC_PIC=$enableval
+      if test $enableval = yes; then
+         DEFAULT_LIBRARY_TYPE=static-pic
+      fi
+else
+  BUILD_STATIC_PIC=yes
+fi
+
+
    # Check whether --enable-shared was given.
 if test "${enable_shared+set}" = set; then :
   enableval=$enable_shared; CAN_BUILD_SHARED=$enableval
@@ -2128,8 +2143,11 @@ fi
    esac
 
   if test x$BUILD_SHARED = xno ; then
-     DEFAULT_LIBRARY_TYPE=static
+    if test x$BUILD_STATIC_PIC = xno ; then
+       DEFAULT_LIBRARY_TYPE=static
+    fi
   fi
+
 
 
 
