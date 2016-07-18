@@ -1090,8 +1090,18 @@ package Gtkada.MDI is
    --
    --    Emitted when a child is put back in the main MDI window
    --
+   --  - "before_unfloat_child"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when a child is about to be put back in the main MDI window
+   --
    --  - "child_state_changed"
    --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --  - "before_destroy_child"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when a child is about to be destroyed
    --
    --    Emitted when the state of the child has changed. See the function
    --    Get_State. In particular, this signal can be detected when a child is
@@ -1109,10 +1119,14 @@ package Gtkada.MDI is
    Signal_Delete_Event         : constant Signal_Name := "delete_event";
    Signal_Selected             : constant Signal_Name := "selected";
    Signal_Unfloat_Child        : constant Signal_Name := "unfloat_child";
+   Signal_Before_Unfloat_Child : constant Signal_Name :=
+     "before_unfloat_child";
    Signal_Perspective_Changed  : constant Signal_Name := "perspective_changed";
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
+   Signal_Before_Destroy_Child : constant Signal_Name :=
+     "before_destroy_child";
 
    procedure Child_Selected
       (Self  : not null access MDI_Window_Record'Class;

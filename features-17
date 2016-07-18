@@ -13,6 +13,13 @@ of the feature.
 New features in GtkAda 17
 -------------------------
 
+NF-17-P722-028 New MDI child signals (2016-07-22)
+
+   New signals have been introduced in the MDI
+      Signal_Before_Unfloat_Child
+      Signal_Before_Destroy_Child
+   allowing respectively to react before a child is unfloated or destroyed.
+
 NF-17-P315-053 Make notebook tabs orientation configurable (2016-03-18)
 
    New parameter in Gtkada.MDI.Configure allows controlling the orientation of

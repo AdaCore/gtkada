@@ -157,13 +157,17 @@ package body Gtkada.MDI is
       6 => New_String (String (Signal_Child_Icon_Changed)),
       7 => New_String (String (Signal_Children_Reorganized)),
       8 => New_String (String (Signal_Perspective_Changed)),
-      9 => New_String (String (Signal_Unfloat_Child)));
+      9 => New_String (String (Signal_Unfloat_Child)),
+      10 => New_String (String (Signal_Before_Unfloat_Child)),
+      11 => New_String (String (Signal_Before_Destroy_Child)));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String (String (Signal_Float_Child)),
       2 => New_String (String (Signal_Unfloat_Child)),
-      3 => New_String (String (Signal_Selected)),
-      4 => New_String (String (Signal_Child_State_Changed)));
+      3 => New_String (String (Signal_Before_Unfloat_Child)),
+      4 => New_String (String (Signal_Selected)),
+      5 => New_String (String (Signal_Child_State_Changed)),
+      6 => New_String (String (Signal_Before_Destroy_Child)));
 
    use Widget_List;
 
@@ -1035,7 +1039,9 @@ package body Gtkada.MDI is
          6 => (1 => GType_Pointer),
          7 => (1 => GType_None),
          8 => (1 => GType_None),
-         9 => (1 => GType_Pointer));
+         9 => (1 => GType_Pointer),
+         10 => (1 => GType_Pointer),
+         11 => (1 => GType_Pointer));
    begin
       Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtkada.Multi_Paned.Get_Type,
@@ -1859,6 +1865,15 @@ package body Gtkada.MDI is
 
       Ref (C);
 
+      --  Emit the signal now, giving clients a chance to react to the
+      --  imminent destruction of the child
+
+      Emit_By_Name_Child
+        (Get_Object (MDI),
+         String (Signal_Before_Destroy_Child) & ASCII.NUL,
+         Get_Object (C));
+      Widget_Callback.Emit_By_Name (C, Signal_Before_Destroy_Child);
+
       --  Do not transfer the focus elsewhere: for an interactive close, this
       --  is done in Close_Child, otherwise we do not want to change the focus.
       --  No need to send a signal to signal that a new child has been selected
@@ -2629,11 +2644,9 @@ package body Gtkada.MDI is
    --------------------
 
    function Child_Get_Type return Glib.GType is
-      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
-                            (1 => (1 => GType_None),
-                             2 => (1 => GType_None),
-                             3 => (1 => GType_None),
-                             4 => (1 => GType_None));
+      Signal_Parameters : constant Glib.Object.Signal_Parameter_Types
+        (Integer (Child_Signals'First) .. Integer (Child_Signals'Last),
+         1 .. 1) := (others => (1 => GType_None));
    begin
       Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtk.Event_Box.Get_Type,
@@ -3923,6 +3936,16 @@ package body Gtkada.MDI is
          Widget_Callback.Emit_By_Name (Child, Signal_Float_Child);
 
       elsif Child.State = Floating and then not Float then
+         --  We are about to unfloat the child: emit the "before" signal
+         --  before the actual unfloat, so that clients have the possibility
+         --  to grab the coordinates of the floating window, for instance.
+
+         Emit_By_Name_Child
+           (Get_Object (Child.MDI),
+            String (Signal_Before_Unfloat_Child) & ASCII.NUL,
+            Get_Object (Child));
+         Widget_Callback.Emit_By_Name (Child, Signal_Before_Unfloat_Child);
+
          --  Reassign the widget to Child instead of the notebook
 
          Win := Gtk_Window (Get_Toplevel (Child.Initial));
@@ -3943,12 +3966,13 @@ package body Gtkada.MDI is
          Put_In_Notebook (Child.MDI, Child);
 
          Update_Float_Menu (Child);
-         Unref (Child);
 
          Emit_By_Name_Child
            (Get_Object (Child.MDI), String (Signal_Unfloat_Child) & ASCII.NUL,
             Get_Object (Child));
          Widget_Callback.Emit_By_Name (Child, Signal_Unfloat_Child);
+
+         Unref (Child);
       end if;
 
       Print_Debug ("", Debug_Decrease);
