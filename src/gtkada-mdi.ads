@@ -350,7 +350,7 @@ package Gtkada.MDI is
    --  Force is set to True.
 
    procedure Set_Title
-     (Child       : access MDI_Child_Record;
+     (Child       : not null access MDI_Child_Record;
       Title       : String;
       Short_Title : String := "");
    --  Set the title for a child. Title is the title put in titlebar of
@@ -368,21 +368,25 @@ package Gtkada.MDI is
    --  Child should already be in the MDI at this point (via a call to Put), so
    --  that the "use_short_titles" preference is taken into account.
 
-   function Get_MDI (Child : access MDI_Child_Record) return MDI_Window;
+   function Get_MDI
+     (Child : not null access MDI_Child_Record) return MDI_Window;
    --  Return the MDI to which Child is associated. In Child is a floating
    --  child, it might not be in the MDI window itself.
 
-   function Get_Title (Child : access MDI_Child_Record) return UTF8_String;
+   function Get_Title
+     (Child : not null access MDI_Child_Record) return UTF8_String;
    --  Return the title for a specific child
 
    function Get_Short_Title
-     (Child : access MDI_Child_Record) return UTF8_String;
+     (Child : not null access MDI_Child_Record) return UTF8_String;
    --  Return the name of the notebook tab used when children are maximized.
 
-   function Has_Title_Bar (Child : access MDI_Child_Record) return Boolean;
+   function Has_Title_Bar
+     (Child : not null access MDI_Child_Record) return Boolean;
    --  Whether a title bar is currently displayed for Child
 
-   function Get_State (Child : access MDI_Child_Record) return State_Type;
+   function Get_State
+     (Child : not null access MDI_Child_Record) return State_Type;
    --  Return the current state of the child
 
    function Get_Allowed_Areas
@@ -404,11 +408,11 @@ package Gtkada.MDI is
    --  characters like "<" and ">" must be quoted with backslashes.
 
    procedure Set_Icon
-     (Child : access MDI_Child_Record;
+     (Child : not null access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf);
    pragma Obsolescent (Set_Icon);
    procedure Set_Icon_Name
-     (Child     : access MDI_Child_Record;
+     (Child     : not null access MDI_Child_Record;
       Icon_Name : String);
    --  Associate an icon with Child. This icon is visible in the title bar, the
    --  notebook tabs, the Window menu and the interactive selection dialog.
@@ -417,10 +421,10 @@ package Gtkada.MDI is
    --  was newly allocated).
 
    function Get_Icon
-     (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+     (Child : not null access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Icon);
    function Get_Icon_Name
-     (Child : access MDI_Child_Record) return String;
+     (Child : not null access MDI_Child_Record) return String;
    --  Returns the icon associated with Child. The returned pixbuf is owned
    --  by the MDI and must not be freed by the caller.
 
@@ -429,7 +433,8 @@ package Gtkada.MDI is
    ---------------------------
 
    function Dnd_Data
-     (Child : access MDI_Child_Record; Copy : Boolean) return MDI_Child;
+     (Child : not null access MDI_Child_Record; Copy : Boolean)
+      return MDI_Child;
    --  When a drag-and-drop operation took place to move a child from one
    --  position to the next, this function is called to know what child should
    --  be moved.
@@ -455,7 +460,7 @@ package Gtkada.MDI is
    --  Passing an empty string for Message will restore the default message.
 
    procedure Child_Drag_Begin
-     (Child  : access MDI_Child_Record'Class;
+     (Child  : not null access MDI_Child_Record'Class;
       Event  : Gdk.Event.Gdk_Event_Button;
       Areas  : Allowed_Areas);
    --  Starts a drag-and-drop operation for the child, so that it can be put in
@@ -467,11 +472,12 @@ package Gtkada.MDI is
    --  useful if Dnd_Data was overridden and some other child will be dropped
    --  instead.
 
-   procedure Cancel_Child_Drag (Child : access MDI_Child_Record'Class);
+   procedure Cancel_Child_Drag
+     (Child : not null access MDI_Child_Record'Class);
    --  Cancel a drag operation started by Child_Drag_Begin.
    --  It doesn't call Child_Drag_Finished.
 
-   procedure Child_Drag_Finished (Child  : access MDI_Child_Record);
+   procedure Child_Drag_Finished (Child : not null access MDI_Child_Record);
    --  Called when a drag operation is either aborted or completed. It should
    --  be overridden if special cleanup should be done.
 
@@ -496,7 +502,7 @@ package Gtkada.MDI is
    ------------------------
 
    procedure Highlight_Child
-     (Child : access MDI_Child_Record; Highlight : Boolean := True);
+     (Child : not null access MDI_Child_Record; Highlight : Boolean := True);
    --  Highlight the child until it is selected by the user.
    --  The color of its menu label and of the text in the notebook tabs is
    --  changed.
@@ -521,7 +527,7 @@ package Gtkada.MDI is
    --  Call this with Containing = null to explicitly unset the current focus
    --  child.
 
-   procedure Set_Focus_Child (Child : access MDI_Child_Record);
+   procedure Set_Focus_Child (Child : not null access MDI_Child_Record);
    --  Make Child the active widget, and raise it at the top.
 
    procedure Check_Interactive_Selection_Dialog
@@ -643,7 +649,7 @@ package Gtkada.MDI is
    -----------------------
 
    procedure Float_Child
-     (Child             : access MDI_Child_Record'Class;
+     (Child             : not null access MDI_Child_Record'Class;
       Float             : Boolean;
       Position_At_Mouse : Boolean := True;
       X, Y              : Gint := 0);
@@ -654,7 +660,7 @@ package Gtkada.MDI is
    --     - if Position_At_Mouse is False, use position the window at X, Y.
 
    function Is_Floating
-     (Child : access MDI_Child_Record'Class) return Boolean;
+     (Child : not null access MDI_Child_Record'Class) return Boolean;
    --  Return True if Child is currently in a separate window
 
    procedure Set_Default_Size_For_Floating_Window
@@ -699,7 +705,7 @@ package Gtkada.MDI is
    ----------------------
 
    procedure Close_Child
-     (Child : access MDI_Child_Record'Class;
+     (Child : not null access MDI_Child_Record'Class;
       Force : Boolean := False);
    --  Same as Close, but applies directly to a MDI_Child.
 
@@ -708,17 +714,19 @@ package Gtkada.MDI is
    ---------------------------
 
    procedure Raise_Child
-     (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True);
+     (Child      : not null access MDI_Child_Record'Class;
+      Give_Focus : Boolean := True);
    --  Put Child in the foreground.
    --  Note that this does not give the focus to this child, unless
    --  Give_Focus is set to True. If Child and the current focus child are in
    --  the same notebook, Child will always gain the focus, so that the focus
    --  is not left on an invisible window.
 
-   function Is_Raised (Child : access MDI_Child_Record'Class) return Boolean;
+   function Is_Raised
+     (Child : not null access MDI_Child_Record'Class) return Boolean;
    --  Whether the child is currently raised, ie fully visible to the user
 
-   procedure Lower_Child (Child : access MDI_Child_Record'Class);
+   procedure Lower_Child (Child : not null access MDI_Child_Record'Class);
    --  Put Child in the background.
    --  If the children are maximized, this selected the next page from the
    --  notebook.

@@ -1759,7 +1759,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Close_Child
-     (Child : access MDI_Child_Record'Class;
+     (Child : not null access MDI_Child_Record'Class;
       Force : Boolean := False)
    is
       MDI   : constant MDI_Window := Child.MDI;
@@ -1865,15 +1865,6 @@ package body Gtkada.MDI is
 
       Ref (C);
 
-      --  Emit the signal now, giving clients a chance to react to the
-      --  imminent destruction of the child
-
-      Emit_By_Name_Child
-        (Get_Object (MDI),
-         String (Signal_Before_Destroy_Child) & ASCII.NUL,
-         Get_Object (C));
-      Widget_Callback.Emit_By_Name (C, Signal_Before_Destroy_Child);
-
       --  Do not transfer the focus elsewhere: for an interactive close, this
       --  is done in Close_Child, otherwise we do not want to change the focus.
       --  No need to send a signal to signal that a new child has been selected
@@ -1884,6 +1875,15 @@ package body Gtkada.MDI is
       if C = MDI.Focus_Child then
          MDI.Focus_Child := null;
       end if;
+
+      --  Emit the signal now, giving clients a chance to react to the
+      --  imminent destruction of the child
+
+      Emit_By_Name_Child
+        (Get_Object (MDI),
+         String (Signal_Before_Destroy_Child) & ASCII.NUL,
+         Get_Object (C));
+      Widget_Callback.Emit_By_Name (C, Signal_Before_Destroy_Child);
 
       C.Tab_Label := null;
 
@@ -2586,7 +2586,8 @@ package body Gtkada.MDI is
    --------------
 
    function Dnd_Data
-     (Child : access MDI_Child_Record; Copy : Boolean) return MDI_Child
+     (Child : not null access MDI_Child_Record; Copy : Boolean)
+      return MDI_Child
    is
       pragma Unreferenced (Copy);
    begin
@@ -2974,7 +2975,8 @@ package body Gtkada.MDI is
    -- Get_Title --
    ---------------
 
-   function Get_Title (Child : access MDI_Child_Record) return UTF8_String is
+   function Get_Title
+     (Child : not null access MDI_Child_Record) return UTF8_String is
    begin
       return Child.Title.all;
    end Get_Title;
@@ -2984,7 +2986,7 @@ package body Gtkada.MDI is
    ---------------------
 
    function Get_Short_Title
-     (Child : access MDI_Child_Record) return UTF8_String is
+     (Child : not null access MDI_Child_Record) return UTF8_String is
    begin
       return Child.Short_Title.all;
    end Get_Short_Title;
@@ -2994,7 +2996,7 @@ package body Gtkada.MDI is
    --------------
 
    procedure Set_Icon
-     (Child : access MDI_Child_Record;
+     (Child : not null access MDI_Child_Record;
       Icon  : Gdk.Pixbuf.Gdk_Pixbuf) is
    begin
       Free (Child.Icon_Name);
@@ -3026,7 +3028,7 @@ package body Gtkada.MDI is
    -------------------
 
    procedure Set_Icon_Name
-     (Child     : access MDI_Child_Record;
+     (Child     : not null access MDI_Child_Record;
       Icon_Name : String) is
    begin
       Free (Child.Icon_Name);
@@ -3060,7 +3062,7 @@ package body Gtkada.MDI is
    --------------
 
    function Get_Icon
-     (Child : access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf
+     (Child : not null access MDI_Child_Record) return Gdk.Pixbuf.Gdk_Pixbuf
    is
    begin
       return Child.Title_Icon.Get;
@@ -3071,7 +3073,7 @@ package body Gtkada.MDI is
    -------------------
 
    function Get_Icon_Name
-     (Child : access MDI_Child_Record) return String
+     (Child : not null access MDI_Child_Record) return String
    is
    begin
       if Child.Icon_Name = null then
@@ -3086,7 +3088,7 @@ package body Gtkada.MDI is
    ---------------
 
    procedure Set_Title
-     (Child       : access MDI_Child_Record;
+     (Child       : not null access MDI_Child_Record;
       Title       : String;
       Short_Title : String := "")
    is
@@ -3330,7 +3332,7 @@ package body Gtkada.MDI is
    -- Lower_Child --
    -----------------
 
-   procedure Lower_Child (Child : access MDI_Child_Record'Class) is
+   procedure Lower_Child (Child : not null access MDI_Child_Record'Class) is
       Note : MDI_Notebook;
    begin
       Ref (Child);
@@ -3356,7 +3358,9 @@ package body Gtkada.MDI is
    -- Is_Raised --
    ---------------
 
-   function Is_Raised (Child : access MDI_Child_Record'Class) return Boolean is
+   function Is_Raised
+     (Child : not null access MDI_Child_Record'Class) return Boolean
+   is
       Note : MDI_Notebook;
    begin
       case Child.State is
@@ -3376,7 +3380,8 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Raise_Child
-     (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True)
+     (Child : not null access MDI_Child_Record'Class;
+      Give_Focus : Boolean := True)
    is
       Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
       Note          : MDI_Notebook;
@@ -3472,7 +3477,8 @@ package body Gtkada.MDI is
    -- Has_Title_Bar --
    -------------------
 
-   function Has_Title_Bar (Child : access MDI_Child_Record) return Boolean is
+   function Has_Title_Bar
+     (Child : not null access MDI_Child_Record) return Boolean is
    begin
       case Child.MDI.Draw_Title_Bars is
          when Always       => return True;
@@ -3511,7 +3517,7 @@ package body Gtkada.MDI is
    -- Set_Focus_Child --
    ---------------------
 
-   procedure Set_Focus_Child (Child : access MDI_Child_Record) is
+   procedure Set_Focus_Child (Child : not null access MDI_Child_Record) is
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
       Tmp : Boolean;
@@ -3705,7 +3711,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Float_Child
-     (Child : access MDI_Child_Record'Class;
+     (Child             : not null access MDI_Child_Record'Class;
       Float             : Boolean;
       Position_At_Mouse : Boolean := True;
       X, Y              : Gint := 0) is
@@ -3983,7 +3989,7 @@ package body Gtkada.MDI is
    -----------------
 
    function Is_Floating
-     (Child : access MDI_Child_Record'Class) return Boolean is
+     (Child : not null access MDI_Child_Record'Class) return Boolean is
    begin
       return Child.State = Floating;
    end Is_Floating;
@@ -4042,7 +4048,8 @@ package body Gtkada.MDI is
    -- Get_MDI --
    -------------
 
-   function Get_MDI (Child : access MDI_Child_Record) return MDI_Window is
+   function Get_MDI
+     (Child : not null access MDI_Child_Record) return MDI_Window is
    begin
       return Child.MDI;
    end Get_MDI;
@@ -8249,7 +8256,7 @@ package body Gtkada.MDI is
    ---------------------
 
    procedure Highlight_Child
-     (Child : access MDI_Child_Record; Highlight : Boolean := True)
+     (Child : not null access MDI_Child_Record; Highlight : Boolean := True)
    is
       Note      : constant MDI_Notebook := Get_Notebook (Child);
    begin
@@ -8286,7 +8293,8 @@ package body Gtkada.MDI is
    -- Get_State --
    ---------------
 
-   function Get_State (Child : access MDI_Child_Record) return State_Type is
+   function Get_State
+     (Child : not null access MDI_Child_Record) return State_Type is
    begin
       return Child.State;
    end Get_State;
@@ -8562,7 +8570,7 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Child_Drag_Begin
-     (Child : access MDI_Child_Record'Class;
+     (Child : not null access MDI_Child_Record'Class;
       Event : Gdk_Event_Button;
       Areas : Allowed_Areas)
    is
@@ -8613,7 +8621,8 @@ package body Gtkada.MDI is
    -- Cancel_Child_Drag --
    -----------------------
 
-   procedure Cancel_Child_Drag (Child : access MDI_Child_Record'Class) is
+   procedure Cancel_Child_Drag
+     (Child : not null access MDI_Child_Record'Class) is
    begin
       Print_Debug ("Cancel_Child_Drag");
 
@@ -8625,7 +8634,7 @@ package body Gtkada.MDI is
    -- Child_Drag_Finished --
    -------------------------
 
-   procedure Child_Drag_Finished (Child  : access MDI_Child_Record) is
+   procedure Child_Drag_Finished (Child : not null access MDI_Child_Record) is
       pragma Unreferenced (Child);
    begin
       null;
