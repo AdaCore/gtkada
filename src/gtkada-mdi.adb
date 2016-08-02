@@ -390,9 +390,6 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean;
    --  Forward a delete_event from the toplevel window to the child
 
-   procedure On_Close_Floating_Dialog (Child : access GObject_Record'Class);
-   --  Called when the user presses ESC in a floating window
-
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class);
    procedure Destroy_Initial_Child
       (Child : access Gtk_Widget_Record'Class);
@@ -3729,69 +3726,45 @@ package body Gtkada.MDI is
        Win       : out Gtk_Window;
        Container : out Gtk_Container)
    is
+      Parent : Gtk_Window := null;
+      Item   : Widget_List.Glist;
+      It     : MDI_Child;
    begin
-      if (Child.Flags and Float_As_Transient) /= 0
-          or else (Child.Flags and Float_To_Main) /= 0
-      then
-         declare
-            Diag   : Gtk_Dialog;
-            Parent : Gtk_Window := null;
-            Item   : Widget_List.Glist;
-            It     : MDI_Child;
-         begin
-            --  If the current child is floating, and the mode is
-            --  Float_As_Transient, we want to float the dialog as
-            --  transient for the current child.
+      Gtk_New (Win);
+      Container := Gtk_Container (Win);
 
-            if (Child.Flags and Float_As_Transient) /= 0 then
-               Item := Child.MDI.Items;
-               while Item /= Widget_List.Null_List loop
-                  It := MDI_Child (Get_Data (Item));
+      --  If the current child is floating, and the mode is
+      --  Float_As_Transient, we want to float the dialog as
+      --  transient for the current child.
 
-                  if It /= MDI_Child (Child) then
-                     if It.State = Floating
-                       and then It.Initial.Get_Realized
-                     then
-                        Parent := Gtk_Window (Get_Toplevel (It.Initial));
-                     else
-                        Parent := Gtk_Window (Get_Toplevel (Child.MDI));
-                     end if;
+      if (Child.Flags and Float_As_Transient) /= 0 then
+         Item := Child.MDI.Items;
+         while Item /= Widget_List.Null_List loop
+            It := MDI_Child (Get_Data (Item));
 
-                     exit;
-                  end if;
+            if It /= MDI_Child (Child) then
+               if It.State = Floating
+                 and then It.Initial.Get_Realized
+               then
+                  Parent := Gtk_Window (Get_Toplevel (It.Initial));
+               else
+                  Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+               end if;
 
-                  Item := Widget_List.Next (Item);
-               end loop;
-            elsif (Child.Flags and Float_To_Main) /= 0 then
-               Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+               exit;
             end if;
 
-            Gtk_New (Diag,
-                     Title  => "",
-                     Parent => Parent,
-                     Flags  => Use_Header_Bar_From_Settings (Child.MDI)
-                        or Destroy_With_Parent);
-            Win  := Gtk_Window (Diag);
-            Container := Gtk_Container (Get_Content_Area (Diag));
+            Item := Widget_List.Next (Item);
+         end loop;
+      elsif (Child.Flags and Float_To_Main) /= 0 then
+         Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+      end if;
 
-            --  Closing the dialog should give the focus to the previous child
-
-            Diag.On_Close (On_Close_Floating_Dialog'Access, Child);
-         end;
-      else
-         Gtk_New (Win);
-         Container := Gtk_Container (Win);
+      if Parent /= null then
+         Win.Set_Transient_For (Parent);
+         Win.Set_Destroy_With_Parent (True);
       end if;
    end Create_Float_Window_For_Child;
-
-   ------------------------------
-   -- On_Close_Floating_Dialog --
-   ------------------------------
-
-   procedure On_Close_Floating_Dialog (Child : access GObject_Record'Class) is
-   begin
-      Close_Child (MDI_Child (Child), Force => True);
-   end On_Close_Floating_Dialog;
 
    --------------------------
    -- Internal_Float_Child --
