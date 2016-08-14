@@ -98,7 +98,7 @@ package Cairo.Scaled_Font is
    procedure Text_Extents
      (Scaled_Font : Cairo_Scaled_Font;
       Utf8        : Interfaces.C.Strings.chars_ptr;
-      Extents     : Cairo_Text_Extents);
+      Extents     : access Cairo_Text_Extents);
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Utf8: a NUL-terminated string of text, encoded in UTF-8
    --  Extents: a Cairo_Text_Extents which to store the retrieved Extents.
@@ -124,7 +124,7 @@ package Cairo.Scaled_Font is
      (Scaled_Font : Cairo_Scaled_Font;
       Glyphs      : access Cairo_Glyph;
       Num_Glyphs  : Gint;
-      Extents     : Cairo_Text_Extents);
+      Extents     : access Cairo_Text_Extents);
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Glyphs: an array of glyph IDs with X and Y offsets.
    --  Num_Glyphs: the number of glyphs in the glyphs array
