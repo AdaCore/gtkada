@@ -39,7 +39,7 @@ project TestGtk is
 
    package Install is
       for artifacts ("share/examples/gtkada/testgtk") use
-        ("*.ad*", "*.xpm", "*.png", "*.gif", "*.css", "*.ui", "*.lwo", "*.xml");
+        ("*.ad*", "*.xpm", "*.svg", "*.png", "*.gif", "*.css", "*.ui", "*.lwo", "*.xml");
    end Install;
 
 end TestGtk;

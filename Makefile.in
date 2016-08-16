@@ -119,7 +119,7 @@ install: install-clean
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage -Psrc/tools/tools.gpr
 	cd testgtk; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
-		--mode=usage --exec-subdir=${exampledir} \
+		--mode=usage --exec-subdir=${DESTDIR}/${exampledir} \
 		-Ptestgtk.gpr -aP ../src
 
 	@echo '-----------------------------------------------------------------------'
