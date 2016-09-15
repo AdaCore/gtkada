@@ -3816,7 +3816,7 @@ package body Gtkada.MDI is
             end if;
 
          else
-            Child.Initial.Get_Preferred_Size (Min, Requisition);
+            Child.Get_Preferred_Size (Min, Requisition);
             W := Requisition.Width;
             H := Requisition.Height;
             if Traces then
