@@ -41,7 +41,13 @@ library project GtkAda is
    for Library_Name use "gtkada";
    for Library_Version use
       "lib" & Project'Library_Name & Shared.So_Ext & "." & Version;
-   for Library_Options use Shared.Gtk_Libs;
+
+   case Shared.Library_Kind is
+      when "relocatable" =>
+         for Library_Options use Shared.Gtk_Libs;
+      when others =>
+         null;
+   end case;
 
    package Builder  renames Shared.Builder;
    package Naming   renames Shared.Naming;
