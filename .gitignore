@@ -42,6 +42,7 @@ testgtk/testcairo
 testgtk/application
 testgtk/try.png
 docs/gtkada_rm/gtkada_rm/
+docs/gtkada_rm/html/static/index.html
 docs/gtkada_ug/gtkada_ug.html
 docs/gtkada_ug/gtkada_ug.info
 docs/gtkada_ug/gtkada_ug.ps

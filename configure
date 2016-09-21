@@ -3905,7 +3905,7 @@ $as_echo "$have_MesaGL_pthread" >&6; }
 
 libdir='${prefix}/lib'
 
-ac_config_files="$ac_config_files Makefile shared.gpr po/Makefile"
+ac_config_files="$ac_config_files Makefile shared.gpr po/Makefile docs/gtkada_rm/html/static/index.html"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4615,6 +4615,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "shared.gpr") CONFIG_FILES="$CONFIG_FILES shared.gpr" ;;
     "po/Makefile") CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;
+    "docs/gtkada_rm/html/static/index.html") CONFIG_FILES="$CONFIG_FILES docs/gtkada_rm/html/static/index.html" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

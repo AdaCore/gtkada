@@ -11,6 +11,10 @@ project GtkAda_Documentation is
       for Default_Switches ("Ada") use ("-m");
    end Builder;
 
+   package Documentation is
+      for HTML_Custom_Dir use "html";
+   end Documentation;
+
    package IDE is
       for Documentation_Dir use "gtkada_rm";
    end IDE;
