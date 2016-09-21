@@ -24,7 +24,6 @@ shared.gpr
 contrib/generated/*.ad?
 contrib/generated/tmp.ada
 src/Makefile.common
-src/config.h
 src/gtkada-intl.adb
 src/gtkextra/obj
 src/lib
