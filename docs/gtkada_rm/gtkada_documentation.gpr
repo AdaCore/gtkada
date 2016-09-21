@@ -4,7 +4,7 @@ project GtkAda_Documentation is
    for Object_Dir use "doc_obj";
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-gnatc", "-gnatQ", "-gnat05");
+      for Default_Switches ("Ada") use ("-gnatc", "-gnatQ");
    end Compiler;
 
    package Builder is
