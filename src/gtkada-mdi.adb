@@ -2312,14 +2312,13 @@ package body Gtkada.MDI is
                            Orientation => Orientation_Horizontal,
                            Width       => 0,
                            Height      => 0);
-
-                     else
-                        Emit_By_Name
-                          (Get_Object (MDI),
-                           String (Signal_Children_Reorganized)
-                           & ASCII.NUL);
                      end if;
                end case;
+
+               Emit_By_Name
+                 (Get_Object (MDI),
+                  String (Signal_Children_Reorganized)
+                  & ASCII.NUL);
             end if;
 
             Child_Drag_Finished (C);
