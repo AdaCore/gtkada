@@ -1061,6 +1061,11 @@ package Gtkada.MDI is
    --     Called when the user has selected a new perspective. One use is to
    --     save the new desktop to a file.
    --
+   --  - "perspectives_added"
+   --     procedure Handler
+   --        (MDI : access MDI_Window_Record'Class; Name : String);
+   --     Called when a new perspective is created
+   --
    --  </signals>
    --
    --  <signals>
@@ -1130,6 +1135,7 @@ package Gtkada.MDI is
    Signal_Before_Unfloat_Child : constant Signal_Name :=
      "before_unfloat_child";
    Signal_Perspective_Changed  : constant Signal_Name := "perspective_changed";
+   Signal_Perspectives_Added   : constant Signal_Name := "perspectives_added";
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";

@@ -32,6 +32,7 @@
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
 
+with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Containers.Vectors;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Unchecked_Deallocation;
@@ -159,7 +160,8 @@ package body Gtkada.MDI is
       8 => New_String (String (Signal_Perspective_Changed)),
       9 => New_String (String (Signal_Unfloat_Child)),
       10 => New_String (String (Signal_Before_Unfloat_Child)),
-      11 => New_String (String (Signal_Before_Destroy_Child)));
+      11 => New_String (String (Signal_Before_Destroy_Child)),
+      12 => New_String (String (Signal_Perspectives_Added)));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String (String (Signal_Float_Child)),
@@ -583,6 +585,10 @@ package body Gtkada.MDI is
 
    procedure Emit_By_Name (Object : System.Address; Name : String);
    pragma Import (C, Emit_By_Name, "ada_g_signal_emit_by_name");
+
+   procedure Emit_By_Name_Str (Object : System.Address; Name, Param : String);
+   pragma Import (C, Emit_By_Name_Str, "ada_g_signal_emit_by_name_ptr");
+   --  Both Name and Param must end with ASCII.NUL
 
    procedure Internal_Float_Child
      (Child             : access MDI_Child_Record'Class;
@@ -1038,7 +1044,8 @@ package body Gtkada.MDI is
          8 => (1 => GType_None),
          9 => (1 => GType_Pointer),
          10 => (1 => GType_Pointer),
-         11 => (1 => GType_Pointer));
+         11 => (1 => GType_Pointer),
+         12 => (1 => GType_String));
    begin
       Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtkada.Multi_Paned.Get_Type,
@@ -5821,6 +5828,10 @@ package body Gtkada.MDI is
 
          Recompute_Perspective_Names (MDI);
          Update_Perspective_Menu_Model (MDI);
+         Emit_By_Name_Str
+           (Get_Object (MDI),
+            String (Signal_Perspectives_Added) & ASCII.NUL,
+            Name & ASCII.NUL);
       end Create_Perspective;
 
       ------------------------
@@ -5853,6 +5864,10 @@ package body Gtkada.MDI is
 
          Add_Child (MDI.Perspectives, Deep_Copy (XML), Append => True);
          Update_Perspective_Menu_Model (MDI);
+         Emit_By_Name_Str
+           (Get_Object (MDI),
+            String (Signal_Perspectives_Added) & ASCII.NUL,
+            Name & ASCII.NUL);
       end Define_Perspective;
 
       ----------------------------------------
@@ -7463,6 +7478,8 @@ package body Gtkada.MDI is
             end if;
          end Save_Paned;
 
+         Save_On_Exit : Boolean;
+
       begin
          if MDI.Perspectives = null then
             MDI.Perspectives := new Node;
@@ -7470,6 +7487,12 @@ package body Gtkada.MDI is
          end if;
 
          if MDI.Current_Perspective /= null then
+            if To_Lower (Get_Attribute
+               (MDI.Current_Perspective, "save_on_exit", "True")) = "false"
+            then
+               return;
+            end if;
+
             --  Replace (in place) the perspective. This is so that the
             --  order in the /Window/Perspectives menu is preserved as much
             --  as possible
