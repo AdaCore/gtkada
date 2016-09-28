@@ -42,6 +42,7 @@ with Gdk.RGBA;                           use Gdk.RGBA;
 with Gdk.Types.Keysyms;                  use Gdk.Types.Keysyms;
 with Gdk.Window_Attr;                    use Gdk.Window_Attr;
 with Gdk.Window;                         use Gdk.Window;
+with Gtk.Accel_Group;                    use Gtk.Accel_Group;
 with Gtk.Enums;                          use Gtk.Enums;
 with Gtk.Handlers;                       use Gtk.Handlers;
 with Gtk.Scrollable;                     use Gtk.Scrollable;
@@ -56,6 +57,7 @@ with Gtkada.Canvas_View.Objects;         use Gtkada.Canvas_View.Objects;
 with Gtkada.Canvas_View.Views;           use Gtkada.Canvas_View.Views;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
 with Gtkada.Types;                       use Gtkada.Types;
+with Pango.Font;                         use Pango.Font;
 with System.Storage_Elements;            use System.Storage_Elements;
 
 package body Gtkada.Canvas_View is
@@ -1395,8 +1397,9 @@ package body Gtkada.Canvas_View is
          Edit := Self.Get_Child;
          Box := Self.Model_To_View (Self.Inline_Edit.Item.Model_Bounding_Box);
 
-         SAlloc.X := Alloc.X + Gint (Box.X);
-         SAlloc.Y := Alloc.Y + Gint (Box.Y);
+         --  SAlloc is relative to the view, so we should not add Alloc.{X,Y}
+         SAlloc.X := Gint (Box.X);
+         SAlloc.Y := Gint (Box.Y);
 
          Edit.Get_Preferred_Height (HMin, HNat);
          SAlloc.Height := Gint'Max (HMin, Gint (Box.Height));
@@ -4378,8 +4381,10 @@ package body Gtkada.Canvas_View is
       Text : Gtk_Text_View;
       From, To : Gtk_Text_Iter;
    begin
-      if Event.State = Control_Mask
-        and then Event.Keyval = GDK_Return
+      --  <return> closes the editing, but <shift-return> just
+      --  inserts a newline
+      if Event.Keyval = GDK_Return
+         and then (Event.State and Get_Default_Mod_Mask) = 0
       then
          declare
             Old : constant String := Editable_Text_Item
@@ -4410,6 +4415,28 @@ package body Gtkada.Canvas_View is
       return False;
    end On_Text_Edit_Key_Press;
 
+   ------------------
+   -- Set_Editable --
+   ------------------
+
+   procedure Set_Editable
+     (Self   : not null access Editable_Text_Item_Record'Class;
+      Editable : Boolean) is
+   begin
+      Self.Editable := Editable;
+   end Set_Editable;
+
+   -----------------
+   -- Is_Editable --
+   -----------------
+
+   function Is_Editable
+     (Self   : not null access Editable_Text_Item_Record'Class)
+     return Boolean is
+   begin
+      return Self.Editable;
+   end Is_Editable;
+
    -----------------
    -- Edit_Widget --
    -----------------
@@ -4420,14 +4447,36 @@ package body Gtkada.Canvas_View is
       return Gtk.Widget.Gtk_Widget
    is
       Text   : Gtk_Text_View;
+      Font   : Pango_Font_Description;
+      Start, Finish : Gtk_Text_Iter;
       Buffer : Gtk_Text_Buffer;
    begin
-      Gtk_New (Buffer);
-      Gtk_New (Text, Buffer);
-      Buffer.Set_Text (Self.Text.all);   --  not compute_text
-      Text.On_Key_Press_Event (On_Text_Edit_Key_Press'Access, View);
+      if Self.Editable then
+         Gtk_New (Buffer);
+         Gtk_New (Text, Buffer);
 
-      return Gtk_Widget (Text);
+         Font := Copy (Self.Get_Style.Get_Font.Name);
+         Set_Size (Font, Gint (Gdouble (Get_Size (Font)) * View.Get_Scale));
+         Text.Override_Font (Font);
+         Free (Font);
+
+         Text.Override_Color
+            (Gtk_State_Flag_Normal or Gtk_State_Flag_Active,
+             Self.Get_Style.Get_Font.Color);
+
+         Buffer.Set_Text (Self.Text.all);   --  not compute_text
+         Text.On_Key_Press_Event (On_Text_Edit_Key_Press'Access, View);
+
+         --  Select the whole text so that users can more easily replace
+         --  it
+         Buffer.Get_Start_Iter (Start);
+         Buffer.Get_End_Iter (Finish);
+         Buffer.Select_Range (Start, Finish);
+
+         return Gtk_Widget (Text);
+      else
+         return null;
+      end if;
    end Edit_Widget;
 
    -----------------

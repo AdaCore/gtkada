@@ -319,6 +319,17 @@ package body Gtkada.Canvas_View.Views is
       end if;
    end Cancel_Inline_Editing;
 
+   --------------------------------
+   -- Inline_Editing_In_Progress --
+   --------------------------------
+
+   function Inline_Editing_In_Progress
+     (Self : not null access Canvas_View_Record'Class)
+     return Boolean is
+   begin
+      return Self.Inline_Edit.Item /= null;
+   end Inline_Editing_In_Progress;
+
    --------------------------
    -- Start_Inline_Editing --
    --------------------------

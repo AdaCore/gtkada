@@ -737,7 +737,7 @@ package Gtkada.Canvas_View is
    procedure Remove
      (Self : not null access Canvas_Model_Record;
       Item : not null access Abstract_Item_Record'Class) is null;
-   --  Remove an item to the model, and destroy it.
+   --  Remove an item from the model, and destroy it.
    --  This also removes all links to and from the element, and links to
    --  these links (and so on).
 
@@ -1802,8 +1802,19 @@ package Gtkada.Canvas_View is
       Directed : Text_Arrow_Direction := No_Text_Arrow);
    --  Create a new text item
 
+   procedure Set_Editable
+      (Self   : not null access Editable_Text_Item_Record'Class;
+       Editable : Boolean);
+   function Is_Editable
+      (Self   : not null access Editable_Text_Item_Record'Class)
+      return Boolean;
+   --  Sets whether Self can be edited interactively by double-clicking
+   --  on it. You should also call
+   --  Gtkada.Canvas_View.Views.Cancel_Inline_Editing in case some editing
+   --  was taking place.
+
    procedure On_Edited
-     (Self     : not null access Editable_Text_Item_Record'Class;
+     (Self     : not null access Editable_Text_Item_Record;
       Old_Text : String) is null;
    --  Called after the text has been edited
 
@@ -2070,7 +2081,9 @@ private
       Directed : Text_Arrow_Direction;
    end record;
 
-   type Editable_Text_Item_Record is new Text_Item_Record with null record;
+   type Editable_Text_Item_Record is new Text_Item_Record with record
+      Editable : Boolean := True;
+   end record;
 
    type Hr_Item_Record is new Container_Item_Record with record
       Text     : GNAT.Strings.String_Access;

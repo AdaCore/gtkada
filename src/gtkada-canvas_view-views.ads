@@ -310,6 +310,11 @@ package Gtkada.Canvas_View.Views is
    --  Returns True if such a widget could be displayed, False if editing could
    --  not take place.
 
+   function Inline_Editing_In_Progress
+     (Self : not null access Canvas_View_Record'Class)
+     return Boolean;
+   --  Whether any inline editing is taking place
+
    procedure Cancel_Inline_Editing
      (Self    : not null access Canvas_View_Record'Class);
    --  Destroys any inline editing widget that might be set
