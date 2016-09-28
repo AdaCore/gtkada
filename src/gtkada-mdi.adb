@@ -38,7 +38,6 @@ with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Unchecked_Deallocation;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
-with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Tags;                use Ada.Tags;
 with Ada.Exceptions;          use Ada.Exceptions;
 with System;                  use System;
@@ -7477,8 +7476,6 @@ package body Gtkada.MDI is
                Prune_Empty (Parent.Child);
             end if;
          end Save_Paned;
-
-         Save_On_Exit : Boolean;
 
       begin
          if MDI.Perspectives = null then
