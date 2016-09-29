@@ -63,7 +63,7 @@ project Shared is
              for Switches ("C") use ("-g", "-O0");
          when "Production" =>
              for Switches ("Ada") use
-                ("-gnat05", "-gnatQ", "-O2", "-gnatn", "-gnatws",
+                ("-gnat05", "-gnatQ", "-O2", "-gnatn", "-gnatwa", "-gnaty",
                  "-Werror=format-security");
              for Switches ("C") use ("-O2");
       end case;
