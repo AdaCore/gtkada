@@ -69,7 +69,9 @@ package body Gtkada.Canvas_View is
       4 => New_String (String (Signal_Item_Destroyed)));
    View_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
      (1 => New_String (String (Signal_Viewport_Changed)),
-      2 => New_String (String (Signal_Item_Event)));
+      2 => New_String (String (Signal_Item_Event)),
+      3 => New_String (String (Signal_Inline_Editing_Started)),
+      4 => New_String (String (Signal_Inline_Editing_Finished)));
 
    Model_Class_Record : Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
@@ -101,6 +103,10 @@ package body Gtkada.Canvas_View is
    procedure On_Size_Allocate (View : System.Address; Alloc : Gtk_Allocation);
    pragma Convention (C, On_Size_Allocate);
    --  default handler for "size_allocate" on views.
+
+   procedure Move_Inline_Edit_Widget
+     (Self : not null access Canvas_View_Record'Class);
+   --  Move the inline editing widget, if one exists
 
    function GValue_To_Abstract_Item (Value : GValue) return Abstract_Item;
    function Abstract_Item_To_Address is new Ada.Unchecked_Conversion
@@ -508,6 +514,8 @@ package body Gtkada.Canvas_View is
          Set_Adjustment_Values (Self);
          Self.Queue_Draw;
       end if;
+
+      Move_Inline_Edit_Widget (Self);
    end On_Layout_Changed_For_View;
 
    -----------------------------------
@@ -1136,7 +1144,9 @@ package body Gtkada.Canvas_View is
          Class_Record => View_Class_Record'Access,
          Type_Name    => "GtkadaCanvasView",
          Parameters   => (1 => (1 => GType_None),
-                          2 => (1 => GType_Pointer)),
+                          2 => (1 => GType_Pointer),
+                          3 => (1 => GType_Pointer),
+                          4 => (1 => GType_Pointer)),
          Returns      => (1 => GType_None,
                           2 => GType_Boolean),
          Class_Init   => View_Class_Init'Access)
@@ -1357,6 +1367,36 @@ package body Gtkada.Canvas_View is
          return 0;
    end On_View_Draw;
 
+   -----------------------------
+   -- Move_Inline_Edit_Widget --
+   -----------------------------
+
+   procedure Move_Inline_Edit_Widget
+      (Self : not null access Canvas_View_Record'Class)
+   is
+      Edit   : Gtk_Widget;
+      Box    : View_Rectangle;
+      SAlloc : Gtk_Allocation;
+      WMin, WNat, HMin, HNat : Gint;
+   begin
+      if Self.Inline_Edit.Item /= null then
+         Edit := Self.Get_Child;
+         Box := Self.Model_To_View (Self.Inline_Edit.Item.Model_Bounding_Box);
+
+         --  SAlloc is relative to the view, so we should not add Alloc.{X,Y}
+         SAlloc.X := Gint (Box.X);
+         SAlloc.Y := Gint (Box.Y);
+
+         Edit.Get_Preferred_Height (HMin, HNat);
+         SAlloc.Height := Gint'Max (HMin, Gint (Box.Height));
+
+         Edit.Get_Preferred_Width_For_Height (SAlloc.Height, WMin, WNat);
+         SAlloc.Width := Gint'Max (WMin, Gint (Box.Width));
+
+         Edit.Size_Allocate (SAlloc);
+      end if;
+   end Move_Inline_Edit_Widget;
+
    ----------------------
    -- On_Size_Allocate --
    ----------------------
@@ -1366,9 +1406,6 @@ package body Gtkada.Canvas_View is
    is
       Self : constant Canvas_View := Canvas_View (Glib.Object.Convert (View));
       SAlloc : Gtk_Allocation := Alloc;
-      Edit   : Gtk_Widget;
-      Box    : View_Rectangle;
-      WMin, WNat, HMin, HNat : Gint;
    begin
       --  For some reason, when we maximize the toplevel window in testgtk, or
       --  at least enlarge it horizontally, we are starting to see an alloc
@@ -1393,22 +1430,7 @@ package body Gtkada.Canvas_View is
       end if;
 
       --  Are we in the middle of inline-editing ?
-      if Self.Inline_Edit.Item /= null then
-         Edit := Self.Get_Child;
-         Box := Self.Model_To_View (Self.Inline_Edit.Item.Model_Bounding_Box);
-
-         --  SAlloc is relative to the view, so we should not add Alloc.{X,Y}
-         SAlloc.X := Gint (Box.X);
-         SAlloc.Y := Gint (Box.Y);
-
-         Edit.Get_Preferred_Height (HMin, HNat);
-         SAlloc.Height := Gint'Max (HMin, Gint (Box.Height));
-
-         Edit.Get_Preferred_Width_For_Height (SAlloc.Height, WMin, WNat);
-         SAlloc.Width := Gint'Max (WMin, Gint (Box.Width));
-
-         Edit.Size_Allocate (SAlloc);
-      end if;
+      Move_Inline_Edit_Widget (Self);
 
       if Self.Scale_To_Fit_Requested /= 0.0 then
          Self.Scale_To_Fit
@@ -1829,6 +1851,76 @@ package body Gtkada.Canvas_View is
             EDA_Marshallers.To_Marshaller (Call), Slot);
       end if;
    end On_Item_Event;
+
+   ----------------------------
+   -- Inline_Editing_Started --
+   ----------------------------
+
+   procedure Inline_Editing_Started
+     (Self   : not null access Canvas_View_Record'Class;
+      Item : not null access Abstract_Item_Record'Class) is
+   begin
+      Abstract_Item_Emit
+        (Self, Signal_Inline_Editing_Started & ASCII.NUL,
+         Abstract_Item (Item));
+   end Inline_Editing_Started;
+
+   -------------------------------
+   -- On_Inline_Editing_Started --
+   -------------------------------
+
+   function On_Inline_Editing_Started
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class; Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id is
+   begin
+      if Slot = null then
+         return Object_Callback.Connect
+           (Self, Signal_Inline_Editing_Started,
+            Abstract_Item_Marshallers.To_Marshaller (Call));
+      else
+         return Object_Callback.Object_Connect
+           (Self, Signal_Inline_Editing_Started,
+            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+      end if;
+   end On_Inline_Editing_Started;
+
+   -----------------------------
+   -- Inline_Editing_Finished --
+   -----------------------------
+
+   procedure Inline_Editing_Finished
+     (Self  : not null access Canvas_View_Record'Class;
+      Item : not null access Abstract_Item_Record'Class) is
+   begin
+      Abstract_Item_Emit
+        (Self, Signal_Inline_Editing_Finished & ASCII.NUL,
+         Abstract_Item (Item));
+   end Inline_Editing_Finished;
+
+   --------------------------------
+   -- On_Inline_Editing_Finished --
+   --------------------------------
+
+   function On_Inline_Editing_Finished
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class; Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id is
+   begin
+      if Slot = null then
+         return Object_Callback.Connect
+           (Self, Signal_Inline_Editing_Finished,
+            Abstract_Item_Marshallers.To_Marshaller (Call));
+      else
+         return Object_Callback.Object_Connect
+           (Self, Signal_Inline_Editing_Finished,
+            Abstract_Item_Marshallers.To_Marshaller (Call), Slot);
+      end if;
+   end On_Inline_Editing_Finished;
 
    -------------
    -- Refresh --

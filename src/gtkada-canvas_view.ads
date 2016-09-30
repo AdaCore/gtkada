@@ -1295,6 +1295,33 @@ package Gtkada.Canvas_View is
    --  compatible callbacks which enable behaviors such as a moving items,
    --  scrolling the canvas by dragging the background,...
 
+   procedure Inline_Editing_Started
+     (Self : not null access Canvas_View_Record'Class;
+      Item : not null access Abstract_Item_Record'Class);
+   function On_Inline_Editing_Started
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class; Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
+   Signal_Inline_Editing_Started : constant Glib.Signal_Name :=
+      "inline_editing_started";
+   --  Called when the user starts inline editing of items.
+
+   procedure Inline_Editing_Finished
+     (Self : not null access Canvas_View_Record'Class;
+      Item : not null access Abstract_Item_Record'Class);
+   function On_Inline_Editing_Finished
+     (Self : not null access Canvas_View_Record'Class;
+      Call : not null access procedure
+        (Self : access GObject_Record'Class; Item : Abstract_Item);
+      Slot : access GObject_Record'Class := null)
+      return Gtk.Handlers.Handler_Id;
+   Signal_Inline_Editing_Finished : constant Glib.Signal_Name :=
+      "inline_editing_finished";
+   --  Called when the user finishes (cancels ot validates) inline
+   --  editing of items.
+
    ------------------------
    -- Object hierarchies --
    ------------------------

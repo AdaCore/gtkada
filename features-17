@@ -13,6 +13,21 @@ of the feature.
 New features in GtkAda 17
 -------------------------
 
+NF-17-P930-028 Gtkada.Canvas_View: inline editing improvements (2016-09-30)
+
+   New signals have been aded:
+      Signal_Inline_Editing_Started
+      Signal_Inline_Editing_Finished
+   New subprograms have been added:
+      Set_Editable, Is_Editable
+      Inline_Editing_In_Progress
+   When an item that is edited interactively by the user is moved, we now
+   also move the editing widget (generally a GtkTextView). This text view
+   now also inherits the font size and attributes from the edited item.
+   End of editing is done via a simple <return>, since the previous
+   <ctrl-return> was impossible to guess by the user. Preselect the whole
+   text when editing, so that the user can more easily change it all.
+
 NF-17-P722-028 New MDI child signals (2016-07-22)
 
    New signals have been introduced in the MDI

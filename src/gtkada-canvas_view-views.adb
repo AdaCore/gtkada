@@ -310,10 +310,10 @@ package body Gtkada.Canvas_View.Views is
    ---------------------------
 
    procedure Cancel_Inline_Editing
-     (Self    : not null access Canvas_View_Record'Class)
-   is
+     (Self    : not null access Canvas_View_Record'Class) is
    begin
       if Self.Inline_Edit.Item /= null then
+         Self.Inline_Editing_Finished (Self.Inline_Edit.Item);
          Self.Inline_Edit.Item := null;
          Self.Remove (Self.Get_Child);
       end if;
@@ -347,6 +347,7 @@ package body Gtkada.Canvas_View.Views is
          Self.Add (W);  --  also queues a resize, so calls On_Size_Allocate
          W.Show_All;
          W.Grab_Focus;
+         Self.Inline_Editing_Started (Item);
       end if;
    end Start_Inline_Editing;
 
