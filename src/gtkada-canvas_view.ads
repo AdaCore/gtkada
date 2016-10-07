@@ -676,7 +676,7 @@ package Gtkada.Canvas_View is
    --  This iterator should return all the links in the model.
    --  If possible, it should restrict itself to the links with at least one
    --  end on an item in From_Or_To (or on a link to such an item).
-   --  This function is important for performance when draggin items in a
+   --  This function is important for performance when dragging items in a
    --  large model (tens of thousands of items). The default implementation
    --  simply calls For_Each_Item.
    --  From_Or_To is never empty.
