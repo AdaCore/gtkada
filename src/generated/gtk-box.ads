@@ -123,6 +123,7 @@ package Gtk.Box is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_box_get_type");
+   --  Used with Glib.Object.G_New, this creates a horizontal box
 
    procedure Gtk_New_Hbox
       (Box         : out Gtk_Hbox;

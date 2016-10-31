@@ -887,6 +887,9 @@ on how all the parameters for the boxes work.
          <parameter name="padding" default="0"/>
       </method>
       <parameter name="self" ada="Box"/>
+      <method id="gtk_box_get_type">
+         <doc extend="True">Used with Glib.Object.G_New, this creates a horizontal box</doc>
+      </method>
 
       <extra>
          <gir:method c:identifier="ada_box_get_child" name="Get_Child"

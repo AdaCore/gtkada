@@ -1627,6 +1627,7 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
             section.add(
                 Subprogram(
                     name=get_type_name,
+                    doc=gtkmethod.get_doc(default=''),
                     returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True))
                 .import_c(n))
 
