@@ -52,6 +52,8 @@ package Gtk.Text_Child_Anchor is
    --  Gtk.Text_Buffer.Insert_Child_Anchor. To perform the creation and
    --  insertion in one step, use the convenience function
    --  Gtk.Text_Buffer.Create_Child_Anchor.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Text_Child_Anchor_New return Gtk_Text_Child_Anchor;
    --  Creates a new Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor. Usually you

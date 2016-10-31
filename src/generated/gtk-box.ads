@@ -110,6 +110,8 @@ package Gtk.Box is
        Spacing     : Gint);
    --  Creates a new Gtk.Box.Gtk_Box.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "orientation": the box's orientation.
    --  "spacing": the number of pixels to place by default between children.
 
@@ -134,6 +136,8 @@ package Gtk.Box is
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Hbox.
+   --  Initialize_Hbox does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.
@@ -158,6 +162,8 @@ package Gtk.Box is
        Homogeneous : Boolean := False;
        Spacing     : Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Vbox.
+   --  Initialize_Vbox does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
    --  "spacing": the number of pixels to place by default between children.

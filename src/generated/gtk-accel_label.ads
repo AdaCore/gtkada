@@ -99,6 +99,8 @@ package Gtk.Accel_Label is
       (Accel_Label : not null access Gtk_Accel_Label_Record'Class;
        String      : UTF8_String);
    --  Creates a new Gtk.Accel_Label.Gtk_Accel_Label.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "string": the label string. Must be non-null.
 
    function Gtk_Accel_Label_New

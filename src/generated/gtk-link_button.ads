@@ -69,6 +69,8 @@ package Gtk.Link_Button is
        URI    : UTF8_String);
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button with the URI as its text.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "uri": a valid URI
 
    function Gtk_Link_Button_New (URI : UTF8_String) return Gtk_Link_Button;
@@ -86,6 +88,8 @@ package Gtk.Link_Button is
        Label  : UTF8_String := "");
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
    --  Since: gtk+ 2.10
+   --  Initialize_With_Label does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "uri": a valid URI
    --  "label": the text of the button
 

@@ -79,6 +79,8 @@ package Gtk.Font_Chooser_Widget is
       (Self : not null access Gtk_Font_Chooser_Widget_Record'Class);
    --  Creates a new Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget.
    --  Since: gtk+ 3.2
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Font_Chooser_Widget_New return Gtk_Font_Chooser_Widget;
    --  Creates a new Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget.

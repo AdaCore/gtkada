@@ -61,6 +61,8 @@ package Gtk.Gesture_Swipe is
        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes swipes.
    --  Since: gtk+ 3.14
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "widget": a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Swipe_New

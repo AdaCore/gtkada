@@ -74,6 +74,8 @@ package Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record'Class);
    --  Creates a new font picker widget.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Font_Button_New return Gtk_Font_Button;
    --  Creates a new font picker widget.
@@ -87,6 +89,8 @@ package Gtk.Font_Button is
        Fontname    : UTF8_String);
    --  Creates a new font picker widget.
    --  Since: gtk+ 2.4
+   --  Initialize_With_Font does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "fontname": Name of font to display in font chooser dialog
 
    function Gtk_Font_Button_New_With_Font

@@ -51,6 +51,8 @@ package Gtk.Event_Box is
       (Event_Box : not null access Gtk_Event_Box_Record'Class);
    --  Create a new box.
    --  The box's child can then be set using the Gtk.Container.Add function.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Event_Box_New return Gtk_Event_Box;
    --  Create a new box.

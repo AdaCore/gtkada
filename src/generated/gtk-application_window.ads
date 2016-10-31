@@ -131,6 +131,8 @@ package Gtk.Application_Window is
        Application : not null access Gtk.Application.Gtk_Application_Record'Class);
    --  Creates a new Gtk.Application_Window.Gtk_Application_Window.
    --  Since: gtk+ 3.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "application": a Gtk.Application.Gtk_Application
 
    function Gtk_Application_Window_New

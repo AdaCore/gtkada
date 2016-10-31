@@ -85,6 +85,8 @@ package Gtk.Scale is
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new Gtk.Scale.Gtk_Scale.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "orientation": the scale's orientation.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
    --  the scale, or null to create a new adjustment.
@@ -119,6 +121,8 @@ package Gtk.Scale is
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  Since: gtk+ 3.0
+   --  Initialize_With_Range does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "orientation": the scale's orientation.
    --  "min": minimum value
    --  "max": maximum value
@@ -152,6 +156,8 @@ package Gtk.Scale is
       (Scale      : not null access Gtk_Hscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Scale.Gtk_Hscale.
+   --  Initialize_Hscale does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
    --  the scale.
 
@@ -172,6 +178,8 @@ package Gtk.Scale is
    --  Note that the way in which the precision is derived works best if Step
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Scale.Set_Digits to correct it.
+   --  Initialize_Hscale does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "min": minimum value
    --  "max": maximum value
    --  "step": step increment (tick size) used with keyboard shortcuts
@@ -207,6 +215,8 @@ package Gtk.Scale is
       (Scale      : not null access Gtk_Vscale_Record'Class;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Scale.Gtk_Vscale.
+   --  Initialize_Vscale does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
    --  the scale.
 
@@ -227,6 +237,8 @@ package Gtk.Scale is
    --  Note that the way in which the precision is derived works best if Step
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Scale.Set_Digits to correct it.
+   --  Initialize_Vscale does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "min": minimum value
    --  "max": maximum value
    --  "step": step increment (tick size) used with keyboard shortcuts

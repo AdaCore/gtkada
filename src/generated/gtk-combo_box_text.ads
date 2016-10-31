@@ -100,6 +100,8 @@ package Gtk.Combo_Box_Text is
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
    --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings.
    --  Since: gtk+ 2.24
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Combo_Box_Text_New return Gtk_Combo_Box_Text;
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a
@@ -113,6 +115,8 @@ package Gtk.Combo_Box_Text is
    --  Gtk.Combo_Box.Gtk_Combo_Box just displaying strings. The combo box
    --  created by this function has an entry.
    --  Since: gtk+ 2.24
+   --  Initialize_With_Entry does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
 
    function Gtk_Combo_Box_Text_New_With_Entry return Gtk_Combo_Box_Text;
    --  Creates a new Gtk.Combo_Box_Text.Gtk_Combo_Box_Text, which is a

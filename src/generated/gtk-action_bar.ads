@@ -53,6 +53,8 @@ package Gtk.Action_Bar is
    procedure Initialize (Self : not null access Gtk_Action_Bar_Record'Class);
    --  Creates a new Gtk.Action_Bar.Gtk_Action_Bar widget.
    --  Since: gtk+ 3.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Action_Bar_New return Gtk_Action_Bar;
    --  Creates a new Gtk.Action_Bar.Gtk_Action_Bar widget.

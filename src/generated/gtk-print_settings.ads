@@ -74,6 +74,8 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record'Class);
    --  Creates a new Gtk.Print_Settings.Gtk_Print_Settings object.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Print_Settings_New return Gtk_Print_Settings;
    --  Creates a new Gtk.Print_Settings.Gtk_Print_Settings object.
@@ -91,6 +93,8 @@ package Gtk.Print_Settings is
    --  is set to either a GFile_Error or GKey_File_Error. See
    --  Gtk.Print_Settings.To_File.
    --  Since: gtk+ 2.12
+   --  Initialize_From_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "file_name": the filename to read the settings from
 
    function Gtk_Print_Settings_New_From_File
@@ -116,6 +120,8 @@ package Gtk.Print_Settings is
    --  settings, or null if an error occurred. If the file could not be loaded
    --  then error is set to either a GFile_Error or GKey_File_Error.
    --  Since: gtk+ 2.12
+   --  Initialize_From_Key_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "key_file": the Gkey.File.Gkey_File to retrieve the settings from
    --  "group_name": the name of the group to use, or null to use the default
    --  "Print Settings"

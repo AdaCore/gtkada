@@ -57,6 +57,8 @@ package Gtk.Toggle_Tool_Button is
       (Button : not null access Gtk_Toggle_Tool_Button_Record'Class);
    --  Returns a new Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Toggle_Tool_Button_New return Gtk_Toggle_Tool_Button;
    --  Returns a new Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button
@@ -73,6 +75,8 @@ package Gtk.Toggle_Tool_Button is
    --  macros like GTK_STOCK_OK and GTK_STOCK_APPLY.
    --  It is an error if Stock_Id is not a name of a stock item.
    --  Since: gtk+ 2.4
+   --  Initialize_From_Stock does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "stock_id": the name of the stock item
 
    function Gtk_Toggle_Tool_Button_New_From_Stock

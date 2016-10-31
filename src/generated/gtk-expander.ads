@@ -96,6 +96,8 @@ package Gtk.Expander is
        Label    : UTF8_String);
    --  Creates a new expander using Label as the text of the label.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": the text of the label
 
    function Gtk_Expander_New (Label : UTF8_String) return Gtk_Expander;
@@ -116,6 +118,8 @@ package Gtk.Expander is
    --  accelerator called a mnemonic. Pressing Alt and that key activates the
    --  button.
    --  Since: gtk+ 2.4
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "label": the text of the label with an underscore in front of the
    --  mnemonic character
 

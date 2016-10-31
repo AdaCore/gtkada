@@ -74,6 +74,8 @@ package Gtk.Scale_Button is
    --  Creates a Gtk.Scale_Button.Gtk_Scale_Button, with a range between Min
    --  and Max, with a stepping of Step.
    --  Since: gtk+ 2.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "size": a stock icon size
    --  "min": the minimum value of the scale (usually 0)
    --  "max": the maximum value of the scale (usually 100)

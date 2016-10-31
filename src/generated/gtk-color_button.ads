@@ -66,6 +66,8 @@ package Gtk.Color_Button is
    --  The swatch will be updated to reflect the new color when the user
    --  finishes.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Color_Button_New return Gtk_Color_Button;
    --  Creates a new color button.
@@ -84,6 +86,8 @@ package Gtk.Color_Button is
        Color  : Gdk.Color.Gdk_Color);
    --  Creates a new color button.
    --  Since: gtk+ 2.4
+   --  Initialize_With_Color does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "color": A Gdk.Color.Gdk_Color to set the current color with
 
    function Gtk_Color_Button_New_With_Color
@@ -100,6 +104,8 @@ package Gtk.Color_Button is
        Rgba   : Gdk.RGBA.Gdk_RGBA);
    --  Creates a new color button.
    --  Since: gtk+ 3.0
+   --  Initialize_With_Rgba does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "rgba": A Gdk.RGBA.Gdk_RGBA to set the current color with
 
    function Gtk_Color_Button_New_With_Rgba

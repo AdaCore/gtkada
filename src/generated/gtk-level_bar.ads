@@ -96,6 +96,8 @@ package Gtk.Level_Bar is
    procedure Initialize (Self : not null access Gtk_Level_Bar_Record'Class);
    --  Creates a new Gtk.Level_Bar.Gtk_Level_Bar.
    --  Since: gtk+ 3.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Level_Bar_New return Gtk_Level_Bar;
    --  Creates a new Gtk.Level_Bar.Gtk_Level_Bar.
@@ -112,6 +114,8 @@ package Gtk.Level_Bar is
    --  Utility constructor that creates a new Gtk.Level_Bar.Gtk_Level_Bar for
    --  the specified interval.
    --  Since: gtk+ 3.6
+   --  Initialize_For_Interval does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "min_value": a positive value
    --  "max_value": a positive value
 

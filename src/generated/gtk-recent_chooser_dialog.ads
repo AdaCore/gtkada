@@ -94,6 +94,8 @@ package Gtk.Recent_Chooser_Dialog is
       (Widget : not null access Gtk_Recent_Chooser_Dialog_Record'Class;
        Title  : UTF8_String := "";
        Parent : access Gtk.Window.Gtk_Window_Record'Class);
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Recent_Chooser_Dialog_New
       (Title  : UTF8_String := "";
@@ -110,6 +112,8 @@ package Gtk.Recent_Chooser_Dialog is
        Title   : UTF8_String := "";
        Parent  : access Gtk.Window.Gtk_Window_Record'Class;
        Manager : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class);
+   --  Initialize_For_Manager does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
 
    function Gtk_Recent_Chooser_Dialog_New_For_Manager
       (Title   : UTF8_String := "";

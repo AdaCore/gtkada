@@ -52,6 +52,8 @@ package Gtk.List_Box_Row is
    --  Creates a new Gtk.List_Box_Row.Gtk_List_Box_Row, to be used as a child
    --  of a Gtk.List_Box.Gtk_List_Box.
    --  Since: gtk+ 3.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_List_Box_Row_New return Gtk_List_Box_Row;
    --  Creates a new Gtk.List_Box_Row.Gtk_List_Box_Row, to be used as a child

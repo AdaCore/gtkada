@@ -102,6 +102,8 @@ package Gtk.Tree_Store is
       (Tree_Store : not null access Gtk_Tree_Store_Record'Class;
        Types      : GType_Array);
    --  Non vararg creation function. Used primarily by language bindings.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "types": an array of GType types for the columns, from first to last
 
    function Gtk_Tree_Store_Newv (Types : GType_Array) return Gtk_Tree_Store;

@@ -106,6 +106,8 @@ package Gtk.Toggle_Button is
    --  the button and you will have to provide your own child through a call to
    --  Gtk.Container.Add. This is the recommended way to put a pixmap inside a
    --  toggle button.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": a string containing the message to be placed in the toggle
    --  button.
 
@@ -127,6 +129,8 @@ package Gtk.Toggle_Button is
    --  Creates a new Gtk.Toggle_Button.Gtk_Toggle_Button containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the button.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
 

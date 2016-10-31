@@ -74,6 +74,8 @@ package Gtk.Progress_Bar is
    procedure Initialize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record'Class);
    --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Progress_Bar_New return Gtk_Progress_Bar;
    --  Creates a new Gtk.Progress_Bar.Gtk_Progress_Bar.

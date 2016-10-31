@@ -66,6 +66,8 @@ package Gtk.Offscreen_Window is
    --  Creates a toplevel container widget that is used to retrieve snapshots
    --  of widgets without showing them on the screen.
    --  Since: gtk+ 2.20
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Offscreen_Window_New return Gtk_Offscreen_Window;
    --  Creates a toplevel container widget that is used to retrieve snapshots

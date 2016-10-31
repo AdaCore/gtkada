@@ -144,6 +144,8 @@ package Gtk.Recent_Filter is
    --  language="C" --> GtkRecentFilter *filter = gtk_recent_filter_new ();
    --  gtk_recent_filter_add_pattern (filter, "*"); ]|
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Recent_Filter_New return Gtk_Recent_Filter;
    --  Creates a new Gtk.Recent_Filter.Gtk_Recent_Filter with no rules added

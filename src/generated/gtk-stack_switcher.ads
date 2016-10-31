@@ -61,6 +61,8 @@ package Gtk.Stack_Switcher is
       (Self : not null access Gtk_Stack_Switcher_Record'Class);
    --  Create a new Gtk.Stack_Switcher.Gtk_Stack_Switcher.
    --  Since: gtk+ 3.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Stack_Switcher_New return Gtk_Stack_Switcher;
    --  Create a new Gtk.Stack_Switcher.Gtk_Stack_Switcher.

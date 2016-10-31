@@ -45,6 +45,8 @@ package Gtk.Flow_Box_Child is
    --  Creates a new Gtk.Flow_Box_Child.Gtk_Flow_Box_Child, to be used as a
    --  child of a Gtk.Flow_Box.Gtk_Flow_Box.
    --  Since: gtk+ 3.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Flow_Box_Child_New return Gtk_Flow_Box_Child;
    --  Creates a new Gtk.Flow_Box_Child.Gtk_Flow_Box_Child, to be used as a

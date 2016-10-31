@@ -66,6 +66,8 @@ package Gtk.Radio_Tool_Button is
    --  Creates a new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button, adding it to
    --  Group.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "group": An existing radio button group, or null if you are creating a
    --  new group
 
@@ -89,6 +91,8 @@ package Gtk.Radio_Tool_Button is
    --  Group. The new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button will contain
    --  an icon and label from the stock item indicated by Stock_Id.
    --  Since: gtk+ 2.4
+   --  Initialize_From_Stock does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "group": an existing radio button group, or null if you are creating a
    --  new group
    --  "stock_id": the name of a stock item

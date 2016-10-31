@@ -171,6 +171,8 @@ package Gtk.File_Chooser_Dialog is
    --  Creates a new Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. This
    --  function is analogous to gtk_dialog_new_with_buttons.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "title": Title of the dialog, or null
    --  "parent": Transient parent of the dialog, or null
    --  "action": Open or save mode for the dialog

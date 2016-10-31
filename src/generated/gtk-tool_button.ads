@@ -81,6 +81,8 @@ package Gtk.Tool_Button is
    --  Creates a new GtkToolButton using Icon_Widget as contents and Label as
    --  label.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "icon_widget": a widget that will be used as the button contents, or
    --  null
    --  "label": a string that will be used as label, or null
@@ -106,6 +108,8 @@ package Gtk.Tool_Button is
    --  GTK_STOCK_OK and GTK_STOCK_APPLY.
    --  It is an error if Stock_Id is not a name of a stock item.
    --  Since: gtk+ 2.4
+   --  Initialize_From_Stock does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "stock_id": the name of the stock item
 
    function Gtk_Tool_Button_New_From_Stock

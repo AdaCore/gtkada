@@ -180,6 +180,8 @@ package Gtk.List_Store is
       (List_Store : not null access Gtk_List_Store_Record'Class;
        Types      : GType_Array);
    --  Non-vararg creation function. Used primarily by language bindings.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "types": an array of GType types for the columns, from first to last
 
    function Gtk_List_Store_Newv (Types : GType_Array) return Gtk_List_Store;

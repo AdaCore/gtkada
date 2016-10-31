@@ -83,6 +83,8 @@ package Gtk.Status_Bar is
    procedure Initialize
       (Statusbar : not null access Gtk_Status_Bar_Record'Class);
    --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Status_Bar_New return Gtk_Status_Bar;
    --  Creates a new Gtk.Status_Bar.Gtk_Status_Bar ready for messages.

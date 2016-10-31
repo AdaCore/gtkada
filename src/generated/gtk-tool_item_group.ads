@@ -57,6 +57,8 @@ package Gtk.Tool_Item_Group is
        Label : UTF8_String);
    --  Creates a new tool item group with label Label.
    --  Since: gtk+ 2.20
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": the label of the new group
 
    function Gtk_Tool_Item_Group_New

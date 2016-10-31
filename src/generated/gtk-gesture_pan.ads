@@ -67,6 +67,8 @@ package Gtk.Gesture_Pan is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes pan
    --  gestures.
    --  Since: gtk+ 3.14
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "widget": a Gtk.Widget.Gtk_Widget
    --  "orientation": expected orientation
 

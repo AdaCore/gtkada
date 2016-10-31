@@ -54,6 +54,8 @@ package Gtk.Color_Selection_Dialog is
       (Color_Selection_Dialog : not null access Gtk_Color_Selection_Dialog_Record'Class;
        Title                  : UTF8_String);
    --  Creates a new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "title": a string containing the title text for the dialog.
 
    function Gtk_Color_Selection_Dialog_New

@@ -61,6 +61,8 @@ package Gtk.Check_Menu_Item is
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record'Class;
        Label           : UTF8_String := "");
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item with a label.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": the string to use for the label.
 
    function Gtk_Check_Menu_Item_New_With_Label
@@ -77,6 +79,8 @@ package Gtk.Check_Menu_Item is
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "label": The text of the button, with an underscore in front of the
    --  character
 

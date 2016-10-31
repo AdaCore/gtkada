@@ -65,6 +65,8 @@ package Gtk.Tearoff_Menu_Item is
    procedure Initialize
       (Menu_Item : not null access Gtk_Tearoff_Menu_Item_Record'Class);
    --  Creates a new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Tearoff_Menu_Item_New return Gtk_Tearoff_Menu_Item;
    --  Creates a new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item.

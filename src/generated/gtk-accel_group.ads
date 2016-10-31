@@ -112,6 +112,8 @@ package Gtk.Accel_Group is
       (Accel_Group : not null access Gtk_Accel_Group_Record'Class);
    --  Creates a new Gtk.Accel_Group.Gtk_Accel_Group. Remember to call
    --  Gtk.Window.Add_Accel_Group to active the group.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Accel_Group_New return Gtk_Accel_Group;
    --  Creates a new Gtk.Accel_Group.Gtk_Accel_Group. Remember to call

@@ -77,6 +77,8 @@ package Gtk.Style is
    procedure Gtk_New (Style : out Gtk_Style);
    procedure Initialize (Style : not null access Gtk_Style_Record'Class);
    --  Creates a new Gtk.Style.Gtk_Style.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Style_New return Gtk_Style;
    --  Creates a new Gtk.Style.Gtk_Style.

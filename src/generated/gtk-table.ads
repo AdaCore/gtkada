@@ -83,6 +83,8 @@ package Gtk.Table is
    --  Columns columns, which all have the same width if Homogeneous is True.
    --  If Homogeneous is False, the width will be calculated with the children
    --  contained in the table. Same behavior for the rows.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "rows": The number of rows the new table should have.
    --  "columns": The number of columns the new table should have.
    --  "homogeneous": If set to True, all table cells are resized to the size

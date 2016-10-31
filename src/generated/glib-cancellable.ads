@@ -69,6 +69,8 @@ package Glib.Cancellable is
    --  the operations.
    --  One Glib.Cancellable.Gcancellable can be used in multiple consecutive
    --  operations or in multiple concurrent operations.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gcancellable_New return Gcancellable;
    --  Creates a new Glib.Cancellable.Gcancellable object.

@@ -112,6 +112,8 @@ package Gtk.Action is
    --  action, call Gtk.Action_Group.Add_Action_With_Accel. See the [UI
    --  Definition section][XML-UI] for information on allowed action names.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": A unique name for the action
    --  "label": the label displayed in menu items and on buttons, or null
    --  "tooltip": a tooltip for the action, or null

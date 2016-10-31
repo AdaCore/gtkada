@@ -103,6 +103,8 @@ package Gtk.Window is
    --  internally, Gtk.Window.Gtk_New does not return a reference to the
    --  caller.
    --  To delete a Gtk.Window.Gtk_Window, call Gtk.Widget.Destroy.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "type": type of window
 
    function Gtk_Window_New
@@ -135,6 +137,8 @@ package Gtk.Window is
    --  Creates a new Gtk.Window.Gtk_Window_Group object. Grabs added with
    --  Gtk.Widget.Grab_Add only affect windows within the same
    --  Gtk.Window.Gtk_Window_Group.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Window_Group_New return Gtk_Window_Group;
    --  Creates a new Gtk.Window.Gtk_Window_Group object. Grabs added with

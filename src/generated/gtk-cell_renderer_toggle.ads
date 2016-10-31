@@ -56,6 +56,8 @@ package Gtk.Cell_Renderer_Toggle is
    --  value in a Gtk.Tree_Model.Gtk_Tree_Model. For example, you can bind the
    --  "active" property on the cell renderer to a boolean value in the model,
    --  thus causing the check button to reflect the state of the model.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Toggle_New return Gtk_Cell_Renderer_Toggle;
    --  Creates a new Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle. Adjust

@@ -236,6 +236,8 @@ package Gtk.Builder is
    --  Most users will probably want to use Gtk.Builder.Gtk_New_From_File,
    --  Gtk.Builder.Gtk_New_From_Resource or Gtk.Builder.Gtk_New_From_String.
    --  Since: gtk+ 2.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Builder_New return Gtk_Builder;
    --  Creates a new empty builder object.
@@ -258,6 +260,8 @@ package Gtk.Builder is
    --  the program will be aborted. You should only ever attempt to parse user
    --  interface descriptions that are shipped as part of your program.
    --  Since: gtk+ 3.10
+   --  Initialize_From_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "filename": filename of user interface description file
 
    function Gtk_Builder_New_From_File
@@ -279,6 +283,8 @@ package Gtk.Builder is
    --  If there is an error locating the resurce or parsing the description
    --  then the program will be aborted.
    --  Since: gtk+ 3.10
+   --  Initialize_From_Resource does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "resource_path": a Gresource.Gresource resource path
 
    function Gtk_Builder_New_From_Resource
@@ -305,6 +311,8 @@ package Gtk.Builder is
    --  You should not attempt to parse user interface description from
    --  untrusted sources.
    --  Since: gtk+ 3.10
+   --  Initialize_From_String does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "string": a user interface (XML) description
    --  "length": the length of String, or -1
 

@@ -58,6 +58,8 @@ package Gtk.Image_Menu_Item is
       (Self : not null access Gtk_Image_Menu_Item_Record'Class);
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item with an empty
    --  label.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Image_Menu_Item_New return Gtk_Image_Menu_Item;
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item with an empty
@@ -79,6 +81,8 @@ package Gtk.Image_Menu_Item is
    --  appropriate path for the menu item, use Gtk.Stock.Lookup to look up the
    --  standard accelerator for the stock item, and if one is found, call
    --  Gtk.Accel_Map.Add_Entry to register it.
+   --  Initialize_From_Stock does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "stock_id": the name of the stock item.
    --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to add the menu
    --  items accelerator to, or null.
@@ -105,6 +109,8 @@ package Gtk.Image_Menu_Item is
        Label : UTF8_String);
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing a
    --  label.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": the text of the menu item.
 
    function Gtk_Image_Menu_Item_New_With_Label
@@ -122,6 +128,8 @@ package Gtk.Image_Menu_Item is
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "label": the text of the menu item, with an underscore in front of the
    --  mnemonic character
 

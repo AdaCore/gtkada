@@ -61,6 +61,8 @@ package Gtk.File_Chooser_Widget is
    --  the same widget that is used by
    --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "action": Open or save mode for the widget
 
    function Gtk_File_Chooser_Widget_New

@@ -58,6 +58,8 @@ package Gtk.Header_Bar is
    procedure Initialize (Self : not null access Gtk_Header_Bar_Record'Class);
    --  Creates a new Gtk.Header_Bar.Gtk_Header_Bar widget.
    --  Since: gtk+ 3.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Header_Bar_New return Gtk_Header_Bar;
    --  Creates a new Gtk.Header_Bar.Gtk_Header_Bar widget.

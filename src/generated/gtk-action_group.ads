@@ -114,6 +114,8 @@ package Gtk.Action_Group is
    --  action group is used when associating [keybindings][Action-Accel] with
    --  the actions.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": the name of the action group.
 
    function Gtk_Action_Group_New

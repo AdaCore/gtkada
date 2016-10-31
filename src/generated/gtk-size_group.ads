@@ -130,6 +130,8 @@ package Gtk.Size_Group is
       (Size_Group : not null access Gtk_Size_Group_Record'Class;
        Mode       : Size_Group_Mode := Both);
    --  Create a new Gtk.Size_Group.Gtk_Size_Group.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "mode": the mode for the new size group.
 
    function Gtk_Size_Group_New

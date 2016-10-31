@@ -90,6 +90,8 @@ package Gtk.Layout is
    --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
    --  adjustment you'd like the layout to use for scrolling, pass null for
    --  Hadjustment and Vadjustment.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "hadjustment": horizontal scroll adjustment, or null
    --  "vadjustment": vertical scroll adjustment, or null
 

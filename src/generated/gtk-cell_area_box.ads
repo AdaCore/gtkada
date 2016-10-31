@@ -86,6 +86,8 @@ package Gtk.Cell_Area_Box is
       (Self : not null access Gtk_Cell_Area_Box_Record'Class);
    --  Creates a new Gtk.Cell_Area_Box.Gtk_Cell_Area_Box.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Area_Box_New return Gtk_Cell_Area_Box;
    --  Creates a new Gtk.Cell_Area_Box.Gtk_Cell_Area_Box.

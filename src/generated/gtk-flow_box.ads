@@ -105,6 +105,8 @@ package Gtk.Flow_Box is
    procedure Initialize (Self : not null access Gtk_Flow_Box_Record'Class);
    --  Creates a GtkFlowBox.
    --  Since: gtk+ 3.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Flow_Box_New return Gtk_Flow_Box;
    --  Creates a GtkFlowBox.

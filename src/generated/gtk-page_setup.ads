@@ -80,6 +80,8 @@ package Gtk.Page_Setup is
    procedure Initialize (Self : not null access Gtk_Page_Setup_Record'Class);
    --  Creates a new Gtk.Page_Setup.Gtk_Page_Setup.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Page_Setup_New return Gtk_Page_Setup;
    --  Creates a new Gtk.Page_Setup.Gtk_Page_Setup.
@@ -95,6 +97,8 @@ package Gtk.Page_Setup is
    --  Gtk.Page_Setup.Gtk_Page_Setup object with the restored page setup, or
    --  null if an error occurred. See Gtk.Page_Setup.To_File.
    --  Since: gtk+ 2.12
+   --  Initialize_From_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "file_name": the filename to read the page setup from
 
    function Gtk_Page_Setup_New_From_File
@@ -117,6 +121,8 @@ package Gtk.Page_Setup is
    --  Key_File. Returns a new Gtk.Page_Setup.Gtk_Page_Setup object with the
    --  restored page setup, or null if an error occurred.
    --  Since: gtk+ 2.12
+   --  Initialize_From_Key_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "key_file": the Gkey.File.Gkey_File to retrieve the page_setup from
    --  "group_name": the name of the group in the key_file to read, or null to
    --  use the default name "Page Setup"

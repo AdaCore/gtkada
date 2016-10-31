@@ -112,6 +112,8 @@ package Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record'Class);
    --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.
    --  Since: gtk+ 2.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_About_Dialog_New return Gtk_About_Dialog;
    --  Creates a new Gtk.About_Dialog.Gtk_About_Dialog.

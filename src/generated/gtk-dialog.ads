@@ -202,6 +202,8 @@ package Gtk.Dialog is
    --  Creates a new dialog box.
    --  Widgets should not be packed into this Gtk.Window.Gtk_Window directly,
    --  but into the Vbox and Action_Area, as described above.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Dialog_New return Gtk_Dialog;
    --  Creates a new dialog box.
@@ -233,6 +235,8 @@ package Gtk.Dialog is
    --  for reference for the flag Destroy_With_Parent, or to compute the
    --  initial position of the dialog).
    --  Since: gtk+ GtkAda 1.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_dialog_get_type");

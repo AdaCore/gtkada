@@ -156,6 +156,8 @@ package Gtk.Tree_Model_Sort is
        Child_Model : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
    --  child model.
+   --  Initialize_With_Model does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "child_model": A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Gtk_Tree_Model_Sort_Sort_New_With_Model

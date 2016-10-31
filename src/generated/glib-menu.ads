@@ -62,6 +62,8 @@ package Glib.Menu is
    --  Creates a new Glib.Menu.Gmenu.
    --  The new menu has no items.
    --  Since: gtk+ 2.32
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gmenu_New return Gmenu;
    --  Creates a new Glib.Menu.Gmenu.
@@ -96,6 +98,8 @@ package Glib.Menu is
    --  possibly the "target" attribute of the new item. See
    --  Glib.Menu.Set_Detailed_Action for more information.
    --  Since: gtk+ 2.32
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": the section label, or null
    --  "detailed_action": the detailed action string, or null
 
@@ -133,6 +137,8 @@ package Glib.Menu is
    --  Item_Index must be valid (ie: be sure to call
    --  Glib.Menu_Model.Get_N_Items first).
    --  Since: gtk+ 2.34
+   --  Initialize_From_Model does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "model": a Glib.Menu_Model.Gmenu_Model
    --  "item_index": the index of an item in Model
 
@@ -218,6 +224,8 @@ package Glib.Menu is
    --  </item> <item> <link name='section'> <item label='Cut'/> <item
    --  label='Copy'/> <item label='Paste'/> </link> </item> </menu> ]|
    --  Since: gtk+ 2.32
+   --  Initialize_Section does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "label": the section label, or null
    --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
 
@@ -277,6 +285,8 @@ package Glib.Menu is
    --  This is a convenience API around Glib.Menu.G_New and
    --  Glib.Menu.Set_Submenu.
    --  Since: gtk+ 2.32
+   --  Initialize_Submenu does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "label": the section label, or null
    --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
 

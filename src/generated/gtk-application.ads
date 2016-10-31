@@ -159,6 +159,8 @@ package Gtk.Application is
    --  application uniqueness) will be disabled. A null application ID is only
    --  allowed with GTK+ 3.6 or later.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "application_id": The application ID.
    --  "flags": the application flags
 

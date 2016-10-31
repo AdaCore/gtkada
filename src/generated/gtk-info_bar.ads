@@ -99,6 +99,8 @@ package Gtk.Info_Bar is
    procedure Initialize (Self : not null access Gtk_Info_Bar_Record'Class);
    --  Creates a new Gtk.Info_Bar.Gtk_Info_Bar object.
    --  Since: gtk+ 2.18
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Info_Bar_New return Gtk_Info_Bar;
    --  Creates a new Gtk.Info_Bar.Gtk_Info_Bar object.

@@ -101,6 +101,8 @@ package Gtk.Tree_View_Column is
    procedure Initialize
       (Tree_Column : not null access Gtk_Tree_View_Column_Record'Class);
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Tree_View_Column_New return Gtk_Tree_View_Column;
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column.
@@ -114,6 +116,8 @@ package Gtk.Tree_View_Column is
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column using Area to
    --  render its cells.
    --  Since: gtk+ 3.0
+   --  Initialize_With_Area does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area that the newly created column
    --  should use to layout cells.
 

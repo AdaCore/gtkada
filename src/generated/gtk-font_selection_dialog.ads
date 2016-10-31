@@ -54,6 +54,8 @@ package Gtk.Font_Selection_Dialog is
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record'Class;
        Title  : UTF8_String);
    --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "title": the title of the dialog window
 
    function Gtk_Font_Selection_Dialog_New

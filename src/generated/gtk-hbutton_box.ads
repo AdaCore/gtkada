@@ -52,6 +52,8 @@ package Gtk.Hbutton_Box is
    procedure Initialize
       (Widget : not null access Gtk_Hbutton_Box_Record'Class);
    --  Creates a new horizontal button box.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Hbutton_Box_New return Gtk_Hbutton_Box;
    --  Creates a new horizontal button box.

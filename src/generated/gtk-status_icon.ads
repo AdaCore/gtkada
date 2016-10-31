@@ -78,6 +78,8 @@ package Gtk.Status_Icon is
       (Status_Icon : not null access Gtk_Status_Icon_Record'Class);
    --  Creates an empty status icon object.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Status_Icon_New return Gtk_Status_Icon;
    --  Creates an empty status icon object.
@@ -93,6 +95,8 @@ package Gtk.Status_Icon is
    --  The image will be scaled down to fit in the available space in the
    --  notification area, if necessary.
    --  Since: gtk+ 2.10
+   --  Initialize_From_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "filename": a filename
 
    function Gtk_Status_Icon_New_From_File
@@ -112,6 +116,8 @@ package Gtk.Status_Icon is
    --  Creates a status icon displaying a Glib.G_Icon.G_Icon. If the icon is a
    --  themed icon, it will be updated when the theme changes.
    --  Since: gtk+ 2.14
+   --  Initialize_From_Gicon does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "icon": a Glib.G_Icon.G_Icon
 
    function Gtk_Status_Icon_New_From_Gicon
@@ -131,6 +137,8 @@ package Gtk.Status_Icon is
    --  If the current icon theme is changed, the icon will be updated
    --  appropriately.
    --  Since: gtk+ 2.10
+   --  Initialize_From_Icon_Name does nothing if the object was already
+   --  created with another call to Initialize* or G_New.
    --  "icon_name": an icon name
 
    function Gtk_Status_Icon_New_From_Icon_Name
@@ -151,6 +159,8 @@ package Gtk.Status_Icon is
    --  The image will be scaled down to fit in the available space in the
    --  notification area, if necessary.
    --  Since: gtk+ 2.10
+   --  Initialize_From_Pixbuf does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
 
    function Gtk_Status_Icon_New_From_Pixbuf
@@ -172,6 +182,8 @@ package Gtk.Status_Icon is
    --  are GTK_STOCK_OPEN, GTK_STOCK_QUIT. You can register your own stock icon
    --  names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
    --  Since: gtk+ 2.10
+   --  Initialize_From_Stock does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "stock_id": a stock icon id
 
    function Gtk_Status_Icon_New_From_Stock

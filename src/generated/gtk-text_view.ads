@@ -83,6 +83,8 @@ package Gtk.Text_View is
    --  buffer will be created for you. Get the buffer with
    --  Gtk.Text_View.Get_Buffer. If you want to specify your own buffer,
    --  consider Gtk.Text_View.Gtk_New.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Text_View_New return Gtk_Text_View;
    --  Creates a new Gtk.Text_View.Gtk_Text_View. If you don't call
@@ -102,6 +104,8 @@ package Gtk.Text_View is
    --  to create a default buffer, in which case this function is equivalent to
    --  Gtk.Text_View.Gtk_New. The text view adds its own reference count to the
    --  buffer; it does not take over an existing reference.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
 
    function Gtk_Text_View_New_With_Buffer

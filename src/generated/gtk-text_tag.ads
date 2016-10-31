@@ -74,6 +74,8 @@ package Gtk.Text_Tag is
    --  intend to use them in, as in: "Gtk.Text_Tag_Table.Add (Get_Tag_Table
    --  (Buffer), Tag)". See also Gtk.Text_Buffer.Create_Tag which is a more
    --  convenient way of creating a tag.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": tag name, or null
 
    function Gtk_Text_Tag_New (Name : UTF8_String := "") return Gtk_Text_Tag;

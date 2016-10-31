@@ -67,6 +67,8 @@ package Gtk.Tool_Item is
       (Tool_Item : not null access Gtk_Tool_Item_Record'Class);
    --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Tool_Item_New return Gtk_Tool_Item;
    --  Creates a new Gtk.Tool_Item.Gtk_Tool_Item

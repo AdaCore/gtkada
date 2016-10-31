@@ -123,6 +123,8 @@ package Gtk.Radio_Button is
    --  initialize the group (when creating the first button), leave Group to
    --  the Null_List. You can later get the new group that is created with a
    --  call to the Get_Group subprogram below.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "group": an existing radio button group, or null if you are creating a
    --  new group.
    --  "label": the text label to display next to the radio button.
@@ -150,6 +152,8 @@ package Gtk.Radio_Button is
        Label        : UTF8_String := "");
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
    --  adding it to the same group as Radio_Group_Member.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "Group": widget to get radio group from or null
    --  "label": a text string to display next to the radio button.
 
@@ -173,6 +177,8 @@ package Gtk.Radio_Button is
    --  adding it to the same group as Group. The label will be created using
    --  Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate the
    --  mnemonic for the button.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "group": the radio button group, or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character
@@ -191,6 +197,8 @@ package Gtk.Radio_Button is
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "Group": widget to get radio group from or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character

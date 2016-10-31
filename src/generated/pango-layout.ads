@@ -119,6 +119,8 @@ package Pango.Layout is
    --  Create a new Pango.Layout.Pango_Layout object with attributes
    --  initialized to default values for a particular
    --  Pango.Context.Pango_Context.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "context": a Pango.Context.Pango_Context
 
    function Pango_Layout_New

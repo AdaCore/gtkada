@@ -79,6 +79,8 @@ package Gtk.Frame is
        Label : UTF8_String := "");
    --  Creates a new Gtk.Frame.Gtk_Frame, with optional label Label. If Label
    --  is null, the label is omitted.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": the text to use as the label of the frame
 
    function Gtk_Frame_New (Label : UTF8_String := "") return Gtk_Frame;

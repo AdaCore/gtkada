@@ -141,6 +141,8 @@ package Gtk.Message_Dialog is
    --  may want to see. When the user clicks a button a "response" signal is
    --  emitted with response IDs from Gtk_Response_Type. See
    --  Gtk.Dialog.Gtk_Dialog for more details.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "parent": transient parent, or null for none
    --  "flags": flags
    --  "type": type of message
@@ -195,6 +197,8 @@ package Gtk.Message_Dialog is
    --  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL);
    --  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup); ]|
    --  Since: gtk+ 2.4
+   --  Initialize_With_Markup does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "parent": transient parent, or null for none
    --  "flags": flags
    --  "type": type of message

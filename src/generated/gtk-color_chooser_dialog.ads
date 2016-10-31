@@ -59,6 +59,8 @@ package Gtk.Color_Chooser_Dialog is
        Parent : access Gtk.Window.Gtk_Window_Record'Class);
    --  Creates a new Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog.
    --  Since: gtk+ 3.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "title": Title of the dialog, or null
    --  "parent": Transient parent of the dialog, or null
 

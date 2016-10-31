@@ -73,6 +73,8 @@ package Pango.Context is
    --  instance, the GTK+ toolkit has, among others,
    --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Pango_Context_New return Pango_Context;
    --  Creates a new Pango.Context.Pango_Context initialized to default

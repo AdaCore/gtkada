@@ -75,6 +75,8 @@ package Gtk.Button is
    --  This function is a convenience wrapper around gtk_button_new and
    --  Gtk.Button.Set_Image.
    --  Since: gtk+ 3.10
+   --  Initialize_From_Icon_Name does nothing if the object was already
+   --  created with another call to Initialize* or G_New.
    --  "icon_name": an icon name
    --  "size": an icon size
 
@@ -102,6 +104,8 @@ package Gtk.Button is
    --  and GTK_STOCK_APPLY.
    --  If Stock_Id is unknown, then it will be treated as a mnemonic label (as
    --  for Gtk.Button.Gtk_New_With_Mnemonic).
+   --  Initialize_From_Stock does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "stock_id": the name of the stock item
 
    function Gtk_Button_New_From_Stock
@@ -119,6 +123,8 @@ package Gtk.Button is
        Label  : UTF8_String := "");
    --  Creates a Gtk.Button.Gtk_Button widget with a Gtk.Label.Gtk_Label child
    --  containing the given text.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": The text you want the Gtk.Label.Gtk_Label to hold.
 
    function Gtk_Button_New_With_Label
@@ -138,6 +144,8 @@ package Gtk.Button is
    --  a literal underscore character in a label, use "__" (two underscores).
    --  The first underlined character represents a keyboard accelerator called
    --  a mnemonic. Pressing Alt and that key activates the button.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "label": The text of the button, with an underscore in front of the
    --  mnemonic character
 

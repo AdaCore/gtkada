@@ -68,6 +68,8 @@ package Gtk.Cell_Renderer_Pixbuf is
    --  "pixbuf" property on the cell renderer to a pixbuf value in the model,
    --  thus rendering a different image in each row of the
    --  Gtk.Tree_View.Gtk_Tree_View.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Pixbuf_New return Gtk_Cell_Renderer_Pixbuf;
    --  Creates a new Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf. Adjust

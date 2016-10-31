@@ -99,6 +99,8 @@ package Gtk.Scrolled_Window is
    --  shared with the scrollbars and the child widget to keep the bars in sync
    --  with the child. Usually you want to pass null for the adjustments, which
    --  will cause the scrolled window to create them for you.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "hadjustment": horizontal adjustment
    --  "vadjustment": vertical adjustment
 

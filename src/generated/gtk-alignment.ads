@@ -74,6 +74,8 @@ package Gtk.Alignment is
        Xscale    : Gfloat;
        Yscale    : Gfloat);
    --  Creates a new Gtk.Alignment.Gtk_Alignment.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "xalign": the horizontal alignment of the child widget, from 0 (left)
    --  to 1 (right).
    --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1

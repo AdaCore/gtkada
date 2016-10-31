@@ -58,6 +58,8 @@ package Gtk.Cell_Renderer_Spinner is
    --  Returns a new cell renderer which will show a spinner to indicate
    --  activity.
    --  Since: gtk+ 2.20
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Spinner_New return Gtk_Cell_Renderer_Spinner;
    --  Returns a new cell renderer which will show a spinner to indicate

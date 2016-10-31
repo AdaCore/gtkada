@@ -56,6 +56,8 @@ package Gtk.Gesture_Drag is
        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes drags.
    --  Since: gtk+ 3.14
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "widget": a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Drag_New

@@ -93,6 +93,8 @@ package Gtk.Popover is
        Relative_To : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Creates a new popover to point to Relative_To
    --  Since: gtk+ 3.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "relative_to": Gtk.Widget.Gtk_Widget the popover is related to
 
    function Gtk_Popover_New
@@ -119,6 +121,8 @@ package Gtk.Popover is
    --  Actions can also be added using gtk_widget_insert_action_group on the
    --  menus attach widget or on any of its parent widgets.
    --  Since: gtk+ 3.12
+   --  Initialize_From_Model does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "relative_to": Gtk.Widget.Gtk_Widget the popover is related to
    --  "model": a Glib.Menu_Model.Gmenu_Model
 

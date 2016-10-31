@@ -81,6 +81,8 @@ package Gtk.Fixed is
    procedure Gtk_New (Fixed : out Gtk_Fixed);
    procedure Initialize (Fixed : not null access Gtk_Fixed_Record'Class);
    --  Creates a new Gtk.Fixed.Gtk_Fixed.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Fixed_New return Gtk_Fixed;
    --  Creates a new Gtk.Fixed.Gtk_Fixed.

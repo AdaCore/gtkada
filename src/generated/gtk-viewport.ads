@@ -74,6 +74,8 @@ package Gtk.Viewport is
        Vadjustment : Gtk.Adjustment.Gtk_Adjustment := null);
    --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments, or
    --  with default adjustments if none are given.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "hadjustment": horizontal adjustment
    --  "vadjustment": vertical adjustment
 

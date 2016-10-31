@@ -107,6 +107,8 @@ package Gtk.Paned is
        Orientation : Gtk.Enums.Gtk_Orientation);
    --  Creates a new Gtk.Paned.Gtk_Paned widget.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "orientation": the paned's orientation.
 
    function Gtk_Paned_New
@@ -122,6 +124,8 @@ package Gtk.Paned is
    procedure Initialize_Hpaned
       (Paned : not null access Gtk_Hpaned_Record'Class);
    --  The children will be displayed next to each other
+   --  Initialize_Hpaned does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
 
    function Gtk_Hpaned_New return Gtk_Hpaned;
    --  The children will be displayed next to each other
@@ -133,6 +137,8 @@ package Gtk.Paned is
    procedure Initialize_Vpaned
       (Paned : not null access Gtk_Vpaned_Record'Class);
    --  The children will be displayed one on top of the other
+   --  Initialize_Vpaned does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
 
    function Gtk_Vpaned_New return Gtk_Vpaned;
    --  The children will be displayed one on top of the other

@@ -50,6 +50,8 @@ package Gtk.Menu_Bar is
    procedure Initialize
       (Menu_Bar : not null access Gtk_Menu_Bar_Record'Class);
    --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Menu_Bar_New return Gtk_Menu_Bar;
    --  Creates a new Gtk.Menu_Bar.Gtk_Menu_Bar
@@ -67,6 +69,8 @@ package Gtk.Menu_Bar is
    --  belongs - typically by means of being contained within the
    --  Gtk_Application_Windows widget hierarchy.
    --  Since: gtk+ 3.4
+   --  Initialize_From_Model does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "model": a Glib.Menu_Model.Gmenu_Model
 
    function Gtk_Menu_Bar_New_From_Model

@@ -94,6 +94,8 @@ package Gtk.Stack is
    procedure Initialize (Self : not null access Gtk_Stack_Record'Class);
    --  Creates a new Gtk.Stack.Gtk_Stack container.
    --  Since: gtk+ 3.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Stack_New return Gtk_Stack;
    --  Creates a new Gtk.Stack.Gtk_Stack container.

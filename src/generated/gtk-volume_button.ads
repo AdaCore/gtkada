@@ -58,6 +58,8 @@ package Gtk.Volume_Button is
    --  and 1.0, with a stepping of 0.02. Volume values can be obtained and
    --  modified using the functions from Gtk.Scale_Button.Gtk_Scale_Button.
    --  Since: gtk+ 2.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Volume_Button_New return Gtk_Volume_Button;
    --  Creates a Gtk.Volume_Button.Gtk_Volume_Button, with a range between 0.0

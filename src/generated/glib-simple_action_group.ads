@@ -56,6 +56,8 @@ package Glib.Simple_Action_Group is
       (Self : not null access Gsimple_Action_Group_Record'Class);
    --  Creates a new, empty, Glib.Simple_Action_Group.Gsimple_Action_Group.
    --  Since: gtk+ 2.28
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gsimple_Action_Group_New return Gsimple_Action_Group;
    --  Creates a new, empty, Glib.Simple_Action_Group.Gsimple_Action_Group.

@@ -63,6 +63,8 @@ package Gtk.Separator is
        Orientation : Gtk.Enums.Gtk_Orientation);
    --  Creates a new Gtk.Separator.Gtk_Separator with the given orientation.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "orientation": the separator's orientation.
 
    function Gtk_Separator_New
@@ -78,6 +80,8 @@ package Gtk.Separator is
    procedure Initialize_Hseparator
       (Separator : not null access Gtk_Hseparator_Record'Class);
    --  Creates a new Gtk.Separator.Gtk_Hseparator.
+   --  Initialize_Hseparator does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
 
    function Gtk_Hseparator_New return Gtk_Hseparator;
    --  Creates a new Gtk.Separator.Gtk_Hseparator.
@@ -89,6 +93,8 @@ package Gtk.Separator is
    procedure Initialize_Vseparator
       (Separator : not null access Gtk_Vseparator_Record'Class);
    --  Creates a new Gtk.Separator.Gtk_Vseparator.
+   --  Initialize_Vseparator does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
 
    function Gtk_Vseparator_New return Gtk_Vseparator;
    --  Creates a new Gtk.Separator.Gtk_Vseparator.

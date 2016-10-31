@@ -41,6 +41,8 @@ package Gtk.IM_Multi_Context is
    procedure Initialize
       (Self : not null access Gtk_IM_Multi_Context_Record'Class);
    --  Creates a new Gtk.IM_Multi_Context.Gtk_IM_Multi_Context.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_IM_Multi_Context_New return Gtk_IM_Multi_Context;
    --  Creates a new Gtk.IM_Multi_Context.Gtk_IM_Multi_Context.

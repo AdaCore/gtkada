@@ -67,6 +67,8 @@ package Gtk.Radio_Action is
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": A unique name for the action
    --  "label": The label displayed in menu items and on buttons, or null
    --  "tooltip": A tooltip for this action, or null

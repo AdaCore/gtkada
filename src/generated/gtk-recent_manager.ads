@@ -156,6 +156,8 @@ package Gtk.Recent_Manager is
    --  create them only when needed. You should use
    --  Gtk.Recent_Manager.Get_Default instead.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Recent_Manager_New return Gtk_Recent_Manager;
    --  Creates a new recent manager object. Recent manager objects are used to

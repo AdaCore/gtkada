@@ -62,6 +62,8 @@ package Gtk.Separator_Tool_Item is
       (Item : not null access Gtk_Separator_Tool_Item_Record'Class);
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Separator_Tool_Item_New return Gtk_Separator_Tool_Item;
    --  Create a new Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item

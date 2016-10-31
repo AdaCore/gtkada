@@ -80,6 +80,8 @@ package Gtk.Recent_Action is
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": a unique name for the action
    --  "label": the label displayed in menu items and on buttons, or null
    --  "tooltip": a tooltip for the action, or null
@@ -119,6 +121,8 @@ package Gtk.Recent_Action is
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.12
+   --  Initialize_For_Manager does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "name": a unique name for the action
    --  "label": the label displayed in menu items and on buttons, or null
    --  "tooltip": a tooltip for the action, or null

@@ -136,6 +136,8 @@ package Gtk.Icon_Theme is
    --  use Gtk.Icon_Theme.Get_Default or Gtk.Icon_Theme.Get_For_Screen rather
    --  than creating a new icon theme object for scratch.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Icon_Theme_New return Gtk_Icon_Theme;
    --  Creates a new icon theme object. Icon theme objects are used to lookup
@@ -157,6 +159,8 @@ package Gtk.Icon_Theme is
        Pixbuf     : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    --  Creates a Gtk.Icon_Theme.Gtk_Icon_Info for a Gdk.Pixbuf.Gdk_Pixbuf.
    --  Since: gtk+ 2.14
+   --  Initialize_For_Pixbuf does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "icon_theme": a Gtk.Icon_Theme.Gtk_Icon_Theme
    --  "pixbuf": the pixbuf to wrap in a Gtk.Icon_Theme.Gtk_Icon_Info
 

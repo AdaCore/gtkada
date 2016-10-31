@@ -113,6 +113,8 @@ package Gtk.List_Box is
    procedure Initialize (Self : not null access Gtk_List_Box_Record'Class);
    --  Creates a new Gtk.List_Box.Gtk_List_Box container.
    --  Since: gtk+ 3.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_List_Box_New return Gtk_List_Box;
    --  Creates a new Gtk.List_Box.Gtk_List_Box container.

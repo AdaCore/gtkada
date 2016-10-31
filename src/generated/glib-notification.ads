@@ -96,6 +96,8 @@ package Glib.Notification is
    --  properties after this call will not have any effect until resending
    --  Notification.
    --  Since: gtk+ 2.40
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "title": the title of the notification
 
    function Gnotification_New (Title : UTF8_String) return Gnotification;

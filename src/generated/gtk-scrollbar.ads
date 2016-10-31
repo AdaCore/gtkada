@@ -76,6 +76,8 @@ package Gtk.Scrollbar is
        Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new scrollbar with the given orientation.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "orientation": the scrollbar's orientation.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
    --  create a new adjustment.
@@ -100,6 +102,8 @@ package Gtk.Scrollbar is
       (Scrollbar  : not null access Gtk_Hscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new horizontal scrollbar.
+   --  Initialize_Hscrollbar does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
    --  create a new adjustment
 
@@ -120,6 +124,8 @@ package Gtk.Scrollbar is
       (Scrollbar  : not null access Gtk_Vscrollbar_Record'Class;
        Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Creates a new vertical scrollbar.
+   --  Initialize_Vscrollbar does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment to use, or null to
    --  create a new adjustment
 

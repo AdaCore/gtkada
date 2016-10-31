@@ -1408,16 +1408,21 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         if self.is_gobject:
             filtered_params = [p for p in profile.params if p.ada_binding]
 
+            initialize_name=adaname.replace(
+                gtk_new_prefix, "%s.Initialize" % self.pkg.name)
+
             initialize_params = [Parameter(
                 name=selfname,
                 type=AdaType(selftype, pkg=self.pkg, in_spec=True),
                 mode="not null access")] + filtered_params
             initialize = Subprogram(
-                name=adaname.replace(
-                    gtk_new_prefix, "%s.Initialize" % self.pkg.name),
+                name=initialize_name,
                 plist=initialize_params,
                 local_vars=local_vars + call[2],
-                doc=profile.doc,
+                doc=profile.doc +
+                    [('\n%s does nothing if the object was already' +
+                     ' created with another call to Initialize* or G_New.') % (
+                         base_name(initialize_name), )],
                 code="if not %s.Is_Created then %sSet_Object (%s, %s); end if" % (
                     selfname, call[0], selfname, call[1]),
             ).add_nested(internal)

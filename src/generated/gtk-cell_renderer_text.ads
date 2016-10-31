@@ -66,6 +66,8 @@ package Gtk.Cell_Renderer_Text is
    --  "text" property on the cell renderer to a string value in the model,
    --  thus rendering a different string in each row of the
    --  Gtk.Tree_View.Gtk_Tree_View
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Text_New return Gtk_Cell_Renderer_Text;
    --  Creates a new Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text. Adjust how

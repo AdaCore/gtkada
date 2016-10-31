@@ -66,6 +66,8 @@ package Glib.Simple_Action is
    --  Creates a new action.
    --  The created action is stateless. See Glib.Simple_Action.G_New_Stateful.
    --  Since: gtk+ 2.28
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": the name of the action
    --  "parameter_type": the type of parameter to the activate function
 
@@ -102,6 +104,8 @@ package Glib.Simple_Action is
    --  have the same Glib.Variant.Gvariant_Type as the initial state.
    --  If the State GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
+   --  Initialize_Stateful does nothing if the object was already created with
+   --  another call to Initialize* or G_New.
    --  "name": the name of the action
    --  "parameter_type": the type of the parameter to the activate function
    --  "state": the initial state of the action

@@ -167,6 +167,8 @@ package Gtk.Print_Operation is
       (Self : not null access Gtk_Print_Operation_Record'Class);
    --  Creates a new Gtk.Print_Operation.Gtk_Print_Operation.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Print_Operation_New return Gtk_Print_Operation;
    --  Creates a new Gtk.Print_Operation.Gtk_Print_Operation.

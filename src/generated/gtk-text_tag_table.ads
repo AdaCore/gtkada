@@ -68,6 +68,8 @@ package Gtk.Text_Tag_Table is
       (Table : not null access Gtk_Text_Tag_Table_Record'Class);
    --  Creates a new Gtk.Text_Tag_Table.Gtk_Text_Tag_Table. The table contains
    --  no tags by default.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Text_Tag_Table_New return Gtk_Text_Tag_Table;
    --  Creates a new Gtk.Text_Tag_Table.Gtk_Text_Tag_Table. The table contains

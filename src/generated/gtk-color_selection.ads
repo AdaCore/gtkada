@@ -63,6 +63,8 @@ package Gtk.Color_Selection is
    procedure Initialize
       (Colorsel : not null access Gtk_Color_Selection_Record'Class);
    --  Creates a new GtkColorSelection.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Color_Selection_New return Gtk_Color_Selection;
    --  Creates a new GtkColorSelection.

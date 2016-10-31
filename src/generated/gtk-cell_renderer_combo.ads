@@ -71,6 +71,8 @@ package Gtk.Cell_Renderer_Combo is
    --  thus rendering a different string in each row of the
    --  Gtk.Tree_View.Gtk_Tree_View.
    --  Since: gtk+ 2.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Combo_New return Gtk_Cell_Renderer_Combo;
    --  Creates a new Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo. Adjust

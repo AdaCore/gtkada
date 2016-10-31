@@ -131,6 +131,8 @@ package Gtk.Menu is
    procedure Gtk_New (Menu : out Gtk_Menu);
    procedure Initialize (Menu : not null access Gtk_Menu_Record'Class);
    --  Creates a new Gtk.Menu.Gtk_Menu
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Menu_New return Gtk_Menu;
    --  Creates a new Gtk.Menu.Gtk_Menu
@@ -151,6 +153,8 @@ package Gtk.Menu is
    --  Actions can also be added using gtk_widget_insert_action_group on the
    --  menu's attach widget or on any of its parent widgets.
    --  Since: gtk+ 3.4
+   --  Initialize_From_Model does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "model": a Glib.Menu_Model.Gmenu_Model
 
    function Gtk_Menu_New_From_Model

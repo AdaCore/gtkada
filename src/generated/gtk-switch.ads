@@ -57,6 +57,8 @@ package Gtk.Switch is
    procedure Initialize (Self : not null access Gtk_Switch_Record'Class);
    --  Creates a new Gtk.Switch.Gtk_Switch widget.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Switch_New return Gtk_Switch;
    --  Creates a new Gtk.Switch.Gtk_Switch widget.

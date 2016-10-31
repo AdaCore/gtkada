@@ -67,6 +67,8 @@ package Gtk.Search_Entry is
    --  Creates a Gtk.Search_Entry.Gtk_Search_Entry, with a find icon when the
    --  search field is empty, and a clear icon when it isn't.
    --  Since: gtk+ 3.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Search_Entry_New return Gtk_Search_Entry;
    --  Creates a Gtk.Search_Entry.Gtk_Search_Entry, with a find icon when the

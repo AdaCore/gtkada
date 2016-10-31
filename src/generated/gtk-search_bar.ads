@@ -70,6 +70,8 @@ package Gtk.Search_Bar is
    --  which widget is going to be your text entry using
    --  Gtk.Search_Bar.Connect_Entry.
    --  Since: gtk+ 3.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Search_Bar_New return Gtk_Search_Bar;
    --  Creates a Gtk.Search_Bar.Gtk_Search_Bar. You will need to tell it about

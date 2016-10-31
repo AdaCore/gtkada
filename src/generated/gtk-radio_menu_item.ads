@@ -76,6 +76,8 @@ package Gtk.Radio_Menu_Item is
        Label           : UTF8_String := "");
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose child is a
    --  simple Gtk.Label.Gtk_Label.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "group": group the radio menu item is inside, or null
    --  "label": the text for the label
 
@@ -98,6 +100,8 @@ package Gtk.Radio_Menu_Item is
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "group": group the radio menu item is inside, or null
    --  "label": the text of the button, with an underscore in front of the
    --  mnemonic character

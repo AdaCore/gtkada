@@ -59,6 +59,8 @@ package Gtk.Gesture_Long_Press is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes long
    --  presses.
    --  Since: gtk+ 3.14
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "widget": a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Long_Press_New

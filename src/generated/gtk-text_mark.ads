@@ -87,6 +87,8 @@ package Gtk.Text_Mark is
    --  right gravity (when you type, the cursor stays on the right side of the
    --  text you're typing).
    --  Since: gtk+ 2.12
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "name": mark name or null
    --  "left_gravity": whether the mark should have left gravity
 

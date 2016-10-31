@@ -210,6 +210,8 @@ package Gtk.Tree_View is
    procedure Initialize
       (Tree_View : not null access Gtk_Tree_View_Record'Class);
    --  Creates a new Gtk.Tree_View.Gtk_Tree_View widget.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Tree_View_New return Gtk_Tree_View;
    --  Creates a new Gtk.Tree_View.Gtk_Tree_View widget.
@@ -222,6 +224,8 @@ package Gtk.Tree_View is
        Model     : Gtk.Tree_Model.Gtk_Tree_Model);
    --  Creates a new Gtk.Tree_View.Gtk_Tree_View widget with the model
    --  initialized to Model.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "model": the model.
 
    function Gtk_Tree_View_New_With_Model

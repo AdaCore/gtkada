@@ -109,6 +109,8 @@ package Gtk.Calendar is
    procedure Initialize
       (Calendar : not null access Gtk_Calendar_Record'Class);
    --  Creates a new calendar, with the current date being selected.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Calendar_New return Gtk_Calendar;
    --  Creates a new calendar, with the current date being selected.

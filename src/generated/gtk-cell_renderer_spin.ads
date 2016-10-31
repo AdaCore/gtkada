@@ -63,6 +63,8 @@ package Gtk.Cell_Renderer_Spin is
       (Self : not null access Gtk_Cell_Renderer_Spin_Record'Class);
    --  Creates a new Gtk.Cell_Renderer_Spin.Gtk_Cell_Renderer_Spin.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Spin_New return Gtk_Cell_Renderer_Spin;
    --  Creates a new Gtk.Cell_Renderer_Spin.Gtk_Cell_Renderer_Spin.

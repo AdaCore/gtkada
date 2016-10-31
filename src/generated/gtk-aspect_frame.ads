@@ -65,6 +65,8 @@ package Gtk.Aspect_Frame is
        Ratio        : Gfloat;
        Obey_Child   : Boolean);
    --  Create a new Gtk.Aspect_Frame.Gtk_Aspect_Frame.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "label": Label text.
    --  "xalign": Horizontal alignment of the child within the allocation of
    --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left

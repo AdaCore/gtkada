@@ -90,6 +90,8 @@ package Gtk.Adjustment is
    --  scrollbar. Page_Increment is used to make major adjustments, such as
    --  when the user clicks in the through on a scrollbar. Page_Size is
    --  deprecated, use the default value.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "value": the initial value.
    --  "lower": the minimum value.
    --  "upper": the maximum value.

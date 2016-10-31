@@ -150,6 +150,8 @@ package Gtk.Spin_Button is
        Climb_Rate  : Gdouble;
        The_Digits  : Guint := 0);
    --  Creates a new Gtk.Spin_Button.Gtk_Spin_Button.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment object that this spin
    --  button should use, or null
    --  "climb_rate": specifies how much the spin button changes when an arrow
@@ -185,6 +187,8 @@ package Gtk.Spin_Button is
    --  Note that the way in which the precision is derived works best if Step
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Spin_Button.Set_Digits to correct it.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "min": Minimum allowable value
    --  "max": Maximum allowable value
    --  "step": Increment added or subtracted by spinning the widget

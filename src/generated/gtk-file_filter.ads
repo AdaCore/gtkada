@@ -127,6 +127,8 @@ package Gtk.File_Filter is
    --  *filter = gtk_file_filter_new (); gtk_file_filter_add_pattern (filter,
    --  "*"); ]|
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_File_Filter_New return Gtk_File_Filter;
    --  Creates a new Gtk.File_Filter.Gtk_File_Filter with no rules added to

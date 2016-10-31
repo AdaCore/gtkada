@@ -163,6 +163,8 @@ package Gtk.Tree_Model_Filter is
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Model, with Child_Model as the
    --  child_model and Root as the virtual root.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "child_model": A Gtk.Tree_Model.Gtk_Tree_Model.
    --  "root": A Gtk.Tree_Model.Gtk_Tree_Path or null.
 

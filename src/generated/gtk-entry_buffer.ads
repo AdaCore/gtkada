@@ -62,6 +62,8 @@ package Gtk.Entry_Buffer is
    --  Create a new GtkEntryBuffer object.
    --  Optionally, specify initial text to set in the buffer.
    --  Since: gtk+ 2.18
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "initial_chars": initial buffer text, or null
    --  "n_initial_chars": number of characters in Initial_Chars, or -1
 

@@ -138,6 +138,8 @@ package Gtk.Menu_Button is
    --  downwards-pointing arrow as the only child. You can replace the child
    --  widget with another Gtk.Widget.Gtk_Widget should you wish to.
    --  Since: gtk+ 3.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Menu_Button_New return Gtk_Menu_Button;
    --  Creates a new Gtk.Menu_Button.Gtk_Menu_Button widget with

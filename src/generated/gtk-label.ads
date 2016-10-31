@@ -193,6 +193,8 @@ package Gtk.Label is
        Str   : UTF8_String := "");
    --  Creates a new label with the given text inside it. You can pass null to
    --  get an empty label widget.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "str": The text of the label
 
    function Gtk_Label_New (Str : UTF8_String := "") return Gtk_Label;
@@ -218,6 +220,8 @@ package Gtk.Label is
    --  mnemonic widget. For instance, if the label is inside a button or menu
    --  item, the button or menu item will automatically become the mnemonic
    --  widget and be activated by the mnemonic.
+   --  Initialize_With_Mnemonic does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "str": The text of the label, with an underscore in front of the
    --  mnemonic character
 

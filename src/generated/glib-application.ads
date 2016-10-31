@@ -209,6 +209,8 @@ package Glib.Application is
    --  If no application ID is given then some features of
    --  Glib.Application.Gapplication (most notably application uniqueness) will
    --  be disabled.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "application_id": the application id
    --  "flags": the application flags
 

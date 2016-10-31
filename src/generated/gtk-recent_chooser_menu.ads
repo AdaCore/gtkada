@@ -92,6 +92,8 @@ package Gtk.Recent_Chooser_Menu is
    --  know how to create a Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu
    --  widget bound to another Gtk.Recent_Manager.Gtk_Recent_Manager object.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Recent_Chooser_Menu_New return Gtk_Recent_Chooser_Menu;
    --  Creates a new Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu widget.
@@ -120,6 +122,8 @@ package Gtk.Recent_Chooser_Menu is
    --  common Gtk.Recent_Manager.Gtk_Recent_Manager object among multiple
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser widgets.
    --  Since: gtk+ 2.10
+   --  Initialize_For_Manager does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
 
    function Gtk_Recent_Chooser_Menu_New_For_Manager

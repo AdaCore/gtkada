@@ -107,6 +107,8 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
    --  Since: gtk+ 2.4
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Combo_Box_New return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box.
@@ -120,6 +122,8 @@ package Gtk.Combo_Box is
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box using Area to layout
    --  cells.
+   --  Initialize_With_Area does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
 
    function Gtk_Combo_Box_New_With_Area
@@ -137,6 +141,8 @@ package Gtk.Combo_Box is
        Area      : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
    --  The new combo box will use Area to layout cells.
+   --  Initialize_With_Area_And_Entry does nothing if the object was already
+   --  created with another call to Initialize* or G_New.
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
 
    function Gtk_Combo_Box_New_With_Area_And_Entry
@@ -151,6 +157,8 @@ package Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record'Class);
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
    --  Since: gtk+ 2.24
+   --  Initialize_With_Entry does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
 
    function Gtk_Combo_Box_New_With_Entry return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
@@ -165,6 +173,8 @@ package Gtk.Combo_Box is
    --  Creates a new Gtk.Combo_Box.Gtk_Combo_Box with the model initialized to
    --  Model.
    --  Since: gtk+ 2.4
+   --  Initialize_With_Model does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model.
 
    function Gtk_Combo_Box_New_With_Model
@@ -183,6 +193,8 @@ package Gtk.Combo_Box is
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
    --  the model initialized to Model.
    --  Since: gtk+ 2.24
+   --  Initialize_With_Model_And_Entry does nothing if the object was already
+   --  created with another call to Initialize* or G_New.
    --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Gtk_Combo_Box_New_With_Model_And_Entry

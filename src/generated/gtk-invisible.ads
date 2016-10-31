@@ -51,6 +51,8 @@ package Gtk.Invisible is
    procedure Gtk_New (Self : out Gtk_Invisible);
    procedure Initialize (Self : not null access Gtk_Invisible_Record'Class);
    --  Creates a new Gtk.Invisible.Gtk_Invisible.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Invisible_New return Gtk_Invisible;
    --  Creates a new Gtk.Invisible.Gtk_Invisible.
@@ -63,6 +65,8 @@ package Gtk.Invisible is
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
    --  Creates a new Gtk.Invisible.Gtk_Invisible object for a specified screen
    --  Since: gtk+ 2.2
+   --  Initialize_For_Screen does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "screen": a Gdk.Screen.Gdk_Screen which identifies on which the new
    --  Gtk.Invisible.Gtk_Invisible will be created.
 

@@ -140,6 +140,8 @@ package Gtk.Image is
    procedure Gtk_New (Image : out Gtk_Image);
    procedure Initialize (Image : not null access Gtk_Image_Record'Class);
    --  Creates a new empty Gtk.Image.Gtk_Image widget.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Image_New return Gtk_Image;
    --  Creates a new empty Gtk.Image.Gtk_Image widget.
@@ -158,6 +160,8 @@ package Gtk.Image is
    --  G_PRIORITY_DEFAULT. When using animations to indicate busyness, keep in
    --  mind that the animation will only be shown if the main loop is not busy
    --  with something that has a higher priority.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "animation": an animation
 
    function Gtk_Image_New_From_Animation
@@ -187,6 +191,8 @@ package Gtk.Image is
    --  Gdk.Pixbuf.Gdk_New_From_File).
    --  The storage type (gtk_image_get_storage_type) of the returned image is
    --  not defined, it will be whatever is appropriate for displaying the file.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "filename": a filename
 
    function Gtk_Image_New_From_File
@@ -217,6 +223,8 @@ package Gtk.Image is
    --  displayed instead. If the current icon theme is changed, the icon will
    --  be updated appropriately.
    --  Since: gtk+ 2.14
+   --  Initialize_From_Gicon does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "icon": an icon
    --  "size": a stock icon size
 
@@ -244,6 +252,8 @@ package Gtk.Image is
    --  displayed instead. If the current icon theme is changed, the icon will
    --  be updated appropriately.
    --  Since: gtk+ 2.6
+   --  Initialize_From_Icon_Name does nothing if the object was already
+   --  created with another call to Initialize* or G_New.
    --  "icon_name": an icon name
    --  "size": a stock icon size
 
@@ -276,6 +286,8 @@ package Gtk.Image is
    --  The Gtk.Image.Gtk_Image does not assume a reference to the icon set;
    --  you still need to unref it if you own references. Gtk.Image.Gtk_Image
    --  will add its own reference rather than adopting yours.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
    --  "size": a stock icon size
 
@@ -308,6 +320,8 @@ package Gtk.Image is
    --  Note that this function just creates an Gtk.Image.Gtk_Image from the
    --  pixbuf. The Gtk.Image.Gtk_Image created will not react to state changes.
    --  Should you want that, you should use Gtk.Image.Gtk_New_From_Icon_Name.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    function Gtk_Image_New_From_Pixbuf
@@ -340,6 +354,8 @@ package Gtk.Image is
    --  The storage type (gtk_image_get_storage_type) of the returned image is
    --  not defined, it will be whatever is appropriate for displaying the file.
    --  Since: gtk+ 3.4
+   --  Initialize_From_Resource does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "resource_path": a resource path
 
    function Gtk_Image_New_From_Resource
@@ -372,6 +388,8 @@ package Gtk.Image is
    --  GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_SMALL_TOOLBAR. If the stock icon name
    --  isn't known, the image will be empty. You can register your own stock
    --  icon names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "stock_id": a stock icon name
    --  "size": a stock icon size
 
@@ -397,6 +415,8 @@ package Gtk.Image is
    --  still need to unref it if you own references. Gtk.Image.Gtk_Image will
    --  add its own reference rather than adopting yours.
    --  Since: gtk+ 3.10
+   --  Initialize_From_Surface does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "surface": a cairo_surface_t, or null
 
    function Gtk_Image_New_From_Surface

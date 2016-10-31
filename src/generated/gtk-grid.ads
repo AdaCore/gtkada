@@ -64,6 +64,8 @@ package Gtk.Grid is
    procedure Gtk_New (Self : out Gtk_Grid);
    procedure Initialize (Self : not null access Gtk_Grid_Record'Class);
    --  Creates a new grid widget.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Grid_New return Gtk_Grid;
    --  Creates a new grid widget.

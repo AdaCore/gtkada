@@ -60,6 +60,8 @@ package Gtk.Text_Buffer is
       (Buffer : not null access Gtk_Text_Buffer_Record'Class;
        Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null);
    --  Creates a new text buffer.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "table": a tag table, or null to create a new one
 
    function Gtk_Text_Buffer_New

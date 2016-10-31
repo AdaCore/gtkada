@@ -120,6 +120,8 @@ package Gtk.Icon_Factory is
    --  Gtk.Icon_Factory.Remove_Default. Applications with icons should add a
    --  default icon factory with their icons, which will allow themes to
    --  override the icons for the application.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Icon_Factory_New return Gtk_Icon_Factory;
    --  Creates a new Gtk.Icon_Factory.Gtk_Icon_Factory. An icon factory

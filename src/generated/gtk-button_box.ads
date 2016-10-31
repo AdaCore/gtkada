@@ -62,6 +62,8 @@ package Gtk.Button_Box is
        Orientation : Gtk.Enums.Gtk_Orientation);
    --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
    --  Since: gtk+ 3.0
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "orientation": the box' orientation.
 
    function Gtk_Button_Box_New

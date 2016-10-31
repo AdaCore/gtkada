@@ -130,6 +130,8 @@ package Gtk.Style_Context is
    --  from GTK+, if you are using Gtk.Style_Context.Gtk_Style_Context to theme
    --  Gtk_Widgets, use gtk_widget_get_style_context in order to get a style
    --  context ready to theme the widget.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Style_Context_New return Gtk_Style_Context;
    --  Creates a standalone Gtk.Style_Context.Gtk_Style_Context, this style

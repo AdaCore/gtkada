@@ -74,6 +74,8 @@ package Gtk.Recent_Chooser_Widget is
    --  object. This is an embeddable widget used to access the recently used
    --  resources list.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Recent_Chooser_Widget_New return Gtk_Recent_Chooser_Widget;
    --  Creates a new Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget
@@ -93,6 +95,8 @@ package Gtk.Recent_Chooser_Widget is
    --  you have a customized instance of a
    --  Gtk.Recent_Manager.Gtk_Recent_Manager object.
    --  Since: gtk+ 2.10
+   --  Initialize_For_Manager does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
 
    function Gtk_Recent_Chooser_Widget_New_For_Manager

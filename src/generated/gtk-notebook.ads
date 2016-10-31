@@ -94,6 +94,8 @@ package Gtk.Notebook is
    procedure Initialize
       (Notebook : not null access Gtk_Notebook_Record'Class);
    --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Notebook_New return Gtk_Notebook;
    --  Creates a new Gtk.Notebook.Gtk_Notebook widget with no pages.

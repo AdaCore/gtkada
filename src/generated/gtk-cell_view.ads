@@ -91,6 +91,8 @@ package Gtk.Cell_View is
       (Cell_View : not null access Gtk_Cell_View_Record'Class);
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget.
    --  Since: gtk+ 2.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_View_New return Gtk_Cell_View;
    --  Creates a new Gtk.Cell_View.Gtk_Cell_View widget.
@@ -111,6 +113,8 @@ package Gtk.Cell_View is
    --  area synchronize the geometry for those cells, in this way alignments
    --  with cellviews for other rows are possible.
    --  Since: gtk+ 2.6
+   --  Initialize_With_Context does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to layout cells
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in which to
    --  calculate cell geometry
@@ -141,6 +145,8 @@ package Gtk.Cell_View is
    --  Markup. The text can be marked up with the [Pango text markup
    --  language][PangoMarkupFormat].
    --  Since: gtk+ 2.6
+   --  Initialize_With_Markup does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "markup": the text to display in the cell view
 
    function Gtk_Cell_View_New_With_Markup
@@ -162,6 +168,8 @@ package Gtk.Cell_View is
    --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes it
    --  show Pixbuf.
    --  Since: gtk+ 2.6
+   --  Initialize_With_Pixbuf does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "pixbuf": the image to display in the cell view
 
    function Gtk_Cell_View_New_With_Pixbuf
@@ -183,6 +191,8 @@ package Gtk.Cell_View is
    --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
    --  Text.
    --  Since: gtk+ 2.6
+   --  Initialize_With_Text does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "text": the text to display in the cell view
 
    function Gtk_Cell_View_New_With_Text

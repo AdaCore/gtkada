@@ -66,6 +66,8 @@ package Gtk.Overlay is
    procedure Initialize (Self : not null access Gtk_Overlay_Record'Class);
    --  Creates a new Gtk.Overlay.Gtk_Overlay.
    --  Since: gtk+ 3.2
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Overlay_New return Gtk_Overlay;
    --  Creates a new Gtk.Overlay.Gtk_Overlay.

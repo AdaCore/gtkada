@@ -54,6 +54,8 @@ package Gtk.Gesture_Rotate is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes 2-touch
    --  rotation gestures.
    --  Since: gtk+ 3.14
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "widget": a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Rotate_New

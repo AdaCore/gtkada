@@ -54,6 +54,8 @@ package Gtk.Cell_Renderer_Progress is
       (Self : not null access Gtk_Cell_Renderer_Progress_Record'Class);
    --  Creates a new Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress.
    --  Since: gtk+ 2.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Progress_New return Gtk_Cell_Renderer_Progress;
    --  Creates a new Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress.

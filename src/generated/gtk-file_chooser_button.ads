@@ -84,6 +84,8 @@ package Gtk.File_Chooser_Button is
        Action : Gtk.File_Chooser.Gtk_File_Chooser_Action);
    --  Creates a new file-selecting button widget.
    --  Since: gtk+ 2.6
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
    --  "title": the title of the browse dialog.
    --  "action": the open mode for the widget.
 
@@ -111,6 +113,8 @@ package Gtk.File_Chooser_Button is
    --  with response GTK_RESPONSE_ACCEPT or GTK_RESPONSE_OK in order for the
    --  button to take over the file selected in the dialog.
    --  Since: gtk+ 2.6
+   --  Initialize_With_Dialog does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
    --  "dialog": the widget to use as dialog
 
    function Gtk_File_Chooser_Button_New_With_Dialog

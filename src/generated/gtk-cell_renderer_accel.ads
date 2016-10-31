@@ -54,6 +54,8 @@ package Gtk.Cell_Renderer_Accel is
       (Self : not null access Gtk_Cell_Renderer_Accel_Record'Class);
    --  Creates a new Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel.
    --  Since: gtk+ 2.10
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
 
    function Gtk_Cell_Renderer_Accel_New return Gtk_Cell_Renderer_Accel;
    --  Creates a new Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel.
