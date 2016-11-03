@@ -364,7 +364,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
 
    if test "x$with_GL" != xno ; then
      AC_MSG_CHECKING([for OpenGL])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL"
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL -lm -lX11"
      AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
      AC_MSG_RESULT($have_GL)
 
@@ -396,7 +396,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
    case "x$with_GL" in
    x|xauto)
       if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         GL_LIBS="$GL_LDOPTS -lGLU -lGL -lm -lX11"
          HAVE_OPENGL="True"
       elif test "x$have_GL32" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
@@ -411,7 +411,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
       ;;
    xGL)
       if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         GL_LIBS="$GL_LDOPTS -lGLU -lGL -lm -lX11"
          HAVE_OPENGL="True"
       else
          AC_MSG_ERROR([Missing OpenGL library])

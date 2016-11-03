@@ -21,7 +21,7 @@
 #define __GDK_GL_H__
 
 #include <glib.h>
-#include <cairo/cairo.h>
+#include <cairo.h>
 
 #ifdef G_OS_WIN32
  /* The GL/gl.h on Windows requires you to include <windows.h>

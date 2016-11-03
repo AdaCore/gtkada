@@ -39,12 +39,18 @@ library project GtkAda_GL is
    for Library_Dir use "../lib/" & Project'Library_Name & "/" & Project'Library_Kind;
    for Library_Version use
       "lib" & Project'Library_Name & Shared.So_Ext & "." & Shared.Version;
-   for Library_Options use Shared.GL_Libs;
+
+   case Shared.Library_Kind is
+      when "relocatable" =>
+         for Library_Options use Shared.GL_Libs & Shared.Gtk_Libs;
+      when others =>
+         null;
+   end case;
 
    package Builder  renames Shared.Builder;
    package Compiler is
       for Switches ("C") use Shared.Compiler'Switches ("C")
-         & Shared.GL_Include;
+         & Shared.GL_Include & Shared.Gtk_Include;
       for Switches ("Ada") use Shared.Compiler'Switches ("Ada");
    end Compiler;
 
