@@ -3031,7 +3031,11 @@ package body Gtkada.MDI is
 
    procedure Set_Icon_Name
      (Child     : not null access MDI_Child_Record;
-      Icon_Name : String) is
+      Icon_Name : String)
+   is
+      Changed : constant Boolean :=
+        (Child.Icon_Name = null or else
+         Child.Icon_Name.all /= Icon_Name);
    begin
       Free (Child.Icon_Name);
       Child.Icon_Name := new String'(Icon_Name);
@@ -3053,10 +3057,13 @@ package body Gtkada.MDI is
       end if;
 
       Update_Menu_Model_List_Of_Children (Child.MDI);
-      Emit_By_Name_Child
-        (Get_Object (Child.MDI),
-         String (Signal_Child_Icon_Changed) & ASCII.NUL,
-         Get_Object (Child));
+
+      if Changed then
+         Emit_By_Name_Child
+           (Get_Object (Child.MDI),
+            String (Signal_Child_Icon_Changed) & ASCII.NUL,
+            Get_Object (Child));
+      end if;
    end Set_Icon_Name;
 
    --------------
