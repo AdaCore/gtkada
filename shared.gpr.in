@@ -94,7 +94,10 @@ project Shared is
 
    package IDE is
       for VCS_Kind use "auto";
-      for Documentation_Dir use "html";
    end IDE;
+
+   package Documentation is
+      for Documentation_Dir use "html";
+   end Documentation;
 
 end Shared;

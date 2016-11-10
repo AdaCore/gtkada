@@ -31,5 +31,7 @@ with "contrib/contrib";
 project GtkAda is
    for Source_Files use ();
    for Object_Dir use "src/obj";
-   package IDE renames Shared.IDE;
+
+   package IDE           renames Shared.IDE;
+   package Documentation renames Shared.Documentation;
 end GtkAda;

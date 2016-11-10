@@ -54,7 +54,7 @@ library project GtkAda_GL is
       for Switches ("Ada") use Shared.Compiler'Switches ("Ada");
    end Compiler;
 
-   package IDE      renames Shared.IDE;
+   package IDE renames Shared.IDE;
 
    package Linker is
       for Linker_Options use Shared.GL_Libs;
