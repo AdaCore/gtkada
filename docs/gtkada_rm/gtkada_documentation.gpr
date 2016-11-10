@@ -12,11 +12,8 @@ project GtkAda_Documentation is
    end Builder;
 
    package Documentation is
+      for Documentation_Dir use "gtkada_rm";
       for HTML_Custom_Dir use "html";
    end Documentation;
-
-   package IDE is
-      for Documentation_Dir use "gtkada_rm";
-   end IDE;
 
 end GtkAda_Documentation;
