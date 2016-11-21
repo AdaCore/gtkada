@@ -19,7 +19,7 @@ The home page for gtk is
 
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 3.14.1. This package is an Ada graphical library
+This is GtkAda version 17.1. This package is an Ada graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada
 as the programming language.
