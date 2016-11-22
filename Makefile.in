@@ -105,7 +105,7 @@ install/%: force
 ifeq (${HAVE_OPENGL}, True)
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
 		--sources-subdir=include/gtkada/gtkada_gl.$(@F) \
-		--lib-subdir=${libdir}/gtkada/gtkada_gl.$(@F) \
+		--lib-subdir=lib/gtkada/gtkada_gl.$(@F) \
 		-Psrc/opengl/gtkada_gl.gpr
 endif
 
