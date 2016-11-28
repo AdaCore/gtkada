@@ -474,6 +474,27 @@ package Glib.Object is
    --  Info should be allocated in this call, and is never freed in the
    --  lifetime of the application.
 
+   -------------
+   -- Signals --
+   -------------
+   --  ??? This section is incomplete.
+
+   --  <signals>
+   --  The following new signals are defined for this object:
+   --
+   --  - "notify"
+   --    procedure Handler
+   --      (Object : access GObject_Record'Class; Name : String);
+   --
+   --    Emitted when the property Name has been modified
+   --  </signals>
+
+   procedure Notify
+     (Object        : access GObject_Record;
+      Property_Name : String);
+   --  Emits the "notify" signal, to signal every listener that the property
+   --  has been changed.
+
    --------------
    -- Bindings --
    --------------
@@ -557,27 +578,6 @@ package Glib.Object is
    function Class_List_Properties
      (Class : GObject_Class) return Glib.Param_Spec_Array;
    --  Return the list of all properties of the class.
-
-   -------------
-   -- Signals --
-   -------------
-   --  ??? This section is incomplete.
-
-   --  <signals>
-   --  The following new signals are defined for this object:
-   --
-   --  - "notify"
-   --    procedure Handler
-   --      (Object : access GObject_Record'Class; Name : String);
-   --
-   --    Emitted when the property Name has been modified
-   --  </signals>
-
-   procedure Notify
-     (Object        : access GObject_Record;
-      Property_Name : String);
-   --  Emits the "notify" signal, to signal every listener that the property
-   --  has been changed.
 
    ---------------
    -- User_Data --
