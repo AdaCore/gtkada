@@ -8672,13 +8672,13 @@ package body Gtkada.MDI is
 
          while Current /= null
            and then Current /= Gtk_Widget (MDI)
-           and then Current.all not in Gtkada_Multi_Paned_Record'Class
+           and then Current /= Gtk_Widget (MDI.Central)
            and then Get_Parent (Current) /= null
            and then
              (Current.all not in Gtk_Notebook_Record'Class
-              or else Get_Parent (Current).all
-                 not in Gtkada_Multi_Paned_Record'Class)
-           and then Get_Parent (Current) /= Gtk_Widget (MDI)
+              or else
+                 (Get_Parent (Current) /= Gtk_Widget (MDI)
+                  and then Get_Parent (Current) /= Gtk_Widget (MDI.Central)))
          loop
             Current := Get_Parent (Current);
          end loop;
