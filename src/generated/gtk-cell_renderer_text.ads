@@ -133,6 +133,8 @@ package Gtk.Cell_Renderer_Text is
 
    Background_Set_Property : constant Glib.Properties.Property_Boolean;
 
+   Cancel_On_Focus_Out_Property : constant Glib.Properties.Property_Boolean;
+
    Editable_Property : constant Glib.Properties.Property_Boolean;
 
    Editable_Set_Property : constant Glib.Properties.Property_Boolean;
@@ -376,6 +378,8 @@ private
      Glib.Properties.Build ("editable-set");
    Editable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("editable");
+   Cancel_On_Focus_Out_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("cancel-on-focus-out");
    Background_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("background-set");
    Background_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
