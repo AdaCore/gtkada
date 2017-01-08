@@ -166,7 +166,24 @@ package Gtkada.Intl is
    --  This overrides the default system locale data base.
    --  Dirname will generally be the installation prefix for your application.
 
-   procedure Setlocale;
+   procedure Bind_Text_Domain_Codeset (Domain : String; Codeset : String);
+   --  Specify the character encoding in which the messages from the
+   --  DOMAINNAME message catalog will be returned.
+
+   --  Category values
+   LC_ALL      : Integer := 0;
+   LC_COLLATE  : Integer := 1;
+   LC_CTYPE    : Integer := 2;
+   LC_MONETARY : Integer := 3;
+   LC_NUMERIC  : Integer := 4;
+   LC_TIME     : Integer := 5;
+   LC_MESSAGES : Integer := 6;
+   u_LC_LAST   : Integer := 7;  --  Marks end
+
+   function Getlocale return String;
+   --  Return the current locale.
+
+   procedure Setlocale (Category : Integer := LC_ALL; Locale : String := "");
    --  This procedure must be called before any other subprogram in this
    --  package. It will initialize internal variables based on the environment
    --  variables.

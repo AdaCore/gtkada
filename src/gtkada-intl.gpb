@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Interfaces.C;         use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Glib; use Glib;
 
@@ -144,21 +145,49 @@ package body Gtkada.Intl is
 #end if;
    end Bind_Text_Domain;
 
+   ------------------------------
+   -- Bind_Text_Domain_Codeset --
+   ------------------------------
+
+   procedure Bind_Text_Domain_Codeset (Domain : String; Codeset : String) is
+      procedure Internal (Domain, Codeset : String);
+      pragma Import (C, Internal, "bind_textdomain_codeset");
+   begin
+#if HAVE_GETTEXT then
+      Internal (Domain & ASCII.NUL, Codeset & ASCII.NUL);
+#else
+      null;
+#end if;
+   end Bind_Text_Domain_Codeset;
+
    ---------------
    -- Setlocale --
    ---------------
 
-   procedure Setlocale is
-      LC_ALL : constant Integer := 6;  --  from locale.h
-      Empty_String : constant String (1 .. 1) := (1 => ASCII.NUL);
-      procedure Setlocale (Category : Integer; Locale : String);
-      pragma Import (C, Setlocale, "setlocale");
+   procedure Setlocale (Category : Integer := LC_ALL; Locale : String := "") is
+      procedure Internal (Category : int; Locale : String);
+      pragma Import (C, Internal, "setlocale");
    begin
 #if HAVE_GETTEXT then
-      Setlocale (LC_ALL, Empty_String);
+      Internal (int (Category), Locale & ASCII.NUL);
 #else
       null;
 #end if;
    end Setlocale;
+
+   ---------------
+   -- Getlocale --
+   ---------------
+
+   function Getlocale return String is
+      function Internal (Category : int; Locale : chars_ptr) return chars_ptr;
+      pragma Import (C, Internal, "setlocale");
+   begin
+#if HAVE_GETTEXT then
+      return Value (Internal (0, Null_Ptr));
+#else
+      return "";
+#end if;
+   end Getlocale;
 
 end Gtkada.Intl;
