@@ -4213,6 +4213,8 @@ text. Since: 3.14
      <enum ctype="GdkWindowState" prefix="GDK_"/>
      <enum ctype="GdkSettingAction" prefix="GDK_"/>
      <enum ctype="GdkOwnerChange" prefix="GDK_"/>
+
+     <!-- All the record types that should be visible in gdk-event.ads -->
      <record ctype="GdkEventSequence"/>
      <record ctype="GdkEventAny"/>
      <record ctype="GdkEventButton"/>
@@ -4233,7 +4235,12 @@ text. Since: 3.14
      <record ctype="GdkEventSetting"/>
      <record ctype="GdkEventTouch"/>
      <record ctype="GdkEventGrabBroken"/>
+     <record ctype="GdkEventPadGroupMode"/>
 
+     <!-- The name of the fields for each value of the discriminant
+          in Gdk_Event_Record.
+          The "value" must be a value from the enumeration "EventType"
+     -->
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
        <union value="GDK_NOTHING" field="any"/>
        <union value="GDK_DELETE" field="any"/>
@@ -4276,6 +4283,13 @@ text. Since: 3.14
        <union value="GDK_TOUCH_UPDATE" field="touch" />
        <union value="GDK_TOUCH_END" field="touch" />
        <union value="GDK_TOUCH_CANCEL" field="touch" />
+       <union value="GDK_TOUCHPAD_SWIPE" field="touchpad_swipe"/>
+       <union value="GDK_TOUCHPAD_PINCH" field="touchpad_pinch"/>
+       <union value="GDK_PAD_RING" field="pad_axis"/>
+       <union value="GDK_PAD_STRIP" field="pad_axis"/>
+       <union value="GDK_PAD_BUTTON_PRESS" field="pad_button"/>
+       <union value="GDK_PAD_BUTTON_RELEASE" field="pad_button"/>
+       <union value="GDK_PAD_GROUP_MODE" field="pad_group_mode"/>
      </record>
 
      <method id="gdk_event_get_coords" return="void"/>

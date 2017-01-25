@@ -8,6 +8,11 @@ import re
 import copy
 from collections import namedtuple
 
+
+show_warnings = False
+# Whether to display warnings during the generation
+
+
 # A lot of subprograms below take a "lang" parameter, which indicates how
 # values should be converted:
 #
@@ -823,12 +828,12 @@ class AdaNaming(object):
 
         return self.girname_to_ctype.get(girname, default)
 
-    def adamethod_name(self, cname, warning_if_not_found=True):
+    def adamethod_name(self, cname):
         """Return the ada name corresponding to the C method's name"""
         try:
             return self.cname_to_adaname[cname]
         except KeyError:
-            if warning_if_not_found and cname.lower().startswith("gtk_"):
+            if show_warnings and cname.lower().startswith("gtk_"):
                 print "Name quoted in doc has no Ada binding: %s" % cname
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
