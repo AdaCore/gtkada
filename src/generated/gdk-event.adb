@@ -168,6 +168,13 @@ package body Gdk.Event is
       return Result;
    end From_Object_Free;
 
+   function From_Object_Free (B : access Gdk_Event_Pad_Group_Mode) return Gdk_Event_Pad_Group_Mode is
+      Result : constant Gdk_Event_Pad_Group_Mode := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object_Free (B : access Gdk_Event_Record) return Gdk_Event_Record is
       Result : constant Gdk_Event_Record := B.all;
    begin

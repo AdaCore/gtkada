@@ -173,20 +173,24 @@ class GIR(object):
 
         print "Missing bindings:"
         count = 0
+        width = 24
         for name in sorted(gir.interfaces.iterkeys()):
             if name not in self.bound:
-                sys.stdout.write("%-28s" % (name + "(intf)", ))
+                sys.stdout.write("%s(i)" % name, )
                 count += 1
                 if (count % 4) == 0:
                     sys.stdout.write("\n")
+                else:
+                    sys.stdout.write((width - 3 - len(name)) * ' ')
 
         for name in sorted(gir.classes.iterkeys()):
-            if name not in self.bound:
-                sys.stdout.write("%-28s" % name)
-                # print '    "--%s", # Not tested yet, from Gio' % name
+            if name is not None and name not in self.bound:
+                sys.stdout.write("%s" % name)
                 count += 1
                 if (count % 4) == 0:
                     sys.stdout.write("\n")
+                else:
+                    sys.stdout.write((width - len(name)) * ' ')
 
         print
 
@@ -907,7 +911,9 @@ class GIRClass(object):
         if profile.has_varargs() \
                 and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
-            print "No binding for %s: varargs" % cname
+
+            if show_warnings:
+                print("Warning: no binding for %s: varargs" % cname)
             return None
 
         is_import = self._func_is_direct_import(profile) \
@@ -1343,7 +1349,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     and gtkmethod.get_param("varargs").node is None:
 
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
-                print "No binding for %s: varargs" % cname
+                if show_warnings:
+                    print "No binding for %s: varargs" % cname
                 continue
 
             self._handle_constructor(
@@ -2468,7 +2475,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
                         if not when_stmt:
                             print("ERROR: no discrimant value for field %s"
-                                  % f[0])
+                                  % (f,))
 
                         text += "\n      when %s =>\n %s : %s;\n" % (
                             "\n          | ".join(when_stmt), f[0], f[1])
@@ -2564,7 +2571,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
             if cname in ignore:
                 continue
 
-            m = naming.adamethod_name(cname, warning_if_not_found=False)
+            m = naming.adamethod_name(cname)
             if m is None:
                 continue
 

@@ -3,4 +3,5 @@ src/misc_generated.c                      no-precommit-check
 
 # Too much work to clean up
 contrib/binding.py                        no-precommit-check
+contrib/adaformat.py                      no-precommit-check
 

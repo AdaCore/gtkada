@@ -673,6 +673,20 @@ package Gdk.Event is
    --  keyboard again. Note that implicit grabs (which are initiated by button
    --  presses) can also cause Gdk.Event.Gdk_Event_Grab_Broken events.
 
+   type Gdk_Event_Pad_Group_Mode is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Time : Guint32;
+      Group : Guint;
+      Mode : Guint;
+   end record;
+   pragma Convention (C, Gdk_Event_Pad_Group_Mode);
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Group_Mode) return Gdk_Event_Pad_Group_Mode;
+   pragma Inline (From_Object_Free);
+   --  Generated during GDK_SOURCE_TABLET_PAD mode switches in a group.
+
    type Gdk_Event_Record (The_Type : Gdk_Event_Type := Gdk.Event.Nothing) is record
       case The_Type is
 
@@ -765,7 +779,8 @@ package Gdk.Event is
          | Gdk.Event.Pad_Button_Release =>
          Pad_Button : Gdk_Event_Pad_Button;
 
-         when Gdk.Event.Pad_Strip =>
+         when Gdk.Event.Pad_Ring
+         | Gdk.Event.Pad_Strip =>
          Pad_Axis : Gdk_Event_Pad_Axis;
 
          when Gdk.Event.Pad_Group_Mode =>
