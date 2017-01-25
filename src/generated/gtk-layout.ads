@@ -68,6 +68,7 @@ with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Scrollable;  use Gtk.Scrollable;
+with Gtk.Style;       use Gtk.Style;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Layout is
@@ -165,6 +166,10 @@ package Gtk.Layout is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Border
+      (Self   : not null access Gtk_Layout_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Layout_Record)

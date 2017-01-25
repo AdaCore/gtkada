@@ -72,6 +72,10 @@
 --  (GTK_TOOL_PALETTE (palette), target, GTK_DEST_DEFAULT_ALL,
 --  GTK_TOOL_PALETTE_DRAG_ITEMS, GDK_ACTION_COPY); ]|
 --
+--  # CSS nodes
+--
+--  GtkToolPalette has a single CSS node named toolpalette.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -88,6 +92,7 @@ with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Orientable;          use Gtk.Orientable;
 with Gtk.Scrollable;          use Gtk.Scrollable;
 with Gtk.Selection_Data;      use Gtk.Selection_Data;
+with Gtk.Style;               use Gtk.Style;
 with Gtk.Target_Entry;        use Gtk.Target_Entry;
 with Gtk.Tool_Item;           use Gtk.Tool_Item;
 with Gtk.Tool_Item_Group;     use Gtk.Tool_Item_Group;
@@ -324,6 +329,10 @@ package Gtk.Tool_Palette is
    procedure Set_Orientation
       (Self        : not null access Gtk_Tool_Palette_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   function Get_Border
+      (Self   : not null access Gtk_Tool_Palette_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Tool_Palette_Record)

@@ -84,6 +84,10 @@
 --  variable declaration, which can then be loaded into a Gdk.Pixbuf.Gdk_Pixbuf
 --  using gdk_pixbuf_new_from_inline.
 --
+--  # CSS nodes
+--
+--  GtkImage has a single CSS node with the name image.
+--
 --  </description>
 --  <screenshot>gtk-image</screenshot>
 --  <group>Display widgets</group>
@@ -226,7 +230,7 @@ package Gtk.Image is
    --  Initialize_From_Gicon does nothing if the object was already created
    --  with another call to Initialize* or G_New.
    --  "icon": an icon
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    function Gtk_Image_New_From_Gicon
       (Icon : Glib.G_Icon.G_Icon;
@@ -237,7 +241,7 @@ package Gtk.Image is
    --  be updated appropriately.
    --  Since: gtk+ 2.14
    --  "icon": an icon
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Gtk_New_From_Icon_Name
       (Image     : out Gtk_Image;
@@ -255,7 +259,7 @@ package Gtk.Image is
    --  Initialize_From_Icon_Name does nothing if the object was already
    --  created with another call to Initialize* or G_New.
    --  "icon_name": an icon name
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    function Gtk_Image_New_From_Icon_Name
       (Icon_Name : UTF8_String;
@@ -266,7 +270,7 @@ package Gtk.Image is
    --  be updated appropriately.
    --  Since: gtk+ 2.6
    --  "icon_name": an icon name
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Gtk_New
       (Image    : out Gtk_Image;
@@ -289,7 +293,7 @@ package Gtk.Image is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    function Gtk_Image_New_From_Icon_Set
       (Icon_Set : Gtk.Icon_Set.Gtk_Icon_Set;
@@ -305,7 +309,7 @@ package Gtk.Image is
    --  you still need to unref it if you own references. Gtk.Image.Gtk_Image
    --  will add its own reference rather than adopting yours.
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Gtk_New
       (Image  : out Gtk_Image;
@@ -391,7 +395,7 @@ package Gtk.Image is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  "stock_id": a stock icon name
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    function Gtk_Image_New_From_Stock
       (Stock_Id : UTF8_String;
@@ -402,7 +406,7 @@ package Gtk.Image is
    --  isn't known, the image will be empty. You can register your own stock
    --  icon names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
    --  "stock_id": a stock icon name
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Gtk_New_From_Surface
       (Image   : out Gtk_Image;
@@ -459,7 +463,7 @@ package Gtk.Image is
    --  reference to the returned Glib.G_Icon.G_Icon.
    --  Since: gtk+ 2.14
    --  "gicon": place to store a Glib.G_Icon.G_Icon, or null
-   --  "size": place to store an icon size, or null
+   --  "size": place to store an icon size (Gtk.Enums.Gtk_Icon_Size), or null
 
    procedure Get
       (Image    : not null access Gtk_Image_Record;
@@ -471,7 +475,8 @@ package Gtk.Image is
    --  Gtk.Image.Image_Icon_Set (see Gtk.Image.Get_Storage_Type).
    --  Deprecated since 3.10, 1
    --  "icon_set": location to store a Gtk.Icon_Set.Gtk_Icon_Set, or null
-   --  "size": location to store a stock icon size, or null
+   --  "size": location to store a stock icon size (Gtk.Enums.Gtk_Icon_Size),
+   --  or null
 
    function Get
       (Image : not null access Gtk_Image_Record)
@@ -522,7 +527,7 @@ package Gtk.Image is
    --  See Gtk.Image.Gtk_New_From_Gicon for details.
    --  Since: gtk+ 2.14
    --  "icon": an icon
-   --  "size": an icon size
+   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set
       (Image    : not null access Gtk_Image_Record;
@@ -532,7 +537,7 @@ package Gtk.Image is
    --  See Gtk.Image.Gtk_New for details.
    --  Deprecated since 3.10, 1
    --  "icon_set": a Gtk.Icon_Set.Gtk_Icon_Set
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set
       (Image  : not null access Gtk_Image_Record;
@@ -548,7 +553,7 @@ package Gtk.Image is
    --  See Gtk.Image.Gtk_New for details.
    --  Deprecated since 3.10, 1
    --  "stock_id": a stock icon name
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_From_Icon_Name
       (Image     : not null access Gtk_Image_Record;
@@ -557,7 +562,7 @@ package Gtk.Image is
    --  See Gtk.Image.Gtk_New_From_Icon_Name for details.
    --  Since: gtk+ 2.6
    --  "icon_name": an icon name
-   --  "size": an icon size
+   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_From_Resource
       (Image         : not null access Gtk_Image_Record;

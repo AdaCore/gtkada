@@ -43,6 +43,42 @@
 --  is not empty, its content is taken as the markup to show at the mark. It
 --  can be translated with the usual "translatable" and "context" attributes.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> scale[.fine-tune][.marks-before][.marks-after]
+--  ├── marks.top │ ├── mark │ ┊ ├── [label] │ ┊ ╰── indicator ┊ ┊ │ ╰── mark
+--  ├── [value] ├── contents │ ╰── trough │ ├── slider │ ├── [highlight] │ ╰──
+--  [fill] ╰── marks.bottom ├── mark ┊ ├── indicator ┊ ╰── [label] ╰── mark ]|
+--
+--  GtkScale has a main CSS node with name scale and a subnode for its
+--  contents, with subnodes named trough and slider.
+--
+--  The main node gets the style class .fine-tune added when the scale is in
+--  'fine-tuning' mode.
+--
+--  If the scale has an origin (see Gtk.Scale.Set_Has_Origin), there is a
+--  subnode with name highlight below the trough node that is used for
+--  rendering the highlighted part of the trough.
+--
+--  If the scale is showing a fill level (see Gtk.GRange.Set_Show_Fill_Level),
+--  there is a subnode with name fill below the trough node that is used for
+--  rendering the filled in part of the trough.
+--
+--  If marks are present, there is a marks subnode before or after the
+--  contents node, below which each mark gets a node with name mark. The marks
+--  nodes get either the .top or .bottom style class.
+--
+--  The mark node has a subnode named indicator. If the mark has text, it also
+--  has a subnode named label. When the mark is either above or left of the
+--  scale, the label subnode is the first when present. Otherwise, the
+--  indicator subnode is the first.
+--
+--  The main CSS node gets the 'marks-before' and/or 'marks-after' style
+--  classes added depending on what marks are present.
+--
+--  If the scale is displaying the value (see Gtk.Scale.Gtk_Scale:draw-value),
+--  there is subnode with name value.
+--
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>
 --  <group>Numeric/Text Data Entry</group>
@@ -306,6 +342,10 @@ package Gtk.Scale is
    --  Sets the number of decimal places that are displayed in the value. Also
    --  causes the value of the adjustment to be rounded off to this number of
    --  digits, so the retrieved value matches the value the user saw.
+   --  Note that rounding to a small number of digits can interfere with the
+   --  smooth autoscrolling that is built into Gtk.Scale.Gtk_Scale. As an
+   --  alternative, you can use the Gtk.Scale.Gtk_Scale::format-value signal to
+   --  format the displayed value yourself.
    --  "digits": the number of decimal places to display, e.g. use 1 to
    --  display 1.0, 2 to display 1.00, etc
 

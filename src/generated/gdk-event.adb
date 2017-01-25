@@ -326,6 +326,20 @@ package body Gdk.Event is
       return Tmp_Return /= 0;
    end Get_Center;
 
+   ---------------------
+   -- Get_Device_Tool --
+   ---------------------
+
+   function Get_Device_Tool
+      (Event : Gdk_Event) return Gdk.Device_Tool.Gdk_Device_Tool
+   is
+      function Internal (Event : Gdk_Event) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_device_tool");
+      Stub_Gdk_Device_Tool : Gdk.Device_Tool.Gdk_Device_Tool_Record;
+   begin
+      return Gdk.Device_Tool.Gdk_Device_Tool (Get_User_Data (Internal (Event), Stub_Gdk_Device_Tool));
+   end Get_Device_Tool;
+
    ------------------
    -- Get_Distance --
    ------------------
@@ -347,6 +361,29 @@ package body Gdk.Event is
       Distance.all := Acc_Distance;
       return Tmp_Return /= 0;
    end Get_Distance;
+
+   --------------------------
+   -- Get_Pointer_Emulated --
+   --------------------------
+
+   function Get_Pointer_Emulated (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_get_pointer_emulated");
+   begin
+      return Internal (Event) /= 0;
+   end Get_Pointer_Emulated;
+
+   --------------
+   -- Get_Seat --
+   --------------
+
+   function Get_Seat (Event : Gdk_Event) return Gdk.Seat.Gdk_Seat is
+      function Internal (Event : Gdk_Event) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_seat");
+      Stub_Gdk_Seat : Gdk.Seat.Gdk_Seat_Record;
+   begin
+      return Gdk.Seat.Gdk_Seat (Get_User_Data (Internal (Event), Stub_Gdk_Seat));
+   end Get_Seat;
 
    -----------------
    -- Handler_Set --
@@ -411,6 +448,31 @@ package body Gdk.Event is
       end Internal_Cb;
 
    end Handler_Set_User_Data;
+
+   --------------------------
+   -- Is_Scroll_Stop_Event --
+   --------------------------
+
+   function Is_Scroll_Stop_Event (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_is_scroll_stop_event");
+   begin
+      return Internal (Event) /= 0;
+   end Is_Scroll_Stop_Event;
+
+   ---------------------
+   -- Set_Device_Tool --
+   ---------------------
+
+   procedure Set_Device_Tool
+      (Event : Gdk_Event;
+       Tool  : access Gdk.Device_Tool.Gdk_Device_Tool_Record'Class)
+   is
+      procedure Internal (Event : Gdk_Event; Tool : System.Address);
+      pragma Import (C, Internal, "gdk_event_set_device_tool");
+   begin
+      Internal (Event, Get_Object_Or_Null (GObject (Tool)));
+   end Set_Device_Tool;
 
    ---------------------------
    -- Triggers_Context_Menu --

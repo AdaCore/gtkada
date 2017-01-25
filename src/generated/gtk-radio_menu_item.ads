@@ -41,6 +41,13 @@
 --  (GTK_RADIO_MENU_ITEM (item)); if (i == 1) gtk_check_menu_item_set_active
 --  (GTK_CHECK_MENU_ITEM (item), TRUE); } ]|
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> menuitem ├── radio.left ╰── <child> ]|
+--
+--  GtkRadioMenuItem has a main CSS node with name menuitem, and a subnode
+--  with name radio, which gets the .left or .right style class.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -136,6 +143,26 @@ package Gtk.Radio_Menu_Item is
    --  Sets the group of a radio menu item, or changes it.
    --  "group": the new group, or null.
 
+   procedure Join_Group
+      (Radio_Menu_Item : not null access Gtk_Radio_Menu_Item_Record;
+       Group_Source    : access Gtk_Radio_Menu_Item_Record'Class);
+   --  Joins a Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item object to the group of
+   --  another Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item object.
+   --  This function should be used by language bindings to avoid the memory
+   --  manangement of the opaque GSList of Gtk.Radio_Menu_Item.Get_Group and
+   --  Gtk.Radio_Menu_Item.Set_Group.
+   --  A common way to set up a group of
+   --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item instances is:
+   --  |[ GtkRadioMenuItem *last_item = NULL;
+   --  while ( ...more items to add... ) { GtkRadioMenuItem *radio_item;
+   --  radio_item = gtk_radio_menu_item_new (...);
+   --  gtk_radio_menu_item_join_group (radio_item, last_item); last_item =
+   --  radio_item; } ]|
+   --  Since: gtk+ 3.18
+   --  "group_source": a Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose group
+   --  we are joining, or null to remove the Radio_Menu_Item from its current
+   --  group
+
    ----------------------
    -- GtkAda additions --
    ----------------------
@@ -157,7 +184,7 @@ package Gtk.Radio_Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Radio_Menu_Item_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Radio_Menu_Item_Record)

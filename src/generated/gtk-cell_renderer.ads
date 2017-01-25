@@ -329,7 +329,7 @@ package Gtk.Cell_Renderer is
 
    function Get_State
       (Cell       : not null access Gtk_Cell_Renderer_Record;
-       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_State : Gtk_Cell_Renderer_State)
        return Gtk.Enums.Gtk_State_Flags;
    --  Translates the cell renderer state to Gtk.Enums.Gtk_State_Flags, based

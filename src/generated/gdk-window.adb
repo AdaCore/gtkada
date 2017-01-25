@@ -24,6 +24,9 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Values;              use Glib.Values;
+with Gtk.Arguments;            use Gtk.Arguments;
+with Gtkada.Bindings;          use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
 pragma Warnings(On);
@@ -169,6 +172,24 @@ package body Gdk.Window is
       return Self;
    end Gdk_Window_New;
 
+   ----------------------
+   -- Begin_Draw_Frame --
+   ----------------------
+
+   function Begin_Draw_Frame
+      (Self   : Gdk.Gdk_Window;
+       Region : Cairo.Region.Cairo_Region)
+       return Gdk.Drawing_Context.Gdk_Drawing_Context
+   is
+      function Internal
+         (Self   : Gdk.Gdk_Window;
+          Region : Cairo.Region.Cairo_Region) return System.Address;
+      pragma Import (C, Internal, "gdk_window_begin_draw_frame");
+      Stub_Gdk_Drawing_Context : Gdk.Drawing_Context.Gdk_Drawing_Context_Record;
+   begin
+      return Gdk.Drawing_Context.Gdk_Drawing_Context (Get_User_Data (Internal (Self, Region), Stub_Gdk_Drawing_Context));
+   end Begin_Draw_Frame;
+
    --------------------------------
    -- Begin_Move_Drag_For_Device --
    --------------------------------
@@ -218,6 +239,34 @@ package body Gdk.Window is
    begin
       Internal (Self, Edge, Get_Object (Device), Button, Root_X, Root_Y, Timestamp);
    end Begin_Resize_Drag_For_Device;
+
+   -----------------------
+   -- Create_Gl_Context --
+   -----------------------
+
+   function Create_Gl_Context
+      (Self : Gdk.Gdk_Window) return Gdk.Glcontext.Gdk_Glcontext
+   is
+      function Internal (Self : Gdk.Gdk_Window) return System.Address;
+      pragma Import (C, Internal, "gdk_window_create_gl_context");
+      Stub_Gdk_Glcontext : Gdk.Glcontext.Gdk_Glcontext_Record;
+   begin
+      return Gdk.Glcontext.Gdk_Glcontext (Get_User_Data (Internal (Self), Stub_Gdk_Glcontext));
+   end Create_Gl_Context;
+
+   --------------------
+   -- End_Draw_Frame --
+   --------------------
+
+   procedure End_Draw_Frame
+      (Self    : Gdk.Gdk_Window;
+       Context : not null access Gdk.Drawing_Context.Gdk_Drawing_Context_Record'Class)
+   is
+      procedure Internal (Self : Gdk.Gdk_Window; Context : System.Address);
+      pragma Import (C, Internal, "gdk_window_end_draw_frame");
+   begin
+      Internal (Self, Get_Object (Context));
+   end End_Draw_Frame;
 
    -------------------
    -- Ensure_Native --
@@ -451,6 +500,17 @@ package body Gdk.Window is
    begin
       return Internal (Self) /= 0;
    end Get_Modal_Hint;
+
+   ----------------------
+   -- Get_Pass_Through --
+   ----------------------
+
+   function Get_Pass_Through (Self : Gdk.Gdk_Window) return Boolean is
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_window_get_pass_through");
+   begin
+      return Internal (Self) /= 0;
+   end Get_Pass_Through;
 
    -----------------
    -- Get_Pointer --
@@ -910,6 +970,22 @@ package body Gdk.Window is
       Internal (Self, Boolean'Pos (Override_Redirect));
    end Set_Override_Redirect;
 
+   ----------------------
+   -- Set_Pass_Through --
+   ----------------------
+
+   procedure Set_Pass_Through
+      (Self         : Gdk.Gdk_Window;
+       Pass_Through : Boolean)
+   is
+      procedure Internal
+         (Self         : Gdk.Gdk_Window;
+          Pass_Through : Glib.Gboolean);
+      pragma Import (C, Internal, "gdk_window_set_pass_through");
+   begin
+      Internal (Self, Boolean'Pos (Pass_Through));
+   end Set_Pass_Through;
+
    --------------
    -- Set_Role --
    --------------
@@ -1082,5 +1158,155 @@ package body Gdk.Window is
    begin
       Internal (Boolean'Pos (Setting));
    end Set_Debug_Updates;
+
+   use type System.Address;
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Address_Address_Boolean_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Address_Address_Boolean_Boolean_Void);
+
+   procedure Connect
+      (Object  : Gdk_Window;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : Gdk_Window;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Address_Address_Boolean_Boolean_Void);
+
+   procedure Marsh_Gdk_Window_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gdk_Window_Address_Address_Boolean_Boolean_Void);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : Gdk_Window;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gdk_Window_Address_Address_Boolean_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : Gdk_Window;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Address_Address_Boolean_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   --------------------------------------------------------
+   -- Marsh_GObject_Address_Address_Boolean_Boolean_Void --
+   --------------------------------------------------------
+
+   procedure Marsh_GObject_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Address_Address_Boolean_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Address (Params, 1), Unchecked_To_Address (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Address_Address_Boolean_Boolean_Void;
+
+   -----------------------------------------------------------
+   -- Marsh_Gdk_Window_Address_Address_Boolean_Boolean_Void --
+   -----------------------------------------------------------
+
+   procedure Marsh_Gdk_Window_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gdk_Window := Gdk_Window (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Address (Params, 1), Unchecked_To_Address (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gdk_Window_Address_Address_Boolean_Boolean_Void;
+
+   ----------------------
+   -- On_Moved_To_Rect --
+   ----------------------
+
+   procedure On_Moved_To_Rect
+      (Self  : Gdk_Window;
+       Call  : Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "moved-to-rect" & ASCII.NUL, Call, After);
+   end On_Moved_To_Rect;
+
+   ----------------------
+   -- On_Moved_To_Rect --
+   ----------------------
+
+   procedure On_Moved_To_Rect
+      (Self  : Gdk_Window;
+       Call  : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "moved-to-rect" & ASCII.NUL, Call, After, Slot);
+   end On_Moved_To_Rect;
 
 end Gdk.Window;

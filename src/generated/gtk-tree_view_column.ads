@@ -267,7 +267,7 @@ package Gtk.Tree_View_Column is
        Fixed_Width : Gint);
    --  If Fixed_Width is not -1, sets the fixed width of Tree_Column;
    --  otherwise unsets it. The effective value of Fixed_Width is clamped
-   --  between the minumum and maximum width of the column; however, the value
+   --  between the minimum and maximum width of the column; however, the value
    --  stored in the "fixed-width" property is not clamped. If the column
    --  sizing is GTK_TREE_VIEW_COLUMN_GROW_ONLY or
    --  GTK_TREE_VIEW_COLUMN_AUTOSIZE, setting a fixed width overrides the

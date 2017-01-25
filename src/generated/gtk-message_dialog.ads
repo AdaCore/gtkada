@@ -136,10 +136,9 @@ package Gtk.Message_Dialog is
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
        Message  : UTF8_String := "");
-   --  Creates a new message dialog, which is a simple dialog with an icon
-   --  indicating the dialog type (error, warning, etc.) and some text the user
-   --  may want to see. When the user clicks a button a "response" signal is
-   --  emitted with response IDs from Gtk_Response_Type. See
+   --  Creates a new message dialog, which is a simple dialog with some text
+   --  the user may want to see. When the user clicks a button a "response"
+   --  signal is emitted with response IDs from Gtk_Response_Type. See
    --  Gtk.Dialog.Gtk_Dialog for more details.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
@@ -155,10 +154,9 @@ package Gtk.Message_Dialog is
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
        Message  : UTF8_String := "") return Gtk_Message_Dialog;
-   --  Creates a new message dialog, which is a simple dialog with an icon
-   --  indicating the dialog type (error, warning, etc.) and some text the user
-   --  may want to see. When the user clicks a button a "response" signal is
-   --  emitted with response IDs from Gtk_Response_Type. See
+   --  Creates a new message dialog, which is a simple dialog with some text
+   --  the user may want to see. When the user clicks a button a "response"
+   --  signal is emitted with response IDs from Gtk_Response_Type. See
    --  Gtk.Dialog.Gtk_Dialog for more details.
    --  "parent": transient parent, or null for none
    --  "flags": flags
@@ -180,11 +178,11 @@ package Gtk.Message_Dialog is
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
        Message  : UTF8_String := "");
-   --  Creates a new message dialog, which is a simple dialog with an icon
-   --  indicating the dialog type (error, warning, etc.) and some text which is
-   --  marked up with the [Pango text markup language][PangoMarkupFormat]. When
-   --  the user clicks a button a "response" signal is emitted with response
-   --  IDs from Gtk_Response_Type. See Gtk.Dialog.Gtk_Dialog for more details.
+   --  Creates a new message dialog, which is a simple dialog with some text
+   --  that is marked up with the [Pango text markup
+   --  language][PangoMarkupFormat]. When the user clicks a button a "response"
+   --  signal is emitted with response IDs from Gtk_Response_Type. See
+   --  Gtk.Dialog.Gtk_Dialog for more details.
    --  Special XML characters in the printf arguments passed to this function
    --  will automatically be escaped as necessary. (See g_markup_printf_escaped
    --  for how this is implemented.) Usually this is what you want, but if you
@@ -211,11 +209,11 @@ package Gtk.Message_Dialog is
        The_Type : Gtk_Message_Type;
        Buttons  : Gtk_Buttons_Type;
        Message  : UTF8_String := "") return Gtk_Message_Dialog;
-   --  Creates a new message dialog, which is a simple dialog with an icon
-   --  indicating the dialog type (error, warning, etc.) and some text which is
-   --  marked up with the [Pango text markup language][PangoMarkupFormat]. When
-   --  the user clicks a button a "response" signal is emitted with response
-   --  IDs from Gtk_Response_Type. See Gtk.Dialog.Gtk_Dialog for more details.
+   --  Creates a new message dialog, which is a simple dialog with some text
+   --  that is marked up with the [Pango text markup
+   --  language][PangoMarkupFormat]. When the user clicks a button a "response"
+   --  signal is emitted with response IDs from Gtk_Response_Type. See
+   --  Gtk.Dialog.Gtk_Dialog for more details.
    --  Special XML characters in the printf arguments passed to this function
    --  will automatically be escaped as necessary. (See g_markup_printf_escaped
    --  for how this is implemented.) Usually this is what you want, but if you

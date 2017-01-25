@@ -26,6 +26,22 @@
 --  overview][TextWidget] which gives an overview of all the objects and data
 --  types related to the text widget and how they work together.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> textview.view ├── border.top ├── border.left
+--  ├── text │ ╰── [selection] ├── border.right ├── border.bottom ╰──
+--  [window.popup] ]|
+--
+--  GtkTextView has a main css node with name textview and style class .view,
+--  and subnodes for each of the border windows, and the main text area, with
+--  names border and text, respectively. The border nodes each get one of the
+--  style classes .left, .right, .top or .bottom.
+--
+--  A node representing the selection will appear below the text node.
+--
+--  If a context menu is opened, the window node will appear as a subnode of
+--  the main node.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -44,6 +60,7 @@ with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Container;           use Gtk.Container;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Scrollable;          use Gtk.Scrollable;
+with Gtk.Style;               use Gtk.Style;
 with Gtk.Text_Attributes;     use Gtk.Text_Attributes;
 with Gtk.Text_Buffer;         use Gtk.Text_Buffer;
 with Gtk.Text_Child_Anchor;   use Gtk.Text_Child_Anchor;
@@ -59,7 +76,9 @@ package Gtk.Text_View is
 
    type Gtk_Text_View_Layer is (
       Text_View_Layer_Below,
-      Text_View_Layer_Above);
+      Text_View_Layer_Above,
+      Text_View_Layer_Below_Text,
+      Text_View_Layer_Above_Text);
    pragma Convention (C, Gtk_Text_View_Layer);
    --  Used to reference the layers of Gtk.Text_View.Gtk_Text_View for the
    --  purpose of customized drawing with the ::draw_layer vfunc.
@@ -260,6 +279,20 @@ package Gtk.Text_View is
    --  "type": window to affect
    --  "size": width or height of the window
 
+   function Get_Bottom_Margin
+      (View : not null access Gtk_Text_View_Record) return Gint;
+   --  Gets the bottom margin for text in the Text_View.
+   --  Since: gtk+ 3.18
+
+   procedure Set_Bottom_Margin
+      (View          : not null access Gtk_Text_View_Record;
+       Bottom_Margin : Gint);
+   --  Sets the bottom margin for text in Text_View.
+   --  Note that this function is confusingly named. In CSS terms, the value
+   --  set here is padding.
+   --  Since: gtk+ 3.18
+   --  "bottom_margin": bottom margin in pixels
+
    function Get_Buffer
       (View : not null access Gtk_Text_View_Record)
        return Gtk.Text_Buffer.Gtk_Text_Buffer;
@@ -304,14 +337,16 @@ package Gtk.Text_View is
 
    function Get_Cursor_Visible
       (View : not null access Gtk_Text_View_Record) return Boolean;
-   --  Find out whether the cursor is being displayed.
+   --  Find out whether the cursor should be displayed.
 
    procedure Set_Cursor_Visible
       (View    : not null access Gtk_Text_View_Record;
        Setting : Boolean);
-   --  Toggles whether the insertion point is displayed. A buffer with no
-   --  editable text probably shouldn't have a visible cursor, so you may want
-   --  to turn the cursor off.
+   --  Toggles whether the insertion point should be displayed. A buffer with
+   --  no editable text probably shouldn't have a visible cursor, so you may
+   --  want to turn the cursor off.
+   --  Note that this property may be overridden by the
+   --  Gtk.Settings.Gtk_Settings:gtk-keynave-use-caret settings.
    --  "setting": whether to show the insertion cursor
 
    function Get_Default_Attributes
@@ -322,7 +357,7 @@ package Gtk.Text_View is
    --  default attributes in to Gtk.Text_Iter.Get_Attributes in order to get
    --  the attributes in effect at a given text position.
    --  The return value is a copy owned by the caller of this function, and
-   --  should be freed.
+   --  should be freed with Gtk.Text_Attributes.Unref.
 
    function Get_Editable
       (View : not null access Gtk_Text_View_Record) return Boolean;
@@ -379,11 +414,11 @@ package Gtk.Text_View is
    --  Since: gtk+ 3.6
    --  "purpose": the purpose
 
-   procedure Get_Iter_At_Location
+   function Get_Iter_At_Location
       (View : not null access Gtk_Text_View_Record;
-       Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
        X    : Gint;
-       Y    : Gint);
+       Y    : Gint) return Boolean;
    --  Retrieves the iterator at buffer coordinates X and Y. Buffer
    --  coordinates are coordinates for the entire buffer, not just the
    --  currently-displayed portion. If you have coordinates from an event, you
@@ -393,12 +428,12 @@ package Gtk.Text_View is
    --  "x": x position, in buffer coordinates
    --  "y": y position, in buffer coordinates
 
-   procedure Get_Iter_At_Position
+   function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
-       Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : out Gint;
+       Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Trailing : access Gint;
        X        : Gint;
-       Y        : Gint);
+       Y        : Gint) return Boolean;
    --  Retrieves the iterator pointing to the character at buffer coordinates
    --  X and Y. Buffer coordinates are coordinates for the entire buffer, not
    --  just the currently-displayed portion. If you have coordinates from an
@@ -449,6 +484,8 @@ package Gtk.Text_View is
        Left_Margin : Gint);
    --  Sets the default left margin for text in Text_View. Tags in the buffer
    --  may override the default.
+   --  Note that this function is confusingly named. In CSS terms, the value
+   --  set here is padding.
    --  "left_margin": left margin in pixels
 
    procedure Get_Line_At_Y
@@ -477,6 +514,19 @@ package Gtk.Text_View is
    --  "y": return location for a y coordinate
    --  "height": return location for a height
 
+   function Get_Monospace
+      (View : not null access Gtk_Text_View_Record) return Boolean;
+   --  Gets the value of the Gtk.Text_View.Gtk_Text_View:monospace property.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Monospace
+      (View      : not null access Gtk_Text_View_Record;
+       Monospace : Boolean);
+   --  Sets the Gtk.Text_View.Gtk_Text_View:monospace property, which
+   --  indicates that the text view should use monospace fonts.
+   --  Since: gtk+ 3.16
+   --  "monospace": True to request monospace styling
+
    function Get_Overwrite
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Returns whether the Gtk.Text_View.Gtk_Text_View is in overwrite mode or
@@ -492,7 +542,9 @@ package Gtk.Text_View is
 
    function Get_Pixels_Above_Lines
       (View : not null access Gtk_Text_View_Record) return Gint;
-   --  Gets the default number of pixels to put above paragraphs.
+   --  Gets the default number of pixels to put above paragraphs. Adding this
+   --  function with Gtk.Text_View.Get_Pixels_Below_Lines is equal to the line
+   --  space between each paragraph.
 
    procedure Set_Pixels_Above_Lines
       (View               : not null access Gtk_Text_View_Record;
@@ -504,6 +556,8 @@ package Gtk.Text_View is
    function Get_Pixels_Below_Lines
       (View : not null access Gtk_Text_View_Record) return Gint;
    --  Gets the value set by Gtk.Text_View.Set_Pixels_Below_Lines.
+   --  The line space is the sum of the value returned by this function and
+   --  the value returned by Gtk.Text_View.Get_Pixels_Above_Lines.
 
    procedure Set_Pixels_Below_Lines
       (View               : not null access Gtk_Text_View_Record;
@@ -535,6 +589,8 @@ package Gtk.Text_View is
        Right_Margin : Gint);
    --  Sets the default right margin for text in the text view. Tags in the
    --  buffer may override the default.
+   --  Note that this function is confusingly named. In CSS terms, the value
+   --  set here is padding.
    --  "right_margin": right margin in pixels
 
    function Get_Tabs
@@ -550,6 +606,20 @@ package Gtk.Text_View is
    --  Sets the default tab stops for paragraphs in Text_View. Tags in the
    --  buffer may override the default.
    --  "tabs": tabs as a Pango.Tabs.Pango_Tab_Array
+
+   function Get_Top_Margin
+      (View : not null access Gtk_Text_View_Record) return Gint;
+   --  Gets the top margin for text in the Text_View.
+   --  Since: gtk+ 3.18
+
+   procedure Set_Top_Margin
+      (View       : not null access Gtk_Text_View_Record;
+       Top_Margin : Gint);
+   --  Sets the top margin for text in Text_View.
+   --  Note that this function is confusingly named. In CSS terms, the value
+   --  set here is padding.
+   --  Since: gtk+ 3.18
+   --  "top_margin": top margin in pixels
 
    procedure Get_Visible_Rect
       (View         : not null access Gtk_Text_View_Record;
@@ -651,6 +721,16 @@ package Gtk.Text_View is
    --  Moves the cursor to the currently visible region of the buffer, it it
    --  isn't there already.
 
+   procedure Reset_Cursor_Blink
+      (View : not null access Gtk_Text_View_Record);
+   --  Ensures that the cursor is shown (i.e. not in an 'off' blink interval)
+   --  and resets the time that it will stay blinking (or visible, in case
+   --  blinking is disabled).
+   --  This function should be called in response to user input (e.g. from
+   --  derived classes that override the textview's
+   --  Gtk.Widget.Gtk_Widget::key-press-event handler).
+   --  Since: gtk+ 3.20
+
    procedure Reset_Im_Context (View : not null access Gtk_Text_View_Record);
    --  Reset the input method context of the text view if needed.
    --  This can be necessary in the case where modifying the buffer would
@@ -742,6 +822,10 @@ package Gtk.Text_View is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   function Get_Border
+      (Self   : not null access Gtk_Text_View_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
+
    function Get_Hadjustment
       (Self : not null access Gtk_Text_View_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
@@ -782,6 +866,15 @@ package Gtk.Text_View is
 
    Accepts_Tab_Property : constant Glib.Properties.Property_Boolean;
 
+   Bottom_Margin_Property : constant Glib.Properties.Property_Int;
+   --  The bottom margin for text in the text view.
+   --
+   --  Note that this property is confusingly named. In CSS terms, the value
+   --  set here is padding, and it is applied in addition to the padding from
+   --  the theme.
+   --
+   --  Don't confuse this property with Gtk.Widget.Gtk_Widget:margin-bottom.
+
    Buffer_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Text_Buffer.Gtk_Text_Buffer
 
@@ -812,6 +905,16 @@ package Gtk.Text_View is
    Justification_Property : constant Gtk.Enums.Property_Gtk_Justification;
 
    Left_Margin_Property : constant Glib.Properties.Property_Int;
+   --  The default left margin for text in the text view. Tags in the buffer
+   --  may override the default.
+   --
+   --  Note that this property is confusingly named. In CSS terms, the value
+   --  set here is padding, and it is applied in addition to the padding from
+   --  the theme.
+   --
+   --  Don't confuse this property with Gtk.Widget.Gtk_Widget:margin-left.
+
+   Monospace_Property : constant Glib.Properties.Property_Boolean;
 
    Overwrite_Property : constant Glib.Properties.Property_Boolean;
 
@@ -827,9 +930,26 @@ package Gtk.Text_View is
    --  touch popups.
 
    Right_Margin_Property : constant Glib.Properties.Property_Int;
+   --  The default right margin for text in the text view. Tags in the buffer
+   --  may override the default.
+   --
+   --  Note that this property is confusingly named. In CSS terms, the value
+   --  set here is padding, and it is applied in addition to the padding from
+   --  the theme.
+   --
+   --  Don't confuse this property with Gtk.Widget.Gtk_Widget:margin-right.
 
    Tabs_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Pango.Tab_Array
+
+   Top_Margin_Property : constant Glib.Properties.Property_Int;
+   --  The top margin for text in the text view.
+   --
+   --  Note that this property is confusingly named. In CSS terms, the value
+   --  set here is padding, and it is applied in addition to the padding from
+   --  the theme.
+   --
+   --  Don't confuse this property with Gtk.Widget.Gtk_Widget:margin-top.
 
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode;
 
@@ -921,6 +1041,41 @@ package Gtk.Text_View is
    --  Callback parameters:
    --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
+
+   type Cb_Gtk_Text_View_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean is not null access function
+     (Self        : access Gtk_Text_View_Record'Class;
+      Granularity : Text_Extend_Selection;
+      Location    : Gtk.Text_Iter.Gtk_Text_Iter;
+      Start       : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End     : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
+
+   type Cb_GObject_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean is not null access function
+     (Self        : access Glib.Object.GObject_Record'Class;
+      Granularity : Text_Extend_Selection;
+      Location    : Gtk.Text_Iter.Gtk_Text_Iter;
+      Start       : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End     : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
+
+   Signal_Extend_Selection : constant Glib.Signal_Name := "extend-selection";
+   procedure On_Extend_Selection
+      (Self  : not null access Gtk_Text_View_Record;
+       Call  : Cb_Gtk_Text_View_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       After : Boolean := False);
+   procedure On_Extend_Selection
+      (Self  : not null access Gtk_Text_View_Record;
+       Call  : Cb_GObject_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::extend-selection signal is emitted when the selection needs to be
+   --  extended at Location.
+   -- 
+   --  Callback parameters:
+   --    --  "granularity": the granularity type
+   --    --  "location": the location where to extend the selection
+   --    --  "start": where the selection should start
+   --    --  "end": where the selection should end
+   --    --  Returns GDK_EVENT_STOP to stop other handlers from being invoked for the
+   --   event. GDK_EVENT_PROPAGATE to propagate the event further.
 
    type Cb_Gtk_Text_View_UTF8_String_Void is not null access procedure
      (Self   : access Gtk_Text_View_Record'Class;
@@ -1018,7 +1173,7 @@ package Gtk.Text_View is
    --  There are no default bindings for this signal.
    -- 
    --  Callback parameters:
-   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step
+   --    --  "step": the granularity of the movement, as a Gtk.Enums.Gtk_Scroll_Step
    --    --  "count": the number of Step units to move
 
    Signal_Paste_Clipboard : constant Glib.Signal_Name := "paste-clipboard";
@@ -1139,8 +1294,8 @@ package Gtk.Text_View is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::toggle-cursor-visible signal is a [keybinding
-   --  signal][GtkBindingSignal] which gets emitted to toggle the visibility of
-   --  the cursor.
+   --  signal][GtkBindingSignal] which gets emitted to toggle the
+   --  Gtk.Text_View.Gtk_Text_View:cursor-visible property.
    --
    --  The default binding for this signal is F7.
 
@@ -1216,6 +1371,8 @@ package Gtk.Text_View is
 private
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=
      Gtk.Enums.Build ("wrap-mode");
+   Top_Margin_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("top-margin");
    Tabs_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("tabs");
    Right_Margin_Property : constant Glib.Properties.Property_Int :=
@@ -1230,6 +1387,8 @@ private
      Glib.Properties.Build ("pixels-above-lines");
    Overwrite_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("overwrite");
+   Monospace_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("monospace");
    Left_Margin_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("left-margin");
    Justification_Property : constant Gtk.Enums.Property_Gtk_Justification :=
@@ -1248,6 +1407,8 @@ private
      Glib.Properties.Build ("cursor-visible");
    Buffer_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("buffer");
+   Bottom_Margin_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("bottom-margin");
    Accepts_Tab_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("accepts-tab");
 end Gtk.Text_View;

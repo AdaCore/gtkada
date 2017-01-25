@@ -70,6 +70,16 @@
 --  id="selection"> <signal name="changed"
 --  handler="on_treeview_selection_changed"/> </object> </child> </object> ]|
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> treeview.view ├── header │ ├── <column header>
+--  ┊ ┊ │ ╰── <column header> │ ╰── [rubberband] ]|
+--
+--  GtkTreeView has a main CSS node with name treeview and style class .view.
+--  It has a subnode with name header, which is the parent for all the column
+--  header widgets' CSS nodes. For rubberband selection, a subnode with name
+--  rubberband is used.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -91,6 +101,7 @@ with Gtk.Container;           use Gtk.Container;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.GEntry;              use Gtk.GEntry;
 with Gtk.Scrollable;          use Gtk.Scrollable;
+with Gtk.Style;               use Gtk.Style;
 with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Tooltip;             use Gtk.Tooltip;
 with Gtk.Tree_Model;          use Gtk.Tree_Model;
@@ -124,7 +135,7 @@ package Gtk.Tree_View is
    --  straight mapping between the cell and the model. This is useful for
    --  customizing the cell renderer. For example, a function might get an
    --  integer from the Tree_Model, and render it to the "text" attribute of
-   --  "cell" by converting it to its written equivilent. This is set by
+   --  "cell" by converting it to its written equivalent. This is set by
    --  calling gtk_tree_view_column_set_cell_data_func
    --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
    --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
@@ -1015,7 +1026,7 @@ package Gtk.Tree_View is
       --  straight mapping between the cell and the model. This is useful for
       --  customizing the cell renderer. For example, a function might get an
       --  integer from the Tree_Model, and render it to the "text" attribute of
-      --  "cell" by converting it to its written equivilent. This is set by
+      --  "cell" by converting it to its written equivalent. This is set by
       --  calling gtk_tree_view_column_set_cell_data_func
       --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
       --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
@@ -1464,6 +1475,10 @@ package Gtk.Tree_View is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Border
+      (Self   : not null access Gtk_Tree_View_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Tree_View_Record)

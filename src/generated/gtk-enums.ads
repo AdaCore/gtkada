@@ -209,6 +209,7 @@ package Gtk.Enums is
    Input_Hint_Uppercase_Words : constant Gtk_Input_Hints := 32;
    Input_Hint_Uppercase_Sentences : constant Gtk_Input_Hints := 64;
    Input_Hint_Inhibit_Osk : constant Gtk_Input_Hints := 128;
+   Input_Hint_Vertical_Writing : constant Gtk_Input_Hints := 256;
 
    type Gtk_Input_Purpose is (
       Input_Purpose_Free_Form,
@@ -353,7 +354,8 @@ package Gtk.Enums is
    type Gtk_Policy_Type is (
       Policy_Always,
       Policy_Automatic,
-      Policy_Never);
+      Policy_Never,
+      Policy_External);
    pragma Convention (C, Gtk_Policy_Type);
    --  Determines how the size should be computed to achieve the one of the
    --  visibility mode for the scrollbars.
@@ -516,6 +518,7 @@ package Gtk.Enums is
    Gtk_State_Flag_Link : constant Gtk_State_Flags := 512;
    Gtk_State_Flag_Visited : constant Gtk_State_Flags := 1024;
    Gtk_State_Flag_Checked : constant Gtk_State_Flags := 2048;
+   Gtk_State_Flag_Drop_Active : constant Gtk_State_Flags := 4096;
 
    type Gtk_State_Type is (
       State_Normal,

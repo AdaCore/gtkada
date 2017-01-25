@@ -39,6 +39,11 @@
 --  To simply switch the state of a toggle button, use
 --  Gtk.Toggle_Button.Toggled.
 --
+--  # CSS nodes
+--
+--  GtkToggleButton has a single CSS node with name button. To differentiate
+--  it from a plain Gtk.Button.Gtk_Button, it gets the .toggle style class.
+--
 --  ## Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets.
 --
 --  |[<!-- language="C" --> void make_toggles (void) { GtkWidget *dialog,
@@ -192,7 +197,9 @@ package Gtk.Toggle_Button is
        Draw_Indicator : Boolean);
    --  Sets whether the button is displayed as a separate indicator and label.
    --  You can call this function on a checkbutton or a radiobutton with
-   --  Draw_Indicator = False to make the button look like a normal button
+   --  Draw_Indicator = False to make the button look like a normal button.
+   --  This can be used to create linked strip of buttons that work like a
+   --  Gtk.Stack_Switcher.Gtk_Stack_Switcher.
    --  This function only affects instances of classes like
    --  Gtk.Check_Button.Gtk_Check_Button and Gtk.Radio_Button.Gtk_Radio_Button
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
@@ -218,7 +225,7 @@ package Gtk.Toggle_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Toggle_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Toggle_Button_Record)

@@ -87,7 +87,7 @@ package Gtk.Tearoff_Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Tearoff_Menu_Item_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Tearoff_Menu_Item_Record)

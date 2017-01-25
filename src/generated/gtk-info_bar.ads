@@ -71,6 +71,12 @@
 --  numeric response, and the content of the element is the id of widget (which
 --  should be a child of the dialogs Action_Area).
 --
+--  # CSS nodes
+--
+--  GtkInfoBar has a single CSS node with name infobar. The node may get one
+--  of the style classes .info, .warning, .error or .question, depending on the
+--  message type.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -159,8 +165,8 @@ package Gtk.Info_Bar is
    procedure Set_Message_Type
       (Self         : not null access Gtk_Info_Bar_Record;
        Message_Type : Gtk.Message_Dialog.Gtk_Message_Type);
-   --  Sets the message type of the message area. GTK+ uses this type to
-   --  determine what color to use when drawing the message area.
+   --  Sets the message type of the message area.
+   --  GTK+ uses this type to determine how the message is displayed.
    --  Since: gtk+ 2.18
    --  "message_type": a Gtk.Message_Dialog.Gtk_Message_Type
 

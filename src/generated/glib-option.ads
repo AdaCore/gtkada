@@ -242,6 +242,12 @@ package Glib.Option is
    --  Since: gtk+ 2.6
    --  "group": the group to set as main group
 
+   function Get_Strict_Posix (Self : Goption_Context) return Boolean;
+
+   procedure Set_Strict_Posix
+      (Self         : Goption_Context;
+       Strict_Posix : Boolean);
+
    function Get_Summary (Self : Goption_Context) return UTF8_String;
    --  Returns the summary. See Glib.Option.Set_Summary.
    --  Since: gtk+ 2.12

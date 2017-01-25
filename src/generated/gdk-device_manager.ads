@@ -127,6 +127,10 @@
 --  globally set to map into normal X keyboard events. The mapping is set using
 --  Gdk.Device.Set_Key.
 --
+--  In GTK+ 3.20, a new Gdk.Seat.Gdk_Seat object has been introduced that
+--  supersedes Gdk.Device_Manager.Gdk_Device_Manager and should be preferred in
+--  newly written code.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -156,6 +160,7 @@ package Gdk.Device_Manager is
    function Get_Client_Pointer
       (Self : not null access Gdk_Device_Manager_Record)
        return Gdk.Device.Gdk_Device;
+   pragma Obsolescent (Get_Client_Pointer);
    --  Returns the client pointer, that is, the master pointer that acts as
    --  the core pointer for this application. In X11, window managers may
    --  change this depending on the interaction pattern under the presence of
@@ -164,6 +169,7 @@ package Gdk.Device_Manager is
    --  triggered by a Gdk.Event.Gdk_Event and there aren't other means to get a
    --  meaningful Gdk.Device.Gdk_Device to operate on.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20, 1
 
    function Get_Display
       (Self : not null access Gdk_Device_Manager_Record)
@@ -175,9 +181,11 @@ package Gdk.Device_Manager is
       (Self     : not null access Gdk_Device_Manager_Record;
        The_Type : Gdk.Device.Gdk_Device_Type)
        return Gdk.Device.Device_List.Glist;
+   pragma Obsolescent (List_Devices);
    --  Returns the list of devices of type Type currently attached to
    --  Device_Manager.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20, 1
    --  "type": device type to get.
 
    ----------------------

@@ -38,6 +38,11 @@
 --  Gtk.Link_Button.Gtk_Link_Button::activate-link signal and returning True
 --  from the signal handler.
 --
+--  # CSS nodes
+--
+--  GtkLinkButton has a single CSS node with name button. To differentiate it
+--  from a plain Gtk.Button.Gtk_Button, it gets the .link style class.
+--
 --  </description>
 --  <group>Buttons and Toggles</group>
 pragma Ada_2005;
@@ -151,7 +156,7 @@ package Gtk.Link_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Link_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Link_Button_Record)

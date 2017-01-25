@@ -26,19 +26,12 @@
 --  associated lower and upper bound, together with step and page increments,
 --  and a page size. It is used within several GTK+ widgets, including
 --  Gtk.Spin_Button.Gtk_Spin_Button, Gtk.Viewport.Gtk_Viewport, and
---  Gtk.GRange.Gtk_Range (which is a base class for
---  Gtk.Scrollbar.Gtk_Hscrollbar, Gtk.Scrollbar.Gtk_Vscrollbar,
---  Gtk.Scale.Gtk_Hscale, and Gtk.Scale.Gtk_Vscale).
+--  Gtk.GRange.Gtk_Range (which is a base class for Gtk.Scrollbar.Gtk_Scrollbar
+--  and Gtk.Scale.Gtk_Scale).
 --
 --  The Gtk.Adjustment.Gtk_Adjustment object does not update the value itself.
 --  Instead it is left up to the owner of the Gtk.Adjustment.Gtk_Adjustment to
 --  control the value.
---
---  The owner of the Gtk.Adjustment.Gtk_Adjustment typically calls the
---  Gtk.Adjustment.Value_Changed and Gtk.Adjustment.Changed functions after
---  changing the value and its bounds. This results in the emission of the
---  Gtk.Adjustment.Gtk_Adjustment::value_changed or
---  Gtk.Adjustment.Gtk_Adjustment::changed signal respectively.
 --
 --  </description>
 --  <description>
@@ -92,12 +85,12 @@ package Gtk.Adjustment is
    --  deprecated, use the default value.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "value": the initial value.
-   --  "lower": the minimum value.
-   --  "upper": the maximum value.
-   --  "step_increment": the step increment.
-   --  "page_increment": the page increment.
-   --  "page_size": the page size.
+   --  "value": the initial value
+   --  "lower": the minimum value
+   --  "upper": the maximum value
+   --  "step_increment": the step increment
+   --  "page_increment": the page increment
+   --  "page_size": the page size
 
    function Gtk_Adjustment_New
       (Value          : Gdouble;
@@ -113,12 +106,12 @@ package Gtk.Adjustment is
    --  scrollbar. Page_Increment is used to make major adjustments, such as
    --  when the user clicks in the through on a scrollbar. Page_Size is
    --  deprecated, use the default value.
-   --  "value": the initial value.
-   --  "lower": the minimum value.
-   --  "upper": the maximum value.
-   --  "step_increment": the step increment.
-   --  "page_increment": the page increment.
-   --  "page_size": the page size.
+   --  "value": the initial value
+   --  "lower": the minimum value
+   --  "upper": the maximum value
+   --  "step_increment": the step increment
+   --  "page_increment": the page increment
+   --  "page_size": the page size
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
@@ -128,10 +121,12 @@ package Gtk.Adjustment is
    -------------
 
    procedure Changed (Adjustment : not null access Gtk_Adjustment_Record);
+   pragma Obsolescent (Changed);
    --  Emits a Gtk.Adjustment.Gtk_Adjustment::changed signal from the
    --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
    --  the Gtk.Adjustment.Gtk_Adjustment after it has changed any of the
    --  Gtk.Adjustment.Gtk_Adjustment properties other than the value.
+   --  Deprecated since 3.18, 1
 
    procedure Clamp_Page
       (Adjustment : not null access Gtk_Adjustment_Record;
@@ -142,8 +137,8 @@ package Gtk.Adjustment is
    --  If the range is larger than the page size, then only the start of it
    --  will be in the current page. A "value_changed" signal will be emitted if
    --  the value is changed.
-   --  "lower": the lower value.
-   --  "upper": the upper value.
+   --  "lower": the lower value
+   --  "upper": the upper value
 
    procedure Configure
       (Adjustment     : not null access Gtk_Adjustment_Record;
@@ -258,8 +253,7 @@ package Gtk.Adjustment is
 
    function Get_Value
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
-   --  Gets the current value of the adjustment. See gtk_adjustment_set_value
-   --  ().
+   --  Gets the current value of the adjustment. See Gtk.Adjustment.Set_Value.
 
    procedure Set_Value
       (Adjustment : not null access Gtk_Adjustment_Record;
@@ -271,15 +265,17 @@ package Gtk.Adjustment is
    --  Gtk.Scrollbar.Gtk_Scrollbar, the effective range of allowed values goes
    --  from Gtk.Adjustment.Gtk_Adjustment:lower to
    --  Gtk.Adjustment.Gtk_Adjustment:upper -
-   --  Gtk.Adjustment.Gtk_Adjustment:page_size.
-   --  "value": the new value.
+   --  Gtk.Adjustment.Gtk_Adjustment:page-size.
+   --  "value": the new value
 
    procedure Value_Changed
       (Adjustment : not null access Gtk_Adjustment_Record);
-   --  Emits a Gtk.Adjustment.Gtk_Adjustment::value_changed signal from the
+   pragma Obsolescent (Value_Changed);
+   --  Emits a Gtk.Adjustment.Gtk_Adjustment::value-changed signal from the
    --  Gtk.Adjustment.Gtk_Adjustment. This is typically called by the owner of
    --  the Gtk.Adjustment.Gtk_Adjustment after it has changed the
    --  Gtk.Adjustment.Gtk_Adjustment:value property.
+   --  Deprecated since 3.18, 1
 
    ----------------
    -- Properties --

@@ -39,6 +39,10 @@
 --  direction determined by the Gtk.Orientable.Gtk_Orientable:orientation
 --  property.
 --
+--  # CSS nodes
+--
+--  GtkGrid uses a single CSS node with name grid.
+--
 --  </description>
 pragma Ada_2005;
 

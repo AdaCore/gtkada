@@ -37,6 +37,7 @@ with Gdk;                     use Gdk;
 with Gdk.Display;             use Gdk.Display;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Screen;              use Gdk.Screen;
+with Gdk.Seat;                use Gdk.Seat;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -91,6 +92,11 @@ package Gdk.Device is
    --  returned, as there is no associated device.
    --  Since: gtk+ 3.0
 
+   function Get_Axes
+      (Self : not null access Gdk_Device_Record) return Gdk_Axis_Flags;
+   --  Returns the axes currently available on the device.
+   --  Since: gtk+ 3.22
+
    function Get_Axis_Use
       (Self  : not null access Gdk_Device_Record;
        Index : Guint) return Gdk_Axis_Use;
@@ -119,16 +125,17 @@ package Gdk.Device is
 
    function Get_Has_Cursor
       (Self : not null access Gdk_Device_Record) return Boolean;
-   --  Determines whether the pointer follows device motion.
+   --  Determines whether the pointer follows device motion. This is not
+   --  meaningful for keyboard devices, which don't have a pointer.
    --  Since: gtk+ 2.20
 
    function Get_Last_Event_Window
       (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Window;
    --  Gets information about which window the given pointer device is in,
-   --  based on that have been received so far from the display server. If
-   --  another application has a pointer grab, or this application has a grab
-   --  with owner_events = False, null may be returned even if the pointer is
-   --  physically over one of this application's windows.
+   --  based on events that have been received so far from the display server.
+   --  If another application has a pointer grab, or this application has a
+   --  grab with owner_events = False, null may be returned even if the pointer
+   --  is physically over one of this application's windows.
    --  Since: gtk+ 3.12
 
    function Get_Mode
@@ -177,6 +184,18 @@ package Gdk.Device is
    --  "x": location to store root window X coordinate of Device, or null.
    --  "y": location to store root window Y coordinate of Device, or null.
 
+   function Get_Product_Id
+      (Self : not null access Gdk_Device_Record) return UTF8_String;
+   --  Returns the product ID of this device, or null if this information
+   --  couldn't be obtained. This ID is retrieved from the device, and is thus
+   --  constant for it. See Gdk.Device.Get_Vendor_Id for more information.
+   --  Since: gtk+ 3.16
+
+   function Get_Seat
+      (Self : not null access Gdk_Device_Record) return Gdk.Seat.Gdk_Seat;
+   --  Returns the Gdk.Seat.Gdk_Seat the device belongs to.
+   --  Since: gtk+ 3.20
+
    function Get_Source
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Source;
    --  Determines the type of the device.
@@ -196,6 +215,24 @@ package Gdk.Device is
    --  "axes": an array of doubles to store the values of the axes of Device
    --  in, or null.
    --  "mask": location to store the modifiers, or null.
+
+   function Get_Vendor_Id
+      (Self : not null access Gdk_Device_Record) return UTF8_String;
+   --  Returns the vendor ID of this device, or null if this information
+   --  couldn't be obtained. This ID is retrieved from the device, and is thus
+   --  constant for it.
+   --  This function, together with Gdk.Device.Get_Product_Id, can be used to
+   --  eg. compose Gsettings.Gsettings paths to store settings for this device.
+   --  |[<!-- language="C" --> static GSettings * get_device_settings
+   --  (GdkDevice *device) { const gchar *vendor, *product; GSettings
+   --  *settings; GdkDevice *device; gchar *path;
+   --  vendor = gdk_device_get_vendor_id (device); product =
+   --  gdk_device_get_product_id (device);
+   --  path = g_strdup_printf ("/org/example/app/devices/%s:%s/", vendor,
+   --  product); settings = g_settings_new_with_path (DEVICE_SCHEMA, path);
+   --  g_free (path);
+   --  return settings; } ]|
+   --  Since: gtk+ 3.16
 
    function Get_Window_At_Position_Double
       (Self  : not null access Gdk_Device_Record;
@@ -223,10 +260,12 @@ package Gdk.Device is
        Event_Mask     : Gdk.Event.Gdk_Event_Mask;
        Cursor         : Gdk.Gdk_Cursor;
        Time           : Guint32) return Gdk_Grab_Status;
+   pragma Obsolescent (Grab);
    --  Grabs the device so that all events coming from this device are passed
    --  to this application until the device is ungrabbed with
    --  Gdk.Device.Ungrab, or the window becomes unviewable. This overrides any
    --  previous grab on the device by this client.
+   --  Note that Device and Window need to be on the same display.
    --  Device grabs are used for operations which need complete control over
    --  the given device events (either pointer or keyboard). For example in
    --  GTK+ this is used for Drag and Drop operations, popup menus and such.
@@ -241,6 +280,7 @@ package Gdk.Device is
    --  Gdk.Event.Gdk_Event_Grab_Broken events that are emitted when the grab
    --  ends unvoluntarily.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20., 1
    --  "window": the Gdk.Gdk_Window which will own the grab (the grab window)
    --  "grab_ownership": specifies the grab ownership.
    --  "owner_events": if False then all device events are reported with
@@ -272,8 +312,10 @@ package Gdk.Device is
    procedure Ungrab
       (Self : not null access Gdk_Device_Record;
        Time : Guint32);
+   pragma Obsolescent (Ungrab);
    --  Release any grab on Device.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20., 1
    --  "time_": a timestap (e.g. GDK_CURRENT_TIME).
 
    procedure Warp
@@ -341,6 +383,10 @@ package Gdk.Device is
    --  type GDK_DEVICE_TYPE_MASTER always come in keyboard/pointer pairs. Other
    --  device types will have a null associated device.
 
+   Axes_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Axis_Flags
+   --  The axes currently available for this device.
+
    Device_Manager_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Device_Manager
    --  The Gdk.Device_Manager.Gdk_Device_Manager the Gdk.Device.Gdk_Device
@@ -356,7 +402,6 @@ package Gdk.Device is
 
    Input_Mode_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Input_Mode
-   --  Input mode for the device.
 
    Input_Source_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Input_Source
@@ -368,9 +413,27 @@ package Gdk.Device is
    Name_Property : constant Glib.Properties.Property_String;
    --  The device name.
 
+   Num_Touches_Property : constant Glib.Properties.Property_Uint;
+   --  The maximal number of concurrent touches on a touch device. Will be 0
+   --  if the device is not a touch device or if the number of touches is
+   --  unknown.
+
+   Product_Id_Property : constant Glib.Properties.Property_String;
+   --  Product ID of this device, see Gdk.Device.Get_Product_Id.
+
+   Seat_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Seat
+   --  Gdk.Seat.Gdk_Seat of this device.
+
    The_Type_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Device_Type
    --  Device role in the device manager.
+
+   Tool_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Device_Tool
+
+   Vendor_Id_Property : constant Glib.Properties.Property_String;
+   --  Vendor ID of this device, see Gdk.Device.Get_Vendor_Id.
 
    -------------
    -- Signals --
@@ -385,9 +448,40 @@ package Gdk.Device is
    --  slave device axes and keys.
    --    procedure Handler (Self : access Gdk_Device_Record'Class)
 
+   type Cb_Gdk_Device_Device_Tool_Void is not null access procedure
+     (Self : access Gdk_Device_Record'Class;
+      Tool : Device_Tool);
+
+   type Cb_GObject_Device_Tool_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Tool : Device_Tool);
+
+   Signal_Tool_Changed : constant Glib.Signal_Name := "tool-changed";
+   procedure On_Tool_Changed
+      (Self  : not null access Gdk_Device_Record;
+       Call  : Cb_Gdk_Device_Device_Tool_Void;
+       After : Boolean := False);
+   procedure On_Tool_Changed
+      (Self  : not null access Gdk_Device_Record;
+       Call  : Cb_GObject_Device_Tool_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::tool-changed signal is emitted on pen/eraser Gdk_Devices whenever
+   --  tools enter or leave proximity.
+
 private
+   Vendor_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("vendor-id");
+   Tool_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("tool");
    The_Type_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("type");
+   Seat_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("seat");
+   Product_Id_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("product-id");
+   Num_Touches_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("num-touches");
    Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("name");
    N_Axes_Property : constant Glib.Properties.Property_Uint :=
@@ -402,6 +496,8 @@ private
      Glib.Properties.Build ("display");
    Device_Manager_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("device-manager");
+   Axes_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("axes");
    Associated_Device_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("associated-device");
 end Gdk.Device;

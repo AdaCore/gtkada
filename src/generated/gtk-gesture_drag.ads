@@ -24,9 +24,9 @@
 --  <description>
 --  Gtk.Gesture_Drag.Gtk_Gesture_Drag is a Gtk.Gesture.Gtk_Gesture
 --  implementation that recognizes drag operations. The drag operation itself
---  can be tracked throught the Gtk.Gesture_Drag.Gtk_Gesture_Drag:drag-begin,
---  Gtk.Gesture_Drag.Gtk_Gesture_Drag:drag-update and
---  Gtk.Gesture_Drag.Gtk_Gesture_Drag:drag-end signals, or the relevant
+--  can be tracked throught the Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-begin,
+--  Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-update and
+--  Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-end signals, or the relevant
 --  coordinates be extracted through Gtk.Gesture_Drag.Get_Offset and
 --  Gtk.Gesture_Drag.Get_Start_Point.
 --

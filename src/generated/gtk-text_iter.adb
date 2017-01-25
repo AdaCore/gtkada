@@ -1275,6 +1275,22 @@ package body Gtk.Text_Iter is
       return Internal (Iter) /= 0;
    end Starts_Sentence;
 
+   ----------------
+   -- Starts_Tag --
+   ----------------
+
+   function Starts_Tag
+      (Iter : Gtk_Text_Iter;
+       Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean
+   is
+      function Internal
+         (Iter : Gtk_Text_Iter;
+          Tag  : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_starts_tag");
+   begin
+      return Internal (Iter, Get_Object_Or_Null (GObject (Tag))) /= 0;
+   end Starts_Tag;
+
    -----------------
    -- Starts_Word --
    -----------------

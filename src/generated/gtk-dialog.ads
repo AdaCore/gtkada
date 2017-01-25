@@ -112,7 +112,8 @@
 --  An example of a Gtk.Dialog.Gtk_Dialog UI definition fragment: |[ <object
 --  class="GtkDialog" id="dialog1"> <child type="action"> <object
 --  class="GtkButton" id="button_cancel"/> </child> <child type="action">
---  <object class="GtkButton" id="button_ok"/> </child> <action-widgets>
+--  <object class="GtkButton" id="button_ok"> <property
+--  name="can-default">True</property> </object> </child> <action-widgets>
 --  <action-widget response="cancel">button_cancel</action-widget>
 --  <action-widget response="ok" default="true">button_ok</action-widget>
 --  </action-widgets> </object> ]|

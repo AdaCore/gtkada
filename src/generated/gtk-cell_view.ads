@@ -40,6 +40,10 @@
 --  (left-to-right menus should be allocated vertically since they all share
 --  the same height but may have variable widths).
 --
+--  # CSS nodes
+--
+--  GtkCellView has a single CSS node with name cellview.
+--
 --  </description>
 pragma Ada_2005;
 

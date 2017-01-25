@@ -67,6 +67,15 @@
 --  id="expander-label"/> </child> <child> <object class="GtkEntry"
 --  id="expander-content"/> </child> </object> ]|
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> expander ├── title │ ├── arrow │ ╰── <label
+--  widget> ╰── <child> ]|
+--
+--  GtkExpander has three CSS nodes, the main node with the name expander, a
+--  subnode with name title and node below it with name arrow. Neither of them
+--  is using any style classes.
+--
 --  </description>
 --  <screenshot>gtk-expanded</screenshot>
 --  <group>Layout containers</group>
@@ -225,15 +234,19 @@ package Gtk.Expander is
 
    function Get_Spacing
       (Expander : not null access Gtk_Expander_Record) return Gint;
+   pragma Obsolescent (Get_Spacing);
    --  Gets the value set by Gtk.Expander.Set_Spacing.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.20, 1
 
    procedure Set_Spacing
       (Expander : not null access Gtk_Expander_Record;
        Spacing  : Gint);
+   pragma Obsolescent (Set_Spacing);
    --  Sets the spacing field of Expander, which is the number of pixels to
    --  place between expander and the child.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.20, 1
    --  "spacing": distance between the expander and child in pixels
 
    function Get_Use_Markup
@@ -285,6 +298,8 @@ package Gtk.Expander is
    --  widget containing the expander upon expanding and collapsing.
 
    Spacing_Property : constant Glib.Properties.Property_Int;
+   --  Space to put between the label and the child when the expander is
+   --  expanded.
 
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
 

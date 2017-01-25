@@ -35,6 +35,10 @@
 --  Use Gtk.Separator_Tool_Item.Gtk_New to create a new
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item.
 --
+--  # CSS nodes
+--
+--  GtkSeparatorToolItem has a single CSS node with name separator.
+--
 --  </description>
 --  <group>Menus and Toolbars</group>
 pragma Ada_2005;

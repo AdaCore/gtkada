@@ -170,6 +170,7 @@ package Glib.Application is
    G_Application_Handles_Command_Line : constant GApplication_Flags := 8;
    G_Application_Send_Environment : constant GApplication_Flags := 16;
    G_Application_Non_Unique : constant GApplication_Flags := 32;
+   G_Application_Can_Override_App_Id : constant GApplication_Flags := 64;
 
    type Gapplication_Command_Line_Record is new GObject_Record with null record;
    type Gapplication_Command_Line is access all Gapplication_Command_Line_Record'Class;
@@ -243,6 +244,11 @@ package Glib.Application is
    --  The application must be registered before calling this function.
    --  Since: gtk+ 2.28
 
+   procedure Bind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String);
+
    function Get_Application_Id
       (Self : not null access Gapplication_Record) return UTF8_String;
    --  Gets the unique identifier for Application.
@@ -309,6 +315,9 @@ package Glib.Application is
    --  Any timeouts currently in progress are not impacted.
    --  Since: gtk+ 2.28
    --  "inactivity_timeout": the timeout, in milliseconds
+
+   function Get_Is_Busy
+      (Self : not null access Gapplication_Record) return Boolean;
 
    function Get_Is_Registered
       (Self : not null access Gapplication_Record) return Boolean;
@@ -555,6 +564,11 @@ package Glib.Application is
    --  Application is destroyed then the default application will revert back
    --  to null.
    --  Since: gtk+ 2.32
+
+   procedure Unbind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String);
 
    procedure Unmark_Busy (Self : not null access Gapplication_Record);
    --  Decreases the busy count of Application.
@@ -819,6 +833,8 @@ package Glib.Application is
 
    Inactivity_Timeout_Property : constant Glib.Properties.Property_Uint;
 
+   Is_Busy_Property : constant Glib.Properties.Property_Boolean;
+
    Is_Registered_Property : constant Glib.Properties.Property_Boolean;
 
    Is_Remote_Property : constant Glib.Properties.Property_Boolean;
@@ -1065,6 +1081,8 @@ private
      Glib.Properties.Build ("is-remote");
    Is_Registered_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-registered");
+   Is_Busy_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-busy");
    Inactivity_Timeout_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("inactivity-timeout");
    Flags_Property : constant Glib.Properties.Property_Boxed :=

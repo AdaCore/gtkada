@@ -38,6 +38,10 @@
 --  as your search entry using Gtk.Search_Bar.Connect_Entry. The following
 --  example shows you how to create a more complex search entry.
 --
+--  # CSS nodes
+--
+--  GtkSearchBar has a single CSS node with name searchbar.
+--
 --  ## Creating a search bar
 --
 --  [A simple

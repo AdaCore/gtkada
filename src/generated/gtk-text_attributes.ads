@@ -75,8 +75,9 @@ package Gtk.Text_Attributes is
       Invisible : Guint;
       Bg_Full_Height : Guint;
       Editable : Guint;
+      No_Fallback : Guint;
       Pg_Bg_Rgba : Gdk.RGBA.Gdk_RGBA;
-      Padding : System.Address;
+      Letter_Spacing : Gint := 0;
    end record;
    pragma Convention (C, Gtk_Text_Attributes);
 

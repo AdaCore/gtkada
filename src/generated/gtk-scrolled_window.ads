@@ -22,10 +22,9 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Gtk.Scrolled_Window.Gtk_Scrolled_Window is a Gtk.Bin.Gtk_Bin subclass:
---  it's a container the accepts a single child widget.
---  Gtk.Scrolled_Window.Gtk_Scrolled_Window adds scrollbars to the child widget
---  and optionally draws a beveled frame around the child widget.
+--  GtkScrolledWindow is a Gtk.Bin.Gtk_Bin subclass: it's a container the
+--  accepts a single child widget. GtkScrolledWindow adds scrollbars to the
+--  child widget and optionally draws a beveled frame around the child widget.
 --
 --  The scrolled window can work in two ways. Some widgets have native
 --  scrolling support; these widgets implement the
@@ -40,27 +39,64 @@
 --  Gtk.Grid.Gtk_Grid, Gtk.Box.Gtk_Box, and so on.
 --
 --  If a widget has native scrolling abilities, it can be added to the
---  Gtk.Scrolled_Window.Gtk_Scrolled_Window with Gtk.Container.Add. If a widget
---  does not, you must first add the widget to a Gtk.Viewport.Gtk_Viewport,
---  then add the Gtk.Viewport.Gtk_Viewport to the scrolled window.
---  Gtk.Container.Add will do this for you for widgets that don't implement
---  Gtk.Scrollable.Gtk_Scrollable natively, so you can ignore the presence of
---  the viewport.
+--  GtkScrolledWindow with Gtk.Container.Add. If a widget does not, you must
+--  first add the widget to a Gtk.Viewport.Gtk_Viewport, then add the
+--  Gtk.Viewport.Gtk_Viewport to the scrolled window. Gtk.Container.Add will do
+--  this for you for widgets that don't implement Gtk.Scrollable.Gtk_Scrollable
+--  natively, so you can ignore the presence of the viewport.
+--
+--  If Gtk.Container.Add has added a Gtk.Viewport.Gtk_Viewport for you, you
+--  can remove both your added child widget from the Gtk.Viewport.Gtk_Viewport
+--  and the Gtk.Viewport.Gtk_Viewport from the GtkScrolledWindow with either of
+--  the calls |[<!-- language="C" --> gtk_container_remove (GTK_CONTAINER
+--  (scrolled_window), child_widget); // or gtk_container_remove (GTK_CONTAINER
+--  (scrolled_window), gtk_bin_get_child (GTK_BIN (scrolled_window))); ]|
 --
 --  The position of the scrollbars is controlled by the scroll adjustments.
---  See Gtk.Adjustment.Gtk_Adjustment for the fields in an adjustment - for
---  Gtk.Scrollbar.Gtk_Scrollbar, used by
---  Gtk.Scrolled_Window.Gtk_Scrolled_Window, the "value" field represents the
---  position of the scrollbar, which must be between the "lower" field and
---  "upper - page_size." The "page_size" field represents the size of the
---  visible scrollable area. The "step_increment" and "page_increment" fields
---  are used when the user asks to step down (using the small stepper arrows)
---  or page down (using for example the PageDown key).
+--  See Gtk.Adjustment.Gtk_Adjustment for the fields in an adjustment — for
+--  Gtk.Scrollbar.Gtk_Scrollbar, used by GtkScrolledWindow, the "value" field
+--  represents the position of the scrollbar, which must be between the "lower"
+--  field and "upper - page_size." The "page_size" field represents the size of
+--  the visible scrollable area. The "step_increment" and "page_increment"
+--  fields are used when the user asks to step down (using the small stepper
+--  arrows) or page down (using for example the PageDown key).
 --
---  If a Gtk.Scrolled_Window.Gtk_Scrolled_Window doesn't behave quite as you
---  would like, or doesn't have exactly the right layout, it's very possible to
---  set up your own scrolling with Gtk.Scrollbar.Gtk_Scrollbar and for example
---  a Gtk.Grid.Gtk_Grid.
+--  If a GtkScrolledWindow doesn't behave quite as you would like, or doesn't
+--  have exactly the right layout, it's very possible to set up your own
+--  scrolling with Gtk.Scrollbar.Gtk_Scrollbar and for example a
+--  Gtk.Grid.Gtk_Grid.
+--
+--  # Touch support
+--
+--  GtkScrolledWindow has built-in support for touch devices. When a
+--  touchscreen is used, swiping will move the scrolled window, and will expose
+--  'kinetic' behavior. This can be turned off with the
+--  Gtk.Scrolled_Window.Gtk_Scrolled_Window:kinetic-scrolling property if it is
+--  undesired.
+--
+--  GtkScrolledWindow also displays visual 'overshoot' indication when the
+--  content is pulled beyond the end, and this situation can be captured with
+--  the Gtk.Scrolled_Window.Gtk_Scrolled_Window::edge-overshot signal.
+--
+--  If no mouse device is present, the scrollbars will overlayed as narrow,
+--  auto-hiding indicators over the content. If traditional scrollbars are
+--  desired although no mouse is present, this behaviour can be turned off with
+--  the Gtk.Scrolled_Window.Gtk_Scrolled_Window:overlay-scrolling property.
+--
+--  # CSS nodes
+--
+--  GtkScrolledWindow has a main CSS node with name scrolledwindow.
+--
+--  It uses subnodes with names overshoot and undershoot to draw the overflow
+--  and underflow indications. These nodes get the .left, .right, .top or
+--  .bottom style class added depending on where the indication is drawn.
+--
+--  GtkScrolledWindow also sets the positional style classes (.left, .right,
+--  .top, .bottom) and style classes related to overlay scrolling
+--  (.overlay-indicator, .dragging, .hovering) on its scrollbars.
+--
+--  If both scrollbars are visible, the area where they meet is drawn with a
+--  subnode named junction.
 --
 --  </description>
 pragma Ada_2005;
@@ -154,10 +190,10 @@ package Gtk.Scrolled_Window is
    procedure Set_Capture_Button_Press
       (Scrolled_Window      : not null access Gtk_Scrolled_Window_Record;
        Capture_Button_Press : Boolean);
-   --  Changes the behaviour of Scrolled_Window wrt. to the initial event that
-   --  possibly starts kinetic scrolling. When Capture_Button_Press is set to
-   --  True, the event is captured by the scrolled window, and then later
-   --  replayed if it is meant to go to the child widget.
+   --  Changes the behaviour of Scrolled_Window with regard to the initial
+   --  event that possibly starts kinetic scrolling. When Capture_Button_Press
+   --  is set to True, the event is captured by the scrolled window, and then
+   --  later replayed if it is meant to go to the child widget.
    --  This should be enabled if any child widgets perform non-reversible
    --  actions on Gtk.Widget.Gtk_Widget::button-press-event. If they don't, and
    --  handle additionally handle Gtk.Widget.Gtk_Widget::grab-broken-event, it
@@ -199,6 +235,40 @@ package Gtk.Scrolled_Window is
    --  Since: gtk+ 3.4
    --  "kinetic_scrolling": True to enable kinetic scrolling
 
+   function Get_Max_Content_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Gint;
+   --  Returns the maximum content height set.
+   --  Since: gtk+ 3.22
+
+   procedure Set_Max_Content_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Height          : Gint);
+   --  Sets the maximum height that Scrolled_Window should keep visible. The
+   --  Scrolled_Window will grow up to this height before it starts scrolling
+   --  the content.
+   --  It is a programming error to set the maximum content height to a value
+   --  smaller than Gtk.Scrolled_Window.Gtk_Scrolled_Window:min-content-height.
+   --  Since: gtk+ 3.22
+   --  "height": the maximum content height
+
+   function Get_Max_Content_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Gint;
+   --  Returns the maximum content width set.
+   --  Since: gtk+ 3.22
+
+   procedure Set_Max_Content_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Width           : Gint);
+   --  Sets the maximum width that Scrolled_Window should keep visible. The
+   --  Scrolled_Window will grow up to this width before it starts scrolling
+   --  the content.
+   --  It is a programming error to set the maximum content width to a value
+   --  smaller than Gtk.Scrolled_Window.Gtk_Scrolled_Window:min-content-width.
+   --  Since: gtk+ 3.22
+   --  "width": the maximum content width
+
    function Get_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gint;
@@ -211,6 +281,8 @@ package Gtk.Scrolled_Window is
    --  Sets the minimum height that Scrolled_Window should keep visible. Note
    --  that this can and (usually will) be smaller than the minimum size of the
    --  content.
+   --  It is a programming error to set the minimum content height to a value
+   --  greater than Gtk.Scrolled_Window.Gtk_Scrolled_Window:max-content-height.
    --  Since: gtk+ 3.0
    --  "height": the minimal content height
 
@@ -226,8 +298,23 @@ package Gtk.Scrolled_Window is
    --  Sets the minimum width that Scrolled_Window should keep visible. Note
    --  that this can and (usually will) be smaller than the minimum size of the
    --  content.
+   --  It is a programming error to set the minimum content width to a value
+   --  greater than Gtk.Scrolled_Window.Gtk_Scrolled_Window:max-content-width.
    --  Since: gtk+ 3.0
    --  "width": the minimal content width
+
+   function Get_Overlay_Scrolling
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean;
+   --  Returns whether overlay scrolling is enabled for this scrolled window.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Overlay_Scrolling
+      (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
+       Overlay_Scrolling : Boolean);
+   --  Enables or disables overlay scrolling for this scrolled window.
+   --  Since: gtk+ 3.16
+   --  "overlay_scrolling": whether to enable overlay scrolling
 
    function Get_Placement
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
@@ -255,9 +342,9 @@ package Gtk.Scrolled_Window is
    --  Retrieves the current policy values for the horizontal and vertical
    --  scrollbars. See Gtk.Scrolled_Window.Set_Policy.
    --  "hscrollbar_policy": location to store the policy for the horizontal
-   --  scrollbar, or null.
+   --  scrollbar, or null
    --  "vscrollbar_policy": location to store the policy for the vertical
-   --  scrollbar, or null.
+   --  scrollbar, or null
 
    procedure Set_Policy
       (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
@@ -270,9 +357,39 @@ package Gtk.Scrolled_Window is
    --  Gtk.Enums.Policy_Never, the scrollbar is never present; if
    --  Gtk.Enums.Policy_Automatic, the scrollbar is present only if needed
    --  (that is, if the slider part of the bar would be smaller than the trough
-   --  - the display is larger than the page size).
+   --  — the display is larger than the page size).
    --  "hscrollbar_policy": policy for horizontal bar
    --  "vscrollbar_policy": policy for vertical bar
+
+   function Get_Propagate_Natural_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean;
+   --  Reports whether the natural height of the child will be calculated and
+   --  propagated through the scrolled windows requested natural height.
+   --  Since: gtk+ 3.22
+
+   procedure Set_Propagate_Natural_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Propagate       : Boolean);
+   --  Sets whether the natural height of the child should be calculated and
+   --  propagated through the scrolled windows requested natural height.
+   --  Since: gtk+ 3.22
+   --  "propagate": whether to propagate natural height
+
+   function Get_Propagate_Natural_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean;
+   --  Reports whether the natural width of the child will be calculated and
+   --  propagated through the scrolled windows requested natural width.
+   --  Since: gtk+ 3.22
+
+   procedure Set_Propagate_Natural_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Propagate       : Boolean);
+   --  Sets whether the natural width of the child should be calculated and
+   --  propagated through the scrolled windows requested natural width.
+   --  Since: gtk+ 3.22
+   --  "propagate": whether to propagate natural width
 
    function Get_Shadow_Type
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
@@ -309,7 +426,7 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record);
    --  Unsets the placement of the contents with respect to the scrollbars for
    --  the scrolled window. If no window placement is set for a scrolled
-   --  window, it defaults to GTK_CORNER_TOP_LEFT.
+   --  window, it defaults to Gtk.Enums.Corner_Top_Left.
    --  See also Gtk.Scrolled_Window.Set_Placement and
    --  Gtk.Scrolled_Window.Get_Placement.
    --  Since: gtk+ 2.10
@@ -326,14 +443,40 @@ package Gtk.Scrolled_Window is
    Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type;
 
    Kinetic_Scrolling_Property : constant Glib.Properties.Property_Boolean;
-   --  The kinetic scrolling behavior flags. Kinetic scrolling only applies to
-   --  devices with source GDK_SOURCE_TOUCHSCREEN
+   --  Whether kinetic scrolling is enabled or not. Kinetic scrolling only
+   --  applies to devices with source GDK_SOURCE_TOUCHSCREEN.
+
+   Max_Content_Height_Property : constant Glib.Properties.Property_Int;
+   --  The maximum content height of Scrolled_Window, or -1 if not set.
+
+   Max_Content_Width_Property : constant Glib.Properties.Property_Int;
+   --  The maximum content width of Scrolled_Window, or -1 if not set.
 
    Min_Content_Height_Property : constant Glib.Properties.Property_Int;
    --  The minimum content height of Scrolled_Window, or -1 if not set.
 
    Min_Content_Width_Property : constant Glib.Properties.Property_Int;
    --  The minimum content width of Scrolled_Window, or -1 if not set.
+
+   Overlay_Scrolling_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether overlay scrolling is enabled or not. If it is, the scrollbars
+   --  are only added as traditional widgets when a mouse is present.
+   --  Otherwise, they are overlayed on top of the content, as narrow
+   --  indicators.
+
+   Propagate_Natural_Height_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the natural height of the child should be calculated and
+   --  propagated through the scrolled windows requested natural height.
+   --
+   --  This is useful in cases where an attempt should be made to allocate
+   --  exactly enough space for the natural size of the child.
+
+   Propagate_Natural_Width_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the natural width of the child should be calculated and
+   --  propagated through the scrolled windows requested natural width.
+   --
+   --  This is useful in cases where an attempt should be made to allocate
+   --  exactly enough space for the natural size of the child.
 
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type;
 
@@ -351,6 +494,54 @@ package Gtk.Scrolled_Window is
    -------------
    -- Signals --
    -------------
+
+   type Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void is not null access procedure
+     (Self : access Gtk_Scrolled_Window_Record'Class;
+      Pos  : Gtk.Enums.Gtk_Position_Type);
+
+   type Cb_GObject_Gtk_Position_Type_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Pos  : Gtk.Enums.Gtk_Position_Type);
+
+   Signal_Edge_Overshot : constant Glib.Signal_Name := "edge-overshot";
+   procedure On_Edge_Overshot
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+       After : Boolean := False);
+   procedure On_Edge_Overshot
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_GObject_Gtk_Position_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::edge-overshot signal is emitted whenever user initiated scrolling
+   --  makes the scrolledwindow firmly surpass (ie. with some edge resistance)
+   --  the lower or upper limits defined by the adjustment in that orientation.
+   --
+   --  A similar behavior without edge resistance is provided by the
+   --  Gtk.Scrolled_Window.Gtk_Scrolled_Window::edge-reached signal.
+   --
+   --  Note: The Pos argument is LTR/RTL aware, so callers should be aware too
+   --  if intending to provide behavior on horizontal edges.
+
+   Signal_Edge_Reached : constant Glib.Signal_Name := "edge-reached";
+   procedure On_Edge_Reached
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+       After : Boolean := False);
+   procedure On_Edge_Reached
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_GObject_Gtk_Position_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::edge-reached signal is emitted whenever user-initiated scrolling
+   --  makes the scrolledwindow exactly reaches the lower or upper limits
+   --  defined by the adjustment in that orientation.
+   --
+   --  A similar behavior with edge resistance is provided by the
+   --  Gtk.Scrolled_Window.Gtk_Scrolled_Window::edge-overshot signal.
+   --
+   --  Note: The Pos argument is LTR/RTL aware, so callers should be aware too
+   --  if intending to provide behavior on horizontal edges.
 
    type Cb_Gtk_Scrolled_Window_Gtk_Direction_Type_Void is not null access procedure
      (Self           : access Gtk_Scrolled_Window_Record'Class;
@@ -436,10 +627,20 @@ private
      Glib.Properties.Build ("vadjustment");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
+   Propagate_Natural_Width_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("propagate-natural-width");
+   Propagate_Natural_Height_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("propagate-natural-height");
+   Overlay_Scrolling_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("overlay-scrolling");
    Min_Content_Width_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("min-content-width");
    Min_Content_Height_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("min-content-height");
+   Max_Content_Width_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-content-width");
+   Max_Content_Height_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("max-content-height");
    Kinetic_Scrolling_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("kinetic-scrolling");
    Hscrollbar_Policy_Property : constant Gtk.Enums.Property_Gtk_Policy_Type :=

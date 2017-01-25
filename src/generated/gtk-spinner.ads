@@ -29,6 +29,10 @@
 --  To start the animation, use Gtk.Spinner.Start, to stop it use
 --  Gtk.Spinner.Stop.
 --
+--  # CSS nodes
+--
+--  GtkSpinner has a single CSS node with the name spinner.
+--
 --  </description>
 --  <group>Ornaments</group>
 pragma Ada_2005;

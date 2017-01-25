@@ -231,7 +231,7 @@ package Gtk.Icon_Factory is
    --  The rendered pixbuf may not even correspond to the width/height returned
    --  by Gtk.Icon_Factory.Icon_Size_Lookup, because themes are free to render
    --  the pixbuf however they like, including changing the usual size.
-   --  "size": an icon size
+   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
    --  "width": location to store icon width
    --  "height": location to store icon height
 
@@ -255,7 +255,7 @@ package Gtk.Icon_Factory is
    --  Deprecated since 3.10, 1
    --  "settings": a Gtk.Settings.Gtk_Settings object, used to determine which
    --  set of user preferences to used.
-   --  "size": an icon size
+   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
    --  "width": location to store icon width
    --  "height": location to store icon height
 
@@ -279,7 +279,7 @@ package Gtk.Icon_Factory is
    --  gtk_icon_size_from_name with Alias as argument will return Target.
    --  Deprecated since 3.10, 1
    --  "alias": an alias for Target
-   --  "target": an existing icon size
+   --  "target": an existing icon size (Gtk.Enums.Gtk_Icon_Size)
 
    ----------------
    -- Interfaces --

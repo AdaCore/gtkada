@@ -150,16 +150,20 @@ package Gtk.GRange is
 
    function Get_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record) return Gint;
+   pragma Obsolescent (Get_Min_Slider_Size);
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  See Gtk.GRange.Set_Min_Slider_Size.
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.20, 1
 
    procedure Set_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record;
        Min_Size  : Gint);
+   pragma Obsolescent (Set_Min_Slider_Size);
    --  Sets the minimum size of the range's slider.
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.20, 1
    --  "min_size": The slider's minimum size
 
    procedure Get_Range_Rect

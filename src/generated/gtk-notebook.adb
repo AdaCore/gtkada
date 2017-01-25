@@ -144,6 +144,20 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)), Get_Object_Or_Null (GObject (Menu_Label)));
    end Append_Page_Menu;
 
+   ----------------
+   -- Detach_Tab --
+   ----------------
+
+   procedure Detach_Tab
+      (Notebook : not null access Gtk_Notebook_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Notebook : System.Address; Child : System.Address);
+      pragma Import (C, Internal, "gtk_notebook_detach_tab");
+   begin
+      Internal (Get_Object (Notebook), Get_Object (Child));
+   end Detach_Tab;
+
    -----------------------
    -- Get_Action_Widget --
    -----------------------

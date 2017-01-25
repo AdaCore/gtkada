@@ -162,6 +162,34 @@ package body Gtk.Scrolled_Window is
    end Get_Kinetic_Scrolling;
 
    ----------------------------
+   -- Get_Max_Content_Height --
+   ----------------------------
+
+   function Get_Max_Content_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Gint
+   is
+      function Internal (Scrolled_Window : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_max_content_height");
+   begin
+      return Internal (Get_Object (Scrolled_Window));
+   end Get_Max_Content_Height;
+
+   ---------------------------
+   -- Get_Max_Content_Width --
+   ---------------------------
+
+   function Get_Max_Content_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Gint
+   is
+      function Internal (Scrolled_Window : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_max_content_width");
+   begin
+      return Internal (Get_Object (Scrolled_Window));
+   end Get_Max_Content_Width;
+
+   ----------------------------
    -- Get_Min_Content_Height --
    ----------------------------
 
@@ -188,6 +216,21 @@ package body Gtk.Scrolled_Window is
    begin
       return Internal (Get_Object (Scrolled_Window));
    end Get_Min_Content_Width;
+
+   ---------------------------
+   -- Get_Overlay_Scrolling --
+   ---------------------------
+
+   function Get_Overlay_Scrolling
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean
+   is
+      function Internal
+         (Scrolled_Window : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_overlay_scrolling");
+   begin
+      return Internal (Get_Object (Scrolled_Window)) /= 0;
+   end Get_Overlay_Scrolling;
 
    -------------------
    -- Get_Placement --
@@ -221,6 +264,36 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window), Hscrollbar_Policy, Vscrollbar_Policy);
    end Get_Policy;
+
+   ----------------------------------
+   -- Get_Propagate_Natural_Height --
+   ----------------------------------
+
+   function Get_Propagate_Natural_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean
+   is
+      function Internal
+         (Scrolled_Window : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_propagate_natural_height");
+   begin
+      return Internal (Get_Object (Scrolled_Window)) /= 0;
+   end Get_Propagate_Natural_Height;
+
+   ---------------------------------
+   -- Get_Propagate_Natural_Width --
+   ---------------------------------
+
+   function Get_Propagate_Natural_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
+       return Boolean
+   is
+      function Internal
+         (Scrolled_Window : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_propagate_natural_width");
+   begin
+      return Internal (Get_Object (Scrolled_Window)) /= 0;
+   end Get_Propagate_Natural_Width;
 
    ---------------------
    -- Get_Shadow_Type --
@@ -318,6 +391,34 @@ package body Gtk.Scrolled_Window is
    end Set_Kinetic_Scrolling;
 
    ----------------------------
+   -- Set_Max_Content_Height --
+   ----------------------------
+
+   procedure Set_Max_Content_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Height          : Gint)
+   is
+      procedure Internal (Scrolled_Window : System.Address; Height : Gint);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_max_content_height");
+   begin
+      Internal (Get_Object (Scrolled_Window), Height);
+   end Set_Max_Content_Height;
+
+   ---------------------------
+   -- Set_Max_Content_Width --
+   ---------------------------
+
+   procedure Set_Max_Content_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Width           : Gint)
+   is
+      procedure Internal (Scrolled_Window : System.Address; Width : Gint);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_max_content_width");
+   begin
+      Internal (Get_Object (Scrolled_Window), Width);
+   end Set_Max_Content_Width;
+
+   ----------------------------
    -- Set_Min_Content_Height --
    ----------------------------
 
@@ -344,6 +445,22 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window), Width);
    end Set_Min_Content_Width;
+
+   ---------------------------
+   -- Set_Overlay_Scrolling --
+   ---------------------------
+
+   procedure Set_Overlay_Scrolling
+      (Scrolled_Window   : not null access Gtk_Scrolled_Window_Record;
+       Overlay_Scrolling : Boolean)
+   is
+      procedure Internal
+         (Scrolled_Window   : System.Address;
+          Overlay_Scrolling : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_overlay_scrolling");
+   begin
+      Internal (Get_Object (Scrolled_Window), Boolean'Pos (Overlay_Scrolling));
+   end Set_Overlay_Scrolling;
 
    -------------------
    -- Set_Placement --
@@ -378,6 +495,38 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window), Hscrollbar_Policy, Vscrollbar_Policy);
    end Set_Policy;
+
+   ----------------------------------
+   -- Set_Propagate_Natural_Height --
+   ----------------------------------
+
+   procedure Set_Propagate_Natural_Height
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Propagate       : Boolean)
+   is
+      procedure Internal
+         (Scrolled_Window : System.Address;
+          Propagate       : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_propagate_natural_height");
+   begin
+      Internal (Get_Object (Scrolled_Window), Boolean'Pos (Propagate));
+   end Set_Propagate_Natural_Height;
+
+   ---------------------------------
+   -- Set_Propagate_Natural_Width --
+   ---------------------------------
+
+   procedure Set_Propagate_Natural_Width
+      (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
+       Propagate       : Boolean)
+   is
+      procedure Internal
+         (Scrolled_Window : System.Address;
+          Propagate       : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_propagate_natural_width");
+   begin
+      Internal (Get_Object (Scrolled_Window), Boolean'Pos (Propagate));
+   end Set_Propagate_Natural_Width;
 
    ---------------------
    -- Set_Shadow_Type --
@@ -427,6 +576,16 @@ package body Gtk.Scrolled_Window is
    use type System.Address;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Position_Type_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Position_Type_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Scrolled_Window_Gtk_Direction_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_Gtk_Scrolled_Window_Gtk_Direction_Type_Void);
@@ -449,6 +608,12 @@ package body Gtk.Scrolled_Window is
    procedure Connect
       (Object  : access Gtk_Scrolled_Window_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Scrolled_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Scrolled_Window_Gtk_Direction_Type_Void;
        After   : Boolean);
 
@@ -457,6 +622,13 @@ package body Gtk.Scrolled_Window is
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean;
        After   : Boolean);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Scrolled_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Position_Type_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
 
    procedure Connect_Slot
       (Object  : access Gtk_Scrolled_Window_Record'Class;
@@ -481,6 +653,15 @@ package body Gtk.Scrolled_Window is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Direction_Type_Void);
 
+   procedure Marsh_GObject_Gtk_Position_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Position_Type_Void);
+
    procedure Marsh_GObject_Gtk_Scroll_Type_Boolean_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -499,6 +680,15 @@ package body Gtk.Scrolled_Window is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Scrolled_Window_Gtk_Direction_Type_Void);
 
+   procedure Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void);
+
    procedure Marsh_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -507,6 +697,25 @@ package body Gtk.Scrolled_Window is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean);
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Scrolled_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
 
    -------------
    -- Connect --
@@ -545,6 +754,27 @@ package body Gtk.Scrolled_Window is
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Scrolled_Window_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Position_Type_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Position_Type_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
 
    ------------------
    -- Connect_Slot --
@@ -608,6 +838,26 @@ package body Gtk.Scrolled_Window is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Void;
 
+   ------------------------------------------
+   -- Marsh_GObject_Gtk_Position_Type_Void --
+   ------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Position_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Position_Type_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Gtk_Position_Type (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Position_Type_Void;
+
    ---------------------------------------------------
    -- Marsh_GObject_Gtk_Scroll_Type_Boolean_Boolean --
    ---------------------------------------------------
@@ -649,6 +899,26 @@ package body Gtk.Scrolled_Window is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Scrolled_Window_Gtk_Direction_Type_Void;
 
+   ------------------------------------------------------
+   -- Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void --
+   ------------------------------------------------------
+
+   procedure Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Scrolled_Window := Gtk_Scrolled_Window (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Gtk_Position_Type (Params, 1));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+
    ---------------------------------------------------------------
    -- Marsh_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean --
    ---------------------------------------------------------------
@@ -669,6 +939,60 @@ package body Gtk.Scrolled_Window is
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean;
+
+   ----------------------
+   -- On_Edge_Overshot --
+   ----------------------
+
+   procedure On_Edge_Overshot
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "edge-overshot" & ASCII.NUL, Call, After);
+   end On_Edge_Overshot;
+
+   ----------------------
+   -- On_Edge_Overshot --
+   ----------------------
+
+   procedure On_Edge_Overshot
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_GObject_Gtk_Position_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "edge-overshot" & ASCII.NUL, Call, After, Slot);
+   end On_Edge_Overshot;
+
+   ---------------------
+   -- On_Edge_Reached --
+   ---------------------
+
+   procedure On_Edge_Reached
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "edge-reached" & ASCII.NUL, Call, After);
+   end On_Edge_Reached;
+
+   ---------------------
+   -- On_Edge_Reached --
+   ---------------------
+
+   procedure On_Edge_Reached
+      (Self  : not null access Gtk_Scrolled_Window_Record;
+       Call  : Cb_GObject_Gtk_Position_Type_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "edge-reached" & ASCII.NUL, Call, After, Slot);
+   end On_Edge_Reached;
 
    -----------------------
    -- On_Move_Focus_Out --

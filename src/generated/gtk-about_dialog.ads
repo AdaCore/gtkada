@@ -35,7 +35,7 @@
 --  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal.
 --
 --  To specify a person with an email address, use a string like "Edgar Allan
---  Poe <edgarPoe.com>". To specify a website with a title, use a string like
+--  Poe <edgar\Poe.com>". To specify a website with a title, use a string like
 --  "GTK+ team http://www.gtk.org".
 --
 --  To make constructing a GtkAboutDialog as convenient as possible, you can
@@ -89,7 +89,8 @@ package Gtk.About_Dialog is
       License_Gpl_2_0_Only,
       License_Gpl_3_0_Only,
       License_Lgpl_2_1_Only,
-      License_Lgpl_3_0_Only);
+      License_Lgpl_3_0_Only,
+      License_Agpl_3_0);
    pragma Convention (C, Gtk_License);
    --  The type of license for an application.
    --

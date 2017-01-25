@@ -27,7 +27,8 @@
 --  implement this interface are
 --  Gtk.Font_Chooser_Widget.Gtk_Font_Chooser_Widget,
 --  Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog and
---  Gtk.Font_Button.Gtk_Font_Button.
+--  Gtk.Font_Button.Gtk_Font_Button. The GtkFontChooser interface has been
+--  introducted in GTK+ 3.2.
 --
 --  </description>
 pragma Ada_2005;
@@ -40,6 +41,7 @@ with Glib.Types;           use Glib.Types;
 with Pango.Font;           use Pango.Font;
 with Pango.Font_Face;      use Pango.Font_Face;
 with Pango.Font_Family;    use Pango.Font_Family;
+with Pango.Font_Map;       use Pango.Font_Map;
 pragma Warnings(Off);  --  might be unused
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 pragma Warnings(On);
@@ -122,6 +124,31 @@ package Gtk.Font_Chooser is
    --  font family. Font families are a collection of font faces.
    --  If the selected font is not installed, returns null.
    --  Since: gtk+ 3.2
+
+   function Get_Font_Map
+      (Self : Gtk_Font_Chooser) return Pango.Font_Map.Pango_Font_Map;
+   --  Gets the custom font map of this font chooser widget, or null if it
+   --  does not have one.
+   --  Since: gtk+ 3.18
+
+   procedure Set_Font_Map
+      (Self    : Gtk_Font_Chooser;
+       Fontmap : access Pango.Font_Map.Pango_Font_Map_Record'Class);
+   --  Sets a custom font map to use for this font chooser widget. A custom
+   --  font map can be used to present application-specific fonts instead of or
+   --  in addition to the normal system fonts.
+   --  |[<!-- language="C" --> FcConfig *config; PangoFontMap *fontmap;
+   --  config = FcInitLoadConfigAndFonts (); FcConfigAppFontAddFile (config,
+   --  my_app_font_file);
+   --  fontmap = pango_cairo_font_map_new_for_font_type (CAIRO_FONT_TYPE_FT);
+   --  pango_fc_font_map_set_config (PANGO_FC_FONT_MAP (fontmap), config);
+   --  gtk_font_chooser_set_font_map (font_chooser, fontmap); ]|
+   --  Note that other GTK+ widgets will only be able to use the
+   --  application-specific font if it is present in the font map they use:
+   --  |[ context = gtk_widget_get_pango_context (label);
+   --  pango_context_set_font_map (context, fontmap); ]|
+   --  Since: gtk+ 3.18
+   --  "fontmap": a Pango.Font_Map.Pango_Font_Map
 
    function Get_Font_Size (Self : Gtk_Font_Chooser) return Gint;
    pragma Import (C, Get_Font_Size, "gtk_font_chooser_get_font_size");
@@ -263,6 +290,12 @@ package Gtk.Font_Chooser is
    --  If the selected font is not installed, returns null.
    --  Since: gtk+ 3.2
 
+   type Virtual_Get_Font_Map is access function (Self : Gtk_Font_Chooser) return System.Address;
+   pragma Convention (C, Virtual_Get_Font_Map);
+   --  Gets the custom font map of this font chooser widget, or null if it
+   --  does not have one.
+   --  Since: gtk+ 3.18
+
    type Virtual_Get_Font_Size is access function (Self : Gtk_Font_Chooser) return Gint;
    pragma Convention (C, Virtual_Get_Font_Size);
    --  The selected font size.
@@ -281,6 +314,24 @@ package Gtk.Font_Chooser is
    --  "user_data": data to pass to Filter
    --  "destroy": function to call to free Data when it is no longer needed
 
+   type Virtual_Set_Font_Map is access procedure (Self : Gtk_Font_Chooser; Fontmap : System.Address);
+   pragma Convention (C, Virtual_Set_Font_Map);
+   --  Sets a custom font map to use for this font chooser widget. A custom
+   --  font map can be used to present application-specific fonts instead of or
+   --  in addition to the normal system fonts.
+   --  |[<!-- language="C" --> FcConfig *config; PangoFontMap *fontmap;
+   --  config = FcInitLoadConfigAndFonts (); FcConfigAppFontAddFile (config,
+   --  my_app_font_file);
+   --  fontmap = pango_cairo_font_map_new_for_font_type (CAIRO_FONT_TYPE_FT);
+   --  pango_fc_font_map_set_config (PANGO_FC_FONT_MAP (fontmap), config);
+   --  gtk_font_chooser_set_font_map (font_chooser, fontmap); ]|
+   --  Note that other GTK+ widgets will only be able to use the
+   --  application-specific font if it is present in the font map they use:
+   --  |[ context = gtk_widget_get_pango_context (label);
+   --  pango_context_set_font_map (context, fontmap); ]|
+   --  Since: gtk+ 3.18
+   --  "fontmap": a Pango.Font_Map.Pango_Font_Map
+
    subtype Font_Chooser_Interface_Descr is Glib.Object.Interface_Description;
 
    procedure Set_Font_Activated
@@ -298,6 +349,11 @@ package Gtk.Font_Chooser is
       Handler : Virtual_Get_Font_Family);
    pragma Import (C, Set_Get_Font_Family, "gtkada_Font_Chooser_set_get_font_family");
 
+   procedure Set_Get_Font_Map
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Get_Font_Map);
+   pragma Import (C, Set_Get_Font_Map, "gtkada_Font_Chooser_set_get_font_map");
+
    procedure Set_Get_Font_Size
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Get_Font_Size);
@@ -307,6 +363,11 @@ package Gtk.Font_Chooser is
      (Self    : Font_Chooser_Interface_Descr;
       Handler : Virtual_Set_Filter_Func);
    pragma Import (C, Set_Set_Filter_Func, "gtkada_Font_Chooser_set_set_filter_func");
+
+   procedure Set_Set_Font_Map
+     (Self    : Font_Chooser_Interface_Descr;
+      Handler : Virtual_Set_Font_Map);
+   pragma Import (C, Set_Set_Font_Map, "gtkada_Font_Chooser_set_set_font_map");
    --  See Glib.Object.Add_Interface
 
 private

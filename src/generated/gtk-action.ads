@@ -182,7 +182,8 @@ package Gtk.Action is
    --  icons displayed in the proxy widgets.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "icon_size": the size of the icon that should be created.
+   --  "icon_size": the size of the icon (Gtk.Enums.Gtk_Icon_Size) that should
+   --  be created.
 
    function Create_Menu
       (Action : not null access Gtk_Action_Record)

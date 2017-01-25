@@ -56,6 +56,36 @@
 --  that any such functionality should also be available by other means, e.g.
 --  via the context menu of the entry.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> entry ├── image.left ├── image.right ├──
+--  undershoot.left ├── undershoot.right ├── [selection] ├── [progress[.pulse]]
+--  ╰── [window.popup] ]|
+--
+--  GtkEntry has a main node with the name entry. Depending on the properties
+--  of the entry, the style classes .read-only and .flat may appear. The style
+--  classes .warning and .error may also be used with entries.
+--
+--  When the entry shows icons, it adds subnodes with the name image and the
+--  style class .left or .right, depending on where the icon appears.
+--
+--  When the entry has a selection, it adds a subnode with the name selection.
+--
+--  When the entry shows progress, it adds a subnode with the name progress.
+--  The node has the style class .pulse when the shown progress is pulsing.
+--
+--  The CSS node for a context menu is added as a subnode below entry as well.
+--
+--  The undershoot nodes are used to draw the underflow indication when
+--  content is scrolled out of view. These nodes get the .left and .right style
+--  classes added depending on where the indication is drawn.
+--
+--  When touch is used and touch selection handles are shown, they are using
+--  CSS nodes with name cursor-handle. They get the .top or .bottom style class
+--  depending on where they are shown in relation to the selection. If there is
+--  just a single handle for the text cursor, it gets the style class
+--  .insertion-cursor.
+--
 --  </description>
 --  <description>
 --  A Gtk_Entry is a single line text editing widget. The text is
@@ -248,7 +278,7 @@ package Gtk.GEntry is
 
    procedure Set_Cursor_Hadjustment
       (The_Entry  : not null access Gtk_Entry_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Hooks up an adjustment to the cursor position in an entry, so that when
    --  the cursor is moved, the adjustment is scrolled to show that position.
    --  See Gtk.Scrolled_Window.Get_Hadjustment for a typical way of obtaining
@@ -582,7 +612,7 @@ package Gtk.GEntry is
 
    procedure Set_Placeholder_Text
       (The_Entry : not null access Gtk_Entry_Record;
-       Text      : UTF8_String);
+       Text      : UTF8_String := "");
    --  Sets text to be displayed in Entry when it is empty and unfocused. This
    --  can be used to give a visual hint of the expected contents of the
    --  Gtk.GEntry.Gtk_Entry.
@@ -591,7 +621,7 @@ package Gtk.GEntry is
    --  given the initial focus in a window. Sometimes this can be worked around
    --  by delaying the initial focus setting until the first key event arrives.
    --  Since: gtk+ 3.2
-   --  "text": a string to be displayed when Entry is empty an unfocused, or
+   --  "text": a string to be displayed when Entry is empty and unfocused, or
    --  null
 
    function Get_Progress_Fraction
@@ -703,6 +733,15 @@ package Gtk.GEntry is
    --  is -1, the size reverts to the default entry size.
    --  "Width": width in chars
 
+   procedure Grab_Focus_Without_Selecting
+      (The_Entry : not null access Gtk_Entry_Record);
+   --  Causes Entry to have keyboard focus.
+   --  It behaves like Gtk.Widget.Grab_Focus, except that it doesn't select
+   --  the contents of the entry. You only want to call this on some special
+   --  entries which the user usually doesn't want to replace all text in, such
+   --  as search-as-you-type entries.
+   --  Since: gtk+ 3.16
+
    function Im_Context_Filter_Keypress
       (The_Entry : not null access Gtk_Entry_Record;
        Event     : Gdk.Event.Gdk_Event_Key) return Boolean;
@@ -721,10 +760,9 @@ package Gtk.GEntry is
    function Layout_Index_To_Text_Index
       (The_Entry    : not null access Gtk_Entry_Record;
        Layout_Index : Gint) return Gint;
-   --  Converts from a position in the entry contents (returned by
-   --  Gtk.GEntry.Get_Text) to a position in the entry's
-   --  Pango.Layout.Pango_Layout (returned by Gtk.GEntry.Get_Layout, with text
-   --  retrieved via Pango.Layout.Get_Text).
+   --  Converts from a position in the entry's Pango.Layout.Pango_Layout
+   --  (returned by Gtk.GEntry.Get_Layout) to a position in the entry contents
+   --  (returned by Gtk.GEntry.Get_Text).
    --  "layout_index": byte index into the entry layout text
 
    procedure Progress_Pulse (The_Entry : not null access Gtk_Entry_Record);
@@ -814,9 +852,10 @@ package Gtk.GEntry is
    function Text_Index_To_Layout_Index
       (The_Entry  : not null access Gtk_Entry_Record;
        Text_Index : Gint) return Gint;
-   --  Converts from a position in the entry's Pango.Layout.Pango_Layout
-   --  (returned by Gtk.GEntry.Get_Layout) to a position in the entry contents
-   --  (returned by Gtk.GEntry.Get_Text).
+   --  Converts from a position in the entry contents (returned by
+   --  Gtk.GEntry.Get_Text) to a position in the entry's
+   --  Pango.Layout.Pango_Layout (returned by Gtk.GEntry.Get_Layout, with text
+   --  retrieved via Pango.Layout.Get_Text).
    --  "text_index": byte index into the entry contents
 
    procedure Unset_Invisible_Char
@@ -917,6 +956,10 @@ package Gtk.GEntry is
    --  A list of Pango attributes to apply to the text of the entry.
    --
    --  This is mainly useful to change the size or weight of the text.
+   --
+   --  The Pango.Attributes.Pango_Attribute's Start_Index and End_Index must
+   --  refer to the Gtk.Entry_Buffer.Gtk_Entry_Buffer text, i.e. without the
+   --  preedit string.
 
    Buffer_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Entry_Buffer.Gtk_Entry_Buffer
@@ -1361,12 +1404,12 @@ package Gtk.GEntry is
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
 
    type Cb_Gtk_Entry_Gtk_Widget_Void is not null access procedure
-     (Self  : access Gtk_Entry_Record'Class;
-      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+     (Self   : access Gtk_Entry_Record'Class;
+      Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
    type Cb_GObject_Gtk_Widget_Void is not null access procedure
-     (Self  : access Glib.Object.GObject_Record'Class;
-      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    procedure On_Populate_Popup

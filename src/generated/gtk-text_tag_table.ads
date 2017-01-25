@@ -187,7 +187,8 @@ package Gtk.Text_Tag_Table is
    -- 
    --  Callback parameters:
    --    --  "tag": the changed tag.
-   --    --  "size_changed": whether the size has been changed.
+   --    --  "size_changed": whether the change affects the
+   --    --  Gtk.Text_View.Gtk_Text_View layout.
 
    Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
    procedure On_Tag_Removed

@@ -26,12 +26,17 @@
 --  files. It exposes the Gtk.File_Chooser.Gtk_File_Chooser interface, and you
 --  should use the methods of this interface to interact with the widget.
 --
+--  # CSS nodes
+--
+--  GtkFileChooserWidget has a single CSS node with name filechooser.
+--
 --  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
+with Glib.Properties;  use Glib.Properties;
 with Glib.Types;       use Glib.Types;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Buildable;    use Gtk.Buildable;
@@ -85,6 +90,13 @@ package Gtk.File_Chooser_Widget is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   procedure Add_Choice
+      (Chooser       : not null access Gtk_File_Chooser_Widget_Record;
+       Id            : UTF8_String;
+       Label         : UTF8_String;
+       Options       : UTF8_String;
+       Option_Labels : UTF8_String);
+
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
@@ -104,6 +116,15 @@ package Gtk.File_Chooser_Widget is
    procedure Set_Action
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
+
+   function Get_Choice
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Id      : UTF8_String) return UTF8_String;
+
+   procedure Set_Choice
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Id      : UTF8_String;
+       Option  : UTF8_String);
 
    function Get_Create_Folders
       (Chooser : not null access Gtk_File_Chooser_Widget_Record)
@@ -253,6 +274,10 @@ package Gtk.File_Chooser_Widget is
       (Chooser : not null access Gtk_File_Chooser_Widget_Record)
        return Gtk.Enums.String_SList.GSlist;
 
+   procedure Remove_Choice
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Id      : UTF8_String);
+
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Widget_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
@@ -294,6 +319,16 @@ package Gtk.File_Chooser_Widget is
    procedure Set_Orientation
       (Self        : not null access Gtk_File_Chooser_Widget_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Search_Mode_Property : constant Glib.Properties.Property_Boolean;
+
+   Subtitle_Property : constant Glib.Properties.Property_String;
 
    -------------
    -- Signals --
@@ -407,7 +442,7 @@ package Gtk.File_Chooser_Widget is
    --  signal][GtkBindingSignal] which gets emitted when the user asks for it.
    --
    --  This is used to make the file chooser show a "Location" prompt when the
-   --  user pastes Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget.
+   --  user pastes into a Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget.
    --
    --  The default binding for this signal is `Control + V`.
 
@@ -428,6 +463,23 @@ package Gtk.File_Chooser_Widget is
    --  user can use to manually type the name of the file he wishes to select.
    --
    --  The default binding for this signal is `Control + L`.
+
+   Signal_Places_Shortcut : constant Glib.Signal_Name := "places-shortcut";
+   procedure On_Places_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False);
+   procedure On_Places_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::places-shortcut signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user asks for it.
+   --
+   --  This is used to move the focus to the places sidebar.
+   --
+   --  The default binding for this signal is `Alt + P`.
 
    type Cb_Gtk_File_Chooser_Widget_Gint_Void is not null access procedure
      (Self           : access Gtk_File_Chooser_Widget_Record'Class;
@@ -573,4 +625,9 @@ package Gtk.File_Chooser_Widget is
    return Gtk_File_Chooser_Widget
    renames Implements_Gtk_Orientable.To_Object;
 
+private
+   Subtitle_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("subtitle");
+   Search_Mode_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("search-mode");
 end Gtk.File_Chooser_Widget;

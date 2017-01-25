@@ -39,6 +39,10 @@
 --  Creating a context menu for the toolbar can be done by connecting to the
 --  Gtk.Toolbar.Gtk_Toolbar::popup-context-menu signal.
 --
+--  # CSS nodes
+--
+--  GtkToolbar has a single CSS node with name toolbar.
+--
 --  </description>
 pragma Ada_2005;
 

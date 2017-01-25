@@ -563,7 +563,7 @@ package Pango.Layout is
    --  position is measured from the left edge of the line)
    --  "index_": the byte index of a grapheme within the layout.
    --  "trailing": an integer indicating the edge of the grapheme to retrieve
-   --  the position of. If 0, the trailing edge of the grapheme, if > 0, the
+   --  the position of. If > 0, the trailing edge of the grapheme, if 0, the
    --  leading of the grapheme.
    --  "line": location to store resulting line index. (which will between 0
    --  and pango_layout_get_line_count(layout) - 1), or null
@@ -623,8 +623,8 @@ package Pango.Layout is
    --  cursor. The strong cursor is the cursor corresponding to text insertion
    --  in the base direction for the layout.
    --  "old_index": the byte index of the grapheme for the old index
-   --  "old_trailing": if 0, the cursor was at the trailing edge of the
-   --  grapheme indicated by Old_Index, if > 0, the cursor was at the leading
+   --  "old_trailing": if 0, the cursor was at the leading edge of the
+   --  grapheme indicated by Old_Index, if > 0, the cursor was at the trailing
    --  edge.
    --  "direction": direction to move cursor. A negative value indicates
    --  motion to the left.
@@ -680,15 +680,15 @@ package Pango.Layout is
    --  layout, the closest position is chosen (the position will be clamped
    --  inside the layout). If the X position is not within the layout, then the
    --  start or the end of the line is chosen as described for
-   --  Pango.Layout.Xy_To_Index. If either the X or Y positions were not inside
-   --  the layout, then the function returns False; on an exact hit, it returns
-   --  True.
+   --  pango_layout_line_x_to_index. If either the X or Y positions were not
+   --  inside the layout, then the function returns False; on an exact hit, it
+   --  returns True.
    --  "x": the X offset (in Pango units) from the left edge of the layout.
    --  "y": the Y offset (in Pango units) from the top edge of the layout
    --  "index_": location to store calculated byte index
    --  "trailing": location to store a integer indicating where in the
    --  grapheme the user clicked. It will either be zero, or the number of
-   --  characters in the grapheme. 0 represents the trailing edge of the
+   --  characters in the grapheme. 0 represents the leading edge of the
    --  grapheme.
 
    function At_Last_Line (Self : Pango_Layout_Iter) return Boolean;

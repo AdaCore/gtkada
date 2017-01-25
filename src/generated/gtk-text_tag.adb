@@ -91,6 +91,22 @@ package body Gtk.Text_Tag is
       end if;
    end Initialize;
 
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed
+      (Tag          : not null access Gtk_Text_Tag_Record;
+       Size_Changed : Boolean)
+   is
+      procedure Internal
+         (Tag          : System.Address;
+          Size_Changed : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_text_tag_changed");
+   begin
+      Internal (Get_Object (Tag), Boolean'Pos (Size_Changed));
+   end Changed;
+
    ------------------
    -- Get_Priority --
    ------------------

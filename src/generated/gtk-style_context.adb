@@ -883,6 +883,23 @@ package body Gtk.Style_Context is
       Is_Running := Tmp_Return /= 0;
    end State_Is_Running;
 
+   ---------------
+   -- To_String --
+   ---------------
+
+   function To_String
+      (Self  : not null access Gtk_Style_Context_Record;
+       Flags : Gtk_Style_Context_Print_Flags) return UTF8_String
+   is
+      function Internal
+         (Self  : System.Address;
+          Flags : Gtk_Style_Context_Print_Flags)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_style_context_to_string");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Flags));
+   end To_String;
+
    -----------------------------
    -- Add_Provider_For_Screen --
    -----------------------------

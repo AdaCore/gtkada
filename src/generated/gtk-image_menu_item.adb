@@ -391,14 +391,19 @@ package body Gtk.Image_Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Image_Menu_Item_Record;
-       Action_Name : UTF8_String)
+       Action_Name : UTF8_String := "")
    is
       procedure Internal
          (Self        : System.Address;
           Action_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_actionable_set_action_name");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr;
    begin
+      if Action_Name = "" then
+         Tmp_Action_Name := Interfaces.C.Strings.Null_Ptr;
+      else
+         Tmp_Action_Name := New_String (Action_Name);
+      end if;
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Set_Action_Name;

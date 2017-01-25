@@ -154,6 +154,10 @@ package Glib.Simple_Action is
    --  Since: gtk+ 2.30
    --  "value": the new Glib.Variant.Gvariant for the state
 
+   procedure Set_State_Hint
+      (Self       : not null access Gsimple_Action_Record;
+       State_Hint : Glib.Variant.Gvariant);
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------

@@ -27,6 +27,22 @@
 --  Gtk.Button.Gtk_Button, a Gtk.Menu_Item.Gtk_Menu_Item, or a
 --  Gtk.Combo_Box.Gtk_Combo_Box.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> label ├── [selection] ├── [link] ┊ ╰── [link]
+--  ]|
+--
+--  GtkLabel has a single CSS node with the name label. A wide variety of
+--  style classes may be applied to labels, such as .title, .subtitle,
+--  .dim-label, etc. In the Gtk.Shortcuts_Window.Gtk_Shortcuts_Window, labels
+--  are used wth the .keycap style class.
+--
+--  If the label has a selection, it gets a subnode with name selection.
+--
+--  If the label has links, there is one subnode per link. These subnodes
+--  carry the link or visited state depending on whether they have been
+--  visited.
+--
 --  # GtkLabel as GtkBuildable
 --
 --  The GtkLabel implementation of the GtkBuildable interface supports a
@@ -123,7 +139,7 @@
 --
 --  Gtk.Label.Set_Justify sets how the lines in a label align with one
 --  another. If you want to set how the label as a whole aligns in its
---  available space, see the Gtk.Widget.Gtk_Widget::halign and
+--  available space, see the Gtk.Widget.Gtk_Widget:halign and
 --  Gtk.Widget.Gtk_Widget:valign properties.
 --
 --  The Gtk.Label.Gtk_Label:width-chars and
@@ -285,7 +301,7 @@ package Gtk.Label is
    --  properties. While it is not recommended to mix markup strings with
    --  manually set attributes, if you must; know that the attributes will be
    --  applied to the label after the markup string is parsed.
-   --  "attrs": a Pango.Attributes.Pango_Attr_List
+   --  "attrs": a Pango.Attributes.Pango_Attr_List, or null
 
    function Get_Current_Uri
       (Label : not null access Gtk_Label_Record) return UTF8_String;
@@ -338,7 +354,7 @@ package Gtk.Label is
        Str   : UTF8_String);
    --  Sets the text of the label. The label is interpreted as including
    --  embedded underlines and/or Pango markup depending on the values of the
-   --  Gtk.Label.Gtk_Label:use-underline" and Gtk.Label.Gtk_Label:use-markup
+   --  Gtk.Label.Gtk_Label:use-underline and Gtk.Label.Gtk_Label:use-markup
    --  properties.
    --  "str": the new text to set for the label
 
@@ -362,8 +378,9 @@ package Gtk.Label is
    --  Pango.Layout.Pango_Layout, e.g. to take some action if some part of the
    --  label is clicked. Of course you will need to create a
    --  Gtk.Event_Box.Gtk_Event_Box to receive the events, and pack the label
-   --  inside it, since labels are a GTK_NO_WINDOW widget. Remember when using
-   --  the Pango.Layout.Pango_Layout functions you need to convert to and from
+   --  inside it, since labels are windowless (they return False from
+   --  Gtk.Widget.Get_Has_Window). Remember when using the
+   --  Pango.Layout.Pango_Layout functions you need to convert to and from
    --  pixels using PANGO_PIXELS or PANGO_SCALE.
    --  "x": location to store X offset of layout, or null
    --  "y": location to store Y offset of layout, or null
@@ -504,7 +521,12 @@ package Gtk.Label is
        Str   : UTF8_String);
    --  Sets the text within the Gtk.Label.Gtk_Label widget. It overwrites any
    --  text that was there before.
-   --  This will also clear any previously set mnemonic accelerators.
+   --  This function will clear any previously set mnemonic accelerators, and
+   --  set the Gtk.Label.Gtk_Label:use-underline property to False as a side
+   --  effect.
+   --  This function will set the Gtk.Label.Gtk_Label:use-markup property to
+   --  False as a side effect.
+   --  See also: Gtk.Label.Set_Markup
    --  "str": The text you want to set
 
    function Get_Track_Visited_Links
@@ -558,6 +580,30 @@ package Gtk.Label is
    --  Since: gtk+ 2.6
    --  "n_chars": the new desired width, in characters.
 
+   function Get_Xalign
+      (Label : not null access Gtk_Label_Record) return Gfloat;
+   --  Gets the Gtk.Label.Gtk_Label:xalign property for Label.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Xalign
+      (Label  : not null access Gtk_Label_Record;
+       Xalign : Gfloat);
+   --  Sets the Gtk.Label.Gtk_Label:xalign property for Label.
+   --  Since: gtk+ 3.16
+   --  "xalign": the new xalign value, between 0 and 1
+
+   function Get_Yalign
+      (Label : not null access Gtk_Label_Record) return Gfloat;
+   --  Gets the Gtk.Label.Gtk_Label:yalign property for Label.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Yalign
+      (Label  : not null access Gtk_Label_Record;
+       Yalign : Gfloat);
+   --  Sets the Gtk.Label.Gtk_Label:yalign property for Label.
+   --  Since: gtk+ 3.16
+   --  "yalign": the new yalign value, between 0 and 1
+
    procedure Select_Region
       (Label        : not null access Gtk_Label_Record;
        Start_Offset : Gint := -1;
@@ -574,12 +620,19 @@ package Gtk.Label is
        Str   : UTF8_String);
    --  Parses Str which is marked up with the [Pango text markup
    --  language][PangoMarkupFormat], setting the label's text and attribute
-   --  list based on the parse results. If the Str is external data, you may
-   --  need to escape it with g_markup_escape_text or g_markup_printf_escaped:
+   --  list based on the parse results.
+   --  If the Str is external data, you may need to escape it with
+   --  g_markup_escape_text or g_markup_printf_escaped:
    --  |[<!-- language="C" --> const char *format = "<span
    --  style=\"italic\">\%s</span>"; char *markup;
    --  markup = g_markup_printf_escaped (format, str); gtk_label_set_markup
    --  (GTK_LABEL (label), markup); g_free (markup); ]|
+   --  This function will set the Gtk.Label.Gtk_Label:use-markup property to
+   --  True as a side effect.
+   --  If you set the label contents using the Gtk.Label.Gtk_Label:label
+   --  property you should also ensure that you set the
+   --  Gtk.Label.Gtk_Label:use-markup property accordingly.
+   --  See also: Gtk.Label.Set_Text
    --  "str": a markup string (see [Pango markup format][PangoMarkupFormat])
 
    procedure Set_Markup_With_Mnemonic
@@ -627,7 +680,7 @@ package Gtk.Label is
    --  The angle that the baseline of the label makes with the horizontal, in
    --  degrees, measured counterclockwise. An angle of 90 reads from from
    --  bottom to top, an angle of 270, from top to bottom. Ignored if the label
-   --  is selectable, wrapped, or ellipsized.
+   --  is selectable.
 
    Attributes_Property : constant Glib.Properties.Property_Object;
    --  Type: Pango.Attributes.Pango_Attr_List
@@ -651,6 +704,18 @@ package Gtk.Label is
    Justify_Property : constant Gtk.Enums.Property_Gtk_Justification;
 
    Label_Property : constant Glib.Properties.Property_String;
+   --  The contents of the label.
+   --
+   --  If the string contains [Pango XML markup][PangoMarkupFormat], you will
+   --  have to set the Gtk.Label.Gtk_Label:use-markup property to True in order
+   --  for the label to display the markup attributes. See also
+   --  Gtk.Label.Set_Markup for a convenience function that sets both this
+   --  property and the Gtk.Label.Gtk_Label:use-markup property at the same
+   --  time.
+   --
+   --  If the string contains underlines acting as mnemonics, you will have to
+   --  set the Gtk.Label.Gtk_Label:use-underline property to True in order for
+   --  the label to display them.
 
    Lines_Property : constant Glib.Properties.Property_Int;
    --  The number of lines to which an ellipsized, wrapping label should be
@@ -709,6 +774,18 @@ package Gtk.Label is
    --  If line wrapping is on (see the Gtk.Label.Gtk_Label:wrap property) this
    --  controls how the line wrapping is done. The default is
    --  Pango.Enums.Pango_Wrap_Word, which means wrap on word boundaries.
+
+   Xalign_Property : constant Glib.Properties.Property_Float;
+   --  The xalign property determines the horizontal aligment of the label
+   --  text inside the labels size allocation. Compare this to
+   --  Gtk.Widget.Gtk_Widget:halign, which determines how the labels size
+   --  allocation is positioned in the space available for the label.
+
+   Yalign_Property : constant Glib.Properties.Property_Float;
+   --  The yalign property determines the vertical aligment of the label text
+   --  inside the labels size allocation. Compare this to
+   --  Gtk.Widget.Gtk_Widget:valign, which determines how the labels size
+   --  allocation is positioned in the space available for the label.
 
    -------------
    -- Signals --
@@ -864,6 +941,10 @@ package Gtk.Label is
    renames Implements_Gtk_Buildable.To_Object;
 
 private
+   Yalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("yalign");
+   Xalign_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("xalign");
    Wrap_Mode_Property : constant Pango.Enums.Property_Wrap_Mode :=
      Pango.Enums.Build ("wrap-mode");
    Wrap_Property : constant Glib.Properties.Property_Boolean :=

@@ -32,11 +32,11 @@
 --  convenience APIs for setting these properties.
 --
 --  The action will be looked up in action groups that are found among the
---  widgets ancestors. Most commonly, these will be the actions with the "win"
---  or "app" prefix that are associated with the
---  Gtk.Application_Window.Gtk_Application_Window or "GtkApplication, but other
---  action groups that are added with gtk_widget_insert_action_group will be
---  consulted as well.
+--  widgets ancestors. Most commonly, these will be the actions with the "win."
+--  or "app." prefix that are associated with the
+--  Gtk.Application_Window.Gtk_Application_Window or
+--  Gtk.Application.Gtk_Application, but other action groups that are added
+--  with gtk_widget_insert_action_group will be consulted as well.
 --
 --  </description>
 pragma Ada_2005;
@@ -74,7 +74,7 @@ package Gtk.Actionable is
 
    procedure Set_Action_Name
       (Self        : Gtk_Actionable;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
    --  Specifies the name of the action with which this widget should be
    --  associated. If Action_Name is null then the widget will be unassociated
    --  from any previous action.
@@ -91,7 +91,7 @@ package Gtk.Actionable is
 
    function Get_Action_Target_Value
       (Self : Gtk_Actionable) return Glib.Variant.Gvariant;
-   --  Gets the current target value of Actionabe.
+   --  Gets the current target value of Actionable.
    --  See Gtk.Actionable.Set_Action_Target_Value for more information.
    --  Since: gtk+ 3.4
 
@@ -103,7 +103,7 @@ package Gtk.Actionable is
    --  The target value has two purposes. First, it is used as the parameter
    --  to activation of the action associated with the
    --  Gtk.Actionable.Gtk_Actionable widget. Second, it is used to determine if
-   --  the widget should be rendered as "active" - the widget is active if the
+   --  the widget should be rendered as "active" — the widget is active if the
    --  state is equal to the given target.
    --  Consider the example of associating a set of buttons with a
    --  Glib.Action.Gaction with string state in a typical "radio button"
@@ -166,7 +166,7 @@ package Gtk.Actionable is
 
    type Virtual_Get_Action_Target_Value is access function (Self : Gtk_Actionable) return System.Address;
    pragma Convention (C, Virtual_Get_Action_Target_Value);
-   --  Gets the current target value of Actionabe.
+   --  Gets the current target value of Actionable.
    --  See Gtk.Actionable.Set_Action_Target_Value for more information.
    --  Since: gtk+ 3.4
 
@@ -195,7 +195,7 @@ package Gtk.Actionable is
    --  The target value has two purposes. First, it is used as the parameter
    --  to activation of the action associated with the
    --  Gtk.Actionable.Gtk_Actionable widget. Second, it is used to determine if
-   --  the widget should be rendered as "active" - the widget is active if the
+   --  the widget should be rendered as "active" — the widget is active if the
    --  state is equal to the given target.
    --  Consider the example of associating a set of buttons with a
    --  Glib.Action.Gaction with string state in a typical "radio button"

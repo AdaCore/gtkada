@@ -290,7 +290,7 @@ package Gtk.Icon_Theme is
       (Icon_Theme : not null access Gtk_Icon_Theme_Record)
        return Gtk.Enums.String_List.Glist;
    --  Gets the list of contexts available within the current hierarchy of
-   --  icon themes
+   --  icon themes. See Gtk.Icon_Theme.List_Icons for details about contexts.
    --  Since: gtk+ 2.12
 
    function List_Icons
@@ -299,7 +299,12 @@ package Gtk.Icon_Theme is
    --  Lists the icons in the current icon theme. Only a subset of the icons
    --  can be listed by providing a context string. The set of values for the
    --  context string is system dependent, but will typically include such
-   --  values as "Applications" and "MimeTypes".
+   --  values as "Applications" and "MimeTypes". Contexts are explained in the
+   --  [Icon Theme
+   --  Specification](http://www.freedesktop.org/wiki/Specifications/icon-theme-spec).
+   --  The standard contexts are listed in the [Icon Naming
+   --  Specification](http://www.freedesktop.org/wiki/Specifications/icon-naming-spec).
+   --  Also see Gtk.Icon_Theme.List_Contexts.
    --  Since: gtk+ 2.4
    --  "context": a string identifying a particular type of icon, or null to
    --  list all icons.
@@ -416,6 +421,11 @@ package Gtk.Icon_Theme is
    --  Looks up an icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info containing
    --  information such as the filename of the icon. The icon can then be
    --  rendered into a pixbuf using Gtk.Icon_Theme.Load_Icon.
+   --  When rendering on displays with high pixel densities you should not use
+   --  a Size multiplied by the scaling factor returned by functions like
+   --  Gdk.Window.Get_Scale_Factor. Instead, you should use
+   --  Gtk.Icon_Theme.Lookup_By_Gicon_For_Scale, as the assets loaded for a
+   --  given scaling factor may be different.
    --  Since: gtk+ 2.14
    --  "icon": the Glib.G_Icon.G_Icon to look up
    --  "size": desired icon size
@@ -446,6 +456,11 @@ package Gtk.Icon_Theme is
    --  then be rendered into a pixbuf using Gtk.Icon_Theme.Load_Icon.
    --  (gtk_icon_theme_load_icon combines these two steps if all you need is
    --  the pixbuf.)
+   --  When rendering on displays with high pixel densities you should not use
+   --  a Size multiplied by the scaling factor returned by functions like
+   --  Gdk.Window.Get_Scale_Factor. Instead, you should use
+   --  Gtk.Icon_Theme.Lookup_Icon_For_Scale, as the assets loaded for a given
+   --  scaling factor may be different.
    --  Since: gtk+ 2.4
    --  "icon_name": the name of the icon to lookup
    --  "size": desired icon size

@@ -24,8 +24,8 @@
 --  <description>
 --  The Gtk.Tree_Store.Gtk_Tree_Store object is a list model for use with a
 --  Gtk.Tree_View.Gtk_Tree_View widget. It implements the
---  Gtk.Tree_Model.Gtk_Tree_Model interface, and consequentialy, can use all of
---  the methods available there. It also implements the
+--  Gtk.Tree_Model.Gtk_Tree_Model interface, and consequentially, can use all
+--  of the methods available there. It also implements the
 --  Gtk.Tree_Sortable.Gtk_Tree_Sortable interface so it can be sorted by the
 --  view. Finally, it also implements the tree [drag and
 --  drop][gtk3-GtkTreeView-drag-and-drop] interfaces.

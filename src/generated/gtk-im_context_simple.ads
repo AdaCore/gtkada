@@ -21,6 +21,23 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  GtkIMContextSimple is a simple input method context supporting table-based
+--  input methods. It has a built-in table of compose sequences that is derived
+--  from the X11 Compose files.
+--
+--  GtkIMContextSimple reads additional compose sequences from the first of
+--  the following files that is found: ~/.config/gtk-3.0/Compose, ~/.XCompose,
+--  /usr/share/X11/locale/$locale/Compose (for locales that have a nontrivial
+--  Compose file). The syntax of these files is described in the Compose(5)
+--  manual page.
+--
+--  GtkIMContextSimple also supports numeric entry of Unicode characters by
+--  typing Ctrl-Shift-u, followed by a hexadecimal Unicode codepoint. For
+--  example, Ctrl-Shift-u 1 2 3 Enter yields U+0123 LATIN SMALL LETTER G WITH
+--  CEDILLA, i.e. ģ.
+--
+--  </description>
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -52,6 +69,10 @@ package Gtk.IM_Context_Simple is
    -------------
    -- Methods --
    -------------
+
+   procedure Add_Compose_File
+      (Self         : not null access Gtk_IM_Context_Simple_Record;
+       Compose_File : UTF8_String);
 
    procedure Add_Table
       (Self        : not null access Gtk_IM_Context_Simple_Record;

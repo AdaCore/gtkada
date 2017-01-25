@@ -46,7 +46,10 @@
 --  doesn't allow to embed arbitrary widgets.
 --
 --  GtkStatusIcon has been deprecated in 3.14. You should consider using
---  notifications or more modern platform-specific APIs instead.
+--  notifications or more modern platform-specific APIs instead. GLib provides
+--  the Glib.Notification.Gnotification API which works well with
+--  Gtk.Application.Gtk_Application. Also see this
+--  [HowDoI](https://wiki.gnome.org/HowDoI/GNotification).
 --
 --  </description>
 pragma Ada_2005;
@@ -480,8 +483,8 @@ package Gtk.Status_Icon is
 
    procedure Position_Menu
       (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-       X       : out Gint;
-       Y       : out Gint;
+       X       : in out Gint;
+       Y       : in out Gint;
        Push_In : out Boolean;
        Icon    : Glib.Object.GObject);
    pragma Obsolescent (Position_Menu);

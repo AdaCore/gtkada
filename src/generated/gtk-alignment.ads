@@ -191,12 +191,22 @@ package Gtk.Alignment is
    --  The padding to insert at the top of the widget.
 
    Xalign_Property : constant Glib.Properties.Property_Float;
+   --  Horizontal position of child in available space. A value of 0.0 will
+   --  flush the child left (or right, in RTL locales); a value of 1.0 will
+   --  flush the child right (or left, in RTL locales).
 
    Xscale_Property : constant Glib.Properties.Property_Float;
+   --  If available horizontal space is bigger than needed, how much of it to
+   --  use for the child. A value of 0.0 means none; a value of 1.0 means all.
 
    Yalign_Property : constant Glib.Properties.Property_Float;
+   --  Vertical position of child in available space. A value of 0.0 will
+   --  flush the child to the top; a value of 1.0 will flush the child to the
+   --  bottom.
 
    Yscale_Property : constant Glib.Properties.Property_Float;
+   --  If available vertical space is bigger than needed, how much of it to
+   --  use for the child. A value of 0.0 means none; a value of 1.0 means all.
 
    ----------------
    -- Interfaces --

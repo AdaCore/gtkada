@@ -239,8 +239,8 @@ package body Gtk.Widget is
        Connect_Data         : System.Address;
        Connect_Data_Destroy : Glib.G_Destroy_Notify_Address);
    pragma Import (C, C_Gtk_Widget_Class_Set_Connect_Func, "gtk_widget_class_set_connect_func");
-   --  For use in lanuage bindings, this will override the default
-   --  Gtk_Builder_Connect_Func to be used when parsing GtkBuilder xml from
+   --  For use in language bindings, this will override the default
+   --  Gtk_Builder_Connect_Func to be used when parsing GtkBuilder XML from
    --  this class's template data.
    --  Note that this must be called from a composite widget classes class
    --  initializer after calling gtk_widget_class_set_template.
@@ -1072,6 +1072,27 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Freeze_Child_Notify;
 
+   ----------------------
+   -- Get_Action_Group --
+   ----------------------
+
+   function Get_Action_Group
+      (Widget : not null access Gtk_Widget_Record;
+       Prefix : UTF8_String) return Glib.Action_Group.Gaction_Group
+   is
+      function Internal
+         (Widget : System.Address;
+          Prefix : Interfaces.C.Strings.chars_ptr)
+          return Glib.Action_Group.Gaction_Group;
+      pragma Import (C, Internal, "gtk_widget_get_action_group");
+      Tmp_Prefix : Interfaces.C.Strings.chars_ptr := New_String (Prefix);
+      Tmp_Return : Glib.Action_Group.Gaction_Group;
+   begin
+      Tmp_Return := Internal (Get_Object (Widget), Tmp_Prefix);
+      Free (Tmp_Prefix);
+      return Tmp_Return;
+   end Get_Action_Group;
+
    ----------------------------
    -- Get_Allocated_Baseline --
    ----------------------------
@@ -1097,6 +1118,24 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Allocated_Height;
+
+   ------------------------
+   -- Get_Allocated_Size --
+   ------------------------
+
+   procedure Get_Allocated_Size
+      (Widget     : not null access Gtk_Widget_Record;
+       Allocation : out Gtk_Allocation;
+       Baseline   : out Gint)
+   is
+      procedure Internal
+         (Widget     : System.Address;
+          Allocation : out Gtk_Allocation;
+          Baseline   : out Gint);
+      pragma Import (C, Internal, "gtk_widget_get_allocated_size");
+   begin
+      Internal (Get_Object (Widget), Allocation, Baseline);
+   end Get_Allocated_Size;
 
    -------------------------
    -- Get_Allocated_Width --
@@ -1244,6 +1283,21 @@ package body Gtk.Widget is
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
    end Get_Composite_Name;
 
+   ------------------
+   -- Get_Css_Name --
+   ------------------
+
+   function Get_Css_Name
+      (Self : Glib.Object.GObject_Class) return UTF8_String
+   is
+      function Internal
+         (Self : Glib.Object.GObject_Class)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_widget_class_get_css_name");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
+   end Get_Css_Name;
+
    ------------------------
    -- Get_Device_Enabled --
    ------------------------
@@ -1335,6 +1389,49 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Events;
+
+   ------------------------
+   -- Get_Focus_On_Click --
+   ------------------------
+
+   function Get_Focus_On_Click
+      (Widget : not null access Gtk_Widget_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_widget_get_focus_on_click");
+   begin
+      return Internal (Get_Object (Widget)) /= 0;
+   end Get_Focus_On_Click;
+
+   ------------------
+   -- Get_Font_Map --
+   ------------------
+
+   function Get_Font_Map
+      (Widget : not null access Gtk_Widget_Record)
+       return Pango.Font_Map.Pango_Font_Map
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_font_map");
+      Stub_Pango_Font_Map : Pango.Font_Map.Pango_Font_Map_Record;
+   begin
+      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object (Widget)), Stub_Pango_Font_Map));
+   end Get_Font_Map;
+
+   ----------------------
+   -- Get_Font_Options --
+   ----------------------
+
+   function Get_Font_Options
+      (Widget : not null access Gtk_Widget_Record)
+       return Cairo.Cairo_Font_Options
+   is
+      function Internal
+         (Widget : System.Address) return Cairo.Cairo_Font_Options;
+      pragma Import (C, Internal, "gtk_widget_get_font_options");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Font_Options;
 
    ---------------------
    -- Get_Frame_Clock --
@@ -2443,6 +2540,21 @@ package body Gtk.Widget is
    end Keynav_Failed;
 
    --------------------------
+   -- List_Action_Prefixes --
+   --------------------------
+
+   function List_Action_Prefixes
+      (Widget : not null access Gtk_Widget_Record)
+       return GNAT.Strings.String_List
+   is
+      function Internal
+         (Widget : System.Address) return chars_ptr_array_access;
+      pragma Import (C, Internal, "gtk_widget_list_action_prefixes");
+   begin
+      return To_String_List_And_Free (Internal (Get_Object (Widget)));
+   end List_Action_Prefixes;
+
+   --------------------------
    -- List_Mnemonic_Labels --
    --------------------------
 
@@ -2679,6 +2791,17 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Tmp_Name, Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
       Free (Tmp_Name);
    end Override_Symbolic_Color;
+
+   --------------------
+   -- Queue_Allocate --
+   --------------------
+
+   procedure Queue_Allocate (Widget : not null access Gtk_Widget_Record) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_queue_allocate");
+   begin
+      Internal (Get_Object (Widget));
+   end Queue_Allocate;
 
    --------------------------
    -- Queue_Compute_Expand --
@@ -3216,6 +3339,24 @@ package body Gtk.Widget is
 
    end Set_Connect_Func_User_Data;
 
+   ------------------
+   -- Set_Css_Name --
+   ------------------
+
+   procedure Set_Css_Name
+      (Self : Glib.Object.GObject_Class;
+       Name : UTF8_String)
+   is
+      procedure Internal
+         (Self : Glib.Object.GObject_Class;
+          Name : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_widget_class_set_css_name");
+      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+   begin
+      Internal (Self, Tmp_Name);
+      Free (Tmp_Name);
+   end Set_Css_Name;
+
    ------------------------
    -- Set_Device_Enabled --
    ------------------------
@@ -3299,6 +3440,54 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Events);
    end Set_Events;
+
+   ------------------------
+   -- Set_Focus_On_Click --
+   ------------------------
+
+   procedure Set_Focus_On_Click
+      (Widget         : not null access Gtk_Widget_Record;
+       Focus_On_Click : Boolean)
+   is
+      procedure Internal
+         (Widget         : System.Address;
+          Focus_On_Click : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_widget_set_focus_on_click");
+   begin
+      Internal (Get_Object (Widget), Boolean'Pos (Focus_On_Click));
+   end Set_Focus_On_Click;
+
+   ------------------
+   -- Set_Font_Map --
+   ------------------
+
+   procedure Set_Font_Map
+      (Widget   : not null access Gtk_Widget_Record;
+       Font_Map : access Pango.Font_Map.Pango_Font_Map_Record'Class)
+   is
+      procedure Internal
+         (Widget   : System.Address;
+          Font_Map : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_font_map");
+   begin
+      Internal (Get_Object (Widget), Get_Object_Or_Null (GObject (Font_Map)));
+   end Set_Font_Map;
+
+   ----------------------
+   -- Set_Font_Options --
+   ----------------------
+
+   procedure Set_Font_Options
+      (Widget  : not null access Gtk_Widget_Record;
+       Options : in out Cairo.Cairo_Font_Options)
+   is
+      procedure Internal
+         (Widget  : System.Address;
+          Options : in out Cairo.Cairo_Font_Options);
+      pragma Import (C, Internal, "gtk_widget_set_font_options");
+   begin
+      Internal (Get_Object (Widget), Options);
+   end Set_Font_Options;
 
    ----------------
    -- Set_Halign --

@@ -311,8 +311,19 @@ package body Glib.Option is
       function Internal (Self : System.Address) return access GOption_Group;
       pragma Import (C, Internal, "g_option_context_get_main_group");
    begin
-      return Internal (Get_Object (Self)).all;
+      return From_Object_Free (Internal (Get_Object (Self)));
    end Get_Main_Group;
+
+   ----------------------
+   -- Get_Strict_Posix --
+   ----------------------
+
+   function Get_Strict_Posix (Self : Goption_Context) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_option_context_get_strict_posix");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Strict_Posix;
 
    -----------------
    -- Get_Summary --
@@ -391,6 +402,22 @@ package body Glib.Option is
    begin
       Internal (Get_Object (Self), Group);
    end Set_Main_Group;
+
+   ----------------------
+   -- Set_Strict_Posix --
+   ----------------------
+
+   procedure Set_Strict_Posix
+      (Self         : Goption_Context;
+       Strict_Posix : Boolean)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Strict_Posix : Glib.Gboolean);
+      pragma Import (C, Internal, "g_option_context_set_strict_posix");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Strict_Posix));
+   end Set_Strict_Posix;
 
    -----------------
    -- Set_Summary --

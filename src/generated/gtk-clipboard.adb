@@ -415,6 +415,21 @@ package body Gtk.Clipboard is
       return Get_User_Data (Internal (Get_Object (Clipboard)), Stub_GObject);
    end Get_Owner;
 
+   -------------------
+   -- Get_Selection --
+   -------------------
+
+   function Get_Selection
+      (Clipboard : not null access Gtk_Clipboard_Record)
+       return Gdk.Types.Gdk_Atom
+   is
+      function Internal
+         (Clipboard : System.Address) return Gdk.Types.Gdk_Atom;
+      pragma Import (C, Internal, "gtk_clipboard_get_selection");
+   begin
+      return Internal (Get_Object (Clipboard));
+   end Get_Selection;
+
    ----------------------
    -- Request_Contents --
    ----------------------
@@ -725,6 +740,21 @@ package body Gtk.Clipboard is
    begin
       return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Selection), Stub_Gtk_Clipboard));
    end Get;
+
+   -----------------
+   -- Get_Default --
+   -----------------
+
+   function Get_Default
+      (Display : not null access Gdk.Display.Gdk_Display_Record'Class)
+       return Gtk_Clipboard
+   is
+      function Internal (Display : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_clipboard_get_default");
+      Stub_Gtk_Clipboard : Gtk_Clipboard_Record;
+   begin
+      return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Get_Object (Display)), Stub_Gtk_Clipboard));
+   end Get_Default;
 
    ---------------------
    -- Get_For_Display --

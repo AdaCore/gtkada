@@ -27,10 +27,11 @@
 --  is determined by its Gtk.Widget.Gtk_Widget:halign and
 --  Gtk.Widget.Gtk_Widget:valign properties. E.g. a widget with both alignments
 --  set to Gtk.Widget.Align_Start will be placed at the top left corner of the
---  main widget, whereas an overlay with halign set to Gtk.Widget.Align_Center
---  and valign set to Gtk.Widget.Align_End will be placed a the bottom edge of
---  the main widget, horizontally centered. The position can be adjusted by
---  setting the margin properties of the child to non-zero values.
+--  GtkOverlay container, whereas an overlay with halign set to
+--  Gtk.Widget.Align_Center and valign set to Gtk.Widget.Align_End will be
+--  placed a the bottom edge of the GtkOverlay, horizontally centered. The
+--  position can be adjusted by setting the margin properties of the child to
+--  non-zero values.
 --
 --  More complicated placement of overlays is possible by connecting to the
 --  Gtk.Overlay.Gtk_Overlay::get-child-position signal.
@@ -91,6 +92,39 @@ package Gtk.Overlay is
    --  properties.
    --  Since: gtk+ 3.2
    --  "widget": a Gtk.Widget.Gtk_Widget to be added to the container
+
+   function Get_Overlay_Pass_Through
+      (Self   : not null access Gtk_Overlay_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
+   --  Convenience function to get the value of the
+   --  Gtk.Overlay.Gtk_Overlay:pass-through child property for Widget.
+   --  Since: gtk+ 3.18
+   --  "widget": an overlay child of Gtk.Overlay.Gtk_Overlay
+
+   procedure Set_Overlay_Pass_Through
+      (Self         : not null access Gtk_Overlay_Record;
+       Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Pass_Through : Boolean);
+   --  Convenience function to set the value of the
+   --  Gtk.Overlay.Gtk_Overlay:pass-through child property for Widget.
+   --  Since: gtk+ 3.18
+   --  "widget": an overlay child of Gtk.Overlay.Gtk_Overlay
+   --  "pass_through": whether the child should pass the input through
+
+   procedure Reorder_Overlay
+      (Self     : not null access Gtk_Overlay_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Position : Gint);
+   --  Moves Child to a new Index in the list of Overlay children. The list
+   --  contains overlays in the order that these were added to Overlay.
+   --  A widget's index in the Overlay children list determines which order
+   --  the children are drawn if they overlap. The first child is drawn at the
+   --  bottom. It also affects the default focus chain order.
+   --  Since: gtk+ 3.18
+   --  "child": the overlaid Gtk.Widget.Gtk_Widget to move
+   --  "position": the new index for Child in the list of overlay children of
+   --  Overlay, starting from 0. If negative, indicates the end of the list
 
    -------------
    -- Signals --

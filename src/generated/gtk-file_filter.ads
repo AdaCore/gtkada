@@ -61,6 +61,7 @@ with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
+with Glib.Variant;            use Glib.Variant;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
@@ -139,6 +140,26 @@ package Gtk.File_Filter is
    --  *filter = gtk_file_filter_new (); gtk_file_filter_add_pattern (filter,
    --  "*"); ]|
    --  Since: gtk+ 2.4
+
+   procedure Gtk_New_From_Gvariant
+      (Self    : out Gtk_File_Filter;
+       Variant : Glib.Variant.Gvariant);
+   procedure Initialize_From_Gvariant
+      (Self    : not null access Gtk_File_Filter_Record'Class;
+       Variant : Glib.Variant.Gvariant);
+   --  Deserialize a file filter from an a{sv} variant in the format produced
+   --  by Gtk.File_Filter.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  Initialize_From_Gvariant does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
+   --  "variant": an a{sv} Glib.Variant.Gvariant
+
+   function Gtk_File_Filter_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_File_Filter;
+   --  Deserialize a file filter from an a{sv} variant in the format produced
+   --  by Gtk.File_Filter.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  "variant": an a{sv} Glib.Variant.Gvariant
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_filter_get_type");
@@ -252,6 +273,12 @@ package Gtk.File_Filter is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
+
+   function To_Gvariant
+      (Self : not null access Gtk_File_Filter_Record)
+       return Glib.Variant.Gvariant;
+   --  Serialize a file filter to an a{sv} variant.
+   --  Since: gtk+ 3.22
 
    ----------------
    -- Interfaces --

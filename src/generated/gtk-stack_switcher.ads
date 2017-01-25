@@ -34,6 +34,14 @@
 --
 --  The GtkStackSwitcher widget was added in 3.10.
 --
+--  # CSS nodes
+--
+--  GtkStackSwitcher has a single CSS node named stackswitcher and style class
+--  .stack-switcher.
+--
+--  When circumstances require it, GtkStackSwitcher adds the .needs-attention
+--  style class to the widgets representing the stack pages.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -109,6 +117,10 @@ package Gtk.Stack_Switcher is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Icon_Size_Property : constant Glib.Properties.Property_Int;
+   --  Use the "icon-size" property to change the size of the image displayed
+   --  when a Gtk.Stack_Switcher.Gtk_Stack_Switcher is displaying icons.
+
    Stack_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Stack.Gtk_Stack
 
@@ -146,4 +158,6 @@ package Gtk.Stack_Switcher is
 private
    Stack_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("stack");
+   Icon_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("icon-size");
 end Gtk.Stack_Switcher;

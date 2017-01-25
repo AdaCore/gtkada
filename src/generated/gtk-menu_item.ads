@@ -50,6 +50,14 @@
 --  class="GtkMenuItem"> <child type="submenu"> <object class="GtkMenu"/>
 --  </child> </object> ]|
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> menuitem ├── <child> ╰── [arrow.right] ]|
+--
+--  GtkMenuItem has a single CSS node with name menuitem. If the menuitem has
+--  a submenu, it gets another CSS node with name arrow, which has the .left or
+--  .right style class.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -282,7 +290,7 @@ package Gtk.Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Menu_Item_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Menu_Item_Record)

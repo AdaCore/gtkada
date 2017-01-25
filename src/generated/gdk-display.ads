@@ -46,6 +46,8 @@ pragma Ada_2005;
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;         use Gdk;
 with Gdk.Event;   use Gdk.Event;
+with Gdk.Monitor; use Gdk.Monitor;
+with Gdk.Seat;    use Gdk.Seat;
 with Gdk.Types;   use Gdk.Types;
 with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
@@ -99,6 +101,11 @@ package Gdk.Display is
    --  Gdk.Window.Set_Group.
    --  Since: gtk+ 2.4
 
+   function Get_Default_Seat
+      (Self : not null access Gdk_Display_Record) return Gdk.Seat.Gdk_Seat;
+   --  Returns the default Gdk.Seat.Gdk_Seat for this display.
+   --  Since: gtk+ 3.20
+
    function Get_Event
       (Self : not null access Gdk_Display_Record) return Gdk.Event.Gdk_Event;
    --  Gets the next Gdk.Event.Gdk_Event to be processed for Display, fetching
@@ -114,6 +121,39 @@ package Gdk.Display is
    --  "width": the return location for the maximal cursor width
    --  "height": the return location for the maximal cursor height
 
+   function Get_Monitor
+      (Self        : not null access Gdk_Display_Record;
+       Monitor_Num : Gint) return Gdk.Monitor.Gdk_Monitor;
+   --  Gets a monitor associated with this display.
+   --  Since: gtk+ 3.22
+   --  "monitor_num": number of the monitor
+
+   function Get_Monitor_At_Point
+      (Self : not null access Gdk_Display_Record;
+       X    : Gint;
+       Y    : Gint) return Gdk.Monitor.Gdk_Monitor;
+   --  Gets the monitor in which the point (X, Y) is located, or a nearby
+   --  monitor if the point is not in any monitor.
+   --  Since: gtk+ 3.22
+   --  "x": the x coordinate of the point
+   --  "y": the y coordinate of the point
+
+   function Get_Monitor_At_Window
+      (Self   : not null access Gdk_Display_Record;
+       Window : Gdk.Gdk_Window) return Gdk.Monitor.Gdk_Monitor;
+   --  Gets the monitor in which the largest area of Window resides, or a
+   --  monitor close to Window if it is outside of all monitors.
+   --  Since: gtk+ 3.22
+   --  "window": a Gdk.Gdk_Window
+
+   function Get_N_Monitors
+      (Self : not null access Gdk_Display_Record) return Gint;
+   --  Gets the number of monitors that belong to Display.
+   --  The returned number is valid until the next emission of the
+   --  Gdk.Display.Gdk_Display::monitor-added or
+   --  Gdk.Display.Gdk_Display::monitor-removed signal.
+   --  Since: gtk+ 3.22
+
    function Get_N_Screens
       (Self : not null access Gdk_Display_Record) return Gint;
    pragma Obsolescent (Get_N_Screens);
@@ -125,6 +165,16 @@ package Gdk.Display is
       (Self : not null access Gdk_Display_Record) return UTF8_String;
    --  Gets the name of the display.
    --  Since: gtk+ 2.2
+
+   function Get_Primary_Monitor
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Monitor.Gdk_Monitor;
+   --  Gets the primary monitor for the display.
+   --  The primary monitor is considered the monitor where the "main desktop"
+   --  lives. While normal application windows typically allow the window
+   --  manager to place the windows, specialized desktop applications such as
+   --  panels should place themselves on the primary monitor.
+   --  Since: gtk+ 3.22
 
    function Has_Pending
       (Self : not null access Gdk_Display_Record) return Boolean;
@@ -145,6 +195,11 @@ package Gdk.Display is
    --  Since: gtk+ 2.2
    --  Deprecated since 3.0, 1
    --  "time_": a timestap (e.g GDK_CURRENT_TIME).
+
+   function List_Seats
+      (Self : not null access Gdk_Display_Record) return GList;
+   --  Returns the list of seats known to Display.
+   --  Since: gtk+ 3.20
 
    procedure Notify_Startup_Complete
       (Self       : not null access Gdk_Display_Record;
@@ -229,11 +284,13 @@ package Gdk.Display is
 
    function Supports_Composite
       (Self : not null access Gdk_Display_Record) return Boolean;
+   pragma Obsolescent (Supports_Composite);
    --  Returns True if Gdk.Window.Set_Composited can be used to redirect
    --  drawing on the window using compositing.
    --  Currently this only works on X11 with XComposite and XDamage extensions
    --  available.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.16, 1
 
    function Supports_Cursor_Alpha
       (Self : not null access Gdk_Display_Record) return Boolean;
@@ -327,11 +384,13 @@ package Gdk.Display is
    --  "display_name": the name of the display to open
 
    function Open_Default_Libgtk_Only return Gdk_Display;
+   pragma Obsolescent (Open_Default_Libgtk_Only);
    --  Opens the default display specified by command line arguments or
    --  environment variables, sets it as the default display, and returns it.
    --  gdk_parse_args must have been called first. If the default display has
    --  previously been set, simply returns that. An internal function that
    --  should not be used by applications.
+   --  Deprecated since 3.16, 1
 
    -------------
    -- Signals --
@@ -358,6 +417,38 @@ package Gdk.Display is
    --  The ::closed signal is emitted when the connection to the windowing
    --  system for Display is closed.
 
+   type Cb_Gdk_Display_Monitor_Void is not null access procedure
+     (Self    : access Gdk_Display_Record'Class;
+      Monitor : Monitor);
+
+   type Cb_GObject_Monitor_Void is not null access procedure
+     (Self    : access Glib.Object.GObject_Record'Class;
+      Monitor : Monitor);
+
+   Signal_Monitor_Added : constant Glib.Signal_Name := "monitor-added";
+   procedure On_Monitor_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Monitor_Void;
+       After : Boolean := False);
+   procedure On_Monitor_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Monitor_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::monitor-added signal is emitted whenever a monitor is added.
+
+   Signal_Monitor_Removed : constant Glib.Signal_Name := "monitor-removed";
+   procedure On_Monitor_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Monitor_Void;
+       After : Boolean := False);
+   procedure On_Monitor_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Monitor_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::monitor-removed signal is emitted whenever a monitor is removed.
+
    type Cb_Gdk_Display_Void is not null access procedure (Self : access Gdk_Display_Record'Class);
 
    type Cb_GObject_Void is not null access procedure
@@ -375,5 +466,39 @@ package Gdk.Display is
        After : Boolean := False);
    --  The ::opened signal is emitted when the connection to the windowing
    --  system for Display is opened.
+
+   type Cb_Gdk_Display_Seat_Void is not null access procedure
+     (Self : access Gdk_Display_Record'Class;
+      Seat : Seat);
+
+   type Cb_GObject_Seat_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Seat : Seat);
+
+   Signal_Seat_Added : constant Glib.Signal_Name := "seat-added";
+   procedure On_Seat_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Seat_Void;
+       After : Boolean := False);
+   procedure On_Seat_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Seat_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::seat-added signal is emitted whenever a new seat is made known to
+   --  the windowing system.
+
+   Signal_Seat_Removed : constant Glib.Signal_Name := "seat-removed";
+   procedure On_Seat_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Seat_Void;
+       After : Boolean := False);
+   procedure On_Seat_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Seat_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::seat-removed signal is emitted whenever a seat is removed by the
+   --  windowing system.
 
 end Gdk.Display;

@@ -27,7 +27,8 @@
 --  the label text, e.g. "Ctl+S". It is commonly used in menus to show the
 --  keyboard short-cuts for commands.
 --
---  The accelerator key to display is not set explicitly. Instead, the
+--  The accelerator key to display is typically not set explicitly (although
+--  it can be, with Gtk.Accel_Label.Set_Accel). Instead, the
 --  Gtk.Accel_Label.Gtk_Accel_Label displays the accelerators which have been
 --  added to a particular widget. This widget is set by calling
 --  Gtk.Accel_Label.Set_Accel_Widget.
@@ -70,6 +71,13 @@
 --  accelerators. We just need to make sure we use // GTK_ACCEL_VISIBLE here.
 --  gtk_widget_add_accelerator (save_item, "activate", accel_group, GDK_KEY_s,
 --  GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE); ]|
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> label ╰── accelerator ]|
+--
+--  Like Gtk.Label.Gtk_Label, GtkAccelLabel has a main CSS node with the name
+--  label. It adds a subnode with name accelerator.
 --
 --  </description>
 pragma Ada_2005;

@@ -26,6 +26,10 @@
 --  Gtk.Tool_Palette.Gtk_Tool_Palette to add Gtk_Tool_Items to a palette like
 --  container with different categories and drag and drop support.
 --
+--  # CSS nodes
+--
+--  GtkToolItemGroup has a single CSS node named toolitemgroup.
+--
 --  </description>
 pragma Ada_2005;
 

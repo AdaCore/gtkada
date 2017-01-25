@@ -27,6 +27,11 @@
 --  the font. It is suitable widget for selecting a font in a preference
 --  dialog.
 --
+--  # CSS nodes
+--
+--  GtkFontButton has a single CSS node with name button and style class
+--  .font.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -45,6 +50,7 @@ with Gtk.Font_Chooser;  use Gtk.Font_Chooser;
 with Pango.Font;        use Pango.Font;
 with Pango.Font_Face;   use Pango.Font_Face;
 with Pango.Font_Family; use Pango.Font_Family;
+with Pango.Font_Map;    use Pango.Font_Map;
 
 package Gtk.Font_Button is
 
@@ -237,7 +243,7 @@ package Gtk.Font_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Font_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Font_Button_Record)
@@ -302,6 +308,14 @@ package Gtk.Font_Button is
    function Get_Font_Family
       (Self : not null access Gtk_Font_Button_Record)
        return Pango.Font_Family.Pango_Font_Family;
+
+   function Get_Font_Map
+      (Self : not null access Gtk_Font_Button_Record)
+       return Pango.Font_Map.Pango_Font_Map;
+
+   procedure Set_Font_Map
+      (Self    : not null access Gtk_Font_Button_Record;
+       Fontmap : access Pango.Font_Map.Pango_Font_Map_Record'Class);
 
    function Get_Font_Size
       (Self : not null access Gtk_Font_Button_Record) return Gint;

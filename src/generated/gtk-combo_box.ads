@@ -46,6 +46,22 @@
 --  Gtk.Combo_Box_Text.Gtk_Combo_Box_Text offers a simple alternative. Both
 --  GtkComboBox and Gtk.Combo_Box_Text.Gtk_Combo_Box_Text can contain an entry.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> combobox ├── box.linked │ ╰── button.combo │
+--  ╰── box │ ├── cellview │ ╰── arrow ╰── window.popup ]|
+--
+--  A normal combobox contains a box with the .linked class, a button with the
+--  .combo class and inside those buttons, there are a cellview and an arrow.
+--
+--  |[<!-- language="plain" --> combobox ├── box.linked │ ├── entry.combo │
+--  ╰── button.combo │ ╰── box │ ╰── arrow ╰── window.popup ]|
+--
+--  A GtkComboBox with an entry has a single CSS node with name combobox. It
+--  contains a bx with the .linked class and that box contains an entry and a
+--  button, both with the .combo class added. The button also contains another
+--  node with name arrow.
+--
 --  </description>
 --  <group>Numeric/Text Data Entry</group>
 pragma Ada_2005;
@@ -320,18 +336,22 @@ package Gtk.Combo_Box is
 
    function Get_Focus_On_Click
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
+   pragma Obsolescent (Get_Focus_On_Click);
    --  Returns whether the combo box grabs focus when it is clicked with the
    --  mouse. See Gtk.Combo_Box.Set_Focus_On_Click.
    --  Since: gtk+ 2.6
+   --  Deprecated since 3.20, 1
 
    procedure Set_Focus_On_Click
       (Combo_Box      : not null access Gtk_Combo_Box_Record;
        Focus_On_Click : Boolean);
+   pragma Obsolescent (Set_Focus_On_Click);
    --  Sets whether the combo box will grab focus when it is clicked with the
    --  mouse. Making mouse clicks not grab focus is useful in places like
    --  toolbars where you don't want the keyboard focus removed from the main
    --  area of the application.
    --  Since: gtk+ 2.6
+   --  Deprecated since 3.20, 1
    --  "focus_on_click": whether the combo box grabs focus when clicked with
    --  the mouse
 
@@ -657,8 +677,6 @@ package Gtk.Combo_Box is
    --  entry if the combo was created with
    --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry = True.
 
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
-
    Has_Entry_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the combo box has an entry.
 
@@ -757,7 +775,9 @@ package Gtk.Combo_Box is
    --  displays it in the entry. |[<!-- language="C" --> static gchar*
    --  format_entry_text_callback (GtkComboBox *combo, const gchar *path,
    --  gpointer user_data) { GtkTreeIter iter; GtkTreeModel model; gdouble
-   --  value; model = gtk_combo_box_get_model (combo);
+   --  value;
+   --
+   --  model = gtk_combo_box_get_model (combo);
    --
    --  gtk_tree_model_get_iter_from_string (model, &iter, path);
    --  gtk_tree_model_get (model, &iter, THE_DOUBLE_VALUE_COLUMN, &value, -1);
@@ -891,8 +911,6 @@ private
      Glib.Properties.Build ("has-frame");
    Has_Entry_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-entry");
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
    Entry_Text_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("entry-text-column");
    Column_Span_Column_Property : constant Glib.Properties.Property_Int :=

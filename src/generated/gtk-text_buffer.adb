@@ -1094,6 +1094,28 @@ package body Gtk.Text_Buffer is
    end Insert_Interactive_At_Cursor;
 
    -------------------
+   -- Insert_Markup --
+   -------------------
+
+   procedure Insert_Markup
+      (Buffer : not null access Gtk_Text_Buffer_Record;
+       Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+       Markup : UTF8_String;
+       Len    : Gint)
+   is
+      procedure Internal
+         (Buffer : System.Address;
+          Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+          Markup : Interfaces.C.Strings.chars_ptr;
+          Len    : Gint);
+      pragma Import (C, Internal, "gtk_text_buffer_insert_markup");
+      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+   begin
+      Internal (Get_Object (Buffer), Iter, Tmp_Markup, Len);
+      Free (Tmp_Markup);
+   end Insert_Markup;
+
+   -------------------
    -- Insert_Pixbuf --
    -------------------
 

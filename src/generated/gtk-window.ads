@@ -48,6 +48,24 @@
 --  setting a child as the titlebar by specifying "titlebar" as the "type"
 --  attribute of a <child> element.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> window ├── decoration ╰── <child> ]|
+--
+--  GtkWindow has a main CSS node with name window and style class
+--  .background, and a subnode with name decoration.
+--
+--  Style classes that are typically used with the main CSS node are .csd
+--  (when client-side decorations are in use), .solid-csd (for client-side
+--  decorations without invisible borders), .ssd (used by mutter when rendering
+--  server-side decorations). GtkWindow also represents window states with the
+--  following style classes on the main node: .tiled, .maximized, .fullscreen.
+--  Specialized types of window often add their own discriminating style
+--  classes, such as .popup or .tooltip.
+--
+--  GtkWindow adds the .titlebar and .default-decoration style classes to the
+--  widget that is added as a titlebar child.
+--
 --  </description>
 pragma Ada_2005;
 
@@ -253,6 +271,18 @@ package Gtk.Window is
    --  on Gtk.Widget.Gtk_Widget.
    --  Since: gtk+ 2.2
 
+   procedure Fullscreen_On_Monitor
+      (Window  : not null access Gtk_Window_Record;
+       Screen  : not null access Gdk.Screen.Gdk_Screen_Record'Class;
+       Monitor : Gint);
+   --  Asks to place Window in the fullscreen state. Note that you shouldn't
+   --  assume the window is definitely full screen afterward.
+   --  You can track the fullscreen state via the "window-state-event" signal
+   --  on Gtk.Widget.Gtk_Widget.
+   --  Since: gtk+ 3.18
+   --  "screen": a Gdk.Screen.Gdk_Screen to draw to
+   --  "monitor": which monitor to go fullscreen on
+
    function Get_Accept_Focus
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Gets the value set by Gtk.Window.Set_Accept_Focus.
@@ -347,6 +377,10 @@ package Gtk.Window is
    --  had prior to hiding, rather than using the default size.
    --  Windows can't actually be 0x0 in size, they must be at least 1x1, but
    --  passing 0 for Width and Height is OK, resulting in a 1x1 default size.
+   --  If you use this function to reestablish a previously saved window size,
+   --  note that the appropriate size to save is the one returned by
+   --  Gtk.Window.Get_Size. Using the window allocation directly will not work
+   --  in all circumstances and can lead to growing or shrinking windows.
    --  "width": width in pixels, or -1 to unset the default width
    --  "height": height in pixels, or -1 to unset the default height
 
@@ -509,7 +543,8 @@ package Gtk.Window is
    --  Sets up the icon representing a Gtk.Window.Gtk_Window. This icon is
    --  used when the window is minimized (also known as iconified). Some window
    --  managers or desktop environments may also place it in the window frame,
-   --  or display it in other contexts.
+   --  or display it in other contexts. On others, the icon is not used at all,
+   --  so your mileage may vary.
    --  The icon should be provided in whatever size it was naturally drawn;
    --  that is, don't scale the image before passing it to GTK+. Scaling is
    --  postponed until the last minute, when the desired final size is known,
@@ -534,7 +569,8 @@ package Gtk.Window is
    --  Sets up the icon representing a Gtk.Window.Gtk_Window. The icon is used
    --  when the window is minimized (also known as iconified). Some window
    --  managers or desktop environments may also place it in the window frame,
-   --  or display it in other contexts.
+   --  or display it in other contexts. On others, the icon is not used at all,
+   --  so your mileage may vary.
    --  Gtk.Window.Set_Icon_List allows you to pass in the same icon in several
    --  hand-drawn sizes. The list should contain the natural sizes your icon is
    --  available in; that is, don't scale the image before passing it to GTK+.
@@ -562,7 +598,8 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Name   : UTF8_String := "");
    --  Sets the icon for the window from a named themed icon. See the docs for
-   --  Gtk.Icon_Theme.Gtk_Icon_Theme for more details.
+   --  Gtk.Icon_Theme.Gtk_Icon_Theme for more details. On some platforms, the
+   --  window icon is not used at all.
    --  Note that this has nothing to do with the WM_ICON_NAME property which
    --  is mentioned in the ICCCM.
    --  Since: gtk+ 2.6
@@ -616,31 +653,32 @@ package Gtk.Window is
    --  to keep Window in its current position. This means that the meaning of
    --  the returned value varies with window gravity. See Gtk.Window.Move for
    --  more details.
+   --  The reliability of this function depends on the windowing system
+   --  currently in use. Some windowing systems, such as Wayland, do not
+   --  support a global coordinate system, and thus the position of the window
+   --  will always be (0, 0). Others, like X11, do not have a reliable way to
+   --  obtain the geometry of the decorations of a window if they are provided
+   --  by the window manager. Additionally, on X11, window manager have been
+   --  known to mismanage window gravity, which result in windows moving even
+   --  if you use the coordinates of the current position as returned by this
+   --  function.
    --  If you haven't changed the window gravity, its gravity will be
    --  GDK_GRAVITY_NORTH_WEST. This means that Gtk.Window.Get_Position gets the
    --  position of the top-left corner of the window manager frame for the
    --  window. Gtk.Window.Move sets the position of this same top-left corner.
-   --  Gtk.Window.Get_Position is not 100% reliable because the X Window
-   --  System does not specify a way to obtain the geometry of the decorations
-   --  placed on a window by the window manager. Thus GTK+ is using a "best
-   --  guess" that works with most window managers.
-   --  Moreover, nearly all window managers are historically broken with
-   --  respect to their handling of window gravity. So moving a window to its
-   --  current position as returned by Gtk.Window.Get_Position tends to result
-   --  in moving the window slightly. Window managers are slowly getting better
-   --  over time.
    --  If a window has gravity GDK_GRAVITY_STATIC the window manager frame is
    --  not relevant, and thus Gtk.Window.Get_Position will always produce
    --  accurate results. However you can't use static gravity to do things like
    --  place a window in a corner of the screen, because static gravity ignores
    --  the window manager decorations.
-   --  If you are saving and restoring your application's window positions,
-   --  you should know that it's impossible for applications to do this without
-   --  getting it somewhat wrong because applications do not have sufficient
-   --  knowledge of window manager state. The Correct Mechanism is to support
-   --  the session management protocol (see the "GnomeClient" object in the
-   --  GNOME libraries for example) and allow the window manager to save your
-   --  window sizes and positions.
+   --  Ideally, this function should return appropriate values if the window
+   --  has client side decorations, assuming that the windowing system supports
+   --  global coordinates.
+   --  In practice, saving the window position should not be left to
+   --  applications, as they lack enough knowledge of the windowing system and
+   --  the window manager state to effectively do so. The appropriate way to
+   --  implement saving the window position is to use a platform-specific
+   --  protocol, wherever that is available.
    --  "root_x": return location for X coordinate of gravity-determined
    --  reference point, or null
    --  "root_y": return location for Y coordinate of gravity-determined
@@ -716,40 +754,57 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Width  : out Gint;
        Height : out Gint);
-   --  Obtains the current size of Window. If Window is not onscreen, it
-   --  returns the size GTK+ will suggest to the [window manager][gtk-X11-arch]
-   --  for the initial window size (but this is not reliably the same as the
-   --  size the window manager will actually select). The size obtained by
-   --  Gtk.Window.Get_Size is the last size received in a
-   --  Gdk.Event.Gdk_Event_Configure, that is, GTK+ uses its locally-stored
-   --  size, rather than querying the X server for the size. As a result, if
-   --  you call Gtk.Window.Resize then immediately call Gtk.Window.Get_Size,
-   --  the size won't have taken effect yet. After the window manager processes
-   --  the resize request, GTK+ receives notification that the size has changed
-   --  via a configure event, and the size of the window gets updated.
-   --  Note 1: Nearly any use of this function creates a race condition,
-   --  because the size of the window may change between the time that you get
-   --  the size and the time that you perform some action assuming that size is
-   --  the current size. To avoid race conditions, connect to "configure-event"
-   --  on the window and adjust your size-dependent state to match the size
-   --  delivered in the Gdk.Event.Gdk_Event_Configure.
-   --  Note 2: The returned size does not include the size of the window
-   --  manager decorations (aka the window frame or border). Those are not
-   --  drawn by GTK+ and GTK+ has no reliable method of determining their size.
-   --  Note 3: If you are getting a window size in order to position the
-   --  window onscreen, there may be a better way. The preferred way is to
-   --  simply set the window's semantic type with Gtk.Window.Set_Type_Hint,
-   --  which allows the window manager to e.g. center dialogs. Also, if you set
-   --  the transient parent of dialogs with Gtk.Window.Set_Transient_For window
-   --  managers will often center the dialog over its parent window. It's much
-   --  preferred to let the window manager handle these things rather than
-   --  doing it yourself, because all apps will behave consistently and
-   --  according to user prefs if the window manager handles it. Also, the
-   --  window manager can take the size of the window decorations/border into
-   --  account, while your application cannot.
-   --  In any case, if you insist on application-specified window positioning,
-   --  there's still a better way than doing it yourself -
-   --  Gtk.Window.Set_Position will frequently handle the details for you.
+   --  Obtains the current size of Window.
+   --  If Window is not visible on screen, this function return the size GTK+
+   --  will suggest to the [window manager][gtk-X11-arch] for the initial
+   --  window size (but this is not reliably the same as the size the window
+   --  manager will actually select). See: Gtk.Window.Set_Default_Size.
+   --  Depending on the windowing system and the window manager constraints,
+   --  the size returned by this function may not match the size set using
+   --  Gtk.Window.Resize; additionally, since Gtk.Window.Resize may be
+   --  implemented as an asynchronous operation, GTK+ cannot guarantee in any
+   --  way that this code:
+   --  |[<!-- language="C" --> // width and height are set elsewhere
+   --  gtk_window_resize (window, width, height);
+   --  int new_width, new_height; gtk_window_get_size (window, &new_width,
+   --  &new_height); ]|
+   --  will result in `new_width` and `new_height` matching `width` and
+   --  `height`, respectively.
+   --  This function will return the logical size of the
+   --  Gtk.Window.Gtk_Window, excluding the widgets used in client side
+   --  decorations; there is, however, no guarantee that the result will be
+   --  completely accurate because client side decoration may include widgets
+   --  that depend on the user preferences and that may not be visibile at the
+   --  time you call this function.
+   --  The dimensions returned by this function are suitable for being stored
+   --  across sessions; use Gtk.Window.Set_Default_Size to restore them when
+   --  before showing the window.
+   --  To avoid potential race conditions, you should only call this function
+   --  in response to a size change notification, for instance inside a handler
+   --  for the Gtk.Widget.Gtk_Widget::size-allocate signal, or inside a handler
+   --  for the Gtk.Widget.Gtk_Widget::configure-event signal:
+   --  |[<!-- language="C" --> static void on_size_allocate (GtkWidget
+   --  *widget, GtkAllocation *allocation) { int new_width, new_height;
+   --  gtk_window_get_size (GTK_WINDOW (widget), &new_width, &new_height);
+   --  ... } ]|
+   --  Note that, if you connect to the Gtk.Widget.Gtk_Widget::size-allocate
+   --  signal, you should not use the dimensions of the Gtk_Allocation passed
+   --  to the signal handler, as the allocation may contain client side
+   --  decorations added by GTK+, depending on the windowing system in use.
+   --  If you are getting a window size in order to position the window on the
+   --  screen, you should, instead, simply set the window's semantic type with
+   --  Gtk.Window.Set_Type_Hint, which allows the window manager to e.g. center
+   --  dialogs. Also, if you set the transient parent of dialogs with
+   --  Gtk.Window.Set_Transient_For window managers will often center the
+   --  dialog over its parent window. It's much preferred to let the window
+   --  manager handle these cases rather than doing it yourself, because all
+   --  apps will behave consistently and according to user or system
+   --  preferences, if the window manager handles it. Also, the window manager
+   --  can take into account the size of the window decorations and border that
+   --  it may add, and of which GTK+ has no knowledge. Additionally,
+   --  positioning windows in global screen coordinates may not be allowed by
+   --  the windowing system. For more information, see:
+   --  Gtk.Window.Set_Position.
    --  "width": return location for width, or null
    --  "height": return location for height, or null
 
@@ -797,6 +852,24 @@ package Gtk.Window is
    --  current document filename, for example.
    --  "title": title of the window
 
+   function Get_Titlebar
+      (Window : not null access Gtk_Window_Record)
+       return Gtk.Widget.Gtk_Widget;
+   --  Returns the custom titlebar that has been set with
+   --  Gtk.Window.Set_Titlebar.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Titlebar
+      (Window   : not null access Gtk_Window_Record;
+       Titlebar : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Sets a custom titlebar for Window.
+   --  If you set a custom titlebar, GTK+ will do its best to convince the
+   --  window manager not to put its own titlebar on the window. Depending on
+   --  the system, this function may not work for a window that is already
+   --  visible, so you set the titlebar before calling Gtk.Widget.Show.
+   --  Since: gtk+ 3.10
+   --  "titlebar": the widget to use as titlebar
+
    function Get_Transient_For
       (Window : not null access Gtk_Window_Record) return Gtk_Window;
    --  Fetches the transient parent for this window. See
@@ -812,6 +885,11 @@ package Gtk.Window is
    --  functions in GTK+ will sometimes call Gtk.Window.Set_Transient_For on
    --  your behalf.
    --  Passing null for Parent unsets the current transient window.
+   --  On Wayland, this function can also be used to attach a new
+   --  GTK_WINDOW_POPUP to a GTK_WINDOW_TOPLEVEL parent already mapped on
+   --  screen so that the GTK_WINDOW_POPUP will be created as a
+   --  subsurface-based window GDK_WINDOW_SUBSURFACE which can be positioned at
+   --  will relatively to the GTK_WINDOW_TOPLEVEL surface.
    --  On Windows, this function puts the child window on top of the parent,
    --  much as the window manager would have done on X.
    --  "parent": parent window, or null
@@ -859,7 +937,7 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record) return Boolean;
    --  Returns whether the input focus is within this GtkWindow. For real
    --  toplevel windows, this is identical to Gtk.Window.Is_Active, but for
-   --  embedded windows, like Gtk_Plug, the results will differ.
+   --  embedded windows, like Gtk.Plug.Gtk_Plug, the results will differ.
    --  Since: gtk+ 2.4
 
    procedure Iconify (Window : not null access Gtk_Window_Record);
@@ -879,9 +957,9 @@ package Gtk.Window is
    --  Returns whether the window is part of the current active toplevel.
    --  (That is, the toplevel window receiving keystrokes.) The return value is
    --  True if the window is active toplevel itself, but also if it is, say, a
-   --  Gtk_Plug embedded in the active toplevel. You might use this function if
-   --  you wanted to draw a widget differently in an active window from a
-   --  widget in an inactive window. See Gtk.Window.Has_Toplevel_Focus
+   --  Gtk.Plug.Gtk_Plug embedded in the active toplevel. You might use this
+   --  function if you wanted to draw a widget differently in an active window
+   --  from a widget in an inactive window. See Gtk.Window.Has_Toplevel_Focus
    --  Since: gtk+ 2.4
 
    function Is_Maximized
@@ -953,6 +1031,7 @@ package Gtk.Window is
    function Parse_Geometry
       (Window   : not null access Gtk_Window_Record;
        Geometry : UTF8_String) return Boolean;
+   pragma Obsolescent (Parse_Geometry);
    --  Parses a standard X Window System geometry string - see the manual page
    --  for X (type "man X") for details on this. Gtk.Window.Parse_Geometry does
    --  work on all GTK+ ports including Win32 but is primarily intended for an
@@ -979,14 +1058,14 @@ package Gtk.Window is
    --  (GTK_ORIENTATION_VERTICAL, 0);
    --  gtk_container_add (GTK_CONTAINER (window), vbox); fill_with_content
    --  (vbox); gtk_widget_show_all (vbox);
-   --  gtk_window_set_geometry_hints (GTK_WINDOW (window), window,
-   --  &size_hints, GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE |
-   --  GDK_HINT_RESIZE_INC);
+   --  gtk_window_set_geometry_hints (GTK_WINDOW (window), NULL, &size_hints,
+   --  GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE | GDK_HINT_RESIZE_INC);
    --  if (argc > 1) { gboolean res; res = gtk_window_parse_geometry
    --  (GTK_WINDOW (window), argv[1]); if (! res) fprintf (stderr, "Failed to
    --  parse "%s"\n", argv[1]); }
    --  gtk_widget_show_all (window); gtk_main ();
    --  return 0; } ]|
+   --  Deprecated since 3.20, 1
    --  "geometry": geometry string
 
    procedure Present (Window : not null access Gtk_Window_Record);
@@ -1059,6 +1138,19 @@ package Gtk.Window is
    --  time, it overrides any default size set with
    --  Gtk.Window.Set_Default_Size.
    --  Windows may not be resized smaller than 1 by 1 pixels.
+   --  When using client side decorations, GTK+ will do its best to adjust the
+   --  given size so that the resulting window size matches the requested size
+   --  without the title bar, borders and shadows added for the client side
+   --  decorations, but there is no garantee that the result will be totally
+   --  accurate because these widgets added for client side decorations depend
+   --  on the theme and may not be realized or visible at the time
+   --  Gtk.Window.Resize is issued.
+   --  Typically, Gtk.Window.Resize will compensate for the GtkHeaderBar
+   --  height only if it's known at the time the resulting GtkWindow
+   --  configuration is issued. For example, if new widgets are added after the
+   --  GtkWindow configuration and cause the GtkHeaderBar to grow in height,
+   --  this will result in a window content smaller that specified by
+   --  Gtk.Window.Resize and not a larger window.
    --  "width": width in pixels to resize the window to
    --  "height": height in pixels to resize the window to
 
@@ -1073,9 +1165,11 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Width  : Gint;
        Height : Gint);
+   pragma Obsolescent (Resize_To_Geometry);
    --  Like Gtk.Window.Resize, but Width and Height are interpreted in terms
    --  of the base size and increment set with gtk_window_set_geometry_hints.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20, 1
    --  "width": width in resize increments to resize the window to
    --  "height": height in resize increments to resize the window to
 
@@ -1096,10 +1190,12 @@ package Gtk.Window is
       (Window : not null access Gtk_Window_Record;
        Width  : Gint;
        Height : Gint);
+   pragma Obsolescent (Set_Default_Geometry);
    --  Like Gtk.Window.Set_Default_Size, but Width and Height are interpreted
    --  in terms of the base size and increment set with
    --  gtk_window_set_geometry_hints.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20, 1
    --  "width": width in resize increments, or -1 to unset the default width
    --  "height": height in resize increments, or -1 to unset the default
    --  height
@@ -1113,7 +1209,9 @@ package Gtk.Window is
    --  user. You can set a minimum and maximum size; allowed resize increments
    --  (e.g. for xterm, you can only resize by the size of a character); aspect
    --  ratios; and more. See the Gdk.Window.Gdk_Geometry struct.
-   --  "geometry_widget": widget the geometry hints will be applied to or null
+   --  "geometry_widget": widget the geometry hints used to be applied to or
+   --  null. Since 3.20 this argument is ignored and GTK behaves as if null was
+   --  set.
    --  "geometry": struct containing geometry information or null
    --  "geom_mask": mask indicating which struct fields should be paid
    --  attention to
@@ -1194,21 +1292,11 @@ package Gtk.Window is
    --  Since: gtk+ 2.12
    --  "startup_id": a string with startup-notification identifier
 
-   procedure Set_Titlebar
-      (Window   : not null access Gtk_Window_Record;
-       Titlebar : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets a custom titlebar for Window.
-   --  If you set a custom titlebar, GTK+ will do its best to convince the
-   --  window manager not to put its own titlebar on the window. Depending on
-   --  the system, this function may not work for a window that is already
-   --  visible, so you set the titlebar before calling Gtk.Widget.Show.
-   --  Since: gtk+ 3.10
-   --  "titlebar": the widget to use as titlebar
-
    procedure Set_Wmclass
       (Window        : not null access Gtk_Window_Record;
        Wmclass_Name  : UTF8_String;
        Wmclass_Class : UTF8_String);
+   pragma Obsolescent (Set_Wmclass);
    --  Don't use this function. It sets the X Window System "class" and "name"
    --  hints for a window. According to the ICCCM, you should always set these
    --  to the same value for all windows in an application, and GTK+ sets them
@@ -1217,6 +1305,7 @@ package Gtk.Window is
    --  application, for the benefit of the session manager. Setting the role
    --  allows the window manager to restore window positions when loading a
    --  saved session.
+   --  Deprecated since 3.22, 1
    --  "wmclass_name": window name hint
    --  "wmclass_class": window class hint
 
@@ -1385,7 +1474,7 @@ package Gtk.Window is
    --
    --  Normally, the connection between the application and the window will
    --  remain until the window is destroyed, but you can explicitly remove it
-   --  by setting the ::application property to null.
+   --  by setting the :application property to null.
 
    Attached_To_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget

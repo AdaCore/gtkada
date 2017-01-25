@@ -62,7 +62,10 @@ package Pango.Enums is
       Pango_Attr_Strikethrough_Color,
       Pango_Attr_Absolute_Size,
       Pango_Attr_Gravity,
-      Pango_Attr_Gravity_Hint);
+      Pango_Attr_Gravity_Hint,
+      Pango_Attr_Font_Features,
+      Pango_Attr_Foreground_Alpha,
+      Pango_Attr_Background_Alpha);
    pragma Convention (C, Attr_Type);
    --  The Pango.Enums.Attr_Type distinguishes between different types of
    --  attributes. Along with the predefined values, it is possible to allocate

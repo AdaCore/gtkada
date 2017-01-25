@@ -46,6 +46,10 @@
 --  a child to the GtkAssistant object, and set its child properties as
 --  necessary.
 --
+--  # CSS nodes
+--
+--  GtkAssistant has a single CSS node with the name assistant.
+--
 --  </description>
 --  <group>Windows</group>
 --  <testgtk>create_assistant.adb</testgtk>
@@ -200,6 +204,23 @@ package Gtk.Assistant is
    --  Since: gtk+ 2.10
    --  "page": a page of Assistant
    --  "complete": the completeness status of the page
+
+   function Get_Page_Has_Padding
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
+   --  Gets whether page has padding.
+   --  Since: gtk+ 3.18
+   --  "page": a page of Assistant
+
+   procedure Set_Page_Has_Padding
+      (Assistant   : not null access Gtk_Assistant_Record;
+       Page        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Has_Padding : Boolean);
+   --  Sets whether the assistant is adding padding around the page.
+   --  Since: gtk+ 3.18
+   --  "page": a page of Assistant
+   --  "has_padding": whether this page has padding
 
    function Get_Page_Header_Image
       (Assistant : not null access Gtk_Assistant_Record;

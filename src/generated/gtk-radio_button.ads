@@ -53,6 +53,19 @@
 --  Gtk.Radio_Button.Gtk_Radio_Button will remove itself and its list item when
 --  it is destroyed.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> radiobutton ├── radio ╰── <child> ]|
+--
+--  A GtkRadioButton with indicator (see Gtk.Toggle_Button.Set_Mode) has a
+--  main CSS node with name radiobutton and a subnode with name radio.
+--
+--  |[<!-- language="plain" --> button.radio ├── radio ╰── <child> ]|
+--
+--  A GtkRadioButton without indicator changes the name of its main node to
+--  button and adds a .radio style class to it. The subnode is invisible in
+--  this case.
+--
 --  ## How to create a group of two radio buttons.
 --
 --  |[<!-- language="C" --> void create_radio_buttons (void) {
@@ -279,7 +292,7 @@ package Gtk.Radio_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Radio_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Radio_Button_Record)

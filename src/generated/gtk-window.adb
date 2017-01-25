@@ -293,6 +293,24 @@ package body Gtk.Window is
       Internal (Get_Object (Window));
    end Fullscreen;
 
+   ---------------------------
+   -- Fullscreen_On_Monitor --
+   ---------------------------
+
+   procedure Fullscreen_On_Monitor
+      (Window  : not null access Gtk_Window_Record;
+       Screen  : not null access Gdk.Screen.Gdk_Screen_Record'Class;
+       Monitor : Gint)
+   is
+      procedure Internal
+         (Window  : System.Address;
+          Screen  : System.Address;
+          Monitor : Gint);
+      pragma Import (C, Internal, "gtk_window_fullscreen_on_monitor");
+   begin
+      Internal (Get_Object (Window), Get_Object (Screen), Monitor);
+   end Fullscreen_On_Monitor;
+
    ----------------------
    -- Get_Accept_Focus --
    ----------------------
@@ -748,6 +766,21 @@ package body Gtk.Window is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Window)));
    end Get_Title;
+
+   ------------------
+   -- Get_Titlebar --
+   ------------------
+
+   function Get_Titlebar
+      (Window : not null access Gtk_Window_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Window : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_window_get_titlebar");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Window)), Stub_Gtk_Widget));
+   end Get_Titlebar;
 
    -----------------------
    -- Get_Transient_For --

@@ -98,6 +98,19 @@ package body Gtk.File_Filter is
       return Self;
    end Gtk_File_Filter_New;
 
+   ---------------------------------------
+   -- Gtk_File_Filter_New_From_Gvariant --
+   ---------------------------------------
+
+   function Gtk_File_Filter_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_File_Filter
+   is
+      Self : constant Gtk_File_Filter := new Gtk_File_Filter_Record;
+   begin
+      Gtk.File_Filter.Initialize_From_Gvariant (Self, Variant);
+      return Self;
+   end Gtk_File_Filter_New_From_Gvariant;
+
    -------------
    -- Gtk_New --
    -------------
@@ -107,6 +120,19 @@ package body Gtk.File_Filter is
       Self := new Gtk_File_Filter_Record;
       Gtk.File_Filter.Initialize (Self);
    end Gtk_New;
+
+   ---------------------------
+   -- Gtk_New_From_Gvariant --
+   ---------------------------
+
+   procedure Gtk_New_From_Gvariant
+      (Self    : out Gtk_File_Filter;
+       Variant : Glib.Variant.Gvariant)
+   is
+   begin
+      Self := new Gtk_File_Filter_Record;
+      Gtk.File_Filter.Initialize_From_Gvariant (Self, Variant);
+   end Gtk_New_From_Gvariant;
 
    ----------------
    -- Initialize --
@@ -122,6 +148,22 @@ package body Gtk.File_Filter is
          Set_Object (Self, Internal);
       end if;
    end Initialize;
+
+   ------------------------------
+   -- Initialize_From_Gvariant --
+   ------------------------------
+
+   procedure Initialize_From_Gvariant
+      (Self    : not null access Gtk_File_Filter_Record'Class;
+       Variant : Glib.Variant.Gvariant)
+   is
+      function Internal (Variant : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_file_filter_new_from_gvariant");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Variant)));
+      end if;
+   end Initialize_From_Gvariant;
 
    ----------------
    -- Add_Custom --
@@ -311,5 +353,19 @@ package body Gtk.File_Filter is
       Internal (Get_Object (Self), Tmp_Name);
       Free (Tmp_Name);
    end Set_Name;
+
+   -----------------
+   -- To_Gvariant --
+   -----------------
+
+   function To_Gvariant
+      (Self : not null access Gtk_File_Filter_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_file_filter_to_gvariant");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end To_Gvariant;
 
 end Gtk.File_Filter;

@@ -34,6 +34,36 @@ pragma Warnings(On);
 package body Gtk.File_Chooser is
 
    ----------------
+   -- Add_Choice --
+   ----------------
+
+   procedure Add_Choice
+      (Chooser       : Gtk_File_Chooser;
+       Id            : UTF8_String;
+       Label         : UTF8_String;
+       Options       : UTF8_String;
+       Option_Labels : UTF8_String)
+   is
+      procedure Internal
+         (Chooser       : Gtk_File_Chooser;
+          Id            : Interfaces.C.Strings.chars_ptr;
+          Label         : Interfaces.C.Strings.chars_ptr;
+          Options       : Interfaces.C.Strings.chars_ptr;
+          Option_Labels : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_file_chooser_add_choice");
+      Tmp_Id            : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Tmp_Label         : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Options       : Interfaces.C.Strings.chars_ptr := New_String (Options);
+      Tmp_Option_Labels : Interfaces.C.Strings.chars_ptr := New_String (Option_Labels);
+   begin
+      Internal (Chooser, Tmp_Id, Tmp_Label, Tmp_Options, Tmp_Option_Labels);
+      Free (Tmp_Option_Labels);
+      Free (Tmp_Options);
+      Free (Tmp_Label);
+      Free (Tmp_Id);
+   end Add_Choice;
+
+   ----------------
    -- Add_Filter --
    ----------------
 
@@ -88,6 +118,27 @@ package body Gtk.File_Chooser is
       Free (Tmp_URI);
       return Tmp_Return /= 0;
    end Add_Shortcut_Folder_Uri;
+
+   ----------------
+   -- Get_Choice --
+   ----------------
+
+   function Get_Choice
+      (Chooser : Gtk_File_Chooser;
+       Id      : UTF8_String) return UTF8_String
+   is
+      function Internal
+         (Chooser : Gtk_File_Chooser;
+          Id      : Interfaces.C.Strings.chars_ptr)
+          return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_file_chooser_get_choice");
+      Tmp_Id     : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+   begin
+      Tmp_Return := Internal (Chooser, Tmp_Id);
+      Free (Tmp_Id);
+      return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
+   end Get_Choice;
 
    ------------------------
    -- Get_Create_Folders --
@@ -380,6 +431,21 @@ package body Gtk.File_Chooser is
    end List_Shortcut_Folders;
 
    -------------------
+   -- Remove_Choice --
+   -------------------
+
+   procedure Remove_Choice (Chooser : Gtk_File_Chooser; Id : UTF8_String) is
+      procedure Internal
+         (Chooser : Gtk_File_Chooser;
+          Id      : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_file_chooser_remove_choice");
+      Tmp_Id : Interfaces.C.Strings.chars_ptr := New_String (Id);
+   begin
+      Internal (Chooser, Tmp_Id);
+      Free (Tmp_Id);
+   end Remove_Choice;
+
+   -------------------
    -- Remove_Filter --
    -------------------
 
@@ -474,6 +540,28 @@ package body Gtk.File_Chooser is
       Free (Tmp_URI);
       return Tmp_Return /= 0;
    end Select_Uri;
+
+   ----------------
+   -- Set_Choice --
+   ----------------
+
+   procedure Set_Choice
+      (Chooser : Gtk_File_Chooser;
+       Id      : UTF8_String;
+       Option  : UTF8_String)
+   is
+      procedure Internal
+         (Chooser : Gtk_File_Chooser;
+          Id      : Interfaces.C.Strings.chars_ptr;
+          Option  : Interfaces.C.Strings.chars_ptr);
+      pragma Import (C, Internal, "gtk_file_chooser_set_choice");
+      Tmp_Id     : Interfaces.C.Strings.chars_ptr := New_String (Id);
+      Tmp_Option : Interfaces.C.Strings.chars_ptr := New_String (Option);
+   begin
+      Internal (Chooser, Tmp_Id, Tmp_Option);
+      Free (Tmp_Option);
+      Free (Tmp_Id);
+   end Set_Choice;
 
    ------------------------
    -- Set_Create_Folders --

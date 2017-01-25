@@ -190,10 +190,11 @@ package body Pango.Context is
       function Internal
          (Self     : System.Address;
           Desc     : Pango.Font.Pango_Font_Description;
-          Language : System.Address) return System.Address;
+          Language : System.Address)
+          return access Pango.Font_Metrics.Pango_Font_Metrics;
       pragma Import (C, Internal, "pango_context_get_metrics");
    begin
-      return From_Object (Internal (Get_Object (Self), Desc, Get_Object (Language)));
+      return From_Object_Free (Internal (Get_Object (Self), Desc, Get_Object (Language)));
    end Get_Metrics;
 
    ----------------
