@@ -10,19 +10,96 @@ and/or use gtk-doc annotations.  -->
   <c:include name="glib.h"/>
   <namespace name="GLib"
              version="2.0"
-             shared-library="/opt/local/lib/libglib-2.0.0.dylib,/opt/local/lib/libgobject-2.0.0.dylib"
+             shared-library="libglib-2.0.so.0,libgobject-2.0.so.0"
              c:identifier-prefixes="G"
              c:symbol-prefixes="g,glib">
+    <alias name="Array_autoptr" c:type="GArray_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="AsyncQueue_autoptr" c:type="GAsyncQueue_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="BookmarkFile_autoptr" c:type="GBookmarkFile_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ByteArray_autoptr" c:type="GByteArray_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Bytes_autoptr" c:type="GBytes_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Checksum_autoptr" c:type="GChecksum_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
     <alias name="DateDay" c:type="GDateDay">
       <doc xml:space="preserve">Integer representing a day of the month; between 1 and 31.
 #G_DATE_BAD_DAY represents an invalid day of the month.</doc>
       <type name="guint8" c:type="guint8"/>
+    </alias>
+    <alias name="DateTime_autoptr" c:type="GDateTime_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
     </alias>
     <alias name="DateYear" c:type="GDateYear">
       <doc xml:space="preserve">Integer representing a year; #G_DATE_BAD_YEAR is the invalid
 value. The year must be 1 or higher; negative (BC) years are not
 allowed. The year is represented with four digits.</doc>
       <type name="guint16" c:type="guint16"/>
+    </alias>
+    <alias name="Dir_autoptr" c:type="GDir_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Error_autoptr" c:type="GError_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="HashTable_autoptr" c:type="GHashTable_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Hmac_autoptr" c:type="GHmac_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="IOChannel_autoptr" c:type="GIOChannel_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="KeyFile_autoptr" c:type="GKeyFile_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="List_autoptr" c:type="GList_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MainContext_autoptr" c:type="GMainContext_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MainLoop_autoptr" c:type="GMainLoop_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MappedFile_autoptr" c:type="GMappedFile_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MarkupParseContext_autoptr"
+           c:type="GMarkupParseContext_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MatchInfo_autoptr" c:type="GMatchInfo_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MutexLocker" c:type="GMutexLocker">
+      <doc xml:space="preserve">Opaque type. See g_mutex_locker_new() for details.</doc>
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MutexLocker_autoptr" c:type="GMutexLocker_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Node_autoptr" c:type="GNode_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="OptionContext_autoptr" c:type="GOptionContext_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="OptionGroup_autoptr" c:type="GOptionGroup_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="PatternSpec_autoptr" c:type="GPatternSpec_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
     </alias>
     <alias name="Pid" c:type="GPid">
       <doc xml:space="preserve">A type which is used to hold a process identification.
@@ -34,13 +111,45 @@ GPid is used in GLib only for descendant processes spawned with
 the g_spawn functions.</doc>
       <type name="gint" c:type="int"/>
     </alias>
+    <alias name="PtrArray_autoptr" c:type="GPtrArray_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
     <alias name="Quark" c:type="GQuark">
       <doc xml:space="preserve">A GQuark is a non-zero integer which uniquely identifies a
 particular string. A GQuark value of zero is associated to %NULL.</doc>
       <type name="guint32" c:type="guint32"/>
     </alias>
+    <alias name="Queue_autoptr" c:type="GQueue_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Rand_autoptr" c:type="GRand_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Regex_autoptr" c:type="GRegex_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SList_autoptr" c:type="GSList_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Scanner_autoptr" c:type="GScanner_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Sequence_autoptr" c:type="GSequence_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Source_autoptr" c:type="GSource_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="StringChunk_autoptr" c:type="GStringChunk_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="String_autoptr" c:type="GString_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
     <alias name="Strv" c:type="GStrv">
-      <doc xml:space="preserve">A C representable type name for #G_TYPE_STRV.</doc>
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Thread_autoptr" c:type="GThread_autoptr">
       <type name="gpointer" c:type="gpointer"/>
     </alias>
     <alias name="Time" c:type="GTime">
@@ -68,8 +177,32 @@ gtime = (GTime)ttime;
       <doc xml:space="preserve">A value representing an interval of time, in microseconds.</doc>
       <type name="gint64" c:type="gint64"/>
     </alias>
+    <alias name="TimeZone_autoptr" c:type="GTimeZone_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Timer_autoptr" c:type="GTimer_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Tree_autoptr" c:type="GTree_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
     <alias name="Type" c:type="GType">
       <type name="gsize" c:type="gsize"/>
+    </alias>
+    <alias name="VariantBuilder_autoptr" c:type="GVariantBuilder_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="VariantDict_autoptr" c:type="GVariantDict_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="VariantIter_autoptr" c:type="GVariantIter_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="VariantType_autoptr" c:type="GVariantType_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Variant_autoptr" c:type="GVariant_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
     </alias>
     <constant name="ANALYZER_ANALYZING"
               value="1"
@@ -669,6 +802,33 @@ This function must be called while holding the @queue's lock.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="push_front" c:identifier="g_async_queue_push_front">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="queue" transfer-ownership="none">
+            <type name="AsyncQueue" c:type="GAsyncQueue*"/>
+          </instance-parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="push_front_unlocked"
+              c:identifier="g_async_queue_push_front_unlocked">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="queue" transfer-ownership="none">
+            <type name="AsyncQueue" c:type="GAsyncQueue*"/>
+          </instance-parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="push_sorted"
               c:identifier="g_async_queue_push_sorted"
               version="2.10"
@@ -794,6 +954,33 @@ lock.</doc-deprecated>
             <doc xml:space="preserve">a #GAsyncQueue</doc>
             <type name="AsyncQueue" c:type="GAsyncQueue*"/>
           </instance-parameter>
+        </parameters>
+      </method>
+      <method name="remove" c:identifier="g_async_queue_remove">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="queue" transfer-ownership="none">
+            <type name="AsyncQueue" c:type="GAsyncQueue*"/>
+          </instance-parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="remove_unlocked"
+              c:identifier="g_async_queue_remove_unlocked">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="queue" transfer-ownership="none">
+            <type name="AsyncQueue" c:type="GAsyncQueue*"/>
+          </instance-parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
         </parameters>
       </method>
       <method name="sort"
@@ -3026,9 +3213,6 @@ data is copied.</doc>
         </parameters>
       </method>
     </record>
-    <constant name="CAN_INLINE" value="1" c:type="G_CAN_INLINE">
-      <type name="gint" c:type="gint"/>
-    </constant>
     <constant name="CSET_A_2_Z"
               value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
               c:type="G_CSET_A_2_Z">
@@ -3233,7 +3417,7 @@ date to include new hashing algorithm types.</doc>
         <doc xml:space="preserve">Use the SHA-256 hashing algorithm</doc>
       </member>
       <member name="sha512" value="3" c:identifier="G_CHECKSUM_SHA512">
-        <doc xml:space="preserve">Use the SHA-512 hashing algorithm</doc>
+        <doc xml:space="preserve">Use the SHA-512 hashing algorithm (Since: 2.36)</doc>
       </member>
     </enumeration>
     <callback name="ChildWatchFunc" c:type="GChildWatchFunc">
@@ -6607,21 +6791,18 @@ for scanning and printing values of type #guintptr.</doc>
     <constant name="HAVE_GNUC_VARARGS" value="1" c:type="G_HAVE_GNUC_VARARGS">
       <type name="gint" c:type="gint"/>
     </constant>
+    <constant name="HAVE_GNUC_VISIBILITY"
+              value="1"
+              c:type="G_HAVE_GNUC_VISIBILITY">
+      <doc xml:space="preserve">Defined to 1 if gcc-style visibility handling is supported.</doc>
+      <type name="gint" c:type="gint"/>
+    </constant>
     <constant name="HAVE_GROWING_STACK"
               value="0"
               c:type="G_HAVE_GROWING_STACK">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="HAVE_INLINE" value="1" c:type="G_HAVE_INLINE">
-      <type name="gint" c:type="gint"/>
-    </constant>
     <constant name="HAVE_ISO_VARARGS" value="1" c:type="G_HAVE_ISO_VARARGS">
-      <type name="gint" c:type="gint"/>
-    </constant>
-    <constant name="HAVE___INLINE" value="1" c:type="G_HAVE___INLINE">
-      <type name="gint" c:type="gint"/>
-    </constant>
-    <constant name="HAVE___INLINE__" value="1" c:type="G_HAVE___INLINE__">
       <type name="gint" c:type="gint"/>
     </constant>
     <callback name="HFunc" c:type="GHFunc">
@@ -10574,6 +10755,24 @@ or not a key exists.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="load_from_bytes"
+              c:identifier="g_key_file_load_from_bytes"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="key_file" transfer-ownership="none">
+            <type name="KeyFile" c:type="GKeyFile*"/>
+          </instance-parameter>
+          <parameter name="bytes" transfer-ownership="none">
+            <type name="Bytes" c:type="GBytes*"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="KeyFileFlags" c:type="GKeyFileFlags"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="load_from_data"
               c:identifier="g_key_file_load_from_data"
               version="2.6"
@@ -12269,6 +12468,27 @@ a user data argument.</doc>
         </parameters>
       </function>
     </record>
+    <record name="LogField" c:type="GLogField" version="2.50">
+      <doc xml:space="preserve">Structure representing a single field in a structured log entry. See
+g_log_structured() for details.
+
+Log fields may contain arbitrary values, including binary with embedded nul
+bytes. If the field contains a string, the string must be UTF-8 encoded and
+have a trailing nul byte. Otherwise, @length must be set to a non-negative
+value.</doc>
+      <field name="key" writable="1">
+        <doc xml:space="preserve">field name (UTF-8 string)</doc>
+        <type name="utf8" c:type="const gchar*"/>
+      </field>
+      <field name="value" writable="1">
+        <doc xml:space="preserve">field value (arbitrary bytes)</doc>
+        <type name="gpointer" c:type="gconstpointer"/>
+      </field>
+      <field name="length" writable="1">
+        <doc xml:space="preserve">length of @value, in bytes, or -1 if it is nul-terminated</doc>
+        <type name="gssize" c:type="gssize"/>
+      </field>
+    </record>
     <callback name="LogFunc" c:type="GLogFunc">
       <doc xml:space="preserve">Specifies the prototype of log handler functions.
 
@@ -12344,6 +12564,60 @@ levels using g_log_set_handler() and g_log_set_fatal_mask().</doc>
         <doc xml:space="preserve">a mask including all log levels</doc>
       </member>
     </bitfield>
+    <callback name="LogWriterFunc" c:type="GLogWriterFunc" version="2.50">
+      <doc xml:space="preserve">Writer function for log entries. A log entry is a collection of one or more
+#GLogFields, using the standard [field names from journal
+specification](https://www.freedesktop.org/software/systemd/man/systemd.journal-fields.html).
+See g_log_structured() for more information.
+
+Writer functions must ignore fields which they do not recognise, unless they
+can write arbitrary binary output, as field values may be arbitrary binary.
+
+@log_level is guaranteed to be included in @fields as the `PRIORITY` field,
+but is provided separately for convenience of deciding whether or where to
+output the log entry.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:space="preserve">%G_LOG_WRITER_HANDLED if the log entry was handled successfully;
+   %G_LOG_WRITER_UNHANDLED otherwise</doc>
+        <type name="LogWriterOutput" c:type="GLogWriterOutput"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_level" transfer-ownership="none">
+          <doc xml:space="preserve">log level of the message</doc>
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <doc xml:space="preserve">fields forming the message</doc>
+          <array length="2" zero-terminated="0" c:type="GLogField*">
+            <type name="LogField" c:type="GLogField"/>
+          </array>
+        </parameter>
+        <parameter name="n_fields" transfer-ownership="none">
+          <doc xml:space="preserve">number of @fields</doc>
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none" closure="3">
+          <doc xml:space="preserve">user data passed to g_log_set_writer_func()</doc>
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </callback>
+    <enumeration name="LogWriterOutput"
+                 version="2.50"
+                 c:type="GLogWriterOutput">
+      <doc xml:space="preserve">Return values from #GLogWriterFuncs to indicate whether the given log entry
+was successfully handled by the writer, or whether there was an error in
+handling it (and hence a fallback writer should be used).
+
+If a #GLogWriterFunc ignores a log entry, it should return
+%G_LOG_WRITER_HANDLED.</doc>
+      <member name="handled" value="1" c:identifier="G_LOG_WRITER_HANDLED">
+        <doc xml:space="preserve">Log writer has handled the log entry.</doc>
+      </member>
+      <member name="unhandled" value="0" c:identifier="G_LOG_WRITER_UNHANDLED">
+        <doc xml:space="preserve">Log writer could not handle the log entry.</doc>
+      </member>
+    </enumeration>
     <constant name="MAJOR_VERSION" value="2" c:type="GLIB_MAJOR_VERSION">
       <doc xml:space="preserve">The major version number of the GLib library.
 
@@ -12395,7 +12669,7 @@ linked against at application run time.</doc>
       <doc xml:space="preserve">The maximum value which can be held in a #guint8.</doc>
       <type name="guint8" c:type="guint8"/>
     </constant>
-    <constant name="MICRO_VERSION" value="0" c:type="GLIB_MICRO_VERSION">
+    <constant name="MICRO_VERSION" value="2" c:type="GLIB_MICRO_VERSION">
       <doc xml:space="preserve">The micro version number of the GLib library.
 
 Like #gtk_micro_version, but from the headers used at
@@ -12403,12 +12677,12 @@ application compile time, rather than from the library
 linked against at application run time.</doc>
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="MININT16" value="32768" c:type="G_MININT16" version="2.4">
+    <constant name="MININT16" value="-32768" c:type="G_MININT16" version="2.4">
       <doc xml:space="preserve">The minimum value which can be held in a #gint16.</doc>
       <type name="gint16" c:type="gint16"/>
     </constant>
     <constant name="MININT32"
-              value="2147483648"
+              value="-2147483648"
               c:type="G_MININT32"
               version="2.4">
       <doc xml:space="preserve">The minimum value which can be held in a #gint32.</doc>
@@ -12418,11 +12692,11 @@ linked against at application run time.</doc>
       <doc xml:space="preserve">The minimum value which can be held in a #gint64.</doc>
       <type name="gint64" c:type="gint64"/>
     </constant>
-    <constant name="MININT8" value="128" c:type="G_MININT8" version="2.4">
+    <constant name="MININT8" value="-128" c:type="G_MININT8" version="2.4">
       <doc xml:space="preserve">The minimum value which can be held in a #gint8.</doc>
       <type name="gint8" c:type="gint8"/>
     </constant>
-    <constant name="MINOR_VERSION" value="42" c:type="GLIB_MINOR_VERSION">
+    <constant name="MINOR_VERSION" value="50" c:type="GLIB_MINOR_VERSION">
       <doc xml:space="preserve">The minor version number of the GLib library.
 
 Like #gtk_minor_version, but from the headers used at
@@ -14465,7 +14739,9 @@ to zero, it frees all the memory associated with the match_info structure.</doc>
     <record name="MemVTable" c:type="GMemVTable">
       <doc xml:space="preserve">A set of functions used to perform memory allocation. The same #GMemVTable must
 be used for all allocations in the same program; a call to g_mem_set_vtable(),
-if it exists, should be prior to any use of GLib.</doc>
+if it exists, should be prior to any use of GLib.
+
+This functions related to this has been deprecated in 2.46, and no longer work.</doc>
       <field name="malloc" introspectable="0">
         <callback name="malloc" introspectable="0">
           <return-value>
@@ -15456,8 +15732,8 @@ option: `--name arg` or combined in a single argument: `--name=arg`.</doc>
         <doc xml:space="preserve">The option takes an integer argument.</doc>
       </member>
       <member name="callback" value="3" c:identifier="G_OPTION_ARG_CALLBACK">
-        <doc xml:space="preserve">The option provides a callback to parse the
-    extra argument.</doc>
+        <doc xml:space="preserve">The option provides a callback (of type
+    #GOptionArgFunc) to parse the extra argument.</doc>
       </member>
       <member name="filename" value="4" c:identifier="G_OPTION_ARG_FILENAME">
         <doc xml:space="preserve">The option takes a filename as argument.</doc>
@@ -15663,10 +15939,9 @@ g_option_context_set_ignore_unknown_options().</doc>
       </method>
       <method name="get_main_group"
               c:identifier="g_option_context_get_main_group"
-              version="2.6"
-              introspectable="0">
+              version="2.6">
         <doc xml:space="preserve">Returns a pointer to the main group of @context.</doc>
-        <return-value>
+        <return-value transfer-ownership="full">
           <doc xml:space="preserve">the main group of @context, or %NULL if @context doesn't
  have a main group. Note that group belongs to @context and should
  not be modified or freed.</doc>
@@ -15675,6 +15950,17 @@ g_option_context_set_ignore_unknown_options().</doc>
         <parameters>
           <instance-parameter name="context" transfer-ownership="none">
             <doc xml:space="preserve">a #GOptionContext</doc>
+            <type name="OptionContext" c:type="GOptionContext*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_strict_posix"
+              c:identifier="g_option_context_get_strict_posix">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="context" transfer-ownership="none">
             <type name="OptionContext" c:type="GOptionContext*"/>
           </instance-parameter>
         </parameters>
@@ -15883,6 +16169,20 @@ treated differently when generating `--help` output.</doc>
           <parameter name="group" transfer-ownership="none">
             <doc xml:space="preserve">the group to set as main group</doc>
             <type name="OptionGroup" c:type="GOptionGroup*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_strict_posix"
+              c:identifier="g_option_context_set_strict_posix">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="context" transfer-ownership="none">
+            <type name="OptionContext" c:type="GOptionContext*"/>
+          </instance-parameter>
+          <parameter name="strict_posix" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
           </parameter>
         </parameters>
       </method>
@@ -16167,7 +16467,11 @@ or g_option_group_add_entries().</doc>
     your direct control. Since 2.8.</doc>
       </member>
     </bitfield>
-    <record name="OptionGroup" c:type="GOptionGroup" disguised="1">
+    <record name="OptionGroup"
+            c:type="GOptionGroup"
+            glib:type-name="GOptionGroup"
+            glib:get-type="g_option_group_get_type"
+            c:symbol-prefix="option_group">
       <doc xml:space="preserve">A `GOptionGroup` struct defines the options in a single
 group. The struct has only private fields and should not be directly accessed.
 
@@ -16175,6 +16479,49 @@ All options in a group share the same translation function. Libraries which
 need to parse commandline options are expected to provide a function for
 getting a `GOptionGroup` holding their options, which
 the application can then add to its #GOptionContext.</doc>
+      <constructor name="new" c:identifier="g_option_group_new" version="2.6">
+        <doc xml:space="preserve">Creates a new #GOptionGroup.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:space="preserve">a newly created option group. It should be added
+  to a #GOptionContext or freed with g_option_group_free().</doc>
+          <type name="OptionGroup" c:type="GOptionGroup*"/>
+        </return-value>
+        <parameters>
+          <parameter name="name" transfer-ownership="none">
+            <doc xml:space="preserve">the name for the option group, this is used to provide
+  help for the options in this group with `--help-`@name</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="description" transfer-ownership="none">
+            <doc xml:space="preserve">a description for this group to be shown in
+  `--help`. This string is translated using the translation
+  domain or translation function of the group</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="help_description" transfer-ownership="none">
+            <doc xml:space="preserve">a description for the `--help-`@name option.
+  This string is translated using the translation domain or translation function
+  of the group</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="user_data"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <doc xml:space="preserve">user data that will be passed to the pre- and post-parse hooks,
+  the error hook and to callbacks of %G_OPTION_ARG_CALLBACK options, or %NULL</doc>
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+          <parameter name="destroy"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async">
+            <doc xml:space="preserve">a function that will be called to free @user_data, or %NULL</doc>
+            <type name="DestroyNotify" c:type="GDestroyNotify"/>
+          </parameter>
+        </parameters>
+      </constructor>
       <method name="add_entries"
               c:identifier="g_option_group_add_entries"
               version="2.6">
@@ -16202,6 +16549,16 @@ which have been added to a #GOptionContext.</doc>
         <parameters>
           <instance-parameter name="group" transfer-ownership="none">
             <doc xml:space="preserve">a #GOptionGroup</doc>
+            <type name="OptionGroup" c:type="GOptionGroup*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="ref" c:identifier="g_option_group_ref">
+        <return-value transfer-ownership="full">
+          <type name="OptionGroup" c:type="GOptionGroup*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="group" transfer-ownership="none">
             <type name="OptionGroup" c:type="GOptionGroup*"/>
           </instance-parameter>
         </parameters>
@@ -16327,52 +16684,16 @@ user-visible strings.</doc>
           </parameter>
         </parameters>
       </method>
-      <function name="new"
-                c:identifier="g_option_group_new"
-                version="2.6"
-                introspectable="0">
-        <doc xml:space="preserve">Creates a new #GOptionGroup.</doc>
-        <return-value>
-          <doc xml:space="preserve">a newly created option group. It should be added
-  to a #GOptionContext or freed with g_option_group_free().</doc>
-          <type name="OptionGroup" c:type="GOptionGroup*"/>
+      <method name="unref" c:identifier="g_option_group_unref">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
         </return-value>
         <parameters>
-          <parameter name="name" transfer-ownership="none">
-            <doc xml:space="preserve">the name for the option group, this is used to provide
-  help for the options in this group with `--help-`@name</doc>
-            <type name="utf8" c:type="const gchar*"/>
-          </parameter>
-          <parameter name="description" transfer-ownership="none">
-            <doc xml:space="preserve">a description for this group to be shown in
-  `--help`. This string is translated using the translation
-  domain or translation function of the group</doc>
-            <type name="utf8" c:type="const gchar*"/>
-          </parameter>
-          <parameter name="help_description" transfer-ownership="none">
-            <doc xml:space="preserve">a description for the `--help-`@name option.
-  This string is translated using the translation domain or translation function
-  of the group</doc>
-            <type name="utf8" c:type="const gchar*"/>
-          </parameter>
-          <parameter name="user_data"
-                     transfer-ownership="none"
-                     nullable="1"
-                     allow-none="1">
-            <doc xml:space="preserve">user data that will be passed to the pre- and post-parse hooks,
-  the error hook and to callbacks of %G_OPTION_ARG_CALLBACK options, or %NULL</doc>
-            <type name="gpointer" c:type="gpointer"/>
-          </parameter>
-          <parameter name="destroy"
-                     transfer-ownership="none"
-                     nullable="1"
-                     allow-none="1"
-                     scope="async">
-            <doc xml:space="preserve">a function that will be called to free @user_data, or %NULL</doc>
-            <type name="DestroyNotify" c:type="GDestroyNotify"/>
-          </parameter>
+          <instance-parameter name="group" transfer-ownership="none">
+            <type name="OptionGroup" c:type="GOptionGroup*"/>
+          </instance-parameter>
         </parameters>
-      </function>
+      </method>
     </record>
     <callback name="OptionParseFunc" c:type="GOptionParseFunc" throws="1">
       <doc xml:space="preserve">The type of function that can be called before and after parsing.</doc>
@@ -16406,6 +16727,11 @@ user-visible strings.</doc>
       <doc xml:space="preserve">The value of pi (ratio of circle's circumference to its diameter).</doc>
       <type name="gdouble" c:type="gdouble"/>
     </constant>
+    <constant name="PID_FORMAT" value="i" c:type="G_PID_FORMAT" version="2.50">
+      <doc xml:space="preserve">A format specifier that can be used in printf()-style format strings
+when printing a #GPid.</doc>
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
     <constant name="PI_2" value="1.570796" c:type="G_PI_2">
       <doc xml:space="preserve">Pi divided by 2.</doc>
       <type name="gdouble" c:type="gdouble"/>
@@ -16414,7 +16740,7 @@ user-visible strings.</doc>
       <doc xml:space="preserve">Pi divided by 4.</doc>
       <type name="gdouble" c:type="gdouble"/>
     </constant>
-    <constant name="POLLFD_FORMAT" value="%#I64x" c:type="G_POLLFD_FORMAT">
+    <constant name="POLLFD_FORMAT" value="%d" c:type="G_POLLFD_FORMAT">
       <doc xml:space="preserve">A format specifier that can be used in printf()-style format strings
 when printing the @fd member of a #GPollFD.</doc>
       <type name="utf8" c:type="gchar*"/>
@@ -19717,7 +20043,7 @@ it using g_strfreev()</doc>
               value="112"
               c:identifier="G_REGEX_ERROR_UNRECOGNIZED_CHARACTER">
         <doc xml:space="preserve">Unrecognized character after "(?",
-    "(?&amp;lt;" or "(?P". Since 2.16</doc>
+    "(?&lt;" or "(?P". Since 2.16</doc>
       </member>
       <member name="posix_named_class_outside_class"
               value="113"
@@ -20930,7 +21256,7 @@ the #GSource from the main loop.</doc>
     <constant name="SYSDEF_AF_INET" value="2" c:type="GLIB_SYSDEF_AF_INET">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="SYSDEF_AF_INET6" value="30" c:type="GLIB_SYSDEF_AF_INET6">
+    <constant name="SYSDEF_AF_INET6" value="10" c:type="GLIB_SYSDEF_AF_INET6">
       <type name="gint" c:type="gint"/>
     </constant>
     <constant name="SYSDEF_AF_UNIX" value="1" c:type="GLIB_SYSDEF_AF_UNIX">
@@ -21849,6 +22175,16 @@ if the second iterator comes before the first.</doc>
             <doc xml:space="preserve">user data passed to @cmp_func</doc>
             <type name="gpointer" c:type="gpointer"/>
           </parameter>
+        </parameters>
+      </method>
+      <method name="is_empty" c:identifier="g_sequence_is_empty">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="seq" transfer-ownership="none">
+            <type name="Sequence" c:type="GSequence*"/>
+          </instance-parameter>
         </parameters>
       </method>
       <method name="lookup"
@@ -25331,6 +25667,19 @@ After calling this function @pool must not be used anymore.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="move_to_front" c:identifier="g_thread_pool_move_to_front">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="pool" transfer-ownership="none">
+            <type name="ThreadPool" c:type="GThreadPool*"/>
+          </instance-parameter>
+          <parameter name="data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="push" c:identifier="g_thread_pool_push" throws="1">
         <doc xml:space="preserve">Inserts @data into the list of tasks to be executed by @pool.
 
@@ -27027,6 +27376,21 @@ See &lt;ulink url="http://www.unicode.org/unicode/reports/tr14/"&gt;http://www.u
               c:identifier="G_UNICODE_BREAK_REGIONAL_INDICATOR">
         <doc xml:space="preserve">Regional Indicator (RI). Since: 2.36</doc>
       </member>
+      <member name="emoji_base"
+              value="40"
+              c:identifier="G_UNICODE_BREAK_EMOJI_BASE">
+        <doc xml:space="preserve">Emoji Base (EB). Since: 2.50</doc>
+      </member>
+      <member name="emoji_modifier"
+              value="41"
+              c:identifier="G_UNICODE_BREAK_EMOJI_MODIFIER">
+        <doc xml:space="preserve">Emoji Modifier (EM). Since: 2.50</doc>
+      </member>
+      <member name="zero_width_joiner"
+              value="42"
+              c:identifier="G_UNICODE_BREAK_ZERO_WIDTH_JOINER">
+        <doc xml:space="preserve">Zero Width Joiner (ZWJ). Since: 2.50</doc>
+      </member>
     </enumeration>
     <enumeration name="UnicodeScript" c:type="GUnicodeScript">
       <doc xml:space="preserve">The #GUnicodeScript enumeration identifies different writing
@@ -27051,7 +27415,7 @@ url="http://www.unicode.org/reports/tr24/"&gt;Unicode Standard Annex
               value="1"
               c:identifier="G_UNICODE_SCRIPT_INHERITED">
         <doc xml:space="preserve">a mark glyph that takes its script from the
-i                             base glyph to which it is attached</doc>
+                              base glyph to which it is attached</doc>
       </member>
       <member name="arabic" value="2" c:identifier="G_UNICODE_SCRIPT_ARABIC">
         <doc xml:space="preserve">Arabic</doc>
@@ -27580,18 +27944,66 @@ i                             base glyph to which it is attached</doc>
       <member name="tirhuta"
               value="124"
               c:identifier="G_UNICODE_SCRIPT_TIRHUTA">
-        <doc xml:space="preserve">Tirhuta. Since: 2.42
-@G_UNICODE_SCRIPT_WARANG_CITI           Warang Citi. Since: 2.42</doc>
+        <doc xml:space="preserve">Tirhuta. Since: 2.42</doc>
       </member>
       <member name="warang_citi"
               value="125"
               c:identifier="G_UNICODE_SCRIPT_WARANG_CITI">
+        <doc xml:space="preserve">Warang Citi. Since: 2.42</doc>
+      </member>
+      <member name="ahom" value="126" c:identifier="G_UNICODE_SCRIPT_AHOM">
+        <doc xml:space="preserve">Ahom. Since: 2.48</doc>
+      </member>
+      <member name="anatolian_hieroglyphs"
+              value="127"
+              c:identifier="G_UNICODE_SCRIPT_ANATOLIAN_HIEROGLYPHS">
+        <doc xml:space="preserve">Anatolian Hieroglyphs. Since: 2.48</doc>
+      </member>
+      <member name="hatran" value="128" c:identifier="G_UNICODE_SCRIPT_HATRAN">
+        <doc xml:space="preserve">Hatran. Since: 2.48</doc>
+      </member>
+      <member name="multani"
+              value="129"
+              c:identifier="G_UNICODE_SCRIPT_MULTANI">
+        <doc xml:space="preserve">Multani. Since: 2.48</doc>
+      </member>
+      <member name="old_hungarian"
+              value="130"
+              c:identifier="G_UNICODE_SCRIPT_OLD_HUNGARIAN">
+        <doc xml:space="preserve">Old Hungarian. Since: 2.48</doc>
+      </member>
+      <member name="signwriting"
+              value="131"
+              c:identifier="G_UNICODE_SCRIPT_SIGNWRITING">
+        <doc xml:space="preserve">Signwriting. Since: 2.48</doc>
+      </member>
+      <member name="adlam" value="132" c:identifier="G_UNICODE_SCRIPT_ADLAM">
+        <doc xml:space="preserve">Adlam. Since: 2.50</doc>
+      </member>
+      <member name="bhaiksuki"
+              value="133"
+              c:identifier="G_UNICODE_SCRIPT_BHAIKSUKI">
+        <doc xml:space="preserve">Bhaiksuki. Since: 2.50</doc>
+      </member>
+      <member name="marchen"
+              value="134"
+              c:identifier="G_UNICODE_SCRIPT_MARCHEN">
+        <doc xml:space="preserve">Marchen. Since: 2.50</doc>
+      </member>
+      <member name="newa" value="135" c:identifier="G_UNICODE_SCRIPT_NEWA">
+        <doc xml:space="preserve">Newa. Since: 2.50</doc>
+      </member>
+      <member name="osage" value="136" c:identifier="G_UNICODE_SCRIPT_OSAGE">
+        <doc xml:space="preserve">Osage. Since: 2.50</doc>
+      </member>
+      <member name="tangut" value="137" c:identifier="G_UNICODE_SCRIPT_TANGUT">
+        <doc xml:space="preserve">Tangut. Since: 2.50</doc>
       </member>
     </enumeration>
     <enumeration name="UnicodeType" c:type="GUnicodeType">
       <doc xml:space="preserve">These are the possible character classifications from the
 Unicode specification.
-See &lt;ulink url="http://www.unicode.org/Public/UNIDATA/UnicodeData.html"&gt;http://www.unicode.org/Public/UNIDATA/UnicodeData.html&lt;/ulink&gt;.</doc>
+See &lt;ulink url="http://www.unicode.org/reports/tr44/#General_Category_Values"&gt;Unicode Character Database&lt;/unlink&gt;.</doc>
       <member name="control" value="0" c:identifier="G_UNICODE_CONTROL">
         <doc xml:space="preserve">General category "Other, Control" (Cc)</doc>
       </member>
@@ -27836,6 +28248,7 @@ using functions deprecated in later releases will not).</doc>
             c:type="GVariant"
             version="2.24"
             glib:type-name="GVariant"
+            glib:get-type="intern"
             c:symbol-prefix="variant">
       <doc xml:space="preserve">#GVariant is a variant datatype; it stores a value along with
 information about the type of that value.  The range of possible
@@ -29926,7 +30339,7 @@ function with #GHashTable.  @value must be a #GVariant.</doc>
         <parameters>
           <instance-parameter name="value" transfer-ownership="none">
             <doc xml:space="preserve">a basic #GVariant value as a #gconstpointer</doc>
-            <type name="Variant" c:type="GVariant*"/>
+            <type name="Variant" c:type="gconstpointer"/>
           </instance-parameter>
         </parameters>
       </method>
@@ -30511,11 +30924,26 @@ following functions.
 
 #GVariantBuilder is not threadsafe in any way.  Do not attempt to
 access it from more than one thread.</doc>
-      <field name="x" readable="0" private="1">
-        <array zero-terminated="0" c:type="gsize" fixed-size="16">
-          <type name="gsize" c:type="gsize"/>
-        </array>
-      </field>
+      <union name="u" c:type="u">
+        <record name="s" c:type="s">
+          <field name="partial_magic" writable="1">
+            <type name="gsize" c:type="gsize"/>
+          </field>
+          <field name="type" writable="1">
+            <type name="VariantType" c:type="const GVariantType*"/>
+          </field>
+          <field name="y" writable="1">
+            <array zero-terminated="0" c:type="gsize" fixed-size="14">
+              <type name="gsize" c:type="gsize"/>
+            </array>
+          </field>
+        </record>
+        <field name="x" writable="1">
+          <array zero-terminated="0" c:type="gsize" fixed-size="16">
+            <type name="gsize" c:type="gsize"/>
+          </array>
+        </field>
+      </union>
       <constructor name="new"
                    c:identifier="g_variant_builder_new"
                    version="2.24">
@@ -31006,11 +31434,26 @@ key is not found.  Each returns the new dictionary as a floating
     return result;
   }
 ]|</doc>
-      <field name="x" readable="0" private="1">
-        <array zero-terminated="0" c:type="gsize" fixed-size="16">
-          <type name="gsize" c:type="gsize"/>
-        </array>
-      </field>
+      <union name="u" c:type="u">
+        <record name="s" c:type="s">
+          <field name="asv" writable="1">
+            <type name="Variant" c:type="GVariant*"/>
+          </field>
+          <field name="partial_magic" writable="1">
+            <type name="gsize" c:type="gsize"/>
+          </field>
+          <field name="y" writable="1">
+            <array zero-terminated="0" c:type="gsize" fixed-size="14">
+              <type name="gsize" c:type="gsize"/>
+            </array>
+          </field>
+        </record>
+        <field name="x" writable="1">
+          <array zero-terminated="0" c:type="gsize" fixed-size="16">
+            <type name="gsize" c:type="gsize"/>
+          </array>
+        </field>
+      </union>
       <constructor name="new" c:identifier="g_variant_dict_new" version="2.40">
         <doc xml:space="preserve">Allocates and initialises a new #GVariantDict.
 
@@ -34476,6 +34919,23 @@ The hexadecimal string returned will be in lower case.</doc>
         </parameter>
       </parameters>
     </function>
+    <function name="compute_hmac_for_bytes"
+              c:identifier="g_compute_hmac_for_bytes">
+      <return-value transfer-ownership="full">
+        <type name="utf8" c:type="gchar*"/>
+      </return-value>
+      <parameters>
+        <parameter name="digest_type" transfer-ownership="none">
+          <type name="ChecksumType" c:type="GChecksumType"/>
+        </parameter>
+        <parameter name="key" transfer-ownership="none">
+          <type name="Bytes" c:type="GBytes*"/>
+        </parameter>
+        <parameter name="data" transfer-ownership="none">
+          <type name="Bytes" c:type="GBytes*"/>
+        </parameter>
+      </parameters>
+    </function>
     <function name="compute_hmac_for_data"
               c:identifier="g_compute_hmac_for_data"
               version="2.30">
@@ -34741,35 +35201,6 @@ could combine with the base character.)</doc>
           <doc xml:space="preserve">the number of bytes stored in the output buffer (not
                 including the terminating nul).</doc>
           <type name="gsize" c:type="gsize*"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="critical" c:identifier="g_critical" introspectable="0">
-      <doc xml:space="preserve">Logs a "critical warning" (#G_LOG_LEVEL_CRITICAL).
-It's more or less application-defined what constitutes
-a critical vs. a regular warning. You could call
-g_log_set_always_fatal() to make critical warnings exit
-the program, then use g_critical() for fatal errors, for
-example.
-
-You can also make critical warnings fatal at runtime by
-setting the `G_DEBUG` environment variable (see
-[Running GLib Applications](glib-running.html)).
-
-If g_log_default_handler() is used as the log handler function, a new-line
-character will automatically be appended to @..., and need not be entered
-manually.</doc>
-      <return-value transfer-ownership="none">
-        <type name="none" c:type="void"/>
-      </return-value>
-      <parameters>
-        <parameter name="format" transfer-ownership="none">
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-        <parameter name="..." transfer-ownership="none">
-          <doc xml:space="preserve">format string, followed by parameters to insert
-    into the format string (as with printf())</doc>
-          <varargs/>
         </parameter>
       </parameters>
     </function>
@@ -35899,32 +36330,6 @@ environment @envp.</doc>
         <parameter name="variable" transfer-ownership="none">
           <doc xml:space="preserve">the environment variable to remove, must not contain '='</doc>
           <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-      </parameters>
-    </function>
-    <function name="error" c:identifier="g_error" introspectable="0">
-      <doc xml:space="preserve">A convenience function/macro to log an error message.
-
-Error messages are always fatal, resulting in a call to
-abort() to terminate the application. This function will
-result in a core dump; don't use it for errors you expect.
-Using this function indicates a bug in your program, i.e.
-an assertion failure.
-
-If g_log_default_handler() is used as the log handler function, a new-line
-character will automatically be appended to @..., and need not be entered
-manually.</doc>
-      <return-value transfer-ownership="none">
-        <type name="none" c:type="void"/>
-      </return-value>
-      <parameters>
-        <parameter name="format" transfer-ownership="none">
-          <type name="utf8" c:type="const gchar*"/>
-        </parameter>
-        <parameter name="..." transfer-ownership="none">
-          <doc xml:space="preserve">format string, followed by parameters to insert
-    into the format string (as with printf())</doc>
-          <varargs/>
         </parameter>
       </parameters>
     </function>
@@ -38278,6 +38683,206 @@ g_log_set_handler ("GLib", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
         <parameter name="user_data" transfer-ownership="none">
           <doc xml:space="preserve">data passed to the log handler</doc>
           <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_set_handler_full"
+              c:identifier="g_log_set_handler_full">
+      <return-value transfer-ownership="none">
+        <type name="guint" c:type="guint"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_domain" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="log_levels" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="log_func"
+                   transfer-ownership="none"
+                   scope="notified"
+                   closure="3"
+                   destroy="4">
+          <type name="LogFunc" c:type="GLogFunc"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+        <parameter name="destroy" transfer-ownership="none" scope="async">
+          <type name="DestroyNotify" c:type="GDestroyNotify"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_set_writer_func" c:identifier="g_log_set_writer_func">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="func"
+                   transfer-ownership="none"
+                   scope="notified"
+                   closure="1"
+                   destroy="2">
+          <type name="LogWriterFunc" c:type="GLogWriterFunc"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+        <parameter name="user_data_free"
+                   transfer-ownership="none"
+                   scope="async">
+          <type name="DestroyNotify" c:type="GDestroyNotify"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_structured"
+              c:identifier="g_log_structured"
+              introspectable="0">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_domain" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="..." transfer-ownership="none">
+          <varargs/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_structured_array"
+              c:identifier="g_log_structured_array">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <type name="LogField" c:type="const GLogField*"/>
+        </parameter>
+        <parameter name="n_fields" transfer-ownership="none">
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_variant" c:identifier="g_log_variant">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_domain" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </parameter>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <type name="Variant" c:type="GVariant*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_writer_default" c:identifier="g_log_writer_default">
+      <return-value transfer-ownership="none">
+        <type name="LogWriterOutput" c:type="GLogWriterOutput"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <type name="LogField" c:type="const GLogField*"/>
+        </parameter>
+        <parameter name="n_fields" transfer-ownership="none">
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_writer_format_fields"
+              c:identifier="g_log_writer_format_fields">
+      <return-value transfer-ownership="full">
+        <type name="utf8" c:type="gchar*"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <type name="LogField" c:type="const GLogField*"/>
+        </parameter>
+        <parameter name="n_fields" transfer-ownership="none">
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+        <parameter name="use_color" transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_writer_is_journald"
+              c:identifier="g_log_writer_is_journald">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="output_fd" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_writer_journald" c:identifier="g_log_writer_journald">
+      <return-value transfer-ownership="none">
+        <type name="LogWriterOutput" c:type="GLogWriterOutput"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <type name="LogField" c:type="const GLogField*"/>
+        </parameter>
+        <parameter name="n_fields" transfer-ownership="none">
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_writer_standard_streams"
+              c:identifier="g_log_writer_standard_streams">
+      <return-value transfer-ownership="none">
+        <type name="LogWriterOutput" c:type="GLogWriterOutput"/>
+      </return-value>
+      <parameters>
+        <parameter name="log_level" transfer-ownership="none">
+          <type name="LogLevelFlags" c:type="GLogLevelFlags"/>
+        </parameter>
+        <parameter name="fields" transfer-ownership="none">
+          <type name="LogField" c:type="const GLogField*"/>
+        </parameter>
+        <parameter name="n_fields" transfer-ownership="none">
+          <type name="gsize" c:type="gsize"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="log_writer_supports_color"
+              c:identifier="g_log_writer_supports_color">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="output_fd" transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
         </parameter>
       </parameters>
     </function>
@@ -42501,6 +43106,19 @@ point in some locales, causing unexpected results.</doc>
         <parameter name="string" transfer-ownership="none">
           <doc xml:space="preserve">the string to convert</doc>
           <type name="utf8" c:type="gchar*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="strv_contains" c:identifier="g_strv_contains">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="strv" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar* const*"/>
+        </parameter>
+        <parameter name="str" transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
         </parameter>
       </parameters>
     </function>

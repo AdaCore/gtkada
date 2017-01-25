@@ -9,22 +9,477 @@ and/or use gtk-doc annotations.  -->
   <include name="GObject" version="2.0"/>
   <package name="gio-2.0"/>
   <package name="gio-unix-2.0"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gdesktopappinfo.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gfiledescriptorbased.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixconnection.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixcredentialsmessage.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixfdlist.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixfdmessage.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixinputstream.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixmounts.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixoutputstream.h"/>
-  <c:include name="/opt/local/include/gio-unix-2.0/gio/gunixsocketaddress.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gdesktopappinfo.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gfiledescriptorbased.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixconnection.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixcredentialsmessage.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixfdlist.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixfdmessage.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixinputstream.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixmounts.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixoutputstream.h"/>
+  <c:include name="/export/work/setton/src/gtk322/sandbox/x86_64-linux/glib-2.50.2-gtk-3.22/install/include/gio-unix-2.0/gio/gunixsocketaddress.h"/>
   <c:include name="gio/gio.h"/>
   <namespace name="Gio"
              version="2.0"
-             shared-library="/opt/local/lib/libgio-2.0.0.dylib"
+             shared-library="libgio-2.0.so.0"
              c:identifier-prefixes="G"
              c:symbol-prefixes="g">
+    <alias name="ActionMap_autoptr" c:type="GActionMap_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Action_autoptr" c:type="GAction_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="AppInfoMonitor_autoptr" c:type="GAppInfoMonitor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="AppInfo_autoptr" c:type="GAppInfo_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="AppLaunchContext_autoptr" c:type="GAppLaunchContext_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ApplicationCommandLine_autoptr"
+           c:type="GApplicationCommandLine_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Application_autoptr" c:type="GApplication_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="AsyncInitable_autoptr" c:type="GAsyncInitable_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="AsyncResult_autoptr" c:type="GAsyncResult_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="BufferedInputStream_autoptr"
+           c:type="GBufferedInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="BufferedOutputStream_autoptr"
+           c:type="GBufferedOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="BytesIcon_autoptr" c:type="GBytesIcon_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Cancellable_autoptr" c:type="GCancellable_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="CharsetConverter_autoptr" c:type="GCharsetConverter_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ConverterInputStream_autoptr"
+           c:type="GConverterInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ConverterOutputStream_autoptr"
+           c:type="GConverterOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Converter_autoptr" c:type="GConverter_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Credentials_autoptr" c:type="GCredentials_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusActionGroup_autoptr" c:type="GDBusActionGroup_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusAuthObserver_autoptr" c:type="GDBusAuthObserver_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusConnection_autoptr" c:type="GDBusConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusInterfaceSkeleton_autoptr"
+           c:type="GDBusInterfaceSkeleton_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusInterface_autoptr" c:type="GDBusInterface_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusMenuModel_autoptr" c:type="GDBusMenuModel_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusMessage_autoptr" c:type="GDBusMessage_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusMethodInvocation_autoptr"
+           c:type="GDBusMethodInvocation_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusNodeInfo_autoptr" c:type="GDBusNodeInfo_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusObjectManagerClient_autoptr"
+           c:type="GDBusObjectManagerClient_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusObjectManagerServer_autoptr"
+           c:type="GDBusObjectManagerServer_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusObjectManager_autoptr"
+           c:type="GDBusObjectManager_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusObjectProxy_autoptr" c:type="GDBusObjectProxy_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusObjectSkeleton_autoptr"
+           c:type="GDBusObjectSkeleton_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusObject_autoptr" c:type="GDBusObject_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusProxy_autoptr" c:type="GDBusProxy_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DBusServer_autoptr" c:type="GDBusServer_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DataInputStream_autoptr" c:type="GDataInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DataOutputStream_autoptr" c:type="GDataOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DatagramBased_autoptr" c:type="GDatagramBased_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="DesktopAppInfo_autoptr" c:type="GDesktopAppInfo_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Drive_autoptr" c:type="GDrive_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Emblem_autoptr" c:type="GEmblem_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="EmblemedIcon_autoptr" c:type="GEmblemedIcon_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileAttributeInfoList_autoptr"
+           c:type="GFileAttributeInfoList_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileDescriptorBased_autoptr"
+           c:type="GFileDescriptorBased_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileEnumerator_autoptr" c:type="GFileEnumerator_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileIOStream_autoptr" c:type="GFileIOStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileIcon_autoptr" c:type="GFileIcon_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileInfo_autoptr" c:type="GFileInfo_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileInputStream_autoptr" c:type="GFileInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileMonitor_autoptr" c:type="GFileMonitor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FileOutputStream_autoptr" c:type="GFileOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="File_autoptr" c:type="GFile_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FilenameCompleter_autoptr"
+           c:type="GFilenameCompleter_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FilterInputStream_autoptr"
+           c:type="GFilterInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="FilterOutputStream_autoptr"
+           c:type="GFilterOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="IOModule_autoptr" c:type="GIOModule_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="IOStream_autoptr" c:type="GIOStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Icon_autoptr" c:type="GIcon_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="InetAddressMask_autoptr" c:type="GInetAddressMask_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="InetAddress_autoptr" c:type="GInetAddress_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="InetSocketAddress_autoptr"
+           c:type="GInetSocketAddress_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Initable_autoptr" c:type="GInitable_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="InputStream_autoptr" c:type="GInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ListModel_autoptr" c:type="GListModel_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ListStore_autoptr" c:type="GListStore_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="LoadableIcon_autoptr" c:type="GLoadableIcon_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MemoryInputStream_autoptr"
+           c:type="GMemoryInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MemoryOutputStream_autoptr"
+           c:type="GMemoryOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MenuAttributeIter_autoptr"
+           c:type="GMenuAttributeIter_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MenuItem_autoptr" c:type="GMenuItem_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MenuLinkIter_autoptr" c:type="GMenuLinkIter_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MenuModel_autoptr" c:type="GMenuModel_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Menu_autoptr" c:type="GMenu_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="MountOperation_autoptr" c:type="GMountOperation_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Mount_autoptr" c:type="GMount_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="NativeVolumeMonitor_autoptr"
+           c:type="GNativeVolumeMonitor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="NetworkAddress_autoptr" c:type="GNetworkAddress_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="NetworkMonitor_autoptr" c:type="GNetworkMonitor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="NetworkService_autoptr" c:type="GNetworkService_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Notification_autoptr" c:type="GNotification_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="OutputStream_autoptr" c:type="GOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Permission_autoptr" c:type="GPermission_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="PollableInputStream_autoptr"
+           c:type="GPollableInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="PollableOutputStream_autoptr"
+           c:type="GPollableOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="PropertyAction_autoptr" c:type="GPropertyAction_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ProxyAddressEnumerator_autoptr"
+           c:type="GProxyAddressEnumerator_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ProxyAddress_autoptr" c:type="GProxyAddress_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ProxyResolver_autoptr" c:type="GProxyResolver_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Proxy_autoptr" c:type="GProxy_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="RemoteActionGroup_autoptr"
+           c:type="GRemoteActionGroup_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Resolver_autoptr" c:type="GResolver_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Seekable_autoptr" c:type="GSeekable_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SettingsBackend_autoptr" c:type="GSettingsBackend_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SettingsSchema_autoptr" c:type="GSettingsSchema_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Settings_autoptr" c:type="GSettings_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SimpleActionGroup_autoptr"
+           c:type="GSimpleActionGroup_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SimpleAction_autoptr" c:type="GSimpleAction_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SimpleAsyncResult_autoptr"
+           c:type="GSimpleAsyncResult_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SimplePermission_autoptr" c:type="GSimplePermission_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SimpleProxyResolver_autoptr"
+           c:type="GSimpleProxyResolver_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketAddressEnumerator_autoptr"
+           c:type="GSocketAddressEnumerator_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketAddress_autoptr" c:type="GSocketAddress_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketClient_autoptr" c:type="GSocketClient_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketConnectable_autoptr"
+           c:type="GSocketConnectable_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketConnection_autoptr" c:type="GSocketConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketControlMessage_autoptr"
+           c:type="GSocketControlMessage_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketListener_autoptr" c:type="GSocketListener_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SocketService_autoptr" c:type="GSocketService_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Socket_autoptr" c:type="GSocket_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="SubprocessLauncher_autoptr"
+           c:type="GSubprocessLauncher_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Subprocess_autoptr" c:type="GSubprocess_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Task_autoptr" c:type="GTask_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TcpConnection_autoptr" c:type="GTcpConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TcpWrapperConnection_autoptr"
+           c:type="GTcpWrapperConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TestDBus_autoptr" c:type="GTestDBus_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ThemedIcon_autoptr" c:type="GThemedIcon_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ThreadedSocketService_autoptr"
+           c:type="GThreadedSocketService_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsBackend_autoptr" c:type="GTlsBackend_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsCertificate_autoptr" c:type="GTlsCertificate_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsClientConnection_autoptr"
+           c:type="GTlsClientConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsConnection_autoptr" c:type="GTlsConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsDatabase_autoptr" c:type="GTlsDatabase_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsFileDatabase_autoptr" c:type="GTlsFileDatabase_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsInteraction_autoptr" c:type="GTlsInteraction_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsPassword_autoptr" c:type="GTlsPassword_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="TlsServerConnection_autoptr"
+           c:type="GTlsServerConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixConnection_autoptr" c:type="GUnixConnection_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixCredentialsMessage_autoptr"
+           c:type="GUnixCredentialsMessage_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixFDList_autoptr" c:type="GUnixFDList_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixFDMessage_autoptr" c:type="GUnixFDMessage_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixInputStream_autoptr" c:type="GUnixInputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixMountMonitor_autoptr" c:type="GUnixMountMonitor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixOutputStream_autoptr" c:type="GUnixOutputStream_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="UnixSocketAddress_autoptr"
+           c:type="GUnixSocketAddress_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Vfs_autoptr" c:type="GVfs_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="VolumeMonitor_autoptr" c:type="GVolumeMonitor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="Volume_autoptr" c:type="GVolume_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ZlibCompressor_autoptr" c:type="GZlibCompressor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
+    <alias name="ZlibDecompressor_autoptr" c:type="GZlibDecompressor_autoptr">
+      <type name="gpointer" c:type="gpointer"/>
+    </alias>
     <interface name="Action"
                c:symbol-prefix="action"
                c:type="GAction"
@@ -2548,6 +3003,49 @@ required.</doc>
           </parameter>
         </parameters>
       </function>
+      <function name="launch_default_for_uri_async"
+                c:identifier="g_app_info_launch_default_for_uri_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="uri" transfer-ownership="none">
+            <type name="utf8" c:type="const char*"/>
+          </parameter>
+          <parameter name="launch_context" transfer-ownership="none">
+            <type name="AppLaunchContext" c:type="GAppLaunchContext*"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="4">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="launch_default_for_uri_finish"
+                c:identifier="g_app_info_launch_default_for_uri_finish"
+                throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+        </parameters>
+      </function>
       <function name="reset_type_associations"
                 c:identifier="g_app_info_reset_type_associations"
                 version="2.20">
@@ -4320,7 +4818,6 @@ when @context is used to launch an application.</doc>
     <class name="Application"
            c:symbol-prefix="application"
            c:type="GApplication"
-           version="2.28"
            parent="GObject.Object"
            glib:type-name="GApplication"
            glib:get-type="g_application_get_type"
@@ -4924,6 +5421,23 @@ new functionality whereby unrecognised options are rejected even if
           </parameter>
         </parameters>
       </method>
+      <method name="bind_busy_property"
+              c:identifier="g_application_bind_busy_property">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="application" transfer-ownership="none">
+            <type name="Application" c:type="GApplication*"/>
+          </instance-parameter>
+          <parameter name="object" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+          <parameter name="property" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="get_application_id"
               c:identifier="g_application_get_application_id"
               version="2.28">
@@ -5025,6 +5539,16 @@ g_application_release() before the application stops running.</doc>
         <parameters>
           <instance-parameter name="application" transfer-ownership="none">
             <doc xml:space="preserve">a #GApplication</doc>
+            <type name="Application" c:type="GApplication*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_is_busy" c:identifier="g_application_get_is_busy">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="application" transfer-ownership="none">
             <type name="Application" c:type="GApplication*"/>
           </instance-parameter>
         </parameters>
@@ -5582,6 +6106,23 @@ for forming paths for various purposes is unspecified.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="unbind_busy_property"
+              c:identifier="g_application_unbind_busy_property">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="application" transfer-ownership="none">
+            <type name="Application" c:type="GApplication*"/>
+          </instance-parameter>
+          <parameter name="object" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+          <parameter name="property" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="unmark_busy"
               c:identifier="g_application_unmark_busy"
               version="2.38">
@@ -5651,6 +6192,9 @@ there is no need to explicitly withdraw the notification in that case.</doc>
                 writable="1"
                 transfer-ownership="none">
         <type name="guint" c:type="guint"/>
+      </property>
+      <property name="is-busy" transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
       </property>
       <property name="is-registered" transfer-ownership="none">
         <type name="gboolean" c:type="gboolean"/>
@@ -6746,7 +7290,7 @@ contains private data only.</doc>
     launching process to the primary instance. Set this flag if your
     application is expected to behave differently depending on certain
     environment variables. For instance, an editor might be expected
-    to use the &lt;envar&gt;GIT_COMMITTER_NAME&lt;/envar&gt; environment variable
+    to use the `GIT_COMMITTER_NAME` environment variable
     when editing a git commit message. The environment is available
     to the #GApplication::command-line signal handler, via
     g_application_command_line_getenv().</doc>
@@ -6761,6 +7305,14 @@ contains private data only.</doc>
     owner of the application ID nor does it check if an existing
     owner already exists.  Everything occurs in the local process.
     Since: 2.30.</doc>
+      </member>
+      <member name="can_override_app_id"
+              value="64"
+              c:identifier="G_APPLICATION_CAN_OVERRIDE_APP_ID"
+              glib:nick="can-override-app-id">
+        <doc xml:space="preserve">Allow users to override the
+    application ID from the command line with `--gapplication-app-id`.
+    Since: 2.48</doc>
       </member>
     </bitfield>
     <record name="ApplicationPrivate"
@@ -10119,31 +10671,31 @@ returned string may change in future GLib release.</doc>
               value="1"
               c:identifier="G_CREDENTIALS_TYPE_LINUX_UCRED"
               glib:nick="linux-ucred">
-        <doc xml:space="preserve">The native credentials type is a &lt;type&gt;struct ucred&lt;/type&gt;.</doc>
+        <doc xml:space="preserve">The native credentials type is a struct ucred.</doc>
       </member>
       <member name="freebsd_cmsgcred"
               value="2"
               c:identifier="G_CREDENTIALS_TYPE_FREEBSD_CMSGCRED"
               glib:nick="freebsd-cmsgcred">
-        <doc xml:space="preserve">The native credentials type is a &lt;type&gt;struct cmsgcred&lt;/type&gt;.</doc>
-      </member>
-      <member name="netbsd_unpcbid"
-              value="3"
-              c:identifier="G_CREDENTIALS_TYPE_NETBSD_UNPCBID"
-              glib:nick="netbsd-unpcbid">
-        <doc xml:space="preserve">The native credentials type is a &lt;type&gt;struct unpcbid&lt;/type&gt;.</doc>
+        <doc xml:space="preserve">The native credentials type is a struct cmsgcred.</doc>
       </member>
       <member name="openbsd_sockpeercred"
-              value="4"
+              value="3"
               c:identifier="G_CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED"
               glib:nick="openbsd-sockpeercred">
-        <doc xml:space="preserve">The native credentials type is a &lt;type&gt;struct sockpeercred&lt;/type&gt;. Added in 2.30.</doc>
+        <doc xml:space="preserve">The native credentials type is a struct sockpeercred. Added in 2.30.</doc>
       </member>
       <member name="solaris_ucred"
-              value="5"
+              value="4"
               c:identifier="G_CREDENTIALS_TYPE_SOLARIS_UCRED"
               glib:nick="solaris-ucred">
-        <doc xml:space="preserve">The native credentials type is a &lt;type&gt;ucred_t&lt;/type&gt;. Added in 2.40.</doc>
+        <doc xml:space="preserve">The native credentials type is a ucred_t. Added in 2.40.</doc>
+      </member>
+      <member name="netbsd_unpcbid"
+              value="5"
+              c:identifier="G_CREDENTIALS_TYPE_NETBSD_UNPCBID"
+              glib:nick="netbsd-unpcbid">
+        <doc xml:space="preserve">The native credentials type is a struct unpcbid.</doc>
       </member>
     </enumeration>
     <class name="DBusActionGroup"
@@ -10482,6 +11034,13 @@ is authorized.</doc>
         <doc xml:space="preserve">The bus must not launch
 an owner for the destination name in response to this method
 invocation.</doc>
+      </member>
+      <member name="allow_interactive_authorization"
+              value="2"
+              c:identifier="G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION"
+              glib:nick="allow-interactive-authorization">
+        <doc xml:space="preserve">the caller is prepared to
+wait for interactive authorization. Since 2.46.</doc>
       </member>
     </bitfield>
     <bitfield name="DBusCapabilityFlags"
@@ -11894,6 +12453,33 @@ See this [server][gdbus-server] for an example of how to use this method.</doc>
                      scope="async">
             <doc xml:space="preserve">function to call when the object path is unregistered</doc>
             <type name="GLib.DestroyNotify" c:type="GDestroyNotify"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="register_object_with_closures"
+              c:identifier="g_dbus_connection_register_object_with_closures"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="connection" transfer-ownership="none">
+            <type name="DBusConnection" c:type="GDBusConnection*"/>
+          </instance-parameter>
+          <parameter name="object_path" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="interface_info" transfer-ownership="none">
+            <type name="DBusInterfaceInfo" c:type="GDBusInterfaceInfo*"/>
+          </parameter>
+          <parameter name="method_call_closure" transfer-ownership="none">
+            <type name="GObject.Closure" c:type="GClosure*"/>
+          </parameter>
+          <parameter name="get_property_closure" transfer-ownership="none">
+            <type name="GObject.Closure" c:type="GClosure*"/>
+          </parameter>
+          <parameter name="set_property_closure" transfer-ownership="none">
+            <type name="GObject.Closure" c:type="GClosure*"/>
           </parameter>
         </parameters>
       </method>
@@ -13740,8 +14326,8 @@ the memory used is freed.</doc>
           <doc xml:space="preserve">A #GVariant tuple with parameters.</doc>
           <type name="GLib.Variant" c:type="GVariant*"/>
         </parameter>
-        <parameter name="invocation" transfer-ownership="none">
-          <doc xml:space="preserve">A #GDBusMethodInvocation object that can be used to return a value or error.</doc>
+        <parameter name="invocation" transfer-ownership="full">
+          <doc xml:space="preserve">A #GDBusMethodInvocation object that must be used to return a value or error.</doc>
           <type name="DBusMethodInvocation" c:type="GDBusMethodInvocation*"/>
         </parameter>
         <parameter name="user_data" transfer-ownership="none" closure="7">
@@ -14345,6 +14931,16 @@ Since 2.38, if you want to handle getting/setting D-Bus properties
 asynchronously, give %NULL as your get_property() or set_property()
 function. The D-Bus call will be directed to your @method_call function,
 with the provided @interface_name set to "org.freedesktop.DBus.Properties".
+
+Ownership of the #GDBusMethodInvocation object passed to the
+method_call() function is transferred to your handler; you must
+call one of the methods of #GDBusMethodInvocation to return a reply
+(possibly empty), or an error. These functions also take ownership
+of the passed-in invocation object, so unless the invocation
+object has otherwise been referenced, it will be then be freed.
+Calling one of these functions may be done within your
+method_call() implementation but it also can be done at a later
+point to handle the method asynchronously.
 
 The usual checks on the validity of the calls is performed. For
 `Get` calls, an error is automatically returned if the property does
@@ -15539,6 +16135,14 @@ a message to be sent to the other peer.</doc>
               glib:nick="no-auto-start">
         <doc xml:space="preserve">The bus must not launch an
 owner for the destination name in response to this message.</doc>
+      </member>
+      <member name="allow_interactive_authorization"
+              value="4"
+              c:identifier="G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION"
+              glib:nick="allow-interactive-authorization">
+        <doc xml:space="preserve">If set on a method
+call, this flag means that the caller is prepared to wait for interactive
+authorization. Since 2.46.</doc>
       </member>
     </bitfield>
     <enumeration name="DBusMessageHeaderField"
@@ -19615,9 +20219,9 @@ This signal corresponds to the
               value="4"
               c:identifier="G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START"
               glib:nick="do-not-auto-start">
-        <doc xml:space="preserve">If not set and the proxy if for a well-known name,
-then request the bus to launch an owner for the name if no-one owns the name. This flag can
-only be used in proxies for well-known names.</doc>
+        <doc xml:space="preserve">If the proxy is for a well-known name,
+do not ask the bus to launch an owner during proxy initialization or a method call.
+This flag is only meaningful in proxies for well-known names.</doc>
       </member>
       <member name="get_invalidated_properties"
               value="8"
@@ -19632,7 +20236,7 @@ only be used in proxies for well-known names.</doc>
         <doc xml:space="preserve">If the proxy is for a well-known name,
 do not ask the bus to launch an owner during proxy initialization, but allow it to be
 autostarted by a method call. This flag is only meaningful in proxies for well-known names,
-and only if %G_DBUS_PROXY_FLAGS_DO_NOT_AUTOSTART is not also specified.</doc>
+and only if %G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START is not also specified.</doc>
       </member>
     </bitfield>
     <record name="DBusProxyPrivate" c:type="GDBusProxyPrivate" disguised="1">
@@ -19649,7 +20253,7 @@ This function is called in the
 that @manager was constructed in.</doc>
       <return-value transfer-ownership="none">
         <doc xml:space="preserve">A #GType to use for the remote object. The returned type
-  must be a #GDBusProxy&lt;!-- --&gt;- or #GDBusObjectProxy&lt;!-- --&gt;-derived
+  must be a #GDBusProxy or #GDBusObjectProxy -derived
   type.</doc>
         <type name="GType" c:type="GType"/>
       </return-value>
@@ -20123,7 +20727,10 @@ segment of the object path (ie: it never contains a slash).</doc>
           <doc xml:space="preserve">A node that is a child of @object_path (relative to @object_path) or %NULL for the root of the subtree.</doc>
           <type name="utf8" c:type="const gchar*"/>
         </parameter>
-        <parameter name="out_user_data" transfer-ownership="none">
+        <parameter name="out_user_data"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
           <doc xml:space="preserve">Return location for user data to pass to functions in the returned #GDBusInterfaceVTable (never %NULL).</doc>
           <type name="gpointer" c:type="gpointer*"/>
         </parameter>
@@ -21471,6 +22078,406 @@ across various machine architectures.</doc>
         <doc xml:space="preserve">Automatically try to handle any line ending type.</doc>
       </member>
     </enumeration>
+    <interface name="DatagramBased"
+               c:symbol-prefix="datagram_based"
+               c:type="GDatagramBased"
+               version="2.48"
+               glib:type-name="GDatagramBased"
+               glib:get-type="g_datagram_based_get_type"
+               glib:type-struct="DatagramBasedInterface">
+      <doc xml:space="preserve">Interface for socket-like objects with datagram semantics.</doc>
+      <virtual-method name="condition_check" invoker="condition_check">
+        <return-value transfer-ownership="none">
+          <type name="GLib.IOCondition" c:type="GIOCondition"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="condition" transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="condition_wait"
+                      invoker="condition_wait"
+                      throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="condition" transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </parameter>
+          <parameter name="timeout" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="create_source" invoker="create_source">
+        <return-value transfer-ownership="full">
+          <type name="GLib.Source" c:type="GSource*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="condition" transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="receive_messages"
+                      invoker="receive_messages"
+                      throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="messages" transfer-ownership="none">
+            <type name="InputMessage" c:type="GInputMessage*"/>
+          </parameter>
+          <parameter name="num_messages" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="timeout" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="send_messages" invoker="send_messages" throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="messages" transfer-ownership="none">
+            <type name="OutputMessage" c:type="GOutputMessage*"/>
+          </parameter>
+          <parameter name="num_messages" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="timeout" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="condition_check"
+              c:identifier="g_datagram_based_condition_check">
+        <return-value transfer-ownership="none">
+          <type name="GLib.IOCondition" c:type="GIOCondition"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="condition" transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="condition_wait"
+              c:identifier="g_datagram_based_condition_wait"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="condition" transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </parameter>
+          <parameter name="timeout" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="create_source"
+              c:identifier="g_datagram_based_create_source">
+        <return-value transfer-ownership="full">
+          <type name="GLib.Source" c:type="GSource*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="condition" transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="receive_messages"
+              c:identifier="g_datagram_based_receive_messages"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="messages" transfer-ownership="none">
+            <type name="InputMessage" c:type="GInputMessage*"/>
+          </parameter>
+          <parameter name="num_messages" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="timeout" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="send_messages"
+              c:identifier="g_datagram_based_send_messages"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="datagram_based" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </instance-parameter>
+          <parameter name="messages" transfer-ownership="none">
+            <type name="OutputMessage" c:type="GOutputMessage*"/>
+          </parameter>
+          <parameter name="num_messages" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="timeout" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+    </interface>
+    <record name="DatagramBasedInterface"
+            c:type="GDatagramBasedInterface"
+            glib:is-gtype-struct-for="DatagramBased"
+            version="2.48">
+      <doc xml:space="preserve">Provides an interface for socket-like objects which have datagram semantics,
+following the Berkeley sockets API. The interface methods are thin wrappers
+around the corresponding virtual methods, and no pre-processing of inputs is
+implemented — so implementations of this API must handle all functionality
+documented in the interface methods.</doc>
+      <field name="g_iface">
+        <doc xml:space="preserve">The parent interface.</doc>
+        <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+      <field name="receive_messages">
+        <callback name="receive_messages" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </return-value>
+          <parameters>
+            <parameter name="datagram_based" transfer-ownership="none">
+              <type name="DatagramBased" c:type="GDatagramBased*"/>
+            </parameter>
+            <parameter name="messages" transfer-ownership="none">
+              <type name="InputMessage" c:type="GInputMessage*"/>
+            </parameter>
+            <parameter name="num_messages" transfer-ownership="none">
+              <type name="guint" c:type="guint"/>
+            </parameter>
+            <parameter name="flags" transfer-ownership="none">
+              <type name="gint" c:type="gint"/>
+            </parameter>
+            <parameter name="timeout" transfer-ownership="none">
+              <type name="gint64" c:type="gint64"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="send_messages">
+        <callback name="send_messages" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </return-value>
+          <parameters>
+            <parameter name="datagram_based" transfer-ownership="none">
+              <type name="DatagramBased" c:type="GDatagramBased*"/>
+            </parameter>
+            <parameter name="messages" transfer-ownership="none">
+              <type name="OutputMessage" c:type="GOutputMessage*"/>
+            </parameter>
+            <parameter name="num_messages" transfer-ownership="none">
+              <type name="guint" c:type="guint"/>
+            </parameter>
+            <parameter name="flags" transfer-ownership="none">
+              <type name="gint" c:type="gint"/>
+            </parameter>
+            <parameter name="timeout" transfer-ownership="none">
+              <type name="gint64" c:type="gint64"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="create_source">
+        <callback name="create_source">
+          <return-value transfer-ownership="full">
+            <type name="GLib.Source" c:type="GSource*"/>
+          </return-value>
+          <parameters>
+            <parameter name="datagram_based" transfer-ownership="none">
+              <type name="DatagramBased" c:type="GDatagramBased*"/>
+            </parameter>
+            <parameter name="condition" transfer-ownership="none">
+              <type name="GLib.IOCondition" c:type="GIOCondition"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="condition_check">
+        <callback name="condition_check">
+          <return-value transfer-ownership="none">
+            <type name="GLib.IOCondition" c:type="GIOCondition"/>
+          </return-value>
+          <parameters>
+            <parameter name="datagram_based" transfer-ownership="none">
+              <type name="DatagramBased" c:type="GDatagramBased*"/>
+            </parameter>
+            <parameter name="condition" transfer-ownership="none">
+              <type name="GLib.IOCondition" c:type="GIOCondition"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="condition_wait">
+        <callback name="condition_wait" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="datagram_based" transfer-ownership="none">
+              <type name="DatagramBased" c:type="GDatagramBased*"/>
+            </parameter>
+            <parameter name="condition" transfer-ownership="none">
+              <type name="GLib.IOCondition" c:type="GIOCondition"/>
+            </parameter>
+            <parameter name="timeout" transfer-ownership="none">
+              <type name="gint64" c:type="gint64"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+    </record>
+    <callback name="DatagramBasedSourceFunc"
+              c:type="GDatagramBasedSourceFunc"
+              version="2.48">
+      <doc xml:space="preserve">This is the function type of the callback used for the #GSource
+returned by g_datagram_based_create_source().</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:space="preserve">%G_SOURCE_REMOVE if the source should be removed,
+  %G_SOURCE_CONTINUE otherwise</doc>
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="datagram_based" transfer-ownership="none">
+          <doc xml:space="preserve">the #GDatagramBased</doc>
+          <type name="DatagramBased" c:type="GDatagramBased*"/>
+        </parameter>
+        <parameter name="condition" transfer-ownership="none">
+          <doc xml:space="preserve">the current condition at the source fired</doc>
+          <type name="GLib.IOCondition" c:type="GIOCondition"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none" closure="2">
+          <doc xml:space="preserve">data passed in by the user</doc>
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </callback>
     <class name="DesktopAppInfo"
            c:symbol-prefix="desktop_app_info"
            c:type="GDesktopAppInfo"
@@ -22006,8 +23013,6 @@ explicitly listed in the "Actions" key of the [Desktop Entry] group.</doc>
                glib:type-name="GDesktopAppInfoLookup"
                glib:get-type="g_desktop_app_info_lookup_get_type"
                glib:type-struct="DesktopAppInfoLookupIface">
-      <doc xml:space="preserve">Interface that is used by backends to associate default
-handlers with URI schemes.</doc>
       <virtual-method name="get_default_for_uri_scheme"
                       invoker="get_default_for_uri_scheme"
                       deprecated="1">
@@ -22066,6 +23071,8 @@ directly. Applications should use g_app_info_get_default_for_uri_scheme().</doc>
     <record name="DesktopAppInfoLookupIface"
             c:type="GDesktopAppInfoLookupIface"
             glib:is-gtype-struct-for="DesktopAppInfoLookup">
+      <doc xml:space="preserve">Interface that is used by backends to associate default
+handlers with URI schemes.</doc>
       <field name="g_iface">
         <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
       </field>
@@ -22561,6 +23568,16 @@ for more details.</doc>
         <parameters>
           <instance-parameter name="drive" transfer-ownership="none">
             <doc xml:space="preserve">a #GDrive.</doc>
+            <type name="Drive" c:type="GDrive*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="is_removable" invoker="is_removable">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="drive" transfer-ownership="none">
             <type name="Drive" c:type="GDrive*"/>
           </instance-parameter>
         </parameters>
@@ -23158,6 +24175,16 @@ for more details.</doc>
         <parameters>
           <instance-parameter name="drive" transfer-ownership="none">
             <doc xml:space="preserve">a #GDrive.</doc>
+            <type name="Drive" c:type="GDrive*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="is_removable" c:identifier="g_drive_is_removable">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="drive" transfer-ownership="none">
             <type name="Drive" c:type="GDrive*"/>
           </instance-parameter>
         </parameters>
@@ -23996,6 +25023,18 @@ been pressed.</doc>
           </parameters>
         </callback>
       </field>
+      <field name="is_removable">
+        <callback name="is_removable">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="drive" transfer-ownership="none">
+              <type name="Drive" c:type="GDrive*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
     </record>
     <bitfield name="DriveStartFlags"
               version="2.22"
@@ -24055,6 +25094,907 @@ been pressed.</doc>
    UNLOCK DEVICE&lt;/quote&gt; command)</doc>
       </member>
     </enumeration>
+    <interface name="DtlsClientConnection"
+               c:symbol-prefix="dtls_client_connection"
+               c:type="GDtlsClientConnection"
+               glib:type-name="GDtlsClientConnection"
+               glib:get-type="g_dtls_client_connection_get_type"
+               glib:type-struct="DtlsClientConnectionInterface">
+      <prerequisite name="DatagramBased"/>
+      <prerequisite name="DtlsConnection"/>
+      <function name="new"
+                c:identifier="g_dtls_client_connection_new"
+                introspectable="0"
+                throws="1">
+        <return-value>
+          <type name="DatagramBased" c:type="GDatagramBased*"/>
+        </return-value>
+        <parameters>
+          <parameter name="base_socket" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </parameter>
+          <parameter name="server_identity" transfer-ownership="none">
+            <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <method name="get_accepted_cas"
+              c:identifier="g_dtls_client_connection_get_accepted_cas"
+              introspectable="0">
+        <return-value>
+          <type name="GLib.List" c:type="GList*">
+            <type name="gpointer" c:type="gpointer"/>
+          </type>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsClientConnection" c:type="GDtlsClientConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_server_identity"
+              c:identifier="g_dtls_client_connection_get_server_identity"
+              introspectable="0">
+        <return-value>
+          <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsClientConnection" c:type="GDtlsClientConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_validation_flags"
+              c:identifier="g_dtls_client_connection_get_validation_flags">
+        <return-value transfer-ownership="none">
+          <type name="TlsCertificateFlags" c:type="GTlsCertificateFlags"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsClientConnection" c:type="GDtlsClientConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="set_server_identity"
+              c:identifier="g_dtls_client_connection_set_server_identity">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsClientConnection" c:type="GDtlsClientConnection*"/>
+          </instance-parameter>
+          <parameter name="identity" transfer-ownership="none">
+            <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_validation_flags"
+              c:identifier="g_dtls_client_connection_set_validation_flags">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsClientConnection" c:type="GDtlsClientConnection*"/>
+          </instance-parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="TlsCertificateFlags" c:type="GTlsCertificateFlags"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="accepted-cas" transfer-ownership="none">
+        <type name="gpointer" c:type="gpointer"/>
+      </property>
+      <property name="server-identity"
+                writable="1"
+                construct="1"
+                transfer-ownership="none">
+        <type name="SocketConnectable"/>
+      </property>
+      <property name="validation-flags"
+                writable="1"
+                construct="1"
+                transfer-ownership="none">
+        <type name="TlsCertificateFlags"/>
+      </property>
+    </interface>
+    <record name="DtlsClientConnectionInterface"
+            c:type="GDtlsClientConnectionInterface"
+            glib:is-gtype-struct-for="DtlsClientConnection"
+            version="2.48">
+      <doc xml:space="preserve">vtable for a #GDtlsClientConnection implementation.</doc>
+      <field name="g_iface">
+        <doc xml:space="preserve">The parent interface.</doc>
+        <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+    </record>
+    <interface name="DtlsConnection"
+               c:symbol-prefix="dtls_connection"
+               c:type="GDtlsConnection"
+               glib:type-name="GDtlsConnection"
+               glib:get-type="g_dtls_connection_get_type"
+               glib:type-struct="DtlsConnectionInterface">
+      <prerequisite name="DatagramBased"/>
+      <virtual-method name="accept_certificate">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="connection" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="peer_cert" transfer-ownership="none">
+            <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+          </parameter>
+          <parameter name="errors" transfer-ownership="none">
+            <type name="TlsCertificateFlags" c:type="GTlsCertificateFlags"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="handshake" invoker="handshake" throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="handshake_async" invoker="handshake_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="3">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="3">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="handshake_finish"
+                      invoker="handshake_finish"
+                      throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="shutdown" invoker="shutdown" throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="shutdown_read" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="shutdown_write" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="shutdown_async" invoker="shutdown_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="shutdown_read" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="shutdown_write" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="5">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="5">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="shutdown_finish"
+                      invoker="shutdown_finish"
+                      throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="close" c:identifier="g_dtls_connection_close" throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="close_async" c:identifier="g_dtls_connection_close_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="3">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="close_finish"
+              c:identifier="g_dtls_connection_close_finish"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="emit_accept_certificate"
+              c:identifier="g_dtls_connection_emit_accept_certificate">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="peer_cert" transfer-ownership="none">
+            <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+          </parameter>
+          <parameter name="errors" transfer-ownership="none">
+            <type name="TlsCertificateFlags" c:type="GTlsCertificateFlags"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_certificate"
+              c:identifier="g_dtls_connection_get_certificate"
+              introspectable="0">
+        <return-value>
+          <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_database"
+              c:identifier="g_dtls_connection_get_database"
+              introspectable="0">
+        <return-value>
+          <type name="TlsDatabase" c:type="GTlsDatabase*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_interaction"
+              c:identifier="g_dtls_connection_get_interaction"
+              introspectable="0">
+        <return-value>
+          <type name="TlsInteraction" c:type="GTlsInteraction*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_peer_certificate"
+              c:identifier="g_dtls_connection_get_peer_certificate"
+              introspectable="0">
+        <return-value>
+          <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_peer_certificate_errors"
+              c:identifier="g_dtls_connection_get_peer_certificate_errors">
+        <return-value transfer-ownership="none">
+          <type name="TlsCertificateFlags" c:type="GTlsCertificateFlags"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_rehandshake_mode"
+              c:identifier="g_dtls_connection_get_rehandshake_mode">
+        <return-value transfer-ownership="none">
+          <type name="TlsRehandshakeMode" c:type="GTlsRehandshakeMode"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_require_close_notify"
+              c:identifier="g_dtls_connection_get_require_close_notify">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="handshake"
+              c:identifier="g_dtls_connection_handshake"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="handshake_async"
+              c:identifier="g_dtls_connection_handshake_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="3">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="handshake_finish"
+              c:identifier="g_dtls_connection_handshake_finish"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_certificate"
+              c:identifier="g_dtls_connection_set_certificate">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="certificate" transfer-ownership="none">
+            <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_database"
+              c:identifier="g_dtls_connection_set_database">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="database" transfer-ownership="none">
+            <type name="TlsDatabase" c:type="GTlsDatabase*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_interaction"
+              c:identifier="g_dtls_connection_set_interaction">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="interaction" transfer-ownership="none">
+            <type name="TlsInteraction" c:type="GTlsInteraction*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_rehandshake_mode"
+              c:identifier="g_dtls_connection_set_rehandshake_mode">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="mode" transfer-ownership="none">
+            <type name="TlsRehandshakeMode" c:type="GTlsRehandshakeMode"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_require_close_notify"
+              c:identifier="g_dtls_connection_set_require_close_notify">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="require_close_notify" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="shutdown"
+              c:identifier="g_dtls_connection_shutdown"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="shutdown_read" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="shutdown_write" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="shutdown_async"
+              c:identifier="g_dtls_connection_shutdown_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="shutdown_read" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="shutdown_write" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="5">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="shutdown_finish"
+              c:identifier="g_dtls_connection_shutdown_finish"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="base-socket"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="DatagramBased"/>
+      </property>
+      <property name="certificate" writable="1" transfer-ownership="none">
+        <type name="TlsCertificate"/>
+      </property>
+      <property name="database" writable="1" transfer-ownership="none">
+        <type name="TlsDatabase"/>
+      </property>
+      <property name="interaction" writable="1" transfer-ownership="none">
+        <type name="TlsInteraction"/>
+      </property>
+      <property name="peer-certificate" transfer-ownership="none">
+        <type name="TlsCertificate"/>
+      </property>
+      <property name="peer-certificate-errors" transfer-ownership="none">
+        <type name="TlsCertificateFlags"/>
+      </property>
+      <property name="rehandshake-mode"
+                writable="1"
+                construct="1"
+                transfer-ownership="none">
+        <type name="TlsRehandshakeMode"/>
+      </property>
+      <property name="require-close-notify"
+                writable="1"
+                construct="1"
+                transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </property>
+      <glib:signal name="accept-certificate" when="last">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="TlsCertificate"/>
+          </parameter>
+          <parameter name="p0" transfer-ownership="none">
+            <type name="TlsCertificateFlags"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+    </interface>
+    <record name="DtlsConnectionInterface"
+            c:type="GDtlsConnectionInterface"
+            glib:is-gtype-struct-for="DtlsConnection"
+            version="2.48">
+      <doc xml:space="preserve">Virtual method table for a #GDtlsConnection implementation.</doc>
+      <field name="g_iface">
+        <doc xml:space="preserve">The parent interface.</doc>
+        <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+      <field name="accept_certificate">
+        <callback name="accept_certificate">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="connection" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="peer_cert" transfer-ownership="none">
+              <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+            </parameter>
+            <parameter name="errors" transfer-ownership="none">
+              <type name="TlsCertificateFlags" c:type="GTlsCertificateFlags"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="handshake">
+        <callback name="handshake" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="handshake_async">
+        <callback name="handshake_async">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="io_priority" transfer-ownership="none">
+              <type name="gint" c:type="int"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+            <parameter name="callback"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1"
+                       scope="async"
+                       closure="4">
+              <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="4">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="handshake_finish">
+        <callback name="handshake_finish" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="result" transfer-ownership="none">
+              <type name="AsyncResult" c:type="GAsyncResult*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="shutdown">
+        <callback name="shutdown" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="shutdown_read" transfer-ownership="none">
+              <type name="gboolean" c:type="gboolean"/>
+            </parameter>
+            <parameter name="shutdown_write" transfer-ownership="none">
+              <type name="gboolean" c:type="gboolean"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="shutdown_async">
+        <callback name="shutdown_async">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="shutdown_read" transfer-ownership="none">
+              <type name="gboolean" c:type="gboolean"/>
+            </parameter>
+            <parameter name="shutdown_write" transfer-ownership="none">
+              <type name="gboolean" c:type="gboolean"/>
+            </parameter>
+            <parameter name="io_priority" transfer-ownership="none">
+              <type name="gint" c:type="int"/>
+            </parameter>
+            <parameter name="cancellable"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1">
+              <type name="Cancellable" c:type="GCancellable*"/>
+            </parameter>
+            <parameter name="callback"
+                       transfer-ownership="none"
+                       nullable="1"
+                       allow-none="1"
+                       scope="async"
+                       closure="6">
+              <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="6">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="shutdown_finish">
+        <callback name="shutdown_finish" throws="1">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="DtlsConnection" c:type="GDtlsConnection*"/>
+            </parameter>
+            <parameter name="result" transfer-ownership="none">
+              <type name="AsyncResult" c:type="GAsyncResult*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+    </record>
+    <interface name="DtlsServerConnection"
+               c:symbol-prefix="dtls_server_connection"
+               c:type="GDtlsServerConnection"
+               version="2.48"
+               glib:type-name="GDtlsServerConnection"
+               glib:get-type="g_dtls_server_connection_get_type"
+               glib:type-struct="DtlsServerConnectionInterface">
+      <doc xml:space="preserve">DTLS server-side connection. This is the server-side implementation
+of a #GDtlsConnection.</doc>
+      <prerequisite name="DatagramBased"/>
+      <prerequisite name="DtlsConnection"/>
+      <function name="new"
+                c:identifier="g_dtls_server_connection_new"
+                introspectable="0"
+                throws="1">
+        <return-value>
+          <type name="DatagramBased" c:type="GDatagramBased*"/>
+        </return-value>
+        <parameters>
+          <parameter name="base_socket" transfer-ownership="none">
+            <type name="DatagramBased" c:type="GDatagramBased*"/>
+          </parameter>
+          <parameter name="certificate" transfer-ownership="none">
+            <type name="TlsCertificate" c:type="GTlsCertificate*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <property name="authentication-mode"
+                writable="1"
+                transfer-ownership="none">
+        <type name="TlsAuthenticationMode"/>
+      </property>
+    </interface>
+    <record name="DtlsServerConnectionInterface"
+            c:type="GDtlsServerConnectionInterface"
+            glib:is-gtype-struct-for="DtlsServerConnection"
+            version="2.48">
+      <doc xml:space="preserve">vtable for a #GDtlsServerConnection implementation.</doc>
+      <field name="g_iface">
+        <doc xml:space="preserve">The parent interface.</doc>
+        <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+    </record>
     <class name="Emblem"
            c:symbol-prefix="emblem"
            c:type="GEmblem"
@@ -24396,6 +26336,14 @@ is read only. Is set to %TRUE if the file system is read only.
 Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_BOOLEAN.</doc>
       <type name="utf8" c:type="gchar*"/>
     </constant>
+    <constant name="FILE_ATTRIBUTE_FILESYSTEM_REMOTE"
+              value="filesystem::remote"
+              c:type="G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE">
+      <doc xml:space="preserve">A key in the "filesystem" namespace for checking if the file system
+is remote. Is set to %TRUE if the file system is remote.
+Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_BOOLEAN.</doc>
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
     <constant name="FILE_ATTRIBUTE_FILESYSTEM_SIZE"
               value="filesystem::size"
               c:type="G_FILE_ATTRIBUTE_FILESYSTEM_SIZE">
@@ -24706,6 +26654,18 @@ Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_BOOLEAN.</doc>
 Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_BOOLEAN.</doc>
       <type name="utf8" c:type="gchar*"/>
     </constant>
+    <constant name="FILE_ATTRIBUTE_STANDARD_IS_VOLATILE"
+              value="standard::is-volatile"
+              c:type="G_FILE_ATTRIBUTE_STANDARD_IS_VOLATILE"
+              version="2.46">
+      <doc xml:space="preserve">A key in the "standard" namespace for checking if a file is
+volatile. This is meant for opaque, non-POSIX-like backends to
+indicate that the URI is not persistent. Applications should look
+at #G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET for the persistent URI.
+
+Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_BOOLEAN.</doc>
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
     <constant name="FILE_ATTRIBUTE_STANDARD_NAME"
               value="standard::name"
               c:type="G_FILE_ATTRIBUTE_STANDARD_NAME">
@@ -24875,7 +26835,7 @@ the file was last modified. This should be used in conjunction with
     <constant name="FILE_ATTRIBUTE_TRASH_DELETION_DATE"
               value="trash::deletion-date"
               c:type="G_FILE_ATTRIBUTE_TRASH_DELETION_DATE"
-              version="2.24.">
+              version="2.24">
       <doc xml:space="preserve">A key in the "trash" namespace.  When requested against
 items in "trash:///", will return the date and time when the file
 was trashed. The format of the returned string is YYYY-MM-DDThh:mm:ss.
@@ -24893,7 +26853,7 @@ Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_UINT32.</doc>
     <constant name="FILE_ATTRIBUTE_TRASH_ORIG_PATH"
               value="trash::orig-path"
               c:type="G_FILE_ATTRIBUTE_TRASH_ORIG_PATH"
-              version="2.24.">
+              version="2.24">
       <doc xml:space="preserve">A key in the "trash" namespace.  When requested against
 items in "trash:///", will return the original path to the file before it
 was trashed. Corresponding #GFileAttributeType is
@@ -33885,6 +35845,7 @@ file when using it.</doc>
     <record name="FileDescriptorBasedIface"
             c:type="GFileDescriptorBasedIface"
             glib:is-gtype-struct-for="FileDescriptorBased">
+      <doc xml:space="preserve">An interface for file descriptor based io objects.</doc>
       <field name="g_iface">
         <doc xml:space="preserve">The parent interface.</doc>
         <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
@@ -34295,6 +36256,30 @@ This is a convenience method that's equivalent to:
             <doc xml:space="preserve">a #GFileEnumerator.</doc>
             <type name="FileEnumerator" c:type="GFileEnumerator*"/>
           </instance-parameter>
+        </parameters>
+      </method>
+      <method name="iterate"
+              c:identifier="g_file_enumerator_iterate"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="direnum" transfer-ownership="none">
+            <type name="FileEnumerator" c:type="GFileEnumerator*"/>
+          </instance-parameter>
+          <parameter name="out_info" transfer-ownership="none">
+            <type name="FileInfo" c:type="GFileInfo**"/>
+          </parameter>
+          <parameter name="out_child" transfer-ownership="none">
+            <type name="File" c:type="GFile**"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
         </parameters>
       </method>
       <method name="next_file"
@@ -40008,13 +41993,6 @@ consecutive change events to the same file.</doc>
       <property name="cancelled" transfer-ownership="none">
         <type name="gboolean" c:type="gboolean"/>
       </property>
-      <property name="context"
-                readable="0"
-                writable="1"
-                construct-only="1"
-                transfer-ownership="none">
-        <type name="GLib.MainContext"/>
-      </property>
       <property name="rate-limit" writable="1" transfer-ownership="none">
         <type name="gint" c:type="gint"/>
       </property>
@@ -40182,7 +42160,32 @@ In all the other cases, @other_file will be set to #NULL.</doc>
               value="7"
               c:identifier="G_FILE_MONITOR_EVENT_MOVED"
               glib:nick="moved">
-        <doc xml:space="preserve">the file was moved.</doc>
+        <doc xml:space="preserve">the file was moved -- only sent if the
+  (deprecated) %G_FILE_MONITOR_SEND_MOVED flag is set</doc>
+      </member>
+      <member name="renamed"
+              value="8"
+              c:identifier="G_FILE_MONITOR_EVENT_RENAMED"
+              glib:nick="renamed">
+        <doc xml:space="preserve">the file was renamed within the
+  current directory -- only sent if the %G_FILE_MONITOR_WATCH_MOVES
+  flag is set.  Since: 2.46.</doc>
+      </member>
+      <member name="moved_in"
+              value="9"
+              c:identifier="G_FILE_MONITOR_EVENT_MOVED_IN"
+              glib:nick="moved-in">
+        <doc xml:space="preserve">the file was moved into the
+  monitored directory from another location -- only sent if the
+  %G_FILE_MONITOR_WATCH_MOVES flag is set.  Since: 2.46.</doc>
+      </member>
+      <member name="moved_out"
+              value="10"
+              c:identifier="G_FILE_MONITOR_EVENT_MOVED_OUT"
+              glib:nick="moved-out">
+        <doc xml:space="preserve">the file was moved out of the
+  monitored directory to another location -- only sent if the
+  %G_FILE_MONITOR_WATCH_MOVES flag is set.  Since: 2.46</doc>
       </member>
     </enumeration>
     <bitfield name="FileMonitorFlags"
@@ -40210,7 +42213,8 @@ In all the other cases, @other_file will be set to #NULL.</doc>
   by file renames (moves) and send a single G_FILE_MONITOR_EVENT_MOVED
   event instead (NB: not supported on all backends; the default
   behaviour -without specifying this flag- is to send single DELETED
-  and CREATED events).</doc>
+  and CREATED events).  Deprecated since 2.46: use
+  %G_FILE_MONITOR_WATCH_MOVES instead.</doc>
       </member>
       <member name="watch_hard_links"
               value="4"
@@ -40218,6 +42222,15 @@ In all the other cases, @other_file will be set to #NULL.</doc>
               glib:nick="watch-hard-links">
         <doc xml:space="preserve">Watch for changes to the file made
   via another hard link. Since 2.36.</doc>
+      </member>
+      <member name="watch_moves"
+              value="8"
+              c:identifier="G_FILE_MONITOR_WATCH_MOVES"
+              glib:nick="watch-moves">
+        <doc xml:space="preserve">Watch for rename operations on a
+  monitored directory.  This causes %G_FILE_MONITOR_EVENT_RENAMED,
+  %G_FILE_MONITOR_EVENT_MOVED_IN and %G_FILE_MONITOR_EVENT_MOVED_OUT
+  events to be emitted when possible.  Since: 2.46.</doc>
       </member>
     </bitfield>
     <record name="FileMonitorPrivate"
@@ -41286,7 +43299,7 @@ closed.</doc>
 
 Note that this domain may be extended in future GLib releases. In
 general, new error codes either only apply to new APIs, or else
-replace #G_IO_ERROR_FAILED in cases that were not explicitly
+replace %G_IO_ERROR_FAILED in cases that were not explicitly
 distinguished before. You should therefore avoid writing code like
 |[&lt;!-- language="C" --&gt;
 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_FAILED))
@@ -41575,6 +43588,28 @@ but should instead treat all unrecognized error codes the same as
               c:identifier="G_IO_ERROR_BROKEN_PIPE"
               glib:nick="broken-pipe">
         <doc xml:space="preserve">Broken pipe. Since 2.36</doc>
+      </member>
+      <member name="connection_closed"
+              value="44"
+              c:identifier="G_IO_ERROR_CONNECTION_CLOSED"
+              glib:nick="connection-closed">
+        <doc xml:space="preserve">Connection closed by peer. Note that this
+    is the same code as %G_IO_ERROR_BROKEN_PIPE; before 2.44 some
+    "connection closed" errors returned %G_IO_ERROR_BROKEN_PIPE, but others
+    returned %G_IO_ERROR_FAILED. Now they should all return the same
+    value, which has this more logical name. Since 2.44.</doc>
+      </member>
+      <member name="not_connected"
+              value="45"
+              c:identifier="G_IO_ERROR_NOT_CONNECTED"
+              glib:nick="not-connected">
+        <doc xml:space="preserve">Transport endpoint is not connected. Since 2.44</doc>
+      </member>
+      <member name="message_too_large"
+              value="46"
+              c:identifier="G_IO_ERROR_MESSAGE_TOO_LARGE"
+              glib:nick="message-too-large">
+        <doc xml:space="preserve">Message too large. Since 2.48.</doc>
       </member>
     </enumeration>
     <record name="IOExtension" c:type="GIOExtension" disguised="1">
@@ -44165,6 +46200,68 @@ may fail.</doc>
         </callback>
       </field>
     </record>
+    <record name="InputMessage" c:type="GInputMessage" version="2.48">
+      <doc xml:space="preserve">Structure used for scatter/gather data input when receiving multiple
+messages or packets in one go. You generally pass in an array of empty
+#GInputVectors and the operation will use all the buffers as if they
+were one buffer, and will set @bytes_received to the total number of bytes
+received across all #GInputVectors.
+
+This structure closely mirrors `struct mmsghdr` and `struct msghdr` from
+the POSIX sockets API (see `man 2 recvmmsg`).
+
+If @address is non-%NULL then it is set to the source address the message
+was received from, and the caller must free it afterwards.
+
+If @control_messages is non-%NULL then it is set to an array of control
+messages received with the message (if any), and the caller must free it
+afterwards. @num_control_messages is set to the number of elements in
+this array, which may be zero.
+
+Flags relevant to this message will be returned in @flags. For example,
+`MSG_EOR` or `MSG_TRUNC`.</doc>
+      <field name="address" writable="1">
+        <doc xml:space="preserve">return location
+  for a #GSocketAddress, or %NULL</doc>
+        <type name="SocketAddress" c:type="GSocketAddress**"/>
+      </field>
+      <field name="vectors" writable="1">
+        <doc xml:space="preserve">pointer to an
+  array of input vectors</doc>
+        <array length="2" zero-terminated="0" c:type="GInputVector*">
+          <type name="InputVector" c:type="GInputVector"/>
+        </array>
+      </field>
+      <field name="num_vectors" writable="1">
+        <doc xml:space="preserve">the number of input vectors pointed to by @vectors</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <field name="bytes_received" writable="1">
+        <doc xml:space="preserve">will be set to the number of bytes that have been
+  received</doc>
+        <type name="gsize" c:type="gsize"/>
+      </field>
+      <field name="flags" writable="1">
+        <doc xml:space="preserve">collection of #GSocketMsgFlags for the received message,
+  outputted by the call</doc>
+        <type name="gint" c:type="gint"/>
+      </field>
+      <field name="control_messages" writable="1">
+        <doc xml:space="preserve">
+  (out) (transfer full): return location for a
+  caller-allocated array of #GSocketControlMessages, or %NULL</doc>
+        <array length="6"
+               zero-terminated="0"
+               c:type="GSocketControlMessage***">
+          <type name="SocketControlMessage" c:type="GSocketControlMessage**"/>
+        </array>
+      </field>
+      <field name="num_control_messages" writable="1">
+        <doc xml:space="preserve">return location for the number of
+  elements in @control_messages</doc>
+        <type name="guint" c:type="guint*"/>
+      </field>
+    </record>
     <class name="InputStream"
            c:symbol-prefix="input_stream"
            c:type="GInputStream"
@@ -44728,6 +46825,61 @@ the number of bytes read into @buffer before the error occurred.</doc>
                      allow-none="1">
             <doc xml:space="preserve">optional #GCancellable object, %NULL to ignore.</doc>
             <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="read_all_async"
+              c:identifier="g_input_stream_read_all_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="stream" transfer-ownership="none">
+            <type name="InputStream" c:type="GInputStream*"/>
+          </instance-parameter>
+          <parameter name="buffer" transfer-ownership="none">
+            <type name="gpointer" c:type="void*"/>
+          </parameter>
+          <parameter name="count" transfer-ownership="none">
+            <type name="gsize" c:type="gsize"/>
+          </parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="5">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="read_all_finish"
+              c:identifier="g_input_stream_read_all_finish"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="stream" transfer-ownership="none">
+            <type name="InputStream" c:type="GInputStream*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+          <parameter name="bytes_read" transfer-ownership="none">
+            <type name="gsize" c:type="gsize*"/>
           </parameter>
         </parameters>
       </method>
@@ -45399,6 +47551,320 @@ first buffer, switching to the next as needed.</doc>
       <field name="size" writable="1">
         <doc xml:space="preserve">the available size in @buffer.</doc>
         <type name="gsize" c:type="gsize"/>
+      </field>
+    </record>
+    <interface name="ListModel"
+               c:symbol-prefix="list_model"
+               c:type="GListModel"
+               glib:type-name="GListModel"
+               glib:get-type="g_list_model_get_type"
+               glib:type-struct="ListModelInterface">
+      <virtual-method name="get_item" invoker="get_item" introspectable="0">
+        <return-value>
+          <type name="gpointer" c:type="gpointer"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="get_item_type" invoker="get_item_type">
+        <return-value transfer-ownership="none">
+          <type name="GType" c:type="GType"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="get_n_items" invoker="get_n_items">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
+      <method name="get_item"
+              c:identifier="g_list_model_get_item"
+              introspectable="0">
+        <return-value>
+          <type name="gpointer" c:type="gpointer"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_item_type" c:identifier="g_list_model_get_item_type">
+        <return-value transfer-ownership="none">
+          <type name="GType" c:type="GType"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_n_items" c:identifier="g_list_model_get_n_items">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_object"
+              c:identifier="g_list_model_get_object"
+              introspectable="0">
+        <return-value>
+          <type name="GObject.Object" c:type="GObject*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="items_changed" c:identifier="g_list_model_items_changed">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="list" transfer-ownership="none">
+            <type name="ListModel" c:type="GListModel*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="removed" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="added" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <glib:signal name="items-changed" when="last">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="p0" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="p1" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+    </interface>
+    <record name="ListModelInterface"
+            c:type="GListModelInterface"
+            glib:is-gtype-struct-for="ListModel">
+      <field name="g_iface">
+        <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+      <field name="get_item_type">
+        <callback name="get_item_type">
+          <return-value transfer-ownership="none">
+            <type name="GType" c:type="GType"/>
+          </return-value>
+          <parameters>
+            <parameter name="list" transfer-ownership="none">
+              <type name="ListModel" c:type="GListModel*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="get_n_items">
+        <callback name="get_n_items">
+          <return-value transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </return-value>
+          <parameters>
+            <parameter name="list" transfer-ownership="none">
+              <type name="ListModel" c:type="GListModel*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="get_item" introspectable="0">
+        <callback name="get_item" introspectable="0">
+          <return-value>
+            <type name="gpointer" c:type="gpointer"/>
+          </return-value>
+          <parameters>
+            <parameter name="list" transfer-ownership="none">
+              <type name="ListModel" c:type="GListModel*"/>
+            </parameter>
+            <parameter name="position" transfer-ownership="none">
+              <type name="guint" c:type="guint"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+    </record>
+    <class name="ListStore"
+           c:symbol-prefix="list_store"
+           c:type="GListStore"
+           parent="GObject.Object"
+           glib:type-name="GListStore"
+           glib:get-type="g_list_store_get_type"
+           glib:type-struct="ListStoreClass">
+      <implements name="ListModel"/>
+      <constructor name="new" c:identifier="g_list_store_new">
+        <return-value transfer-ownership="full">
+          <type name="ListStore" c:type="GListStore*"/>
+        </return-value>
+        <parameters>
+          <parameter name="item_type" transfer-ownership="none">
+            <type name="GType" c:type="GType"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <method name="append" c:identifier="g_list_store_append">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="insert" c:identifier="g_list_store_insert">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="insert_sorted"
+              c:identifier="g_list_store_insert_sorted"
+              introspectable="0">
+        <return-value transfer-ownership="none">
+          <type name="guint" c:type="guint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+          <parameter name="item" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+          <parameter name="compare_func" transfer-ownership="none" closure="2">
+            <type name="GLib.CompareDataFunc" c:type="GCompareDataFunc"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="remove" c:identifier="g_list_store_remove">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="remove_all" c:identifier="g_list_store_remove_all">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="sort" c:identifier="g_list_store_sort" introspectable="0">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+          <parameter name="compare_func" transfer-ownership="none" closure="1">
+            <type name="GLib.CompareDataFunc" c:type="GCompareDataFunc"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="splice" c:identifier="g_list_store_splice">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="store" transfer-ownership="none">
+            <type name="ListStore" c:type="GListStore*"/>
+          </instance-parameter>
+          <parameter name="position" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="n_removals" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="additions" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer*"/>
+          </parameter>
+          <parameter name="n_additions" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="item-type"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="GType" c:type="GType"/>
+      </property>
+    </class>
+    <record name="ListStoreClass"
+            c:type="GListStoreClass"
+            glib:is-gtype-struct-for="ListStore">
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
       </field>
     </record>
     <interface name="LoadableIcon"
@@ -51274,6 +53740,10 @@ information is send by the mounting operation.</doc>
 See [Extending GIO][extending-gio].</doc>
       <type name="utf8" c:type="gchar*"/>
     </constant>
+    <record name="NativeSocketAddress"
+            c:type="GNativeSocketAddress"
+            disguised="1">
+    </record>
     <class name="NativeVolumeMonitor"
            c:symbol-prefix="native_volume_monitor"
            c:type="GNativeVolumeMonitor"
@@ -51342,6 +53812,18 @@ interface.</doc>
           </parameter>
         </parameters>
       </constructor>
+      <function name="new_loopback"
+                c:identifier="g_network_address_new_loopback"
+                introspectable="0">
+        <return-value>
+          <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+        </return-value>
+        <parameters>
+          <parameter name="port" transfer-ownership="none">
+            <type name="guint16" c:type="guint16"/>
+          </parameter>
+        </parameters>
+      </function>
       <function name="parse"
                 c:identifier="g_network_address_parse"
                 version="2.22"
@@ -51489,6 +53971,43 @@ depending on what @addr was created with.</doc>
             c:type="GNetworkAddressPrivate"
             disguised="1">
     </record>
+    <enumeration name="NetworkConnectivity"
+                 version="2.44"
+                 glib:type-name="GNetworkConnectivity"
+                 glib:get-type="g_network_connectivity_get_type"
+                 c:type="GNetworkConnectivity">
+      <doc xml:space="preserve">The host's network connectivity state, as reported by #GNetworkMonitor.</doc>
+      <member name="local"
+              value="1"
+              c:identifier="G_NETWORK_CONNECTIVITY_LOCAL"
+              glib:nick="local">
+        <doc xml:space="preserve">The host is not configured with a
+  route to the Internet; it may or may not be connected to a local
+  network.</doc>
+      </member>
+      <member name="limited"
+              value="2"
+              c:identifier="G_NETWORK_CONNECTIVITY_LIMITED"
+              glib:nick="limited">
+        <doc xml:space="preserve">The host is connected to a network, but
+  does not appear to be able to reach the full Internet, perhaps
+  due to upstream network problems.</doc>
+      </member>
+      <member name="portal"
+              value="3"
+              c:identifier="G_NETWORK_CONNECTIVITY_PORTAL"
+              glib:nick="portal">
+        <doc xml:space="preserve">The host is behind a captive portal and
+  cannot reach the full Internet.</doc>
+      </member>
+      <member name="full"
+              value="4"
+              c:identifier="G_NETWORK_CONNECTIVITY_FULL"
+              glib:nick="full">
+        <doc xml:space="preserve">The host is connected to a network, and
+  appears to be able to reach the full Internet.</doc>
+      </member>
+    </enumeration>
     <interface name="NetworkMonitor"
                c:symbol-prefix="network_monitor"
                c:type="GNetworkMonitor"
@@ -51739,6 +54258,17 @@ See g_network_monitor_can_reach_async().</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="get_connectivity"
+              c:identifier="g_network_monitor_get_connectivity">
+        <return-value transfer-ownership="none">
+          <type name="NetworkConnectivity" c:type="GNetworkConnectivity"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="monitor" transfer-ownership="none">
+            <type name="NetworkMonitor" c:type="GNetworkMonitor*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_network_available"
               c:identifier="g_network_monitor_get_network_available"
               version="2.32">
@@ -51757,6 +54287,20 @@ reachable. See #GNetworkMonitor:network-available for more details.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_network_metered"
+              c:identifier="g_network_monitor_get_network_metered">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="monitor" transfer-ownership="none">
+            <type name="NetworkMonitor" c:type="GNetworkMonitor*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <property name="connectivity" transfer-ownership="none">
+        <type name="NetworkConnectivity"/>
+      </property>
       <property name="network-available"
                 version="2.32"
                 transfer-ownership="none">
@@ -51777,6 +54321,9 @@ hosts at all are reachable, and should indicate this to the user
 in its UI.)
 
 See also #GNetworkMonitor::network-changed.</doc>
+        <type name="gboolean" c:type="gboolean"/>
+      </property>
+      <property name="network-metered" transfer-ownership="none">
         <type name="gboolean" c:type="gboolean"/>
       </property>
       <glib:signal name="network-changed" when="last" version="2.32">
@@ -52446,6 +54993,43 @@ was sent on is activated.</doc>
   or emergency warnings)</doc>
       </member>
     </enumeration>
+    <record name="OutputMessage" c:type="GOutputMessage" version="2.44">
+      <doc xml:space="preserve">Structure used for scatter/gather data output when sending multiple
+messages or packets in one go. You generally pass in an array of
+#GOutputVectors and the operation will use all the buffers as if they
+were one buffer.
+
+If @address is %NULL then the message is sent to the default receiver
+(as previously set by g_socket_connect()).</doc>
+      <field name="address" writable="1">
+        <doc xml:space="preserve">a #GSocketAddress, or %NULL</doc>
+        <type name="SocketAddress" c:type="GSocketAddress*"/>
+      </field>
+      <field name="vectors" writable="1">
+        <doc xml:space="preserve">pointer to an array of output vectors</doc>
+        <type name="OutputVector" c:type="GOutputVector*"/>
+      </field>
+      <field name="num_vectors" writable="1">
+        <doc xml:space="preserve">the number of output vectors pointed to by @vectors.</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <field name="bytes_sent" writable="1">
+        <doc xml:space="preserve">initialize to 0. Will be set to the number of bytes
+    that have been sent</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+      <field name="control_messages" writable="1">
+        <doc xml:space="preserve">a pointer
+  to an array of #GSocketControlMessages, or %NULL.</doc>
+        <array length="5" zero-terminated="0" c:type="GSocketControlMessage**">
+          <type name="SocketControlMessage" c:type="GSocketControlMessage*"/>
+        </array>
+      </field>
+      <field name="num_control_messages" writable="1">
+        <doc xml:space="preserve">number of elements in @control_messages.</doc>
+        <type name="guint" c:type="guint"/>
+      </field>
+    </record>
     <class name="OutputStream"
            c:symbol-prefix="output_stream"
            c:type="GOutputStream"
@@ -53463,6 +56047,61 @@ the number of bytes written into the stream before the error occurred.</doc>
                      allow-none="1">
             <doc xml:space="preserve">optional #GCancellable object, %NULL to ignore.</doc>
             <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="write_all_async"
+              c:identifier="g_output_stream_write_all_async">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="stream" transfer-ownership="none">
+            <type name="OutputStream" c:type="GOutputStream*"/>
+          </instance-parameter>
+          <parameter name="buffer" transfer-ownership="none">
+            <type name="gpointer" c:type="void*"/>
+          </parameter>
+          <parameter name="count" transfer-ownership="none">
+            <type name="gsize" c:type="gsize"/>
+          </parameter>
+          <parameter name="io_priority" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+          <parameter name="callback"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1"
+                     scope="async"
+                     closure="5">
+            <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="write_all_finish"
+              c:identifier="g_output_stream_write_all_finish"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="stream" transfer-ownership="none">
+            <type name="OutputStream" c:type="GOutputStream*"/>
+          </instance-parameter>
+          <parameter name="result" transfer-ownership="none">
+            <type name="AsyncResult" c:type="GAsyncResult*"/>
+          </parameter>
+          <parameter name="bytes_written" transfer-ownership="none">
+            <type name="gsize" c:type="gsize*"/>
           </parameter>
         </parameters>
       </method>
@@ -55646,6 +58285,12 @@ If the action is disabled then calls to g_action_activate() and
 g_action_change_state() have no effect.</doc>
         <type name="gboolean" c:type="gboolean"/>
       </property>
+      <property name="invert-boolean"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </property>
       <property name="name"
                 version="2.38"
                 writable="1"
@@ -57060,6 +59705,7 @@ user interaction timestamp or startup notification information.
            c:symbol-prefix="resolver"
            c:type="GResolver"
            parent="GObject.Object"
+           abstract="1"
            glib:type-name="GResolver"
            glib:get-type="g_resolver_get_type"
            glib:type-struct="ResolverClass">
@@ -60248,6 +62894,19 @@ having a int32 type in the schema for @settings.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="get_int64" c:identifier="g_settings_get_int64">
+        <return-value transfer-ownership="none">
+          <type name="gint64" c:type="gint64"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="settings" transfer-ownership="none">
+            <type name="Settings" c:type="GSettings*"/>
+          </instance-parameter>
+          <parameter name="key" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="get_mapped" c:identifier="g_settings_get_mapped">
         <doc xml:space="preserve">Gets the value that is stored at @key in @settings, subject to
 application-level validation/mapping.
@@ -60395,6 +63054,19 @@ having a uint32 type in the schema for @settings.</doc>
           </instance-parameter>
           <parameter name="key" transfer-ownership="none">
             <doc xml:space="preserve">the key to get the value for</doc>
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_uint64" c:identifier="g_settings_get_uint64">
+        <return-value transfer-ownership="none">
+          <type name="guint64" c:type="guint64"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="settings" transfer-ownership="none">
+            <type name="Settings" c:type="GSettings*"/>
+          </instance-parameter>
+          <parameter name="key" transfer-ownership="none">
             <type name="utf8" c:type="const gchar*"/>
           </parameter>
         </parameters>
@@ -60777,6 +63449,22 @@ having a int32 type in the schema for @settings.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="set_int64" c:identifier="g_settings_set_int64">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="settings" transfer-ownership="none">
+            <type name="Settings" c:type="GSettings*"/>
+          </instance-parameter>
+          <parameter name="key" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="value" transfer-ownership="none">
+            <type name="gint64" c:type="gint64"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="set_string"
               c:identifier="g_settings_set_string"
               version="2.26">
@@ -60868,6 +63556,22 @@ having a uint32 type in the schema for @settings.</doc>
           <parameter name="value" transfer-ownership="none">
             <doc xml:space="preserve">the value to set it to</doc>
             <type name="guint" c:type="guint"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_uint64" c:identifier="g_settings_set_uint64">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="settings" transfer-ownership="none">
+            <type name="Settings" c:type="GSettings*"/>
+          </instance-parameter>
+          <parameter name="key" transfer-ownership="none">
+            <type name="utf8" c:type="const gchar*"/>
+          </parameter>
+          <parameter name="value" transfer-ownership="none">
+            <type name="guint64" c:type="guint64"/>
           </parameter>
         </parameters>
       </method>
@@ -61482,6 +64186,34 @@ relocatable schemas, this function will return %NULL.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="list_children"
+              c:identifier="g_settings_schema_list_children"
+              introspectable="0">
+        <return-value>
+          <array c:type="gchar**">
+            <type name="utf8"/>
+          </array>
+        </return-value>
+        <parameters>
+          <instance-parameter name="schema" transfer-ownership="none">
+            <type name="SettingsSchema" c:type="GSettingsSchema*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="list_keys"
+              c:identifier="g_settings_schema_list_keys"
+              introspectable="0">
+        <return-value>
+          <array c:type="gchar**">
+            <type name="utf8"/>
+          </array>
+        </return-value>
+        <parameters>
+          <instance-parameter name="schema" transfer-ownership="none">
+            <type name="SettingsSchema" c:type="GSettingsSchema*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="ref" c:identifier="g_settings_schema_ref" version="2.32">
         <doc xml:space="preserve">Increase the reference count of @schema, returning a new reference.</doc>
         <return-value transfer-ownership="full">
@@ -61557,6 +64289,16 @@ directory.</doc>
         <parameters>
           <instance-parameter name="key" transfer-ownership="none">
             <doc xml:space="preserve">a #GSettingsSchemaKey</doc>
+            <type name="SettingsSchemaKey" c:type="GSettingsSchemaKey*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_name" c:identifier="g_settings_schema_key_get_name">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="const gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="key" transfer-ownership="none">
             <type name="SettingsSchemaKey" c:type="GSettingsSchemaKey*"/>
           </instance-parameter>
         </parameters>
@@ -62012,6 +64754,20 @@ If the @value GVariant is floating, it is consumed.</doc>
           </instance-parameter>
           <parameter name="value" transfer-ownership="none">
             <doc xml:space="preserve">the new #GVariant for the state</doc>
+            <type name="GLib.Variant" c:type="GVariant*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_state_hint"
+              c:identifier="g_simple_action_set_state_hint">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="simple" transfer-ownership="none">
+            <type name="SimpleAction" c:type="GSimpleAction*"/>
+          </instance-parameter>
+          <parameter name="state_hint" transfer-ownership="none">
             <type name="GLib.Variant" c:type="GVariant*"/>
           </parameter>
         </parameters>
@@ -63046,6 +65802,38 @@ checks for cancellation.</doc>
         </parameter>
       </parameters>
     </callback>
+    <class name="SimpleIOStream"
+           c:symbol-prefix="simple_io_stream"
+           c:type="GSimpleIOStream"
+           parent="IOStream"
+           glib:type-name="GSimpleIOStream"
+           glib:get-type="g_simple_io_stream_get_type">
+      <constructor name="new" c:identifier="g_simple_io_stream_new">
+        <return-value transfer-ownership="full">
+          <type name="IOStream" c:type="GIOStream*"/>
+        </return-value>
+        <parameters>
+          <parameter name="input_stream" transfer-ownership="none">
+            <type name="InputStream" c:type="GInputStream*"/>
+          </parameter>
+          <parameter name="output_stream" transfer-ownership="none">
+            <type name="OutputStream" c:type="GOutputStream*"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <property name="input-stream"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="InputStream"/>
+      </property>
+      <property name="output-stream"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="OutputStream"/>
+      </property>
+    </class>
     <class name="SimplePermission"
            c:symbol-prefix="simple_permission"
            c:type="GSimplePermission"
@@ -63356,6 +66144,7 @@ if it tries to write to %stdout after it has been closed.
 Like most other APIs in GLib, #GSocket is not inherently thread safe. To use
 a #GSocket concurrently from multiple threads, you must implement your own
 locking.</doc>
+      <implements name="DatagramBased"/>
       <implements name="Initable"/>
       <constructor name="new"
                    c:identifier="g_socket_new"
@@ -64468,6 +67257,33 @@ the peer, or -1 on error</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="receive_messages"
+              c:identifier="g_socket_receive_messages"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="socket" transfer-ownership="none">
+            <type name="Socket" c:type="GSocket*"/>
+          </instance-parameter>
+          <parameter name="messages" transfer-ownership="none">
+            <type name="InputMessage" c:type="GInputMessage*"/>
+          </parameter>
+          <parameter name="num_messages" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="receive_with_blocking"
               c:identifier="g_socket_receive_with_blocking"
               version="2.26"
@@ -64651,6 +67467,33 @@ on error</doc>
                      nullable="1"
                      allow-none="1">
             <doc xml:space="preserve">a %GCancellable or %NULL</doc>
+            <type name="Cancellable" c:type="GCancellable*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="send_messages"
+              c:identifier="g_socket_send_messages"
+              throws="1">
+        <return-value transfer-ownership="none">
+          <type name="gint" c:type="gint"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="socket" transfer-ownership="none">
+            <type name="Socket" c:type="GSocket*"/>
+          </instance-parameter>
+          <parameter name="messages" transfer-ownership="none">
+            <type name="OutputMessage" c:type="GOutputMessage*"/>
+          </parameter>
+          <parameter name="num_messages" transfer-ownership="none">
+            <type name="guint" c:type="guint"/>
+          </parameter>
+          <parameter name="flags" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="cancellable"
+                     transfer-ownership="none"
+                     nullable="1"
+                     allow-none="1">
             <type name="Cancellable" c:type="GCancellable*"/>
           </parameter>
         </parameters>
@@ -66990,6 +69833,16 @@ calling g_socket_connectable_enumerate().</doc>
           </instance-parameter>
         </parameters>
       </virtual-method>
+      <virtual-method name="to_string" invoker="to_string">
+        <return-value transfer-ownership="full">
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="connectable" transfer-ownership="none">
+            <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
       <method name="enumerate"
               c:identifier="g_socket_connectable_enumerate"
               version="2.22">
@@ -67024,6 +69877,16 @@ calling g_socket_connectable_enumerate().</doc>
         <parameters>
           <instance-parameter name="connectable" transfer-ownership="none">
             <doc xml:space="preserve">a #GSocketConnectable</doc>
+            <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="to_string" c:identifier="g_socket_connectable_to_string">
+        <return-value transfer-ownership="full">
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="connectable" transfer-ownership="none">
             <type name="SocketConnectable" c:type="GSocketConnectable*"/>
           </instance-parameter>
         </parameters>
@@ -67063,6 +69926,18 @@ and #GProxyAddressEnumerator</doc>
           <parameters>
             <parameter name="connectable" transfer-ownership="none">
               <doc xml:space="preserve">a #GSocketConnectable</doc>
+              <type name="SocketConnectable" c:type="GSocketConnectable*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="to_string">
+        <callback name="to_string">
+          <return-value transfer-ownership="full">
+            <type name="utf8" c:type="gchar*"/>
+          </return-value>
+          <parameters>
+            <parameter name="connectable" transfer-ownership="none">
               <type name="SocketConnectable" c:type="GSocketConnectable*"/>
             </parameter>
           </parameters>
@@ -67583,6 +70458,7 @@ object.</doc>
     <record name="SocketControlMessageClass"
             c:type="GSocketControlMessageClass"
             glib:is-gtype-struct-for="SocketControlMessage">
+      <doc xml:space="preserve">Class structure for #GSocketControlMessage.</doc>
       <field name="parent_class">
         <type name="GObject.ObjectClass" c:type="GObjectClass"/>
       </field>
@@ -67735,7 +70611,7 @@ if available.)</doc>
         <doc xml:space="preserve">the IPv4 family</doc>
       </member>
       <member name="ipv6"
-              value="30"
+              value="10"
               c:identifier="G_SOCKET_FAMILY_IPV6"
               glib:nick="ipv6">
         <doc xml:space="preserve">the IPv6 family</doc>
@@ -67775,6 +70651,22 @@ or g_socket_listener_add_inet_port().</doc>
           <instance-parameter name="listener" transfer-ownership="none">
             <type name="SocketListener" c:type="GSocketListener*"/>
           </instance-parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="event">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="listener" transfer-ownership="none">
+            <type name="SocketListener" c:type="GSocketListener*"/>
+          </instance-parameter>
+          <parameter name="event" transfer-ownership="none">
+            <type name="SocketListenerEvent" c:type="GSocketListenerEvent*"/>
+          </parameter>
+          <parameter name="socket" transfer-ownership="none">
+            <type name="Socket" c:type="GSocket*"/>
+          </parameter>
         </parameters>
       </virtual-method>
       <method name="accept"
@@ -68211,10 +71103,24 @@ See g_socket_set_listen_backlog() for details</doc>
       <field name="priv">
         <type name="SocketListenerPrivate" c:type="GSocketListenerPrivate*"/>
       </field>
+      <glib:signal name="event" when="last">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="SocketListenerEvent"/>
+          </parameter>
+          <parameter name="p0" transfer-ownership="none">
+            <type name="Socket"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
     </class>
     <record name="SocketListenerClass"
             c:type="GSocketListenerClass"
             glib:is-gtype-struct-for="SocketListener">
+      <doc xml:space="preserve">Class structure for #GSocketListener.</doc>
       <field name="parent_class">
         <type name="GObject.ObjectClass" c:type="GObjectClass"/>
       </field>
@@ -68230,11 +71136,22 @@ See g_socket_set_listen_backlog() for details</doc>
           </parameters>
         </callback>
       </field>
-      <field name="_g_reserved1" introspectable="0">
-        <callback name="_g_reserved1">
+      <field name="event">
+        <callback name="event">
           <return-value transfer-ownership="none">
             <type name="none" c:type="void"/>
           </return-value>
+          <parameters>
+            <parameter name="listener" transfer-ownership="none">
+              <type name="SocketListener" c:type="GSocketListener*"/>
+            </parameter>
+            <parameter name="event" transfer-ownership="none">
+              <type name="SocketListenerEvent" c:type="GSocketListenerEvent*"/>
+            </parameter>
+            <parameter name="socket" transfer-ownership="none">
+              <type name="Socket" c:type="GSocket*"/>
+            </parameter>
+          </parameters>
         </callback>
       </field>
       <field name="_g_reserved2" introspectable="0">
@@ -68273,6 +71190,42 @@ See g_socket_set_listen_backlog() for details</doc>
         </callback>
       </field>
     </record>
+    <enumeration name="SocketListenerEvent"
+                 version="2.46"
+                 glib:type-name="GSocketListenerEvent"
+                 glib:get-type="g_socket_listener_event_get_type"
+                 c:type="GSocketListenerEvent">
+      <doc xml:space="preserve">Describes an event occurring on a #GSocketListener. See the
+#GSocketListener::event signal for more details.
+
+Additional values may be added to this type in the future.</doc>
+      <member name="binding"
+              value="0"
+              c:identifier="G_SOCKET_LISTENER_BINDING"
+              glib:nick="binding">
+        <doc xml:space="preserve">The listener is about to bind a socket.</doc>
+      </member>
+      <member name="bound"
+              value="1"
+              c:identifier="G_SOCKET_LISTENER_BOUND"
+              glib:nick="bound">
+        <doc xml:space="preserve">The listener has bound a socket.</doc>
+      </member>
+      <member name="listening"
+              value="2"
+              c:identifier="G_SOCKET_LISTENER_LISTENING"
+              glib:nick="listening">
+        <doc xml:space="preserve">The listener is about to start
+   listening on this socket.</doc>
+      </member>
+      <member name="listened"
+              value="3"
+              c:identifier="G_SOCKET_LISTENER_LISTENED"
+              glib:nick="listened">
+        <doc xml:space="preserve">The listener is now listening on
+  this socket.</doc>
+      </member>
+    </enumeration>
     <record name="SocketListenerPrivate"
             c:type="GSocketListenerPrivate"
             disguised="1">
@@ -68478,6 +71431,12 @@ will happen automatically when the #GSocketService is finalized.)</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <property name="active"
+                writable="1"
+                construct="1"
+                transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </property>
       <field name="parent_instance">
         <type name="SocketListener" c:type="GSocketListener"/>
       </field>
@@ -68515,6 +71474,7 @@ so you need to ref it yourself if you are planning to use it.</doc>
     <record name="SocketServiceClass"
             c:type="GSocketServiceClass"
             glib:is-gtype-struct-for="SocketService">
+      <doc xml:space="preserve">Class structure for #GSocketService.</doc>
       <field name="parent_class">
         <type name="SocketListenerClass" c:type="GSocketListenerClass"/>
       </field>
@@ -68802,19 +71762,19 @@ RFC 2782.</doc>
       </function>
     </record>
     <record name="StaticResource" c:type="GStaticResource">
-      <field name="data" writable="1">
+      <field name="data" readable="0" private="1">
         <type name="guint8" c:type="const guint8*"/>
       </field>
-      <field name="data_len" writable="1">
+      <field name="data_len" readable="0" private="1">
         <type name="gsize" c:type="gsize"/>
       </field>
-      <field name="resource" writable="1">
+      <field name="resource" readable="0" private="1">
         <type name="Resource" c:type="GResource*"/>
       </field>
-      <field name="next" writable="1">
+      <field name="next" readable="0" private="1">
         <type name="StaticResource" c:type="GStaticResource*"/>
       </field>
-      <field name="padding" writable="1">
+      <field name="padding" readable="0" private="1">
         <type name="gpointer" c:type="gpointer"/>
       </field>
       <method name="fini" c:identifier="g_static_resource_fini" version="2.32">
@@ -71058,6 +74018,16 @@ g_task_set_check_cancellable() for more details.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_completed" c:identifier="g_task_get_completed">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="task" transfer-ownership="none">
+            <type name="Task" c:type="GTask*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_context"
               c:identifier="g_task_get_context"
               version="2.36">
@@ -71612,6 +74582,9 @@ particular place.</doc>
           </parameter>
         </parameters>
       </method>
+      <property name="completed" transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </property>
     </class>
     <record name="TaskClass"
             c:type="GTaskClass"
@@ -72420,6 +75393,16 @@ by a TLS backend.</doc>
           </instance-parameter>
         </parameters>
       </virtual-method>
+      <virtual-method name="supports_dtls" invoker="supports_dtls">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="backend" transfer-ownership="none">
+            <type name="TlsBackend" c:type="GTlsBackend*"/>
+          </instance-parameter>
+        </parameters>
+      </virtual-method>
       <virtual-method name="supports_tls"
                       invoker="supports_tls"
                       version="2.28">
@@ -72484,6 +75467,28 @@ by a TLS backend.</doc>
           </instance-parameter>
         </parameters>
       </method>
+      <method name="get_dtls_client_connection_type"
+              c:identifier="g_tls_backend_get_dtls_client_connection_type">
+        <return-value transfer-ownership="none">
+          <type name="GType" c:type="GType"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="backend" transfer-ownership="none">
+            <type name="TlsBackend" c:type="GTlsBackend*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="get_dtls_server_connection_type"
+              c:identifier="g_tls_backend_get_dtls_server_connection_type">
+        <return-value transfer-ownership="none">
+          <type name="GType" c:type="GType"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="backend" transfer-ownership="none">
+            <type name="TlsBackend" c:type="GTlsBackend*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
       <method name="get_file_database_type"
               c:identifier="g_tls_backend_get_file_database_type"
               version="2.30">
@@ -72511,6 +75516,16 @@ by a TLS backend.</doc>
         <parameters>
           <instance-parameter name="backend" transfer-ownership="none">
             <doc xml:space="preserve">the #GTlsBackend</doc>
+            <type name="TlsBackend" c:type="GTlsBackend*"/>
+          </instance-parameter>
+        </parameters>
+      </method>
+      <method name="supports_dtls" c:identifier="g_tls_backend_supports_dtls">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="backend" transfer-ownership="none">
             <type name="TlsBackend" c:type="GTlsBackend*"/>
           </instance-parameter>
         </parameters>
@@ -72596,6 +75611,32 @@ by a TLS backend.</doc>
               <type name="TlsBackend" c:type="GTlsBackend*"/>
             </parameter>
           </parameters>
+        </callback>
+      </field>
+      <field name="supports_dtls">
+        <callback name="supports_dtls">
+          <return-value transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </return-value>
+          <parameters>
+            <parameter name="backend" transfer-ownership="none">
+              <type name="TlsBackend" c:type="GTlsBackend*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="get_dtls_client_connection_type">
+        <callback name="get_dtls_client_connection_type">
+          <return-value transfer-ownership="none">
+            <type name="GType" c:type="GType"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="get_dtls_server_connection_type">
+        <callback name="get_dtls_server_connection_type">
+          <return-value transfer-ownership="none">
+            <type name="GType" c:type="GType"/>
+          </return-value>
         </callback>
       </field>
     </record>
@@ -73076,6 +76117,33 @@ communicate with the server identified by @server_identity.</doc>
           </parameter>
         </parameters>
       </function>
+      <virtual-method name="copy_session_state" invoker="copy_session_state">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="TlsClientConnection" c:type="GTlsClientConnection*"/>
+          </instance-parameter>
+          <parameter name="source" transfer-ownership="none">
+            <type name="TlsClientConnection" c:type="GTlsClientConnection*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="copy_session_state"
+              c:identifier="g_tls_client_connection_copy_session_state">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="conn" transfer-ownership="none">
+            <type name="TlsClientConnection" c:type="GTlsClientConnection*"/>
+          </instance-parameter>
+          <parameter name="source" transfer-ownership="none">
+            <type name="TlsClientConnection" c:type="GTlsClientConnection*"/>
+          </parameter>
+        </parameters>
+      </method>
       <method name="get_accepted_cas"
               c:identifier="g_tls_client_connection_get_accepted_cas"
               version="2.28">
@@ -73274,9 +76342,27 @@ overrides the default via #GTlsConnection::accept-certificate.</doc>
     </interface>
     <record name="TlsClientConnectionInterface"
             c:type="GTlsClientConnectionInterface"
-            glib:is-gtype-struct-for="TlsClientConnection">
+            glib:is-gtype-struct-for="TlsClientConnection"
+            version="2.26">
+      <doc xml:space="preserve">vtable for a #GTlsClientConnection implementation.</doc>
       <field name="g_iface">
+        <doc xml:space="preserve">The parent interface.</doc>
         <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+      </field>
+      <field name="copy_session_state">
+        <callback name="copy_session_state">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="conn" transfer-ownership="none">
+              <type name="TlsClientConnection" c:type="GTlsClientConnection*"/>
+            </parameter>
+            <parameter name="source" transfer-ownership="none">
+              <type name="TlsClientConnection" c:type="GTlsClientConnection*"/>
+            </parameter>
+          </parameters>
+        </callback>
       </field>
     </record>
     <class name="TlsConnection"
@@ -77099,6 +80185,7 @@ g_tls_password_get_flags().</doc>
     <record name="TlsPasswordClass"
             c:type="GTlsPasswordClass"
             glib:is-gtype-struct-for="TlsPassword">
+      <doc xml:space="preserve">Class structure for #GTlsPassword.</doc>
       <field name="parent_class">
         <type name="GObject.ObjectClass" c:type="GObjectClass"/>
       </field>
@@ -77280,8 +80367,11 @@ rehandshake with a different mode from the initial handshake.</doc>
     </interface>
     <record name="TlsServerConnectionInterface"
             c:type="GTlsServerConnectionInterface"
-            glib:is-gtype-struct-for="TlsServerConnection">
+            glib:is-gtype-struct-for="TlsServerConnection"
+            version="2.26">
+      <doc xml:space="preserve">vtable for a #GTlsServerConnection implementation.</doc>
       <field name="g_iface">
+        <doc xml:space="preserve">The parent interface.</doc>
         <type name="GObject.TypeInterface" c:type="GTypeInterface"/>
       </field>
     </record>
@@ -78299,6 +81389,13 @@ g_unix_mount_monitor_set_rate_limit() to change this.</doc>
           <type name="UnixMountMonitor" c:type="GUnixMountMonitor*"/>
         </return-value>
       </constructor>
+      <function name="get"
+                c:identifier="g_unix_mount_monitor_get"
+                introspectable="0">
+        <return-value>
+          <type name="UnixMountMonitor" c:type="GUnixMountMonitor*"/>
+        </return-value>
+      </function>
       <method name="set_rate_limit"
               c:identifier="g_unix_mount_monitor_set_rate_limit"
               version="2.18">
@@ -79356,6 +82453,64 @@ be parsed by the #GVfs module.</doc>
           </parameter>
         </parameters>
       </method>
+      <method name="register_uri_scheme"
+              c:identifier="g_vfs_register_uri_scheme">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="vfs" transfer-ownership="none">
+            <type name="Vfs" c:type="GVfs*"/>
+          </instance-parameter>
+          <parameter name="scheme" transfer-ownership="none">
+            <type name="utf8" c:type="const char*"/>
+          </parameter>
+          <parameter name="uri_func"
+                     transfer-ownership="none"
+                     scope="notified"
+                     closure="2"
+                     destroy="3">
+            <type name="VfsFileLookupFunc" c:type="GVfsFileLookupFunc"/>
+          </parameter>
+          <parameter name="uri_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+          <parameter name="uri_destroy"
+                     transfer-ownership="none"
+                     scope="async">
+            <type name="GLib.DestroyNotify" c:type="GDestroyNotify"/>
+          </parameter>
+          <parameter name="parse_name_func"
+                     transfer-ownership="none"
+                     scope="notified"
+                     closure="5"
+                     destroy="6">
+            <type name="VfsFileLookupFunc" c:type="GVfsFileLookupFunc"/>
+          </parameter>
+          <parameter name="parse_name_data" transfer-ownership="none">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+          <parameter name="parse_name_destroy"
+                     transfer-ownership="none"
+                     scope="async">
+            <type name="GLib.DestroyNotify" c:type="GDestroyNotify"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="unregister_uri_scheme"
+              c:identifier="g_vfs_unregister_uri_scheme">
+        <return-value transfer-ownership="none">
+          <type name="gboolean" c:type="gboolean"/>
+        </return-value>
+        <parameters>
+          <instance-parameter name="vfs" transfer-ownership="none">
+            <type name="Vfs" c:type="GVfs*"/>
+          </instance-parameter>
+          <parameter name="scheme" transfer-ownership="none">
+            <type name="utf8" c:type="const char*"/>
+          </parameter>
+        </parameters>
+      </method>
       <field name="parent_instance">
         <type name="GObject.Object" c:type="GObject"/>
       </field>
@@ -79627,6 +82782,35 @@ be parsed by the #GVfs module.</doc>
         </callback>
       </field>
     </record>
+    <callback name="VfsFileLookupFunc"
+              c:type="GVfsFileLookupFunc"
+              version="2.50">
+      <doc xml:space="preserve">This function type is used by g_vfs_register_uri_scheme() to make it
+possible for a client to associate an URI scheme to a different #GFile
+implementation.
+
+The client should return a reference to the new file that has been
+created for @uri, or %NULL to continue with the default implementation.</doc>
+      <return-value transfer-ownership="full">
+        <doc xml:space="preserve">a #GFile for @identifier.</doc>
+        <type name="File" c:type="GFile*"/>
+      </return-value>
+      <parameters>
+        <parameter name="vfs" transfer-ownership="none">
+          <doc xml:space="preserve">a #GVfs</doc>
+          <type name="Vfs" c:type="GVfs*"/>
+        </parameter>
+        <parameter name="identifier" transfer-ownership="none">
+          <doc xml:space="preserve">the identifier to lookup a #GFile for. This can either
+    be an URI or a parse name as returned by g_file_get_parse_name()</doc>
+          <type name="utf8" c:type="const char*"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none" closure="2">
+          <doc xml:space="preserve">user data passed to the function</doc>
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </callback>
     <interface name="Volume"
                c:symbol-prefix="volume"
                c:type="GVolume"
@@ -82365,6 +85549,51 @@ required.</doc>
                    allow-none="1">
           <doc xml:space="preserve">an optional #GAppLaunchContext.</doc>
           <type name="AppLaunchContext" c:type="GAppLaunchContext*"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="app_info_launch_default_for_uri_async"
+              c:identifier="g_app_info_launch_default_for_uri_async"
+              moved-to="AppInfo.launch_default_for_uri_async">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="uri" transfer-ownership="none">
+          <type name="utf8" c:type="const char*"/>
+        </parameter>
+        <parameter name="launch_context" transfer-ownership="none">
+          <type name="AppLaunchContext" c:type="GAppLaunchContext*"/>
+        </parameter>
+        <parameter name="cancellable"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1">
+          <type name="Cancellable" c:type="GCancellable*"/>
+        </parameter>
+        <parameter name="callback"
+                   transfer-ownership="none"
+                   nullable="1"
+                   allow-none="1"
+                   scope="async"
+                   closure="4">
+          <type name="AsyncReadyCallback" c:type="GAsyncReadyCallback"/>
+        </parameter>
+        <parameter name="user_data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="app_info_launch_default_for_uri_finish"
+              c:identifier="g_app_info_launch_default_for_uri_finish"
+              moved-to="AppInfo.launch_default_for_uri_finish"
+              throws="1">
+      <return-value transfer-ownership="none">
+        <type name="gboolean" c:type="gboolean"/>
+      </return-value>
+      <parameters>
+        <parameter name="result" transfer-ownership="none">
+          <type name="AsyncResult" c:type="GAsyncResult*"/>
         </parameter>
       </parameters>
     </function>
