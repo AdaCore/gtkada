@@ -2014,6 +2014,11 @@ is connected). Use G_CALLBACK() to cast the callback function to a #GCallback.</
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
+      <parameters>  <!-- AdaCore -->
+        <parameter name="data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
     </callback>
     <callback name="ClassFinalizeFunc" c:type="GClassFinalizeFunc">
       <doc xml:space="preserve">A callback function used by the type system to finalize a class.

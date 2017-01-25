@@ -28248,7 +28248,6 @@ using functions deprecated in later releases will not).</doc>
             c:type="GVariant"
             version="2.24"
             glib:type-name="GVariant"
-            glib:get-type="intern"
             c:symbol-prefix="variant">
       <doc xml:space="preserve">#GVariant is a variant datatype; it stores a value along with
 information about the type of that value.  The range of possible
@@ -30339,7 +30338,7 @@ function with #GHashTable.  @value must be a #GVariant.</doc>
         <parameters>
           <instance-parameter name="value" transfer-ownership="none">
             <doc xml:space="preserve">a basic #GVariant value as a #gconstpointer</doc>
-            <type name="Variant" c:type="gconstpointer"/>
+            <type name="Variant" c:type="GVariant*"/>
           </instance-parameter>
         </parameters>
       </method>
