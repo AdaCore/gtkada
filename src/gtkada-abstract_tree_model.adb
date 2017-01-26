@@ -86,7 +86,7 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_N_Children
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter)
+      Iter       : Gtk_Tree_Iter)
       return Glib.Gint;
    pragma Convention (C, Dispatch_Iter_N_Children);
 
@@ -363,16 +363,12 @@ package body Gtkada.Abstract_Tree_Model is
 
    function Dispatch_Iter_N_Children
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter)
+      Iter       : Gtk_Tree_Iter)
       return Glib.Gint
    is
       T : constant Gtk_Abstract_Tree_Model := -Tree_Model;
    begin
-      if Iter = null then
-         return T.N_Children (Null_Iter);
-      else
-         return T.N_Children (Iter.all);
-      end if;
+      return T.N_Children (Iter);
    exception
       when E : others =>
          Process_Exception (E);

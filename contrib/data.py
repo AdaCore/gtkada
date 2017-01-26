@@ -77,13 +77,18 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkCursor",
            "GdkDevice",
            "GdkDeviceManager",
+           "GdkDeviceTool",
            "GdkDisplay",
            "GdkDragContext",
+           "GdkDrawingContext",
            "GdkEvent",
            "GdkFrameClock",
            "GdkFrameTimings",
+           "GdkGLContext",
+           "GdkMonitor",
            "GdkRGBA",
            "GdkScreen",
+           "GdkSeat",
            "GdkWindow",
 
            "GApplication",
@@ -466,6 +471,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkScrollbar",
            "GtkScrolledWindow",
            "--GtkScrolledWindowAccessible",  # We do not support atk
+           "GtkShortcutsWindow",
            "GtkSettings",
            "--GtkSocket",  # X11-specific, no binding
            "GtkSpinner",
