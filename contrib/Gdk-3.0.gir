@@ -6987,7 +6987,7 @@ gdk_event_get_source_device() to get the slave device.</doc>
       </field>
       <field name="phase" writable="1">
         <doc xml:space="preserve">the current phase of the gesture</doc>
-        <type name="TouchpadGesturePhase"/>
+        <type name="TouchpadGesturePhase" c:type="GdkTouchpadGesturePhase"/>
       </field>
       <field name="n_fingers" writable="1">
         <doc xml:space="preserve">The number of fingers triggering the pinch</doc>
@@ -7056,7 +7056,7 @@ gdk_event_get_source_device() to get the slave device.</doc>
       </field>
       <field name="phase" writable="1">
         <doc xml:space="preserve">the current phase of the gesture</doc>
-        <type name="TouchpadGesturePhase"/>
+        <type name="TouchpadGesturePhase" c:type="GdkTouchpadGesturePhase"/>
       </field>
       <field name="n_fingers" writable="1">
         <doc xml:space="preserve">The number of fingers triggering the swipe</doc>

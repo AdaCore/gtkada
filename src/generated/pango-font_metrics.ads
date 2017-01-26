@@ -36,6 +36,15 @@ with Glib; use Glib;
 
 package Pango.Font_Metrics is
 
+   type Pango_Font_Metrics is private;
+   function From_Object_Free (B : access Pango_Font_Metrics) return Pango_Font_Metrics;
+   pragma Inline (From_Object_Free);
+   --  A Pango.Font_Metrics.Pango_Font_Metrics structure holds the overall
+   --  metric information for a font (possibly restricted to a script). The
+   --  fields of this structure are private to implementations of a font
+   --  backend. See the documentation of the corresponding getters for
+   --  documentation of their meaning.
+
    ------------------
    -- Constructors --
    ------------------
@@ -124,5 +133,19 @@ package Pango.Font_Metrics is
    pragma Import (C, Unref, "pango_font_metrics_unref");
    --  Decrease the reference count of a font metrics structure by one. If the
    --  result is zero, frees the structure and any associated memory.
+
+private
+type Pango_Font_Metrics is record
+   Ref_Count : Guint;
+   Ascent : Gint;
+   Descent : Gint;
+   Approximate_Char_Width : Gint;
+   Approximate_Digit_Width : Gint;
+   Underline_Position : Gint;
+   Underline_Thickness : Gint;
+   Strikethrough_Position : Gint;
+   Strikethrough_Thickness : Gint;
+end record;
+pragma Convention (C, Pango_Font_Metrics);
 
 end Pango.Font_Metrics;

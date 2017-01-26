@@ -37,7 +37,6 @@ with Gdk;                     use Gdk;
 with Gdk.Display;             use Gdk.Display;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Screen;              use Gdk.Screen;
-with Gdk.Seat;                use Gdk.Seat;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -58,6 +57,20 @@ package Gdk.Device is
    --  Indicates the device type. See [above][GdkDeviceManager.description]
    --  for more information about the meaning of these device types.
 
+   type Gdk_Axis_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gdk_Axis_Flags);
+   --  Flags describing the current capabilities of a device/tool.
+
+   Gdk_Axis_Flag_X : constant Gdk_Axis_Flags := 2;
+   Gdk_Axis_Flag_Y : constant Gdk_Axis_Flags := 4;
+   Gdk_Axis_Flag_Pressure : constant Gdk_Axis_Flags := 8;
+   Gdk_Axis_Flag_Xtilt : constant Gdk_Axis_Flags := 16;
+   Gdk_Axis_Flag_Ytilt : constant Gdk_Axis_Flags := 32;
+   Gdk_Axis_Flag_Wheel : constant Gdk_Axis_Flags := 64;
+   Gdk_Axis_Flag_Distance : constant Gdk_Axis_Flags := 128;
+   Gdk_Axis_Flag_Rotation : constant Gdk_Axis_Flags := 256;
+   Gdk_Axis_Flag_Slider : constant Gdk_Axis_Flags := 512;
+
    function Convert (R : Gdk.Device.Gdk_Device) return System.Address;
    function Convert (R : System.Address) return Gdk.Device.Gdk_Device;
    package Device_List is new Generic_List (Gdk.Device.Gdk_Device);
@@ -69,6 +82,10 @@ package Gdk.Device is
    package Gdk_Device_Type_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Device_Type);
    type Property_Gdk_Device_Type is new Gdk_Device_Type_Properties.Property;
+
+   package Gdk_Axis_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Axis_Flags);
+   type Property_Gdk_Axis_Flags is new Gdk_Axis_Flags_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -190,11 +207,6 @@ package Gdk.Device is
    --  couldn't be obtained. This ID is retrieved from the device, and is thus
    --  constant for it. See Gdk.Device.Get_Vendor_Id for more information.
    --  Since: gtk+ 3.16
-
-   function Get_Seat
-      (Self : not null access Gdk_Device_Record) return Gdk.Seat.Gdk_Seat;
-   --  Returns the Gdk.Seat.Gdk_Seat the device belongs to.
-   --  Since: gtk+ 3.20
 
    function Get_Source
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Source;
@@ -448,26 +460,12 @@ package Gdk.Device is
    --  slave device axes and keys.
    --    procedure Handler (Self : access Gdk_Device_Record'Class)
 
-   type Cb_Gdk_Device_Device_Tool_Void is not null access procedure
-     (Self : access Gdk_Device_Record'Class;
-      Tool : Device_Tool);
-
-   type Cb_GObject_Device_Tool_Void is not null access procedure
-     (Self : access Glib.Object.GObject_Record'Class;
-      Tool : Device_Tool);
-
    Signal_Tool_Changed : constant Glib.Signal_Name := "tool-changed";
-   procedure On_Tool_Changed
-      (Self  : not null access Gdk_Device_Record;
-       Call  : Cb_Gdk_Device_Device_Tool_Void;
-       After : Boolean := False);
-   procedure On_Tool_Changed
-      (Self  : not null access Gdk_Device_Record;
-       Call  : Cb_GObject_Device_Tool_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The ::tool-changed signal is emitted on pen/eraser Gdk_Devices whenever
    --  tools enter or leave proximity.
+   --    procedure Handler
+   --       (Self : access Gdk_Device_Record'Class;
+   --        Tool : Device_Tool)
 
 private
    Vendor_Id_Property : constant Glib.Properties.Property_String :=

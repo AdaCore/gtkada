@@ -31,30 +31,6 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Flow_Box is
 
-   procedure C_Gtk_Flow_Box_Bind_Model
-      (Self                : System.Address;
-       Model               : Glist.Model.Glist_Model;
-       Create_Widget_Func  : System.Address;
-       User_Data           : System.Address;
-       User_Data_Free_Func : Glib.G_Destroy_Notify_Address);
-   pragma Import (C, C_Gtk_Flow_Box_Bind_Model, "gtk_flow_box_bind_model");
-   --  Binds Model to Box.
-   --  If Box was already bound to a model, that previous binding is
-   --  destroyed.
-   --  The contents of Box are cleared and then filled with widgets that
-   --  represent items from Model. Box is updated whenever Model changes. If
-   --  Model is null, Box is left empty.
-   --  It is undefined to add or remove widgets directly (for example, with
-   --  Gtk.Flow_Box.Insert or Gtk.Container.Add) while Box is bound to a model.
-   --  Note that using a model is incompatible with the filtering and sorting
-   --  functionality in GtkFlowBox. When using a model, filtering and sorting
-   --  should be implemented by the model.
-   --  Since: gtk+ 3.18
-   --  "model": the Glist.Model.Glist_Model to be bound to Box
-   --  "create_widget_func": a function that creates widgets for items
-   --  "user_data": user data passed to Create_Widget_Func
-   --  "user_data_free_func": function for freeing User_Data
-
    procedure C_Gtk_Flow_Box_Selected_Foreach
       (Self : System.Address;
        Func : System.Address;
@@ -80,7 +56,7 @@ package body Gtk.Flow_Box is
    --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
    --  called.
    --  Note that using a filter function is incompatible with using a model
-   --  (see Gtk.Flow_Box.Bind_Model).
+   --  (see gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "filter_func": callback that lets you filter which children to show
    --  "user_data": user data passed to Filter_Func
@@ -99,17 +75,11 @@ package body Gtk.Flow_Box is
    --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
    --  called.
    --  Note that using a sort function is incompatible with using a model (see
-   --  Gtk.Flow_Box.Bind_Model).
+   --  gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "sort_func": the sort function
    --  "user_data": user data passed to Sort_Func
    --  "destroy": destroy notifier for User_Data
-
-   function To_Gtk_Flow_Box_Create_Widget_Func is new Ada.Unchecked_Conversion
-     (System.Address, Gtk_Flow_Box_Create_Widget_Func);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gtk_Flow_Box_Create_Widget_Func, System.Address);
 
    function To_Gtk_Flow_Box_Foreach_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Flow_Box_Foreach_Func);
@@ -128,13 +98,6 @@ package body Gtk.Flow_Box is
 
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Flow_Box_Sort_Func, System.Address);
-
-   function Internal_Gtk_Flow_Box_Create_Widget_Func
-      (Item      : System.Address;
-       User_Data : System.Address) return System.Address;
-   pragma Convention (C, Internal_Gtk_Flow_Box_Create_Widget_Func);
-   --  "item": the item from the model for which to create a widget for
-   --  "user_data": user data from Gtk.Flow_Box.Bind_Model
 
    function Internal_Gtk_Flow_Box_Filter_Func
       (Child     : System.Address;
@@ -160,19 +123,6 @@ package body Gtk.Flow_Box is
    --  "child1": the first child
    --  "child2": the second child
    --  "user_data": user data
-
-   ----------------------------------------------
-   -- Internal_Gtk_Flow_Box_Create_Widget_Func --
-   ----------------------------------------------
-
-   function Internal_Gtk_Flow_Box_Create_Widget_Func
-      (Item      : System.Address;
-       User_Data : System.Address) return System.Address
-   is
-      Func : constant Gtk_Flow_Box_Create_Widget_Func := To_Gtk_Flow_Box_Create_Widget_Func (User_Data);
-   begin
-      return Get_Object (Func (Item));
-   end Internal_Gtk_Flow_Box_Create_Widget_Func;
 
    ---------------------------------------
    -- Internal_Gtk_Flow_Box_Filter_Func --
@@ -256,82 +206,6 @@ package body Gtk.Flow_Box is
          Set_Object (Self, Internal);
       end if;
    end Initialize;
-
-   ----------------
-   -- Bind_Model --
-   ----------------
-
-   procedure Bind_Model
-      (Self                : not null access Gtk_Flow_Box_Record;
-       Model               : Glist.Model.Glist_Model;
-       Create_Widget_Func  : Gtk_Flow_Box_Create_Widget_Func;
-       User_Data_Free_Func : Glib.G_Destroy_Notify_Address)
-   is
-   begin
-      if Create_Widget_Func = null then
-         C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, System.Null_Address, System.Null_Address, User_Data_Free_Func);
-      else
-         C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, Internal_Gtk_Flow_Box_Create_Widget_Func'Address, To_Address (Create_Widget_Func), User_Data_Free_Func);
-      end if;
-   end Bind_Model;
-
-   package body Bind_Model_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-
-      function To_Gtk_Flow_Box_Create_Widget_Func is new Ada.Unchecked_Conversion
-        (System.Address, Gtk_Flow_Box_Create_Widget_Func);
-
-      function To_Address is new Ada.Unchecked_Conversion
-        (Gtk_Flow_Box_Create_Widget_Func, System.Address);
-
-      function Internal_Cb
-         (Item      : System.Address;
-          User_Data : System.Address) return System.Address;
-      pragma Convention (C, Internal_Cb);
-      --  Called for flow boxes that are bound to a Glist.Model.Glist_Model
-      --  with Gtk.Flow_Box.Bind_Model for each item that gets added to the
-      --  model.
-      --  Since: gtk+ 3.18
-      --  "item": the item from the model for which to create a widget for
-      --  "user_data": user data from Gtk.Flow_Box.Bind_Model
-
-      ----------------
-      -- Bind_Model --
-      ----------------
-
-      procedure Bind_Model
-         (Self                : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
-          Model               : Glist.Model.Glist_Model;
-          Create_Widget_Func  : Gtk_Flow_Box_Create_Widget_Func;
-          User_Data           : User_Data_Type;
-          User_Data_Free_Func : Glib.G_Destroy_Notify_Address)
-      is
-         D : System.Address;
-      begin
-         if Create_Widget_Func = null then
-            C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, System.Null_Address, System.Null_Address, User_Data_Free_Func);
-         else
-            D := Users.Build (To_Address (Create_Widget_Func), User_Data);
-            C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, Internal_Cb'Address, D, User_Data_Free_Func);
-         end if;
-      end Bind_Model;
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      function Internal_Cb
-         (Item      : System.Address;
-          User_Data : System.Address) return System.Address
-      is
-         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
-      begin
-         return Get_Object (To_Gtk_Flow_Box_Create_Widget_Func (D.Func) (Item, D.Data.all));
-      end Internal_Cb;
-
-   end Bind_Model_User_Data;
 
    ----------------------------------
    -- Get_Activate_On_Single_Click --

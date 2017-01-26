@@ -11,6 +11,7 @@
 
    <package id="GdkDevice">
       <enum ctype="GdkDeviceType" />
+      <enum ctype="GdkAxisFlags" />
       <list ada="Device_List" ctype="GdkDevice"/>
       <method id="::changed" bind="False" /> <!-- elaboration circularity -->
       <method id="gdk_device_get_axis" bind="False" /><!-- need support for array of gdoubles -->
@@ -24,6 +25,11 @@
       <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
       <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support
       for Gdk_Device_Type_Master lists -->
+
+      <method id="gdk_device_get_seat" bind="False"/> <!-- circular dependency -->
+
+      <method id="::changed" bind="False"/> <!-- ??? How to rename the parameter? -->
+      <method id="::tool-changed" bind="False"/> <!--  same as above -->
 
       <extra>
          <spec>
@@ -101,6 +107,10 @@
       </extra>
    </package>
 
+   <package id="GdkDeviceTool">
+      <enum ctype="GdkDeviceToolType" />
+   </package>
+
    <!-- ################################################
         Gdk.Drag_Contexts
         ################################################-->
@@ -108,7 +118,12 @@
    <package id="GdkDragContext">
       <enum ctype="GdkDragAction" prefix="GDK_"/>
       <enum ctype="GdkDragProtocol" prefix="GDK_"/>
+      <enum ctype="GdkDragCancelReason" prefix="GDK_"/>
       <method id="gdk_drag_context_list_targets" bind="False"/><!-- not supposed to be used by applications -->
+
+     <method id="::action-changed" bind="False" /> <!-- ??? can't figure out how to make the parameter work -->
+     <method id="::cancel" bind="False" /> <!-- same as above -->
+
    </package>
 
    <!-- ################################################
@@ -2174,6 +2189,8 @@ __PRE__
 
       <method id="gtk_status_icon_position_menu">
         <parameter name="user_data" ada="Icon" type="Glib.Object.GObject"/>
+        <parameter name="x" direction="out"/>
+        <parameter name="y" direction="out"/>
         <body>
       procedure Internal
          (Menu    : System.Address;
@@ -2477,6 +2494,9 @@ __PRE__
      <method id="gtk_widget_class_set_template" bind="False"/> <!-- needs GBytes -->
      <method id="gtk_widget_class_set_template_from_resource" bind="False"/> <!-- needs GBytes -->
      <method id="gtk_widget_class_bind_template_callback_full" bind="False"/> <!-- useless withouth gtk_widget_class_set_template -->
+
+     <method id="gtk_widget_class_set_connect_func" bind="False"/> <!-- intended
+         for language binders, creates circular dep -->
    </package>
 
    <package id="GtkWidget" needs_merge="false">
@@ -2513,6 +2533,7 @@ __PRE__
      <method id="gtk_drag_dest_set_target_list" bind="False"/><!-- in Gtk.Dnd-->
      <method id="gtk_drag_dest_set" bind="False"/><!-- in Gtk.Dnd -->
      <method id="gtk_drag_source_set" bind="False"/><!-- in Gtk.Dnd -->
+
      <method id="gtk_widget_modify_base" obsolescent="True"/>
      <method id="gtk_widget_modify_fg" obsolescent="True">
         <doc extend="true">
@@ -2702,7 +2723,7 @@ __PRE__
        Width      : Glib.Gint;
        Minimum_Size, Natural_Size : out Glib.Gint);
    --  Call the default implementation
- 
+
    procedure Inherited_Size_Allocate
       (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
@@ -2724,7 +2745,7 @@ __PRE__
       (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class);
    --  Call the inherited realize.
- 
+
    ---------------------------
    -- Override Draw handler --
    ---------------------------
@@ -3442,6 +3463,7 @@ __PRE__
    </package>
 
    <package id="GtkStyleContext">
+     <enum ctype="GtkStyleContextPrintFlags"/>
      <method id="gtk_style_context_has_region"
              return_as_param="Is_Defined"/>
      <method id="gtk_style_context_list_classes" return="StringList"/>
@@ -4022,6 +4044,7 @@ creating a tag.
    <package id="GtkTextView">
      <parameter name="self" ada="View"/>
      <enum ctype="GtkTextViewLayer" />
+     <enum ctype="GtkTextExtendSelection"/>
 
      <!-- These are now inherited from the Scrollable interface -->
      <method id="gtk_text_view_get_hadjustment" bind="false"/>
@@ -4058,6 +4081,7 @@ text. Since: 3.14
      <method id="::from-embedder" bind="False" />
      <method id="::to-embedder" bind="False" />
      <method id="::create-surface" bind="False" />
+     <method id="::moved-to-rect" bind="False" />
      <method id="gdk_window_add_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_remove_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_get_children" return="GdkWindowList"/>
@@ -4213,6 +4237,7 @@ text. Since: 3.14
      <enum ctype="GdkWindowState" prefix="GDK_"/>
      <enum ctype="GdkSettingAction" prefix="GDK_"/>
      <enum ctype="GdkOwnerChange" prefix="GDK_"/>
+     <enum ctype="GdkTouchpadGesturePhase" prefix="GDK_"/>
 
      <!-- All the record types that should be visible in gdk-event.ads -->
      <record ctype="GdkEventSequence"/>
@@ -4231,6 +4256,11 @@ text. Since: 3.14
      <record ctype="GdkEventOwnerChange"/>
      <record ctype="GdkEventProximity"/>
      <record ctype="GdkEventDND"/>
+     <record ctype="GdkEventWindowState"/>
+     <record ctype="GdkEventTouchpadPinch"/>
+     <record ctype="GdkEventTouchpadSwipe"/>
+     <record ctype="GdkEventPadButton"/>
+     <record ctype="GdkEventPadAxis"/>
      <record ctype="GdkEventWindowState"/>
      <record ctype="GdkEventSetting"/>
      <record ctype="GdkEventTouch"/>
@@ -4315,6 +4345,8 @@ text. Since: 3.14
      <method id="gdk_event_set_source_device" bind="False"/>
      <method id="gdk_event_get_screen" bind="False"/>
      <method id="gdk_event_set_screen" bind="False"/>
+     <method id="gdk_event_get_seat" bind="False"/>
+     <method id="gdk_event_set_seat" bind="False"/>
 
      <function id="gdk_events_pending" ada="Events_Pending"/>
      <method id="gdk_events_get_angle" ada="Get_Angle"/>
@@ -4393,6 +4425,9 @@ text. Since: 3.14
    pragma Export (C, Invalid_Gulong_Value, "ada_gdk_invalid_gulong_value");
        </spec>
        <body>
+
+   use Glib.Object;
+
    function From_Address (C : System.Address) return Gdk_Event is
       function Convert is new Ada.Unchecked_Conversion
            (Glib.C_Proxy, Gdk_Event);
@@ -4434,6 +4469,27 @@ text. Since: 3.14
 
      <doc group="Gdk, the low-level API"/>
      <parameter name="self" ada="Event"/>
+   </package>
+
+   <package id="GdkSeat">
+      <enum ctype="GdkSeatCapabilities" prefix="GTK_"/>
+      <list ada="Seat_List" ctype="GdkSeat"/>
+      <method id="gdk_seat_get_slaves" return="DeviceList"/>
+      <method id="::device-added">
+         <parameter name="device" ctype="GdkDevice*"/>
+      </method>
+      <method id="::device-removed">
+         <parameter name="device" ctype="GdkDevice*"/>
+      </method>
+      <method id="::tool-added">
+        <parameter name="tool" ctype="GdkDeviceTool*"/>
+      </method>
+      <method id="::tool-removed">
+        <parameter name="tool" ctype="GdkDeviceTool*"/>
+      </method>
+      <extra>
+         <with_spec pkg="Gdk.Types"/>
+      </extra>
    </package>
 
    <package id="GtkRadioToolButton">
@@ -4750,7 +4806,7 @@ text. Since: 3.14
    </package>
 
    <package id="PangoFontMetrics">
-      <!--<record ctype="PangoFontMetrics" private="true"/>-->
+      <record ctype="PangoFontMetrics" private="true"/>
    </package>
 
    <package id="PangoFontset">
@@ -8152,6 +8208,18 @@ package body Generic_Set is
       <method id="gdk_display_device_is_grabbed" bind="False"/> <!-- circular dependency -->
       <method id="gdk_display_store_clipboard" bind="False"/> <!-- see below -->
       <method id="gdk_display_get_window_at_pointer" bind="False"/> <!-- see below -->
+      <method id="gdk_display_get_default_seat" bind="False"/> <!-- circular dependency -->
+      <method id="gdk_display_list_seats" return="ObjectList"/>
+      <method id="::seat-added" bind="False"/><!-- circular dependency -->
+      <method id="::seat-removed" bind="False"/><!-- circular dependency -->
+
+      <method id="::monitor-added">
+         <parameter name="monitor" ctype="GdkMonitor*"/>
+      </method>
+      <method id="::monitor-removed">
+         <parameter name="monitor" ctype="GdkMonitor*"/>
+      </method>
+
       <extra>
          <spec>
    procedure Store_Clipboard
@@ -8225,6 +8293,11 @@ package body Generic_Set is
       </extra>
    </package>
 
+   <package id="GdkMonitor">
+     <enum ctype="GdkSubpixelLayout"/>
+      <method id='gdk_monitor_get_display' bind='False'/> <!--  circular dependency -->
+   </package>
+
    <package id='GtkActivatable'>
       <virtual-method id='*' bind='False'/>
    </package>
@@ -8232,9 +8305,10 @@ package body Generic_Set is
    <package id='GtkListBoxRow'>
      <list ctype="GtkListBoxRow" ada="List_Box_Row_List" />
    </package>
+
    <package id='GtkListBox'>
-      <method id='gtk_list_box_get_selected_rows' return='ListBoxRowList'>
-      </method>
+     <method id='gtk_list_box_get_selected_rows' return='ListBoxRowList'/>
+     <method id='gtk_list_box_bind_model' bind='False'/> <!-- missing binding for Glist.Model -->
    </package>
 
    <package id='GtkGesture'>
@@ -8351,5 +8425,11 @@ to be attached to some other widget.
 
   <package id="GtkFlowBox">
      <method id="gtk_flow_box_get_selected_children" return="WidgetList" />
+
+    <method id="gtk_flow_box_bind_model" bind="False" /> <!-- requires binding of GIO.GListModel -->
+  </package>
+
+  <package id="GtkPopover">
+     <enum ctype="GtkPopoverConstraint" />
   </package>
 </GIR>

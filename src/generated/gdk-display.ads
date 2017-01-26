@@ -47,7 +47,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk;         use Gdk;
 with Gdk.Event;   use Gdk.Event;
 with Gdk.Monitor; use Gdk.Monitor;
-with Gdk.Seat;    use Gdk.Seat;
 with Gdk.Types;   use Gdk.Types;
 with Glib;        use Glib;
 with Glib.Object; use Glib.Object;
@@ -100,11 +99,6 @@ package Gdk.Display is
    --  Display. This window is implicitly created by GDK. See
    --  Gdk.Window.Set_Group.
    --  Since: gtk+ 2.4
-
-   function Get_Default_Seat
-      (Self : not null access Gdk_Display_Record) return Gdk.Seat.Gdk_Seat;
-   --  Returns the default Gdk.Seat.Gdk_Seat for this display.
-   --  Since: gtk+ 3.20
 
    function Get_Event
       (Self : not null access Gdk_Display_Record) return Gdk.Event.Gdk_Event;
@@ -197,7 +191,8 @@ package Gdk.Display is
    --  "time_": a timestap (e.g GDK_CURRENT_TIME).
 
    function List_Seats
-      (Self : not null access Gdk_Display_Record) return GList;
+      (Self : not null access Gdk_Display_Record)
+       return Glib.Object.Object_Simple_List.Glist;
    --  Returns the list of seats known to Display.
    --  Since: gtk+ 3.20
 
@@ -417,22 +412,22 @@ package Gdk.Display is
    --  The ::closed signal is emitted when the connection to the windowing
    --  system for Display is closed.
 
-   type Cb_Gdk_Display_Monitor_Void is not null access procedure
+   type Cb_Gdk_Display_Gdk_Monitor_Void is not null access procedure
      (Self    : access Gdk_Display_Record'Class;
-      Monitor : Monitor);
+      Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class);
 
-   type Cb_GObject_Monitor_Void is not null access procedure
+   type Cb_GObject_Gdk_Monitor_Void is not null access procedure
      (Self    : access Glib.Object.GObject_Record'Class;
-      Monitor : Monitor);
+      Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class);
 
    Signal_Monitor_Added : constant Glib.Signal_Name := "monitor-added";
    procedure On_Monitor_Added
       (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_Gdk_Display_Monitor_Void;
+       Call  : Cb_Gdk_Display_Gdk_Monitor_Void;
        After : Boolean := False);
    procedure On_Monitor_Added
       (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_GObject_Monitor_Void;
+       Call  : Cb_GObject_Gdk_Monitor_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::monitor-added signal is emitted whenever a monitor is added.
@@ -440,11 +435,11 @@ package Gdk.Display is
    Signal_Monitor_Removed : constant Glib.Signal_Name := "monitor-removed";
    procedure On_Monitor_Removed
       (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_Gdk_Display_Monitor_Void;
+       Call  : Cb_Gdk_Display_Gdk_Monitor_Void;
        After : Boolean := False);
    procedure On_Monitor_Removed
       (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_GObject_Monitor_Void;
+       Call  : Cb_GObject_Gdk_Monitor_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::monitor-removed signal is emitted whenever a monitor is removed.
@@ -467,38 +462,18 @@ package Gdk.Display is
    --  The ::opened signal is emitted when the connection to the windowing
    --  system for Display is opened.
 
-   type Cb_Gdk_Display_Seat_Void is not null access procedure
-     (Self : access Gdk_Display_Record'Class;
-      Seat : Seat);
-
-   type Cb_GObject_Seat_Void is not null access procedure
-     (Self : access Glib.Object.GObject_Record'Class;
-      Seat : Seat);
-
    Signal_Seat_Added : constant Glib.Signal_Name := "seat-added";
-   procedure On_Seat_Added
-      (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_Gdk_Display_Seat_Void;
-       After : Boolean := False);
-   procedure On_Seat_Added
-      (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_GObject_Seat_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The ::seat-added signal is emitted whenever a new seat is made known to
    --  the windowing system.
+   --    procedure Handler
+   --       (Self : access Gdk_Display_Record'Class;
+   --        Seat : Seat)
 
    Signal_Seat_Removed : constant Glib.Signal_Name := "seat-removed";
-   procedure On_Seat_Removed
-      (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_Gdk_Display_Seat_Void;
-       After : Boolean := False);
-   procedure On_Seat_Removed
-      (Self  : not null access Gdk_Display_Record;
-       Call  : Cb_GObject_Seat_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The ::seat-removed signal is emitted whenever a seat is removed by the
    --  windowing system.
+   --    procedure Handler
+   --       (Self : access Gdk_Display_Record'Class;
+   --        Seat : Seat)
 
 end Gdk.Display;

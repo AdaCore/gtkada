@@ -85,28 +85,46 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;              use Cairo;
-with Gdk;                use Gdk;
-with Gdk.Frame_Clock;    use Gdk.Frame_Clock;
-with Gdk.Pixbuf;         use Gdk.Pixbuf;
-with Gdk.RGBA;           use Gdk.RGBA;
-with Gdk.Screen;         use Gdk.Screen;
-with Glib;               use Glib;
-with Glib.Object;        use Glib.Object;
-with Glib.Properties;    use Glib.Properties;
-with Glib.Values;        use Glib.Values;
-with Gtk.Css_Section;    use Gtk.Css_Section;
-with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Style;          use Gtk.Style;
-with Gtk.Style_Provider; use Gtk.Style_Provider;
-with Gtk.Widget;         use Gtk.Widget;
-with Pango.Font;         use Pango.Font;
-with Pango.Layout;       use Pango.Layout;
+with Cairo;                   use Cairo;
+with Gdk;                     use Gdk;
+with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Gdk.RGBA;                use Gdk.RGBA;
+with Gdk.Screen;              use Gdk.Screen;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Values;             use Glib.Values;
+with Gtk.Css_Section;         use Gtk.Css_Section;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Style;               use Gtk.Style;
+with Gtk.Style_Provider;      use Gtk.Style_Provider;
+with Gtk.Widget;              use Gtk.Widget;
+with Pango.Font;              use Pango.Font;
+with Pango.Layout;            use Pango.Layout;
 
 package Gtk.Style_Context is
 
    type Gtk_Style_Context_Record is new GObject_Record with null record;
    type Gtk_Style_Context is access all Gtk_Style_Context_Record'Class;
+
+   type Gtk_Style_Context_Print_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Style_Context_Print_Flags);
+   --  Flags that modify the behavior of Gtk.Style_Context.To_String. New
+   --  values may be added to this enumeration.
+
+   Style_Context_Print_None : constant Gtk_Style_Context_Print_Flags := 0;
+   Style_Context_Print_Recurse : constant Gtk_Style_Context_Print_Flags := 1;
+   Style_Context_Print_Show_Style : constant Gtk_Style_Context_Print_Flags := 2;
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Style_Context_Print_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Style_Context_Print_Flags);
+   type Property_Gtk_Style_Context_Print_Flags is new Gtk_Style_Context_Print_Flags_Properties.Property;
 
    ------------------
    -- Constructors --

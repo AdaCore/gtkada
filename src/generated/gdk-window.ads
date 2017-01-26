@@ -627,7 +627,7 @@ package Gdk.Window is
    --  If the creation of the Gdk.Glcontext.Gdk_Glcontext failed, Error will
    --  be set.
    --  Before using the returned Gdk.Glcontext.Gdk_Glcontext, you will need to
-   --  call gdk_gl_context_make_current or gdk_gl_context_realize.
+   --  call Gdk.Glcontext.Make_Current or Gdk.Glcontext.Realize.
    --  Since: gtk+ 3.16
 
    function Create_Similar_Image_Surface
@@ -2302,30 +2302,7 @@ package Gdk.Window is
    --    --  "offscreen_y": return location for the y coordinate in the offscreen
    --    --  window
 
-   type Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void is not null access procedure
-     (Self         : Gdk_Window;
-      Flipped_Rect : System.Address;
-      Final_Rect   : System.Address;
-      Flipped_X    : Boolean;
-      Flipped_Y    : Boolean);
-
-   type Cb_GObject_Address_Address_Boolean_Boolean_Void is not null access procedure
-     (Self         : access Glib.Object.GObject_Record'Class;
-      Flipped_Rect : System.Address;
-      Final_Rect   : System.Address;
-      Flipped_X    : Boolean;
-      Flipped_Y    : Boolean);
-
    Signal_Moved_To_Rect : constant Glib.Signal_Name := "moved-to-rect";
-   procedure On_Moved_To_Rect
-      (Self  : Gdk_Window;
-       Call  : Cb_Gdk_Window_Address_Address_Boolean_Boolean_Void;
-       After : Boolean := False);
-   procedure On_Moved_To_Rect
-      (Self  : Gdk_Window;
-       Call  : Cb_GObject_Address_Address_Boolean_Boolean_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  Emitted when the position of Window is finalized after being moved to a
    --  destination rectangle.
    --
@@ -2337,6 +2314,12 @@ package Gdk.Window is
    --  flipping, but before any possible sliding. Final_Rect is Flipped_Rect,
    --  but possibly translated in the case that flipping is still ineffective
    --  in keeping Window on-screen.
+   --    procedure Handler
+   --       (Self         : Gdk_Window;
+   --        Flipped_Rect : System.Address;
+   --        Final_Rect   : System.Address;
+   --        Flipped_X    : Boolean;
+   --        Flipped_Y    : Boolean)
    -- 
    --  Callback parameters:
    --    --  "flipped_rect": the position of Window after any possible flipping or

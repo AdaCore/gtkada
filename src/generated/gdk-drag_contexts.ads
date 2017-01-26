@@ -60,6 +60,14 @@ package Gdk.Drag_Contexts is
    --  Used in Gdk.Drag_Contexts.Drag_Context to indicate the protocol
    --  according to which DND is done.
 
+   type Gdk_Drag_Cancel_Reason is (
+      Drag_Cancel_No_Target,
+      Drag_Cancel_User_Cancelled,
+      Drag_Cancel_Error);
+   pragma Convention (C, Gdk_Drag_Cancel_Reason);
+   --  Used in Gdk.Drag_Contexts.Drag_Context to the reason of a cancelled DND
+   --  operation.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -71,6 +79,10 @@ package Gdk.Drag_Contexts is
    package Gdk_Drag_Protocol_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Drag_Protocol);
    type Property_Gdk_Drag_Protocol is new Gdk_Drag_Protocol_Properties.Property;
+
+   package Gdk_Drag_Cancel_Reason_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Drag_Cancel_Reason);
+   type Property_Gdk_Drag_Cancel_Reason is new Gdk_Drag_Cancel_Reason_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -175,53 +187,25 @@ package Gdk.Drag_Contexts is
    -- Signals --
    -------------
 
-   type Cb_Drag_Context_Drag_Action_Void is not null access procedure
-     (Self   : access Drag_Context_Record'Class;
-      Action : Drag_Action);
-
-   type Cb_GObject_Drag_Action_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Action : Drag_Action);
-
    Signal_Action_Changed : constant Glib.Signal_Name := "action-changed";
-   procedure On_Action_Changed
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_Drag_Context_Drag_Action_Void;
-       After : Boolean := False);
-   procedure On_Action_Changed
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_GObject_Drag_Action_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  A new action is being chosen for the drag and drop operation.
    --
    --  This signal will only be emitted if the Gdk.Drag_Contexts.Drag_Context
    --  manages the drag and drop operation. See Gdk.Drag_Contexts.Manage_Dnd
    --  for more information.
-
-   type Cb_Drag_Context_Drag_Cancel_Reason_Void is not null access procedure
-     (Self   : access Drag_Context_Record'Class;
-      Reason : Drag_Cancel_Reason);
-
-   type Cb_GObject_Drag_Cancel_Reason_Void is not null access procedure
-     (Self   : access Glib.Object.GObject_Record'Class;
-      Reason : Drag_Cancel_Reason);
+   --    procedure Handler
+   --       (Self   : access Drag_Context_Record'Class;
+   --        Action : Drag_Action)
 
    Signal_Cancel : constant Glib.Signal_Name := "cancel";
-   procedure On_Cancel
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_Drag_Context_Drag_Cancel_Reason_Void;
-       After : Boolean := False);
-   procedure On_Cancel
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_GObject_Drag_Cancel_Reason_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The drag and drop operation was cancelled.
    --
    --  This signal will only be emitted if the Gdk.Drag_Contexts.Drag_Context
    --  manages the drag and drop operation. See Gdk.Drag_Contexts.Manage_Dnd
    --  for more information.
+   --    procedure Handler
+   --       (Self   : access Drag_Context_Record'Class;
+   --        Reason : Drag_Cancel_Reason)
 
    type Cb_Drag_Context_Void is not null access procedure (Self : access Drag_Context_Record'Class);
 

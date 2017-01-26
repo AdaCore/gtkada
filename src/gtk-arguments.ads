@@ -48,6 +48,8 @@ with Gdk.Event;
 with Gdk.RGBA;
 with Gdk.Rectangle;
 with Gdk.Types;
+with Gdk.Device;
+with Gdk.Device_Tool;
 with Gtk.Dialog;
 with Gtk.Enums;
 with Gtk.GEntry;
@@ -55,6 +57,7 @@ with Gtk.Notebook;
 with Gtk.Print_Operation;
 with Gtk.Status_Bar;
 with Gtk.Text_Iter;
+with Gtk.Text_View;
 with Gtk.Tree_Model;
 with Gtk.Widget;
 
@@ -179,6 +182,11 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
    function Unchecked_To_Gtk_Direction_Type
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Direction_Type);
+   function Unchecked_To_Gtk_Position_Type
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Position_Type);
+   function Unchecked_To_Gtk_Text_Extend_Selection
+   is new Glib.Values.Unsafe_Enum_Nth
+     (Gtk.Text_View.Gtk_Text_Extend_Selection);
    function Unchecked_To_Gtk_Widget_Help_Type
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Widget.Gtk_Widget_Help_Type);
    function Unchecked_To_Gtk_Delete_Type
@@ -210,6 +218,10 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Tree_Model.Gtk_Tree_Model);
    function Unchecked_To_Param_Spec
      is new Glib.Values.Unsafe_Proxy_Nth (Glib.Param_Spec);
+   function Unchecked_To_Device
+     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Device.Gdk_Device);
+   function Unchecked_To_Device_Tool
+     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Device_Tool.Gdk_Device_Tool);
    function Unchecked_To_Cairo_Context
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Cairo.Cairo_Context;

@@ -77,21 +77,37 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Rectangle;   use Gdk.Rectangle;
-with Glib;            use Glib;
-with Glib.Menu_Model; use Glib.Menu_Model;
-with Glib.Object;     use Glib.Object;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Gtk.Bin;         use Gtk.Bin;
-with Gtk.Buildable;   use Gtk.Buildable;
-with Gtk.Enums;       use Gtk.Enums;
-with Gtk.Widget;      use Gtk.Widget;
+with Gdk.Rectangle;           use Gdk.Rectangle;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Menu_Model;         use Glib.Menu_Model;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Types;              use Glib.Types;
+with Gtk.Bin;                 use Gtk.Bin;
+with Gtk.Buildable;           use Gtk.Buildable;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Widget;              use Gtk.Widget;
 
 package Gtk.Popover is
 
    type Gtk_Popover_Record is new Gtk_Bin_Record with null record;
    type Gtk_Popover is access all Gtk_Popover_Record'Class;
+
+   type Gtk_Popover_Constraint is (
+      Popover_Constraint_None,
+      Popover_Constraint_Window);
+   pragma Convention (C, Gtk_Popover_Constraint);
+   --  Describes constraints to positioning of popovers. More values may be
+   --  added to this enumeration in the future.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Popover_Constraint_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Popover_Constraint);
+   type Property_Gtk_Popover_Constraint is new Gtk_Popover_Constraint_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -324,8 +340,8 @@ package Gtk.Popover is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Constrain_To_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Popover_Constraint
+   Constrain_To_Property : constant Gtk.Popover.Property_Gtk_Popover_Constraint;
+   --  Type: Gtk_Popover_Constraint
    --  Sets a constraint for the popover position.
 
    Modal_Property : constant Glib.Properties.Property_Boolean;
@@ -395,6 +411,6 @@ private
      Glib.Properties.Build ("pointing-to");
    Modal_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("modal");
-   Constrain_To_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("constrain-to");
+   Constrain_To_Property : constant Gtk.Popover.Property_Gtk_Popover_Constraint :=
+     Gtk.Popover.Build ("constrain-to");
 end Gtk.Popover;

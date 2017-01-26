@@ -83,6 +83,14 @@ package Gtk.Text_View is
    --  Used to reference the layers of Gtk.Text_View.Gtk_Text_View for the
    --  purpose of customized drawing with the ::draw_layer vfunc.
 
+   type Gtk_Text_Extend_Selection is (
+      Text_Extend_Selection_Word,
+      Text_Extend_Selection_Line);
+   pragma Convention (C, Gtk_Text_Extend_Selection);
+   --  Granularity types that extend the text selection. Use the
+   --  Gtk.Text_View.Gtk_Text_View::extend-selection signal to customize the
+   --  selection.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -90,6 +98,10 @@ package Gtk.Text_View is
    package Gtk_Text_View_Layer_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Text_View_Layer);
    type Property_Gtk_Text_View_Layer is new Gtk_Text_View_Layer_Properties.Property;
+
+   package Gtk_Text_Extend_Selection_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Text_Extend_Selection);
+   type Property_Gtk_Text_Extend_Selection is new Gtk_Text_Extend_Selection_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -1042,16 +1054,16 @@ package Gtk.Text_View is
    --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
 
-   type Cb_Gtk_Text_View_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean is not null access function
+   type Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean is not null access function
      (Self        : access Gtk_Text_View_Record'Class;
-      Granularity : Text_Extend_Selection;
+      Granularity : Gtk_Text_Extend_Selection;
       Location    : Gtk.Text_Iter.Gtk_Text_Iter;
       Start       : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End     : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
 
-   type Cb_GObject_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean is not null access function
+   type Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean is not null access function
      (Self        : access Glib.Object.GObject_Record'Class;
-      Granularity : Text_Extend_Selection;
+      Granularity : Gtk_Text_Extend_Selection;
       Location    : Gtk.Text_Iter.Gtk_Text_Iter;
       Start       : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End     : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
@@ -1059,11 +1071,11 @@ package Gtk.Text_View is
    Signal_Extend_Selection : constant Glib.Signal_Name := "extend-selection";
    procedure On_Extend_Selection
       (Self  : not null access Gtk_Text_View_Record;
-       Call  : Cb_Gtk_Text_View_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       Call  : Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
        After : Boolean := False);
    procedure On_Extend_Selection
       (Self  : not null access Gtk_Text_View_Record;
-       Call  : Cb_GObject_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       Call  : Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::extend-selection signal is emitted when the selection needs to be

@@ -332,7 +332,6 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Values;             use Glib.Values;
 with Gtk.Accel_Group;         use Gtk.Accel_Group;
-with Gtk.Builder;             use Gtk.Builder;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Selection_Data;      use Gtk.Selection_Data;
 with Gtk.Style;               use Gtk.Style;
@@ -454,28 +453,6 @@ package Gtk.Widget is
    --  "widget": the widget
    --  "frame_clock": the frame clock for the widget (same as calling
    --  gtk_widget_get_frame_clock)
-
-   type Gtk_Builder_Connect_Func is access procedure
-     (Builder        : not null access Gtk.Builder.Gtk_Builder_Record'Class;
-      Object         : not null access Glib.Object.GObject_Record'Class;
-      Signal_Name    : UTF8_String;
-      Handler_Name   : UTF8_String;
-      Connect_Object : access Glib.Object.GObject_Record'Class;
-      Flags          : Glib.G_Connect_Flags);
-   --  This is the signature of a function used to connect signals. It is used
-   --  by the Gtk.Builder.Connect_Signals and Gtk.Builder.Connect_Signals_Full
-   --  methods. It is mainly intended for interpreted language bindings, but
-   --  could be useful where the programmer wants more control over the signal
-   --  connection process. Note that this function can only be called once,
-   --  subsequent calls will do nothing.
-   --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "object": object to connect a signal to
-   --  "signal_name": name of the signal
-   --  "handler_name": name of the handler
-   --  "connect_object": a Glib.Object.GObject, if non-null, use
-   --  g_signal_connect_object
-   --  "flags": Glib.G_Connect_Flags to use
 
    ----------------------------
    -- Enumeration Properties --
@@ -3294,71 +3271,6 @@ package Gtk.Widget is
    --  Installs a style property on a widget class. The parser for the style
    --  property is determined by the value type of Pspec.
    --  "pspec": the Glib.Param_Spec for the property
-
-   procedure Set_Connect_Func
-      (Self                 : Glib.Object.GObject_Class;
-       Connect_Func         : Gtk_Builder_Connect_Func;
-       Connect_Data_Destroy : Glib.G_Destroy_Notify_Address);
-   --  For use in language bindings, this will override the default
-   --  Gtk_Builder_Connect_Func to be used when parsing GtkBuilder XML from
-   --  this class's template data.
-   --  Note that this must be called from a composite widget classes class
-   --  initializer after calling gtk_widget_class_set_template.
-   --  Since: gtk+ 3.10
-   --  "connect_func": The Gtk_Builder_Connect_Func to use when connecting
-   --  signals in the class template
-   --  "connect_data_destroy": The Glib.G_Destroy_Notify_Address to free
-   --  Connect_Data, this will only be used at class finalization time, when no
-   --  classes of type Widget_Type are in use anymore.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Set_Connect_Func_User_Data is
-
-      type Gtk_Builder_Connect_Func is access procedure
-        (Builder        : not null access Gtk.Builder.Gtk_Builder_Record'Class;
-         Object         : not null access Glib.Object.GObject_Record'Class;
-         Signal_Name    : UTF8_String;
-         Handler_Name   : UTF8_String;
-         Connect_Object : access Glib.Object.GObject_Record'Class;
-         Flags          : Glib.G_Connect_Flags;
-         User_Data      : User_Data_Type);
-      --  This is the signature of a function used to connect signals. It is used
-      --  by the Gtk.Builder.Connect_Signals and Gtk.Builder.Connect_Signals_Full
-      --  methods. It is mainly intended for interpreted language bindings, but
-      --  could be useful where the programmer wants more control over the signal
-      --  connection process. Note that this function can only be called once,
-      --  subsequent calls will do nothing.
-      --  Since: gtk+ 2.12
-      --  "builder": a Gtk.Builder.Gtk_Builder
-      --  "object": object to connect a signal to
-      --  "signal_name": name of the signal
-      --  "handler_name": name of the handler
-      --  "connect_object": a Glib.Object.GObject, if non-null, use
-      --  g_signal_connect_object
-      --  "flags": Glib.G_Connect_Flags to use
-      --  "user_data": user data
-
-      procedure Set_Connect_Func
-         (Self                 : Glib.Object.GObject_Class;
-          Connect_Func         : Gtk_Builder_Connect_Func;
-          Connect_Data         : User_Data_Type;
-          Connect_Data_Destroy : Glib.G_Destroy_Notify_Address);
-      --  For use in language bindings, this will override the default
-      --  Gtk_Builder_Connect_Func to be used when parsing GtkBuilder XML from
-      --  this class's template data.
-      --  Note that this must be called from a composite widget classes class
-      --  initializer after calling gtk_widget_class_set_template.
-      --  Since: gtk+ 3.10
-      --  "connect_func": The Gtk_Builder_Connect_Func to use when connecting
-      --  signals in the class template
-      --  "connect_data": The data to pass to Connect_Func
-      --  "connect_data_destroy": The Glib.G_Destroy_Notify_Address to free
-      --  Connect_Data, this will only be used at class finalization time, when
-      --  no classes of type Widget_Type are in use anymore.
-
-   end Set_Connect_Func_User_Data;
 
    ----------------------
    -- GtkAda additions --

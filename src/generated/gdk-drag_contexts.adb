@@ -191,26 +191,6 @@ package body Gdk.Drag_Contexts is
    use type System.Address;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Drag_Context_Drag_Action_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Drag_Context_Drag_Action_Void);
-
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Drag_Action_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Drag_Action_Void);
-
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Drag_Context_Drag_Cancel_Reason_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Drag_Context_Drag_Cancel_Reason_Void);
-
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Drag_Cancel_Reason_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Drag_Cancel_Reason_Void);
-
-   function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Drag_Context_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_Drag_Context_Void);
@@ -233,18 +213,6 @@ package body Gdk.Drag_Contexts is
    procedure Connect
       (Object  : access Drag_Context_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Drag_Context_Drag_Action_Void;
-       After   : Boolean);
-
-   procedure Connect
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Drag_Context_Drag_Cancel_Reason_Void;
-       After   : Boolean);
-
-   procedure Connect
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
        Handler : Cb_Drag_Context_Void;
        After   : Boolean);
 
@@ -253,20 +221,6 @@ package body Gdk.Drag_Contexts is
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Drag_Context_Gint_Void;
        After   : Boolean);
-
-   procedure Connect_Slot
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Drag_Action_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null);
-
-   procedure Connect_Slot
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Drag_Cancel_Reason_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null);
 
    procedure Connect_Slot
       (Object  : access Drag_Context_Record'Class;
@@ -281,24 +235,6 @@ package body Gdk.Drag_Contexts is
        Handler : Cb_GObject_Gint_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
-
-   procedure Marsh_Drag_Context_Drag_Action_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_Drag_Context_Drag_Action_Void);
-
-   procedure Marsh_Drag_Context_Drag_Cancel_Reason_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_Drag_Context_Drag_Cancel_Reason_Void);
 
    procedure Marsh_Drag_Context_Gint_Void
       (Closure         : GClosure;
@@ -318,24 +254,6 @@ package body Gdk.Drag_Contexts is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Drag_Context_Void);
 
-   procedure Marsh_GObject_Drag_Action_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Drag_Action_Void);
-
-   procedure Marsh_GObject_Drag_Cancel_Reason_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Drag_Cancel_Reason_Void);
-
    procedure Marsh_GObject_Gint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -353,44 +271,6 @@ package body Gdk.Drag_Contexts is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Void);
-
-   -------------
-   -- Connect --
-   -------------
-
-   procedure Connect
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Drag_Context_Drag_Action_Void;
-       After   : Boolean)
-   is
-   begin
-      Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_Drag_Context_Drag_Action_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         After       => After);
-   end Connect;
-
-   -------------
-   -- Connect --
-   -------------
-
-   procedure Connect
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Drag_Context_Drag_Cancel_Reason_Void;
-       After   : Boolean)
-   is
-   begin
-      Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_Drag_Context_Drag_Cancel_Reason_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         After       => After);
-   end Connect;
 
    -------------
    -- Connect --
@@ -437,48 +317,6 @@ package body Gdk.Drag_Contexts is
    procedure Connect_Slot
       (Object  : access Drag_Context_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Drag_Action_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null)
-   is
-   begin
-      Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Drag_Action_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Slot_Object => Slot,
-         After       => After);
-   end Connect_Slot;
-
-   ------------------
-   -- Connect_Slot --
-   ------------------
-
-   procedure Connect_Slot
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Drag_Cancel_Reason_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null)
-   is
-   begin
-      Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Drag_Cancel_Reason_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Slot_Object => Slot,
-         After       => After);
-   end Connect_Slot;
-
-   ------------------
-   -- Connect_Slot --
-   ------------------
-
-   procedure Connect_Slot
-      (Object  : access Drag_Context_Record'Class;
-       C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
@@ -513,46 +351,6 @@ package body Gdk.Drag_Contexts is
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
-
-   -----------------------------------------
-   -- Marsh_Drag_Context_Drag_Action_Void --
-   -----------------------------------------
-
-   procedure Marsh_Drag_Context_Drag_Action_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Drag_Context_Drag_Action_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Drag_Context := Drag_Context (Unchecked_To_Object (Params, 0));
-   begin
-      H (Obj, Unchecked_To_Drag_Action (Params, 1));
-      exception when E : others => Process_Exception (E);
-   end Marsh_Drag_Context_Drag_Action_Void;
-
-   ------------------------------------------------
-   -- Marsh_Drag_Context_Drag_Cancel_Reason_Void --
-   ------------------------------------------------
-
-   procedure Marsh_Drag_Context_Drag_Cancel_Reason_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Drag_Context_Drag_Cancel_Reason_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Drag_Context := Drag_Context (Unchecked_To_Object (Params, 0));
-   begin
-      H (Obj, Unchecked_To_Drag_Cancel_Reason (Params, 1));
-      exception when E : others => Process_Exception (E);
-   end Marsh_Drag_Context_Drag_Cancel_Reason_Void;
 
    ----------------------------------
    -- Marsh_Drag_Context_Gint_Void --
@@ -594,46 +392,6 @@ package body Gdk.Drag_Contexts is
       exception when E : others => Process_Exception (E);
    end Marsh_Drag_Context_Void;
 
-   ------------------------------------
-   -- Marsh_GObject_Drag_Action_Void --
-   ------------------------------------
-
-   procedure Marsh_GObject_Drag_Action_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Drag_Action_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-   begin
-      H (Obj, Unchecked_To_Drag_Action (Params, 1));
-      exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Drag_Action_Void;
-
-   -------------------------------------------
-   -- Marsh_GObject_Drag_Cancel_Reason_Void --
-   -------------------------------------------
-
-   procedure Marsh_GObject_Drag_Cancel_Reason_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Drag_Cancel_Reason_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-   begin
-      H (Obj, Unchecked_To_Drag_Cancel_Reason (Params, 1));
-      exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Drag_Cancel_Reason_Void;
-
    -----------------------------
    -- Marsh_GObject_Gint_Void --
    -----------------------------
@@ -673,60 +431,6 @@ package body Gdk.Drag_Contexts is
       H (Obj);
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
-
-   -----------------------
-   -- On_Action_Changed --
-   -----------------------
-
-   procedure On_Action_Changed
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_Drag_Context_Drag_Action_Void;
-       After : Boolean := False)
-   is
-   begin
-      Connect (Self, "action-changed" & ASCII.NUL, Call, After);
-   end On_Action_Changed;
-
-   -----------------------
-   -- On_Action_Changed --
-   -----------------------
-
-   procedure On_Action_Changed
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_GObject_Drag_Action_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False)
-   is
-   begin
-      Connect_Slot (Self, "action-changed" & ASCII.NUL, Call, After, Slot);
-   end On_Action_Changed;
-
-   ---------------
-   -- On_Cancel --
-   ---------------
-
-   procedure On_Cancel
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_Drag_Context_Drag_Cancel_Reason_Void;
-       After : Boolean := False)
-   is
-   begin
-      Connect (Self, "cancel" & ASCII.NUL, Call, After);
-   end On_Cancel;
-
-   ---------------
-   -- On_Cancel --
-   ---------------
-
-   procedure On_Cancel
-      (Self  : not null access Drag_Context_Record;
-       Call  : Cb_GObject_Drag_Cancel_Reason_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False)
-   is
-   begin
-      Connect_Slot (Self, "cancel" & ASCII.NUL, Call, After, Slot);
-   end On_Cancel;
 
    ---------------------
    -- On_Dnd_Finished --

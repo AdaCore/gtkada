@@ -147,6 +147,34 @@ package body Gdk.Event is
       return Result;
    end From_Object_Free;
 
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Pinch) return Gdk_Event_Touchpad_Pinch is
+      Result : constant Gdk_Event_Touchpad_Pinch := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Swipe) return Gdk_Event_Touchpad_Swipe is
+      Result : constant Gdk_Event_Touchpad_Swipe := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Button) return Gdk_Event_Pad_Button is
+      Result : constant Gdk_Event_Pad_Button := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Axis) return Gdk_Event_Pad_Axis is
+      Result : constant Gdk_Event_Pad_Axis := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object_Free (B : access Gdk_Event_Setting) return Gdk_Event_Setting is
       Result : constant Gdk_Event_Setting := B.all;
    begin
@@ -181,6 +209,8 @@ package body Gdk.Event is
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
+
+   use Glib.Object;
 
    function From_Address (C : System.Address) return Gdk_Event is
       function Convert is new Ada.Unchecked_Conversion
@@ -379,18 +409,6 @@ package body Gdk.Event is
    begin
       return Internal (Event) /= 0;
    end Get_Pointer_Emulated;
-
-   --------------
-   -- Get_Seat --
-   --------------
-
-   function Get_Seat (Event : Gdk_Event) return Gdk.Seat.Gdk_Seat is
-      function Internal (Event : Gdk_Event) return System.Address;
-      pragma Import (C, Internal, "gdk_event_get_seat");
-      Stub_Gdk_Seat : Gdk.Seat.Gdk_Seat_Record;
-   begin
-      return Gdk.Seat.Gdk_Seat (Get_User_Data (Internal (Event), Stub_Gdk_Seat));
-   end Get_Seat;
 
    -----------------
    -- Handler_Set --

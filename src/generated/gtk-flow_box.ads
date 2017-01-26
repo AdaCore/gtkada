@@ -62,7 +62,6 @@ with Glib;               use Glib;
 with Glib.Object;        use Glib.Object;
 with Glib.Properties;    use Glib.Properties;
 with Glib.Types;         use Glib.Types;
-with Glist.Model;        use Glist.Model;
 with Gtk.Adjustment;     use Gtk.Adjustment;
 with Gtk.Buildable;      use Gtk.Buildable;
 with Gtk.Container;      use Gtk.Container;
@@ -79,12 +78,6 @@ package Gtk.Flow_Box is
    ---------------
    -- Callbacks --
    ---------------
-
-   type Gtk_Flow_Box_Create_Widget_Func is access function (Item : System.Address) return Gtk.Widget.Gtk_Widget;
-   --  Called for flow boxes that are bound to a Glist.Model.Glist_Model with
-   --  Gtk.Flow_Box.Bind_Model for each item that gets added to the model.
-   --  Since: gtk+ 3.18
-   --  "item": the item from the model for which to create a widget for
 
    type Gtk_Flow_Box_Foreach_Func is access procedure
      (Box   : not null access Gtk_Flow_Box_Record'Class;
@@ -134,67 +127,6 @@ package Gtk.Flow_Box is
    -------------
    -- Methods --
    -------------
-
-   procedure Bind_Model
-      (Self                : not null access Gtk_Flow_Box_Record;
-       Model               : Glist.Model.Glist_Model;
-       Create_Widget_Func  : Gtk_Flow_Box_Create_Widget_Func;
-       User_Data_Free_Func : Glib.G_Destroy_Notify_Address);
-   --  Binds Model to Box.
-   --  If Box was already bound to a model, that previous binding is
-   --  destroyed.
-   --  The contents of Box are cleared and then filled with widgets that
-   --  represent items from Model. Box is updated whenever Model changes. If
-   --  Model is null, Box is left empty.
-   --  It is undefined to add or remove widgets directly (for example, with
-   --  Gtk.Flow_Box.Insert or Gtk.Container.Add) while Box is bound to a model.
-   --  Note that using a model is incompatible with the filtering and sorting
-   --  functionality in GtkFlowBox. When using a model, filtering and sorting
-   --  should be implemented by the model.
-   --  Since: gtk+ 3.18
-   --  "model": the Glist.Model.Glist_Model to be bound to Box
-   --  "create_widget_func": a function that creates widgets for items
-   --  "user_data_free_func": function for freeing User_Data
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Bind_Model_User_Data is
-
-      type Gtk_Flow_Box_Create_Widget_Func is access function
-        (Item      : System.Address;
-         User_Data : User_Data_Type) return Gtk.Widget.Gtk_Widget;
-      --  Called for flow boxes that are bound to a Glist.Model.Glist_Model with
-      --  Gtk.Flow_Box.Bind_Model for each item that gets added to the model.
-      --  Since: gtk+ 3.18
-      --  "item": the item from the model for which to create a widget for
-      --  "user_data": user data from Gtk.Flow_Box.Bind_Model
-
-      procedure Bind_Model
-         (Self                : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
-          Model               : Glist.Model.Glist_Model;
-          Create_Widget_Func  : Gtk_Flow_Box_Create_Widget_Func;
-          User_Data           : User_Data_Type;
-          User_Data_Free_Func : Glib.G_Destroy_Notify_Address);
-      --  Binds Model to Box.
-      --  If Box was already bound to a model, that previous binding is
-      --  destroyed.
-      --  The contents of Box are cleared and then filled with widgets that
-      --  represent items from Model. Box is updated whenever Model changes. If
-      --  Model is null, Box is left empty.
-      --  It is undefined to add or remove widgets directly (for example, with
-      --  Gtk.Flow_Box.Insert or Gtk.Container.Add) while Box is bound to a
-      --  model.
-      --  Note that using a model is incompatible with the filtering and
-      --  sorting functionality in GtkFlowBox. When using a model, filtering
-      --  and sorting should be implemented by the model.
-      --  Since: gtk+ 3.18
-      --  "model": the Glist.Model.Glist_Model to be bound to Box
-      --  "create_widget_func": a function that creates widgets for items
-      --  "user_data": user data passed to Create_Widget_Func
-      --  "user_data_free_func": function for freeing User_Data
-
-   end Bind_Model_User_Data;
 
    function Get_Activate_On_Single_Click
       (Self : not null access Gtk_Flow_Box_Record) return Boolean;
@@ -403,7 +335,7 @@ package Gtk.Flow_Box is
    --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
    --  called.
    --  Note that using a filter function is incompatible with using a model
-   --  (see Gtk.Flow_Box.Bind_Model).
+   --  (see gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "filter_func": callback that lets you filter which children to show
 
@@ -433,7 +365,7 @@ package Gtk.Flow_Box is
       --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
       --  called.
       --  Note that using a filter function is incompatible with using a model
-      --  (see Gtk.Flow_Box.Bind_Model).
+      --  (see gtk_flow_box_bind_model).
       --  Since: gtk+ 3.12
       --  "filter_func": callback that lets you filter which children to show
       --  "user_data": user data passed to Filter_Func
@@ -464,7 +396,7 @@ package Gtk.Flow_Box is
    --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
    --  called.
    --  Note that using a sort function is incompatible with using a model (see
-   --  Gtk.Flow_Box.Bind_Model).
+   --  gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "sort_func": the sort function
 
@@ -495,7 +427,7 @@ package Gtk.Flow_Box is
       --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
       --  called.
       --  Note that using a sort function is incompatible with using a model
-      --  (see Gtk.Flow_Box.Bind_Model).
+      --  (see gtk_flow_box_bind_model).
       --  Since: gtk+ 3.12
       --  "sort_func": the sort function
       --  "user_data": user data passed to Sort_Func

@@ -306,7 +306,7 @@ package Gtk.Menu is
       (Menu        : not null access Gtk_Menu_Record;
        Monitor_Num : Gint);
    --  Informs GTK+ on which monitor a menu should be popped up. See
-   --  gdk_monitor_get_geometry.
+   --  Gdk.Monitor.Get_Geometry.
    --  This function should be called from a Gtk_Menu_Position_Func if the
    --  menu should not appear on the same monitor as the pointer. This
    --  information can't be reliably inferred from the coordinates returned by

@@ -23,38 +23,52 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-package body Pango.Font_Metrics is
+package body Gdk.Device_Tool is
 
-   function From_Object_Free (B : access Pango_Font_Metrics) return Pango_Font_Metrics is
-      Result : constant Pango_Font_Metrics := B.all;
+   package Type_Conversion_Gdk_Device_Tool is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gdk_Device_Tool_Record);
+   pragma Unreferenced (Type_Conversion_Gdk_Device_Tool);
+
+   ---------------------
+   -- Get_Hardware_Id --
+   ---------------------
+
+   function Get_Hardware_Id
+      (Self : not null access Gdk_Device_Tool_Record) return Guint64
+   is
+      function Internal (Self : System.Address) return Guint64;
+      pragma Import (C, Internal, "gdk_device_tool_get_hardware_id");
    begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
+      return Internal (Get_Object (Self));
+   end Get_Hardware_Id;
 
-   -------------
-   -- Gdk_New --
-   -------------
+   ----------------
+   -- Get_Serial --
+   ----------------
 
-   procedure Gdk_New (Self : out Pango_Font_Metrics) is
-      function Internal return Pango_Font_Metrics;
-      pragma Import (C, Internal, "pango_font_metrics_new");
+   function Get_Serial
+      (Self : not null access Gdk_Device_Tool_Record) return Guint64
+   is
+      function Internal (Self : System.Address) return Guint64;
+      pragma Import (C, Internal, "gdk_device_tool_get_serial");
    begin
-      Self := Internal;
-   end Gdk_New;
+      return Internal (Get_Object (Self));
+   end Get_Serial;
 
-   ----------------------------
-   -- Pango_Font_Metrics_New --
-   ----------------------------
+   -------------------
+   -- Get_Tool_Type --
+   -------------------
 
-   function Pango_Font_Metrics_New return Pango_Font_Metrics is
-      function Internal return Pango_Font_Metrics;
-      pragma Import (C, Internal, "pango_font_metrics_new");
-      Self : Pango_Font_Metrics;
+   function Get_Tool_Type
+      (Self : not null access Gdk_Device_Tool_Record)
+       return Gdk_Device_Tool_Type
+   is
+      function Internal (Self : System.Address) return Gdk_Device_Tool_Type;
+      pragma Import (C, Internal, "gdk_device_tool_get_tool_type");
    begin
-      Self := Internal;
-      return Self;
-   end Pango_Font_Metrics_New;
+      return Internal (Get_Object (Self));
+   end Get_Tool_Type;
 
-end Pango.Font_Metrics;
+end Gdk.Device_Tool;
