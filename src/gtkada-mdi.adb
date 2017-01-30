@@ -624,6 +624,12 @@ package body Gtkada.MDI is
    --  Unfreeze the emission of the focus, and do the actual focus change on
    --  the current child.
 
+   procedure For_Each_Notebook
+      (Self         : not null access MDI_Window_Record'Class;
+       Central_Only : Boolean;
+       Callback     : not null access procedure (Note : MDI_Notebook));
+   --  Traverse all notebooks contained in Self.
+
    package Close_Button is
 
       --  We use an event box as a basis so that we have a gdk_window
@@ -1336,6 +1342,47 @@ package body Gtkada.MDI is
       return False;
    end Key_Event_Selection_Dialog;
 
+   -----------------------
+   -- For_Each_Notebook --
+   -----------------------
+
+   procedure For_Each_Notebook
+      (Self         : not null access MDI_Window_Record'Class;
+       Central_Only : Boolean;
+       Callback     : not null access procedure (Note : MDI_Notebook))
+   is
+      procedure For_Multi_Paned
+         (Pane : not null access Gtkada_Multi_Paned_Record'Class);
+      --  Process a specific multi-pane recursively
+
+      procedure For_Multi_Paned
+         (Pane : not null access Gtkada_Multi_Paned_Record'Class)
+      is
+         Iter : Gtkada.Multi_Paned.Child_Iterator := Pane.Start;
+         W    : Gtk_Widget;
+      begin
+         while not At_End (Iter) loop
+            W := Get_Widget (Iter);
+            if W = null then
+               null;   --  separator
+            elsif W.all in Gtkada_Multi_Paned_Record'Class then
+               For_Multi_Paned (Gtkada_Multi_Paned (W));
+            else
+               Callback (MDI_Notebook (W));
+            end if;
+
+            Next (Iter);
+         end loop;
+      end For_Multi_Paned;
+
+   begin
+      if Central_Only then
+         For_Multi_Paned (Self.Central);
+      else
+         For_Multi_Paned (Self);
+      end if;
+   end For_Each_Notebook;
+
    ----------------------------------------
    -- Check_Interactive_Selection_Dialog --
    ----------------------------------------
@@ -1361,39 +1408,88 @@ package body Gtkada.MDI is
         or else (Get_Event_Type (Event) /= Key_Press
                  and then Get_Event_Type (Event) /= Key_Release)
       then
+         if MDI.Focus_Child = null then
+            --  Nothing to do
+            return;
+         end if;
+
+         --  We can't simply look at MDI.Items, since otherwise we
+         --  will only be traversing the same two items in the
+         --  following scenario: split main window in 3; select window 1;
+         --  move to next window (window 2 is selected and moved to front
+         --  of MDI.Items); move to next window (window 1 is selected
+         --  again).
+
          declare
-            List     : Widget_List.Glist;
-            Current  : MDI_Notebook;
-            Child    : MDI_Child;
+            Current : constant MDI_Notebook := Get_Notebook (MDI.Focus_Child);
+            Child   : MDI_Child;
+
+            procedure On_Notebook (Note : MDI_Notebook);
+            --  Called for each notebook in the MDI
+
+            First_Notebook : MDI_Notebook;
+            Prev_Notebook  : MDI_Notebook;
+            Next_Notebook  : MDI_Notebook;
+            Last_Notebook  : MDI_Notebook;
+            --  The notebook just before or just after the current notebook,
+            --  for which the current child belongs to the right group.
+
+            Found : Boolean := False;
+
+            procedure On_Notebook (Note : MDI_Notebook) is
+               C : MDI_Child;
+            begin
+               if Note = Current then
+                  Found := True;
+               else
+                  C := MDI_Child (Note.Get_Nth_Page (Note.Get_Current_Page));
+                  if Only_Group /= Group_Any
+                     and then C.Group /= Only_Group
+                  then
+                     --  Not a notebook we are interested in
+                     return;
+                  end if;
+
+                  --  Store first and last notebook, to wrap around
+                  Last_Notebook := Note;
+                  if First_Notebook = null then
+                     First_Notebook := Note;
+                  end if;
+
+                  if not Found then
+                     Prev_Notebook := Note;
+                  elsif Next_Notebook = null then
+                     Next_Notebook := Note;
+                  end if;
+               end if;
+            end On_Notebook;
+
          begin
-            if MDI.Focus_Child /= null then
-               Current := Get_Notebook (MDI.Focus_Child);
-            end if;
+            For_Each_Notebook
+               (MDI, Central_Only => False, Callback => On_Notebook'Access);
 
             if Move_To_Next then
-               List := Next (First (MDI.Items));
-            else
-               List := Last (MDI.Items);
-            end if;
+               if Next_Notebook = null then
+                  Next_Notebook := First_Notebook;
+               end if;
 
-            while List /= Null_List loop
-               --  Return the first window from another notebook that belongs
-               --  to the same group
-               Child := MDI_Child (Get_Data (List));
-               if Get_Notebook (Child) /= Current
-                 and then (Only_Group = Child_Group'Last
-                           or else Child.Group = Only_Group)
-               then
+               if Next_Notebook /= null then
+                  Child := MDI_Child (Next_Notebook.Get_Nth_Page
+                     (Next_Notebook.Get_Current_Page));
                   Set_Focus_Child (Child);
-                  exit;
                end if;
 
-               if Move_To_Next then
-                  List := Next (List);
-               else
-                  List := Prev (List);
+            else
+               if Prev_Notebook = null then
+                  Prev_Notebook := Last_Notebook;
                end if;
-            end loop;
+
+               if Prev_Notebook /= null then
+                  Child := MDI_Child (Prev_Notebook.Get_Nth_Page
+                     (Prev_Notebook.Get_Current_Page));
+                  Set_Focus_Child (Child);
+               end if;
+            end if;
          end;
          return;
       end if;
