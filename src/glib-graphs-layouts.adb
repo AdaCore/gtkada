@@ -1064,7 +1064,8 @@ package body Glib.Graphs.Layouts is
          Info.Space_Between_Items  := Space_Between_Items;
          Info.Space_Between_Layers := Space_Between_Layers;
 
-         Info.Layers := new Integer_Array (Min_Vertex_Index .. Max_Index (G));
+         Info.Layers :=
+           new Integer_Array'(Min_Vertex_Index .. Max_Index (G) => 0);
 
          if not Is_Directed (G) then
             raise Program_Error
