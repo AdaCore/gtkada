@@ -19,6 +19,7 @@ GtkAda User's Guide
    new_widgets
    debugging
    transition
+   transition_3_14_to_3_22
    reporting_bugs
    gtk_parasite
    bibliography
