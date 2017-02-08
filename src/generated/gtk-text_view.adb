@@ -409,11 +409,12 @@ package body Gtk.Text_View is
    -- Get_Iter_At_Location --
    --------------------------
 
-   function Get_Iter_At_Location
-      (View : not null access Gtk_Text_View_Record;
-       Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
-       X    : Gint;
-       Y    : Gint) return Boolean
+   procedure Get_Iter_At_Location
+      (View    : not null access Gtk_Text_View_Record;
+       Iter    : out Gtk.Text_Iter.Gtk_Text_Iter;
+       X       : Gint;
+       Y       : Gint;
+       In_Text : out Boolean)
    is
       function Internal
          (View     : System.Address;
@@ -427,20 +428,21 @@ package body Gtk.Text_View is
    begin
       Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, X, Y);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
-      return Tmp_Return /= 0;
+      Iter := Acc_Iter;
+      In_Text := Tmp_Return /= 0;
    end Get_Iter_At_Location;
 
    --------------------------
    -- Get_Iter_At_Position --
    --------------------------
 
-   function Get_Iter_At_Position
+   procedure Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
-       Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : access Gint;
+       Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Trailing : out Gint;
        X        : Gint;
-       Y        : Gint) return Boolean
+       Y        : Gint;
+       In_Text  : out Boolean)
    is
       function Internal
          (View         : System.Address;
@@ -456,11 +458,9 @@ package body Gtk.Text_View is
    begin
       Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, Acc_Trailing'Access, X, Y);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
-      if Trailing /= null then
-         Trailing.all := Acc_Trailing;
-      end if;
-      return Tmp_Return /= 0;
+      Iter := Acc_Iter;
+      Trailing := Acc_Trailing;
+      In_Text := Tmp_Return /= 0;
    end Get_Iter_At_Position;
 
    -----------------------

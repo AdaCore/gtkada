@@ -4054,6 +4054,9 @@ creating a tag.
 
      <method id="gtk_text_view_new_with_buffer" ada="Gtk_New"/>
 
+     <method id="gtk_text_view_get_iter_at_position" return_as_param="In_Text"/>
+     <method id="gtk_text_view_get_iter_at_location" return_as_param="In_Text"/>
+
      <virtual-method id='draw_layer' bind='True'>
         <doc>
 The draw_layer virtual function is called before and after the text

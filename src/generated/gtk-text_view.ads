@@ -426,11 +426,12 @@ package Gtk.Text_View is
    --  Since: gtk+ 3.6
    --  "purpose": the purpose
 
-   function Get_Iter_At_Location
-      (View : not null access Gtk_Text_View_Record;
-       Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
-       X    : Gint;
-       Y    : Gint) return Boolean;
+   procedure Get_Iter_At_Location
+      (View    : not null access Gtk_Text_View_Record;
+       Iter    : out Gtk.Text_Iter.Gtk_Text_Iter;
+       X       : Gint;
+       Y       : Gint;
+       In_Text : out Boolean);
    --  Retrieves the iterator at buffer coordinates X and Y. Buffer
    --  coordinates are coordinates for the entire buffer, not just the
    --  currently-displayed portion. If you have coordinates from an event, you
@@ -440,12 +441,13 @@ package Gtk.Text_View is
    --  "x": x position, in buffer coordinates
    --  "y": y position, in buffer coordinates
 
-   function Get_Iter_At_Position
+   procedure Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
-       Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : access Gint;
+       Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Trailing : out Gint;
        X        : Gint;
-       Y        : Gint) return Boolean;
+       Y        : Gint;
+       In_Text  : out Boolean);
    --  Retrieves the iterator pointing to the character at buffer coordinates
    --  X and Y. Buffer coordinates are coordinates for the entire buffer, not
    --  just the currently-displayed portion. If you have coordinates from an
