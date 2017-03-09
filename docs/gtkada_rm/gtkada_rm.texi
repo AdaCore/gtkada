@@ -7,7 +7,7 @@
 @c                                                                            o
 @c                           GtkAda DOCUMENTATION                             o
 @c                                                                            o
-@c                     Copyright (C) 2000-2016, AdaCore                       o
+@c                     Copyright (C) 2000-2017, AdaCore                       o
 @c                                                                            o
 @c oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
@@ -23,7 +23,7 @@
 
 @titlepage
 @title GtkAda Reference Manual
-@subtitle Version 17.1
+@subtitle Version 17.2
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
 @author E. Briot, J. Brobecker, A. Charlet
