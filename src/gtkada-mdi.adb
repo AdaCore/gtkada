@@ -49,6 +49,7 @@ with GNAT.Strings;            use GNAT.Strings;
 
 with Glib.Convert;            use Glib.Convert;
 with Glib.Error;              use Glib.Error;
+with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Menu;               use Glib.Menu;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -677,6 +678,11 @@ package body Gtkada.MDI is
 
    end Close_Button;
 
+   function Get_Icon
+     (Child : not null access MDI_Child_Record'Class)
+      return Gtk_Image;
+   --  Retrieve icon. Can return null.
+
    package body Close_Button is separate;
 
    ---------------------
@@ -1244,7 +1250,7 @@ package body Gtkada.MDI is
                D.Icon.Set_From_Icon_Name
                   (C.Icon_Name.all, Size => Icon_Size_Menu);
             elsif C.Title_Icon /= null then
-               Scaled := C.Title_Icon.Get;   --  still owned by Title_Icon
+               Scaled := Get_Icon (C);
                Set_Child_Visible (D.Icon, Scaled /= null);
                if Scaled /= null then
                   Scaled := Scale_Simple (Scaled, 32, 32);
@@ -3171,6 +3177,35 @@ package body Gtkada.MDI is
    is
    begin
       return Child.Title_Icon.Get;
+   end Get_Icon;
+
+   --------------
+   -- Get_Icon --
+   --------------
+
+   function Get_Icon
+     (Child : not null access MDI_Child_Record'Class)
+      return Gtk_Image
+   is
+      Result : Gtk_Image;
+
+      Pixbuf : Gdk_Pixbuf;
+      G_Icon : Glib.G_Icon.G_Icon;
+      Size   : Gtk.Enums.Gtk_Icon_Size;
+
+   begin
+      Pixbuf := Child.Title_Icon.Get;   --  still owned by the image
+      if Pixbuf /= null then
+         Gtk_New (Result, Pixbuf);
+
+      else
+         Child.Title_Icon.Get (G_Icon, Size);
+         if G_Icon /= Null_G_Icon then
+            Result := Gtk_Image_New_From_Gicon (G_Icon, Size);
+         end if;
+      end if;
+
+      return Result;
    end Get_Icon;
 
    -------------------
@@ -5531,11 +5566,10 @@ package body Gtkada.MDI is
       Child  : MDI_Child;
       It     : Gtk_Radio_Menu_Item;
       Box    : Gtk_Box;
-      Pixbuf : Gdk_Pixbuf;
-      Pixmap : Gtk_Image;
       Label  : Gtk_Accel_Label;
       Children, L : Widget_List.Glist;
       W      : Gtk_Widget;
+      Icon   : Gtk_Image;
    begin
       --  Remove all items
 
@@ -5569,10 +5603,9 @@ package body Gtkada.MDI is
          Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
          It.Add (Box);
 
-         Pixbuf := Child.Title_Icon.Get;   --  still owned by the image
-         if Pixbuf /= null then
-            Gtk_New (Pixmap, Pixbuf);
-            Box.Pack_Start (Pixmap, Expand => False);
+         Icon := Get_Icon (Child);
+         if Icon /= null then
+            Box.Pack_Start (Icon, Expand => False);
          end if;
 
          Gtk_New (Label, Child.Short_Title.all);
