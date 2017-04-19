@@ -29,6 +29,7 @@ with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Glib;              use Glib;
 with Glib.Main;         use Glib.Main;
 with Glib.Object;       use Glib.Object;
+with Gtk.Accel_Group;   use Gtk.Accel_Group;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Widget;        use Gtk.Widget;
@@ -566,7 +567,7 @@ package body Gtkada.Canvas_View.Views is
          then
             case Event.Event_Type is
                when Button_Press =>
-                  if Event.State = 0 then
+                  if (Event.State and Get_Default_Mod_Mask) = 0 then
                      Self.Model.Clear_Selection;
                   end if;
 
@@ -580,7 +581,7 @@ package body Gtkada.Canvas_View.Views is
             case Event.Event_Type is
                when Button_Press =>
                   if Self.Model.Is_Selected (Event.Toplevel_Item) then
-                     if Event.State = 0 then
+                     if (Event.State and Get_Default_Mod_Mask) = 0 then
                         null;   --  do nothing, preserve current selection
 
                      else
@@ -590,7 +591,7 @@ package body Gtkada.Canvas_View.Views is
                      end if;
 
                   else
-                     if Event.State = 0 then
+                     if (Event.State and Get_Default_Mod_Mask) = 0 then
                         Self.Model.Clear_Selection;
                      end if;
 
