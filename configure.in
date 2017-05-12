@@ -1,4 +1,4 @@
-AC_INIT(gtkada,17.0gpl,report@adacore.com,gtkada)
+AC_INIT(gtkada,2017,report@adacore.com,gtkada)
 AC_CANONICAL_SYSTEM
 
 TARGET=""
