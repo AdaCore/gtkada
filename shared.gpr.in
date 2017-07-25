@@ -54,6 +54,7 @@ project Shared is
       for Driver ("Objective-C") use "@OBJC@";
       for Leading_Required_Switches ("Objective-C") use ("-c");
       for PIC_Option ("Objective-C") use ("-fPIC");
+      for PIC_Option ("C") use ("-fPIC");
 
       case Build is
          when "Debug" =>
