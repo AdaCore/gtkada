@@ -2127,7 +2127,7 @@ fi
          BUILD_SHARED=yes
       fi
       SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
-      LDFLAGS="-Wl,-framework,Cocoa"
+      LDFLAGS="-Wl,-framework,Cocoa $LDFLAGS"
       TARGET_LFLAGS="-Wl,-framework,Cocoa"
       ;;
    # ??? The following case has been introduced because of an elaboration
@@ -3615,14 +3615,17 @@ $as_echo "yes" >&6; }
   fi
 
 
-
+   gcc_version=$($CC --version | head -1)
 
    value=$GTK_CFLAGS
 
    # Special handling on darwin for gcc 4.5 and 4.7
    case "$build_os" in
       *darwin*)
-         value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         case $gcc_version in
+            *4.5* | *4.7*)
+               value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         esac
    esac
 
    output=GTK_CFLAGS_GPR
@@ -3648,7 +3651,10 @@ $as_echo "yes" >&6; }
    # Special handling on darwin for gcc 4.5 and 4.7
    case "$build_os" in
       *darwin*)
-         value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         case $gcc_version in
+            *4.5* | *4.7*)
+               value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         esac
    esac
 
    output=GTK_LIBS_GPR
@@ -3864,7 +3870,10 @@ $as_echo "$have_MesaGL_pthread" >&6; }
    # Special handling on darwin for gcc 4.5 and 4.7
    case "$build_os" in
       *darwin*)
-         value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         case $gcc_version in
+            *4.5* | *4.7*)
+               value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         esac
    esac
 
    output=GL_LIBS_GPR
@@ -3884,7 +3893,10 @@ $as_echo "$have_MesaGL_pthread" >&6; }
    # Special handling on darwin for gcc 4.5 and 4.7
    case "$build_os" in
       *darwin*)
-         value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         case $gcc_version in
+            *4.5* | *4.7*)
+               value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
+         esac
    esac
 
    output=GL_CFLAGS_GPR
