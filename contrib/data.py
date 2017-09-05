@@ -2,7 +2,7 @@
    bindings.
 """
 
-from adaformat import *
+from adaformat import naming, Enum, Proxy, Record, GObject, List, Callback
 
 # General packages that don't depend on others and must be processed first
 
